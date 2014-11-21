@@ -4,9 +4,9 @@
 #import "Converter.h"
 #import "ControllerC.h"
 
-#define OPTION_NUM 13
+#define OPTION_NUM 14
 #define MAX_LEN 1024
-#define VERSION "1.3.5"
+#define VERSION "1.3.7"
 
 static void version()
 {
@@ -30,6 +30,7 @@ static void usage()
     printf("  --transparent           : generate transparent PNG file\n"); 
     printf("  --kanji ENCODING        : set Japanese encoding  (default: sjis)\n"); 
     printf("  --ignore-errors         : force converting by ignoring nonfatal errors\n"); 
+    printf("  --utf-export            : substitute \\UTF{xxxx} for non-SJIS characters\n"); 
     printf("  --no-delete             : do not delete temporary files (for debug)\n"); 
     printf("  --version               : display version\n"); 
     printf("  --help                  : display this message\n"); 
@@ -107,6 +108,7 @@ int main (int argc, char *argv[]) {
 	bool transparentPngFlag = NO;
 	bool deleteTmpFileFlag = YES;
 	bool ignoreErrorFlag = NO;
+	bool utfExportFlag = NO;
 	NSString* encoding = @"sjis";
 
 	// getopt_long を使った，長いオプション対応のオプション解析
@@ -160,11 +162,16 @@ int main (int argc, char *argv[]) {
 	options[8].has_arg = no_argument;
 	options[8].flag = NULL;
 	options[8].val = 9;	
-	
-	options[9].name = "kanji";
-	options[9].has_arg = required_argument;
+
+	options[9].name = "utf-export";
+	options[9].has_arg = no_argument;
 	options[9].flag = NULL;
-	options[9].val = 10;		
+	options[9].val = 10;	
+	
+	options[10].name = "kanji";
+	options[10].has_arg = required_argument;
+	options[10].flag = NULL;
+	options[10].val = 11;		
 	
 	options[OPTION_NUM - 3].name = "version";
 	options[OPTION_NUM - 3].has_arg = no_argument;
@@ -256,7 +263,10 @@ int main (int argc, char *argv[]) {
 			case 9: // --ignore-errors
 				ignoreErrorFlag = YES;
 				break;
-			case 10: // --kanji
+			case 10: // --utf-export
+				utfExportFlag = YES;
+				break;
+			case 11: // --kanji
 				if(optarg)
 				{
 					encoding = [NSString stringWithCString:optarg];
@@ -303,6 +313,7 @@ int main (int argc, char *argv[]) {
 												leaveText:leaveTextFlag transparentPng:transparentPngFlag
 										 showOutputWindow:NO preview:NO deleteTmpFile:deleteTmpFileFlag 
 											 ignoreErrors:ignoreErrorFlag
+												utfExport:utfExportFlag
 											   controller:controller];
 	bool succeed = [converter compileAndConvertWithInputPath:inputFilePath outputFilePath:outputFilePath];
 	

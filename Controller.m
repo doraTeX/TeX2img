@@ -27,9 +27,9 @@
 	{
 		NSRect mainWindowRect = [mainWindow frame];
 		NSRect outputWindowRect = [outputWindow frame];
-		[outputWindow setFrame:NSMakeRect(mainWindowRect.origin.x + mainWindowRect.size.width, 
-										  mainWindowRect.origin.y + mainWindowRect.size.height - outputWindowRect.size.height, 
-										  outputWindowRect.size.width, outputWindowRect.size.height)
+		[outputWindow setFrame:NSMakeRect(NSMinX(mainWindowRect) + NSWidth(mainWindowRect), 
+										  NSMinY(mainWindowRect) + NSHeight(mainWindowRect) - NSHeight(outputWindowRect), 
+										  NSWidth(outputWindowRect), NSHeight(outputWindowRect))
 					   display:NO];
 	}
 	[outputWindow makeKeyAndOrderFront:nil];
@@ -239,6 +239,7 @@
 		[getOutlineCheckBox setState:[userDefaults boolForKey:@"getOutline"]];
 
 		[ignoreErrorCheckBox setState:[userDefaults boolForKey:@"ignoreError"]];
+		[utfExportCheckBox setState:[userDefaults boolForKey:@"utfExport"]];
 
 		[self loadSettingForTextField:platexPathTextField fromKey:@"platexPath"];
 		[self loadSettingForTextField:dvipdfmxPathTextField fromKey:@"dvipdfmxPath"];
@@ -296,10 +297,10 @@
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-	[userDefaults setFloat:([mainWindow frame]).origin.x forKey:@"x"];
-	[userDefaults setFloat:([mainWindow frame]).origin.y forKey:@"y"];
-	[userDefaults setFloat:([mainWindow frame]).size.width forKey:@"mainWindowWidth"];
-	[userDefaults setFloat:([mainWindow frame]).size.height forKey:@"mainWindowHeight"];
+	[userDefaults setFloat:NSMinX([mainWindow frame]) forKey:@"x"];
+	[userDefaults setFloat:NSMinY([mainWindow frame]) forKey:@"y"];
+	[userDefaults setFloat:NSWidth([mainWindow frame]) forKey:@"mainWindowWidth"];
+	[userDefaults setFloat:NSHeight([mainWindow frame]) forKey:@"mainWindowHeight"];
 	[userDefaults setObject:[outputFileTextField stringValue] forKey:@"outputFile"];
 
 	[userDefaults setInteger:[showOutputWindowCheckBox state] forKey:@"showOutputWindow"];
@@ -309,6 +310,7 @@
 	[userDefaults setBool:[transparentCheckBox state] forKey:@"transparent"];
 	[userDefaults setBool:[getOutlineCheckBox state] forKey:@"getOutline"];
 	[userDefaults setBool:[ignoreErrorCheckBox state] forKey:@"ignoreError"];
+	[userDefaults setBool:[utfExportCheckBox state] forKey:@"utfExport"];
 
 	[userDefaults setObject:[platexPathTextField stringValue] forKey:@"platexPath"];
 	[userDefaults setObject:[dvipdfmxPathTextField stringValue] forKey:@"dvipdfmxPath"];
@@ -384,9 +386,9 @@
 
 		NSRect mainWindowRect = [mainWindow frame];
 		NSRect preambleWindowRect = [preambleWindow frame];
-		[preambleWindow setFrame:NSMakeRect(mainWindowRect.origin.x - preambleWindowRect.size.width, 
-											mainWindowRect.origin.y + mainWindowRect.size.height - preambleWindowRect.size.height, 
-											preambleWindowRect.size.width, preambleWindowRect.size.height)
+		[preambleWindow setFrame:NSMakeRect(NSMinX(mainWindowRect) - NSWidth(preambleWindowRect), 
+											NSMinY(mainWindowRect) + NSHeight(mainWindowRect) - NSHeight(preambleWindowRect), 
+											NSWidth(preambleWindowRect), NSHeight(preambleWindowRect))
 						 display:NO];
 		[preambleWindow makeKeyAndOrderFront:nil];
 	}
@@ -426,6 +428,7 @@
 	bool deleteTmpFileFlag = [deleteTmpFileCheckBox state];
 	
 	bool ignoreErrorFlag = [ignoreErrorCheckBox state];
+	bool utfExportFlag = [utfExportCheckBox state];
 	
 	NSString *outputFilePath = [outputFileTextField stringValue];
 	
@@ -439,6 +442,7 @@
 										  resolutionLevel:resolutionLevel leftMargin:leftMargin rightMargin:rightMargin topMargin:topMargin bottomMargin:bottomMargin
 												leaveText:leaveTextFlag transparentPng:transparentPngFlag showOutputWindow:showOutputWindowFlag preview:previewFlag deleteTmpFile:deleteTmpFileFlag
 											 ignoreErrors:ignoreErrorFlag
+												utfExport:utfExportFlag
 											   controller:self];
 	[converter compileAndConvertWithPreamble:preambleStr withBody:texBodyStr outputFilePath:outputFilePath];
 }

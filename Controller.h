@@ -31,6 +31,7 @@
 	IBOutlet NSTextField *gsPathTextField;
 	IBOutlet NSButton *getOutlineCheckBox;
 	IBOutlet NSButton *ignoreErrorCheckBox;
+	IBOutlet NSButton *utfExportCheckBox;
 	
 }
 - (IBAction)generate:(id)sender;

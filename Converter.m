@@ -14,6 +14,7 @@
 				   leaveText:(bool)_leaveTextFlag transparentPng:(bool)_transparentPngFlag 
 			showOutputWindow:(bool)_showOutputWindowFlag preview:(bool)_previewFlag deleteTmpFile:(bool)_deleteTmpFileFlag
 				ignoreErrors:(bool)_ignoreErrors
+				   utfExport:(bool)_utfExport
 				  controller:(id<OutputController>)_controller
 {
 	platexPath = _platexPath;
@@ -34,6 +35,7 @@
 	previewFlag = _previewFlag;
 	deleteTmpFileFlag = _deleteTmpFileFlag;
 	ignoreErrorsFlag = _ignoreErrors;
+	utfExportFlag = _utfExport;
 	controller = _controller;
 	
 	fileManager = [NSFileManager defaultManager];
@@ -51,6 +53,7 @@
 						leaveText:(bool)_leaveTextFlag transparentPng:(bool)_transparentPngFlag 
 				 showOutputWindow:(bool)_showOutputWindowFlag preview:(bool)_previewFlag deleteTmpFile:(bool)_deleteTmpFileFlag
 					 ignoreErrors:(bool)_ignoreErrors
+						utfExport:(bool)_utfExport
 					   controller:(id<OutputController>)_controller
 {
 	Converter* converter = [Converter alloc];
@@ -61,9 +64,60 @@
 					leaveText:_leaveTextFlag transparentPng:_transparentPngFlag 
 			 showOutputWindow:_showOutputWindowFlag preview:_previewFlag deleteTmpFile:_deleteTmpFileFlag
 				 ignoreErrors:_ignoreErrors
+					utfExport:_utfExport
 				   controller:_controller];
 	return [converter autorelease];
 }
+
+
+// Shift-JIS 外の文字を \UTF に置き換える
+- (NSMutableString *)substituteUTF:(NSString*)dataString
+{
+	NSMutableString *utfString, *newString = [NSMutableString string];
+	int g_texChar = 0x5c;
+	NSRange charRange;
+	NSString *subString;
+	unsigned startl, endl, end;
+	
+	charRange = NSMakeRange(0,1);
+	endl = 0;
+	while (charRange.location < [dataString length])
+	{
+		if (charRange.location == endl)
+		{
+			[dataString getLineStart:&startl end:&endl contentsEnd:&end forRange:charRange];
+		}
+		charRange = [dataString rangeOfComposedCharacterSequenceAtIndex: charRange.location];
+		subString = [dataString substringWithRange: charRange];
+		
+		if (![subString canBeConvertedToEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP)])
+		{
+			if ( [subString characterAtIndex: 0] == 0x2015)
+			{
+				utfString = [NSMutableString stringWithFormat:@"%C", 0x2014];
+			}
+			else
+			{
+				utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}",
+							 g_texChar, [subString characterAtIndex: 0]];
+			}
+			if ((charRange.location + charRange.length) == end)
+			{
+				[utfString appendString: @"%"];
+			}
+			[newString appendString: utfString];
+		}
+		else
+		{
+			[newString appendString: subString];
+		}
+		charRange.location += charRange.length;
+		charRange.length = 1;
+	}
+	
+	return newString;
+}
+
 
 // 文字列の円マーク・バックスラッシュを全てバックスラッシュに統一してファイルに書き込む。
 // 返り値：書き込みの正否(bool)
@@ -76,7 +130,8 @@
 	NSString* backslash = [NSString stringWithUTF8String:"\x5C"];
 	
 	// 円マーク (0xC20xA5) をバックスラッシュ（0x5C）に置換
-	[mstr replaceOccurrencesOfString:yenMark withString:backslash options:0 range:NSMakeRange(0, [mstr length])];	
+	[mstr replaceOccurrencesOfString:yenMark withString:backslash options:0 range:NSMakeRange(0, [mstr length])];
+	if(utfExportFlag) mstr = [self substituteUTF:mstr];
 	return [mstr writeToFile:path atomically:NO encoding:CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese) error:NULL];
 	
 	// バックスラッシュ（0x5C）を円マーク (0xC20xA5) に置換

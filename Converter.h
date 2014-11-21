@@ -22,7 +22,7 @@
 	NSString* gsPath;
 	NSString* encoding;
 	int resolutionLevel, leftMargin, rightMargin, topMargin, bottomMargin;
-	bool leaveTextFlag, transparentPngFlag, showOutputWindowFlag, previewFlag, deleteTmpFileFlag, ignoreErrorsFlag;
+	bool leaveTextFlag, transparentPngFlag, showOutputWindowFlag, previewFlag, deleteTmpFileFlag, ignoreErrorsFlag, utfExportFlag;
 	id<OutputController> controller;
 
 	NSFileManager* fileManager;
@@ -39,6 +39,7 @@
 						leaveText:(bool)_leaveTextFlag transparentPng:(bool)_transparentPngFlag 
 				 showOutputWindow:(bool)_showOutputWindowFlag preview:(bool)_previewFlag deleteTmpFile:(bool)_deleteTmpFileFlag
 					 ignoreErrors:(bool)_ignoreErrors
+						utfExport:(bool)_utfExport
 					   controller:(id<OutputController>)_controller;
 - (bool)compileAndConvertWithInputPath:(NSString*)texSourcePath outputFilePath:(NSString*)outputFilePath;
 - (bool)compileAndConvertWithSource:(NSString*)texSourceStr outputFilePath:(NSString*)outputFilePath;
