@@ -132,7 +132,7 @@ static BOOL isValidTeXCommandChar(int c)
 	if(highlightPattern == NOHIGHLIGHT) return;
 
 	highlightBracesColorDict = [NSDictionary dictionaryWithObjectsAndKeys:
-								[NSColor redColor], NSForegroundColorAttributeName, nil ];
+								[NSColor magentaColor], NSForegroundColorAttributeName, nil ];
 	unichar k_braceCharList[] = {0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E}; // == ()[]{}<>
     
 	NSString *theString = [[self textStorage] string];
@@ -224,6 +224,11 @@ static BOOL isValidTeXCommandChar(int c)
     // NSBeep();	// 対応する開始括弧がなかったときにビープ音を鳴らす
 }
 
+- (void)showIndicator:(NSString*)range
+{
+	[self showFindIndicatorForRange:NSRangeFromString(range)];
+}
+
 - (BOOL)shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString
 {
 	[super shouldChangeTextInRange:affectedCharRange replacementString:replacementString];
@@ -269,12 +274,20 @@ static BOOL isValidTeXCommandChar(int c)
 				matchRange.location = i;
 				matchRange.length = 1;
 				
-				[self setSelectedRange: matchRange
-							  affinity: NSSelectByCharacter stillSelecting: YES];
-				[self display];
-				myDate = [NSDate date];
-				while ([myDate timeIntervalSinceNow] > - 0.075);
-				[self setSelectedRange: affectedCharRange];
+				if (NSFoundationVersionNumber > LEOPARD) {
+					[self performSelector:@selector(showIndicator:) 
+							   withObject:NSStringFromRange(matchRange)
+							   afterDelay:0.0];
+				}
+				else {
+					[self setSelectedRange: matchRange
+								  affinity: NSSelectByCharacter stillSelecting: YES];
+					[self display];
+					myDate = [NSDate date];
+					while ([myDate timeIntervalSinceNow] > - 0.075);
+					[self setSelectedRange: affectedCharRange];
+				}
+				
 				break;
 			}
 		}
