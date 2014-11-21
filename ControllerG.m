@@ -145,6 +145,7 @@
 	[utfExportCheckBox setState:[aProfile boolForKey:@"utfExport"]];
 	
 	[convertYenMarkMenuItem setState:[aProfile boolForKey:@"convertYenMark"]];
+	[colorizeTextMenuItem setState:[aProfile boolForKey:@"colorizeText"]];
 	
 	NSString *encoding = [aProfile stringForKey:@"encoding"];
 	[sjisRadioButton setState:NSOffState];
@@ -204,6 +205,7 @@
 	{
 		[preambleTextView setFont:aFont];
 	}
+	[preambleTextView colorizeText:[aProfile boolForKey:@"colorizeText"]];
 	
 }
 
@@ -265,6 +267,7 @@
 	[currentProfile setInteger:[bottomMarginLabel intValue] forKey:@"bottomMargin"];
 	
 	[currentProfile setInteger:[convertYenMarkMenuItem state] forKey:@"convertYenMark"];
+	[currentProfile setInteger:[colorizeTextMenuItem state] forKey:@"colorizeText"];
 	[currentProfile setObject:[[sourceTextView font] fontName] forKey:@"sourceFontName"];
 	[currentProfile setFloat:[[sourceTextView font] pointSize] forKey:@"sourceFontSize"];
 	[currentProfile setObject:[[preambleTextView font] fontName] forKey:@"preambleFontName"];
@@ -509,6 +512,10 @@
 - (IBAction)toggleMenuItem:(id)sender
 {
 	[sender setState:![sender state]];
+	
+	BOOL colorize = [[self currentProfile] boolForKey:@"colorizeText"];
+	[sourceTextView colorizeText:colorize];
+	[preambleTextView colorizeText:colorize];
 }
 
 - (IBAction)toggleOutputDrawer:(id)sender 

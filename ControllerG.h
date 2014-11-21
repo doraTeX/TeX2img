@@ -1,17 +1,20 @@
 #import <Cocoa/Cocoa.h>
 #import "Converter.h"
 #import "ProfileController.h"
+#import "TeXTextView.h"
 @class ProfileController;
+@class TeXTextView;
 
 @interface ControllerG : NSObject<OutputController> {
 	IBOutlet ProfileController *profileController;
     IBOutlet NSWindow *mainWindow;
-    IBOutlet NSTextView *sourceTextView;
+    IBOutlet TeXTextView *sourceTextView;
 	IBOutlet NSDrawer *outputDrawer;
     IBOutlet NSTextView *outputTextView;
     IBOutlet NSWindow *preambleWindow;
-    IBOutlet NSTextView *preambleTextView;
+    IBOutlet TeXTextView *preambleTextView;
 	IBOutlet NSMenuItem *convertYenMarkMenuItem;
+	IBOutlet NSMenuItem *colorizeTextMenuItem;
 	IBOutlet NSMenuItem *outputDrawerMenuItem;
 	IBOutlet NSMenuItem *preambleWindowMenuItem;
 	IBOutlet NSMenuItem *generateMenuItem;
