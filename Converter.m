@@ -4,72 +4,49 @@
 //#import <OgreKit/OgreKit.h>
 #define MAX_LEN 1024
 
+#import "NSDictionary-Extension.h"
 #import "Converter.h"
 
 @implementation Converter
-- (Converter*)initWithPlatex:(NSString*)_platexPath dvipdfmx:(NSString*)_dvipdfmxPath gs:(NSString*)_gsPath
-			 withPdfcropPath:(NSString*)_pdfcropPath withEpstopdfPath:(NSString*)_epstopdfPath
-					encoding:(NSString*)_encoding
-			 resolutionLevel:(int)_resolutionLevel leftMargin:(int)_leftMargin rightMargin:(int)_rightMargin topMargin:(int)_topMargin bottomMargin:(int)_bottomMargin 
-				   leaveText:(bool)_leaveTextFlag transparentPng:(bool)_transparentPngFlag 
-			showOutputWindow:(bool)_showOutputWindowFlag preview:(bool)_previewFlag deleteTmpFile:(bool)_deleteTmpFileFlag
-				ignoreErrors:(bool)_ignoreErrors
-				   utfExport:(bool)_utfExport
-					   quiet:(bool)_quietFlag
-				  controller:(id<OutputController>)_controller
+- (Converter*)initWithProfile:(NSDictionary*)aProfile
 {
-	platexPath = _platexPath;
-	dvipdfmxPath = _dvipdfmxPath;
-	gsPath = _gsPath;
-	pdfcropPath = _pdfcropPath;
-	epstopdfPath = _epstopdfPath;
-
-	encoding = _encoding;
-	resolutionLevel = _resolutionLevel / 5.0;
-	leftMargin = _leftMargin;
-	rightMargin = _rightMargin;
-	topMargin = _topMargin;
-	bottomMargin = _bottomMargin;
-	leaveTextFlag = _leaveTextFlag;
-	transparentPngFlag = _transparentPngFlag;
-	showOutputWindowFlag = _showOutputWindowFlag;
-	previewFlag = _previewFlag;
-	deleteTmpFileFlag = _deleteTmpFileFlag;
-	ignoreErrorsFlag = _ignoreErrors;
-	utfExportFlag = _utfExport;
-	quietFlag = _quietFlag;
-	controller = _controller;
+	platexPath = [aProfile stringForKey:@"platexPath"];
+	dvipdfmxPath = [aProfile stringForKey:@"dvipdfmxPath"];
+	gsPath = [aProfile stringForKey:@"gsPath"];
+	pdfcropPath = [aProfile stringForKey:@"pdfcropPath"];
+	epstopdfPath = [aProfile stringForKey:@"epstopdfPath"];
+	
+	outputFilePath = [aProfile stringForKey:@"outputFile"];
+	preambleStr = [aProfile stringForKey:@"preamble"];
+	
+	encoding = [aProfile stringForKey:@"encoding"];
+	resolutionLevel = [aProfile floatForKey:@"resolution"] / 5.0;
+	leftMargin = [aProfile integerForKey:@"leftMargin"];
+	rightMargin = [aProfile integerForKey:@"rightMargin"];
+	topMargin = [aProfile integerForKey:@"topMargin"];
+	bottomMargin = [aProfile integerForKey:@"bottomMargin"];
+	leaveTextFlag = ![aProfile boolForKey:@"getOutline"];
+	transparentPngFlag = [aProfile boolForKey:@"transparent"];
+	showOutputWindowFlag = [aProfile boolForKey:@"showOutputWindow"];
+	previewFlag = [aProfile boolForKey:@"preview"];
+	deleteTmpFileFlag = [aProfile boolForKey:@"deleteTmpFile"];
+	ignoreErrorsFlag = [aProfile boolForKey:@"ignoreError"];
+	utfExportFlag = [aProfile boolForKey:@"utfExport"];
+	quietFlag = [aProfile boolForKey:@"quiet"];
+	controller = [aProfile objectForKey:@"controller"];
 	
 	fileManager = [NSFileManager defaultManager];
 	tempdir = NSTemporaryDirectory();
 	pid = (int)getpid();
 	tempFileBaseName = [NSString stringWithFormat:@"temp%d", pid]; 
-
+	
 	return self;
 }
 
-+ (Converter*)converterWithPlatex:(NSString*)_platexPath dvipdfmx:(NSString*)_dvipdfmxPath gs:(NSString*)_gsPath
-				  withPdfcropPath:(NSString*)_pdfcropPath withEpstopdfPath:(NSString*)_epstopdfPath
-						 encoding:(NSString*)_encoding
-				  resolutionLevel:(int)_resolutionLevel leftMargin:(int)_leftMargin rightMargin:(int)_rightMargin topMargin:(int)_topMargin bottomMargin:(int)_bottomMargin 
-						leaveText:(bool)_leaveTextFlag transparentPng:(bool)_transparentPngFlag 
-				 showOutputWindow:(bool)_showOutputWindowFlag preview:(bool)_previewFlag deleteTmpFile:(bool)_deleteTmpFileFlag
-					 ignoreErrors:(bool)_ignoreErrors
-						utfExport:(bool)_utfExport
-							quiet:(bool)_quietFlag
-					   controller:(id<OutputController>)_controller
++ (Converter*)converterWithProfile:(NSDictionary*)aProfile
 {
 	Converter* converter = [Converter alloc];
-	[converter initWithPlatex:_platexPath dvipdfmx:_dvipdfmxPath gs:_gsPath
-			  withPdfcropPath:_pdfcropPath withEpstopdfPath:_epstopdfPath
-					 encoding:_encoding
-			  resolutionLevel:_resolutionLevel leftMargin:_leftMargin rightMargin:_rightMargin topMargin:_topMargin bottomMargin:_bottomMargin 
-					leaveText:_leaveTextFlag transparentPng:_transparentPngFlag 
-			 showOutputWindow:_showOutputWindowFlag preview:_previewFlag deleteTmpFile:_deleteTmpFileFlag
-				 ignoreErrors:_ignoreErrors
-					utfExport:_utfExport
-						quiet:_quietFlag
-				   controller:_controller];
+	[converter initWithProfile:aProfile];
 	return [converter autorelease];
 }
 
@@ -343,7 +320,7 @@
 	
 	NSImage* image = [[[NSImage alloc] initWithSize:size] autorelease];
 	[image lockFocus];
-	[pdfImageRep drawInRect:NSMakeRect(leftMargin, topMargin, [pdfImageRep pixelsWide] * resolutionLevel, [pdfImageRep pixelsHigh] * resolutionLevel)];
+	[pdfImageRep drawInRect:NSMakeRect(leftMargin, bottomMargin, [pdfImageRep pixelsWide] * resolutionLevel, [pdfImageRep pixelsHigh] * resolutionLevel)];
 	[image unlockFocus];
 	
 	// NSImage を TIFF 形式の NSBitmapImageRep に変換する
@@ -446,7 +423,7 @@
 }
 */
 
-- (bool)compileAndConvertTo:(NSString*)outputFilePath
+- (bool)compileAndConvert
 {
 	NSString* teXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	NSString* dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
@@ -552,7 +529,7 @@
 	return YES;
 }
 
-- (bool)compileAndConvertWithCheckTo:(NSString*)outputFilePath
+- (bool)compileAndConvertWithCheck
 {
 	bool status = YES;
 	// 最初にプログラムの存在確認と出力ファイル形式確認
@@ -580,7 +557,7 @@
 		[controller showMainWindow];
 		
 		// 一連のコンパイル処理を実行
-		status = [self compileAndConvertTo:outputFilePath];
+		status = [self compileAndConvert];
 		
 		// プレビュー処理
 		if(status && previewFlag)
@@ -608,7 +585,7 @@
 	return status;
 }
 
-- (bool)compileAndConvertWithSource:(NSString*)texSourceStr outputFilePath:(NSString*)outputFilePath
+- (bool)compileAndConvertWithSource:(NSString*)texSourceStr
 {
 	//TeX ソースを準備
 	NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
@@ -619,17 +596,17 @@
 		return NO;
 	}
 	
-	return [self compileAndConvertWithCheckTo:outputFilePath];
+	return [self compileAndConvertWithCheck];
 }
 
-- (bool)compileAndConvertWithPreamble:(NSString*)preambleStr withBody:(NSString*)texBodyStr outputFilePath:(NSString*)outputFilePath
+- (bool)compileAndConvertWithBody:(NSString*)texBodyStr
 {
 	// TeX ソースを用意
 	NSString* texSourceStr = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}", preambleStr, texBodyStr];
-	return [self compileAndConvertWithSource:texSourceStr outputFilePath:outputFilePath];
+	return [self compileAndConvertWithSource:texSourceStr];
 }
 
-- (bool)compileAndConvertWithInputPath:(NSString*)texSourcePath outputFilePath:(NSString*)outputFilePath
+- (bool)compileAndConvertWithInputPath:(NSString*)texSourcePath
 {
 	NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	if(![fileManager copyPath:texSourcePath toPath:tempTeXFilePath handler:nil])
@@ -638,7 +615,7 @@
 		return NO;
 	}
 	
-	return [self compileAndConvertWithCheckTo:outputFilePath];
+	return [self compileAndConvertWithCheck];
 }
 
 

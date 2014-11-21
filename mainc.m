@@ -3,10 +3,11 @@
 #import <getopt.h>
 #import "Converter.h"
 #import "ControllerC.h"
+#import "NSMutableDictionary-Extension.h";
 
 #define OPTION_NUM 15
 #define MAX_LEN 1024
-#define VERSION "1.3.8"
+#define VERSION "1.4.0"
 
 static void version()
 {
@@ -105,7 +106,7 @@ int main (int argc, char *argv[]) {
 	int rightMargin = 0;
 	int topMargin = 0;
 	int bottomMargin = 0;
-	bool leaveTextFlag = YES;
+	bool getOutline = NO;
 	bool transparentPngFlag = NO;
 	bool deleteTmpFileFlag = YES;
 	bool ignoreErrorFlag = NO;
@@ -259,7 +260,7 @@ int main (int argc, char *argv[]) {
 				}
 				break;
 			case 6: // --create-outline
-				leaveTextFlag = NO;
+				getOutline = YES;
 				break;
 			case 7: // --transparent
 				transparentPngFlag = YES;
@@ -316,17 +317,34 @@ int main (int argc, char *argv[]) {
 	}
 	
 	ControllerC* controller = [[[ControllerC alloc] init] autorelease];
-	Converter* converter = [Converter converterWithPlatex:getPath("platex") dvipdfmx:getPath("dvipdfmx") gs:getPath("gs")
-										  withPdfcropPath:getPath("pdfcrop") withEpstopdfPath:getPath("epstopdf")
-												 encoding:encoding
-										  resolutionLevel:resolutoinLevel leftMargin:leftMargin rightMargin:rightMargin topMargin:topMargin bottomMargin:bottomMargin 
-												leaveText:leaveTextFlag transparentPng:transparentPngFlag
-										 showOutputWindow:NO preview:NO deleteTmpFile:deleteTmpFileFlag 
-											 ignoreErrors:ignoreErrorFlag
-												utfExport:utfExportFlag
-													quiet:quietFlag
-											   controller:controller];
-	bool succeed = [converter compileAndConvertWithInputPath:inputFilePath outputFilePath:outputFilePath];
+	
+	NSMutableDictionary *aProfile = [NSMutableDictionary dictionary];
+	[aProfile setObject:getPath("platex") forKey:@"platexPath"];
+	[aProfile setObject:getPath("dvipdfmx") forKey:@"dvipdfmxPath"];
+	[aProfile setObject:getPath("gs") forKey:@"gsPath"];
+	[aProfile setObject:getPath("pdfcrop") forKey:@"pdfcropPath"];
+	[aProfile setObject:getPath("epstopdf") forKey:@"epstopdfPath"];
+	
+	[aProfile setObject:outputFilePath forKey:@"outputFile"];
+	
+	[aProfile setObject:encoding forKey:@"encoding"];
+	[aProfile setInteger:resolutoinLevel forKey:@"resolution"];
+	[aProfile setInteger:leftMargin forKey:@"leftMargin"];
+	[aProfile setInteger:rightMargin forKey:@"rightMargin"];
+	[aProfile setInteger:topMargin forKey:@"topMargin"];
+	[aProfile setInteger:bottomMargin forKey:@"bottomMargin"];
+	[aProfile setBool:getOutline forKey:@"getOutline"];
+	[aProfile setBool:transparentPngFlag forKey:@"transparent"];
+	[aProfile setBool:NO forKey:@"showOutputWindow"];
+	[aProfile setBool:NO forKey:@"preview"];
+	[aProfile setBool:deleteTmpFileFlag forKey:@"deleteTmpFile"];
+	[aProfile setBool:ignoreErrorFlag forKey:@"ignoreError"];
+	[aProfile setBool:utfExportFlag forKey:@"utfExport"];
+	[aProfile setBool:quietFlag forKey:@"quiet"];
+	[aProfile setObject:controller forKey:@"controller"];
+	
+	Converter *converter = [Converter converterWithProfile:aProfile];
+	bool succeed = [converter compileAndConvertWithInputPath:inputFilePath];
 	
 	if(succeed && !quietFlag)
 	{

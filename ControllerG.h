@@ -1,7 +1,10 @@
 #import <Cocoa/Cocoa.h>
 #import "Converter.h"
+#import "ProfileController.h"
+@class ProfileController;
 
-@interface Controller : NSObject<OutputController> {
+@interface ControllerG : NSObject<OutputController> {
+	IBOutlet ProfileController *profileController;
     IBOutlet NSWindow *mainWindow;
     IBOutlet NSTextView *sourceTextView;
     IBOutlet NSWindow *outputWindow;
@@ -41,7 +44,10 @@
 - (IBAction)showMainWindow:(id)sender;
 - (IBAction)toggleMenuItem:(id)sender;
 - (IBAction)showPreferenceWindow:(id)sender;
+- (IBAction)showProfilesWindow:(id)sender;
 - (IBAction)showSavePanel:(id)sender;
 - (IBAction)restoreDefaultPreamble:(id)sender;
 - (IBAction)openTempDir:(id)sender;
+- (void)adoptProfile:(NSDictionary*)aProfile;
+- (NSMutableDictionary*)currentProfile;
 @end

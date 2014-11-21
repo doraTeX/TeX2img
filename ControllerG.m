@@ -1,0 +1,482 @@
+#import "ControllerG.h"
+#import "NSDictionary-Extension.h"
+#import "NSMutableDictionary-Extension.h"
+#define AutoSavedProfileName @"*AutoSavedProfile*"
+
+@implementation ControllerG
+////// ここから OutputController プロトコルの実装 //////
+- (void)showMainWindow
+{
+	[mainWindow makeKeyAndOrderFront:nil];
+}
+
+- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(bool)quiet
+{
+	if(quiet) return;
+	
+	[[[outputTextView textStorage] mutableString] appendString:mStr];
+	[outputTextView scrollRangeToVisible: NSMakeRange([[outputTextView string] length], 0)]; // 最下部までスクロール
+	[outputTextView display]; // 再描画
+}
+
+- (void)clearOutputTextView
+{
+	[[[outputTextView textStorage] mutableString] setString:@""];
+}
+
+- (void)showOutputWindow
+{
+	[outputWindowMenuItem setState:YES];
+	
+	if(![outputWindow isVisible])
+	{
+		NSRect mainWindowRect = [mainWindow frame];
+		NSRect outputWindowRect = [outputWindow frame];
+		[outputWindow setFrame:NSMakeRect(NSMinX(mainWindowRect) + NSWidth(mainWindowRect), 
+										  NSMinY(mainWindowRect) + NSHeight(mainWindowRect) - NSHeight(outputWindowRect), 
+										  NSWidth(outputWindowRect), NSHeight(outputWindowRect))
+					   display:NO];
+	}
+	[outputWindow makeKeyAndOrderFront:nil];
+}
+
+- (void)showExtensionError
+{
+	NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"extensionErrMsg", nil), @"OK", nil, nil);	
+}
+
+- (void)showNotFoundError:(NSString*)aPath
+{
+	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", aPath, NSLocalizedString(@"programNotFoundErrorMsg", nil)], @"OK", nil, nil);
+}
+
+- (bool)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
+{
+	NSFileManager* fileManager = [NSFileManager defaultManager];
+	
+	if(![fileManager fileExistsAtPath:[[platexPath componentsSeparatedByString:@" "] objectAtIndex:0]])
+	{
+		[self showNotFoundError:platexPath];
+		return NO;
+	}
+	if(![fileManager fileExistsAtPath:[[dvipdfmxPath componentsSeparatedByString:@" "] objectAtIndex:0]])
+	{
+		[self showNotFoundError:dvipdfmxPath];
+		return NO;
+	}
+	if(![fileManager fileExistsAtPath:[[gsPath componentsSeparatedByString:@" "] objectAtIndex:0]])
+	{
+		[self showNotFoundError:gsPath];
+		return NO;
+	}
+	
+	return YES;
+}
+
+- (bool)checkPdfcropExistence;
+{
+	return YES;
+}
+
+- (bool)checkEpstopdfExistence;
+{
+	return YES;
+}
+
+- (void)showFileGenerateError:(NSString*)aPath
+{
+	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", aPath, NSLocalizedString(@"fileGenerateErrorMsg", nil)], @"OK", nil, nil);
+}
+
+- (void)showExecError:(NSString*)command
+{
+	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", command, NSLocalizedString(@"execErrorMsg", nil)], @"OK", nil, nil);
+}
+
+- (void)showCannotOverrideError:(NSString*)path
+{
+	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", path, NSLocalizedString(@"cannotOverrideErrorMsg", nil)], @"OK", nil, nil);
+}
+
+- (void)showCompileError
+{
+	NSRunAlertPanel(NSLocalizedString(@"Alert", nil), NSLocalizedString(@"compileErrorMsg", nil), @"OK", nil, nil);
+}
+////// ここまで OutputController プロトコルの実装 //////
+
+
+////// ここからプロファイルの読み書き関連 //////
+- (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
+{
+	NSString* tempStr = [aProfile stringForKey:aKey];
+	
+	if(tempStr != nil)
+	{
+		[textField setStringValue:tempStr];	
+	}
+}
+
+- (void)loadSettingForTextView:(NSTextView*)textView fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
+{
+	NSString* tempStr = [aProfile stringForKey:aKey];
+	
+	if(tempStr != nil)
+	{
+		[[[textView textStorage] mutableString] setString:tempStr];
+	}
+}
+
+- (void)adoptProfile:(NSDictionary*)aProfile
+{
+	if(aProfile == nil) return;
+	
+	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:@"outputFile"];
+	
+	[showOutputWindowCheckBox setState:[aProfile integerForKey:@"showOutputWindow"]];
+	[previewCheckBox setState:[aProfile integerForKey:@"preview"]];
+	[deleteTmpFileCheckBox setState:[aProfile integerForKey:@"deleteTmpFile"]];
+	
+	[transparentCheckBox setState:[aProfile boolForKey:@"transparent"]];
+	[getOutlineCheckBox setState:[aProfile boolForKey:@"getOutline"]];
+	
+	[ignoreErrorCheckBox setState:[aProfile boolForKey:@"ignoreError"]];
+	[utfExportCheckBox setState:[aProfile boolForKey:@"utfExport"]];
+	
+	[self loadSettingForTextField:platexPathTextField fromProfile:aProfile forKey:@"platexPath"];
+	[self loadSettingForTextField:dvipdfmxPathTextField fromProfile:aProfile forKey:@"dvipdfmxPath"];
+	[self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:@"gsPath"];
+	
+	[self loadSettingForTextField:resolutionLabel fromProfile:aProfile forKey:@"resolutionLabel"];
+	[self loadSettingForTextField:leftMarginLabel fromProfile:aProfile forKey:@"leftMarginLabel"];
+	[self loadSettingForTextField:rightMarginLabel fromProfile:aProfile forKey:@"rightMarginLabel"];
+	[self loadSettingForTextField:topMarginLabel fromProfile:aProfile forKey:@"topMarginLabel"];
+	[self loadSettingForTextField:bottomMarginLabel fromProfile:aProfile forKey:@"bottomMarginLabel"];
+	
+	[resolutionSlider setIntValue:[aProfile integerForKey:@"resolution"]];
+	[leftMarginSlider setIntValue:[aProfile integerForKey:@"leftMargin"]];
+	[rightMarginSlider setIntValue:[aProfile integerForKey:@"rightMargin"]];
+	[topMarginSlider setIntValue:[aProfile integerForKey:@"topMargin"]];
+	[bottomMarginSlider setIntValue:[aProfile integerForKey:@"bottomMargin"]];
+	
+	[self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:@"preamble"];
+}
+
+- (bool)adoptProfileWithWindowFrameForName:(NSString*)profileName
+{
+	NSDictionary* aProfile = [profileController profileForName:profileName];
+	if(aProfile == nil) return NO;
+	
+	[self adoptProfile:aProfile];
+
+	float x, y, mainWindowWidth, mainWindowHeight; 
+	x = [aProfile floatForKey:@"x"];
+	y = [aProfile floatForKey:@"y"];
+	mainWindowWidth = [aProfile floatForKey:@"mainWindowWidth"];
+	mainWindowHeight = [aProfile floatForKey:@"mainWindowHeight"];
+	
+	if(x!=0 && y!=0 && mainWindowWidth!=0 && mainWindowHeight!=0)
+	{
+		[mainWindow setFrame:NSMakeRect(x, y, mainWindowWidth, mainWindowHeight) display:YES];
+	}
+	
+	return YES;
+}
+
+
+
+- (NSMutableDictionary*)currentProfile
+{
+	NSMutableDictionary *currentProfile = [NSMutableDictionary dictionary];
+	[currentProfile setFloat:NSMinX([mainWindow frame]) forKey:@"x"];
+	[currentProfile setFloat:NSMinY([mainWindow frame]) forKey:@"y"];
+	[currentProfile setFloat:NSWidth([mainWindow frame]) forKey:@"mainWindowWidth"];
+	[currentProfile setFloat:NSHeight([mainWindow frame]) forKey:@"mainWindowHeight"];
+	[currentProfile setObject:[outputFileTextField stringValue] forKey:@"outputFile"];
+	
+	[currentProfile setInteger:[showOutputWindowCheckBox state] forKey:@"showOutputWindow"];
+	[currentProfile setInteger:[previewCheckBox state] forKey:@"preview"];
+	[currentProfile setInteger:[deleteTmpFileCheckBox state] forKey:@"deleteTmpFile"];
+	
+	[currentProfile setBool:[transparentCheckBox state] forKey:@"transparent"];
+	[currentProfile setBool:[getOutlineCheckBox state] forKey:@"getOutline"];
+	[currentProfile setBool:[ignoreErrorCheckBox state] forKey:@"ignoreError"];
+	[currentProfile setBool:[utfExportCheckBox state] forKey:@"utfExport"];
+	
+	[currentProfile setObject:[platexPathTextField stringValue] forKey:@"platexPath"];
+	[currentProfile setObject:[dvipdfmxPathTextField stringValue] forKey:@"dvipdfmxPath"];
+	[currentProfile setObject:[gsPathTextField stringValue] forKey:@"gsPath"];
+	
+	[currentProfile setObject:[resolutionLabel stringValue] forKey:@"resolutionLabel"];
+	[currentProfile setObject:[leftMarginLabel stringValue] forKey:@"leftMarginLabel"];
+	[currentProfile setObject:[rightMarginLabel stringValue] forKey:@"rightMarginLabel"];
+	[currentProfile setObject:[topMarginLabel stringValue] forKey:@"topMarginLabel"];
+	[currentProfile setObject:[bottomMarginLabel stringValue] forKey:@"bottomMarginLabel"];
+	
+	[currentProfile setInteger:[resolutionSlider intValue] forKey:@"resolution"];
+	[currentProfile setInteger:[leftMarginSlider intValue] forKey:@"leftMargin"];
+	[currentProfile setInteger:[rightMarginSlider intValue] forKey:@"rightMargin"];
+	[currentProfile setInteger:[topMarginSlider intValue] forKey:@"topMargin"];
+	[currentProfile setInteger:[bottomMarginSlider intValue] forKey:@"bottomMargin"];
+	
+	[currentProfile setObject:[[preambleTextView textStorage] string] forKey:@"preamble"];
+	return currentProfile;
+}
+
+////// ここまでプロファイルの読み書き関連 //////
+
+////// ここから他のメソッドから呼び出されるユーティリティメソッド //////
+- (NSString*)searchProgram:(NSString*)programName
+{
+	NSArray *searchPaths = [NSArray arrayWithObjects:
+							@"/usr/local/bin", @"/opt/local/bin", @"/sw/bin", nil];
+	NSEnumerator *enumerator = [searchPaths objectEnumerator];
+	NSFileManager* fileManager = [NSFileManager defaultManager];
+	
+	NSString *aPath;
+	NSString *aFullPath;
+	
+	while(aPath = [enumerator nextObject])
+	{
+		aFullPath = [NSString stringWithFormat:@"%@/%@", aPath, programName];
+		if([fileManager fileExistsAtPath:aFullPath])
+		{
+			return aFullPath;
+		}
+	}
+	
+	return nil;
+}
+
+- (void)restoreDefaultPreambleLogic
+{
+	[[[preambleTextView textStorage] mutableString] setString:@"\\documentclass[fleqn,papersize]{jsarticle}\n\\usepackage{amsmath,amssymb}\n\\pagestyle{empty}\n"];
+}
+
+////// ここまで他のメソッドから呼び出されるユーティリティメソッド //////
+
+
+////// ここからデリゲート・ノティフィケーションのコールバック //////
+- (void)awakeFromNib
+{
+	//	以下は Interface Builder 上で設定できる
+	//	[mainWindow setReleasedWhenClosed:NO];
+	//	[outputWindow setReleasedWhenClosed:NO];
+	//	[preambleWindow setReleasedWhenClosed:NO];
+	
+	// ノティフィケーションの設定
+	NSNotificationCenter *aCenter=[NSNotificationCenter defaultCenter];
+	
+	// アプリケーションがアクティブになったときにメインウィンドウを表示
+	[aCenter addObserver: self
+				selector: @selector(showMainWindow:)
+					name: @"NSApplicationDidBecomeActiveNotification"
+				  object: NSApp];
+	
+	// プログラム終了時に設定保存実行
+	[aCenter addObserver: self
+				selector: @selector(applicationWillTerminate:)
+					name: @"NSApplicationWillTerminateNotification"
+				  object: NSApp];
+	
+	// アウトプットウィンドウが閉じられるときにメニューのチェックを外す
+	[aCenter addObserver: self
+				selector: @selector(uncheckOutputWindowMenuItem:)
+					name: @"NSWindowWillCloseNotification"
+				  object: outputWindow];
+	
+	// プリアンブルウィンドウが閉じられるときにメニューのチェックを外す
+	[aCenter addObserver: self
+				selector: @selector(uncheckPreambleWindowMenuItem:)
+					name: @"NSWindowWillCloseNotification"
+				  object: preambleWindow];
+	
+	// メインウィンドウが閉じられるときに他のウィンドウも閉じる
+	[aCenter addObserver: self
+				selector: @selector(closeOtherWindows:)
+					name: @"NSWindowWillCloseNotification"
+				  object: mainWindow];
+	
+	
+	// デフォルトのアウトプットファイルのパスをセット
+	[outputFileTextField setStringValue:[NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()]];
+	
+	// 保存された設定を読み込む
+	NSFileManager* fileManager = [NSFileManager defaultManager];
+	NSString* plistFile = [NSString stringWithFormat:@"%@/Library/Preferences/%@.plist", NSHomeDirectory(), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
+	
+	bool loadLastProfileSuccess = NO;
+	
+	if([fileManager fileExistsAtPath:plistFile])
+	{
+		[profileController loadProfilesFromPlist];
+		loadLastProfileSuccess = [self adoptProfileWithWindowFrameForName:AutoSavedProfileName];
+		[profileController removeProfileForName:AutoSavedProfileName];
+	}
+	if(!loadLastProfileSuccess) // 初回起動時の各種プログラムのパスの自動設定
+	{
+		[profileController initProfiles];
+		[self restoreDefaultPreambleLogic];
+		
+		NSString *platexPath;
+		NSString *dvipdfmxPath;
+		NSString *gsPath;
+		
+		if(!(platexPath = [self searchProgram:@"platex"]))
+		{
+			platexPath = @"/usr/local/bin/platex";
+			[self showNotFoundError:@"platex"];
+		}
+		if(!(dvipdfmxPath = [self searchProgram:@"dvipdfmx"]))
+		{
+			dvipdfmxPath = @"/usr/local/bin/dvipdfmx";
+			[self showNotFoundError:@"dvipdfmx"];
+		}
+		if(!(gsPath = [self searchProgram:@"gs"]))
+		{
+			gsPath = @"/usr/local/bin/gs";
+			[self showNotFoundError:@"ghostscript"];
+		}
+		
+		[platexPathTextField setStringValue:platexPath];
+		[dvipdfmxPathTextField setStringValue:dvipdfmxPath];
+		[gsPathTextField setStringValue:gsPath];
+		
+		NSRunAlertPanel(NSLocalizedString(@"initSettingsMsg", nil), 
+						[NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",
+						 NSLocalizedString(@"setPathMsg1", nil), platexPath, dvipdfmxPath, gsPath, NSLocalizedString(@"setPathMsg2", nil)],
+						@"OK", nil, nil);
+	}
+}
+
+- (void)applicationWillTerminate:(NSNotification *)aNotification
+{
+	[profileController updateProfile:[self currentProfile] forName:AutoSavedProfileName];
+	[profileController saveProfiles];
+}
+
+- (void)dealloc
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
+}
+
+- (void)closeOtherWindows:(NSNotification *)aNotification
+{
+	[preambleWindow close];
+	[preferenceWindow close];
+	[outputWindow close];
+}
+
+- (void)uncheckOutputWindowMenuItem:(NSNotification *)aNotification
+{
+	[outputWindowMenuItem setState:NO];
+}
+
+- (void)uncheckPreambleWindowMenuItem:(NSNotification *)aNotification
+{
+	[preambleWindowMenuItem setState:NO];
+}
+
+- (IBAction)showMainWindow:(id)sender
+{
+	[self showMainWindow];
+}
+////// ここまでデリゲート・ノティフィケーションのコールバック //////
+
+- (IBAction)restoreDefaultPreamble:(id)sender
+{
+	if(NSRunAlertPanel(NSLocalizedString(@"Confirm", nil), NSLocalizedString(@"resotreDefaultPreambleMsg", nil), @"OK", NSLocalizedString(@"Cancel", nil), nil) == NSOKButton)
+	{
+		[self restoreDefaultPreambleLogic];
+	}
+}
+
+- (IBAction)openTempDir:(id)sender
+{
+	[[NSWorkspace sharedWorkspace] openFile:NSTemporaryDirectory() withApplication:@"Finder.app"];
+}
+
+- (IBAction)showPreferenceWindow:(id)sender
+{
+	[preferenceWindow makeKeyAndOrderFront:nil];
+}
+
+- (IBAction)showProfilesWindow:(id)sender
+{
+	[profileController showProfileWindow];
+}
+
+
+- (IBAction)showSavePanel:(id)sender
+{
+	NSSavePanel* aPanel = [NSSavePanel savePanel];
+	if([aPanel runModal] == NSFileHandlingPanelOKButton)
+	{
+		[outputFileTextField setStringValue:[aPanel filename]];
+	}
+}
+
+- (IBAction)toggleMenuItem:(id)sender
+{
+	[sender setState:![sender state]];
+}
+
+- (IBAction)toggleOutputWindow:(id)sender 
+{
+	if([outputWindow isVisible])
+	{
+		[outputWindow close];
+	}
+	else
+	{
+		[self showOutputWindow];
+	}
+    
+}
+
+- (IBAction)togglePreambleWindow:(id)sender
+{
+	if([preambleWindow isVisible])
+	{
+		[preambleWindow close];
+	}
+	else
+	{
+		[preambleWindowMenuItem setState:YES];
+
+		NSRect mainWindowRect = [mainWindow frame];
+		NSRect preambleWindowRect = [preambleWindow frame];
+		[preambleWindow setFrame:NSMakeRect(NSMinX(mainWindowRect) - NSWidth(preambleWindowRect), 
+											NSMinY(mainWindowRect) + NSHeight(mainWindowRect) - NSHeight(preambleWindowRect), 
+											NSWidth(preambleWindowRect), NSHeight(preambleWindowRect))
+						 display:NO];
+		[preambleWindow makeKeyAndOrderFront:nil];
+	}
+    
+}
+
+- (IBAction)closeWindow:(id)sender
+{
+	[[NSApp keyWindow] close];
+}
+
+
+
+- (IBAction)generate:(id)sender
+{
+	NSMutableDictionary *aProfile = [self currentProfile];
+	[aProfile setObject:@"sjis" forKey:@"encoding"];
+	[aProfile setObject:[[NSBundle mainBundle] pathForResource:@"pdfcrop" ofType:nil] forKey:@"pdfcropPath"];
+	[aProfile setObject:[[NSBundle mainBundle] pathForResource:@"epstopdf" ofType:nil] forKey:@"epstopdfPath"];
+	[aProfile setBool:NO forKey:@"quiet"];
+	[aProfile setObject:self forKey:@"controller"];
+
+	Converter* converter = [Converter converterWithProfile:aProfile];
+
+	NSString* texBodyStr = [[sourceTextView textStorage] string];
+
+	[converter compileAndConvertWithBody:texBodyStr];
+}
+
+
+@end

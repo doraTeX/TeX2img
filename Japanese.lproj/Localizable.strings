@@ -14,3 +14,5 @@
 "setPathMsg1" = "TeX 関連プログラムのパスを";
 "setPathMsg2" = "に設定しました（環境設定パネルから変更できます）。";
 "extensionErrMsg" = "出力ファイルの拡張子は .eps / .png / .jpg / .pdf のいずれかにしてください。";
+"emptyProfileNameErrMsg" = "保存する設定に名前を付けてください。";
+"profileOverwriteMsg" = "既に同名の設定が存在します。\n既存の同名の設定を置き換えてよろしいですか？";

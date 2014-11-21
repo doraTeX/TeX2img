@@ -8,10 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
-		3424A8E30E4F2DC1003C9F96 /* Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 3424A8E20E4F2DC1003C9F96 /* Controller.m */; };
+		3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */ = {isa = PBXBuildFile; fileRef = 3424A8E20E4F2DC1003C9F96 /* ControllerG.m */; };
 		342C6196101E637F00E29FEB /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 342C6194101E637F00E29FEB /* epstopdf */; };
 		342C6197101E637F00E29FEB /* pdfcrop in Resources */ = {isa = PBXBuildFile; fileRef = 342C6195101E637F00E29FEB /* pdfcrop */; };
+		3432CA3B1026168A009631F9 /* NSMutableDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF2F251025FA30009A8CA6 /* NSMutableDictionary-Extension.m */; };
+		3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
+		34821EC810282CF9008DEB1F /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34821EC710282CF9008DEB1F /* ProfileController.m */; };
 		348BB5190F08C3850063003D /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
+		34B632BE1028FB87009A052F /* NSIndexSet-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B632BD1028FB87009A052F /* NSIndexSet-Extension.m */; };
+		34CF2F261025FA30009A8CA6 /* NSMutableDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF2F251025FA30009A8CA6 /* NSMutableDictionary-Extension.m */; };
+		34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
 		7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */; };
 		705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC3550F10E4670052AFA5 /* ControllerC.m */; };
 		705DC7A60F1197E90052AFA5 /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
@@ -47,12 +53,20 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeX2img_Prefix.pch; sourceTree = "<group>"; };
 		3424A8DF0E4F2C3B003C9F96 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		3424A8E10E4F2DC1003C9F96 /* Controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Controller.h; sourceTree = "<group>"; };
-		3424A8E20E4F2DC1003C9F96 /* Controller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Controller.m; sourceTree = "<group>"; };
+		3424A8E10E4F2DC1003C9F96 /* ControllerG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerG.h; sourceTree = "<group>"; };
+		3424A8E20E4F2DC1003C9F96 /* ControllerG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerG.m; sourceTree = "<group>"; };
 		342C6194101E637F00E29FEB /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
 		342C6195101E637F00E29FEB /* pdfcrop */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = pdfcrop; sourceTree = "<group>"; };
+		34821EC610282CF9008DEB1F /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
+		34821EC710282CF9008DEB1F /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
 		348BB5170F08C3850063003D /* Converter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Converter.h; sourceTree = "<group>"; };
 		348BB5180F08C3850063003D /* Converter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Converter.m; sourceTree = "<group>"; };
+		34B632BC1028FB87009A052F /* NSIndexSet-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet-Extension.h"; sourceTree = "<group>"; };
+		34B632BD1028FB87009A052F /* NSIndexSet-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet-Extension.m"; sourceTree = "<group>"; };
+		34CF2F241025FA30009A8CA6 /* NSMutableDictionary-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary-Extension.h"; sourceTree = "<group>"; };
+		34CF2F251025FA30009A8CA6 /* NSMutableDictionary-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary-Extension.m"; sourceTree = "<group>"; };
+		34CF33A210260315009A8CA6 /* NSDictionary-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary-Extension.h"; sourceTree = "<group>"; };
+		34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary-Extension.m"; sourceTree = "<group>"; };
 		7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = TeX2imgIcon.icns; sourceTree = "<group>"; };
 		705DC2BB0F10E0B00052AFA5 /* mainc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mainc.m; sourceTree = "<group>"; };
 		705DC3540F10E4670052AFA5 /* ControllerC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerC.h; sourceTree = "<group>"; };
@@ -91,12 +105,20 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				3424A8E10E4F2DC1003C9F96 /* Controller.h */,
-				3424A8E20E4F2DC1003C9F96 /* Controller.m */,
+				34821EC610282CF9008DEB1F /* ProfileController.h */,
+				34821EC710282CF9008DEB1F /* ProfileController.m */,
 				348BB5170F08C3850063003D /* Converter.h */,
 				348BB5180F08C3850063003D /* Converter.m */,
+				3424A8E10E4F2DC1003C9F96 /* ControllerG.h */,
+				3424A8E20E4F2DC1003C9F96 /* ControllerG.m */,
 				705DC3540F10E4670052AFA5 /* ControllerC.h */,
 				705DC3550F10E4670052AFA5 /* ControllerC.m */,
+				34CF2F241025FA30009A8CA6 /* NSMutableDictionary-Extension.h */,
+				34CF2F251025FA30009A8CA6 /* NSMutableDictionary-Extension.m */,
+				34CF33A210260315009A8CA6 /* NSDictionary-Extension.h */,
+				34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */,
+				34B632BC1028FB87009A052F /* NSIndexSet-Extension.h */,
+				34B632BD1028FB87009A052F /* NSIndexSet-Extension.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -251,6 +273,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3432CA3B1026168A009631F9 /* NSMutableDictionary-Extension.m in Sources */,
+				3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */,
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
 				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,
 				705DC7A70F1197E90052AFA5 /* mainc.m in Sources */,
@@ -262,8 +286,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
-				3424A8E30E4F2DC1003C9F96 /* Controller.m in Sources */,
+				3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
+				34CF2F261025FA30009A8CA6 /* NSMutableDictionary-Extension.m in Sources */,
+				34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */,
+				34821EC810282CF9008DEB1F /* ProfileController.m in Sources */,
+				34B632BE1028FB87009A052F /* NSIndexSet-Extension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -21,7 +21,9 @@
 	NSString* dvipdfmxPath;
 	NSString* gsPath;
 	NSString* encoding;
-	double resolutionLevel;
+	NSString* outputFilePath;
+	NSString* preambleStr;
+	float resolutionLevel;
 	int leftMargin, rightMargin, topMargin, bottomMargin;
 	bool leaveTextFlag, transparentPngFlag, showOutputWindowFlag, previewFlag, deleteTmpFileFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 	id<OutputController> controller;
@@ -33,17 +35,8 @@
 	NSString* pdfcropPath;
 	NSString* epstopdfPath;
 }
-+ (Converter*)converterWithPlatex:(NSString*) _platexPath dvipdfmx:(NSString*)_dvipdfmxPath gs:(NSString*)_gsPath
-				  withPdfcropPath:(NSString*)_pdfcropPath withEpstopdfPath:(NSString*)_epstopdfPath
-						 encoding:(NSString*)_encoding
-				  resolutionLevel:(int)_resolutionLevel leftMargin:(int)_leftMargin rightMargin:(int)_rightMargin topMargin:(int)_topMargin bottomMargin:(int)_bottomMargin 
-						leaveText:(bool)_leaveTextFlag transparentPng:(bool)_transparentPngFlag 
-				 showOutputWindow:(bool)_showOutputWindowFlag preview:(bool)_previewFlag deleteTmpFile:(bool)_deleteTmpFileFlag
-					 ignoreErrors:(bool)_ignoreErrors
-						utfExport:(bool)_utfExport
-							quiet:(bool)_quietFlag
-					   controller:(id<OutputController>)_controller;
-- (bool)compileAndConvertWithInputPath:(NSString*)texSourcePath outputFilePath:(NSString*)outputFilePath;
-- (bool)compileAndConvertWithSource:(NSString*)texSourceStr outputFilePath:(NSString*)outputFilePath;
-- (bool)compileAndConvertWithPreamble:(NSString*)preambleStr withBody:(NSString*)texBodyStr outputFilePath:(NSString*)outputFilePath;
++ (Converter*)converterWithProfile:(NSDictionary*)aProfile;
+- (bool)compileAndConvertWithInputPath:(NSString*)texSourcePath;
+- (bool)compileAndConvertWithSource:(NSString*)texSourceStr;
+- (bool)compileAndConvertWithBody:(NSString*)texBodyStr;
 @end
