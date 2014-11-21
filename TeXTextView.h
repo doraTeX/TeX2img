@@ -6,6 +6,8 @@
 	IBOutlet ControllerG *controller;
 	NSDictionary* highlightBracesColorDict;
 	int _lastCursorLocation;
+	NSDictionary* autocompletionDictionary;
+	BOOL autoCompleting;
 }
 @end
 

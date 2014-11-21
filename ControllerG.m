@@ -156,6 +156,12 @@
 	[self changeHighlight:nil];
 
 	[flashInMovingMenuItem setState:[aProfile boolForKey:@"flashInMoving"]];
+	
+	[autoCompleteMenuItem setState:[aProfile boolForKey:@"autoComplete"]];
+	[showTabCharacterMenuItem setState:[aProfile boolForKey:@"showTabCharacter"]];
+	[showSpaceCharacterMenuItem setState:[aProfile boolForKey:@"showSpaceCharacter"]];
+	[showFullwidthSpaceCharacterMenuItem setState:[aProfile boolForKey:@"showFullwidthSpaceCharacter"]];
+	[showNewLineCharacterMenuItem setState:[aProfile boolForKey:@"showNewLineCharacter"]];
 
 	NSString *encoding = [aProfile stringForKey:@"encoding"];
 	[sjisRadioButton setState:NSOffState];
@@ -281,6 +287,11 @@
 	[currentProfile setInteger:[colorizeTextMenuItem state] forKey:@"colorizeText"];
 	[currentProfile setInteger:highlightPattern forKey:@"highlightPattern"];
 	[currentProfile setInteger:[flashInMovingMenuItem state] forKey:@"flashInMoving"];
+	[currentProfile setInteger:[autoCompleteMenuItem state] forKey:@"autoComplete"];
+	[currentProfile setInteger:[showTabCharacterMenuItem state] forKey:@"showTabCharacter"];
+	[currentProfile setInteger:[showSpaceCharacterMenuItem state] forKey:@"showSpaceCharacter"];
+	[currentProfile setInteger:[showFullwidthSpaceCharacterMenuItem state] forKey:@"showFullwidthSpaceCharacter"];
+	[currentProfile setInteger:[showNewLineCharacterMenuItem state] forKey:@"showNewLineCharacter"];
 	[currentProfile setObject:[[sourceTextView font] fontName] forKey:@"sourceFontName"];
 	[currentProfile setFloat:[[sourceTextView font] pointSize] forKey:@"sourceFontSize"];
 	[currentProfile setObject:[[preambleTextView font] fontName] forKey:@"preambleFontName"];

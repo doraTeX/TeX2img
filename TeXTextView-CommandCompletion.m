@@ -118,7 +118,7 @@ static NSString* endcommentString = @"›";
 - (void)keyDown:(NSEvent *)theEvent
 {
 	if([self hasMarkedText]) return [super keyDown: theEvent]; // 日本語入力中はそのままイベントを通す
-	char g_texChar = '\\';
+	char texChar = '\\';
 	
 	// FIXME: Using static variables like this is *EVIL*
 	// It will simply not work correctly when using more than one window/view (which we frequently do)!
@@ -168,11 +168,11 @@ static NSString* endcommentString = @"›";
 			&& !latexSpecial)
 		{
 			charSet = [NSCharacterSet characterSetWithCharactersInString:
-					   [NSString stringWithFormat: @"\n \t.,;;{}()%C", g_texChar]]; //should be global?
+					   [NSString stringWithFormat: @"\n \t.,;;{}()%C", texChar]]; //should be global?
 			foundRange = [textString rangeOfCharacterFromSet:charSet
 													 options:NSBackwardsSearch range:NSMakeRange(0,selectedLocation-1)];
 			if (foundRange.location != NSNotFound  &&  foundRange.location >= 6  &&
-				[textString characterAtIndex: foundRange.location-6] == g_texChar  &&
+				[textString characterAtIndex: foundRange.location-6] == texChar  &&
 				[[textString substringWithRange: NSMakeRange(foundRange.location-5, 6)]
 				 isEqualToString: @"begin{"])
 			{
@@ -235,7 +235,7 @@ static NSString* endcommentString = @"›";
 		if (!wasCompleted && !latexSpecial) {
 			// determine the word to complete--search for word boundary
 			charSet = [NSCharacterSet characterSetWithCharactersInString:
-					   [NSString stringWithFormat: @"\n \t.,;;{}()%C", g_texChar]];
+					   [NSString stringWithFormat: @"\n \t.,;;{}()%C", texChar]];
 			foundRange = [textString rangeOfCharacterFromSet:charSet
 													 options:NSBackwardsSearch range:NSMakeRange(0,selectedLocation)];
 			if (foundRange.location != NSNotFound) {
@@ -243,7 +243,7 @@ static NSString* endcommentString = @"›";
 				{ [super keyDown: theEvent];
 					return;} // no string to match
 				c = [textString characterAtIndex: foundRange.location];
-				if (c == g_texChar || c == '{') // special characters
+				if (c == texChar || c == '{') // special characters
 					replaceLocation = foundRange.location; // include these characters for search
 				else
 					replaceLocation = foundRange.location + 1;
@@ -331,13 +331,13 @@ static NSString* endcommentString = @"›";
 				originalString = [[NSString stringWithString: @""] retain];
 				replaceLocation = selectedLocation;
 				newString = [NSMutableString stringWithFormat: @"\n%Cend%@\n",
-							 g_texChar, latexString];
+							 texChar, latexString];
 				insRange.location = 0;
 				completionListLocation = NSNotFound; // just to remember that it wasn't completed
 			} else {
 				// reuse the current string
 				newString = [NSMutableString stringWithFormat: @"%@\n%Cend%@\n",
-							 currentString, g_texChar, latexString];
+							 currentString, texChar, latexString];
 				insRange.location = [currentString length];
 				[currentString release];
 			}

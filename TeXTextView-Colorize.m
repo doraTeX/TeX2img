@@ -219,7 +219,7 @@ static BOOL isValidTeXCommandChar(int c)
 										   forCharacterRange:NSMakeRange(originalLocation, 1)];
 				[self display];
 
-				if (NSFoundationVersionNumber > LEOPARD && [[controller currentProfile] boolForKey:@"flashInMoving"]) {
+				if (NSFoundationVersionNumber > LEOPARD  && !autoCompleting && [[controller currentProfile] boolForKey:@"flashInMoving"]) {
 					[self performSelector:@selector(showIndicator:) 
 							   withObject:NSStringFromRange(NSMakeRange(theLocation, 1)) 
 							   afterDelay:0];

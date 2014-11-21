@@ -58,7 +58,7 @@
 - (NSMutableString *)substituteUTF:(NSString*)dataString
 {
 	NSMutableString *utfString, *newString = [NSMutableString string];
-	int g_texChar = 0x5c;
+	int texChar = 0x5c;
 	NSRange charRange;
 	NSString *subString;
 	unsigned startl, endl, end;
@@ -83,7 +83,7 @@
 			else
 			{
 				utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}",
-							 g_texChar, [subString characterAtIndex: 0]];
+							 texChar, [subString characterAtIndex: 0]];
 			}
 			if ((charRange.location + charRange.length) == end)
 			{

@@ -1,6 +1,7 @@
 #import "TeXTextView.h"
 #import "NSDictionary-Extension.h"
 #import "NSMutableString-Extension.h"
+#import "MyLayoutManager.h"
 
 static BOOL isValidTeXCommandChar(int c);
 
@@ -18,18 +19,147 @@ static BOOL isValidTeXCommandChar(int c)
 
 
 @implementation TeXTextView
-- (id)init
+- (void)awakeFromNib
 {
-	[super init];
+	NSString* autoCompletionPath = [@"~/Library/TeXShop/Keyboard/autocompletion.plist" stringByStandardizingPath];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: autoCompletionPath]){
+		autocompletionDictionary = [[NSDictionary dictionaryWithContentsOfFile:autoCompletionPath] retain];
+	}else {
+		autocompletionDictionary = nil;
+	}
 	_lastCursorLocation = 0;
-	return self;
+	MyLayoutManager *layoutManager = [[MyLayoutManager alloc] init];
+	[layoutManager setController:controller];
+	[[self textContainer] replaceLayoutManager:layoutManager];
 }
 
+- (void) setAutoCompleting:(BOOL)flag 
+{
+	autoCompleting = flag;
+}
+
+
+- (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation
+						length: (unsigned)newLength key:(NSString *)key
+{
+	NSUndoManager	*myManager;
+	NSMutableDictionary	*myDictionary;
+	NSNumber		*theLocation, *theLength;
+	
+	// Create & register an undo action
+	myManager = [self undoManager];
+	myDictionary = [NSMutableDictionary dictionaryWithCapacity: 4];
+	theLocation = [NSNumber numberWithUnsignedInt: oldLocation];
+	theLength = [NSNumber numberWithUnsignedInt: newLength];
+	[myDictionary setObject: oldString forKey: @"oldString"];
+	[myDictionary setObject: theLocation forKey: @"oldLocation"];
+	[myDictionary setObject: theLength forKey: @"oldLength"];
+	[myDictionary setObject: key forKey: @"undoKey"];
+	[myManager registerUndoWithTarget:self selector:@selector(undoSpecial:) object: myDictionary];
+	[myManager setActionName:key];
+}
+
+- (void)undoSpecial:(id)theDictionary
+{
+	NSRange		undoRange;
+	NSString	*oldString, *newString, *undoKey;
+	unsigned	from, to;
+	
+	// Retrieve undo info
+	undoRange.location = [[theDictionary objectForKey: @"oldLocation"] unsignedIntValue];
+	undoRange.length = [[theDictionary objectForKey: @"oldLength"] unsignedIntValue];
+	newString = [theDictionary objectForKey: @"oldString"];
+	undoKey = [theDictionary objectForKey: @"undoKey"];
+	
+	if (undoRange.location+undoRange.length > [[self string] length])
+		return; // something wrong happened
+	
+	oldString = [[self string] substringWithRange: undoRange];
+	
+	// Replace the text
+	[self replaceCharactersInRange:undoRange withString:newString];
+	[self registerUndoWithString:oldString location:undoRange.location
+						  length:[newString length] key:undoKey];
+	
+	from = undoRange.location;
+	to = from + [newString length];
+	[self colorizeText:[[controller currentProfile] boolForKey:@"colorizeText"]];
+}
+
+
+// to be used in AutoCompletion
+- (void)insertSpecialNonStandard:(NSString *)theString undoKey:(NSString *)key
+{
+	NSRange		oldRange, searchRange;
+	NSMutableString	*stringBuf;
+	NSString *oldString, *newString;
+	unsigned from, to;
+	
+	// mutably copy the replacement text
+	stringBuf = [NSMutableString stringWithString: theString];
+	
+	// Determine the curent selection range and text
+	oldRange = [self selectedRange];
+	oldString = [[self string] substringWithRange: oldRange];
+	
+	// Substitute all occurances of #SEL# with the original text
+	[stringBuf replaceOccurrencesOfString: @"#SEL#" withString: oldString
+								  options: 0 range: NSMakeRange(0, [stringBuf length])];
+	
+	// Now search for #INS#, remember its position, and remove it. We will
+	// Later position the insertion mark there. Defaults to end of string.
+	searchRange = [stringBuf rangeOfString:@"#INS#" options:NSLiteralSearch];
+	if (searchRange.location != NSNotFound)
+		[stringBuf replaceCharactersInRange:searchRange withString:@""];
+	
+	// Filtering for Japanese
+	//newString = [self filterBackslashes:stringBuf];
+	newString = stringBuf;
+	
+	// Insert the new text
+	[self replaceCharactersInRange:oldRange withString:newString];
+	
+	// register undo
+	[self registerUndoWithString:oldString location:oldRange.location
+						  length:[newString length] key:key];
+	//[textView registerUndoWithString:oldString location:oldRange.location
+	//					length:[newString length] key:key];
+	
+	from = oldRange.location;
+	to = from + [newString length];
+	[self colorizeText:[[controller currentProfile] boolForKey:@"colorizeText"]];
+	
+	// Place insertion mark
+	if (searchRange.location != NSNotFound) {
+		searchRange.location += oldRange.location;
+		searchRange.length = 0;
+		[self setSelectedRange:searchRange];
+	}
+}
 
 - (void)insertText:(id)aString
 {
 	NSDictionary* currentProfile = [controller currentProfile];
 
+	int texChar = 0x5c;
+	
+	if ([aString length] == 1 &&  [currentProfile boolForKey:@"autoComplete"] && autocompletionDictionary) {
+		if ([aString characterAtIndex:0] >= 128 ||
+			[self selectedRange].location == 0 ||
+			[[self string] characterAtIndex:[self selectedRange].location - 1 ] != texChar )
+		{
+			NSString *completionString = [autocompletionDictionary objectForKey:aString];
+			if ( completionString )
+			{
+				[self setAutoCompleting:YES];
+				[self insertSpecialNonStandard:completionString
+									   undoKey: @"Autocompletion"];
+				[self setAutoCompleting:NO];
+				return;
+			}
+		}
+	}	
+	
 	if([aString isEqualToString:@"¥"] && [currentProfile boolForKey:@"convertYenMark"])
 	{
 		[super insertText:@"\\"];
