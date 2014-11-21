@@ -1,16 +1,14 @@
 #import "TeXTextView.h"
 #import "NSDictionary-Extension.h"
 
-static BOOL isValidTeXCommandChar(int c);
-
 static BOOL isValidTeXCommandChar(int c)
 {
 	if ((c >= 'A') && (c <= 'Z'))
 		return YES;
 	else if ((c >= 'a') && (c <= 'z'))
 		return YES;
-	else if (c == '@') // added by Taylor
-		return YES;    // added by Taylor
+	else if (c == '@')
+		return YES;
 	else
 		return NO;
 }

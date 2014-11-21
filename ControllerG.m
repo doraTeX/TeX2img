@@ -1,6 +1,8 @@
 #import "ControllerG.h"
 #import "NSDictionary-Extension.h"
 #import "NSMutableDictionary-Extension.h"
+//#import <Sparkle/Sparkle.h>
+
 #define AutoSavedProfileName @"*AutoSavedProfile*"
 #define LEOPARD 568
 #define SNOWLEOPARD 678
@@ -341,6 +343,11 @@
 ////// ここからデリゲート・ノティフィケーションのコールバック //////
 - (void)awakeFromNib
 {
+	//SUUpdater* updater = [SUUpdater updaterForBundle:[NSBundle bundleForClass:[self class]]];
+	//[updater setAutomaticallyChecksForUpdates:YES];
+	//[updater resetUpdateCycle];
+	//[updater checkForUpdates:self];	
+	
 	//	以下は Interface Builder 上で設定できる
 	//	[mainWindow setReleasedWhenClosed:NO];
 	//	[outputWindow setReleasedWhenClosed:NO];
