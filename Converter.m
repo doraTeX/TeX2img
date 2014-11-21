@@ -53,9 +53,7 @@
 
 + (Converter*)converterWithProfile:(NSDictionary*)aProfile
 {
-	Converter* converter = [Converter alloc];
-	[converter initWithProfile:aProfile];
-	return [converter autorelease];
+	return [[Converter alloc] initWithProfile:aProfile];
 }
 
 - (NSUInteger)pageCount
@@ -117,7 +115,7 @@
 // 返り値：書き込みの正否(BOOL)
 - (BOOL)writeStringWithYenBackslashConverting:(NSString*)targetString toFile:(NSString*)path
 {
-	NSMutableString* mstr = [[[NSMutableString alloc] initWithCapacity:0] autorelease];
+	NSMutableString* mstr = [[NSMutableString alloc] initWithCapacity:0];
 	[mstr appendString:targetString];
 	
 	[mstr replaceYenWithBackSlash];
@@ -298,17 +296,17 @@
 // NSBitmapImageRep の背景を白く塗りつぶす
 - (NSBitmapImageRep*)fillBackground:(NSBitmapImageRep*)bitmapRep
 {
-	NSImage *srcImage = [[[NSImage alloc] init] autorelease];
+	NSImage *srcImage = [[NSImage alloc] init];
 	[srcImage addRepresentation:bitmapRep];
 	NSSize size = [srcImage size];
 	
-	NSImage *backgroundImage = [[[NSImage alloc] initWithSize:size] autorelease];
+	NSImage *backgroundImage = [[NSImage alloc] initWithSize:size];
 	[backgroundImage lockFocus];
 	[[NSColor whiteColor] set];
 	[NSBezierPath fillRect:NSMakeRect(0, 0, size.width, size.height)];
     [srcImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
 	[backgroundImage unlockFocus];
-	return [[[NSBitmapImageRep alloc] initWithData:[backgroundImage TIFFRepresentation]] autorelease];
+	return [[NSBitmapImageRep alloc] initWithData:[backgroundImage TIFFRepresentation]];
 }
 
 - (void)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page
@@ -319,21 +317,21 @@
 	[self pdfcrop:pdfFilePath outputFileName:pdfFilePath addMargin:NO];
 	
 	// PDFの先頭ページを読み取り，NSPDFImageRep オブジェクトを作成
-	NSData* pageData = [[[[[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]] autorelease] pageAtIndex:(page-1)] dataRepresentation];
-	NSPDFImageRep *pdfImageRep = [[[NSPDFImageRep alloc] initWithData:pageData] autorelease];
+	NSData* pageData = [[[[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]] pageAtIndex:(page-1)] dataRepresentation];
+	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
 
 	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
 	NSSize size;
 	size.width  = (int)([pdfImageRep pixelsWide] * resolutionLevel) + leftMargin + rightMargin;
 	size.height = (int)([pdfImageRep pixelsHigh] * resolutionLevel) + topMargin + bottomMargin;
 	
-	NSImage* image = [[[NSImage alloc] initWithSize:size] autorelease];
+	NSImage* image = [[NSImage alloc] initWithSize:size];
 	[image lockFocus];
 	[pdfImageRep drawInRect:NSMakeRect(leftMargin, bottomMargin, (int)([pdfImageRep pixelsWide] * resolutionLevel), (int)([pdfImageRep pixelsHigh] * resolutionLevel))];
 	[image unlockFocus];
 	
 	// NSImage を TIFF 形式の NSBitmapImageRep に変換する
-	NSBitmapImageRep *imageRep = [[[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]] autorelease];
+	NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]];
 	
 	NSData *outputData;
 	if([@"jpg" isEqualToString:extension])
@@ -566,7 +564,7 @@
 		return NO;
 	}
     
-    pageCount = [[[[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]] autorelease] pageCount];
+    pageCount = [[[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]] pageCount];
 	
 	if(([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) && leaveTextFlag) // 文字化け対策を行わない jpg/png の場合，PDFから直接変換
 	{
@@ -695,7 +693,7 @@
             }];
             
             [script appendFormat:@"end tell\n"];
-            [[[[NSAppleScript alloc] initWithSource:script] autorelease] executeAndReturnError:nil];
+            [[[NSAppleScript alloc] initWithSource:script] executeAndReturnError:nil];
         }
 	}
 	

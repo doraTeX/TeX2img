@@ -351,10 +351,10 @@
 ////// ここから他のメソッドから呼び出されるユーティリティメソッド //////
 - (NSString*)searchProgram:(NSString*)programName
 {
-    NSDictionary *errorInfo = [[NSDictionary new] autorelease];
+    NSDictionary *errorInfo = [NSDictionary new];
     NSString *script =  [NSString stringWithFormat:@"do shell script \"%@\"", @"eval `/usr/libexec/path_helper -s`; echo $PATH"];
     
-    NSAppleScript *appleScript = [[[NSAppleScript alloc] initWithSource:script] autorelease];
+    NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
     NSAppleEventDescriptor * eventResult = [appleScript executeAndReturnError:&errorInfo];
     
     NSString *userPath = [eventResult stringValue];
@@ -540,7 +540,6 @@
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-    [super dealloc];
 }
 
 - (void)closeOtherWindows:(NSNotification *)aNotification
@@ -755,31 +754,30 @@
 
 - (void)doGeneratingThread
 {
-	NSAutoreleasePool* pool;
-	BOOL threading = ([threadingCheckBox state] == NSOnState);
-    if(threading) pool = [[NSAutoreleasePool alloc]init];
-
-	NSMutableDictionary *aProfile = [self currentProfile];
-	aProfile[@"pdfcropPath"] = [[NSBundle mainBundle] pathForResource:@"pdfcrop" ofType:nil];
-	aProfile[@"epstopdfPath"] = [[NSBundle mainBundle] pathForResource:@"epstopdf" ofType:nil];
-	aProfile[@"quiet"] = @(NO);
-	aProfile[@"controller"] = self;
-	
-	Converter* converter = [Converter converterWithProfile:aProfile];
-
-	NSString* texBodyStr = [[sourceTextView textStorage] string];
-	
-	[converter compileAndConvertWithBody:texBodyStr];
-
-	[generateButton setEnabled:YES];
-	[generateMenuItem setEnabled:YES];
-
-	if(threading)
-	{
-		[outputTextView display]; // 再描画
-		[pool drain];
-		[NSThread exit]; 
-	}
+    @autoreleasepool {
+        BOOL threading = ([threadingCheckBox state] == NSOnState);
+        
+        NSMutableDictionary *aProfile = [self currentProfile];
+        aProfile[@"pdfcropPath"] = [[NSBundle mainBundle] pathForResource:@"pdfcrop" ofType:nil];
+        aProfile[@"epstopdfPath"] = [[NSBundle mainBundle] pathForResource:@"epstopdf" ofType:nil];
+        aProfile[@"quiet"] = @(NO);
+        aProfile[@"controller"] = self;
+        
+        Converter* converter = [Converter converterWithProfile:aProfile];
+        
+        NSString* texBodyStr = [[sourceTextView textStorage] string];
+        
+        [converter compileAndConvertWithBody:texBodyStr];
+        
+        [generateButton setEnabled:YES];
+        [generateMenuItem setEnabled:YES];
+        
+        if(threading)
+        {
+            [outputTextView display]; // 再描画
+            [NSThread exit];
+        }
+    }
 }
 
 - (IBAction)generate:(id)sender

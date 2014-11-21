@@ -9,15 +9,15 @@
 
 - (id)init
 {
-	[super init];
+	if (!(self = [super init])) return nil;
 	unichar _tabCharacter = 0x2023; // 他の候補：0x00AC, 0x21E5, 0x25B9
 	unichar _newLineCharacter = 0x21B5; // 他の候補：0x00B6, 0x21A9, 0x23CE
 	unichar _fullwidthSpaceCharacter = 0x25A1; // 他の候補：0x22A0, 0x25A0, 0x2022
 	unichar _spaceCharacter = 0x2423; // 他の候補：0x00B7, 0x00B0, 0x02D0
-	tabCharacter = [[NSString stringWithCharacters:&_tabCharacter length:1] retain];
-    newLineCharacter = [[NSString stringWithCharacters:&_newLineCharacter length:1] retain];
-    fullwidthSpaceCharacter = [[NSString stringWithCharacters:&_fullwidthSpaceCharacter length:1] retain];
-	spaceCharacter = [[NSString stringWithCharacters:&_spaceCharacter length:1] retain];
+	tabCharacter = [NSString stringWithCharacters:&_tabCharacter length:1];
+    newLineCharacter = [NSString stringWithCharacters:&_newLineCharacter length:1];
+    fullwidthSpaceCharacter = [NSString stringWithCharacters:&_fullwidthSpaceCharacter length:1];
+	spaceCharacter = [NSString stringWithCharacters:&_spaceCharacter length:1];
 	return self;
 }
 

@@ -184,8 +184,7 @@ static NSString* endcommentString = @"›";
 				latexSpecial = YES;
 				latexString = [textString substringWithRange:
 							   NSMakeRange(foundRange.location, selectedLocation-foundRange.location)];
-				if (wasCompleted)
-					[currentString retain]; // extend life time
+				 // extend life time
 			}
 		}
 		else
@@ -218,8 +217,6 @@ static NSString* endcommentString = @"›";
 					// this is supposed to happen
 					if (completionListLocation == NSNotFound)
 					{	// this happens if last one was LaTeX Special without previous completion
-						[originalString release];
-						[currentString release];
 						wasCompleted = NO;
 						[super keyDown: theEvent];
 						return; // no other completion is possible
@@ -227,14 +224,11 @@ static NSString* endcommentString = @"›";
 				} else { // this shouldn't happen
 					[[self undoManager] redo];
 					selectedLocation = [self selectedRange].location;
-					[originalString release];
 					wasCompleted = NO;
 				}
 			} else { // probably there were other operations such as cut/paste/Macros which changed text
-				[originalString release];
 				wasCompleted = NO;
 			}
-			[currentString release];
 		}
 		
 		if (!wasCompleted && !latexSpecial) {
@@ -262,7 +256,6 @@ static NSString* endcommentString = @"›";
 			}
 			originalString = [textString substringWithRange:
 							  NSMakeRange(replaceLocation, selectedLocation-replaceLocation)];
-			[originalString retain];
 			completionListLocation = 0;
 		}
 		
@@ -333,7 +326,7 @@ static NSString* endcommentString = @"›";
 		} else { // LaTeX Special -- just add \end and copy of {...}
 			foundCandidate = YES;
 			if (!wasCompleted) {
-				originalString = [@"" retain];
+				originalString = @"";
 				replaceLocation = selectedLocation;
 				newString = [NSMutableString stringWithFormat: @"\n%Cend%@\n",
 							 (unichar)texChar, latexString];
@@ -344,7 +337,6 @@ static NSString* endcommentString = @"›";
 				newString = [NSMutableString stringWithFormat: @"%@\n%Cend%@\n",
 							 currentString, (unichar)texChar, latexString];
 				insRange.location = [currentString length];
-				[currentString release];
 			}
 		}
 		
@@ -363,7 +355,7 @@ static NSString* endcommentString = @"›";
 			//		key:NSLocalizedString(@"Completion", @"Completion")];
 			// clean up
 			[self resetBackgroundColor:nil];
-			currentString = [newString retain];
+			currentString = newString;
 			wasCompleted = YES;
 			// flash the new string
 			[self setSelectedRange: NSMakeRange(replaceLocation, [newString length])];
@@ -384,7 +376,6 @@ static NSString* endcommentString = @"›";
 		}
 		else // candidate was not found
 		{
-			[originalString release];
 			originalString = currentString = nil;
 			if (! wasCompleted)
 				[super keyDown: theEvent];
@@ -393,8 +384,6 @@ static NSString* endcommentString = @"›";
 		}
 		return;
 	} else if (wasCompleted) { // we are not doing the completion
-		[originalString release];
-		[currentString release];
 		originalString = currentString = nil;
 		wasCompleted = NO;
 		// return; //Herb Suggested Error Here		

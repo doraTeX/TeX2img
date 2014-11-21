@@ -23,7 +23,7 @@ static BOOL isValidTeXCommandChar(int c)
 {
 	NSString* autoCompletionPath = [@"~/Library/TeXShop/Keyboard/autocompletion.plist" stringByStandardizingPath];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: autoCompletionPath]){
-		autocompletionDictionary = [[NSDictionary dictionaryWithContentsOfFile:autoCompletionPath] retain];
+		autocompletionDictionary = [NSDictionary dictionaryWithContentsOfFile:autoCompletionPath];
 	}else {
 		autocompletionDictionary = nil;
 	}

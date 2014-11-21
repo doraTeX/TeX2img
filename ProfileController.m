@@ -14,20 +14,18 @@
 
 - (void)loadProfilesFromPlist
 {
-	profileNames = [[NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"profileNames"]] retain]; // retain しておかないと失われる
-	profiles =  [[NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"profiles"]] retain];
+	profileNames = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"profileNames"]]; // retain しておかないと失われる
+	profiles =  [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"profiles"]];
 }
 
 - (void)initProfiles
 {
-	profileNames = [[NSMutableArray arrayWithCapacity:0] retain]; // retain しておかないと失われる
-	profiles = [[NSMutableArray arrayWithCapacity:0] retain];
+	profileNames = [NSMutableArray arrayWithCapacity:0]; // retain しておかないと失われる
+	profiles = [NSMutableArray arrayWithCapacity:0];
 }
 
 - (void)releaseProfiles
 {
-	[profileNames release];
-	[profiles release];
 }
 
 - (void)removeProfileForName:(NSString*)profileName
@@ -142,7 +140,6 @@
 - (void)dealloc
 {
 	[self releaseProfiles];
-	[super dealloc];
 }
 
 - (IBAction)setSelectedProfileName:(id)sender
