@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6249" systemVersion="14A388a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1040" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6249"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
@@ -195,20 +195,47 @@
                             <menuItem title="自動置換" id="348">
                                 <menu key="submenu" title="自動置換" id="349">
                                     <items>
-                                        <menuItem title="スマートコピー／ペースト" tag="1" keyEquivalent="f" id="350">
+                                        <menuItem title="スマートコピー／ペースト" tag="1" id="350">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleSmartInsertDelete:" target="-1" id="355"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="スマート引用符" tag="2" keyEquivalent="g" id="351">
+                                        <menuItem title="スマート引用符" tag="2" id="351">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleAutomaticQuoteSubstitution:" target="-1" id="356"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="スマートリンク" tag="3" keyEquivalent="G" id="354">
-                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
+                                        <menuItem title="スマートリンク" tag="3" id="354">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleAutomaticLinkDetection:" target="-1" id="357"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="変換" id="P4p-Uf-M5h">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="変換" id="qjv-qQ-XHR">
+                                    <items>
+                                        <menuItem title="大文字にする" id="GYG-ow-6KZ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="uppercaseWord:" target="-1" id="E4Y-hT-Yyb"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="小文字にする" id="Bxa-6t-000">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="lowercaseWord:" target="-1" id="oIc-Nd-n6b"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="語頭を大文字にする" id="G7c-sq-Pog">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="capitalizeWord:" target="-1" id="d1s-7T-7if"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -573,6 +600,7 @@ DQ
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
                 <outlet property="noHighlightMenuItem" destination="817" id="822"/>
+                <outlet property="numberOfCompilationTextField" destination="qJq-qV-HLt" id="L73-0t-9Br"/>
                 <outlet property="outputDrawer" destination="776" id="781"/>
                 <outlet property="outputDrawerMenuItem" destination="487" id="782"/>
                 <outlet property="outputFileTextField" destination="461" id="502"/>
@@ -990,7 +1018,7 @@ DQ
                                                         <rect key="frame" x="18" y="13" width="332" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="164" height="18"/>
+                                                        <size key="cellSize" width="74" height="18"/>
                                                         <size key="intercellSpacing" width="4" height="2"/>
                                                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="sw5-6C-440">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1080,7 +1108,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button id="654">
-                                            <rect key="frame" x="15" y="187" width="334" height="18"/>
+                                            <rect key="frame" x="14" y="165" width="334" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="少々のコンパイルエラーは無視して画像化を強行する" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="655">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1088,9 +1116,9 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="659">
-                                            <rect key="frame" x="15" y="167" width="253" height="18"/>
+                                            <rect key="frame" x="14" y="145" width="273" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="JIS 外の文字を \UTF{xxxx} に変換" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="660">
+                                            <buttonCell key="cell" type="check" title="JIS X 0208 外の文字を \UTF{xxxx} に変換" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="660">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -1107,7 +1135,7 @@ DQ
                                             </connections>
                                         </button>
                                         <box autoresizesSubviews="NO" title="ソースの文字コード" borderType="line" id="717">
-                                            <rect key="frame" x="14" y="22" width="360" height="134"/>
+                                            <rect key="frame" x="14" y="5" width="360" height="134"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView">
                                                 <rect key="frame" x="1" y="1" width="358" height="118"/>
@@ -1164,6 +1192,39 @@ DQ
                                                 <action selector="setParametersForTeXLive:" target="450" id="876"/>
                                             </connections>
                                         </button>
+                                        <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="NID-iG-ZgO">
+                                            <rect key="frame" x="163" y="186" width="19" height="27"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="100" doubleValue="1" id="GtD-za-8WU"/>
+                                            <connections>
+                                                <action selector="takeIntValueFrom:" target="qJq-qV-HLt" id="4aI-kR-3fE"/>
+                                            </connections>
+                                        </stepper>
+                                        <textField verticalHuggingPriority="750" id="qJq-qV-HLt">
+                                            <rect key="frame" x="116" y="189" width="47" height="22"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" drawsBackground="YES" id="5Jh-J3-UCx">
+                                                <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="wla-zr-d3n">
+                                                    <real key="minimum" value="1"/>
+                                                    <real key="maximum" value="100"/>
+                                                </numberFormatter>
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <action selector="takeIntValueFrom:" target="NID-iG-ZgO" id="exP-3V-kbM"/>
+                                            </connections>
+                                        </textField>
+                                        <textField verticalHuggingPriority="750" id="FC5-GE-HNZ">
+                                            <rect key="frame" x="15" y="192" width="95" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="コンパイル回数" id="WmO-jJ-pYZ">
+                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
                                     </subviews>
                                 </view>
                             </tabViewItem>

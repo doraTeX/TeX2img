@@ -35,7 +35,15 @@ static BOOL isValidTeXCommandChar(unichar c)
 	MyLayoutManager *layoutManager = MyLayoutManager.new;
 	layoutManager.controller = controller;
 	[self.textContainer replaceLayoutManager:layoutManager];
+
     self.ContinuousSpellCheckingEnabled = NO;
+    self.SmartInsertDeleteEnabled = NO;
+    self.AutomaticDashSubstitutionEnabled = NO;
+    self.AutomaticDataDetectionEnabled = NO;
+    self.AutomaticLinkDetectionEnabled = NO;
+    self.AutomaticQuoteSubstitutionEnabled = NO;
+    self.AutomaticSpellingCorrectionEnabled = NO;
+    self.AutomaticTextReplacementEnabled = NO;
 }
 
 - (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation

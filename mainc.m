@@ -5,9 +5,9 @@
 #import "ControllerC.h"
 #import "global.h"
 
-#define OPTION_NUM 18
+#define OPTION_NUM 19
 #define MAX_LEN 1024
-#define VERSION "1.8.3"
+#define VERSION "1.8.4"
 
 static void version()
 {
@@ -23,6 +23,7 @@ static void usage()
     printf("  OutputFile              : path of output file (extension: eps/png/jpg/pdf)\n");
     printf("Options:\n");
     printf("  --compiler   COMPILER   : set compiler   (default: platex)\n");
+    printf("  --num        NUMBER     : set the number of compilation (default: 1)\n");
     printf("  --resolution RESOLUTION : set resolution level (default: 15)\n");
     printf("  --left-margin    MARGIN : set left margin   (default: 0)\n");
     printf("  --right-margin   MARGIN : set right margin  (default: 0)\n");
@@ -105,6 +106,7 @@ int main (int argc, char *argv[]) {
         NSApplicationLoad(); // PDFKit を使ったときに _NXCreateWindow: error setting window property のエラーを防ぐため
         
         float resolutoinLevel = 15;
+        int numberOfCompilation = 1;
         int leftMargin = 0;
         int rightMargin = 0;
         int topMargin = 0;
@@ -202,6 +204,11 @@ int main (int argc, char *argv[]) {
         options[14].flag = NULL;
         options[14].val = 15;
 
+        options[15].name = "num";
+        options[15].has_arg = required_argument;
+        options[15].flag = NULL;
+        options[15].val = 16;
+        
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
         options[OPTION_NUM - 3].flag = NULL;
@@ -314,6 +321,13 @@ int main (int argc, char *argv[]) {
                 case 15: // --quick
                     quickFlag = YES;
                     break;
+                case 16: // --num
+                    if (optarg) {
+                        numberOfCompilation = strtoi(optarg);
+                    } else {
+                        usage();
+                    }
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -358,6 +372,7 @@ int main (int argc, char *argv[]) {
         aProfile[@"outputFile"] = outputFilePath;
         
         aProfile[@"encoding"] = encoding;
+        aProfile[@"numberOfCompilation"] = @(numberOfCompilation);
         aProfile[@"resolution"] = @(resolutoinLevel);
         aProfile[@"leftMargin"] = @(leftMargin);
         aProfile[@"rightMargin"] = @(rightMargin);

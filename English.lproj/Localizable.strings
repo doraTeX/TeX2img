@@ -5,10 +5,11 @@
 "Confirm" = "Confirm";
 "resotreDefaultPreambleMsg" = "OK to reset?";
 "Cancel" = "Cancel";
-"programNotFoundErrorMsg" = " can't be found.\nMake sure that pLaTeX/Ghostscript are installed and configured in Preferences.";
-"fileGenerateErrorMsg" = " can't be created so generation has been aborted.\nCheck permission.";
-"execErrorMsg" = " can't be executed.\nCheck errors in the source code.";
-"cannotOverrideErrorMsg" = " can't be overridden.";
+"programNotFoundErrorMsg" = " cannot be found.\nMake sure that pLaTeX/Ghostscript are installed and configured in Preferences.";
+"fileGenerateErrorMsg" = " cannot be created so generation has been aborted.\nCheck permission.";
+"execErrorMsg" = " cannot be executed.\nCheck errors in the source code.";
+"cannotOverwriteErrorMsg" = " cannot be overridden.";
+"cannotCreateDirectoryErrorMsg" = " cannnot be created as a folder.";
 "compileErrorMsg" = "TeX Compile error.\nCheck errors in the source code.\nIf there are no errors in the source, check encodings in Preferences.";
 "initSettingsMsg" = "Initial Settings";
 "setPathMsg1" = "Automatic engine settings: ";

@@ -20,7 +20,7 @@
 @property NSString* outputFilePath;
 @property NSString* preambleStr;
 @property float resolutionLevel;
-@property NSInteger leftMargin, rightMargin, topMargin, bottomMargin;
+@property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
 @property BOOL leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property id<OutputController> controller;
 @property NSFileManager* fileManager;
@@ -42,7 +42,7 @@
 @synthesize outputFilePath;
 @synthesize preambleStr;
 @synthesize resolutionLevel;
-@synthesize leftMargin, rightMargin, topMargin, bottomMargin;
+@synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
 @synthesize leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
 @synthesize fileManager;
@@ -65,6 +65,7 @@
 	gsPath = [aProfile stringForKey:@"gsPath"];
 	pdfcropPath = [aProfile stringForKey:@"pdfcropPath"];
 	epstopdfPath = [aProfile stringForKey:@"epstopdfPath"];
+    numberOfCompilation = [aProfile integerForKey:@"numberOfCompilation"];
 	
 	outputFilePath = [aProfile stringForKey:@"outputFile"];
 	preambleStr = [aProfile stringForKey:@"preamble"];
@@ -246,8 +247,16 @@
 
 - (BOOL)tex2dvi:(NSString*)teXFilePath
 {
-	BOOL status = [self execCommand:platexPath atDirectory:tempdir withArguments:@[@"-interaction=nonstopmode", [NSString stringWithFormat:@"-kanji=%@", encoding], teXFilePath]];
-	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];
+    BOOL status;
+    NSArray *arguments = @[@"-interaction=nonstopmode", [NSString stringWithFormat:@"-kanji=%@", encoding], teXFilePath];
+    
+    for (NSInteger i=0; i<numberOfCompilation; i++) {
+        status = [self execCommand:platexPath atDirectory:tempdir withArguments:arguments];
+        [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
+        if (!status) {
+            return NO;
+        }
+    }
 	
 	return status;
 }
@@ -606,11 +615,26 @@
 
 - (BOOL)copyTargetFrom:(NSString*)sourcePath toPath:(NSString*)destPath
 {
-	if ([fileManager fileExistsAtPath:destPath] && [fileManager removeItemAtPath:destPath error:nil] == NO) {
-		[controller showCannotOverrideError:destPath];
-		return NO;
-	}
-	return [fileManager copyItemAtPath:sourcePath toPath:destPath error:nil];
+    BOOL isDir;
+    BOOL fileExists = [fileManager fileExistsAtPath:destPath isDirectory:&isDir];
+    
+    if (fileExists) { // 同名ファイルが存在するとき
+        if (isDir || ![fileManager removeItemAtPath:destPath error:nil]) { // 既存ファイルがディレクトリであるとき，または既存同名ファイルがファイルであり，その削除に失敗したとき
+            [controller showCannotOverwriteError:destPath];
+            return NO;
+        }
+    } else { // 同名ファイルが存在しないとき
+        NSString *destDir = [destPath stringByDeletingLastPathComponent];
+        BOOL dirExists = [fileManager fileExistsAtPath:destDir isDirectory:&isDir];
+        
+        if ((!dirExists && ![fileManager createDirectoryAtPath:destDir withIntermediateDirectories:YES attributes:nil error:nil]) ||
+            (dirExists && !isDir)) { // 出力先新規ディレクトリの作成に失敗したとき，または出力先ディレクトリが存在するが実はファイルであるとき
+            [controller showCannotCreateDirectoryError:destDir];
+            return NO;
+        }
+    }
+
+    return [fileManager copyItemAtPath:sourcePath toPath:destPath error:nil];
 }
 
 - (BOOL)compileAndConvert

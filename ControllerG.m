@@ -63,6 +63,7 @@
 @property IBOutlet NSTextField *platexPathTextField;
 @property IBOutlet NSTextField *dvipdfmxPathTextField;
 @property IBOutlet NSTextField *gsPathTextField;
+@property IBOutlet NSTextField *numberOfCompilationTextField;
 @property IBOutlet NSButton *getOutlineCheckBox;
 @property IBOutlet NSButton *ignoreErrorCheckBox;
 @property IBOutlet NSButton *utfExportCheckBox;
@@ -128,6 +129,7 @@
 @synthesize platexPathTextField;
 @synthesize dvipdfmxPathTextField;
 @synthesize gsPathTextField;
+@synthesize numberOfCompilationTextField;
 @synthesize getOutlineCheckBox;
 @synthesize ignoreErrorCheckBox;
 @synthesize utfExportCheckBox;
@@ -230,9 +232,14 @@
 	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", command, NSLocalizedString(@"execErrorMsg", nil)], @"OK", nil, nil);
 }
 
-- (void)showCannotOverrideError:(NSString*)path
+- (void)showCannotOverwriteError:(NSString*)path
 {
-	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", path, NSLocalizedString(@"cannotOverrideErrorMsg", nil)], @"OK", nil, nil);
+	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", path, NSLocalizedString(@"cannotOverwriteErrorMsg", nil)], @"OK", nil, nil);
+}
+
+- (void)showCannotCreateDirectoryError:(NSString*)dir
+{
+    NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", dir, NSLocalizedString(@"cannotCreateDirectoryErrorMsg", nil)], @"OK", nil, nil);
 }
 
 - (void)showCompileError
@@ -336,6 +343,7 @@
 	[self loadSettingForTextField:topMarginLabel fromProfile:aProfile forKey:@"topMarginLabel"];
 	[self loadSettingForTextField:bottomMarginLabel fromProfile:aProfile forKey:@"bottomMarginLabel"];
 	
+    numberOfCompilationTextField.IntValue = MAX(1, [aProfile integerForKey:@"numberOfCompilation"]);
 	resolutionSlider.FloatValue = [aProfile integerForKey:@"resolution"];
 	leftMarginSlider.IntValue = [aProfile integerForKey:@"leftMargin"];
 	rightMarginSlider.IntValue = [aProfile integerForKey:@"rightMargin"];
@@ -412,6 +420,7 @@
         currentProfile[@"platexPath"] = platexPathTextField.stringValue;
         currentProfile[@"dvipdfmxPath"] = dvipdfmxPathTextField.stringValue;
         currentProfile[@"gsPath"] = gsPathTextField.stringValue;
+        currentProfile[@"numberOfCompilation"] = @(numberOfCompilationTextField.integerValue);
         
         currentProfile[@"resolutionLabel"] = resolutionLabel.stringValue;
         currentProfile[@"leftMarginLabel"] = leftMarginLabel.stringValue;

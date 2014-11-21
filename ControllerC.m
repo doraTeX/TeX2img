@@ -23,7 +23,7 @@ BOOL checkWhich(NSString *cmdName)
 
 - (void)showNotFoundError:(NSString*)aPath
 {
-	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ can't be found.\nCheck environment variable $PATH.\n", aPath].UTF8String);
+	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ cannot be found.\nCheck environment variable $PATH.\n", aPath].UTF8String);
 }
 
 - (BOOL)platexExistsAtPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
@@ -70,17 +70,22 @@ BOOL checkWhich(NSString *cmdName)
 
 - (void)showFileGenerateError:(NSString*)aPath
 {
-	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ can't be created so generation has been aborted.\nCheck permission.\n", aPath].UTF8String);
+	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ cannot be created so generation has been aborted.\nCheck permission.\n", aPath].UTF8String);
 }
 
 - (void)showExecError:(NSString*)command
 {
-	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ can't be executed.\nCheck errors in the source code.\n", command].UTF8String);
+	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ cannot be executed.\nCheck errors in the source code.\n", command].UTF8String);
 }
 
-- (void)showCannotOverrideError:(NSString*)path
+- (void)showCannotOverwriteError:(NSString*)path
 {
-	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ can't be overridden.\n", path].UTF8String);
+	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ cannot be overwritten.\n", path].UTF8String);
+}
+
+- (void)showCannotCreateDirectoryError:(NSString*)dir
+{
+    fprintf(stderr, [NSString stringWithFormat:@"tex2img : Directory %@ cannot be overwritten.\n", dir].UTF8String);
 }
 
 - (void)showCompileError

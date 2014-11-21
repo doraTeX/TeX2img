@@ -8,7 +8,8 @@
 - (BOOL)epstopdfExists;
 - (void)showFileGenerateError:(NSString*)aPath;
 - (void)showExecError:(NSString*)command;
-- (void)showCannotOverrideError:(NSString*)path;
+- (void)showCannotOverwriteError:(NSString*)path;
+- (void)showCannotCreateDirectoryError:(NSString*)dir;
 - (void)showCompileError;
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet;
 - (void)clearOutputTextView;
