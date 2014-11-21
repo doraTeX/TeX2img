@@ -1,0 +1,16 @@
+"YenMark" = "¥";
+"Backslash" = "\\";
+"Error" = "エラー";
+"Alert" = "警告";
+"Confirm" = "確認";
+"resotreDefaultPreambleMsg" = "プリアンブル部をデフォルトに戻してよろしいですか？";
+"Cancel" = "キャンセル";
+"programNotFoundErrorMsg" = " が見つかりません。\npLaTeX / Ghostscript 一式がインストールされているか，「環境設定」で設定されたパスが実際にインストールされているパスと合致してているか確認してください。";
+"fileGenerateErrorMsg" = " を生成できなかったため，処理を中止します。\nアクセス権を確認してください。";
+"execErrorMsg" = " の実行に失敗したので処理を中止します。\nソースコードにエラーがないか，確認してください。";
+"cannotOverrideErrorMsg" = " が上書きできませんでした。";
+"compileErrorMsg" = "TeX のコンパイルエラーが生じています。\nソースコードにエラーがないか，確認してください。";
+"initSettingsMsg" = "初期設定";
+"setPathMsg1" = "TeX 関連プログラムのパスを";
+"setPathMsg2" = "に設定しました（環境設定パネルから変更できます）。";
+"extensionErrMsg" = "出力ファイルの拡張子は .eps / .png / .jpg / .pdf のいずれかにしてください。";
