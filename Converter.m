@@ -236,7 +236,7 @@
 		return NO;
 	}
 	
-	int status = [self execCommand:[NSString stringWithFormat:@"export PATH=$PATH:%@;%@", [gsPath stringByDeletingLastPathComponent], pdfcropPath] atDirectory:tempdir
+	int status = [self execCommand:[NSString stringWithFormat:@"export PATH=$PATH:\"%@\";/usr/bin/perl \"%@\"", [gsPath stringByDeletingLastPathComponent], pdfcropPath] atDirectory:tempdir
 					 withArguments:[NSArray arrayWithObjects:
 									addMargin ? [NSString stringWithFormat:@"--margins \"%d %d %d %d\"", leftMargin, topMargin, rightMargin, bottomMargin] : @"",
 									[pdfPath lastPathComponent],
@@ -266,7 +266,7 @@
 		return NO;
 	}
 	
-	[self execCommand:[NSString stringWithFormat:@"export PATH=%@;/usr/bin/perl %@", [gsPath stringByDeletingLastPathComponent], epstopdfPath] atDirectory:tempdir 
+	[self execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", [gsPath stringByDeletingLastPathComponent], epstopdfPath] atDirectory:tempdir 
 					 withArguments:[NSArray arrayWithObjects:
 									[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
 									epsName,

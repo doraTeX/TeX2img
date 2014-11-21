@@ -174,7 +174,7 @@ static BOOL isValidTeXCommandChar(int c)
     NSUInteger theStringLength = [theString length];
     if (theStringLength == 0) { return; }
     NSRange theSelectedRange = [self selectedRange];
-    NSUInteger theLocation = theSelectedRange.location;
+    NSInteger theLocation = theSelectedRange.location;
     NSInteger theDifference = theLocation - lastCursorLocation;
     lastCursorLocation = theLocation;
 
@@ -195,7 +195,7 @@ static BOOL isValidTeXCommandChar(int c)
     if (theLocation == theStringLength) {
         return;
     }
-	NSUInteger originalLocation = theLocation;
+	NSInteger originalLocation = theLocation;
 	
 	BOOL checkBrace = [profile boolForKey:@"checkBrace"];
 	BOOL checkBracket = [profile boolForKey:@"checkBracket"];
