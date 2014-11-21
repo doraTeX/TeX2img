@@ -47,6 +47,8 @@ typedef enum  {
 	IBOutlet NSButton *threadingCheckBox;
 	IBOutlet NSButton *previewCheckBox;
 	IBOutlet NSButton *deleteTmpFileCheckBox;
+	IBOutlet NSButton *embedInIllustratorCheckBox;
+	IBOutlet NSButton *ungroupCheckBox;
 	IBOutlet NSWindow *preferenceWindow;
 	IBOutlet NSTextField *resolutionLabel;
 	IBOutlet NSTextField *leftMarginLabel;

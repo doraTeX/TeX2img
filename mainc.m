@@ -6,7 +6,7 @@
 
 #define OPTION_NUM 16
 #define MAX_LEN 1024
-#define VERSION "1.7.1"
+#define VERSION "1.7.2"
 
 static void version()
 {
@@ -354,6 +354,8 @@ int main (int argc, char *argv[]) {
 	aProfile[@"showOutputDrawer"] = @(NO);
 	aProfile[@"preview"] = @(NO);
 	aProfile[@"deleteTmpFile"] = @(deleteTmpFileFlag);
+	aProfile[@"embedInIllustrator"] = @(NO);
+	aProfile[@"ungroup"] = @(NO);
 	aProfile[@"ignoreError"] = @(ignoreErrorFlag);
 	aProfile[@"utfExport"] = @(utfExportFlag);
 	aProfile[@"quiet"] = @(quietFlag);

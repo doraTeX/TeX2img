@@ -140,6 +140,9 @@
 	[threadingCheckBox setState:[aProfile integerForKey:@"threading"]];
 	[previewCheckBox setState:[aProfile integerForKey:@"preview"]];
 	[deleteTmpFileCheckBox setState:[aProfile integerForKey:@"deleteTmpFile"]];
+
+	[embedInIllustratorCheckBox setState:[aProfile integerForKey:@"embedInIllustrator"]];
+	[ungroupCheckBox setState:[aProfile integerForKey:@"ungroup"]];
 	
 	[transparentCheckBox setState:[aProfile boolForKey:@"transparent"]];
 	[getOutlineCheckBox setState:[aProfile boolForKey:@"getOutline"]];
@@ -268,7 +271,10 @@
 		currentProfile[@"threading"] = @([threadingCheckBox state]);
 		currentProfile[@"preview"] = @([previewCheckBox state]);
 		currentProfile[@"deleteTmpFile"] = @([deleteTmpFileCheckBox state]);
-		
+
+        currentProfile[@"embedInIllustrator"] = @([embedInIllustratorCheckBox state]);
+        currentProfile[@"ungroup"] = @([ungroupCheckBox state]);
+
 		currentProfile[@"transparent"] = @([transparentCheckBox state]);
 		currentProfile[@"getOutline"] = @([getOutlineCheckBox state]);
 		currentProfile[@"ignoreError"] = @([ignoreErrorCheckBox state]);

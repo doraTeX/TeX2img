@@ -25,7 +25,7 @@
 	NSString* preambleStr;
 	float resolutionLevel;
 	int leftMargin, rightMargin, topMargin, bottomMargin;
-	BOOL leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+	BOOL leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 	id<OutputController> controller;
 
 	NSFileManager* fileManager;

@@ -36,6 +36,8 @@
 	showOutputDrawerFlag = [aProfile boolForKey:@"showOutputDrawer"];
 	previewFlag = [aProfile boolForKey:@"preview"];
 	deleteTmpFileFlag = [aProfile boolForKey:@"deleteTmpFile"];
+	embedInIllustratorFlag = [aProfile boolForKey:@"embedInIllustrator"];
+	ungroupFlag = [aProfile boolForKey:@"ungroup"];
 	ignoreErrorsFlag = [aProfile boolForKey:@"ignoreError"];
 	utfExportFlag = [aProfile boolForKey:@"utfExport"];
 	quietFlag = [aProfile boolForKey:@"quiet"];
@@ -596,7 +598,10 @@
 		}
 		*/
         
-        BOOL success = [self convertPDF:pdfFileName outputEpsFileName:outputEpsFileName outputFileName:outputFileName page:1];
+        BOOL success = [self convertPDF:pdfFileName
+                      outputEpsFileName:outputEpsFileName
+                         outputFileName:outputFileName
+                                   page:1];
         if(!success) return success;
         for (NSUInteger i=2; i<=pageCount; i++) {
             success = [self convertPDF:pdfFileName
@@ -670,6 +675,28 @@
                 }
             }
 		}
+
+        // Illustrator に配置
+        if(status && embedInIllustratorFlag){
+            NSMutableString *script = [NSMutableString stringWithCapacity:0];
+            [script appendFormat:@"tell application \"Adobe Illustrator\"\n"];
+            [script appendFormat:@"activate\n"];
+            
+            NSMutableArray *embededFiles = [NSMutableArray arrayWithObject:outputFilePath];
+            for (NSUInteger i=2; i<=pageCount; i++) {
+                [embededFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
+            }
+            
+            [embededFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL *stop){
+                [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
+                if (ungroupFlag) {
+                    [script appendFormat:@"move page items of selection of current document to end of current document\n"];
+                }
+            }];
+            
+            [script appendFormat:@"end tell\n"];
+            [[[[NSAppleScript alloc] initWithSource:script] autorelease] executeAndReturnError:nil];
+        }
 	}
 	
 	// 中間ファイルの削除
