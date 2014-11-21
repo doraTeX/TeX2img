@@ -15,6 +15,7 @@
     IBOutlet TeXTextView *preambleTextView;
 	IBOutlet NSMenuItem *convertYenMarkMenuItem;
 	IBOutlet NSMenuItem *colorizeTextMenuItem;
+	IBOutlet NSMenuItem *highlightBraceMenuItem;
 	IBOutlet NSMenuItem *outputDrawerMenuItem;
 	IBOutlet NSMenuItem *preambleWindowMenuItem;
 	IBOutlet NSMenuItem *generateMenuItem;

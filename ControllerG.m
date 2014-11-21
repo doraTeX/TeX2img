@@ -149,6 +149,7 @@
 	
 	[convertYenMarkMenuItem setState:[aProfile boolForKey:@"convertYenMark"]];
 	[colorizeTextMenuItem setState:[aProfile boolForKey:@"colorizeText"]];
+	[highlightBraceMenuItem setState:[aProfile boolForKey:@"highlightBrace"]];
 	
 	NSString *encoding = [aProfile stringForKey:@"encoding"];
 	[sjisRadioButton setState:NSOffState];
@@ -272,6 +273,7 @@
 	
 	[currentProfile setInteger:[convertYenMarkMenuItem state] forKey:@"convertYenMark"];
 	[currentProfile setInteger:[colorizeTextMenuItem state] forKey:@"colorizeText"];
+	[currentProfile setInteger:[highlightBraceMenuItem state] forKey:@"highlightBrace"];
 	[currentProfile setObject:[[sourceTextView font] fontName] forKey:@"sourceFontName"];
 	[currentProfile setFloat:[[sourceTextView font] pointSize] forKey:@"sourceFontSize"];
 	[currentProfile setObject:[[preambleTextView font] fontName] forKey:@"preambleFontName"];
@@ -379,6 +381,16 @@
 					name: @"NSWindowWillCloseNotification"
 				  object: mainWindow];
 	
+	// テキストビューのカーソル移動の通知を受ける
+	[aCenter addObserver: sourceTextView
+				selector: @selector(textViewDidChangeSelection:)
+					name: @"NSTextViewDidChangeSelectionNotification"
+				  object: sourceTextView];
+
+	[aCenter addObserver: preambleTextView
+				selector: @selector(textViewDidChangeSelection:)
+					name: @"NSTextViewDidChangeSelectionNotification"
+				  object: preambleTextView];
 	
 	// デフォルトのアウトプットファイルのパスをセット
 	[outputFileTextField setStringValue:[NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()]];
