@@ -14,7 +14,9 @@
 	IBOutlet NSMenuItem *convertYenMarkMenuItem;
 	IBOutlet NSMenuItem *outputDrawerMenuItem;
 	IBOutlet NSMenuItem *preambleWindowMenuItem;
+	IBOutlet NSMenuItem *generateMenuItem;
 	IBOutlet NSTextField *outputFileTextField;
+	IBOutlet NSButton *generateButton;
 	IBOutlet NSButton *transparentCheckBox;
 	IBOutlet NSButton *showOutputDrawerCheckBox;
 	IBOutlet NSButton *previewCheckBox;

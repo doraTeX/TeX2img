@@ -604,20 +604,36 @@
 }
 
 
-- (IBAction)generate:(id)sender
+- (void)doGeneratingThread
 {
+	NSAutoreleasePool* pool;
+    pool = [[NSAutoreleasePool alloc]init];
+
 	NSMutableDictionary *aProfile = [self currentProfile];
 	[aProfile setObject:[[NSBundle mainBundle] pathForResource:@"pdfcrop" ofType:nil] forKey:@"pdfcropPath"];
 	[aProfile setObject:[[NSBundle mainBundle] pathForResource:@"epstopdf" ofType:nil] forKey:@"epstopdfPath"];
 	[aProfile setBool:NO forKey:@"quiet"];
 	[aProfile setObject:self forKey:@"controller"];
-
+	
 	Converter* converter = [Converter converterWithProfile:aProfile];
 
 	NSString* texBodyStr = [[sourceTextView textStorage] string];
-
+	
 	[converter compileAndConvertWithBody:texBodyStr];
+
+	[generateButton setEnabled:YES];
+	[generateMenuItem setEnabled:YES];
+
+    [pool release];
+    [NSThread exit]; 
 }
 
+- (IBAction)generate:(id)sender
+{
+	if([showOutputDrawerCheckBox state]) [self showOutputDrawer];
+	[generateButton setEnabled:NO];
+	[generateMenuItem setEnabled:NO];
+	[NSThread detachNewThreadSelector:@selector(doGeneratingThread) toTarget:self withObject:nil];
+}
 
 @end
