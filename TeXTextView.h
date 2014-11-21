@@ -9,6 +9,8 @@
 	int lastStringLength;
 	NSDictionary* autocompletionDictionary;
 	BOOL autoCompleting;
+	BOOL contentHighlighting;
+	BOOL braceHighlighting;
 }
 @end
 

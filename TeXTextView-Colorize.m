@@ -123,6 +123,7 @@ static BOOL isValidTeXCommandChar(int c)
 	if (NSFoundationVersionNumber > LEOPARD) {
 		[self colorizeText:[[controller currentProfile] boolForKey:@"colorizeText"]];
 	}
+	braceHighlighting = NO;
 }
 
 - (void)showIndicator:(NSString*)range
@@ -140,10 +141,12 @@ static BOOL isValidTeXCommandChar(int c)
 - (void)resetBackgroundColor:(id)sender
 {
 	[[self layoutManager] removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:NSMakeRange(0, [[self textStorage] length])];
+	contentHighlighting = NO;
 }
 
 - (void)highlightContent:(NSString*)range
 {
+	contentHighlighting = YES;
 	[[self layoutManager] addTemporaryAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
 												   [NSColor colorWithDeviceRed:1 green:1 blue:0.5 alpha:1],
 												   NSBackgroundColorAttributeName, nil ]	 // added by Taylor
@@ -156,12 +159,16 @@ static BOOL isValidTeXCommandChar(int c)
 	NSDictionary* profile = [controller currentProfile];
 
 	// Notification の処理で色づけの変更を行うと，delete を押したときにバグるので，performSelector で別途呼び出して処理する
-	[self performSelector:@selector(resetBackgroundColor:) 
-			   withObject:nil afterDelay:0]; // 既存の背景色の消去
-	
-	[self resetHighlight:nil];
+	if(contentHighlighting){
+		[self performSelector:@selector(resetBackgroundColor:) 
+				   withObject:nil afterDelay:0]; // 既存の背景色の消去
+	}
 	
 	HighlightPattern highlightPattern = [profile integerForKey:@"highlightPattern"];
+
+	if(highlightPattern == SOLID && braceHighlighting){
+		[self resetHighlight:nil];
+	}
 
 	highlightBracesColorDict = [NSDictionary dictionaryWithObjectsAndKeys:
 								[NSColor magentaColor], NSForegroundColorAttributeName, nil ];
@@ -252,6 +259,7 @@ static BOOL isValidTeXCommandChar(int c)
 				
 				if (highlightPattern != NOHIGHLIGHT){
 					// 色づけ方式での強調表示
+					braceHighlighting = YES;
 					[layoutManager addTemporaryAttributes:highlightBracesColorDict 
 										forCharacterRange:NSMakeRange(theLocation, 1)];
 					[layoutManager addTemporaryAttributes:highlightBracesColorDict 

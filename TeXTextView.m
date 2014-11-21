@@ -29,6 +29,9 @@ static BOOL isValidTeXCommandChar(int c)
 	}
 	lastCursorLocation = 0;
 	lastStringLength = 0;
+	autoCompleting = NO;
+	contentHighlighting = NO;
+	braceHighlighting = NO;
 	MyLayoutManager *layoutManager = [[MyLayoutManager alloc] init];
 	[layoutManager setController:controller];
 	[[self textContainer] replaceLayoutManager:layoutManager];
