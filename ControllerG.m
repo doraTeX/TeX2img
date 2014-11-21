@@ -1,6 +1,5 @@
 #import "ControllerG.h"
 #import "NSDictionary-Extension.h"
-#import "NSMutableDictionary-Extension.h"
 //#import <Sparkle/Sparkle.h>
 
 #define AutoSavedProfileName @"*AutoSavedProfile*"
@@ -59,17 +58,17 @@
 {
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 	
-	if(![fileManager fileExistsAtPath:[[platexPath componentsSeparatedByString:@" "] objectAtIndex:0]])
+	if(![fileManager fileExistsAtPath:[platexPath componentsSeparatedByString:@" "][0]])
 	{
 		[self showNotFoundError:platexPath];
 		return NO;
 	}
-	if(![fileManager fileExistsAtPath:[[dvipdfmxPath componentsSeparatedByString:@" "] objectAtIndex:0]])
+	if(![fileManager fileExistsAtPath:[dvipdfmxPath componentsSeparatedByString:@" "][0]])
 	{
 		[self showNotFoundError:dvipdfmxPath];
 		return NO;
 	}
-	if(![fileManager fileExistsAtPath:[[gsPath componentsSeparatedByString:@" "] objectAtIndex:0]])
+	if(![fileManager fileExistsAtPath:[gsPath componentsSeparatedByString:@" "][0]])
 	{
 		[self showNotFoundError:gsPath];
 		return NO;
@@ -259,83 +258,83 @@
 {
 	NSMutableDictionary *currentProfile = [NSMutableDictionary dictionary];
 	@try {
-		[currentProfile setFloat:NSMinX([mainWindow frame]) forKey:@"x"];
-		[currentProfile setFloat:NSMinY([mainWindow frame]) forKey:@"y"];
-		[currentProfile setFloat:NSWidth([mainWindow frame]) forKey:@"mainWindowWidth"];
-		[currentProfile setFloat:NSHeight([mainWindow frame]) forKey:@"mainWindowHeight"];
-		[currentProfile setObject:[outputFileTextField stringValue] forKey:@"outputFile"];
+		currentProfile[@"x"] = @(NSMinX([mainWindow frame]));
+		currentProfile[@"y"] = @(NSMinY([mainWindow frame]));
+		currentProfile[@"mainWindowWidth"] = @(NSWidth([mainWindow frame]));
+		currentProfile[@"mainWindowHeight"] = @(NSHeight([mainWindow frame]));
+		currentProfile[@"outputFile"] = [outputFileTextField stringValue];
 		
-		[currentProfile setInteger:[showOutputDrawerCheckBox state] forKey:@"showOutputDrawer"];
-		[currentProfile setInteger:[threadingCheckBox state] forKey:@"threading"];
-		[currentProfile setInteger:[previewCheckBox state] forKey:@"preview"];
-		[currentProfile setInteger:[deleteTmpFileCheckBox state] forKey:@"deleteTmpFile"];
+		currentProfile[@"showOutputDrawer"] = @([showOutputDrawerCheckBox state]);
+		currentProfile[@"threading"] = @([threadingCheckBox state]);
+		currentProfile[@"preview"] = @([previewCheckBox state]);
+		currentProfile[@"deleteTmpFile"] = @([deleteTmpFileCheckBox state]);
 		
-		[currentProfile setBool:[transparentCheckBox state] forKey:@"transparent"];
-		[currentProfile setBool:[getOutlineCheckBox state] forKey:@"getOutline"];
-		[currentProfile setBool:[ignoreErrorCheckBox state] forKey:@"ignoreError"];
-		[currentProfile setBool:[utfExportCheckBox state] forKey:@"utfExport"];
+		currentProfile[@"transparent"] = @([transparentCheckBox state]);
+		currentProfile[@"getOutline"] = @([getOutlineCheckBox state]);
+		currentProfile[@"ignoreError"] = @([ignoreErrorCheckBox state]);
+		currentProfile[@"utfExport"] = @([utfExportCheckBox state]);
 		
-		[currentProfile setObject:[platexPathTextField stringValue] forKey:@"platexPath"];
-		[currentProfile setObject:[dvipdfmxPathTextField stringValue] forKey:@"dvipdfmxPath"];
-		[currentProfile setObject:[gsPathTextField stringValue] forKey:@"gsPath"];
+		currentProfile[@"platexPath"] = [platexPathTextField stringValue];
+		currentProfile[@"dvipdfmxPath"] = [dvipdfmxPathTextField stringValue];
+		currentProfile[@"gsPath"] = [gsPathTextField stringValue];
 		
-		[currentProfile setObject:[resolutionLabel stringValue] forKey:@"resolutionLabel"];
-		[currentProfile setObject:[leftMarginLabel stringValue] forKey:@"leftMarginLabel"];
-		[currentProfile setObject:[rightMarginLabel stringValue] forKey:@"rightMarginLabel"];
-		[currentProfile setObject:[topMarginLabel stringValue] forKey:@"topMarginLabel"];
-		[currentProfile setObject:[bottomMarginLabel stringValue] forKey:@"bottomMarginLabel"];
+		currentProfile[@"resolutionLabel"] = [resolutionLabel stringValue];
+		currentProfile[@"leftMarginLabel"] = [leftMarginLabel stringValue];
+		currentProfile[@"rightMarginLabel"] = [rightMarginLabel stringValue];
+		currentProfile[@"topMarginLabel"] = [topMarginLabel stringValue];
+		currentProfile[@"bottomMarginLabel"] = [bottomMarginLabel stringValue];
 		
-		[currentProfile setFloat:[resolutionLabel floatValue] forKey:@"resolution"];
-		[currentProfile setInteger:[leftMarginLabel intValue] forKey:@"leftMargin"];
-		[currentProfile setInteger:[rightMarginLabel intValue] forKey:@"rightMargin"];
-		[currentProfile setInteger:[topMarginLabel intValue] forKey:@"topMargin"];
-		[currentProfile setInteger:[bottomMarginLabel intValue] forKey:@"bottomMargin"];
+		currentProfile[@"resolution"] = @([resolutionLabel floatValue]);
+		currentProfile[@"leftMargin"] = @([leftMarginLabel intValue]);
+		currentProfile[@"rightMargin"] = @([rightMarginLabel intValue]);
+		currentProfile[@"topMargin"] = @([topMarginLabel intValue]);
+		currentProfile[@"bottomMargin"] = @([bottomMarginLabel intValue]);
 		
-		[currentProfile setInteger:[convertYenMarkMenuItem state] forKey:@"convertYenMark"];
-		[currentProfile setInteger:[colorizeTextMenuItem state] forKey:@"colorizeText"];
-		[currentProfile setInteger:highlightPattern forKey:@"highlightPattern"];
-		[currentProfile setInteger:[flashInMovingMenuItem state] forKey:@"flashInMoving"];
-		[currentProfile setInteger:[highlightContentMenuItem state] forKey:@"highlightContent"];
-		[currentProfile setInteger:[beepMenuItem state] forKey:@"beep"];
-		[currentProfile setInteger:[flashBackgroundMenuItem state] forKey:@"flashBackground"];
-		[currentProfile setInteger:[checkBraceMenuItem state] forKey:@"checkBrace"];
-		[currentProfile setInteger:[checkBracketMenuItem state] forKey:@"checkBracket"];
-		[currentProfile setInteger:[checkSquareBracketMenuItem state] forKey:@"checkSquareBracket"];
-		[currentProfile setInteger:[checkParenMenuItem state] forKey:@"checkParen"];
-		[currentProfile setInteger:[autoCompleteMenuItem state] forKey:@"autoComplete"];
-		[currentProfile setInteger:[showTabCharacterMenuItem state] forKey:@"showTabCharacter"];
-		[currentProfile setInteger:[showSpaceCharacterMenuItem state] forKey:@"showSpaceCharacter"];
-		[currentProfile setInteger:[showFullwidthSpaceCharacterMenuItem state] forKey:@"showFullwidthSpaceCharacter"];
-		[currentProfile setInteger:[showNewLineCharacterMenuItem state] forKey:@"showNewLineCharacter"];
-		[currentProfile setObject:[[sourceTextView font] fontName] forKey:@"sourceFontName"];
-		[currentProfile setFloat:[[sourceTextView font] pointSize] forKey:@"sourceFontSize"];
-		[currentProfile setObject:[[preambleTextView font] fontName] forKey:@"preambleFontName"];
-		[currentProfile setFloat:[[preambleTextView font] pointSize] forKey:@"preambleFontSize"];
+		currentProfile[@"convertYenMark"] = @([convertYenMarkMenuItem state]);
+		currentProfile[@"colorizeText"] = @([colorizeTextMenuItem state]);
+		currentProfile[@"highlightPattern"] = @(highlightPattern);
+		currentProfile[@"flashInMoving"] = @([flashInMovingMenuItem state]);
+		currentProfile[@"highlightContent"] = @([highlightContentMenuItem state]);
+		currentProfile[@"beep"] = @([beepMenuItem state]);
+		currentProfile[@"flashBackground"] = @([flashBackgroundMenuItem state]);
+		currentProfile[@"checkBrace"] = @([checkBraceMenuItem state]);
+		currentProfile[@"checkBracket"] = @([checkBracketMenuItem state]);
+		currentProfile[@"checkSquareBracket"] = @([checkSquareBracketMenuItem state]);
+		currentProfile[@"checkParen"] = @([checkParenMenuItem state]);
+		currentProfile[@"autoComplete"] = @([autoCompleteMenuItem state]);
+		currentProfile[@"showTabCharacter"] = @([showTabCharacterMenuItem state]);
+		currentProfile[@"showSpaceCharacter"] = @([showSpaceCharacterMenuItem state]);
+		currentProfile[@"showFullwidthSpaceCharacter"] = @([showFullwidthSpaceCharacterMenuItem state]);
+		currentProfile[@"showNewLineCharacter"] = @([showNewLineCharacterMenuItem state]);
+		currentProfile[@"sourceFontName"] = [[sourceTextView font] fontName];
+		currentProfile[@"sourceFontSize"] = @([[sourceTextView font] pointSize]);
+		currentProfile[@"preambleFontName"] = [[preambleTextView font] fontName];
+		currentProfile[@"preambleFontSize"] = @([[preambleTextView font] pointSize]);
 		
-		[currentProfile setObject:[NSString stringWithString:[[preambleTextView textStorage] string]] forKey:@"preamble"];
+		currentProfile[@"preamble"] = [NSString stringWithString:[[preambleTextView textStorage] string]];
 	}
 	@catch (NSException * e) {
 	}
 	
 	if([sjisRadioButton state])
 	{
-		[currentProfile setObject:@"sjis" forKey:@"encoding"];
+		currentProfile[@"encoding"] = @"sjis";
 	}
 	else if([eucRadioButton state])
 	{
-		[currentProfile setObject:@"euc" forKey:@"encoding"];
+		currentProfile[@"encoding"] = @"euc";
 	}
 	else if([jisRadioButton state])
 	{
-		[currentProfile setObject:@"jis" forKey:@"encoding"];
+		currentProfile[@"encoding"] = @"jis";
 	}
 	else if([utf8RadioButton state])
 	{
-		[currentProfile setObject:@"utf8" forKey:@"encoding"];
+		currentProfile[@"encoding"] = @"utf8";
 	}
 	else if([upTeXRadioButton state])
 	{
-		[currentProfile setObject:@"uptex" forKey:@"encoding"];
+		currentProfile[@"encoding"] = @"uptex";
 	}
 	
 	return currentProfile;
@@ -346,8 +345,7 @@
 ////// ここから他のメソッドから呼び出されるユーティリティメソッド //////
 - (NSString*)searchProgram:(NSString*)programName
 {
-	NSArray *searchPaths = [NSArray arrayWithObjects:
-							@"/Applications/pTeX.app/teTeX/bin", @"/usr/local/teTeX/bin", @"/usr/local/bin", @"/opt/local/bin", @"/sw/bin", nil];
+	NSArray *searchPaths = @[@"/Applications/pTeX.app/teTeX/bin", @"/Applications/UpTeX.app/teTeX/bin", @"/usr/texbin", @"/usr/local/teTeX/bin", @"/usr/local/bin", @"/opt/local/bin", @"/sw/bin"];
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 	
 	for(NSString *aPath in searchPaths)
@@ -581,7 +579,7 @@
 	NSSavePanel* aPanel = [NSSavePanel savePanel];
 	if([aPanel runModal] == NSFileHandlingPanelOKButton)
 	{
-		[outputFileTextField setStringValue:[aPanel filename]];
+		[outputFileTextField setStringValue:[[aPanel URL] path]];
 	}
 }
 
@@ -723,6 +721,21 @@
 	[gsPathTextField setStringValue:gsPath];
 }
 
+- (IBAction)setParametersForTeXLive:(id)sender
+{
+    [sjisRadioButton setState:NSOffState];
+    [jisRadioButton setState:NSOffState];
+    [eucRadioButton setState:NSOffState];
+    [utf8RadioButton setState:NSOffState];
+    [upTeXRadioButton setState:NSOnState];
+	[platexPathTextField setStringValue:@"/usr/texbin/uplatex"];
+	[dvipdfmxPathTextField setStringValue:@"/usr/texbin/dvipdfmx"];
+	[gsPathTextField setStringValue:@"/usr/local/bin/gs"];
+    
+    if(NSRunAlertPanel(NSLocalizedString(@"Confirm", @"Confirm"), NSLocalizedString(@"preambleForTeXLiveMsg", @"preambleForTeXLiveMsg"), @"OK", NSLocalizedString(@"Cancel", @"Cancel"), nil) == NSOKButton){
+        [[[preambleTextView textStorage] mutableString] setString:@"\\documentclass[fleqn,papersize,uplatex]{jsarticle}\n\\usepackage{amsmath,amssymb}\n\\pagestyle{empty}\n"];
+    }
+}
 
 - (void)doGeneratingThread
 {
@@ -731,10 +744,10 @@
     if(threading) pool = [[NSAutoreleasePool alloc]init];
 
 	NSMutableDictionary *aProfile = [self currentProfile];
-	[aProfile setObject:[[NSBundle mainBundle] pathForResource:@"pdfcrop" ofType:nil] forKey:@"pdfcropPath"];
-	[aProfile setObject:[[NSBundle mainBundle] pathForResource:@"epstopdf" ofType:nil] forKey:@"epstopdfPath"];
-	[aProfile setBool:NO forKey:@"quiet"];
-	[aProfile setObject:self forKey:@"controller"];
+	aProfile[@"pdfcropPath"] = [[NSBundle mainBundle] pathForResource:@"pdfcrop" ofType:nil];
+	aProfile[@"epstopdfPath"] = [[NSBundle mainBundle] pathForResource:@"epstopdf" ofType:nil];
+	aProfile[@"quiet"] = @(NO);
+	aProfile[@"controller"] = self;
 	
 	Converter* converter = [Converter converterWithProfile:aProfile];
 

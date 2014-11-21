@@ -16,3 +16,4 @@
 "extensionErrMsg" = "The extention must be either .eps/.png/.jpg/.pdf.";
 "emptyProfileNameErrMsg" = "Enter the name of the new profile.";
 "profileOverwriteMsg" = "A profile of the same name already exists. Do you want to replace it?";
+"preambleForTeXLiveMsg" = "Do you use the preamble optimized for TeX Live?";

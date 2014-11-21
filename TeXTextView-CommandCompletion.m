@@ -80,12 +80,12 @@ static NSString* endcommentString = @"›";
 	// Create & register an undo action
 	myManager = [self undoManager];
 	myDictionary = [NSMutableDictionary dictionaryWithCapacity: 4];
-	theLocation = [NSNumber numberWithUnsignedInt: oldLocation];
-	theLength = [NSNumber numberWithUnsignedInt: newLength];
-	[myDictionary setObject: oldString forKey: @"oldString"];
-	[myDictionary setObject: theLocation forKey: @"oldLocation"];
-	[myDictionary setObject: theLength forKey: @"oldLength"];
-	[myDictionary setObject: key forKey: @"undoKey"];
+	theLocation = @(oldLocation);
+	theLength = @(newLength);
+	myDictionary[@"oldString"] = oldString;
+	myDictionary[@"oldLocation"] = theLocation;
+	myDictionary[@"oldLength"] = theLength;
+	myDictionary[@"undoKey"] = key;
 	[myManager registerUndoWithTarget:self selector:@selector(undoSpecial:) object: myDictionary];
 	[myManager setActionName:key];
 }
@@ -97,10 +97,10 @@ static NSString* endcommentString = @"›";
 	NSString	*oldString, *newString, *undoKey;
 	
 	// Retrieve undo info
-	undoRange.location = [[theDictionary objectForKey: @"oldLocation"] unsignedIntValue];
-	undoRange.length = [[theDictionary objectForKey: @"oldLength"] unsignedIntValue];
-	newString = [theDictionary objectForKey: @"oldString"];
-	undoKey = [theDictionary objectForKey: @"undoKey"];
+	undoRange.location = [theDictionary[@"oldLocation"] unsignedIntValue];
+	undoRange.length = [theDictionary[@"oldLength"] unsignedIntValue];
+	newString = theDictionary[@"oldString"];
+	undoKey = theDictionary[@"undoKey"];
 	
 	if (undoRange.location+undoRange.length > [[self string] length])
 		return; // something wrong happened
@@ -173,7 +173,7 @@ static NSString* endcommentString = @"›";
 			&& !latexSpecial)
 		{
 			charSet = [NSCharacterSet characterSetWithCharactersInString:
-					   [NSString stringWithFormat: @"\n \t.,;;{}()%C", texChar]]; //should be global?
+					   [NSString stringWithFormat: @"\n \t.,;;{}()%C", (unichar)texChar]]; //should be global?
 			foundRange = [textString rangeOfCharacterFromSet:charSet
 													 options:NSBackwardsSearch range:NSMakeRange(0,selectedLocation-1)];
 			if (foundRange.location != NSNotFound  &&  foundRange.location >= 6  &&
@@ -240,7 +240,7 @@ static NSString* endcommentString = @"›";
 		if (!wasCompleted && !latexSpecial) {
 			// determine the word to complete--search for word boundary
 			charSet = [NSCharacterSet characterSetWithCharactersInString:
-					   [NSString stringWithFormat: @"\n \t.,;;{}()%C", texChar]];
+					   [NSString stringWithFormat: @"\n \t.,;;{}()%C", (unichar)texChar]];
 			foundRange = [textString rangeOfCharacterFromSet:charSet
 													 options:NSBackwardsSearch range:NSMakeRange(0,selectedLocation)];
 			if (foundRange.location != NSNotFound) {
@@ -333,16 +333,16 @@ static NSString* endcommentString = @"›";
 		} else { // LaTeX Special -- just add \end and copy of {...}
 			foundCandidate = YES;
 			if (!wasCompleted) {
-				originalString = [[NSString stringWithString: @""] retain];
+				originalString = [@"" retain];
 				replaceLocation = selectedLocation;
 				newString = [NSMutableString stringWithFormat: @"\n%Cend%@\n",
-							 texChar, latexString];
+							 (unichar)texChar, latexString];
 				insRange.location = 0;
 				completionListLocation = NSNotFound; // just to remember that it wasn't completed
 			} else {
 				// reuse the current string
 				newString = [NSMutableString stringWithFormat: @"%@\n%Cend%@\n",
-							 currentString, texChar, latexString];
+							 currentString, (unichar)texChar, latexString];
 				insRange.location = [currentString length];
 				[currentString release];
 			}

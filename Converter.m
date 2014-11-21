@@ -39,7 +39,7 @@
 	ignoreErrorsFlag = [aProfile boolForKey:@"ignoreError"];
 	utfExportFlag = [aProfile boolForKey:@"utfExport"];
 	quietFlag = [aProfile boolForKey:@"quiet"];
-	controller = [aProfile objectForKey:@"controller"];
+	controller = aProfile[@"controller"];
 
 	fileManager = [NSFileManager defaultManager];
 	tempdir = NSTemporaryDirectory();
@@ -223,7 +223,7 @@
 
 - (int)tex2dvi:(NSString*)teXFilePath
 {
-	int status = [self execCommand:platexPath atDirectory:tempdir withArguments:[NSArray arrayWithObjects:@"-interaction=nonstopmode", [NSString stringWithFormat:@"-kanji=%@", encoding], teXFilePath, nil]];
+	int status = [self execCommand:platexPath atDirectory:tempdir withArguments:@[@"-interaction=nonstopmode", [NSString stringWithFormat:@"-kanji=%@", encoding], teXFilePath]];
 	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];
 	
 	return status;
@@ -231,7 +231,7 @@
 
 - (int)dvi2pdf:(NSString*)dviFilePath
 {
-	int status = [self execCommand:dvipdfmxPath atDirectory:tempdir withArguments:[NSArray arrayWithObjects:@"-vv", dviFilePath, nil]];
+	int status = [self execCommand:dvipdfmxPath atDirectory:tempdir withArguments:@[@"-vv", dviFilePath]];
 	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];	
 	
 	return status;
@@ -244,28 +244,28 @@
 		return NO;
 	}
 	
-	int status = [self execCommand:[NSString stringWithFormat:@"export PATH=$PATH:\"%@\";/usr/bin/perl \"%@\"", [gsPath stringByDeletingLastPathComponent], pdfcropPath] atDirectory:tempdir
-					 withArguments:[NSArray arrayWithObjects:
-									addMargin ? [NSString stringWithFormat:@"--margins \"%d %d %d %d\"", leftMargin, topMargin, rightMargin, bottomMargin] : @"",
+	int status = [self execCommand:[NSString stringWithFormat:@"export PATH=$PATH:\"%@\":\"%@\";/usr/bin/perl \"%@\"",
+                                    [platexPath stringByDeletingLastPathComponent],
+                                    [gsPath stringByDeletingLastPathComponent],
+                                    pdfcropPath]
+                       atDirectory:tempdir
+					 withArguments:@[addMargin ? [NSString stringWithFormat:@"--margins \"%d %d %d %d\"", leftMargin, topMargin, rightMargin, bottomMargin] : @"",
 									[pdfPath lastPathComponent],
-									outputFileName,
-									nil]];
+									outputFileName]];
 	return (status==0) ? YES : NO;
 }
 
 - (int)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(int)resolution page:(NSUInteger)page;
 {
 	int status = [self execCommand:gsPath atDirectory:tempdir 
-					 withArguments:[NSArray arrayWithObjects:
-									@"-sDEVICE=epswrite",
+					 withArguments:@[@"-sDEVICE=epswrite",
 									@"-dNOPAUSE",
 									@"-dBATCH",
 									[NSString stringWithFormat:@"-dFirstPage=%lu", page],
 									[NSString stringWithFormat:@"-dLastPage=%lu", page],
 									[NSString stringWithFormat:@"-r%d", resolution],
 									[NSString stringWithFormat:@"-sOutputFile=%@", outputEpsFileName],
-									[NSString stringWithFormat:@"%@.pdf", tempFileBaseName],
-									nil]];
+									[NSString stringWithFormat:@"%@.pdf", tempFileBaseName]]];
 	return status;
 }
 
@@ -277,10 +277,8 @@
 	}
 	
 	[self execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", [gsPath stringByDeletingLastPathComponent], epstopdfPath] atDirectory:tempdir 
-					 withArguments:[NSArray arrayWithObjects:
-									[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
-									epsName,
-									nil]];
+					 withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
+									epsName]];
 	return YES;
 }
 
@@ -306,7 +304,7 @@
 	[backgroundImage lockFocus];
 	[[NSColor whiteColor] set];
 	[NSBezierPath fillRect:NSMakeRect(0, 0, size.width, size.height)];
-	[srcImage compositeToPoint:NSZeroPoint operation:NSCompositeSourceOver];
+    [srcImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
 	[backgroundImage unlockFocus];
 	return [[[NSBitmapImageRep alloc] initWithData:[backgroundImage TIFFRepresentation]] autorelease];
 }
@@ -338,10 +336,7 @@
 	NSData *outputData;
 	if([@"jpg" isEqualToString:extension])
 	{
-		NSDictionary *propJpeg = [NSDictionary dictionaryWithObjectsAndKeys:
-								  [NSNumber numberWithFloat: 1.0],
-								  NSImageCompressionFactor,
-								  nil];
+		NSDictionary *propJpeg = @{NSImageCompressionFactor: @1.0f};
 		imageRep = [self fillBackground:imageRep];
 		outputData = [imageRep representationUsingType:NSJPEGFileType properties:propJpeg];
 	}
@@ -351,7 +346,7 @@
 		{
 			imageRep = [self fillBackground:imageRep];
 		}
-		NSDictionary *propPng = [NSDictionary dictionaryWithObjectsAndKeys:nil];
+		NSDictionary *propPng = @{};
 		outputData = [imageRep representationUsingType:NSPNGFileType properties:propPng];
 	}
 	[outputData writeToFile:[tempdir stringByAppendingPathComponent:outputFileName] atomically: YES];
@@ -381,7 +376,7 @@
 	fp = fopen([epsFilePath UTF8String], "r");
 	while ((fgets(str, MAX_LEN - 1, fp)) != NULL)
 	{
-		NSString* line = [NSString stringWithUTF8String:str];
+		NSString* line = @(str);
 		if(regexec(&regexBB, str, nmatch, pmatch, 0) == 0)
 		{
 			leftbottom_x  = [[line substringWithRange:NSMakeRange(pmatch[1].rm_so, pmatch[1].rm_eo - pmatch[1].rm_so)] intValue] - leftMargin;

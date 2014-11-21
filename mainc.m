@@ -3,11 +3,10 @@
 #import <getopt.h>
 #import "Converter.h"
 #import "ControllerC.h"
-#import "NSMutableDictionary-Extension.h"
 
 #define OPTION_NUM 16
 #define MAX_LEN 1024
-#define VERSION "1.7.0"
+#define VERSION "1.7.1"
 
 static void version()
 {
@@ -30,7 +29,7 @@ static void usage()
     printf("  --bottom-margin  MARGIN : set bottom margin (px) (default: 0)\n"); 
     printf("  --create-outline        : create outline of text to prevent garbling (for JPEG/PNG/PDF)\n"); 
     printf("  --transparent           : generate transparent PNG file\n"); 
-    printf("  --kanji ENCODING        : set Japanese encoding  (sjis|jis|euc|utf8|uptex) (default: sjis)\n"); 
+    printf("  --kanji ENCODING        : set Japanese encoding  (sjis|jis|euc|utf8|uptex) (default: utf8)\n");
     printf("  --ignore-errors         : force converting by ignoring nonfatal errors\n"); 
     printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS characters\n"); 
     printf("  --quiet                 : do not output logs or messages\n"); 
@@ -57,7 +56,7 @@ NSString* getPath(NSString* cmdName)
 	
 	pclose(fp);
 
-	return [NSString stringWithUTF8String:str];
+	return @(str);
 }
 
 NSString* getFullPath(NSString* filename)
@@ -71,7 +70,7 @@ NSString* getFullPath(NSString* filename)
 	fgets(str, MAX_LEN-1, fp);
 	pclose(fp);
 	
-	return [NSString stringWithUTF8String:str];
+	return @(str);
 }
 
 int strtoi(char* str)
@@ -113,7 +112,7 @@ int main (int argc, char *argv[]) {
 	BOOL ignoreErrorFlag = NO;
 	BOOL utfExportFlag = NO;
 	BOOL quietFlag = NO;
-	NSString* encoding = @"sjis";
+	NSString* encoding = @"utf8";
 	NSString* compiler = @"platex";
 
 	// getopt_long を使った，長いオプション対応のオプション解析
@@ -284,7 +283,7 @@ int main (int argc, char *argv[]) {
 			case 11: // --kanji
 				if(optarg)
 				{
-					encoding = [NSString stringWithUTF8String:optarg];
+					encoding = @(optarg);
 				}
 				else
 				{
@@ -297,7 +296,7 @@ int main (int argc, char *argv[]) {
 			case 13: // --compiler
 				if(optarg)
 				{
-					compiler = [NSString stringWithUTF8String:optarg];
+					compiler = @(optarg);
 				}
 				else
 				{
@@ -323,8 +322,8 @@ int main (int argc, char *argv[]) {
 	
     if (argc != 2) usage();
 	
-	NSString* inputFilePath = [NSString stringWithUTF8String:argv[0]];
-	NSString* outputFilePath = getFullPath([NSString stringWithUTF8String:argv[1]]);
+	NSString* inputFilePath = @(argv[0]);
+	NSString* outputFilePath = getFullPath(@(argv[1]));
 
 	if(!quietFlag) version();
 	if(![[NSFileManager defaultManager] fileExistsAtPath:inputFilePath])
@@ -336,29 +335,29 @@ int main (int argc, char *argv[]) {
 	ControllerC* controller = [[[ControllerC alloc] init] autorelease];
 	
 	NSMutableDictionary *aProfile = [NSMutableDictionary dictionary];
-	[aProfile setObject:getPath(compiler) forKey:@"platexPath"];
-	[aProfile setObject:getPath(@"dvipdfmx") forKey:@"dvipdfmxPath"];
-	[aProfile setObject:getPath(@"gs") forKey:@"gsPath"];
-	[aProfile setObject:getPath(@"pdfcrop") forKey:@"pdfcropPath"];
-	[aProfile setObject:getPath(@"epstopdf") forKey:@"epstopdfPath"];
+	aProfile[@"platexPath"] = getPath(compiler);
+	aProfile[@"dvipdfmxPath"] = getPath(@"dvipdfmx");
+	aProfile[@"gsPath"] = getPath(@"gs");
+	aProfile[@"pdfcropPath"] = getPath(@"pdfcrop");
+	aProfile[@"epstopdfPath"] = getPath(@"epstopdf");
 	
-	[aProfile setObject:outputFilePath forKey:@"outputFile"];
+	aProfile[@"outputFile"] = outputFilePath;
 	
-	[aProfile setObject:encoding forKey:@"encoding"];
-	[aProfile setFloat:resolutoinLevel forKey:@"resolution"];
-	[aProfile setInteger:leftMargin forKey:@"leftMargin"];
-	[aProfile setInteger:rightMargin forKey:@"rightMargin"];
-	[aProfile setInteger:topMargin forKey:@"topMargin"];
-	[aProfile setInteger:bottomMargin forKey:@"bottomMargin"];
-	[aProfile setBool:getOutline forKey:@"getOutline"];
-	[aProfile setBool:transparentPngFlag forKey:@"transparent"];
-	[aProfile setBool:NO forKey:@"showOutputDrawer"];
-	[aProfile setBool:NO forKey:@"preview"];
-	[aProfile setBool:deleteTmpFileFlag forKey:@"deleteTmpFile"];
-	[aProfile setBool:ignoreErrorFlag forKey:@"ignoreError"];
-	[aProfile setBool:utfExportFlag forKey:@"utfExport"];
-	[aProfile setBool:quietFlag forKey:@"quiet"];
-	[aProfile setObject:controller forKey:@"controller"];
+	aProfile[@"encoding"] = encoding;
+	aProfile[@"resolution"] = @(resolutoinLevel);
+	aProfile[@"leftMargin"] = @(leftMargin);
+	aProfile[@"rightMargin"] = @(rightMargin);
+	aProfile[@"topMargin"] = @(topMargin);
+	aProfile[@"bottomMargin"] = @(bottomMargin);
+	aProfile[@"getOutline"] = @(getOutline);
+	aProfile[@"transparent"] = @(transparentPngFlag);
+	aProfile[@"showOutputDrawer"] = @(NO);
+	aProfile[@"preview"] = @(NO);
+	aProfile[@"deleteTmpFile"] = @(deleteTmpFileFlag);
+	aProfile[@"ignoreError"] = @(ignoreErrorFlag);
+	aProfile[@"utfExport"] = @(utfExportFlag);
+	aProfile[@"quiet"] = @(quietFlag);
+	aProfile[@"controller"] = controller;
 	
 	Converter *converter = [Converter converterWithProfile:aProfile];
 	BOOL succeed = [converter compileAndConvertWithInputPath:inputFilePath];

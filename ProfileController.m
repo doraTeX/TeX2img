@@ -1,7 +1,5 @@
 #import "ProfileController.h"
-#import "NSMutableDictionary-Extension.h"
 #import "NSDictionary-Extension.h"
-#import "NSIndexSet-Extension.h"
 
 #define MovedRowsType @"TeX2imgMovedRowsType"
 
@@ -11,7 +9,7 @@
 	if (!profileNames) return nil;
 	
 	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
-	return (targetIndex==NSNotFound) ? nil : [NSMutableDictionary dictionaryWithDictionary:[profiles objectAtIndex:targetIndex]];
+	return (targetIndex==NSNotFound) ? nil : [NSMutableDictionary dictionaryWithDictionary:profiles[targetIndex]];
 }
 
 - (void)loadProfilesFromPlist
@@ -50,8 +48,8 @@
 	}
 	else
 	{
-		[profileNames replaceObjectAtIndex:targetIndex withObject:profileName];
-		[profiles replaceObjectAtIndex:targetIndex withObject:aProfile];
+		profileNames[targetIndex] = profileName;
+		profiles[targetIndex] = aProfile;
 	}
 }
 
@@ -71,7 +69,7 @@
 
 - (id)tableView:(NSTableView*)aTableView objectValueForTableColumn:(NSTableColumn*)aTableColumn row:(NSInteger)rowIndex
 {
-	return [profileNames objectAtIndex:rowIndex];
+	return profileNames[rowIndex];
 }
 
 
@@ -115,7 +113,7 @@
     NSInteger selectedIndex = [profilesTableView selectedRow];
 	if(selectedIndex == -1) return;
 	
-	[controllerG adoptProfile:[profiles objectAtIndex:selectedIndex]];
+	[controllerG adoptProfile:profiles[selectedIndex]];
 	[profilesWindow close];
 }
 
@@ -138,7 +136,7 @@
 	[profilesTableView setDoubleAction:@selector(loadProfile:)];
 
 	[profilesTableView setDraggingSourceOperationMask:NSDragOperationMove forLocal:YES];
-	[profilesTableView registerForDraggedTypes:[NSArray arrayWithObjects:MovedRowsType, nil]];
+	[profilesTableView registerForDraggedTypes:@[MovedRowsType]];
 }
 
 - (void)dealloc
@@ -152,7 +150,7 @@
 	NSInteger selectedIndex = [profilesTableView selectedRow];
 	if(selectedIndex == -1) return;
 
-	[saveAsTextField setStringValue:[profileNames objectAtIndex:selectedIndex]];
+	[saveAsTextField setStringValue:profileNames[selectedIndex]];
 }
 
 - (void)showProfileWindow
@@ -167,7 +165,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	 toPasteboard:(NSPasteboard *)pboard
 {
 	// declare our own pasteboard types
-    NSArray *typesArray = [NSArray arrayWithObjects:MovedRowsType, nil];
+    NSArray *typesArray = @[MovedRowsType];
 	[pboard declareTypes:typesArray owner:self];
 	
     // add rows array for local move

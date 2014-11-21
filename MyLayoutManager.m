@@ -46,9 +46,8 @@
 	
     NSFont *theFont = [[self textStorage] font];
     NSColor *theColor = [NSColor orangeColor];
-    NSDictionary* _attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-								 theFont, NSFontAttributeName, 
-								 theColor, NSForegroundColorAttributeName,  nil];
+    NSDictionary* _attributes = @{NSFontAttributeName: theFont, 
+								 NSForegroundColorAttributeName: theColor};
 	
 	NSDictionary* currentProfile = [controller currentProfile];
 	

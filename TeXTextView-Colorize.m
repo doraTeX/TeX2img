@@ -143,9 +143,7 @@ static BOOL isValidTeXCommandChar(int c)
 - (void)highlightContent:(NSString*)range
 {
 	contentHighlighting = YES;
-	[[self layoutManager] addTemporaryAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
-												   [NSColor colorWithDeviceRed:1 green:1 blue:0.5 alpha:1],
-												   NSBackgroundColorAttributeName, nil ]	 // added by Taylor
+	[[self layoutManager] addTemporaryAttributes: @{NSBackgroundColorAttributeName: [NSColor colorWithDeviceRed:1 green:1 blue:0.5 alpha:1]}	 // added by Taylor
 							   forCharacterRange:NSRangeFromString(range)];
 }
 
@@ -166,8 +164,7 @@ static BOOL isValidTeXCommandChar(int c)
 		[self resetHighlight:nil];
 	}
 
-	highlightBracesColorDict = [NSDictionary dictionaryWithObjectsAndKeys:
-								[NSColor magentaColor], NSForegroundColorAttributeName, nil ];
+	highlightBracesColorDict = @{NSForegroundColorAttributeName: [NSColor magentaColor]};
 	unichar k_braceCharList[] = {0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E}; // == ()[]{}<>
     
 	NSString *theString = [[self textStorage] string];

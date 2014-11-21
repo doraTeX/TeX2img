@@ -53,12 +53,12 @@ static BOOL isValidTeXCommandChar(int c)
 	// Create & register an undo action
 	myManager = [self undoManager];
 	myDictionary = [NSMutableDictionary dictionaryWithCapacity: 4];
-	theLocation = [NSNumber numberWithUnsignedInt: oldLocation];
-	theLength = [NSNumber numberWithUnsignedInt: newLength];
-	[myDictionary setObject: oldString forKey: @"oldString"];
-	[myDictionary setObject: theLocation forKey: @"oldLocation"];
-	[myDictionary setObject: theLength forKey: @"oldLength"];
-	[myDictionary setObject: key forKey: @"undoKey"];
+	theLocation = @(oldLocation);
+	theLength = @(newLength);
+	myDictionary[@"oldString"] = oldString;
+	myDictionary[@"oldLocation"] = theLocation;
+	myDictionary[@"oldLength"] = theLength;
+	myDictionary[@"undoKey"] = key;
 	[myManager registerUndoWithTarget:self selector:@selector(undoSpecial:) object: myDictionary];
 	[myManager setActionName:key];
 }
@@ -70,10 +70,10 @@ static BOOL isValidTeXCommandChar(int c)
 	unsigned	from, to;
 	
 	// Retrieve undo info
-	undoRange.location = [[theDictionary objectForKey: @"oldLocation"] unsignedIntValue];
-	undoRange.length = [[theDictionary objectForKey: @"oldLength"] unsignedIntValue];
-	newString = [theDictionary objectForKey: @"oldString"];
-	undoKey = [theDictionary objectForKey: @"undoKey"];
+	undoRange.location = [theDictionary[@"oldLocation"] unsignedIntValue];
+	undoRange.length = [theDictionary[@"oldLength"] unsignedIntValue];
+	newString = theDictionary[@"oldString"];
+	undoKey = theDictionary[@"undoKey"];
 	
 	if (undoRange.location+undoRange.length > [[self string] length])
 		return; // something wrong happened
@@ -152,7 +152,7 @@ static BOOL isValidTeXCommandChar(int c)
 			[self selectedRange].location == 0 ||
 			[[self string] characterAtIndex:[self selectedRange].location - 1 ] != texChar )
 		{
-			NSString *completionString = [autocompletionDictionary objectForKey:aString];
+			NSString *completionString = autocompletionDictionary[aString];
 			if ( completionString )
 			{
 				[self setAutoCompleting:YES];

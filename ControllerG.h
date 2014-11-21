@@ -87,6 +87,7 @@ typedef enum  {
 - (IBAction)showFontPanelOfSource:(id)sender;
 - (IBAction)showFontPanelOfPreamble:(id)sender;
 - (IBAction)searchPrograms:(id)sender;
+- (IBAction)setParametersForTeXLive:(id)sender;
 - (void)adoptProfile:(NSDictionary*)aProfile;
 - (NSMutableDictionary*)currentProfile;
 @end
