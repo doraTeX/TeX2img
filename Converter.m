@@ -356,13 +356,17 @@
 	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
 
 	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
+    NSRect rect = [pdfImageRep bounds];
+    CGFloat width = rect.size.width;
+    CGFloat height = rect.size.height;
+    
 	NSSize size;
-	size.width  = (int)([pdfImageRep pixelsWide] * resolutionLevel) + leftMargin + rightMargin;
-	size.height = (int)([pdfImageRep pixelsHigh] * resolutionLevel) + topMargin + bottomMargin;
+	size.width  = (int)(width * resolutionLevel) + leftMargin + rightMargin;
+	size.height = (int)(height * resolutionLevel) + topMargin + bottomMargin;
 	
 	NSImage* image = [[NSImage alloc] initWithSize:size];
 	[image lockFocus];
-	[pdfImageRep drawInRect:NSMakeRect(leftMargin, bottomMargin, (int)([pdfImageRep pixelsWide] * resolutionLevel), (int)([pdfImageRep pixelsHigh] * resolutionLevel))];
+	[pdfImageRep drawInRect:NSMakeRect(leftMargin, bottomMargin, (int)(width * resolutionLevel), (int)(height * resolutionLevel))];
 	[image unlockFocus];
 	
 	// NSImage を TIFF 形式の NSBitmapImageRep に変換する
