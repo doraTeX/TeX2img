@@ -154,7 +154,9 @@
 	
 	highlightPattern = [aProfile integerForKey:@"highlightPattern"];
 	[self changeHighlight:nil];
-	
+
+	[flashInMovingMenuItem setState:[aProfile boolForKey:@"flashInMoving"]];
+
 	NSString *encoding = [aProfile stringForKey:@"encoding"];
 	[sjisRadioButton setState:NSOffState];
 	[jisRadioButton setState:NSOffState];
@@ -278,6 +280,7 @@
 	[currentProfile setInteger:[convertYenMarkMenuItem state] forKey:@"convertYenMark"];
 	[currentProfile setInteger:[colorizeTextMenuItem state] forKey:@"colorizeText"];
 	[currentProfile setInteger:highlightPattern forKey:@"highlightPattern"];
+	[currentProfile setInteger:[flashInMovingMenuItem state] forKey:@"flashInMoving"];
 	[currentProfile setObject:[[sourceTextView font] fontName] forKey:@"sourceFontName"];
 	[currentProfile setFloat:[[sourceTextView font] pointSize] forKey:@"sourceFontSize"];
 	[currentProfile setObject:[[preambleTextView font] fontName] forKey:@"preambleFontName"];

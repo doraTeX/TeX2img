@@ -5,9 +5,9 @@
 #import "ControllerC.h"
 #import "NSMutableDictionary-Extension.h";
 
-#define OPTION_NUM 15
+#define OPTION_NUM 16
 #define MAX_LEN 1024
-#define VERSION "1.4.5"
+#define VERSION "1.5.6"
 
 static void version()
 {
@@ -22,6 +22,7 @@ static void usage()
     printf("  InputTeXFile            : path of TeX source file\n"); 
     printf("  OutputFile              : path of output file (extension: eps/png/jpg/pdf)\n"); 
     printf("Options:\n"); 
+    printf("  --compiler   COMPILER   : set compiler   (default: platex)\n"); 
     printf("  --resolution RESOLUTION : set resolution level   (default: 15)\n"); 
     printf("  --left-margin    MARGIN : set left margin   (px) (default: 0)\n"); 
     printf("  --right-margin   MARGIN : set right margin  (px) (default: 0)\n"); 
@@ -39,13 +40,13 @@ static void usage()
     exit(1); 
 }
 
-NSString* getPath(char* cmdName)
+NSString* getPath(NSString* cmdName)
 {
 	char str[MAX_LEN];
 	FILE* fp;
 	char* pStr;
 
-	if((fp=popen([[NSString stringWithFormat:@"which %s", cmdName] cString],"r"))==NULL){
+	if((fp=popen([[NSString stringWithFormat:@"which %@", cmdName] UTF8String],"r")) == NULL){
 		return NO;
 	}
 	fgets(str, MAX_LEN-1, fp);
@@ -56,7 +57,7 @@ NSString* getPath(char* cmdName)
 	
 	pclose(fp);
 
-	return [NSString stringWithCString:str];
+	return [NSString stringWithUTF8String:str];
 }
 
 NSString* getFullPath(NSString* filename)
@@ -64,13 +65,13 @@ NSString* getFullPath(NSString* filename)
 	char str[MAX_LEN];
 	FILE* fp;
 	
-	if((fp=popen([[NSString stringWithFormat:@"ruby -e \"print File::expand_path('%@')\"", filename] cString],"r"))==NULL){
+	if((fp=popen([[NSString stringWithFormat:@"ruby -e \"print File::expand_path('%@')\"", filename] UTF8String],"r"))==NULL){
 		return NO;
 	}
 	fgets(str, MAX_LEN-1, fp);
 	pclose(fp);
 	
-	return [NSString stringWithCString:str];
+	return [NSString stringWithUTF8String:str];
 }
 
 int strtoi(char* str)
@@ -113,6 +114,7 @@ int main (int argc, char *argv[]) {
 	BOOL utfExportFlag = NO;
 	BOOL quietFlag = NO;
 	NSString* encoding = @"sjis";
+	NSString* compiler = @"platex";
 
 	// getopt_long を使った，長いオプション対応のオプション解析
 	struct option *options;
@@ -181,6 +183,11 @@ int main (int argc, char *argv[]) {
 	options[11].flag = NULL;
 	options[11].val = 12;		
 
+	options[12].name = "compiler";
+	options[12].has_arg = required_argument;
+	options[12].flag = NULL;
+	options[12].val = 13;		
+	
 	options[OPTION_NUM - 3].name = "version";
 	options[OPTION_NUM - 3].has_arg = no_argument;
 	options[OPTION_NUM - 3].flag = NULL;
@@ -277,7 +284,7 @@ int main (int argc, char *argv[]) {
 			case 11: // --kanji
 				if(optarg)
 				{
-					encoding = [NSString stringWithCString:optarg];
+					encoding = [NSString stringWithUTF8String:optarg];
 				}
 				else
 				{
@@ -286,6 +293,16 @@ int main (int argc, char *argv[]) {
 				break;
 			case 12: // --quiet
 				quietFlag = YES;
+				break;
+			case 13: // --compiler
+				if(optarg)
+				{
+					compiler = [NSString stringWithUTF8String:optarg];
+				}
+				else
+				{
+					usage();
+				}
 				break;
 			case (OPTION_NUM - 2): // --version
 				version();
@@ -306,24 +323,24 @@ int main (int argc, char *argv[]) {
 	
     if (argc != 2) usage();
 	
-	NSString* inputFilePath = [NSString stringWithCString:argv[0]];
-	NSString* outputFilePath = getFullPath([NSString stringWithCString:argv[1]]);
+	NSString* inputFilePath = [NSString stringWithUTF8String:argv[0]];
+	NSString* outputFilePath = getFullPath([NSString stringWithUTF8String:argv[1]]);
 
 	if(!quietFlag) version();
 	if(![[NSFileManager defaultManager] fileExistsAtPath:inputFilePath])
 	{
-		fprintf(stderr, "tex2img : %s : No such file or directory\n", [inputFilePath cString]);
+		fprintf(stderr, "tex2img : %s : No such file or directory\n", [inputFilePath UTF8String]);
 		exit(1);
 	}
 	
 	ControllerC* controller = [[[ControllerC alloc] init] autorelease];
 	
 	NSMutableDictionary *aProfile = [NSMutableDictionary dictionary];
-	[aProfile setObject:getPath("platex") forKey:@"platexPath"];
-	[aProfile setObject:getPath("dvipdfmx") forKey:@"dvipdfmxPath"];
-	[aProfile setObject:getPath("gs") forKey:@"gsPath"];
-	[aProfile setObject:getPath("pdfcrop") forKey:@"pdfcropPath"];
-	[aProfile setObject:getPath("epstopdf") forKey:@"epstopdfPath"];
+	[aProfile setObject:getPath(compiler) forKey:@"platexPath"];
+	[aProfile setObject:getPath(@"dvipdfmx") forKey:@"dvipdfmxPath"];
+	[aProfile setObject:getPath(@"gs") forKey:@"gsPath"];
+	[aProfile setObject:getPath(@"pdfcrop") forKey:@"pdfcropPath"];
+	[aProfile setObject:getPath(@"epstopdf") forKey:@"epstopdfPath"];
 	
 	[aProfile setObject:outputFilePath forKey:@"outputFile"];
 	
@@ -348,7 +365,7 @@ int main (int argc, char *argv[]) {
 	
 	if(succeed && !quietFlag)
 	{
-		printf("\n%s is generated.\n", [outputFilePath cString]);
+		printf("\n%s is generated.\n", [outputFilePath UTF8String]);
 	}
 
 	[pool drain];

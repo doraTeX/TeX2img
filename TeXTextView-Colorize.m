@@ -120,7 +120,16 @@ static BOOL isValidTeXCommandChar(int c)
 
 - (void)resetBackgroundColor:(id)sender
 {
-	[self colorizeText:[[controller currentProfile] boolForKey:@"colorizeText"]];
+	if (NSFoundationVersionNumber > LEOPARD) {
+		[self colorizeText:[[controller currentProfile] boolForKey:@"colorizeText"]];
+	}
+}
+
+- (void)showIndicator:(NSString*)range
+{
+	if (NSFoundationVersionNumber > LEOPARD) {
+		[self showFindIndicatorForRange:NSRangeFromString(range)];
+	}
 }
 
 - (void)textViewDidChangeSelection:(NSNotification *)inNotification
@@ -209,6 +218,13 @@ static BOOL isValidTeXCommandChar(int c)
 				[[self layoutManager] addTemporaryAttributes:highlightBracesColorDict 
 										   forCharacterRange:NSMakeRange(originalLocation, 1)];
 				[self display];
+
+				if (NSFoundationVersionNumber > LEOPARD && [[controller currentProfile] boolForKey:@"flashInMoving"]) {
+					[self performSelector:@selector(showIndicator:) 
+							   withObject:NSStringFromRange(NSMakeRange(theLocation, 1)) 
+							   afterDelay:0];
+				}
+				
 				if (highlightPattern == FLASH) {
 					[self performSelector:@selector(resetBackgroundColor:) 
 							   withObject:NSStringFromRange(NSMakeRange(theLocation, 1)) afterDelay:0.30];
@@ -222,11 +238,6 @@ static BOOL isValidTeXCommandChar(int c)
         }
     }
     // NSBeep();	// 対応する開始括弧がなかったときにビープ音を鳴らす
-}
-
-- (void)showIndicator:(NSString*)range
-{
-	[self showFindIndicatorForRange:NSRangeFromString(range)];
 }
 
 - (BOOL)shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString
