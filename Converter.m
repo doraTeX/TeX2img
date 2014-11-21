@@ -11,7 +11,46 @@
 #import "NSMutableString-Extension.h"
 #import "Converter.h"
 
+@interface Converter()
+@property NSString* platexPath;
+@property NSString* dvipdfmxPath;
+@property NSString* gsPath;
+@property NSString* encoding;
+@property NSString* outputFilePath;
+@property NSString* preambleStr;
+@property float resolutionLevel;
+@property int leftMargin, rightMargin, topMargin, bottomMargin;
+@property BOOL leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property id<OutputController> controller;
+@property NSFileManager* fileManager;
+@property NSString* tempdir;
+@property int pid;
+@property NSString* tempFileBaseName;
+@property NSString* pdfcropPath;
+@property NSString* epstopdfPath;
+@property NSUInteger pageCount;
+@end
+
 @implementation Converter
+@synthesize platexPath;
+@synthesize dvipdfmxPath;
+@synthesize gsPath;
+@synthesize encoding;
+@synthesize outputFilePath;
+@synthesize preambleStr;
+@synthesize resolutionLevel;
+@synthesize leftMargin, rightMargin, topMargin, bottomMargin;
+@synthesize leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize controller;
+@synthesize fileManager;
+@synthesize tempdir;
+@synthesize pid;
+@synthesize tempFileBaseName;
+@synthesize pdfcropPath;
+@synthesize epstopdfPath;
+@synthesize pageCount;
+
+
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
 {
     pageCount = 1;
@@ -56,10 +95,6 @@
 	return [[Converter alloc] initWithProfile:aProfile];
 }
 
-- (NSUInteger)pageCount
-{
-    return pageCount;
-}
 
 
 // JIS 外の文字を \UTF に置き換える

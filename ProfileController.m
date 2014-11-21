@@ -3,8 +3,24 @@
 
 #define MovedRowsType @"TeX2imgMovedRowsType"
 
+@interface ProfileController()
+@property NSMutableArray *profiles;
+@property NSMutableArray *profileNames;
+@property IBOutlet NSWindow *profilesWindow;
+@property IBOutlet NSTableView *profilesTableView;
+@property IBOutlet NSTextField *saveAsTextField;
+@property IBOutlet ControllerG *controllerG;
+@end
+
 @implementation ProfileController
- - (NSMutableDictionary*)profileForName:(NSString*)profileName
+@synthesize profiles;
+@synthesize profileNames;
+@synthesize profilesWindow;
+@synthesize profilesTableView;
+@synthesize saveAsTextField;
+@synthesize controllerG;
+
+- (NSMutableDictionary*)profileForName:(NSString*)profileName
 {
 	if (!profileNames) return nil;
 	
@@ -57,6 +73,7 @@
 	[userDefaults setObject:profileNames forKey:@"profileNames"];
 	[userDefaults setObject:profiles forKey:@"profiles"];
 	[userDefaults synchronize];
+    system("killall -SIGTERM cfprefsd"); // for 10.9 bug
 }
 
 

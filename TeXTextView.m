@@ -33,15 +33,9 @@ static BOOL isValidTeXCommandChar(int c)
 	contentHighlighting = NO;
 	braceHighlighting = NO;
 	MyLayoutManager *layoutManager = [[MyLayoutManager alloc] init];
-	[layoutManager setController:controller];
+	layoutManager.controller = controller;
 	[[self textContainer] replaceLayoutManager:layoutManager];
 }
-
-- (void) setAutoCompleting:(BOOL)flag 
-{
-	autoCompleting = flag;
-}
-
 
 - (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation
 						length: (unsigned)newLength key:(NSString *)key
@@ -161,10 +155,10 @@ static BOOL isValidTeXCommandChar(int c)
                 NSString *completionString = autocompletionDictionary[aString];
                 if ( completionString )
                 {
-                    [self setAutoCompleting:YES];
+                    autoCompleting = YES;
                     [self insertSpecialNonStandard:completionString
                                            undoKey: @"Autocompletion"];
-                    [self setAutoCompleting:NO];
+                    autoCompleting = NO;
                     return;
                 }
             }

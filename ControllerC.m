@@ -28,18 +28,15 @@ BOOL checkWhich(NSString* cmdName)
 
 - (BOOL)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
 {
-	if(!checkWhich(platexPath))
-	{
+	if(!checkWhich(platexPath)){
 		[self showNotFoundError:@"platex"];
 		return NO;
 	}
-	if(!checkWhich(dvipdfmxPath))
-	{
+	if(!checkWhich(dvipdfmxPath)){
 		[self showNotFoundError:@"dvipdfmx"];
 		return NO;
 	}
-	if(!checkWhich(gsPath))
-	{
+	if(!checkWhich(gsPath)){
 		[self showNotFoundError:@"gs"];
 		return NO;
 	}
@@ -48,8 +45,7 @@ BOOL checkWhich(NSString* cmdName)
 
 - (BOOL)checkPdfcropExistence;
 {
-	if(!checkWhich(@"pdfcrop"))
-	{
+	if(!checkWhich(@"pdfcrop")){
 		[self showNotFoundError:@"epstopdf"];
 		return NO;
 	}
@@ -59,8 +55,7 @@ BOOL checkWhich(NSString* cmdName)
 
 - (BOOL)checkEpstopdfExistence;
 {
-	if(!checkWhich(@"pdfcrop"))
-	{
+	if(!checkWhich(@"pdfcrop")){
 		[self showNotFoundError:@"pdfcrop"];
 		return NO;
 	}

@@ -16,26 +16,7 @@
 - (void)showMainWindow;
 @end
 
-@interface Converter : NSObject {
-	NSString* platexPath;
-	NSString* dvipdfmxPath;
-	NSString* gsPath;
-	NSString* encoding;
-	NSString* outputFilePath;
-	NSString* preambleStr;
-	float resolutionLevel;
-	int leftMargin, rightMargin, topMargin, bottomMargin;
-	BOOL leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
-	id<OutputController> controller;
-
-	NSFileManager* fileManager;
-	NSString* tempdir;
-	int pid;
-	NSString* tempFileBaseName; 
-	NSString* pdfcropPath;
-	NSString* epstopdfPath;
-    NSUInteger pageCount;
-}
+@interface Converter : NSObject
 + (Converter*)converterWithProfile:(NSDictionary*)aProfile;
 - (BOOL)compileAndConvertWithInputPath:(NSString*)texSourcePath;
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr;

@@ -1,11 +1,141 @@
+#import "ProfileController.h"
+#import "TeXTextView.h"
+#import "global.h"
 #import "ControllerG.h"
 #import "NSDictionary-Extension.h"
 //#import <Sparkle/Sparkle.h>
 
+@class ProfileController;
+@class TeXTextView;
+
 #define AutoSavedProfileName @"*AutoSavedProfile*"
 #define SNOWLEOPARD 678
 
+@interface ControllerG()
+@property IBOutlet ProfileController *profileController;
+@property IBOutlet NSWindow *mainWindow;
+@property IBOutlet TeXTextView *sourceTextView;
+@property IBOutlet NSDrawer *outputDrawer;
+@property IBOutlet NSTextView *outputTextView;
+@property IBOutlet NSWindow *preambleWindow;
+@property IBOutlet TeXTextView *preambleTextView;
+@property IBOutlet NSMenuItem *convertYenMarkMenuItem;
+@property IBOutlet NSMenuItem *colorizeTextMenuItem;
+@property IBOutlet NSMenuItem *outputDrawerMenuItem;
+@property IBOutlet NSMenuItem *preambleWindowMenuItem;
+@property IBOutlet NSMenuItem *generateMenuItem;
+@property IBOutlet NSMenuItem *flashHighlightMenuItem;
+@property IBOutlet NSMenuItem *solidHighlightMenuItem;
+@property IBOutlet NSMenuItem *noHighlightMenuItem;
+@property IBOutlet NSMenuItem *flashInMovingMenuItem;
+@property IBOutlet NSMenuItem *highlightContentMenuItem;
+@property IBOutlet NSMenuItem *beepMenuItem;
+@property IBOutlet NSMenuItem *flashBackgroundMenuItem;
+@property IBOutlet NSMenuItem *checkBraceMenuItem;
+@property IBOutlet NSMenuItem *checkBracketMenuItem;
+@property IBOutlet NSMenuItem *checkSquareBracketMenuItem;
+@property IBOutlet NSMenuItem *checkParenMenuItem;
+@property IBOutlet NSMenuItem *autoCompleteMenuItem;
+@property IBOutlet NSMenuItem *showTabCharacterMenuItem;
+@property IBOutlet NSMenuItem *showSpaceCharacterMenuItem;
+@property IBOutlet NSMenuItem *showNewLineCharacterMenuItem;
+@property IBOutlet NSMenuItem *showFullwidthSpaceCharacterMenuItem;
+@property IBOutlet NSTextField *outputFileTextField;
+@property IBOutlet NSButton *generateButton;
+@property IBOutlet NSButton *transparentCheckBox;
+@property IBOutlet NSButton *showOutputDrawerCheckBox;
+@property IBOutlet NSButton *threadingCheckBox;
+@property IBOutlet NSButton *previewCheckBox;
+@property IBOutlet NSButton *deleteTmpFileCheckBox;
+@property IBOutlet NSButton *embedInIllustratorCheckBox;
+@property IBOutlet NSButton *ungroupCheckBox;
+@property IBOutlet NSWindow *preferenceWindow;
+@property IBOutlet NSTextField *resolutionLabel;
+@property IBOutlet NSTextField *leftMarginLabel;
+@property IBOutlet NSTextField *rightMarginLabel;
+@property IBOutlet NSTextField *topMarginLabel;
+@property IBOutlet NSTextField *bottomMarginLabel;
+@property IBOutlet NSSlider *resolutionSlider;
+@property IBOutlet NSSlider *leftMarginSlider;
+@property IBOutlet NSSlider *rightMarginSlider;
+@property IBOutlet NSSlider *topMarginSlider;
+@property IBOutlet NSSlider *bottomMarginSlider;
+@property IBOutlet NSTextField *platexPathTextField;
+@property IBOutlet NSTextField *dvipdfmxPathTextField;
+@property IBOutlet NSTextField *gsPathTextField;
+@property IBOutlet NSButton *getOutlineCheckBox;
+@property IBOutlet NSButton *ignoreErrorCheckBox;
+@property IBOutlet NSButton *utfExportCheckBox;
+@property IBOutlet NSButtonCell *sjisRadioButton;
+@property IBOutlet NSButtonCell *eucRadioButton;
+@property IBOutlet NSButtonCell *jisRadioButton;
+@property IBOutlet NSButtonCell *utf8RadioButton;
+@property IBOutlet NSButtonCell *upTeXRadioButton;
+@property HighlightPattern highlightPattern;
+@end
+
 @implementation ControllerG
+@synthesize profileController;
+@synthesize mainWindow;
+@synthesize sourceTextView;
+@synthesize outputDrawer;
+@synthesize outputTextView;
+@synthesize preambleWindow;
+@synthesize preambleTextView;
+@synthesize convertYenMarkMenuItem;
+@synthesize colorizeTextMenuItem;
+@synthesize outputDrawerMenuItem;
+@synthesize preambleWindowMenuItem;
+@synthesize generateMenuItem;
+@synthesize flashHighlightMenuItem;
+@synthesize solidHighlightMenuItem;
+@synthesize noHighlightMenuItem;
+@synthesize flashInMovingMenuItem;
+@synthesize highlightContentMenuItem;
+@synthesize beepMenuItem;
+@synthesize flashBackgroundMenuItem;
+@synthesize checkBraceMenuItem;
+@synthesize checkBracketMenuItem;
+@synthesize checkSquareBracketMenuItem;
+@synthesize checkParenMenuItem;
+@synthesize autoCompleteMenuItem;
+@synthesize showTabCharacterMenuItem;
+@synthesize showSpaceCharacterMenuItem;
+@synthesize showNewLineCharacterMenuItem;
+@synthesize showFullwidthSpaceCharacterMenuItem;
+@synthesize outputFileTextField;
+@synthesize generateButton;
+@synthesize transparentCheckBox;
+@synthesize showOutputDrawerCheckBox;
+@synthesize threadingCheckBox;
+@synthesize previewCheckBox;
+@synthesize deleteTmpFileCheckBox;
+@synthesize embedInIllustratorCheckBox;
+@synthesize ungroupCheckBox;
+@synthesize preferenceWindow;
+@synthesize resolutionLabel;
+@synthesize leftMarginLabel;
+@synthesize rightMarginLabel;
+@synthesize topMarginLabel;
+@synthesize bottomMarginLabel;
+@synthesize resolutionSlider;
+@synthesize leftMarginSlider;
+@synthesize rightMarginSlider;
+@synthesize topMarginSlider;
+@synthesize bottomMarginSlider;
+@synthesize platexPathTextField;
+@synthesize dvipdfmxPathTextField;
+@synthesize gsPathTextField;
+@synthesize getOutlineCheckBox;
+@synthesize ignoreErrorCheckBox;
+@synthesize utfExportCheckBox;
+@synthesize sjisRadioButton;
+@synthesize eucRadioButton;
+@synthesize jisRadioButton;
+@synthesize utf8RadioButton;
+@synthesize upTeXRadioButton;
+@synthesize highlightPattern;
+
 ////// ここから OutputController プロトコルの実装 //////
 - (void)showMainWindow
 {
@@ -355,7 +485,7 @@
     NSString *script =  [NSString stringWithFormat:@"do shell script \"%@\"", @"eval `/usr/libexec/path_helper -s`; echo $PATH"];
     
     NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
-    NSAppleEventDescriptor * eventResult = [appleScript executeAndReturnError:&errorInfo];
+    NSAppleEventDescriptor *eventResult = [appleScript executeAndReturnError:&errorInfo];
     
     NSString *userPath = [eventResult stringValue];
     NSMutableArray* searchPaths = [NSMutableArray arrayWithArray:[userPath componentsSeparatedByString:@":"]];
@@ -455,6 +585,7 @@
 		loadLastProfileSuccess = [self adoptProfileWithWindowFrameForName:AutoSavedProfileName];
 		[profileController removeProfileForName:AutoSavedProfileName];
 	}
+    
 	if(!loadLastProfileSuccess) // 初回起動時の各種プログラムのパスの自動設定
 	{
 		[profileController initProfiles];
@@ -484,10 +615,12 @@
 		[dvipdfmxPathTextField setStringValue:dvipdfmxPath];
 		[gsPathTextField setStringValue:gsPath];
 		
-		NSRunAlertPanel(NSLocalizedString(@"initSettingsMsg", nil), 
-						[NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",
-						 NSLocalizedString(@"setPathMsg1", nil), platexPath, dvipdfmxPath, gsPath, NSLocalizedString(@"setPathMsg2", nil)],
-						@"OK", nil, nil);
+        [self performSelectorOnMainThread:@selector(showInitMessage:)
+                               withObject:@{@"platexPath": platexPath,
+                                            @"dvipdfmxPath": dvipdfmxPath,
+                                            @"gsPath": gsPath
+                                            }
+                            waitUntilDone:NO];
 		
 		NSFont *defaultFont = [NSFont fontWithName:@"Osaka-Mono" size:13];
 		if(defaultFont != nil)
@@ -529,6 +662,14 @@
 			[g_commandCompletionList appendString: @"\n"];
 	}
 
+}
+
+- (void)showInitMessage:(NSDictionary*)paths
+{
+    NSRunAlertPanel(NSLocalizedString(@"initSettingsMsg", nil),
+                    [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",
+                     NSLocalizedString(@"setPathMsg1", nil), paths[@"platexPath"], paths[@"dvipdfmxPath"], paths[@"gsPath"], NSLocalizedString(@"setPathMsg2", nil)],
+                    @"OK", nil, nil);
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
@@ -619,11 +760,6 @@
 		[self showOutputDrawer];
 	}
     
-}
-
-- (HighlightPattern)highlightPattern
-{
-	return highlightPattern;
 }
 
 -(IBAction)changeHighlight:(id)sender

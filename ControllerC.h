@@ -1,6 +1,4 @@
 #import "Converter.h"
 
-@interface ControllerC : NSObject<OutputController> {
-
-}
+@interface ControllerC : NSObject<OutputController>
 @end

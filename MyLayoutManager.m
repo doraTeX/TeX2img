@@ -1,23 +1,25 @@
 #import "MyLayoutManager.h"
 #import "NSDictionary-Extension.h"
 
-@implementation MyLayoutManager
-- (void)setController:(ControllerG*)aController
-{
-	controller = aController;
-}
+@interface MyLayoutManager()
+@property NSString *tabCharacter;
+@property NSString *returnCharacter;
+@property NSString *fullwidthSpaceCharacter;
+@property NSString *spaceCharacter;
+@end
 
+@implementation MyLayoutManager
 - (id)init
 {
 	if (!(self = [super init])) return nil;
-	unichar _tabCharacter = 0x2023; // 他の候補：0x00AC, 0x21E5, 0x25B9
-	unichar _newLineCharacter = 0x21B5; // 他の候補：0x00B6, 0x21A9, 0x23CE
-	unichar _fullwidthSpaceCharacter = 0x25A1; // 他の候補：0x22A0, 0x25A0, 0x2022
-	unichar _spaceCharacter = 0x2423; // 他の候補：0x00B7, 0x00B0, 0x02D0
-	tabCharacter = [NSString stringWithCharacters:&_tabCharacter length:1];
-    newLineCharacter = [NSString stringWithCharacters:&_newLineCharacter length:1];
-    fullwidthSpaceCharacter = [NSString stringWithCharacters:&_fullwidthSpaceCharacter length:1];
-	spaceCharacter = [NSString stringWithCharacters:&_spaceCharacter length:1];
+	unichar u_tabCharacter = 0x2023; // 他の候補：0x00AC, 0x21E5, 0x25B9
+	unichar u_returnCharacter = 0x21B5; // 他の候補：0x00B6, 0x21A9, 0x23CE
+	unichar u_fullwidthSpaceCharacter = 0x25A1; // 他の候補：0x22A0, 0x25A0, 0x2022
+	unichar u_spaceCharacter = 0x2423; // 他の候補：0x00B7, 0x00B0, 0x02D0
+	_tabCharacter = [NSString stringWithCharacters:&u_tabCharacter length:1];
+    _returnCharacter = [NSString stringWithCharacters:&u_returnCharacter length:1];
+    _fullwidthSpaceCharacter = [NSString stringWithCharacters:&u_fullwidthSpaceCharacter length:1];
+	_spaceCharacter = [NSString stringWithCharacters:&u_spaceCharacter length:1];
 	return self;
 }
 
@@ -49,7 +51,7 @@
     NSDictionary* _attributes = @{NSFontAttributeName: theFont, 
 								 NSForegroundColorAttributeName: theColor};
 	
-	NSDictionary* currentProfile = [controller currentProfile];
+	NSDictionary* currentProfile = [_controller currentProfile];
 	
 	for (theGlyphIndex = inGlyphRange.location; theGlyphIndex < theLengthToRedraw; theGlyphIndex++) {
 		theCharIndex = [self characterIndexForGlyphAtIndex:theGlyphIndex];
@@ -57,16 +59,16 @@
 		
 		if (theCharacter == '\t' && [currentProfile boolForKey:@"showTabCharacter"]) {
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
-			[tabCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
+			[_tabCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
 		} else if (theCharacter == '\n' && [currentProfile boolForKey:@"showNewLineCharacter"]) {
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
-			[newLineCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
+			[_returnCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
 		} else if (theCharacter == 0x3000 && [currentProfile boolForKey:@"showFullwidthSpaceCharacter"]) { // Fullwidth-space (JP)
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
-			[fullwidthSpaceCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
+			[_fullwidthSpaceCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
 		} else if (theCharacter == ' ' && [currentProfile boolForKey:@"showSpaceCharacter"]) {
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
-			[spaceCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
+			[_spaceCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
 		}
 	}
 	[super drawGlyphsForGlyphRange:inGlyphRange atPoint:inContainerOrigin];

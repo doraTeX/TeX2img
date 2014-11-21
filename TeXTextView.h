@@ -1,16 +1,19 @@
 #import <Cocoa/Cocoa.h>
 #import "ControllerG.h"
+#import "global.h"
+
 @class ControllerG;
 
-@interface TeXTextView : NSTextView {
-	IBOutlet ControllerG *controller;
-	NSDictionary* highlightBracesColorDict;
-	NSUInteger lastCursorLocation;
-	NSUInteger lastStringLength;
-	NSDictionary* autocompletionDictionary;
-	BOOL autoCompleting;
-	BOOL contentHighlighting;
-	BOOL braceHighlighting;
+@interface TeXTextView : NSTextView
+{
+    IBOutlet ControllerG *controller;
+    BOOL autoCompleting;
+    BOOL contentHighlighting;
+    BOOL braceHighlighting;
+    NSDictionary* highlightBracesColorDict;
+    NSUInteger lastCursorLocation;
+    NSUInteger lastStringLength;
+    NSDictionary* autocompletionDictionary;
 }
 @end
 
