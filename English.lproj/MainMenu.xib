@@ -918,7 +918,7 @@ DQ
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
-                                        <box autoresizesSubviews="NO" title="Quality (for JPEG / PNG, from 1 to 100)" borderType="line" id="638">
+                                        <box autoresizesSubviews="NO" title="Quality (from 1 to 100)" borderType="line" id="638">
                                             <rect key="frame" x="6" y="125" width="370" height="62"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <view key="contentView">

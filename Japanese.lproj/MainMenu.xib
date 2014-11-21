@@ -899,7 +899,7 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
                                         </box>
-                                        <box autoresizesSubviews="NO" title="解像度レベル（1〜100; JPEG / PNG で有効）" borderType="line" id="637">
+                                        <box autoresizesSubviews="NO" title="解像度レベル（1〜100）" borderType="line" id="637">
                                             <rect key="frame" x="6" y="125" width="370" height="57"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <view key="contentView">

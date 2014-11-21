@@ -1,8 +1,8 @@
 #import <stdio.h>
-#import <unistd.h>
 #import <Quartz/Quartz.h>
 //#import <OgreKit/OgreKit.h>
-#include <regex.h>
+//#import <unistd.h>
+//#include <regex.h>
 #import "global.h"
 
 #define MAX_LEN 1024
@@ -278,9 +278,9 @@
 	return status;
 }
 
-- (NSString*)epswriteOptionString
+- (BOOL)shouldUseEps2WriteDevice
 {
-    NSString *result = @"eps2write";
+    BOOL result = YES;
     
     NSTask *task = NSTask.new;
     NSPipe *pipe = NSPipe.new;
@@ -297,8 +297,8 @@
     
     if (match) {
         double version = [versionString substringWithRange:[match rangeAtIndex:0]].doubleValue;
-        if (version < 9.14) {
-            result = @"epswrite";
+        if (version < 9.15) {
+            result = NO;
         }
     }
     
@@ -307,17 +307,23 @@
 
 - (BOOL)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(NSInteger)resolution page:(NSUInteger)page;
 {
-    NSString *epswriteOption = [NSString stringWithFormat:@"-sDEVICE=%@", self.epswriteOptionString];
+    NSMutableArray *arguments = [NSMutableArray arrayWithArray:@[@"-dNOPAUSE", @"-dBATCH"]];
     
-	BOOL status = [self execCommand:gsPath atDirectory:tempdir
-					 withArguments:@[epswriteOption,
-									@"-dNOPAUSE",
-									@"-dBATCH",
-									[NSString stringWithFormat:@"-dFirstPage=%lu", page],
-									[NSString stringWithFormat:@"-dLastPage=%lu", page],
-									[NSString stringWithFormat:@"-r%ld", resolution],
-									[NSString stringWithFormat:@"-sOutputFile=%@", outputEpsFileName],
-									[NSString stringWithFormat:@"%@.pdf", tempFileBaseName]]];
+    if (self.shouldUseEps2WriteDevice) {
+        [arguments addObject:@"-sDEVICE=eps2write"];
+        [arguments addObject:@"-dNoOutputFonts"];
+    } else {
+        [arguments addObject:@"-sDEVICE=epswrite"];
+    }
+
+    [arguments addObjectsFromArray:@[[NSString stringWithFormat:@"-dFirstPage=%lu", page],
+                                     [NSString stringWithFormat:@"-dLastPage=%lu", page],
+                                     [NSString stringWithFormat:@"-r%ld", resolution],
+                                     [NSString stringWithFormat:@"-sOutputFile=%@", outputEpsFileName],
+                                     [NSString stringWithFormat:@"%@.pdf", tempFileBaseName]
+                                     ]];
+
+    BOOL status = [self execCommand:gsPath atDirectory:tempdir withArguments:arguments];
 	return status;
 }
 
@@ -414,6 +420,22 @@
 
 - (void)enlargeBB:(NSString*)epsName
 {
+    NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
+    NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: (\\-?[0-9]+) (\\-?[0-9]+) (\\-?[0-9]+) (\\-?[0-9]+)\\n/){ \"%%%%BoundingBox: #{$1.to_i-%ld} #{$2.to_i-%ld} #{$3.to_i+%ld} #{$4.to_i+%ld}\\n\"}.sub(/%%%%HiResBoundingBox\\: (\\-?[0-9\\.]+) (\\-?[0-9\\.]+) (\\-?[0-9\\.]+) (\\-?[0-9\\.]+)\\n/){ \"%%%%HiResBoundingBox: #{$1.to_f-%f} #{$2.to_f-%f} #{$3.to_f+%f} #{$4.to_f+%f}\\n\"};File.open('%@', 'wb') {|f| f.write s}",
+                          epsPath,
+                          leftMargin, bottomMargin, rightMargin, topMargin,
+                          (CGFloat)leftMargin, (CGFloat)bottomMargin, (CGFloat)rightMargin, (CGFloat)topMargin,
+                          epsPath
+                          ];
+    NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-enlargeBB"];
+
+    FILE *fp = fopen(scriptPath.UTF8String, "w");
+    fputs(script.UTF8String, fp);
+    fclose(fp);
+    
+    system([NSString stringWithFormat:@"/usr/bin/ruby %@; rm %@", scriptPath, scriptPath].UTF8String);
+    
+    /*
 	regex_t regexBB, regexHiResBB;
 	size_t nmatch = 5;
 	regmatch_t pmatch[nmatch];
@@ -433,28 +455,30 @@
 	NSString* epsFilePath = [tempdir stringByAppendingPathComponent:epsName];
 
 	fp = fopen(epsFilePath.UTF8String, "r");
-	while ((fgets(str, MAX_LEN - 1, fp)) != NULL) {
-		NSString* line = @(str);
-		if (regexec(&regexBB, str, nmatch, pmatch, 0) == 0) {
-			leftbottom_x  = [[line substringWithRange:NSMakeRange(pmatch[1].rm_so, pmatch[1].rm_eo - pmatch[1].rm_so)] intValue] - leftMargin;
-			leftbottom_y  = [[line substringWithRange:NSMakeRange(pmatch[2].rm_so, pmatch[2].rm_eo - pmatch[2].rm_so)] intValue] - bottomMargin;
-			righttop_x    = [[line substringWithRange:NSMakeRange(pmatch[3].rm_so, pmatch[3].rm_eo - pmatch[3].rm_so)] intValue]  + rightMargin;
-			righttop_y    = [[line substringWithRange:NSMakeRange(pmatch[4].rm_so, pmatch[4].rm_eo - pmatch[4].rm_so)] intValue] + topMargin;
-			[lines addObject:[NSString stringWithFormat:@"%%%%BoundingBox: %ld %ld %ld %ld\n", (NSInteger)leftbottom_x, (NSInteger)leftbottom_y, (NSInteger)righttop_x, (NSInteger)righttop_y]];
-			continue;
-		}
-		
-		if (regexec(&regexHiResBB, str, nmatch, pmatch, 0) == 0) {
-            leftbottom_x  = [[line substringWithRange:NSMakeRange(pmatch[1].rm_so, pmatch[1].rm_eo - pmatch[1].rm_so)] floatValue] - leftMargin;
-            leftbottom_y  = [[line substringWithRange:NSMakeRange(pmatch[2].rm_so, pmatch[2].rm_eo - pmatch[2].rm_so)] floatValue] - bottomMargin;
-            righttop_x    = [[line substringWithRange:NSMakeRange(pmatch[3].rm_so, pmatch[3].rm_eo - pmatch[3].rm_so)] floatValue]  + rightMargin;
-            righttop_y    = [[line substringWithRange:NSMakeRange(pmatch[4].rm_so, pmatch[4].rm_eo - pmatch[4].rm_so)] floatValue] + topMargin;
-            [lines addObject:[NSString stringWithFormat:@"%%%%HiResBoundingBox: %f %f %f %f\n", leftbottom_x, leftbottom_y, righttop_x, righttop_y]];
-			continue;
-		}
-		
-		[lines addObject:line];
-	}
+    while ((fgets(str, MAX_LEN - 1, fp)) != NULL) {
+        NSString* line = @(str);
+        if (line) {
+            if (regexec(&regexBB, str, nmatch, pmatch, 0) == 0) {
+                leftbottom_x  = [[line substringWithRange:NSMakeRange(pmatch[1].rm_so, pmatch[1].rm_eo - pmatch[1].rm_so)] intValue] - leftMargin;
+                leftbottom_y  = [[line substringWithRange:NSMakeRange(pmatch[2].rm_so, pmatch[2].rm_eo - pmatch[2].rm_so)] intValue] - bottomMargin;
+                righttop_x    = [[line substringWithRange:NSMakeRange(pmatch[3].rm_so, pmatch[3].rm_eo - pmatch[3].rm_so)] intValue]  + rightMargin;
+                righttop_y    = [[line substringWithRange:NSMakeRange(pmatch[4].rm_so, pmatch[4].rm_eo - pmatch[4].rm_so)] intValue] + topMargin;
+                [lines addObject:[NSString stringWithFormat:@"%%%%BoundingBox: %ld %ld %ld %ld\n", (NSInteger)leftbottom_x, (NSInteger)leftbottom_y, (NSInteger)righttop_x, (NSInteger)righttop_y]];
+                continue;
+            }
+            
+            if (regexec(&regexHiResBB, str, nmatch, pmatch, 0) == 0) {
+                leftbottom_x  = [[line substringWithRange:NSMakeRange(pmatch[1].rm_so, pmatch[1].rm_eo - pmatch[1].rm_so)] floatValue] - leftMargin;
+                leftbottom_y  = [[line substringWithRange:NSMakeRange(pmatch[2].rm_so, pmatch[2].rm_eo - pmatch[2].rm_so)] floatValue] - bottomMargin;
+                righttop_x    = [[line substringWithRange:NSMakeRange(pmatch[3].rm_so, pmatch[3].rm_eo - pmatch[3].rm_so)] floatValue]  + rightMargin;
+                righttop_y    = [[line substringWithRange:NSMakeRange(pmatch[4].rm_so, pmatch[4].rm_eo - pmatch[4].rm_so)] floatValue] + topMargin;
+                [lines addObject:[NSString stringWithFormat:@"%%%%HiResBoundingBox: %f %f %f %f\n", leftbottom_x, leftbottom_y, righttop_x, righttop_y]];
+                continue;
+            }
+            
+            [lines addObject:line];
+        }
+    }
 	fclose(fp);
 	
 	fp = fopen(epsFilePath.UTF8String, "w");
@@ -466,6 +490,7 @@
 	
 	regfree(&regexBB);
 	regfree(&regexHiResBB);	
+    */
 }
 
 /*
@@ -545,7 +570,7 @@
 {
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
 
-    NSInteger resolution = speedPriorityMode ?  720 : 20016;
+    NSInteger resolution = speedPriorityMode ? resolutionLevel*5*2*72 : 20016;
 
     // PDF→EPS の変換の実行
     if (![self pdf2eps:pdfFileName outputEpsFileName:outputEpsFileName resolution:resolution page:page]
