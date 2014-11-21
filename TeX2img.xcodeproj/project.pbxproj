@@ -15,6 +15,11 @@
 		3445B30C0EDC1761008A7AA5 /* pdfcrop in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3445B2EC0EDC173E008A7AA5 /* pdfcrop */; };
 		348BB5190F08C3850063003D /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
 		7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */; };
+		705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC3550F10E4670052AFA5 /* ControllerC.m */; };
+		705DC7A60F1197E90052AFA5 /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
+		705DC7A70F1197E90052AFA5 /* mainc.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC2BB0F10E0B00052AFA5 /* mainc.m */; };
+		705DC7A80F1197EE0052AFA5 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		705DC7A90F1197EE0052AFA5 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7087BD5D0F0E3CD600A06CF5 /* Quartz.framework */; };
 		7087BD5E0F0E3CD600A06CF5 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7087BD5D0F0E3CD600A06CF5 /* Quartz.framework */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -53,6 +58,10 @@
 		348BB5170F08C3850063003D /* Converter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Converter.h; sourceTree = "<group>"; };
 		348BB5180F08C3850063003D /* Converter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Converter.m; sourceTree = "<group>"; };
 		7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = TeX2imgIcon.icns; sourceTree = "<group>"; };
+		705DC2BB0F10E0B00052AFA5 /* mainc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mainc.m; sourceTree = "<group>"; };
+		705DC3540F10E4670052AFA5 /* ControllerC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerC.h; sourceTree = "<group>"; };
+		705DC3550F10E4670052AFA5 /* ControllerC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerC.m; sourceTree = "<group>"; };
+		705DC7A10F1197DC0052AFA5 /* tex2img */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tex2img; sourceTree = BUILT_PRODUCTS_DIR; };
 		7087BD5D0F0E3CD600A06CF5 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* TeX2img.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeX2img.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -62,6 +71,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		705DC79F0F1197DC0052AFA5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				705DC7A80F1197EE0052AFA5 /* Cocoa.framework in Frameworks */,
+				705DC7A90F1197EE0052AFA5 /* Quartz.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072E0486CEB800E47090 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -81,6 +99,8 @@
 				3424A8E20E4F2DC1003C9F96 /* Controller.m */,
 				348BB5170F08C3850063003D /* Converter.h */,
 				348BB5180F08C3850063003D /* Converter.m */,
+				705DC3540F10E4670052AFA5 /* ControllerC.h */,
+				705DC3550F10E4670052AFA5 /* ControllerC.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -108,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* TeX2img.app */,
+				705DC7A10F1197DC0052AFA5 /* tex2img */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -129,6 +150,7 @@
 			children = (
 				32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				705DC2BB0F10E0B00052AFA5 /* mainc.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -159,6 +181,22 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		705DC7A00F1197DC0052AFA5 /* tex2img */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 705DC7B40F1197F80052AFA5 /* Build configuration list for PBXNativeTarget "tex2img" */;
+			buildPhases = (
+				705DC79E0F1197DC0052AFA5 /* Sources */,
+				705DC79F0F1197DC0052AFA5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tex2img;
+			productName = tex2img;
+			productReference = 705DC7A10F1197DC0052AFA5 /* tex2img */;
+			productType = "com.apple.product-type.tool";
+		};
 		8D1107260486CEB800E47090 /* TeX2img */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "TeX2img" */;
@@ -191,6 +229,7 @@
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* TeX2img */,
+				705DC7A00F1197DC0052AFA5 /* tex2img */,
 			);
 		};
 /* End PBXProject section */
@@ -212,6 +251,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		705DC79E0F1197DC0052AFA5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
+				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,
+				705DC7A70F1197E90052AFA5 /* mainc.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -255,6 +304,52 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		705DC7A30F1197DD0052AFA5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = tex2img;
+			};
+			name = Debug;
+		};
+		705DC7A40F1197DD0052AFA5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = tex2img;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -325,6 +420,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		705DC7B40F1197F80052AFA5 /* Build configuration list for PBXNativeTarget "tex2img" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				705DC7A30F1197DD0052AFA5 /* Debug */,
+				705DC7A40F1197DD0052AFA5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "TeX2img" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

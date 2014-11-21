@@ -1,16 +1,11 @@
-//
-//  Converter.h
-//  TeX2img
-//
-//  Created by Taylor on 08/12/29.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
-//
-
 #import <Cocoa/Cocoa.h>
 
 @protocol OutputController
 - (void)showExtensionError;
 - (void)showNotFoundError:(NSString*)aPath;
+- (bool)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath;
+- (bool)checkPdfcropExistence;
+- (bool)checkEpstopdfExistence;
 - (void)showFileGenerateError:(NSString*)aPath;
 - (void)showExecError:(NSString*)command;
 - (void)showCannotOverrideError:(NSString*)path;
@@ -25,8 +20,9 @@
 	NSString* platexPath;
 	NSString* dvipdfmxPath;
 	NSString* gsPath;
+	NSString* encoding;
 	int resolutionLevel, leftMargin, rightMargin, topMargin, bottomMargin;
-	bool leaveTextFlag, transparentPngFlag, showOutputWindowFlag, previewFlag, deleteTmpFileFlag;
+	bool leaveTextFlag, transparentPngFlag, showOutputWindowFlag, previewFlag, deleteTmpFileFlag, ignoreErrorsFlag;
 	id<OutputController> controller;
 
 	NSFileManager* fileManager;
@@ -37,9 +33,14 @@
 	NSString* epstopdfPath;
 }
 + (Converter*)converterWithPlatex:(NSString*) _platexPath dvipdfmx:(NSString*)_dvipdfmxPath gs:(NSString*)_gsPath
+				  withPdfcropPath:(NSString*)_pdfcropPath withEpstopdfPath:(NSString*)_epstopdfPath
+						 encoding:(NSString*)_encoding
 				  resolutionLevel:(int)_resolutionLevel leftMargin:(int)_leftMargin rightMargin:(int)_rightMargin topMargin:(int)_topMargin bottomMargin:(int)_bottomMargin 
 						leaveText:(bool)_leaveTextFlag transparentPng:(bool)_transparentPngFlag 
 				 showOutputWindow:(bool)_showOutputWindowFlag preview:(bool)_previewFlag deleteTmpFile:(bool)_deleteTmpFileFlag
+					 ignoreErrors:(bool)_ignoreErrors
 					   controller:(id<OutputController>)_controller;
-- (void)compileAndConvertWithPreamble:(NSString*)preambleStr withBody:(NSString*)texBodyStr outputFilePath:(NSString*)outputFilePath;
+- (bool)compileAndConvertWithInputPath:(NSString*)texSourcePath outputFilePath:(NSString*)outputFilePath;
+- (bool)compileAndConvertWithSource:(NSString*)texSourceStr outputFilePath:(NSString*)outputFilePath;
+- (bool)compileAndConvertWithPreamble:(NSString*)preambleStr withBody:(NSString*)texBodyStr outputFilePath:(NSString*)outputFilePath;
 @end

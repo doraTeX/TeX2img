@@ -29,7 +29,8 @@
 	IBOutlet NSTextField *platexPathTextField;
 	IBOutlet NSTextField *dvipdfmxPathTextField;
 	IBOutlet NSTextField *gsPathTextField;
-	IBOutlet NSButton *leaveTextCheckBox;
+	IBOutlet NSButton *getOutlineCheckBox;
+	IBOutlet NSButton *ignoreErrorCheckBox;
 	
 }
 - (IBAction)generate:(id)sender;

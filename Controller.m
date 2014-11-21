@@ -11,6 +11,7 @@
 {
 	[[[outputTextView textStorage] mutableString] appendString:mStr];
 	[outputTextView scrollRangeToVisible: NSMakeRange([[outputTextView string] length], 0)]; // 最下部までスクロール
+	[outputTextView display]; // 再描画
 }
 
 - (void)clearOutputTextView
@@ -42,6 +43,39 @@
 - (void)showNotFoundError:(NSString*)aPath
 {
 	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", aPath, NSLocalizedString(@"programNotFoundErrorMsg", nil)], @"OK", nil, nil);
+}
+
+- (bool)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
+{
+	NSFileManager* fileManager = [NSFileManager defaultManager];
+	
+	if(![fileManager fileExistsAtPath:[[platexPath componentsSeparatedByString:@" "] objectAtIndex:0]])
+	{
+		[self showNotFoundError:platexPath];
+		return NO;
+	}
+	if(![fileManager fileExistsAtPath:[[dvipdfmxPath componentsSeparatedByString:@" "] objectAtIndex:0]])
+	{
+		[self showNotFoundError:dvipdfmxPath];
+		return NO;
+	}
+	if(![fileManager fileExistsAtPath:[[gsPath componentsSeparatedByString:@" "] objectAtIndex:0]])
+	{
+		[self showNotFoundError:gsPath];
+		return NO;
+	}
+	
+	return YES;
+}
+
+- (bool)checkPdfcropExistence;
+{
+	return YES;
+}
+
+- (bool)checkEpstopdfExistence;
+{
+	return YES;
 }
 
 - (void)showFileGenerateError:(NSString*)aPath
@@ -202,7 +236,10 @@
 		[deleteTmpFileCheckBox setState:[userDefaults integerForKey:@"deleteTmpFile"]];
 		
 		[transparentCheckBox setState:[userDefaults boolForKey:@"transparent"]];
-		
+		[getOutlineCheckBox setState:[userDefaults boolForKey:@"getOutline"]];
+
+		[ignoreErrorCheckBox setState:[userDefaults boolForKey:@"ignoreError"]];
+
 		[self loadSettingForTextField:platexPathTextField fromKey:@"platexPath"];
 		[self loadSettingForTextField:dvipdfmxPathTextField fromKey:@"dvipdfmxPath"];
 		[self loadSettingForTextField:gsPathTextField fromKey:@"gsPath"];
@@ -270,6 +307,9 @@
 	[userDefaults setInteger:[deleteTmpFileCheckBox state] forKey:@"deleteTmpFile"];
 
 	[userDefaults setBool:[transparentCheckBox state] forKey:@"transparent"];
+	[userDefaults setBool:[getOutlineCheckBox state] forKey:@"getOutline"];
+	[userDefaults setBool:[ignoreErrorCheckBox state] forKey:@"ignoreError"];
+
 	[userDefaults setObject:[platexPathTextField stringValue] forKey:@"platexPath"];
 	[userDefaults setObject:[dvipdfmxPathTextField stringValue] forKey:@"dvipdfmxPath"];
 	[userDefaults setObject:[gsPathTextField stringValue] forKey:@"gsPath"];
@@ -378,22 +418,28 @@
 	int rightMargin = [rightMarginSlider intValue];
 	int topMargin = [topMarginSlider intValue];
 	int bottomMargin = [bottomMarginSlider intValue];
-	bool leaveTextFlag = [leaveTextCheckBox state];
+	bool leaveTextFlag = ![getOutlineCheckBox state];
 	bool transparentPngFlag = [transparentCheckBox state];
 	
 	bool showOutputWindowFlag = [showOutputWindowCheckBox state];
 	bool previewFlag = [previewCheckBox state];
 	bool deleteTmpFileFlag = [deleteTmpFileCheckBox state];
 	
+	bool ignoreErrorFlag = [ignoreErrorCheckBox state];
+	
 	NSString *outputFilePath = [outputFileTextField stringValue];
 	
 	NSString* preambleStr = [[preambleTextView textStorage] string];
 	NSString* texBodyStr = [[sourceTextView textStorage] string];
 
-	Converter* converter = [Converter converterWithPlatex:platexPath dvipdfmx:dvipdfmxPath gs:gsPath 
-			resolutionLevel:resolutionLevel leftMargin:leftMargin rightMargin:rightMargin topMargin:topMargin bottomMargin:bottomMargin
-					  leaveText:leaveTextFlag transparentPng:transparentPngFlag showOutputWindow:showOutputWindowFlag preview:previewFlag deleteTmpFile:deleteTmpFileFlag
-				   controller:self];
+	Converter* converter = [Converter converterWithPlatex:platexPath dvipdfmx:dvipdfmxPath gs:gsPath
+										  withPdfcropPath:[NSString stringWithFormat:@"%@/Contents/Resources/pdfcrop", [[NSBundle mainBundle] bundlePath]]
+										 withEpstopdfPath:[NSString stringWithFormat:@"%@/Contents/Resources/epstopdf", [[NSBundle mainBundle] bundlePath]]
+												 encoding:@"sjis"
+										  resolutionLevel:resolutionLevel leftMargin:leftMargin rightMargin:rightMargin topMargin:topMargin bottomMargin:bottomMargin
+												leaveText:leaveTextFlag transparentPng:transparentPngFlag showOutputWindow:showOutputWindowFlag preview:previewFlag deleteTmpFile:deleteTmpFileFlag
+											 ignoreErrors:ignoreErrorFlag
+											   controller:self];
 	[converter compileAndConvertWithPreamble:preambleStr withBody:texBodyStr outputFilePath:outputFilePath];
 }
 
