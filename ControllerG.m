@@ -2,6 +2,8 @@
 #import "NSDictionary-Extension.h"
 #import "NSMutableDictionary-Extension.h"
 #define AutoSavedProfileName @"*AutoSavedProfile*"
+#define LEOPARD 568
+#define SNOWLEOPARD 678
 
 @implementation ControllerG
 ////// ここから OutputController プロトコルの実装 //////
@@ -427,6 +429,13 @@
 			[preambleTextView setFont:defaultFont];
 		}
 	}
+	
+	// Leopard 以外では文字化け対策チェックボックスを無効化
+//	if(!((NSFoundationVersionNumber > LEOPARD) && (NSFoundationVersionNumber < SNOWLEOPARD)))
+//	{
+//		[getOutlineCheckBox setState:NO];
+//		[getOutlineCheckBox setEnabled:NO];
+//	}
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification

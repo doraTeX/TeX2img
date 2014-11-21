@@ -333,12 +333,12 @@
 
 	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
 	NSSize size;
-	size.width  = [pdfImageRep pixelsWide] * resolutionLevel + leftMargin + rightMargin;
-	size.height = [pdfImageRep pixelsHigh] * resolutionLevel + topMargin + bottomMargin;
+	size.width  = (int)([pdfImageRep pixelsWide] * resolutionLevel) + leftMargin + rightMargin;
+	size.height = (int)([pdfImageRep pixelsHigh] * resolutionLevel) + topMargin + bottomMargin;
 	
 	NSImage* image = [[[NSImage alloc] initWithSize:size] autorelease];
 	[image lockFocus];
-	[pdfImageRep drawInRect:NSMakeRect(leftMargin, bottomMargin, [pdfImageRep pixelsWide] * resolutionLevel, [pdfImageRep pixelsHigh] * resolutionLevel)];
+	[pdfImageRep drawInRect:NSMakeRect(leftMargin, bottomMargin, (int)([pdfImageRep pixelsWide] * resolutionLevel), (int)([pdfImageRep pixelsHigh] * resolutionLevel))];
 	[image unlockFocus];
 	
 	// NSImage を TIFF 形式の NSBitmapImageRep に変換する
@@ -348,9 +348,10 @@
 	if([@"jpg" isEqualToString:extension])
 	{
 		NSDictionary *propJpeg = [NSDictionary dictionaryWithObjectsAndKeys:
-								  [NSNumber numberWithFloat: 0.9],
+								  [NSNumber numberWithFloat: 1.0],
 								  NSImageCompressionFactor,
 								  nil];
+		imageRep = [self fillBackground:imageRep];
 		outputData = [imageRep representationUsingType:NSJPEGFileType properties:propJpeg];
 	}
 	else // png出力の場合
@@ -359,9 +360,7 @@
 		{
 			imageRep = [self fillBackground:imageRep];
 		}
-		NSDictionary *propPng = [NSDictionary dictionaryWithObjectsAndKeys:
-								 [NSNumber numberWithFloat: 2.0],
-								 NSImageCompressionFactor, nil];
+		NSDictionary *propPng = [NSDictionary dictionaryWithObjectsAndKeys:nil];
 		outputData = [imageRep representationUsingType:NSPNGFileType properties:propPng];
 	}
 	[outputData writeToFile:[tempdir stringByAppendingPathComponent:outputFileName] atomically: YES];
