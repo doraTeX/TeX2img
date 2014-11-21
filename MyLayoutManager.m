@@ -35,8 +35,8 @@
 - (void)drawGlyphsForGlyphRange:(NSRange)inGlyphRange atPoint:(NSPoint)inContainerOrigin
 {
     NSString *theCompleteStr = [[self textStorage] string];
-    unsigned int theLengthToRedraw = NSMaxRange(inGlyphRange);
-    unsigned int theGlyphIndex, theCharIndex = 0;
+    NSUInteger theLengthToRedraw = NSMaxRange(inGlyphRange);
+    NSUInteger theGlyphIndex, theCharIndex = 0;
     unichar theCharacter;
     NSPoint thePointToDraw;
 	

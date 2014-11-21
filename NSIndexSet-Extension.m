@@ -1,7 +1,7 @@
 #import "NSIndexSet-Extension.h"
 
 @implementation NSIndexSet (Extension)
--(unsigned int)countOfIndexesInRange:(NSRange)range
+-(NSUInteger)countOfIndexesInRange:(NSRange)range
 {
 	unsigned int start, end, count;
 	
@@ -14,7 +14,7 @@
 	end		= start + range.length;
 	count	= 0;
 	
-	unsigned int currentIndex = [self indexGreaterThanOrEqualToIndex:start];
+	NSUInteger currentIndex = [self indexGreaterThanOrEqualToIndex:start];
 	
 	while ((currentIndex != NSNotFound) && (currentIndex < end))
 	{

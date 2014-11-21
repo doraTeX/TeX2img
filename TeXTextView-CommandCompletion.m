@@ -133,9 +133,9 @@ static NSString* endcommentString = @"›";
 	static BOOL latexSpecial = NO; // was last time LaTeX Special?  \begin{...}
 	static NSString *originalString = nil; // string before completion, starts at replaceLocation
 	static NSString *currentString = nil; // completed string
-	static unsigned replaceLocation = NSNotFound; // completion started here
-	static unsigned int completionListLocation = 0; // location to start search in the list
-	static unsigned textLocation = NSNotFound; // location of insertion point
+	static NSUInteger replaceLocation = NSNotFound; // completion started here
+	static NSUInteger completionListLocation = 0; // location to start search in the list
+	static NSUInteger textLocation = NSNotFound; // location of insertion point
 	BOOL foundCandidate;
 	NSString *textString, *foundString, *latexString = 0;
 	NSMutableString *newString;

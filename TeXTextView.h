@@ -5,8 +5,8 @@
 @interface TeXTextView : NSTextView {
 	IBOutlet ControllerG *controller;
 	NSDictionary* highlightBracesColorDict;
-	int lastCursorLocation;
-	int lastStringLength;
+	NSUInteger lastCursorLocation;
+	NSUInteger lastStringLength;
 	NSDictionary* autocompletionDictionary;
 	BOOL autoCompleting;
 	BOOL contentHighlighting;

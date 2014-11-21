@@ -481,6 +481,9 @@
 			[sourceTextView setFont:defaultFont];
 			[preambleTextView setFont:defaultFont];
 		}
+		
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"SUEnableAutomaticChecks"];
+		
 	}
 	
 	// Leopard 以外では文字化け対策チェックボックスを無効化

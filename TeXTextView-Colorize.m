@@ -18,13 +18,13 @@ static BOOL isValidTeXCommandChar(int c)
 {
 	NSLayoutManager *layoutManager;
 	NSString		*textString;
-	unsigned		length;
+	NSUInteger		length;
 	NSRange			colorRange;
-	unsigned		location;
+	NSUInteger		location;
 	int				theChar;
-	unsigned		aLineStart;
-	unsigned		aLineEnd;
-	unsigned		end;
+	NSUInteger		aLineStart;
+	NSUInteger		aLineEnd;
+	NSUInteger		end;
 	
 	float r,g,b;
 	NSColor* color;
@@ -171,11 +171,11 @@ static BOOL isValidTeXCommandChar(int c)
 	unichar k_braceCharList[] = {0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E}; // == ()[]{}<>
     
 	NSString *theString = [[self textStorage] string];
-    int theStringLength = [theString length];
+    NSUInteger theStringLength = [theString length];
     if (theStringLength == 0) { return; }
     NSRange theSelectedRange = [self selectedRange];
-    int theLocation = theSelectedRange.location;
-    int theDifference = theLocation - lastCursorLocation;
+    NSUInteger theLocation = theSelectedRange.location;
+    NSInteger theDifference = theLocation - lastCursorLocation;
     lastCursorLocation = theLocation;
 
 	if (theStringLength - lastStringLength == -1) {
@@ -195,7 +195,7 @@ static BOOL isValidTeXCommandChar(int c)
     if (theLocation == theStringLength) {
         return;
     }
-	int originalLocation = theLocation;
+	NSUInteger originalLocation = theLocation;
 	
 	BOOL checkBrace = [profile boolForKey:@"checkBrace"];
 	BOOL checkBracket = [profile boolForKey:@"checkBracket"];
@@ -203,7 +203,7 @@ static BOOL isValidTeXCommandChar(int c)
 	BOOL checkParen = [profile boolForKey:@"checkParen"];
 	
     unichar theUnichar = [theString characterAtIndex:theLocation];
-	unichar previousChar = (theLocation > 0) ? [theString characterAtIndex:theLocation-1] : nil;
+	unichar previousChar = (theLocation > 0) ? [theString characterAtIndex:theLocation-1] : 0;
 	BOOL notCS = ((previousChar != '\\') && (previousChar != 0x00a5));
     unichar theCurChar, theBraceChar;
 	int inc;
@@ -234,12 +234,12 @@ static BOOL isValidTeXCommandChar(int c)
     } else {
         return;
     }
-    unsigned int theSkipMatchingBrace = 0;
+    NSUInteger theSkipMatchingBrace = 0;
     theCurChar = theUnichar;
 	
     while ((theLocation += inc) >= 0 && (theLocation < theStringLength)) {
         theUnichar = [theString characterAtIndex:theLocation];
-		previousChar = (theLocation > 0) ? [theString characterAtIndex:theLocation-1] : nil;
+		previousChar = (theLocation > 0) ? [theString characterAtIndex:theLocation-1] : 0;
 		notCS = ((previousChar != '\\') && (previousChar != 0x00a5));
         if (theUnichar == theBraceChar && notCS) {
             if (!theSkipMatchingBrace) {
@@ -339,7 +339,7 @@ static BOOL isValidTeXCommandChar(int c)
 		j = 1;
 		count = 1;
 		
-		int previousChar = (i > 0) ? [textString characterAtIndex:i-1] : nil;
+		unichar previousChar = (i > 0) ? [textString characterAtIndex:i-1] : 0;
 		BOOL notCS = ((previousChar != '\\') && (previousChar != 0x00a5));
 		if (!notCS) {
 			return YES;
@@ -348,7 +348,7 @@ static BOOL isValidTeXCommandChar(int c)
 		while ((i > 0) && (j < 5000)) {
 			i--; j++;
 			uchar = [textString characterAtIndex:i];
-			previousChar = (i > 0) ? [textString characterAtIndex:i-1] : nil;
+			previousChar = (i > 0) ? [textString characterAtIndex:i-1] : 0;
 			notCS = ((previousChar != '\\') && (previousChar != 0x00a5));
 			if (uchar == rightpar && notCS)
 				count++;

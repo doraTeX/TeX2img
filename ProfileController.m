@@ -8,7 +8,9 @@
 @implementation ProfileController
  - (NSMutableDictionary*)profileForName:(NSString*)profileName
 {
-	int targetIndex = [profileNames indexOfObject:profileName];
+	if (!profileNames) return nil;
+	
+	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
 	return (targetIndex==NSNotFound) ? nil : [NSMutableDictionary dictionaryWithDictionary:[profiles objectAtIndex:targetIndex]];
 }
 
@@ -32,7 +34,7 @@
 
 - (void)removeProfileForName:(NSString*)profileName
 {
-	int targetIndex = [profileNames indexOfObject:profileName];
+	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
 	if(targetIndex == NSNotFound) return;
 	[profileNames removeObjectAtIndex:targetIndex];
 	[profiles removeObjectAtIndex:targetIndex];
@@ -40,7 +42,7 @@
 
 - (void)updateProfile:(NSDictionary*)aProfile forName:(NSString*)profileName
 {
-	int targetIndex = [profileNames indexOfObject:profileName];
+	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
 	if(targetIndex == NSNotFound)
 	{
 		[profileNames addObject:profileName];
@@ -62,12 +64,12 @@
 }
 
 
-- (int)numberOfRowsInTableView:(NSTableView*)aTableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView*)aTableView
 {
 	return [profileNames count];
 }
 
-- (id)tableView:(NSTableView*)aTableView objectValueForTableColumn:(NSTableColumn*)aTableColumn row:(int)rowIndex
+- (id)tableView:(NSTableView*)aTableView objectValueForTableColumn:(NSTableColumn*)aTableColumn row:(NSInteger)rowIndex
 {
 	return [profileNames objectAtIndex:rowIndex];
 }
@@ -84,7 +86,7 @@
 	}
 	else
 	{
-		int aIndex = [profileNames indexOfObject:newProfileName];
+		NSUInteger aIndex = [profileNames indexOfObject:newProfileName];
 		if(aIndex == NSNotFound)
 		{
 			[self updateProfile:[controllerG currentProfile] forName:newProfileName];
@@ -110,7 +112,7 @@
 
 - (IBAction)loadProfile:(id)sender
 {
-    int selectedIndex = [profilesTableView selectedRow];
+    NSInteger selectedIndex = [profilesTableView selectedRow];
 	if(selectedIndex == -1) return;
 	
 	[controllerG adoptProfile:[profiles objectAtIndex:selectedIndex]];
@@ -119,7 +121,7 @@
 
 - (IBAction)removeProfile:(id)sender
 {
-    int selectedIndex = [profilesTableView selectedRow];
+    NSInteger selectedIndex = [profilesTableView selectedRow];
 	if(selectedIndex == -1) return;
 	
 	[profileNames removeObjectAtIndex:selectedIndex];
@@ -147,7 +149,7 @@
 
 - (IBAction)setSelectedProfileName:(id)sender
 {
-	int selectedIndex = [profilesTableView selectedRow];
+	NSInteger selectedIndex = [profilesTableView selectedRow];
 	if(selectedIndex == -1) return;
 
 	[saveAsTextField setStringValue:[profileNames objectAtIndex:selectedIndex]];
@@ -178,7 +180,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 
 - (NSDragOperation)tableView:(NSTableView*)aTableView 
 				validateDrop:(id <NSDraggingInfo>)info 
-				 proposedRow:(int)row 
+				 proposedRow:(NSInteger)row 
 	   proposedDropOperation:(NSTableViewDropOperation)op
 {
 	// 行間へのドロップは許すが，行自体へのドロップ(NSTableViewDropOn)は許さない
@@ -188,7 +190,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	{
 		return NSDragOperationMove;
     }
-	return nil;
+	return NSDragOperationNone;
 }
 
 - (NSIndexSet*)moveObjectsOf:(NSMutableArray*)anArray
@@ -197,7 +199,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 {	
 	// If any of the removed objects come before the insertion index,
 	// we need to decrement the index appropriately
-	unsigned int adjustedInsertIndex = insertIndex - [fromIndexSet countOfIndexesInRange:(NSRange){0, insertIndex}];
+	NSUInteger adjustedInsertIndex = insertIndex - [fromIndexSet countOfIndexesInRange:(NSRange){0, insertIndex}];
 	NSRange destinationRange = NSMakeRange(adjustedInsertIndex, [fromIndexSet count]);
 	NSIndexSet *destinationIndexes = [NSIndexSet indexSetWithIndexesInRange:destinationRange];
 	
@@ -211,7 +213,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 
 - (BOOL)tableView:(NSTableView*)aTableView
 	   acceptDrop:(id <NSDraggingInfo>)info
-			  row:(int)insertionRow
+			  row:(NSInteger)insertionRow
 	dropOperation:(NSTableViewDropOperation)op
 {
     if (insertionRow < 0)
@@ -223,7 +225,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	{
 		
 		NSEvent *currentEvent = [NSApp currentEvent];
-		int optionKeyPressed = [currentEvent modifierFlags] & NSAlternateKeyMask;
+		NSUInteger optionKeyPressed = [currentEvent modifierFlags] & NSAlternateKeyMask;
 		
 		if (optionKeyPressed == 0)
 		{
