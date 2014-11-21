@@ -452,7 +452,7 @@
 				GCC_PREFIX_HEADER = TeX2img_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = TeX2img;
 			};
 			name = Debug;
@@ -475,7 +475,7 @@
 				GCC_PREFIX_HEADER = TeX2img_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = TeX2img;
 			};
 			name = Release;

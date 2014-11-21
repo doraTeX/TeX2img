@@ -5,9 +5,9 @@
 #import "ControllerC.h"
 #import "global.h"
 
-#define OPTION_NUM 17
+#define OPTION_NUM 18
 #define MAX_LEN 1024
-#define VERSION "1.8.0"
+#define VERSION "1.8.1"
 
 static void version()
 {
@@ -31,6 +31,7 @@ static void usage()
     printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF)\n");
     printf("  --create-outline        : outline text in PDF\n");
     printf("  --transparent           : generate transparent PNG file\n");
+    printf("  --quick                 : convert in a speed priority mode\n");
     printf("  --kanji ENCODING        : set Japanese encoding  (sjis|jis|euc|utf8|uptex) (default: utf8)\n");
     printf("  --ignore-errors         : force converting by ignoring nonfatal errors\n");
     printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS X 0208 characters\n");
@@ -114,6 +115,7 @@ int main (int argc, char *argv[]) {
         BOOL ignoreErrorFlag = NO;
         BOOL utfExportFlag = NO;
         BOOL quietFlag = NO;
+        BOOL quickFlag = NO;
         NSString* encoding = @"utf8";
         NSString* compiler = @"platex";
         NSNumber* unitTag = @(PXUNITTAG);
@@ -194,7 +196,12 @@ int main (int argc, char *argv[]) {
         options[13].has_arg = required_argument;
         options[13].flag = NULL;
         options[13].val = 14;
-        
+
+        options[14].name = "quick";
+        options[14].has_arg = no_argument;
+        options[14].flag = NULL;
+        options[14].val = 15;
+
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
         options[OPTION_NUM - 3].flag = NULL;
@@ -304,6 +311,9 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
+                case 15: // --quick
+                    quickFlag = YES;
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -365,6 +375,7 @@ int main (int argc, char *argv[]) {
         aProfile[@"quiet"] = @(quietFlag);
         aProfile[@"controller"] = controller;
         aProfile[@"unit"] = unitTag;
+        aProfile[@"priority"] = quickFlag ? @(SPEED_PRIORITY_TAG) : @(QUALITY_PRIORITY_TAG);
         
         Converter *converter = [Converter converterWithProfile:aProfile];
         BOOL success = [converter compileAndConvertWithInputPath:inputFilePath];

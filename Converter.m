@@ -31,6 +31,7 @@
 @property NSString* epstopdfPath;
 @property NSUInteger pageCount;
 @property BOOL useBP;
+@property BOOL speedPriorityMode;
 @end
 
 @implementation Converter
@@ -52,6 +53,7 @@
 @synthesize epstopdfPath;
 @synthesize pageCount;
 @synthesize useBP;
+@synthesize speedPriorityMode;
 
 
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
@@ -85,6 +87,7 @@
 	quietFlag = [aProfile boolForKey:@"quiet"];
 	controller = aProfile[@"controller"];
     useBP = ([aProfile integerForKey:@"unit"] == BPUNITTAG);
+    speedPriorityMode = ([aProfile integerForKey:@"priority"] == SPEED_PRIORITY_TAG);
 
 	fileManager = NSFileManager.defaultManager;
 	tempdir = NSTemporaryDirectory();
@@ -542,7 +545,7 @@
 {
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
 
-    NSInteger resolution = 20016;
+    NSInteger resolution = speedPriorityMode ?  720 : 20016;
 
     // PDF→EPS の変換の実行
     if (![self pdf2eps:pdfFileName outputEpsFileName:outputEpsFileName resolution:resolution page:page]
@@ -610,14 +613,13 @@
     
     pageCount = [PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfFilePath]].pageCount;
 	
-    // 最終出力が JPEG/PNG の場合も，PDFの段階でアウトラインを取っておいた方が最終出力が綺麗なので，必ずEPSを経由するようにする
-    //if (([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) && leaveTextFlag) { // jpg/png の場合，PDFから直接変換
-	//	[self pdf2image:pdfFilePath outputFileName:outputFileName page:1];
-    //    for (NSUInteger i=2; i<=pageCount; i++) {
-    //        [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i];
-    //    }
-	//} else
-    if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPSを経由しなくてよいので，pdfcrop で直接生成する。
+    // 最終出力が JPEG/PNG で「速度優先」の場合は，PDFからQuartzで直接変換
+    if (([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) && speedPriorityMode) {
+		[self pdf2image:pdfFilePath outputFileName:outputFileName page:1];
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i];
+        }
+	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPSを経由しなくてよいので，pdfcrop で直接生成する。
 		[self pdfcrop:pdfFilePath outputFileName:outputFileName addMargin:YES];
 	} else { // EPS を経由する形式(EPS/outlined-PDF/JPEG/PNG)の場合
 		/*

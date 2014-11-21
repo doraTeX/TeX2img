@@ -583,6 +583,7 @@ DQ
                 <outlet property="preambleWindowMenuItem" destination="486" id="498"/>
                 <outlet property="preferenceWindow" destination="517" id="572"/>
                 <outlet property="previewCheckBox" destination="589" id="593"/>
+                <outlet property="priorityMatrix" destination="UtA-j3-7c0" id="VTH-R4-FjI"/>
                 <outlet property="profileController" destination="671" id="707"/>
                 <outlet property="resolutionLabel" destination="641" id="647"/>
                 <outlet property="resolutionSlider" destination="640" id="646"/>
@@ -677,25 +678,25 @@ DQ
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="517">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="208" y="461" width="433" height="391"/>
+            <rect key="contentRect" x="208" y="461" width="433" height="408"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
-            <value key="minSize" type="size" width="433" height="391"/>
+            <value key="minSize" type="size" width="433" height="408"/>
             <view key="contentView" id="518">
-                <rect key="frame" x="0.0" y="0.0" width="433" height="391"/>
+                <rect key="frame" x="0.0" y="-1" width="433" height="408"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <tabView id="580">
-                        <rect key="frame" x="13" y="10" width="407" height="375"/>
+                        <rect key="frame" x="13" y="5" width="407" height="397"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
                             <tabViewItem label="Output" identifier="2" id="582">
                                 <view key="view" id="583">
-                                    <rect key="frame" x="10" y="33" width="387" height="329"/>
+                                    <rect key="frame" x="10" y="33" width="387" height="351"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <box autoresizesSubviews="NO" title="Margins" borderType="line" id="519">
-                                            <rect key="frame" x="6" y="169" width="370" height="160"/>
+                                            <rect key="frame" x="6" y="191" width="370" height="160"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <view key="contentView">
                                                 <rect key="frame" x="1" y="1" width="368" height="144"/>
@@ -898,10 +899,10 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="PDF Setting (for only PDF)" borderType="line" id="635">
-                                            <rect key="frame" x="6" y="40" width="175" height="59"/>
+                                            <rect key="frame" x="6" y="62" width="169" height="59"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <view key="contentView">
-                                                <rect key="frame" x="1" y="1" width="173" height="43"/>
+                                                <rect key="frame" x="1" y="1" width="167" height="43"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button id="636">
@@ -918,7 +919,7 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="Quality (for JPEG / PNG, from 1 to 100)" borderType="line" id="638">
-                                            <rect key="frame" x="6" y="103" width="370" height="62"/>
+                                            <rect key="frame" x="6" y="125" width="370" height="62"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <view key="contentView">
                                                 <rect key="frame" x="1" y="1" width="368" height="46"/>
@@ -958,10 +959,10 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="PNG setting (for only PNG)" borderType="line" id="520">
-                                            <rect key="frame" x="183" y="40" width="212" height="59"/>
+                                            <rect key="frame" x="177" y="62" width="199" height="59"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES"/>
                                             <view key="contentView">
-                                                <rect key="frame" x="1" y="1" width="210" height="43"/>
+                                                <rect key="frame" x="1" y="1" width="197" height="43"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button id="521">
@@ -977,16 +978,53 @@ DQ
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
+                                        <box autoresizesSubviews="NO" title="Conversion" borderType="line" id="lBe-ki-f48">
+                                            <rect key="frame" x="6" y="4" width="370" height="58"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                            <view key="contentView">
+                                                <rect key="frame" x="1" y="1" width="368" height="42"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="UtA-j3-7c0">
+                                                        <rect key="frame" x="18" y="14" width="332" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="164" height="18"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="zc7-oM-Bmw">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Quality priority" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="W8I-Up-M9K">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </column>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Speed priority" imagePosition="left" alignment="left" tag="2" inset="2" id="7p4-19-gjL">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </column>
+                                                        </cells>
+                                                    </matrix>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
                                     </subviews>
                                 </view>
                             </tabViewItem>
                             <tabViewItem label="Engines" identifier="1" id="581">
                                 <view key="view" id="584">
-                                    <rect key="frame" x="10" y="33" width="387" height="329"/>
+                                    <rect key="frame" x="10" y="33" width="387" height="351"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField verticalHuggingPriority="750" id="595">
-                                            <rect key="frame" x="46" y="296" width="44" height="17"/>
+                                            <rect key="frame" x="46" y="318" width="44" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="platex" id="596">
                                                 <font key="font" metaFont="system"/>
@@ -995,7 +1033,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="597">
-                                            <rect key="frame" x="95" y="294" width="276" height="22"/>
+                                            <rect key="frame" x="95" y="316" width="276" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="598">
                                                 <font key="font" metaFont="system"/>
@@ -1004,7 +1042,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="599">
-                                            <rect key="frame" x="26" y="266" width="64" height="17"/>
+                                            <rect key="frame" x="26" y="288" width="64" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="dvipdfmx" id="602">
                                                 <font key="font" metaFont="system"/>
@@ -1013,7 +1051,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="600">
-                                            <rect key="frame" x="95" y="264" width="276" height="22"/>
+                                            <rect key="frame" x="95" y="286" width="276" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="601">
                                                 <font key="font" metaFont="system"/>
@@ -1022,7 +1060,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="603">
-                                            <rect key="frame" x="14" y="236" width="76" height="17"/>
+                                            <rect key="frame" x="14" y="258" width="76" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="ghostscript" id="606">
                                                 <font key="font" metaFont="system"/>
@@ -1031,7 +1069,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="604">
-                                            <rect key="frame" x="95" y="234" width="276" height="22"/>
+                                            <rect key="frame" x="95" y="256" width="276" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="605">
                                                 <font key="font" metaFont="system"/>
@@ -1040,7 +1078,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button id="653">
-                                            <rect key="frame" x="15" y="177" width="310" height="18"/>
+                                            <rect key="frame" x="15" y="199" width="310" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Force converting by ignoring nonfatal errors  " bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="654">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1048,7 +1086,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="657">
-                                            <rect key="frame" x="15" y="157" width="310" height="18"/>
+                                            <rect key="frame" x="15" y="179" width="310" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Substitute \UTF{xxxx} for non-JIS characters" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="658">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1056,7 +1094,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button verticalHuggingPriority="750" id="718">
-                                            <rect key="frame" x="149" y="198" width="115" height="32"/>
+                                            <rect key="frame" x="149" y="220" width="115" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="Auto Detect" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="719">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1067,7 +1105,7 @@ DQ
                                             </connections>
                                         </button>
                                         <box autoresizesSubviews="NO" title="Encoding" borderType="line" id="710">
-                                            <rect key="frame" x="6" y="5" width="360" height="134"/>
+                                            <rect key="frame" x="6" y="27" width="360" height="134"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView">
                                                 <rect key="frame" x="1" y="1" width="358" height="118"/>
@@ -1114,7 +1152,7 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
                                         <button verticalHuggingPriority="750" id="850">
-                                            <rect key="frame" x="264" y="198" width="111" height="32"/>
+                                            <rect key="frame" x="264" y="220" width="111" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="for MacTeX" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="851">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1129,11 +1167,11 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="Behaviour after Compiling" identifier="Item 2" id="587">
                                 <view key="view" id="588">
-                                    <rect key="frame" x="10" y="33" width="387" height="329"/>
+                                    <rect key="frame" x="10" y="33" width="387" height="351"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button id="589">
-                                            <rect key="frame" x="12" y="270" width="204" height="18"/>
+                                            <rect key="frame" x="12" y="292" width="204" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Preview after compiling" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="590">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1141,7 +1179,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="591">
-                                            <rect key="frame" x="12" y="250" width="377" height="18"/>
+                                            <rect key="frame" x="12" y="272" width="377" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Delete temporary files after compiling (Recommended)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="592">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1149,7 +1187,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button verticalHuggingPriority="750" id="633">
-                                            <rect key="frame" x="0.0" y="211" width="271" height="32"/>
+                                            <rect key="frame" x="0.0" y="233" width="271" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="Reveal Temporary Folder in Finder..." bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="634">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1160,7 +1198,7 @@ DQ
                                             </connections>
                                         </button>
                                         <button id="650">
-                                            <rect key="frame" x="12" y="310" width="351" height="18"/>
+                                            <rect key="frame" x="12" y="332" width="351" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Show output view automatically after compiling" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="651">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1168,7 +1206,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="759">
-                                            <rect key="frame" x="12" y="290" width="346" height="18"/>
+                                            <rect key="frame" x="12" y="312" width="346" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Real-time logging on output view (a little slow)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="760">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1176,7 +1214,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="779">
-                                            <rect key="frame" x="15" y="15" width="229" height="18"/>
+                                            <rect key="frame" x="15" y="37" width="229" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="check" title="Automatically Check for Updates" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="780">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1187,7 +1225,7 @@ DQ
                                             </connections>
                                         </button>
                                         <button id="857">
-                                            <rect key="frame" x="12" y="182" width="371" height="18"/>
+                                            <rect key="frame" x="12" y="204" width="371" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Embed generated files in a Adobe Illustrator document" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="858">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1195,7 +1233,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="859">
-                                            <rect key="frame" x="30" y="162" width="187" height="18"/>
+                                            <rect key="frame" x="30" y="184" width="187" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Ungroup after embedding" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="860">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1209,6 +1247,7 @@ DQ
                     </tabView>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="704.5" y="527"/>
         </window>
         <window title="Save / Load Profiles" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="670" userLabel="Window (ProfileWindow)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>

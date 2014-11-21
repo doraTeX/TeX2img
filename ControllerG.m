@@ -72,6 +72,7 @@
 @property IBOutlet NSButtonCell *utf8RadioButton;
 @property IBOutlet NSButtonCell *upTeXRadioButton;
 @property IBOutlet NSMatrix *unitMatrix;
+@property IBOutlet NSMatrix *priorityMatrix;
 @property HighlightPattern highlightPattern;
 @end
 
@@ -136,6 +137,7 @@
 @synthesize utf8RadioButton;
 @synthesize upTeXRadioButton;
 @synthesize unitMatrix;
+@synthesize priorityMatrix;
 @synthesize highlightPattern;
 
 #pragma mark -
@@ -342,7 +344,10 @@
     
     NSInteger unitTag = [aProfile integerForKey:@"unit"];
     [unitMatrix selectCellWithTag:unitTag];
-	
+
+    NSInteger priorityTag = [aProfile integerForKey:@"priority"];
+    [priorityMatrix selectCellWithTag:priorityTag];
+
 	[self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:@"preamble"];
 	
 	NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:@"sourceFontName"] size:[aProfile floatForKey:@"sourceFontSize"]];
@@ -421,6 +426,7 @@
         currentProfile[@"bottomMargin"] = @(bottomMarginLabel.intValue);
         
         currentProfile[@"unit"] = @(unitMatrix.selectedTag);
+        currentProfile[@"priority"] = @(priorityMatrix.selectedTag);
         
         currentProfile[@"convertYenMark"] = @(convertYenMarkMenuItem.state);
         currentProfile[@"colorizeText"] = @(colorizeTextMenuItem.state);
