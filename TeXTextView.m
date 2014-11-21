@@ -138,6 +138,11 @@ static BOOL isValidTeXCommandChar(int c)
 
 - (void)insertText:(id)aString
 {
+    if (![aString isKindOfClass:[NSString class]]) {
+        [super insertText:aString];
+        return;
+    }
+
 	NSDictionary* currentProfile = [controller currentProfile];
 
 	int texChar = 0x5c;
