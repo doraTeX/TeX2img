@@ -5,9 +5,9 @@
 #import "ControllerC.h"
 #import "global.h"
 
-#define OPTION_NUM 19
+#define OPTION_NUM 20
 #define MAX_LEN 1024
-#define VERSION "1.8.4"
+#define VERSION "1.8.5"
 
 static void version()
 {
@@ -23,7 +23,8 @@ static void usage()
     printf("  OutputFile              : path of output file (extension: eps/png/jpg/pdf)\n");
     printf("Options:\n");
     printf("  --compiler   COMPILER   : set compiler   (default: platex)\n");
-    printf("  --num        NUMBER     : set the number of compilation (default: 1)\n");
+    printf("  --guess-compile         : guess the appropriate number of compilation\n");
+    printf("  --num        NUMBER     : set the maximal number of compilation (default: 10)\n");
     printf("  --resolution RESOLUTION : set resolution level (default: 15)\n");
     printf("  --left-margin    MARGIN : set left margin   (default: 0)\n");
     printf("  --right-margin   MARGIN : set right margin  (default: 0)\n");
@@ -106,7 +107,7 @@ int main (int argc, char *argv[]) {
         NSApplicationLoad(); // PDFKit を使ったときに _NXCreateWindow: error setting window property のエラーを防ぐため
         
         float resolutoinLevel = 15;
-        int numberOfCompilation = 1;
+        int numberOfCompilation = 10;
         int leftMargin = 0;
         int rightMargin = 0;
         int topMargin = 0;
@@ -118,6 +119,7 @@ int main (int argc, char *argv[]) {
         BOOL utfExportFlag = NO;
         BOOL quietFlag = NO;
         BOOL quickFlag = NO;
+        BOOL guessFlag = NO;
         NSString* encoding = @"utf8";
         NSString* compiler = @"platex";
         NSNumber* unitTag = @(PXUNITTAG);
@@ -209,6 +211,11 @@ int main (int argc, char *argv[]) {
         options[15].flag = NULL;
         options[15].val = 16;
         
+        options[16].name = "guess-compile";
+        options[16].has_arg = no_argument;
+        options[16].flag = NULL;
+        options[16].val = 17;
+
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
         options[OPTION_NUM - 3].flag = NULL;
@@ -328,6 +335,9 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
+                case 17: // --guess-compile
+                    guessFlag = YES;
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -388,6 +398,7 @@ int main (int argc, char *argv[]) {
         aProfile[@"ignoreError"] = @(ignoreErrorFlag);
         aProfile[@"utfExport"] = @(utfExportFlag);
         aProfile[@"quiet"] = @(quietFlag);
+        aProfile[@"guessCompilation"] = @(guessFlag);
         aProfile[@"controller"] = controller;
         aProfile[@"unit"] = unitTag;
         aProfile[@"priority"] = quickFlag ? @(SPEED_PRIORITY_TAG) : @(QUALITY_PRIORITY_TAG);

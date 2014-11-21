@@ -20,6 +20,7 @@
 @property NSString* outputFilePath;
 @property NSString* preambleStr;
 @property float resolutionLevel;
+@property BOOL guessCompilation;
 @property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
 @property BOOL leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property id<OutputController> controller;
@@ -42,6 +43,7 @@
 @synthesize outputFilePath;
 @synthesize preambleStr;
 @synthesize resolutionLevel;
+@synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
 @synthesize leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
@@ -65,6 +67,7 @@
 	gsPath = [aProfile stringForKey:@"gsPath"];
 	pdfcropPath = [aProfile stringForKey:@"pdfcropPath"];
 	epstopdfPath = [aProfile stringForKey:@"epstopdfPath"];
+    guessCompilation = [aProfile boolForKey:@"guessCompilation"];
     numberOfCompilation = [aProfile integerForKey:@"numberOfCompilation"];
 	
 	outputFilePath = [aProfile stringForKey:@"outputFile"];
@@ -245,20 +248,46 @@
 	
 }
 
+- (BOOL)compileWithArguments:(NSArray*)arguments
+{
+    BOOL status = [self execCommand:platexPath atDirectory:tempdir withArguments:arguments];
+    [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
+    return status;
+}
+
 - (BOOL)tex2dvi:(NSString*)teXFilePath
 {
-    BOOL status;
     NSArray *arguments = @[@"-interaction=nonstopmode", [NSString stringWithFormat:@"-kanji=%@", encoding], teXFilePath];
     
-    for (NSInteger i=0; i<numberOfCompilation; i++) {
-        status = [self execCommand:platexPath atDirectory:tempdir withArguments:arguments];
-        [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
-        if (!status) {
-            return NO;
+    NSString *auxFilePath = [NSString stringWithFormat:@"%@.aux", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+    
+    // まず aux を削除
+    if ([fileManager fileExistsAtPath:auxFilePath isDirectory:nil] && ![fileManager removeItemAtPath:auxFilePath error:nil]) {
+        return NO;
+    }
+    
+    BOOL success = [self compileWithArguments:arguments];
+    if (!success) {
+        return NO;
+    }
+    
+    if (guessCompilation) {
+        NSData *oldAuxData = nil;
+        NSData *newAuxData = nil;
+        for (NSInteger i=1; i<numberOfCompilation; i++) {
+            newAuxData = [NSData dataWithContentsOfFile:auxFilePath];
+            if ([newAuxData isEqualToData:oldAuxData]) {
+                return YES;
+            }
+            oldAuxData = newAuxData;
+            success = [self compileWithArguments:arguments];
+            if (!success) {
+                return NO;
+            }
         }
     }
-	
-	return status;
+    
+    return YES;
 }
 
 - (BOOL)dvi2pdf:(NSString*)dviFilePath

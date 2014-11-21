@@ -44,7 +44,7 @@
 @property IBOutlet NSButton *generateButton;
 @property IBOutlet NSButton *transparentCheckBox;
 @property IBOutlet NSButton *showOutputDrawerCheckBox;
-@property IBOutlet NSButton *threadingCheckBox;
+//@property IBOutlet NSButton *threadingCheckBox;
 @property IBOutlet NSButton *previewCheckBox;
 @property IBOutlet NSButton *deleteTmpFileCheckBox;
 @property IBOutlet NSButton *embedInIllustratorCheckBox;
@@ -63,6 +63,7 @@
 @property IBOutlet NSTextField *platexPathTextField;
 @property IBOutlet NSTextField *dvipdfmxPathTextField;
 @property IBOutlet NSTextField *gsPathTextField;
+@property IBOutlet NSButton *guessCompilationButton;
 @property IBOutlet NSTextField *numberOfCompilationTextField;
 @property IBOutlet NSButton *getOutlineCheckBox;
 @property IBOutlet NSButton *ignoreErrorCheckBox;
@@ -110,7 +111,7 @@
 @synthesize generateButton;
 @synthesize transparentCheckBox;
 @synthesize showOutputDrawerCheckBox;
-@synthesize threadingCheckBox;
+//@synthesize threadingCheckBox;
 @synthesize previewCheckBox;
 @synthesize deleteTmpFileCheckBox;
 @synthesize embedInIllustratorCheckBox;
@@ -129,6 +130,7 @@
 @synthesize platexPathTextField;
 @synthesize dvipdfmxPathTextField;
 @synthesize gsPathTextField;
+@synthesize guessCompilationButton;
 @synthesize numberOfCompilationTextField;
 @synthesize getOutlineCheckBox;
 @synthesize ignoreErrorCheckBox;
@@ -276,7 +278,7 @@
 	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:@"outputFile"];
 	
 	showOutputDrawerCheckBox.State = [aProfile integerForKey:@"showOutputDrawer"];
-	threadingCheckBox.State = [aProfile integerForKey:@"threading"];
+//	threadingCheckBox.State = [aProfile integerForKey:@"threading"];
 	previewCheckBox.State = [aProfile integerForKey:@"preview"];
 	deleteTmpFileCheckBox.State = [aProfile integerForKey:@"deleteTmpFile"];
 
@@ -311,7 +313,8 @@
 	showSpaceCharacterMenuItem.State = [aProfile boolForKey:@"showSpaceCharacter"];
 	showFullwidthSpaceCharacterMenuItem.State = [aProfile boolForKey:@"showFullwidthSpaceCharacter"];
 	showNewLineCharacterMenuItem.State = [aProfile boolForKey:@"showNewLineCharacter"];
-
+	guessCompilationButton.State = [aProfile boolForKey:@"guessCompilation"];
+    
     NSString *encoding = [aProfile stringForKey:@"encoding"];
     if (encoding) {
         sjisRadioButton.State = NSOffState;
@@ -405,7 +408,7 @@
         currentProfile[@"outputFile"] = outputFileTextField.stringValue;
         
         currentProfile[@"showOutputDrawer"] = @(showOutputDrawerCheckBox.state);
-        currentProfile[@"threading"] = @(threadingCheckBox.state);
+//        currentProfile[@"threading"] = @(threadingCheckBox.state);
         currentProfile[@"preview"] = @(previewCheckBox.state);
         currentProfile[@"deleteTmpFile"] = @(deleteTmpFileCheckBox.state);
         
@@ -420,6 +423,7 @@
         currentProfile[@"platexPath"] = platexPathTextField.stringValue;
         currentProfile[@"dvipdfmxPath"] = dvipdfmxPathTextField.stringValue;
         currentProfile[@"gsPath"] = gsPathTextField.stringValue;
+        currentProfile[@"guessCompilation"] = @(guessCompilationButton.state);
         currentProfile[@"numberOfCompilation"] = @(numberOfCompilationTextField.integerValue);
         
         currentProfile[@"resolutionLabel"] = resolutionLabel.stringValue;
@@ -641,13 +645,6 @@
 		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"SUEnableAutomaticChecks"];
 		
 	}
-	
-	// Leopard 以外では文字化け対策チェックボックスを無効化
-//	if(!((NSFoundationVersionNumber > LEOPARD) && (NSFoundationVersionNumber < SNOWLEOPARD)))
-//	{
-//		[getOutlineCheckBox.State = NO];
-//		[getOutlineCheckBox setEnabled:NO];
-//	}
 
 	// CommandComepletion.txt のロード
 	unichar esc = 0x001B;
@@ -890,7 +887,7 @@
 - (void)doGeneratingThread
 {
     @autoreleasepool {
-        BOOL threading = (threadingCheckBox.state == NSOnState);
+//        BOOL threading = (threadingCheckBox.state == NSOnState);
         
         NSMutableDictionary *aProfile = self.currentProfile;
         aProfile[@"pdfcropPath"] = [NSBundle.mainBundle pathForResource:@"pdfcrop" ofType:nil];
@@ -906,11 +903,13 @@
         
         generateButton.Enabled = YES;
         generateMenuItem.Enabled = YES;
-        
+
+        /*
         if (threading) {
             [outputTextView display]; // 再描画
             [NSThread exit];
         }
+         */
     }
 }
 
@@ -923,11 +922,14 @@
     generateButton.Enabled = NO;
 	generateMenuItem.Enabled = NO;
 
+    /*
     if (threadingCheckBox.state) {
 		[NSThread detachNewThreadSelector:@selector(doGeneratingThread) toTarget:self withObject:nil];
 	} else {
 		[self doGeneratingThread];
-	}
+	}*/
+    
+    [self doGeneratingThread];
 }
 
 @end
