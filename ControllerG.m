@@ -156,7 +156,11 @@
 	[self changeHighlight:nil];
 
 	[flashInMovingMenuItem setState:[aProfile boolForKey:@"flashInMoving"]];
-	
+
+	[highlightContentMenuItem setState:[aProfile boolForKey:@"highlightContent"]];
+	[beepMenuItem setState:[aProfile boolForKey:@"beep"]];
+	[flashBackgroundMenuItem setState:[aProfile boolForKey:@"flashBackground"]];
+
 	[autoCompleteMenuItem setState:[aProfile boolForKey:@"autoComplete"]];
 	[showTabCharacterMenuItem setState:[aProfile boolForKey:@"showTabCharacter"]];
 	[showSpaceCharacterMenuItem setState:[aProfile boolForKey:@"showSpaceCharacter"]];
@@ -287,6 +291,9 @@
 	[currentProfile setInteger:[colorizeTextMenuItem state] forKey:@"colorizeText"];
 	[currentProfile setInteger:highlightPattern forKey:@"highlightPattern"];
 	[currentProfile setInteger:[flashInMovingMenuItem state] forKey:@"flashInMoving"];
+	[currentProfile setInteger:[highlightContentMenuItem state] forKey:@"highlightContent"];
+	[currentProfile setInteger:[beepMenuItem state] forKey:@"beep"];
+	[currentProfile setInteger:[flashBackgroundMenuItem state] forKey:@"flashBackground"];
 	[currentProfile setInteger:[autoCompleteMenuItem state] forKey:@"autoComplete"];
 	[currentProfile setInteger:[showTabCharacterMenuItem state] forKey:@"showTabCharacter"];
 	[currentProfile setInteger:[showSpaceCharacterMenuItem state] forKey:@"showSpaceCharacter"];

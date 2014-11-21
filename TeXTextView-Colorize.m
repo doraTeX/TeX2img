@@ -118,7 +118,7 @@ static BOOL isValidTeXCommandChar(int c)
 	}
 }
 
-- (void)resetBackgroundColor:(id)sender
+- (void)resetHighlight:(id)sender
 {
 	if (NSFoundationVersionNumber > LEOPARD) {
 		[self colorizeText:[[controller currentProfile] boolForKey:@"colorizeText"]];
@@ -132,13 +132,35 @@ static BOOL isValidTeXCommandChar(int c)
 	}
 }
 
+- (void)resetBackgroundColorOfTextView:(id)sender
+{
+	[self setBackgroundColor:[NSColor controlBackgroundColor]];
+}
+
+- (void)resetBackgroundColor:(id)sender
+{
+	[[self layoutManager] removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:NSMakeRange(0, [[self textStorage] length])];
+}
+
+- (void)highlightContent:(NSString*)range
+{
+	[[self layoutManager] addTemporaryAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
+												   [NSColor colorWithDeviceRed:1 green:1 blue:0.5 alpha:1],
+												   NSBackgroundColorAttributeName, nil ]	 // added by Taylor
+							   forCharacterRange:NSRangeFromString(range)];
+}
+
 - (void)textViewDidChangeSelection:(NSNotification *)inNotification
 {
-	[self resetBackgroundColor:nil];
+	NSLayoutManager* layoutManager = [self layoutManager];
+
+	// Notification の処理で色づけの変更を行うと，delete を押したときにバグるので，performSelector で別途呼び出して処理する
+	[self performSelector:@selector(resetBackgroundColor:) 
+			   withObject:nil afterDelay:0]; // 既存の背景色の消去
+	
+	[self resetHighlight:nil];
 	
 	HighlightPattern highlightPattern = [[controller currentProfile] integerForKey:@"highlightPattern"];
-	
-	if(highlightPattern == NOHIGHLIGHT) return;
 
 	highlightBracesColorDict = [NSDictionary dictionaryWithObjectsAndKeys:
 								[NSColor magentaColor], NSForegroundColorAttributeName, nil ];
@@ -212,13 +234,20 @@ static BOOL isValidTeXCommandChar(int c)
 				 [self setSelectedRange: theSelectedRange];
 				 */
 				
-				// 色づけ方式での強調表示
-				[[self layoutManager] addTemporaryAttributes:highlightBracesColorDict 
-										   forCharacterRange:NSMakeRange(theLocation, 1)];
-				[[self layoutManager] addTemporaryAttributes:highlightBracesColorDict 
-										   forCharacterRange:NSMakeRange(originalLocation, 1)];
-				[self display];
+				if (highlightPattern != NOHIGHLIGHT){
+					// 色づけ方式での強調表示
+					[layoutManager addTemporaryAttributes:highlightBracesColorDict 
+										forCharacterRange:NSMakeRange(theLocation, 1)];
+					[layoutManager addTemporaryAttributes:highlightBracesColorDict 
+										forCharacterRange:NSMakeRange(originalLocation, 1)];
+					[self display];
+				}
 
+                if([[controller currentProfile] boolForKey:@"highlightContent"]){
+					[self performSelector:@selector(highlightContent:) 
+							   withObject:NSStringFromRange(NSMakeRange(MIN(originalLocation, theLocation), ABS(originalLocation - theLocation)+1)) afterDelay:0];
+				}
+				
 				if (NSFoundationVersionNumber > LEOPARD  && !autoCompleting && [[controller currentProfile] boolForKey:@"flashInMoving"]) {
 					[self performSelector:@selector(showIndicator:) 
 							   withObject:NSStringFromRange(NSMakeRange(theLocation, 1)) 
@@ -226,7 +255,7 @@ static BOOL isValidTeXCommandChar(int c)
 				}
 				
 				if (highlightPattern == FLASH) {
-					[self performSelector:@selector(resetBackgroundColor:) 
+					[self performSelector:@selector(resetHighlight:) 
 							   withObject:NSStringFromRange(NSMakeRange(theLocation, 1)) afterDelay:0.30];
 				}
                 return;
@@ -237,7 +266,13 @@ static BOOL isValidTeXCommandChar(int c)
             theSkipMatchingBrace -= inc;
         }
     }
-    // NSBeep();	// 対応する開始括弧がなかったときにビープ音を鳴らす
+	// 対応する開始括弧がなかったときの処理
+    if([[controller currentProfile] boolForKey:@"beep"]) NSBeep();
+	if([[controller currentProfile] boolForKey:@"flashBackground"]) {
+		[self setBackgroundColor:[NSColor colorWithDeviceRed:1 green:0.95 blue:1 alpha:1]];
+		[self performSelector:@selector(resetBackgroundColorOfTextView:) 
+				   withObject:nil afterDelay:0.20];
+	}
 }
 
 - (BOOL)shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString
