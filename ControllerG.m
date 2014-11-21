@@ -4,7 +4,6 @@
 //#import <Sparkle/Sparkle.h>
 
 #define AutoSavedProfileName @"*AutoSavedProfile*"
-#define LEOPARD 568
 #define SNOWLEOPARD 678
 
 @implementation ControllerG
@@ -14,12 +13,12 @@
 	[mainWindow makeKeyAndOrderFront:nil];
 }
 
-- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(BOOL)quiet
+- (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet
 {
 	if(quiet) return;
-	if(mStr != nil)
+	if(str != nil)
 	{
-		[[[outputTextView textStorage] mutableString] appendString:mStr];
+		[[[outputTextView textStorage] mutableString] appendString:str];
 		[outputTextView scrollRangeToVisible: NSMakeRange([[outputTextView string] length], 0)]; // 最下部までスクロール
 		//[outputTextView display]; // 再描画
 	}
@@ -231,7 +230,6 @@
 		[preambleTextView setFont:aFont];
 	}
 	[preambleTextView colorizeText:[aProfile boolForKey:@"colorizeText"]];
-	
 }
 
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
@@ -260,61 +258,65 @@
 - (NSMutableDictionary*)currentProfile
 {
 	NSMutableDictionary *currentProfile = [NSMutableDictionary dictionary];
-	[currentProfile setFloat:NSMinX([mainWindow frame]) forKey:@"x"];
-	[currentProfile setFloat:NSMinY([mainWindow frame]) forKey:@"y"];
-	[currentProfile setFloat:NSWidth([mainWindow frame]) forKey:@"mainWindowWidth"];
-	[currentProfile setFloat:NSHeight([mainWindow frame]) forKey:@"mainWindowHeight"];
-	[currentProfile setObject:[outputFileTextField stringValue] forKey:@"outputFile"];
+	@try {
+		[currentProfile setFloat:NSMinX([mainWindow frame]) forKey:@"x"];
+		[currentProfile setFloat:NSMinY([mainWindow frame]) forKey:@"y"];
+		[currentProfile setFloat:NSWidth([mainWindow frame]) forKey:@"mainWindowWidth"];
+		[currentProfile setFloat:NSHeight([mainWindow frame]) forKey:@"mainWindowHeight"];
+		[currentProfile setObject:[outputFileTextField stringValue] forKey:@"outputFile"];
+		
+		[currentProfile setInteger:[showOutputDrawerCheckBox state] forKey:@"showOutputDrawer"];
+		[currentProfile setInteger:[threadingCheckBox state] forKey:@"threading"];
+		[currentProfile setInteger:[previewCheckBox state] forKey:@"preview"];
+		[currentProfile setInteger:[deleteTmpFileCheckBox state] forKey:@"deleteTmpFile"];
+		
+		[currentProfile setBool:[transparentCheckBox state] forKey:@"transparent"];
+		[currentProfile setBool:[getOutlineCheckBox state] forKey:@"getOutline"];
+		[currentProfile setBool:[ignoreErrorCheckBox state] forKey:@"ignoreError"];
+		[currentProfile setBool:[utfExportCheckBox state] forKey:@"utfExport"];
+		
+		[currentProfile setObject:[platexPathTextField stringValue] forKey:@"platexPath"];
+		[currentProfile setObject:[dvipdfmxPathTextField stringValue] forKey:@"dvipdfmxPath"];
+		[currentProfile setObject:[gsPathTextField stringValue] forKey:@"gsPath"];
+		
+		[currentProfile setObject:[resolutionLabel stringValue] forKey:@"resolutionLabel"];
+		[currentProfile setObject:[leftMarginLabel stringValue] forKey:@"leftMarginLabel"];
+		[currentProfile setObject:[rightMarginLabel stringValue] forKey:@"rightMarginLabel"];
+		[currentProfile setObject:[topMarginLabel stringValue] forKey:@"topMarginLabel"];
+		[currentProfile setObject:[bottomMarginLabel stringValue] forKey:@"bottomMarginLabel"];
+		
+		[currentProfile setFloat:[resolutionLabel floatValue] forKey:@"resolution"];
+		[currentProfile setInteger:[leftMarginLabel intValue] forKey:@"leftMargin"];
+		[currentProfile setInteger:[rightMarginLabel intValue] forKey:@"rightMargin"];
+		[currentProfile setInteger:[topMarginLabel intValue] forKey:@"topMargin"];
+		[currentProfile setInteger:[bottomMarginLabel intValue] forKey:@"bottomMargin"];
+		
+		[currentProfile setInteger:[convertYenMarkMenuItem state] forKey:@"convertYenMark"];
+		[currentProfile setInteger:[colorizeTextMenuItem state] forKey:@"colorizeText"];
+		[currentProfile setInteger:highlightPattern forKey:@"highlightPattern"];
+		[currentProfile setInteger:[flashInMovingMenuItem state] forKey:@"flashInMoving"];
+		[currentProfile setInteger:[highlightContentMenuItem state] forKey:@"highlightContent"];
+		[currentProfile setInteger:[beepMenuItem state] forKey:@"beep"];
+		[currentProfile setInteger:[flashBackgroundMenuItem state] forKey:@"flashBackground"];
+		[currentProfile setInteger:[checkBraceMenuItem state] forKey:@"checkBrace"];
+		[currentProfile setInteger:[checkBracketMenuItem state] forKey:@"checkBracket"];
+		[currentProfile setInteger:[checkSquareBracketMenuItem state] forKey:@"checkSquareBracket"];
+		[currentProfile setInteger:[checkParenMenuItem state] forKey:@"checkParen"];
+		[currentProfile setInteger:[autoCompleteMenuItem state] forKey:@"autoComplete"];
+		[currentProfile setInteger:[showTabCharacterMenuItem state] forKey:@"showTabCharacter"];
+		[currentProfile setInteger:[showSpaceCharacterMenuItem state] forKey:@"showSpaceCharacter"];
+		[currentProfile setInteger:[showFullwidthSpaceCharacterMenuItem state] forKey:@"showFullwidthSpaceCharacter"];
+		[currentProfile setInteger:[showNewLineCharacterMenuItem state] forKey:@"showNewLineCharacter"];
+		[currentProfile setObject:[[sourceTextView font] fontName] forKey:@"sourceFontName"];
+		[currentProfile setFloat:[[sourceTextView font] pointSize] forKey:@"sourceFontSize"];
+		[currentProfile setObject:[[preambleTextView font] fontName] forKey:@"preambleFontName"];
+		[currentProfile setFloat:[[preambleTextView font] pointSize] forKey:@"preambleFontSize"];
+		
+		[currentProfile setObject:[NSString stringWithString:[[preambleTextView textStorage] string]] forKey:@"preamble"];
+	}
+	@catch (NSException * e) {
+	}
 	
-	[currentProfile setInteger:[showOutputDrawerCheckBox state] forKey:@"showOutputDrawer"];
-	[currentProfile setInteger:[threadingCheckBox state] forKey:@"threading"];
-	[currentProfile setInteger:[previewCheckBox state] forKey:@"preview"];
-	[currentProfile setInteger:[deleteTmpFileCheckBox state] forKey:@"deleteTmpFile"];
-	
-	[currentProfile setBool:[transparentCheckBox state] forKey:@"transparent"];
-	[currentProfile setBool:[getOutlineCheckBox state] forKey:@"getOutline"];
-	[currentProfile setBool:[ignoreErrorCheckBox state] forKey:@"ignoreError"];
-	[currentProfile setBool:[utfExportCheckBox state] forKey:@"utfExport"];
-	
-	[currentProfile setObject:[platexPathTextField stringValue] forKey:@"platexPath"];
-	[currentProfile setObject:[dvipdfmxPathTextField stringValue] forKey:@"dvipdfmxPath"];
-	[currentProfile setObject:[gsPathTextField stringValue] forKey:@"gsPath"];
-	
-	[currentProfile setObject:[resolutionLabel stringValue] forKey:@"resolutionLabel"];
-	[currentProfile setObject:[leftMarginLabel stringValue] forKey:@"leftMarginLabel"];
-	[currentProfile setObject:[rightMarginLabel stringValue] forKey:@"rightMarginLabel"];
-	[currentProfile setObject:[topMarginLabel stringValue] forKey:@"topMarginLabel"];
-	[currentProfile setObject:[bottomMarginLabel stringValue] forKey:@"bottomMarginLabel"];
-	
-	[currentProfile setFloat:[resolutionLabel floatValue] forKey:@"resolution"];
-	[currentProfile setInteger:[leftMarginLabel intValue] forKey:@"leftMargin"];
-	[currentProfile setInteger:[rightMarginLabel intValue] forKey:@"rightMargin"];
-	[currentProfile setInteger:[topMarginLabel intValue] forKey:@"topMargin"];
-	[currentProfile setInteger:[bottomMarginLabel intValue] forKey:@"bottomMargin"];
-	
-	[currentProfile setInteger:[convertYenMarkMenuItem state] forKey:@"convertYenMark"];
-	[currentProfile setInteger:[colorizeTextMenuItem state] forKey:@"colorizeText"];
-	[currentProfile setInteger:highlightPattern forKey:@"highlightPattern"];
-	[currentProfile setInteger:[flashInMovingMenuItem state] forKey:@"flashInMoving"];
-	[currentProfile setInteger:[highlightContentMenuItem state] forKey:@"highlightContent"];
-	[currentProfile setInteger:[beepMenuItem state] forKey:@"beep"];
-	[currentProfile setInteger:[flashBackgroundMenuItem state] forKey:@"flashBackground"];
-	[currentProfile setInteger:[checkBraceMenuItem state] forKey:@"checkBrace"];
-	[currentProfile setInteger:[checkBracketMenuItem state] forKey:@"checkBracket"];
-	[currentProfile setInteger:[checkSquareBracketMenuItem state] forKey:@"checkSquareBracket"];
-	[currentProfile setInteger:[checkParenMenuItem state] forKey:@"checkParen"];
-	[currentProfile setInteger:[autoCompleteMenuItem state] forKey:@"autoComplete"];
-	[currentProfile setInteger:[showTabCharacterMenuItem state] forKey:@"showTabCharacter"];
-	[currentProfile setInteger:[showSpaceCharacterMenuItem state] forKey:@"showSpaceCharacter"];
-	[currentProfile setInteger:[showFullwidthSpaceCharacterMenuItem state] forKey:@"showFullwidthSpaceCharacter"];
-	[currentProfile setInteger:[showNewLineCharacterMenuItem state] forKey:@"showNewLineCharacter"];
-	[currentProfile setObject:[[sourceTextView font] fontName] forKey:@"sourceFontName"];
-	[currentProfile setFloat:[[sourceTextView font] pointSize] forKey:@"sourceFontSize"];
-	[currentProfile setObject:[[preambleTextView font] fontName] forKey:@"preambleFontName"];
-	[currentProfile setFloat:[[preambleTextView font] pointSize] forKey:@"preambleFontSize"];
-	
-	[currentProfile setObject:[NSString stringWithString:[[preambleTextView textStorage] string]] forKey:@"preamble"];
-
 	if([sjisRadioButton state])
 	{
 		[currentProfile setObject:@"sjis" forKey:@"encoding"];
@@ -346,19 +348,12 @@
 {
 	NSArray *searchPaths = [NSArray arrayWithObjects:
 							@"/Applications/pTeX.app/teTeX/bin", @"/usr/local/teTeX/bin", @"/usr/local/bin", @"/opt/local/bin", @"/sw/bin", nil];
-	NSEnumerator *enumerator = [searchPaths objectEnumerator];
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 	
-	NSString *aPath;
-	NSString *aFullPath;
-	
-	while(aPath = [enumerator nextObject])
+	for(NSString *aPath in searchPaths)
 	{
-		aFullPath = [NSString stringWithFormat:@"%@/%@", aPath, programName];
-		if([fileManager fileExistsAtPath:aFullPath])
-		{
-			return aFullPath;
-		}
+		NSString *aFullPath = [aPath stringByAppendingPathComponent:programName];
+		if([fileManager fileExistsAtPath:aFullPath]) return aFullPath;
 	}
 	
 	return nil;
@@ -391,44 +386,44 @@
 	// アプリケーションがアクティブになったときにメインウィンドウを表示
 	[aCenter addObserver: self
 				selector: @selector(showMainWindow:)
-					name: @"NSApplicationDidBecomeActiveNotification"
+					name: NSApplicationDidBecomeActiveNotification
 				  object: NSApp];
 	
 	// プログラム終了時に設定保存実行
 	[aCenter addObserver: self
 				selector: @selector(applicationWillTerminate:)
-					name: @"NSApplicationWillTerminateNotification"
+					name: NSApplicationWillTerminateNotification
 				  object: NSApp];
 	
 	/*
 	// アウトプットウィンドウが閉じられるときにメニューのチェックを外す
 	[aCenter addObserver: self
 				selector: @selector(uncheckOutputWindowMenuItem:)
-					name: @"NSWindowWillCloseNotification"
+					name: NSWindowWillCloseNotification
 				  object: outputWindow];
 	 */
 	
 	// プリアンブルウィンドウが閉じられるときにメニューのチェックを外す
 	[aCenter addObserver: self
 				selector: @selector(uncheckPreambleWindowMenuItem:)
-					name: @"NSWindowWillCloseNotification"
+					name: NSWindowWillCloseNotification
 				  object: preambleWindow];
 	
 	// メインウィンドウが閉じられるときに他のウィンドウも閉じる
 	[aCenter addObserver: self
 				selector: @selector(closeOtherWindows:)
-					name: @"NSWindowWillCloseNotification"
+					name: NSWindowWillCloseNotification
 				  object: mainWindow];
 	
 	// テキストビューのカーソル移動の通知を受ける
 	[aCenter addObserver: sourceTextView
 				selector: @selector(textViewDidChangeSelection:)
-					name: @"NSTextViewDidChangeSelectionNotification"
+					name: NSTextViewDidChangeSelectionNotification
 				  object: sourceTextView];
 
 	[aCenter addObserver: preambleTextView
 				selector: @selector(textViewDidChangeSelection:)
-					name: @"NSTextViewDidChangeSelectionNotification"
+					name: NSTextViewDidChangeSelectionNotification
 				  object: preambleTextView];
 	
 	// デフォルトのアウトプットファイルのパスをセット
@@ -750,7 +745,7 @@
 	if(threading)
 	{
 		[outputTextView display]; // 再描画
-		[pool release];
+		[pool drain];
 		[NSThread exit]; 
 	}
 }

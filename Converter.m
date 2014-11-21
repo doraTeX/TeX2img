@@ -61,7 +61,7 @@
 	int texChar = 0x5c;
 	NSRange charRange;
 	NSString *subString;
-	unsigned startl, endl, end;
+	NSUInteger startl, endl, end;
 	
 	charRange = NSMakeRange(0,1);
 	endl = 0;
@@ -188,9 +188,7 @@
 	[cmdline appendString:command];
 	[cmdline appendString:@" "];
 	
-	NSEnumerator *enumerator = [arguments objectEnumerator];
-	NSString *argument;
-	while(argument = [enumerator nextObject])
+	for(NSString *argument in arguments)
 	{
 		[cmdline appendString:argument];
 		[cmdline appendString:@" "];
@@ -395,9 +393,8 @@
 	
 	fp = fopen([epsFilePath UTF8String], "w");
 	
-	NSEnumerator* enumerator = [lines objectEnumerator];
 	NSString* line;
-	while(line = [enumerator nextObject])
+	for(line in lines)
 	{
 		fputs([line UTF8String], fp);
 	}

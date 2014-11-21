@@ -93,9 +93,9 @@ BOOL checkWhich(NSString* cmdName)
 	fprintf(stderr, [@"tex2img : TeX Compile error.\nCheck errors in the source code.\n" cString]);
 }
 
-- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(BOOL)quiet
+- (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet
 {
-	if(!quiet) printf([mStr cString]);
+	if(!quiet) printf([str cString]);
 }
 ////// ここまで OutputController プロトコルの実装 //////
 

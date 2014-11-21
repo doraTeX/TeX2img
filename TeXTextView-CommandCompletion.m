@@ -117,7 +117,12 @@ static NSString* endcommentString = @"›";
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-	if([self hasMarkedText]) return [super keyDown: theEvent]; // 日本語入力中はそのままイベントを通す
+	if([self hasMarkedText])
+	{
+		[super keyDown: theEvent]; // 日本語入力中および10.4以下ではそのままイベントを通す
+		return;
+	}
+	
 	char texChar = '\\';
 	
 	// FIXME: Using static variables like this is *EVIL*

@@ -10,7 +10,7 @@
 - (void)showExecError:(NSString*)command;
 - (void)showCannotOverrideError:(NSString*)path;
 - (void)showCompileError;
-- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(BOOL)quiet;
+- (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet;
 - (void)clearOutputTextView;
 - (void)showOutputDrawer;
 - (void)showMainWindow;

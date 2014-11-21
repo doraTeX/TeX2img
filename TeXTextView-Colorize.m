@@ -120,17 +120,13 @@ static BOOL isValidTeXCommandChar(int c)
 
 - (void)resetHighlight:(id)sender
 {
-	if (NSFoundationVersionNumber > LEOPARD) {
-		[self colorizeText:[[controller currentProfile] boolForKey:@"colorizeText"]];
-	}
+	[self colorizeText:[[controller currentProfile] boolForKey:@"colorizeText"]];
 	braceHighlighting = NO;
 }
 
 - (void)showIndicator:(NSString*)range
 {
-	if (NSFoundationVersionNumber > LEOPARD) {
-		[self showFindIndicatorForRange:NSRangeFromString(range)];
-	}
+	[self showFindIndicatorForRange:NSRangeFromString(range)];
 }
 
 - (void)resetBackgroundColorOfTextView:(id)sender
@@ -166,7 +162,7 @@ static BOOL isValidTeXCommandChar(int c)
 	
 	HighlightPattern highlightPattern = [profile integerForKey:@"highlightPattern"];
 
-	if(highlightPattern == SOLID && braceHighlighting){
+	if(highlightPattern == SOLID || braceHighlighting){
 		[self resetHighlight:nil];
 	}
 
@@ -272,7 +268,7 @@ static BOOL isValidTeXCommandChar(int c)
 							   withObject:NSStringFromRange(NSMakeRange(MIN(originalLocation, theLocation), ABS(originalLocation - theLocation)+1)) afterDelay:0];
 				}
 				
-				if (NSFoundationVersionNumber > LEOPARD  && !autoCompleting && [profile boolForKey:@"flashInMoving"]) {
+				if (!autoCompleting && [profile boolForKey:@"flashInMoving"]) {
 					[self performSelector:@selector(showIndicator:) 
 							   withObject:NSStringFromRange(NSMakeRange(theLocation, 1)) 
 							   afterDelay:0];
@@ -306,7 +302,7 @@ static BOOL isValidTeXCommandChar(int c)
 	NSRange			matchRange;
 	NSString		*textString;
 	int				i, j, count, uchar, leftpar, rightpar;
-	NSDate			*myDate;
+//	NSDate			*myDate;
 	
 	if ([replacementString length] != 1)
 		return YES;
@@ -362,19 +358,19 @@ static BOOL isValidTeXCommandChar(int c)
 				matchRange.location = i;
 				matchRange.length = 1;
 				
-				if (NSFoundationVersionNumber > LEOPARD) {
+//				if (NSFoundationVersionNumber > LEOPARD) {
 					[self performSelector:@selector(showIndicator:) 
 							   withObject:NSStringFromRange(matchRange)
 							   afterDelay:0.0];
-				}
-				else {
-					[self setSelectedRange: matchRange
-								  affinity: NSSelectByCharacter stillSelecting: YES];
-					[self display];
-					myDate = [NSDate date];
-					while ([myDate timeIntervalSinceNow] > - 0.075);
-					[self setSelectedRange: affectedCharRange];
-				}
+//				}
+//				else {
+//					[self setSelectedRange: matchRange
+//								  affinity: NSSelectByCharacter stillSelecting: YES];
+//					[self display];
+//					myDate = [NSDate date];
+//					while ([myDate timeIntervalSinceNow] > - 0.075);
+//					[self setSelectedRange: affectedCharRange];
+//				}
 				
 				break;
 			}
