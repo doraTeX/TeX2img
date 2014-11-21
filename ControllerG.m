@@ -351,7 +351,17 @@
 ////// ここから他のメソッドから呼び出されるユーティリティメソッド //////
 - (NSString*)searchProgram:(NSString*)programName
 {
-	NSArray *searchPaths = @[@"/Applications/pTeX.app/teTeX/bin", @"/Applications/UpTeX.app/teTeX/bin", @"/usr/texbin", @"/usr/local/teTeX/bin", @"/usr/local/bin", @"/opt/local/bin", @"/sw/bin"];
+    NSDictionary *errorInfo = [[NSDictionary new] autorelease];
+    NSString *script =  [NSString stringWithFormat:@"do shell script \"%@\"", @"eval `/usr/libexec/path_helper -s`; echo $PATH"];
+    
+    NSAppleScript *appleScript = [[[NSAppleScript alloc] initWithSource:script] autorelease];
+    NSAppleEventDescriptor * eventResult = [appleScript executeAndReturnError:&errorInfo];
+    
+    NSString *userPath = [eventResult stringValue];
+    NSMutableArray* searchPaths = [NSMutableArray arrayWithArray:[userPath componentsSeparatedByString:@":"]];
+
+    [searchPaths addObjectsFromArray: @[@"/Applications/pTeX.app/teTeX/bin", @"/Applications/UpTeX.app/teTeX/bin", @"/usr/texbin", @"/usr/local/teTeX/bin", @"/usr/local/bin", @"/opt/local/bin", @"/sw/bin"]];
+    
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 	
 	for(NSString *aPath in searchPaths)

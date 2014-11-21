@@ -147,29 +147,29 @@ static BOOL isValidTeXCommandChar(int c)
 
 	int texChar = 0x5c;
 	
-	if ([aString length] == 1 &&  [currentProfile boolForKey:@"autoComplete"] && autocompletionDictionary) {
-		if ([aString characterAtIndex:0] >= 128 ||
-			[self selectedRange].location == 0 ||
-			[[self string] characterAtIndex:[self selectedRange].location - 1 ] != texChar )
-		{
-			NSString *completionString = autocompletionDictionary[aString];
-			if ( completionString )
-			{
-				[self setAutoCompleting:YES];
-				[self insertSpecialNonStandard:completionString
-									   undoKey: @"Autocompletion"];
-				[self setAutoCompleting:NO];
-				return;
-			}
-		}
-	}	
-	
 	if([aString isEqualToString:@"¥"] && [currentProfile boolForKey:@"convertYenMark"])
 	{
 		[super insertText:@"\\"];
 	}
 	else
 	{
+        if ([aString length] == 1 &&  [currentProfile boolForKey:@"autoComplete"] && autocompletionDictionary) {
+            if ([aString characterAtIndex:0] >= 128 ||
+                [self selectedRange].location == 0 ||
+                [[self string] characterAtIndex:[self selectedRange].location - 1 ] != texChar )
+            {
+                NSString *completionString = autocompletionDictionary[aString];
+                if ( completionString )
+                {
+                    [self setAutoCompleting:YES];
+                    [self insertSpecialNonStandard:completionString
+                                           undoKey: @"Autocompletion"];
+                    [self setAutoCompleting:NO];
+                    return;
+                }
+            }
+        }	
+        
 		[super insertText:aString];
 	}
 	[self colorizeText:[currentProfile boolForKey:@"colorizeText"]];

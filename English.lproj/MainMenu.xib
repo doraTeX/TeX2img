@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">12E3067</string>
+		<string key="IBDocument.SystemVersion">12F37</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
 		<string key="IBDocument.AppKitVersion">1187.39</string>
 		<string key="IBDocument.HIToolboxVersion">626.00</string>
@@ -2518,14 +2518,14 @@
 											<object class="NSButton" id="346357">
 												<reference key="NSNextResponder" ref="552557180"/>
 												<int key="NSvFlags">265</int>
-												<string key="NSFrame">{{135, 198}, {127, 32}}</string>
+												<string key="NSFrame">{{149, 198}, {115, 32}}</string>
 												<reference key="NSSuperview" ref="552557180"/>
 												<reference key="NSNextKeyView" ref="808279740"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSButtonCell" key="NSCell" id="465832930">
 													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">134217728</int>
-													<string key="NSContents">Auto Search</string>
+													<string key="NSContents">Auto Detect</string>
 													<reference key="NSSupport" ref="1049726897"/>
 													<reference key="NSControlView" ref="346357"/>
 													<int key="NSButtonFlags">-2038284288</int>
@@ -2552,7 +2552,7 @@
 																<int key="NSvFlags">266</int>
 																<string key="NSFrame">{{18, 10}, {322, 98}}</string>
 																<reference key="NSSuperview" ref="164006882"/>
-																<reference key="NSNextKeyView" ref="192767520"/>
+																<reference key="NSNextKeyView"/>
 																<bool key="NSEnabled">YES</bool>
 																<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																<int key="NSNumRows">5</int>
@@ -2829,14 +2829,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSButton" id="808279740">
 												<reference key="NSNextResponder" ref="552557180"/>
 												<int key="NSvFlags">265</int>
-												<string key="NSFrame">{{262, 198}, {115, 32}}</string>
+												<string key="NSFrame">{{264, 198}, {111, 32}}</string>
 												<reference key="NSSuperview" ref="552557180"/>
 												<reference key="NSNextKeyView" ref="901816516"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSButtonCell" key="NSCell" id="612921122">
 													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">134217728</int>
-													<string key="NSContents">for TeX Live</string>
+													<string key="NSContents">for MacTeX</string>
 													<reference key="NSSupport" ref="1049726897"/>
 													<reference key="NSControlView" ref="808279740"/>
 													<int key="NSButtonFlags">-2038284288</int>
@@ -2986,7 +2986,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<int key="NSvFlags">292</int>
 												<string key="NSFrame">{{15, 15}, {229, 18}}</string>
 												<reference key="NSSuperview" ref="1053768862"/>
-												<reference key="NSNextKeyView"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSButtonCell" key="NSCell" id="617072590">
 													<int key="NSCellFlags">-2080374784</int>
