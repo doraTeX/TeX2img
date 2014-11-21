@@ -7,7 +7,7 @@
 
 #define OPTION_NUM 15
 #define MAX_LEN 1024
-#define VERSION "1.4.2"
+#define VERSION "1.4.3"
 
 static void version()
 {
@@ -101,7 +101,7 @@ int main (int argc, char *argv[]) {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSApplicationLoad(); // PDFKit を使ったときに _NXCreateWindow: error setting window property のエラーを防ぐため
 
-	int resolutoinLevel = 15;
+	float resolutoinLevel = 15;
 	int leftMargin = 0;
 	int rightMargin = 0;
 	int topMargin = 0;
@@ -212,7 +212,7 @@ int main (int argc, char *argv[]) {
 			case 1: // --resolution
 				if(optarg)
 				{
-					resolutoinLevel = strtoi(optarg);
+					resolutoinLevel = strtof(optarg, NULL);
 				}
 				else
 				{
@@ -328,14 +328,14 @@ int main (int argc, char *argv[]) {
 	[aProfile setObject:outputFilePath forKey:@"outputFile"];
 	
 	[aProfile setObject:encoding forKey:@"encoding"];
-	[aProfile setInteger:resolutoinLevel forKey:@"resolution"];
+	[aProfile setFloat:resolutoinLevel forKey:@"resolution"];
 	[aProfile setInteger:leftMargin forKey:@"leftMargin"];
 	[aProfile setInteger:rightMargin forKey:@"rightMargin"];
 	[aProfile setInteger:topMargin forKey:@"topMargin"];
 	[aProfile setInteger:bottomMargin forKey:@"bottomMargin"];
 	[aProfile setBool:getOutline forKey:@"getOutline"];
 	[aProfile setBool:transparentPngFlag forKey:@"transparent"];
-	[aProfile setBool:NO forKey:@"showOutputWindow"];
+	[aProfile setBool:NO forKey:@"showOutputDrawer"];
 	[aProfile setBool:NO forKey:@"preview"];
 	[aProfile setBool:deleteTmpFileFlag forKey:@"deleteTmpFile"];
 	[aProfile setBool:ignoreErrorFlag forKey:@"ignoreError"];

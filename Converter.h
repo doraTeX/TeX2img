@@ -12,7 +12,7 @@
 - (void)showCompileError;
 - (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(BOOL)quiet;
 - (void)clearOutputTextView;
-- (void)showOutputWindow;
+- (void)showOutputDrawer;
 - (void)showMainWindow;
 @end
 
@@ -25,7 +25,7 @@
 	NSString* preambleStr;
 	float resolutionLevel;
 	int leftMargin, rightMargin, topMargin, bottomMargin;
-	BOOL leaveTextFlag, transparentPngFlag, showOutputWindowFlag, previewFlag, deleteTmpFileFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+	BOOL leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 	id<OutputController> controller;
 
 	NSFileManager* fileManager;

@@ -13,7 +13,7 @@ BOOL checkWhich(NSString* cmdName)
 {	
 }
 
-- (void)showOutputWindow
+- (void)showOutputDrawer
 {
 }
 

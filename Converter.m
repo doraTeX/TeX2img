@@ -30,7 +30,7 @@
 	bottomMargin = [aProfile integerForKey:@"bottomMargin"];
 	leaveTextFlag = ![aProfile boolForKey:@"getOutline"];
 	transparentPngFlag = [aProfile boolForKey:@"transparent"];
-	showOutputWindowFlag = [aProfile boolForKey:@"showOutputWindow"];
+	showOutputDrawerFlag = [aProfile boolForKey:@"showOutputDrawer"];
 	previewFlag = [aProfile boolForKey:@"preview"];
 	deleteTmpFileFlag = [aProfile boolForKey:@"deleteTmpFile"];
 	ignoreErrorsFlag = [aProfile boolForKey:@"ignoreError"];
@@ -266,7 +266,6 @@
 	NSMutableString* outputMStr = [NSMutableString stringWithCapacity:0];
 	int status = [self execCommand:gsPath atDirectory:tempdir 
 					 withArguments:[NSArray arrayWithObjects:
-									@"-q",
 									@"-sDEVICE=epswrite",
 									@"-dNOPAUSE",
 									@"-dBATCH",
@@ -636,9 +635,9 @@
 	{
 		// 一連のコンパイル処理の開始準備
 		[controller clearOutputTextView];
-		if(showOutputWindowFlag)
+		if(showOutputDrawerFlag)
 		{
-			[controller showOutputWindow];
+			[controller showOutputDrawer];
 		}
 		[controller showMainWindow];
 		

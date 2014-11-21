@@ -24,11 +24,11 @@
 	[[[outputTextView textStorage] mutableString] setString:@""];
 }
 
-- (void)showOutputWindow
+- (void)showOutputDrawer
 {
-	[outputWindowMenuItem setState:YES];
-	
-	if(![outputWindow isVisible])
+	[outputDrawerMenuItem setState:YES];
+	[outputDrawer open];
+/*	if(![outputWindow isVisible])
 	{
 		NSRect mainWindowRect = [mainWindow frame];
 		NSRect outputWindowRect = [outputWindow frame];
@@ -37,7 +37,7 @@
 										  NSWidth(outputWindowRect), NSHeight(outputWindowRect))
 					   display:NO];
 	}
-	[outputWindow makeKeyAndOrderFront:nil];
+	[outputWindow makeKeyAndOrderFront:nil];*/
 }
 
 - (void)showExtensionError
@@ -132,7 +132,7 @@
 	
 	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:@"outputFile"];
 	
-	[showOutputWindowCheckBox setState:[aProfile integerForKey:@"showOutputWindow"]];
+	[showOutputDrawerCheckBox setState:[aProfile integerForKey:@"showOutputDrawer"]];
 	[previewCheckBox setState:[aProfile integerForKey:@"preview"]];
 	[deleteTmpFileCheckBox setState:[aProfile integerForKey:@"deleteTmpFile"]];
 	
@@ -183,7 +183,7 @@
 	[self loadSettingForTextField:topMarginLabel fromProfile:aProfile forKey:@"topMarginLabel"];
 	[self loadSettingForTextField:bottomMarginLabel fromProfile:aProfile forKey:@"bottomMarginLabel"];
 	
-	[resolutionSlider setIntValue:[aProfile integerForKey:@"resolution"]];
+	[resolutionSlider setFloatValue:[aProfile integerForKey:@"resolution"]];
 	[leftMarginSlider setIntValue:[aProfile integerForKey:@"leftMargin"]];
 	[rightMarginSlider setIntValue:[aProfile integerForKey:@"rightMargin"]];
 	[topMarginSlider setIntValue:[aProfile integerForKey:@"topMargin"]];
@@ -237,7 +237,7 @@
 	[currentProfile setFloat:NSHeight([mainWindow frame]) forKey:@"mainWindowHeight"];
 	[currentProfile setObject:[outputFileTextField stringValue] forKey:@"outputFile"];
 	
-	[currentProfile setInteger:[showOutputWindowCheckBox state] forKey:@"showOutputWindow"];
+	[currentProfile setInteger:[showOutputDrawerCheckBox state] forKey:@"showOutputDrawer"];
 	[currentProfile setInteger:[previewCheckBox state] forKey:@"preview"];
 	[currentProfile setInteger:[deleteTmpFileCheckBox state] forKey:@"deleteTmpFile"];
 	
@@ -256,11 +256,11 @@
 	[currentProfile setObject:[topMarginLabel stringValue] forKey:@"topMarginLabel"];
 	[currentProfile setObject:[bottomMarginLabel stringValue] forKey:@"bottomMarginLabel"];
 	
-	[currentProfile setInteger:[resolutionSlider intValue] forKey:@"resolution"];
-	[currentProfile setInteger:[leftMarginSlider intValue] forKey:@"leftMargin"];
-	[currentProfile setInteger:[rightMarginSlider intValue] forKey:@"rightMargin"];
-	[currentProfile setInteger:[topMarginSlider intValue] forKey:@"topMargin"];
-	[currentProfile setInteger:[bottomMarginSlider intValue] forKey:@"bottomMargin"];
+	[currentProfile setFloat:[resolutionLabel floatValue] forKey:@"resolution"];
+	[currentProfile setInteger:[leftMarginLabel intValue] forKey:@"leftMargin"];
+	[currentProfile setInteger:[rightMarginLabel intValue] forKey:@"rightMargin"];
+	[currentProfile setInteger:[topMarginLabel intValue] forKey:@"topMargin"];
+	[currentProfile setInteger:[bottomMarginLabel intValue] forKey:@"bottomMargin"];
 	
 	[currentProfile setInteger:[convertYenMarkMenuItem state] forKey:@"convertYenMark"];
 	[currentProfile setObject:[[sourceTextView font] fontName] forKey:@"sourceFontName"];
@@ -350,11 +350,13 @@
 					name: @"NSApplicationWillTerminateNotification"
 				  object: NSApp];
 	
+	/*
 	// アウトプットウィンドウが閉じられるときにメニューのチェックを外す
 	[aCenter addObserver: self
 				selector: @selector(uncheckOutputWindowMenuItem:)
 					name: @"NSWindowWillCloseNotification"
 				  object: outputWindow];
+	 */
 	
 	// プリアンブルウィンドウが閉じられるときにメニューのチェックを外す
 	[aCenter addObserver: self
@@ -443,12 +445,12 @@
 {
 	[preambleWindow close];
 	[preferenceWindow close];
-	[outputWindow close];
+	//[outputWindow close];
 }
 
-- (void)uncheckOutputWindowMenuItem:(NSNotification *)aNotification
+- (void)uncheckOutputDrawerMenuItem:(NSNotification *)aNotification
 {
-	[outputWindowMenuItem setState:NO];
+	[outputDrawerMenuItem setState:NO];
 }
 
 - (void)uncheckPreambleWindowMenuItem:(NSNotification *)aNotification
@@ -500,15 +502,16 @@
 	[sender setState:![sender state]];
 }
 
-- (IBAction)toggleOutputWindow:(id)sender 
+- (IBAction)toggleOutputDrawer:(id)sender 
 {
-	if([outputWindow isVisible])
+	if([outputDrawer state] == NSDrawerOpenState)
 	{
-		[outputWindow close];
+		[outputDrawerMenuItem setState:NO];
+		[outputDrawer close];
 	}
 	else
 	{
-		[self showOutputWindow];
+		[self showOutputDrawer];
 	}
     
 }

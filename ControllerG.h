@@ -7,16 +7,16 @@
 	IBOutlet ProfileController *profileController;
     IBOutlet NSWindow *mainWindow;
     IBOutlet NSTextView *sourceTextView;
-    IBOutlet NSWindow *outputWindow;
+	IBOutlet NSDrawer *outputDrawer;
     IBOutlet NSTextView *outputTextView;
     IBOutlet NSWindow *preambleWindow;
     IBOutlet NSTextView *preambleTextView;
 	IBOutlet NSMenuItem *convertYenMarkMenuItem;
-	IBOutlet NSMenuItem *outputWindowMenuItem;
+	IBOutlet NSMenuItem *outputDrawerMenuItem;
 	IBOutlet NSMenuItem *preambleWindowMenuItem;
 	IBOutlet NSTextField *outputFileTextField;
 	IBOutlet NSButton *transparentCheckBox;
-	IBOutlet NSButton *showOutputWindowCheckBox;
+	IBOutlet NSButton *showOutputDrawerCheckBox;
 	IBOutlet NSButton *previewCheckBox;
 	IBOutlet NSButton *deleteTmpFileCheckBox;
 	IBOutlet NSWindow *preferenceWindow;
@@ -46,7 +46,7 @@
 }
 - (IBAction)generate:(id)sender;
 - (IBAction)closeWindow:(id)sender;
-- (IBAction)toggleOutputWindow:(id)sender;
+- (IBAction)toggleOutputDrawer:(id)sender;
 - (IBAction)togglePreambleWindow:(id)sender;
 - (IBAction)showMainWindow:(id)sender;
 - (IBAction)toggleMenuItem:(id)sender;
