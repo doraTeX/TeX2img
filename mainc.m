@@ -7,7 +7,7 @@
 
 #define OPTION_NUM 15
 #define MAX_LEN 1024
-#define VERSION "1.4.1"
+#define VERSION "1.4.2"
 
 static void version()
 {

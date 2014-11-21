@@ -2,6 +2,8 @@
 #import <unistd.h>
 #import <Quartz/Quartz.h>
 //#import <OgreKit/OgreKit.h>
+#include <regex.h>
+
 #define MAX_LEN 1024
 
 #import "NSDictionary-Extension.h"
@@ -367,6 +369,63 @@
 
 }
 
+- (void)enlargeBB:(NSString*)epsName
+{
+	regex_t regexBB, regexHiResBB;
+	size_t nmatch = 5;
+	regmatch_t pmatch[nmatch];
+	
+	regcomp(&regexBB, "^\\%\\%BoundingBox\\: ([0-9]+) ([0-9]+) ([0-9]+) ([0-9]+)$", REG_EXTENDED|REG_NEWLINE);
+	regcomp(&regexHiResBB, "^\\%\\%HiResBoundingBox\\: ([0-9\\.]+) ([0-9\\.]+) ([0-9\\.]+) ([0-9\\.]+)$", REG_EXTENDED|REG_NEWLINE);
+
+	int leftbottom_x = 0;
+	int leftbottom_y = 0;
+	int righttop_x = 0;
+	int righttop_y = 0;
+
+	char str[MAX_LEN];
+	NSMutableArray* lines = [NSMutableArray arrayWithArray:0];
+
+	FILE *fp;
+	NSString* epsFilePath = [tempdir stringByAppendingPathComponent:epsName];
+
+	fp = fopen([epsFilePath UTF8String], "r");
+	while ((fgets(str, MAX_LEN - 1, fp)) != NULL)
+	{
+		NSString* line = [NSString stringWithUTF8String:str];
+		if(regexec(&regexBB, str, nmatch, pmatch, 0) == 0)
+		{
+			leftbottom_x  = [[line substringWithRange:NSMakeRange(pmatch[1].rm_so, pmatch[1].rm_eo - pmatch[1].rm_so)] intValue] - leftMargin;
+			leftbottom_y  = [[line substringWithRange:NSMakeRange(pmatch[2].rm_so, pmatch[2].rm_eo - pmatch[2].rm_so)] intValue] - bottomMargin;
+			righttop_x    = [[line substringWithRange:NSMakeRange(pmatch[3].rm_so, pmatch[3].rm_eo - pmatch[3].rm_so)] intValue]  + rightMargin;
+			righttop_y    = [[line substringWithRange:NSMakeRange(pmatch[4].rm_so, pmatch[4].rm_eo - pmatch[4].rm_so)] intValue] + topMargin;
+			[lines addObject:[NSString stringWithFormat:@"%%%%BoundingBox: %d %d %d %d\n", leftbottom_x, leftbottom_y, righttop_x, righttop_y]];
+			continue;
+		}
+		
+		if(regexec(&regexHiResBB, str, nmatch, pmatch, 0) == 0)
+		{
+			continue;
+		}
+		
+		[lines addObject:line];
+	}
+	fclose(fp);
+	
+	fp = fopen([epsFilePath UTF8String], "w");
+	
+	NSEnumerator* enumerator = [lines objectEnumerator];
+	NSString* line;
+	while(line = [enumerator nextObject])
+	{
+		fputs([line UTF8String], fp);
+	}
+	fclose(fp);
+	
+	regfree(&regexBB);
+	regfree(&regexHiResBB);	
+}
+
 /*
 - (int)eps2image:(NSString*)epsName outputFileName:(NSString*)outputFileName resolution:(int)resolution
 {
@@ -510,8 +569,14 @@
 		{
 			[self eps2pdf:outputEpsFileName outputFileName:outputFileName];
 		}
-		else if([@"eps" isEqualToString:extension])  // 最終出力が EPS の場合，生成したEPSファイルの名前を最終出力ファイル名へ変更する
+		else if([@"eps" isEqualToString:extension])  // 最終出力が EPS の場合
 		{
+			// 余白を付け加えるようバウンディングボックスを改変
+			if(topMargin + bottomMargin + leftMargin + rightMargin > 0)
+			{
+				[self enlargeBB:outputEpsFileName];
+			}
+			//生成したEPSファイルの名前を最終出力ファイル名へ変更する
 			if([fileManager fileExistsAtPath:outputFileName])
 			{
 				[fileManager removeFileAtPath:outputFileName handler:nil];

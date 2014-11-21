@@ -2,18 +2,18 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.03">
 	<data>
 		<int key="IBDocument.SystemTarget">1040</int>
-		<string key="IBDocument.SystemVersion">9L30</string>
+		<string key="IBDocument.SystemVersion">9L31a</string>
 		<string key="IBDocument.InterfaceBuilderVersion">677</string>
 		<string key="IBDocument.AppKitVersion">949.54</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="372"/>
-			<integer value="672"/>
 			<integer value="473"/>
 			<integer value="205"/>
-			<integer value="517"/>
 			<integer value="481"/>
+			<integer value="372"/>
+			<integer value="672"/>
+			<integer value="519"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1806,8 +1806,7 @@ IC8gLnBkZiDvvIk</string>
 												<object class="NSTextFieldCell" key="NSTitleCell">
 													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">0</int>
-													<string type="base64-UTF8" key="NSContents">5L2Z55m96Kit5a6a77yI44OU44Kv44K744Or5Y2Y5L2N77ybIEpQRUcgLyBQTkcgLyBQREYg44Gn5pyJ
-5Yq577yJA</string>
+													<string type="base64-UTF8" key="NSContents">5L2Z55m96Kit5a6a77yI44OU44Kv44K744Or5Y2Y5L2N77yJA</string>
 													<reference key="NSSupport" ref="26"/>
 													<reference key="NSBackgroundColor" ref="646503414"/>
 													<object class="NSColor" key="NSTextColor">
@@ -5705,8 +5704,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{449, 383}, {542, 373}}</string>
-					<string>{{449, 383}, {542, 373}}</string>
+					<string>{{423, 383}, {542, 373}}</string>
+					<string>{{423, 383}, {542, 373}}</string>
 					<reference ref="9"/>
 					<string>{{33, 99}, {480, 360}}</string>
 					<string>{3.40282e+38, 3.40282e+38}</string>
