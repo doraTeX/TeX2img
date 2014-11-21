@@ -11,7 +11,7 @@
 @implementation MyLayoutManager
 - (id)init
 {
-    if (!(self = [super init])) {
+    if (!(self = super.init)) {
         return nil;
     }
 	unichar u_tabCharacter = 0x2023; // 他の候補：0x00AC, 0x21E5, 0x25B9

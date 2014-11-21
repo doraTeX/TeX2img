@@ -39,23 +39,16 @@ static BOOL isValidTeXCommandChar(unichar c)
 }
 
 - (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation
-						length: (unsigned)newLength key:(NSString *)key
+                        length: (unsigned)newLength key:(NSString *)key
 {
-	NSUndoManager	*myManager;
-	NSMutableDictionary	*myDictionary;
-	NSNumber		*theLocation, *theLength;
-	
-	// Create & register an undo action
-	myManager = self.undoManager;
-	myDictionary = [NSMutableDictionary dictionaryWithCapacity: 4];
-	theLocation = @(oldLocation);
-	theLength = @(newLength);
-	myDictionary[@"oldString"] = oldString;
-	myDictionary[@"oldLocation"] = theLocation;
-	myDictionary[@"oldLength"] = theLength;
-	myDictionary[@"undoKey"] = key;
-	[myManager registerUndoWithTarget:self selector:@selector(undoSpecial:) object: myDictionary];
-	myManager.ActionName = key;
+    NSUndoManager *myManager = self.undoManager;
+    [myManager registerUndoWithTarget:self selector:@selector(undoSpecial:) object: @{
+                                                                                      @"oldString": oldString,
+                                                                                      @"oldLocation": @(oldLocation),
+                                                                                      @"oldLength" : @(newLength),
+                                                                                      @"undoKey" : key
+                                                                                      }];
+    [myManager setActionName:key];
 }
 
 - (void)undoSpecial:(id)theDictionary
@@ -95,11 +88,11 @@ static BOOL isValidTeXCommandChar(unichar c)
 	unsigned from, to;
 	
 	// mutably copy the replacement text
-	stringBuf = [NSMutableString stringWithString: theString];
+	stringBuf = [NSMutableString stringWithString:theString];
 	
 	// Determine the curent selection range and text
 	oldRange = self.selectedRange;
-	oldString = [self.string substringWithRange: oldRange];
+	oldString = [self.string substringWithRange:oldRange];
 	
 	// Substitute all occurances of #SEL# with the original text
 	[stringBuf replaceOccurrencesOfString: @"#SEL#" withString: oldString
@@ -159,7 +152,7 @@ static BOOL isValidTeXCommandChar(unichar c)
                 if (completionString) {
                     autoCompleting = YES;
                     [self insertSpecialNonStandard:completionString
-                                           undoKey: @"Autocompletion"];
+                                           undoKey:@"Autocompletion"];
                     autoCompleting = NO;
                     return;
                 }

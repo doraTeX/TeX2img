@@ -3,14 +3,15 @@
 
 static BOOL isValidTeXCommandChar(unichar c)
 {
-	if ((c >= 'A') && (c <= 'Z'))
+    if ((c >= 'A') && (c <= 'Z')) {
 		return YES;
-	else if ((c >= 'a') && (c <= 'z'))
+    } else if ((c >= 'a') && (c <= 'z')) {
 		return YES;
-	else if (c == '@')
+    } else if (c == '@') {
 		return YES;
-	else
+    } else {
 		return NO;
+    }
 }
 
 @implementation TeXTextView (Colorize)
@@ -85,7 +86,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 	// Now we iterate over the whole text and perform the actual recoloring.
 	location = aLineStart;
 	while (location < aLineEnd) {
-		theChar = [textString characterAtIndex: location];
+		theChar = [textString characterAtIndex:location];
 		
 		if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
 			// The three special characters { } $ get an extra color.
@@ -108,19 +109,20 @@ static BOOL isValidTeXCommandChar(unichar c)
 			colorRange.location = location;
 			colorRange.length = 1;
 			location++;
-			if ((location < aLineEnd) && (!isValidTeXCommandChar([textString characterAtIndex: location]))) {
+			if ((location < aLineEnd) && (!isValidTeXCommandChar([textString characterAtIndex:location]))) {
 				location++;
 				colorRange.length = location - colorRange.location;
 			} else {
-				while ((location < aLineEnd) && (isValidTeXCommandChar([textString characterAtIndex: location]))) {
+				while ((location < aLineEnd) && (isValidTeXCommandChar([textString characterAtIndex:location]))) {
 					location++;
 					colorRange.length = location - colorRange.location;
 				}
 			}
 			
 			[layoutManager addTemporaryAttributes:commandColorAttribute forCharacterRange:colorRange];
-		} else
+        } else {
 			location++;
+        }
 	}
 }
 
@@ -332,14 +334,15 @@ static BOOL isValidTeXCommandChar(unichar c)
 			return YES;
 		}
 		
-		if (rightpar == '}')
+        if (rightpar == '}') {
 			leftpar = '{';
-		else if (rightpar == ')')
+        } else if (rightpar == ')') {
 			leftpar = '(';
-		else if (rightpar == '>')
+        } else if (rightpar == '>') {
 			leftpar = '<';
-		else
+        } else {
 			leftpar = '[';
+        }
 		
 		textString = self.string;
 		i = affectedCharRange.location;
@@ -357,10 +360,11 @@ static BOOL isValidTeXCommandChar(unichar c)
 			uchar = [textString characterAtIndex:i];
 			previousChar = (i > 0) ? [textString characterAtIndex:i-1] : 0;
 			notCS = ((previousChar != '\\') && (previousChar != 0x00a5));
-			if (uchar == rightpar && notCS)
+            if (uchar == rightpar && notCS) {
 				count++;
-			else if (uchar == leftpar && notCS)
+            } else if (uchar == leftpar && notCS) {
 				count--;
+            }
 			if (count == 0) {
 				matchRange.location = i;
 				matchRange.length = 1;

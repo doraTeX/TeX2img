@@ -70,26 +70,6 @@ static NSString* endcommentString = @"›";
 	//NSLog(@"Next • hit");
 }
 
-- (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation
-						length: (unsigned)newLength key:(NSString *)key
-{
-	NSUndoManager	*myManager;
-	NSMutableDictionary	*myDictionary;
-	NSNumber		*theLocation, *theLength;
-	
-	// Create & register an undo action
-	myManager = self.undoManager;
-	myDictionary = [NSMutableDictionary dictionaryWithCapacity: 4];
-	theLocation = @(oldLocation);
-	theLength = @(newLength);
-	myDictionary[@"oldString"] = oldString;
-	myDictionary[@"oldLocation"] = theLocation;
-	myDictionary[@"oldLength"] = theLength;
-	myDictionary[@"undoKey"] = key;
-	[myManager registerUndoWithTarget:self selector:@selector(undoSpecial:) object: myDictionary];
-	myManager.ActionName = key;
-}
-
 
 - (void)undoSpecial:(id)theDictionary
 {
@@ -147,13 +127,13 @@ static NSString* endcommentString = @"›";
 	NSCharacterSet *charSet;
 	unichar c;
 	
-	if ([theEvent.characters isEqualToString: g_commandCompletionChar]  && (theEvent.modifierFlags & NSAlternateKeyMask) != 0) {
+	if ([theEvent.characters isEqualToString:g_commandCompletionChar]  && (theEvent.modifierFlags & NSAlternateKeyMask) != 0) {
 		[self doNextBullet:self];
 		return;
-	} else if ([theEvent.characters isEqualToString: g_commandCompletionChar] && (theEvent.modifierFlags & NSControlKeyMask) != 0) {
+	} else if ([theEvent.characters isEqualToString:g_commandCompletionChar] && (theEvent.modifierFlags & NSControlKeyMask) != 0) {
 		[self doPreviousBullet:self];
 		return;
-	} else if ([theEvent.characters isEqualToString: g_commandCompletionChar] &&
+	} else if ([theEvent.characters isEqualToString:g_commandCompletionChar] &&
 			 ((theEvent.modifierFlags & NSAlternateKeyMask) == 0) &&
 			 !self.hasMarkedText && g_commandCompletionList) {
 		textString = self.string; // this will change during operations (such as undo)
@@ -304,7 +284,7 @@ static NSString* endcommentString = @"›";
 					// Filtering for Japanese
 					//if (shouldFilter == filterMacJ)//we use current encoding, so this isn't necessary
 					//	newString = filterBackslashToYen(newString);
-					if (![newString isEqualToString: originalString])
+					if (![newString isEqualToString:originalString])
 						break;		// continue search if newString is equal to originalString
 				}
 			}
@@ -362,7 +342,7 @@ static NSString* endcommentString = @"›";
 		} else { // candidate was not found
 			originalString = currentString = nil;
             if (!wasCompleted) {
-				[super keyDown: theEvent];
+				[super keyDown:theEvent];
             }
 			wasCompleted = NO;
 			//NSLog(@"called super");
@@ -374,6 +354,6 @@ static NSString* endcommentString = @"›";
 		// return; //Herb Suggested Error Here		
 	}
 	
-	[super keyDown: theEvent];
+	[super keyDown:theEvent];
 }
 @end

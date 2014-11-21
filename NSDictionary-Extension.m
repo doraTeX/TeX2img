@@ -3,17 +3,17 @@
 @implementation NSDictionary (Extension)
 -(float)floatForKey:(NSString *)aKey
 {
-	return [((NSNumber*)self[aKey]) floatValue];
+	return ((NSNumber*)self[aKey]).floatValue;
 }
 
 -(int)integerForKey:(NSString *)aKey
 {
-	return [((NSNumber*)self[aKey]) intValue];
+	return ((NSNumber*)self[aKey]).intValue;
 }
 
 -(BOOL)boolForKey:(NSString *)aKey
 {
-	return [((NSNumber*)self[aKey]) boolValue];
+	return ((NSNumber*)self[aKey]).boolValue;
 }
 
 -(NSString*)stringForKey:(NSString *)aKey
@@ -30,7 +30,6 @@
 {
 	return [NSMutableArray arrayWithArray:(NSArray*)self[aKey]];
 }
-
 
 -(NSDictionary*)dictionaryForKey:(NSString *)aKey
 {

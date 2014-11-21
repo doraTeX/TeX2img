@@ -22,7 +22,9 @@
 
 - (NSMutableDictionary*)profileForName:(NSString*)profileName
 {
-	if (!profileNames) return nil;
+    if (!profileNames) {
+        return nil;
+    }
 	
 	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
 	return (targetIndex == NSNotFound) ? nil : [NSMutableDictionary dictionaryWithDictionary:profiles[targetIndex]];
@@ -30,18 +32,14 @@
 
 - (void)loadProfilesFromPlist
 {
-	profileNames = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"profileNames"]];
-	profiles =  [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"profiles"]];
+	profileNames = [NSMutableArray arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:@"profileNames"]];
+	profiles =  [NSMutableArray arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:@"profiles"]];
 }
 
 - (void)initProfiles
 {
 	profileNames = NSMutableArray.array;
 	profiles = NSMutableArray.array;
-}
-
-- (void)releaseProfiles
-{
 }
 
 - (void)removeProfileForName:(NSString*)profileName
@@ -78,7 +76,7 @@
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView*)aTableView
 {
-	return [profileNames count];
+	return profileNames.count;
 }
 
 - (id)tableView:(NSTableView*)aTableView objectValueForTableColumn:(NSTableColumn*)aTableColumn row:(NSInteger)rowIndex
@@ -146,11 +144,6 @@
 
 	[profilesTableView setDraggingSourceOperationMask:NSDragOperationMove forLocal:YES];
 	[profilesTableView registerForDraggedTypes:@[MovedRowsType]];
-}
-
-- (void)dealloc
-{
-	[self releaseProfiles];
 }
 
 - (IBAction)setSelectedProfileName:(id)sender
@@ -228,7 +221,6 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	}
 	// if drag source is self, it's a move unless the Option key is pressed
     if (info.draggingSource == profilesTableView) {
-		
 		NSEvent *currentEvent = [NSApp currentEvent];
 		NSUInteger optionKeyPressed = currentEvent.modifierFlags & NSAlternateKeyMask;
 		

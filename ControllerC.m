@@ -1,9 +1,9 @@
 #import "ControllerC.h"
 #import <stdio.h>
 
-BOOL checkWhich(NSString* cmdName)
+BOOL checkWhich(NSString *cmdName)
 {
-	int status = system([[NSString stringWithFormat:@"which %@ > /dev/null", cmdName] cStringUsingEncoding:NSUTF8StringEncoding]);
+	int status = system([NSString stringWithFormat:@"which %@ > /dev/null", cmdName].UTF8String);
 	return (status == 0) ? YES : NO;
 }
 
@@ -23,7 +23,7 @@ BOOL checkWhich(NSString* cmdName)
 
 - (void)showNotFoundError:(NSString*)aPath
 {
-	fprintf(stderr, [[NSString stringWithFormat:@"tex2img : %@ can't be found.\nCheck environment variable $PATH.\n", aPath] cStringUsingEncoding:NSUTF8StringEncoding]);
+	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ can't be found.\nCheck environment variable $PATH.\n", aPath].UTF8String);
 }
 
 - (BOOL)platexExistsAtPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
@@ -65,33 +65,33 @@ BOOL checkWhich(NSString* cmdName)
 
 - (void)showExtensionError
 {
-	fprintf(stderr, [@"tex2img : The extention of output file must be either .eps/.png/.jpg/.pdf.\n" cStringUsingEncoding:NSUTF8StringEncoding]);
+	fprintf(stderr, "tex2img : The extention of output file must be either .eps/.png/.jpg/.pdf.\n");
 }
 
 - (void)showFileGenerateError:(NSString*)aPath
 {
-	fprintf(stderr, [[NSString stringWithFormat:@"tex2img : %@ can't be created so generation has been aborted.\nCheck permission.\n", aPath] cStringUsingEncoding:NSUTF8StringEncoding]);	
+	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ can't be created so generation has been aborted.\nCheck permission.\n", aPath].UTF8String);
 }
 
 - (void)showExecError:(NSString*)command
 {
-	fprintf(stderr, [[NSString stringWithFormat:@"tex2img : %@ can't be executed.\nCheck errors in the source code.\n", command] cStringUsingEncoding:NSUTF8StringEncoding]);
+	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ can't be executed.\nCheck errors in the source code.\n", command].UTF8String);
 }
 
 - (void)showCannotOverrideError:(NSString*)path
 {
-	fprintf(stderr, [[NSString stringWithFormat:@"tex2img : %@ can't be overridden.\n", path] cStringUsingEncoding:NSUTF8StringEncoding]);
+	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ can't be overridden.\n", path].UTF8String);
 }
 
 - (void)showCompileError
 {
-	fprintf(stderr, [@"tex2img : TeX Compile error.\nCheck errors in the source code.\n" cStringUsingEncoding:NSUTF8StringEncoding]);
+	fprintf(stderr, "tex2img : TeX Compile error.\nCheck errors in the source code.\n");
 }
 
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet
 {
     if (!quiet) {
-        printf([str cStringUsingEncoding:NSUTF8StringEncoding]);
+        printf(str.UTF8String);
     }
 }
 ////// ここまで OutputController プロトコルの実装 //////

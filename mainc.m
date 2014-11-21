@@ -1,5 +1,5 @@
 #import <stdio.h>
-#import <unistd.h>
+//#import <unistd.h>
 #import <getopt.h>
 #import "Converter.h"
 #import "ControllerC.h"
@@ -7,7 +7,7 @@
 
 #define OPTION_NUM 18
 #define MAX_LEN 1024
-#define VERSION "1.8.2"
+#define VERSION "1.8.3"
 
 static void version()
 {
@@ -300,9 +300,9 @@ int main (int argc, char *argv[]) {
                 case 14: // --unit
                     if (optarg) {
                         NSString *unitString = @(optarg);
-                        if ([unitString isEqualToString:@"px"]){
+                        if ([unitString isEqualToString:@"px"]) {
                             unitTag = @(PXUNITTAG);
-                        } else if ([unitString isEqualToString:@"bp"]){
+                        } else if ([unitString isEqualToString:@"bp"]) {
                             unitTag = @(BPUNITTAG);
                         } else {
                             usage();
@@ -348,7 +348,7 @@ int main (int argc, char *argv[]) {
         
         ControllerC* controller = ControllerC.new;
         
-        NSMutableDictionary *aProfile = [NSMutableDictionary dictionary];
+        NSMutableDictionary *aProfile = NSMutableDictionary.dictionary;
         aProfile[@"platexPath"] = getPath(compiler);
         aProfile[@"dvipdfmxPath"] = getPath(@"dvipdfmx");
         aProfile[@"gsPath"] = getPath(@"gs");

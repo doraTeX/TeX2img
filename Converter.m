@@ -108,7 +108,7 @@
 - (NSMutableString*)substituteUTF:(NSString*)dataString
 {
 	NSMutableString *utfString, *newString = NSMutableString.string;
-	NSInteger texChar = 0x5c;
+	unichar texChar = 0x5c;
 	NSRange charRange;
 	NSString *subString;
 	NSUInteger startl, endl, end;
@@ -119,15 +119,14 @@
 		if (charRange.location == endl) {
 			[dataString getLineStart:&startl end:&endl contentsEnd:&end forRange:charRange];
 		}
-		charRange = [dataString rangeOfComposedCharacterSequenceAtIndex: charRange.location];
+		charRange = [dataString rangeOfComposedCharacterSequenceAtIndex:charRange.location];
 		subString = [dataString substringWithRange: charRange];
 		
-		if (![subString canBeConvertedToEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP)]) {
-			if ([subString characterAtIndex: 0] == 0x2015) {
-				utfString = [NSMutableString stringWithFormat:@"%C", (unsigned short)0x2014];
+		if (![subString canBeConvertedToEncoding:CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP)]) {
+			if ([subString characterAtIndex:0] == 0x2015) {
+				utfString = [NSMutableString stringWithFormat:@"%C", 0x2014];
 			} else {
-				utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}",
-							 (unsigned short)texChar, [subString characterAtIndex: 0]];
+				utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}", texChar, [subString characterAtIndex: 0]];
 			}
 			if ((charRange.location + charRange.length) == end) {
 				[utfString appendString:@"%"];
@@ -231,7 +230,7 @@
 	[cmdline appendString:@" 2>&1"];
 	[controller appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:quietFlag];
 
-	if ((fp=popen(cmdline.UTF8String,"r")) == NULL) {
+	if ((fp=popen(cmdline.UTF8String, "r")) == NULL) {
 		return NO;
 	}
 	while (YES) {
@@ -339,14 +338,18 @@
 	return YES;
 }
 
-- (BOOL)eps2pdf:(NSString*)epsName outputFileName:(NSString*)outputFileName
+- (BOOL)eps2pdf:(NSString*)epsName outputFileName:(NSString*)outputFileName addMargin:(BOOL)addMargin
 {
-	// まず，epstopdf を使って PDF に戻し，次に，pdfcrop を使って余白を付け加える
-	NSString* trimFileName = [NSString stringWithFormat:@"%@.trim.pdf", epsName];
-	if ([self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName addMargin:YES]) {
-		return YES;
-	}
-	return NO;
+    if (addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0)) {
+        NSString* trimFileName = [NSString stringWithFormat:@"%@.trim.pdf", epsName];
+        // まず，epstopdf を使って PDF に戻し，次に，pdfcrop を使って余白を付け加える
+        return [self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName addMargin:YES];
+    } else {
+        // epstopdf を使って PDF に戻すのみ
+        return [self epstopdf:epsName outputPdfFileName:outputFileName];
+    }
+    
+    return NO;
 }
 
 // NSBitmapImageRep の背景を白く塗りつぶす
@@ -365,12 +368,14 @@
 	return [NSBitmapImageRep.alloc initWithData:backgroundImage.TIFFRepresentation];
 }
 
-- (void)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page
+- (void)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page crop:(BOOL)crop
 {
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
 
 	// PDFのバウンディングボックスで切り取る
-	[self pdfcrop:pdfFilePath outputFileName:pdfFilePath addMargin:NO];
+    if (crop) {
+        [self pdfcrop:pdfFilePath outputFileName:pdfFilePath addMargin:NO];
+    }
 	
 	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
 	NSData* pageData = [[PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfFilePath]] pageAtIndex:(page-1)].dataRepresentation;
@@ -406,8 +411,7 @@
 		NSDictionary *propJpeg = @{NSImageCompressionFactor: @1.0f};
 		imageRep = [self fillBackground:imageRep];
 		outputData = [imageRep representationUsingType:NSJPEGFileType properties:propJpeg];
-	}
-	else { // png出力の場合
+	} else { // png出力の場合
 		if (!transparentPngFlag) {
 			imageRep = [self fillBackground:imageRep];
 		}
@@ -572,15 +576,15 @@
 
     NSInteger resolution = speedPriorityMode ? resolutionLevel*5*2*72 : 20016;
 
-    // PDF→EPS の変換の実行
+    // PDF→EPS の変換の実行（この時点で強制cropされる）
     if (![self pdf2eps:pdfFileName outputEpsFileName:outputEpsFileName resolution:resolution page:page]
         || ![fileManager fileExistsAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName]]) {
         [controller showExecError:@"ghostscript"];
         return NO;
     }
     
-    if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す
-        [self eps2pdf:outputEpsFileName outputFileName:outputFileName];
+    if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す（ここでpdfcropで余白付与）
+        [self eps2pdf:outputEpsFileName outputFileName:outputFileName addMargin:YES];
     } else if ([@"eps" isEqualToString:extension]) { // 最終出力が EPS の場合
         // 余白を付け加えるようバウンディングボックスを改変
         if (topMargin + bottomMargin + leftMargin + rightMargin > 0) {
@@ -593,8 +597,8 @@
         [fileManager moveItemAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
     } else if ([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) { // JPEG/PNG出力の場合，EPSをPDFに戻した上で，それをさらにJPEG/PNGに変換する
         NSString* outlinedPdfFileName = [NSString stringWithFormat:@"%@.outline.pdf", tempFileBaseName];
-        [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName]; // アウトラインを取ったEPSをPDFへ戻す
-        [self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1]; // PDFを目的の画像ファイルへ変換
+        [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:NO]; // アウトラインを取ったEPSをPDFへ戻す（余白はこの時点では付与しない）
+        [self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1 crop:NO]; // PDFを目的の画像ファイルへ変換（ここで余白付与）
     }
     
     return YES;
@@ -640,9 +644,9 @@
 	
     // 最終出力が JPEG/PNG で「速度優先」の場合は，PDFからQuartzで直接変換
     if (([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) && speedPriorityMode) {
-		[self pdf2image:pdfFilePath outputFileName:outputFileName page:1];
+        [self pdf2image:pdfFilePath outputFileName:outputFileName page:1 crop:YES];
         for (NSUInteger i=2; i<=pageCount; i++) {
-            [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i];
+            [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i crop:YES];
         }
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPSを経由しなくてよいので，pdfcrop で直接生成する。
 		[self pdfcrop:pdfFilePath outputFileName:outputFileName addMargin:YES];

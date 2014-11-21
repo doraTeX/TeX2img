@@ -15,6 +15,8 @@
     NSUInteger lastStringLength;
     NSDictionary* autocompletionDictionary;
 }
+- (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation
+                        length: (unsigned)newLength key:(NSString *)key;
 @end
 
 @interface TeXTextView (Colorize)
