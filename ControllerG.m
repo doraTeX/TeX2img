@@ -270,7 +270,7 @@
 	[currentProfile setObject:[[preambleTextView font] fontName] forKey:@"preambleFontName"];
 	[currentProfile setFloat:[[preambleTextView font] pointSize] forKey:@"preambleFontSize"];
 	
-	[currentProfile setObject:[[preambleTextView textStorage] string] forKey:@"preamble"];
+	[currentProfile setObject:[NSString stringWithString:[[preambleTextView textStorage] string]] forKey:@"preamble"];
 
 	if([sjisRadioButton state])
 	{
