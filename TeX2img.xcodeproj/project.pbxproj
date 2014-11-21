@@ -9,10 +9,8 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		3424A8E30E4F2DC1003C9F96 /* Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 3424A8E20E4F2DC1003C9F96 /* Controller.m */; };
-		34414AFE0EDEB057002BA716 /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 34414AFD0EDEB057002BA716 /* epstopdf */; };
-		34414B020EDEB05E002BA716 /* epstopdf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 34414AFD0EDEB057002BA716 /* epstopdf */; };
-		3445B2ED0EDC173E008A7AA5 /* pdfcrop in Resources */ = {isa = PBXBuildFile; fileRef = 3445B2EC0EDC173E008A7AA5 /* pdfcrop */; };
-		3445B30C0EDC1761008A7AA5 /* pdfcrop in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3445B2EC0EDC173E008A7AA5 /* pdfcrop */; };
+		342C6196101E637F00E29FEB /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 342C6194101E637F00E29FEB /* epstopdf */; };
+		342C6197101E637F00E29FEB /* pdfcrop in Resources */ = {isa = PBXBuildFile; fileRef = 342C6195101E637F00E29FEB /* pdfcrop */; };
 		348BB5190F08C3850063003D /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
 		7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */; };
 		705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC3550F10E4670052AFA5 /* ControllerC.m */; };
@@ -34,8 +32,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
-				34414B020EDEB05E002BA716 /* epstopdf in CopyFiles */,
-				3445B30C0EDC1761008A7AA5 /* pdfcrop in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,8 +49,8 @@
 		3424A8DF0E4F2C3B003C9F96 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		3424A8E10E4F2DC1003C9F96 /* Controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Controller.h; sourceTree = "<group>"; };
 		3424A8E20E4F2DC1003C9F96 /* Controller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Controller.m; sourceTree = "<group>"; };
-		34414AFD0EDEB057002BA716 /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
-		3445B2EC0EDC173E008A7AA5 /* pdfcrop */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = pdfcrop; sourceTree = "<group>"; };
+		342C6194101E637F00E29FEB /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
+		342C6195101E637F00E29FEB /* pdfcrop */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = pdfcrop; sourceTree = "<group>"; };
 		348BB5170F08C3850063003D /* Converter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Converter.h; sourceTree = "<group>"; };
 		348BB5180F08C3850063003D /* Converter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Converter.m; sourceTree = "<group>"; };
 		7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = TeX2imgIcon.icns; sourceTree = "<group>"; };
@@ -158,8 +154,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				34414AFD0EDEB057002BA716 /* epstopdf */,
-				3445B2EC0EDC173E008A7AA5 /* pdfcrop */,
+				342C6194101E637F00E29FEB /* epstopdf */,
+				342C6195101E637F00E29FEB /* pdfcrop */,
 				7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -243,8 +239,8 @@
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				CE4A31F10E5036500095D4FC /* Localizable.strings in Resources */,
 				7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */,
-				3445B2ED0EDC173E008A7AA5 /* pdfcrop in Resources */,
-				34414AFE0EDEB057002BA716 /* epstopdf in Resources */,
+				342C6196101E637F00E29FEB /* epstopdf in Resources */,
+				342C6197101E637F00E29FEB /* pdfcrop in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

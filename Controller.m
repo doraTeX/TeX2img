@@ -7,8 +7,10 @@
 	[mainWindow makeKeyAndOrderFront:nil];
 }
 
-- (void)appendOutputAndScroll:(NSMutableString*)mStr
+- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(bool)quiet
 {
+	if(quiet) return;
+	
 	[[[outputTextView textStorage] mutableString] appendString:mStr];
 	[outputTextView scrollRangeToVisible: NSMakeRange([[outputTextView string] length], 0)]; // 最下部までスクロール
 	[outputTextView display]; // 再描画
@@ -102,7 +104,7 @@
 
 - (void)restoreDefaultPreambleLogic
 {
-	[[[preambleTextView textStorage] mutableString] setString:@"\\documentclass[fleqn]{jsarticle}\n\\usepackage{amsmath,amssymb}\n\\pagestyle{empty}\n"];
+	[[[preambleTextView textStorage] mutableString] setString:@"\\documentclass[fleqn,papersize]{jsarticle}\n\\usepackage{amsmath,amssymb}\n\\pagestyle{empty}\n"];
 }
 
 - (IBAction)openTempDir:(id)sender
@@ -436,13 +438,14 @@
 	NSString* texBodyStr = [[sourceTextView textStorage] string];
 
 	Converter* converter = [Converter converterWithPlatex:platexPath dvipdfmx:dvipdfmxPath gs:gsPath
-										  withPdfcropPath:[NSString stringWithFormat:@"%@/Contents/Resources/pdfcrop", [[NSBundle mainBundle] bundlePath]]
-										 withEpstopdfPath:[NSString stringWithFormat:@"%@/Contents/Resources/epstopdf", [[NSBundle mainBundle] bundlePath]]
+										  withPdfcropPath:[[NSBundle mainBundle] pathForResource:@"pdfcrop" ofType:nil]
+										 withEpstopdfPath:[[NSBundle mainBundle] pathForResource:@"epstopdf" ofType:nil]
 												 encoding:@"sjis"
 										  resolutionLevel:resolutionLevel leftMargin:leftMargin rightMargin:rightMargin topMargin:topMargin bottomMargin:bottomMargin
 												leaveText:leaveTextFlag transparentPng:transparentPngFlag showOutputWindow:showOutputWindowFlag preview:previewFlag deleteTmpFile:deleteTmpFileFlag
 											 ignoreErrors:ignoreErrorFlag
 												utfExport:utfExportFlag
+													quiet:NO
 											   controller:self];
 	[converter compileAndConvertWithPreamble:preambleStr withBody:texBodyStr outputFilePath:outputFilePath];
 }

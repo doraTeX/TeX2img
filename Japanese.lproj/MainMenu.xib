@@ -8,10 +8,10 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="580"/>
+			<integer value="517"/>
 			<integer value="471"/>
-			<integer value="460"/>
 			<integer value="481"/>
+			<integer value="460"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1627,7 +1627,7 @@ IC8gLnBkZiDvvIk</string>
 																	<reference key="NSControlView" ref="195157801"/>
 																	<double key="NSMaxValue">1.000000e+02</double>
 																	<double key="NSMinValue">1.000000e+00</double>
-																	<double key="NSValue">6.000000e+00</double>
+																	<double key="NSValue">1.500000e+01</double>
 																	<double key="NSAltIncValue">0.000000e+00</double>
 																	<int key="NSNumberOfTickMarks">0</int>
 																	<int key="NSTickMarkPosition">1</int>
@@ -1644,7 +1644,7 @@ IC8gLnBkZiDvvIk</string>
 																<object class="NSTextFieldCell" key="NSCell" id="342150293">
 																	<int key="NSCellFlags">68288064</int>
 																	<int key="NSCellFlags2">71304192</int>
-																	<string key="NSContents">6</string>
+																	<string key="NSContents">15</string>
 																	<reference key="NSSupport" ref="1049726897"/>
 																	<reference key="NSControlView" ref="131599296"/>
 																	<reference key="NSBackgroundColor" ref="999237217"/>
@@ -4244,8 +4244,8 @@ IC8gLnBkZiDvvIk</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{76, 365}, {442, 391}}</string>
-					<string>{{76, 365}, {442, 391}}</string>
+					<string>{{136, 269}, {442, 391}}</string>
+					<string>{{136, 269}, {442, 391}}</string>
 					<reference ref="6"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

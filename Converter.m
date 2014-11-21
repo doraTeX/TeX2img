@@ -15,6 +15,7 @@
 			showOutputWindow:(bool)_showOutputWindowFlag preview:(bool)_previewFlag deleteTmpFile:(bool)_deleteTmpFileFlag
 				ignoreErrors:(bool)_ignoreErrors
 				   utfExport:(bool)_utfExport
+					   quiet:(bool)_quietFlag
 				  controller:(id<OutputController>)_controller
 {
 	platexPath = _platexPath;
@@ -24,7 +25,7 @@
 	epstopdfPath = _epstopdfPath;
 
 	encoding = _encoding;
-	resolutionLevel = _resolutionLevel;
+	resolutionLevel = _resolutionLevel / 5.0;
 	leftMargin = _leftMargin;
 	rightMargin = _rightMargin;
 	topMargin = _topMargin;
@@ -36,6 +37,7 @@
 	deleteTmpFileFlag = _deleteTmpFileFlag;
 	ignoreErrorsFlag = _ignoreErrors;
 	utfExportFlag = _utfExport;
+	quietFlag = _quietFlag;
 	controller = _controller;
 	
 	fileManager = [NSFileManager defaultManager];
@@ -54,6 +56,7 @@
 				 showOutputWindow:(bool)_showOutputWindowFlag preview:(bool)_previewFlag deleteTmpFile:(bool)_deleteTmpFileFlag
 					 ignoreErrors:(bool)_ignoreErrors
 						utfExport:(bool)_utfExport
+							quiet:(bool)_quietFlag
 					   controller:(id<OutputController>)_controller
 {
 	Converter* converter = [Converter alloc];
@@ -65,6 +68,7 @@
 			 showOutputWindow:_showOutputWindowFlag preview:_previewFlag deleteTmpFile:_deleteTmpFileFlag
 				 ignoreErrors:_ignoreErrors
 					utfExport:_utfExport
+						quiet:_quietFlag
 				   controller:_controller];
 	return [converter autorelease];
 }
@@ -196,7 +200,7 @@
 		[cmdline appendString:@" "];
 	}
 	[cmdline appendString:@" 2>&1"];
-	[controller appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline]];
+	[controller appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:quietFlag];
 
 	if((fp=popen([cmdline cString],"r"))==NULL)
 	{
@@ -222,9 +226,9 @@
 	int status = [self execCommand:platexPath atDirectory:tempdir withArguments:[NSArray arrayWithObjects:@"-interaction=nonstopmode", [NSString stringWithFormat:@"-kanji=%@", encoding], teXFilePath, nil] withStdout:outputMStr];
 	if(outputMStr != nil)
 	{
-		[controller appendOutputAndScroll:outputMStr];
+		[controller appendOutputAndScroll:outputMStr quiet:quietFlag];
 	}
-	[controller appendOutputAndScroll:@"\n"];
+	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];
 	
 	return status;
 }
@@ -235,9 +239,9 @@
 	int status = [self execCommand:dvipdfmxPath atDirectory:tempdir withArguments:[NSArray arrayWithObjects:@"-vv", dviFilePath, nil] withStdout:outputMStr];
 	if(outputMStr != nil)
 	{
-		[controller appendOutputAndScroll:outputMStr];
+		[controller appendOutputAndScroll:outputMStr quiet:quietFlag];
 	}
-	[controller appendOutputAndScroll:@"\n"];	
+	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];	
 	
 	return status;
 }
@@ -256,7 +260,7 @@
 									[pdfPath lastPathComponent],
 									outputFileName,
 									nil] withStdout:outputMStr];
-	[controller appendOutputAndScroll:outputMStr];
+	[controller appendOutputAndScroll:outputMStr quiet:quietFlag];
 	
 	return (status==0) ? YES : NO;
 }
@@ -275,7 +279,7 @@
 									[NSString stringWithFormat:@"%@.pdf", tempFileBaseName],
 									nil]
 						withStdout:outputMStr];
-	[controller appendOutputAndScroll:outputMStr];
+	[controller appendOutputAndScroll:outputMStr quiet:quietFlag];
 	return status;
 }
 

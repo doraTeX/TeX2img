@@ -4,9 +4,9 @@
 #import "Converter.h"
 #import "ControllerC.h"
 
-#define OPTION_NUM 14
+#define OPTION_NUM 15
 #define MAX_LEN 1024
-#define VERSION "1.3.7"
+#define VERSION "1.3.8"
 
 static void version()
 {
@@ -21,7 +21,7 @@ static void usage()
     printf("  InputTeXFile            : path of TeX source file (ShiftJIS)\n"); 
     printf("  OutputFile              : path of output file (extension: eps/png/jpg/pdf)\n"); 
     printf("Options:\n"); 
-    printf("  --resolution RESOLUTION : set resolution level   (default: 6)\n"); 
+    printf("  --resolution RESOLUTION : set resolution level   (default: 15)\n"); 
     printf("  --left-margin    MARGIN : set left margin   (px) (default: 0)\n"); 
     printf("  --right-margin   MARGIN : set right margin  (px) (default: 0)\n"); 
     printf("  --top-margin     MARGIN : set top margin    (px) (default: 0)\n"); 
@@ -31,6 +31,7 @@ static void usage()
     printf("  --kanji ENCODING        : set Japanese encoding  (default: sjis)\n"); 
     printf("  --ignore-errors         : force converting by ignoring nonfatal errors\n"); 
     printf("  --utf-export            : substitute \\UTF{xxxx} for non-SJIS characters\n"); 
+    printf("  --quiet                 : do not output logs or messages\n"); 
     printf("  --no-delete             : do not delete temporary files (for debug)\n"); 
     printf("  --version               : display version\n"); 
     printf("  --help                  : display this message\n"); 
@@ -99,7 +100,7 @@ int main (int argc, char *argv[]) {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSApplicationLoad(); // PDFKit を使ったときに _NXCreateWindow: error setting window property のエラーを防ぐため
 
-	int resolutoinLevel = 6;
+	int resolutoinLevel = 15;
 	int leftMargin = 0;
 	int rightMargin = 0;
 	int topMargin = 0;
@@ -109,6 +110,7 @@ int main (int argc, char *argv[]) {
 	bool deleteTmpFileFlag = YES;
 	bool ignoreErrorFlag = NO;
 	bool utfExportFlag = NO;
+	bool quietFlag = NO;
 	NSString* encoding = @"sjis";
 
 	// getopt_long を使った，長いオプション対応のオプション解析
@@ -173,6 +175,11 @@ int main (int argc, char *argv[]) {
 	options[10].flag = NULL;
 	options[10].val = 11;		
 	
+	options[11].name = "quiet";
+	options[11].has_arg = no_argument;
+	options[11].flag = NULL;
+	options[11].val = 12;		
+
 	options[OPTION_NUM - 3].name = "version";
 	options[OPTION_NUM - 3].has_arg = no_argument;
 	options[OPTION_NUM - 3].flag = NULL;
@@ -276,6 +283,9 @@ int main (int argc, char *argv[]) {
 					usage();
 				}
 				break;
+			case 12: // --quiet
+				quietFlag = YES;
+				break;
 			case (OPTION_NUM - 2): // --version
 				version();
 				exit(1);
@@ -298,7 +308,7 @@ int main (int argc, char *argv[]) {
 	NSString* inputFilePath = [NSString stringWithCString:argv[0]];
 	NSString* outputFilePath = getFullPath([NSString stringWithCString:argv[1]]);
 
-	version();
+	if(!quietFlag) version();
 	if(![[NSFileManager defaultManager] fileExistsAtPath:inputFilePath])
 	{
 		fprintf(stderr, "tex2img : %s : No such file or directory\n", [inputFilePath cString]);
@@ -314,10 +324,11 @@ int main (int argc, char *argv[]) {
 										 showOutputWindow:NO preview:NO deleteTmpFile:deleteTmpFileFlag 
 											 ignoreErrors:ignoreErrorFlag
 												utfExport:utfExportFlag
+													quiet:quietFlag
 											   controller:controller];
 	bool succeed = [converter compileAndConvertWithInputPath:inputFilePath outputFilePath:outputFilePath];
 	
-	if(succeed)
+	if(succeed && !quietFlag)
 	{
 		printf("\n%s is generated.\n", [outputFilePath cString]);
 	}

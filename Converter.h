@@ -10,7 +10,7 @@
 - (void)showExecError:(NSString*)command;
 - (void)showCannotOverrideError:(NSString*)path;
 - (void)showCompileError;
-- (void)appendOutputAndScroll:(NSMutableString*)mStr;
+- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(bool)quiet;
 - (void)clearOutputTextView;
 - (void)showOutputWindow;
 - (void)showMainWindow;
@@ -21,8 +21,9 @@
 	NSString* dvipdfmxPath;
 	NSString* gsPath;
 	NSString* encoding;
-	int resolutionLevel, leftMargin, rightMargin, topMargin, bottomMargin;
-	bool leaveTextFlag, transparentPngFlag, showOutputWindowFlag, previewFlag, deleteTmpFileFlag, ignoreErrorsFlag, utfExportFlag;
+	double resolutionLevel;
+	int leftMargin, rightMargin, topMargin, bottomMargin;
+	bool leaveTextFlag, transparentPngFlag, showOutputWindowFlag, previewFlag, deleteTmpFileFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 	id<OutputController> controller;
 
 	NSFileManager* fileManager;
@@ -40,6 +41,7 @@
 				 showOutputWindow:(bool)_showOutputWindowFlag preview:(bool)_previewFlag deleteTmpFile:(bool)_deleteTmpFileFlag
 					 ignoreErrors:(bool)_ignoreErrors
 						utfExport:(bool)_utfExport
+							quiet:(bool)_quietFlag
 					   controller:(id<OutputController>)_controller;
 - (bool)compileAndConvertWithInputPath:(NSString*)texSourcePath outputFilePath:(NSString*)outputFilePath;
 - (bool)compileAndConvertWithSource:(NSString*)texSourceStr outputFilePath:(NSString*)outputFilePath;

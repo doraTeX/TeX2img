@@ -8,9 +8,9 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="580"/>
 			<integer value="481"/>
 			<integer value="371"/>
+			<integer value="518"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1584,7 +1584,7 @@
 												<object class="NSTextFieldCell" key="NSTitleCell">
 													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Peventing garbed text (for JPEG / PNG / PDF)</string>
+													<string key="NSContents">Peventing garbled text (for JPEG / PNG / PDF)</string>
 													<reference key="NSSupport" ref="26"/>
 													<reference key="NSBackgroundColor" ref="646503414"/>
 													<object class="NSColor" key="NSTextColor">
@@ -1668,7 +1668,7 @@
 															<object class="NSSlider" id="983131497">
 																<reference key="NSNextResponder" ref="541752465"/>
 																<int key="NSvFlags">266</int>
-																<string key="NSFrame">{{16, 12}, {314, 21}}</string>
+																<string key="NSFrame">{{16, 12}, {306, 21}}</string>
 																<reference key="NSSuperview" ref="541752465"/>
 																<bool key="NSEnabled">YES</bool>
 																<object class="NSSliderCell" key="NSCell" id="228868947">
@@ -1679,7 +1679,7 @@
 																	<reference key="NSControlView" ref="983131497"/>
 																	<double key="NSMaxValue">1.000000e+02</double>
 																	<double key="NSMinValue">1.000000e+00</double>
-																	<double key="NSValue">6.000000e+00</double>
+																	<double key="NSValue">1.500000e+01</double>
 																	<double key="NSAltIncValue">0.000000e+00</double>
 																	<int key="NSNumberOfTickMarks">0</int>
 																	<int key="NSTickMarkPosition">1</int>
@@ -1696,7 +1696,7 @@
 																<object class="NSTextFieldCell" key="NSCell" id="742049068">
 																	<int key="NSCellFlags">68288064</int>
 																	<int key="NSCellFlags2">71304192</int>
-																	<string key="NSContents">6</string>
+																	<string key="NSContents">15</string>
 																	<reference key="NSSupport" ref="1049726897"/>
 																	<reference key="NSControlView" ref="269706706"/>
 																	<reference key="NSBackgroundColor" ref="999237217"/>
@@ -3300,8 +3300,8 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="480286730"/>
 							<reference ref="856350977"/>
-							<reference ref="237307138"/>
 							<reference ref="422951580"/>
+							<reference ref="237307138"/>
 						</object>
 						<reference key="parent" ref="565362609"/>
 					</object>
@@ -4193,8 +4193,8 @@
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{151, 383}, {542, 373}}</string>
-					<string>{{151, 383}, {542, 373}}</string>
+					<string>{{493, 383}, {542, 373}}</string>
+					<string>{{493, 383}, {542, 373}}</string>
 					<reference ref="9"/>
 					<string>{{33, 99}, {480, 360}}</string>
 					<string>{3.40282e+38, 3.40282e+38}</string>
