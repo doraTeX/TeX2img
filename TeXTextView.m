@@ -27,7 +27,8 @@ static BOOL isValidTeXCommandChar(int c)
 	}else {
 		autocompletionDictionary = nil;
 	}
-	_lastCursorLocation = 0;
+	lastCursorLocation = 0;
+	lastStringLength = 0;
 	MyLayoutManager *layoutManager = [[MyLayoutManager alloc] init];
 	[layoutManager setController:controller];
 	[[self textContainer] replaceLayoutManager:layoutManager];
