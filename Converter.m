@@ -351,7 +351,7 @@
 	// PDFのバウンディングボックスで切り取る
 	[self pdfcrop:pdfFilePath outputFileName:pdfFilePath addMargin:NO];
 	
-	// PDFの先頭ページを読み取り，NSPDFImageRep オブジェクトを作成
+	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
 	NSData* pageData = [[[[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]] pageAtIndex:(page-1)] dataRepresentation];
 	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
 
@@ -371,8 +371,9 @@
 	
 	// NSImage を TIFF 形式の NSBitmapImageRep に変換する
 	NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]];
-	
-	NSData *outputData;
+    
+	// JPEG / PNG に変換
+    NSData *outputData;
 	if([@"jpg" isEqualToString:extension])
 	{
 		NSDictionary *propJpeg = @{NSImageCompressionFactor: @1.0f};

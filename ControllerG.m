@@ -811,6 +811,7 @@
 											NSWidth(preambleWindowRect), NSHeight(preambleWindowRect))
 						 display:NO];
 		[preambleWindow makeKeyAndOrderFront:nil];
+        [preambleTextView colorizeText:[[self currentProfile] boolForKey:@"colorizeText"]];
 	}
     
 }

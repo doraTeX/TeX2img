@@ -35,6 +35,7 @@ static BOOL isValidTeXCommandChar(int c)
 	MyLayoutManager *layoutManager = [[MyLayoutManager alloc] init];
 	layoutManager.controller = controller;
 	[[self textContainer] replaceLayoutManager:layoutManager];
+    [self setContinuousSpellCheckingEnabled:NO];
 }
 
 - (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation
