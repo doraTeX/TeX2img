@@ -34,9 +34,11 @@
 	NSString* tempFileBaseName; 
 	NSString* pdfcropPath;
 	NSString* epstopdfPath;
+    NSUInteger pageCount;
 }
 + (Converter*)converterWithProfile:(NSDictionary*)aProfile;
 - (BOOL)compileAndConvertWithInputPath:(NSString*)texSourcePath;
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr;
 - (BOOL)compileAndConvertWithBody:(NSString*)texBodyStr;
+- (NSUInteger)pageCount;
 @end

@@ -3,11 +3,11 @@
 #import <getopt.h>
 #import "Converter.h"
 #import "ControllerC.h"
-#import "NSMutableDictionary-Extension.h";
+#import "NSMutableDictionary-Extension.h"
 
 #define OPTION_NUM 16
 #define MAX_LEN 1024
-#define VERSION "1.5.6"
+#define VERSION "1.7.0"
 
 static void version()
 {

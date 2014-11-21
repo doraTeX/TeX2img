@@ -24,6 +24,8 @@
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
 		34CF2F261025FA30009A8CA6 /* NSMutableDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF2F251025FA30009A8CA6 /* NSMutableDictionary-Extension.m */; };
 		34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
+		34D41D1E17A6BE2C00997795 /* NSString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D41D1D17A6BE2C00997795 /* NSString-Extension.m */; };
+		34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D41D1D17A6BE2C00997795 /* NSString-Extension.m */; };
 		70254EF010353485000D6D05 /* TeXTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70254EEF10353485000D6D05 /* TeXTextView.m */; };
 		7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7025539810353D33000D6D05 /* NSMutableString-Extension.m */; };
 		7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */; };
@@ -84,6 +86,8 @@
 		34CF2F251025FA30009A8CA6 /* NSMutableDictionary-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary-Extension.m"; sourceTree = "<group>"; };
 		34CF33A210260315009A8CA6 /* NSDictionary-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary-Extension.h"; sourceTree = "<group>"; };
 		34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary-Extension.m"; sourceTree = "<group>"; };
+		34D41D1C17A6BE2C00997795 /* NSString-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Extension.h"; sourceTree = "<group>"; };
+		34D41D1D17A6BE2C00997795 /* NSString-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Extension.m"; sourceTree = "<group>"; };
 		70254EEE10353485000D6D05 /* TeXTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeXTextView.h; sourceTree = "<group>"; };
 		70254EEF10353485000D6D05 /* TeXTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeXTextView.m; sourceTree = "<group>"; };
 		7025539710353D33000D6D05 /* NSMutableString-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableString-Extension.h"; sourceTree = "<group>"; };
@@ -149,6 +153,8 @@
 				34B632BD1028FB87009A052F /* NSIndexSet-Extension.m */,
 				7025539710353D33000D6D05 /* NSMutableString-Extension.h */,
 				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
+				34D41D1C17A6BE2C00997795 /* NSString-Extension.h */,
+				34D41D1D17A6BE2C00997795 /* NSString-Extension.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -273,6 +279,9 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "TeX2img" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -321,8 +330,8 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "VERSION=$(cat Info.plist |tr -d '\\012'| perl -e \"while(<>){if (\\$_ =~ /CFBundleVersion\\<\\/key\\>\\t\\<string\\>(.+?)\\<\\/string\\>/) {print \\$1;}}\")\nDMG=\"${BUILD_DIR}/${CONFIGURATION}/${PRODUCT_NAME}_$VERSION.dmg\"\nAPPCAST=../${PRODUCT_NAME}_Appcast\n\nif [ -e \"$DMG\" ]; then rm \"$DMG\"; fi\nif [ -e ${APPCAST}2.xml ]; then rm ${APPCAST}2.xml; fi\nif [ -e ${APPCAST}3.xml ]; then rm ${APPCAST}3.xml; fi\nif [ -e ${APPCAST}_New.xml ]; then rm ${APPCAST}_New.xml; fi\n\nhdiutil create -ov -srcfolder \"${BUILD_DIR}/${CONFIGURATION}/${PRODUCT_NAME}.app\" -fs HFS+ -format UDZO -imagekey zlib-level=9 -volname \"${PRODUCT_NAME}\" \"$DMG\"\n\nSIGNATURE=$(openssl dgst -sha1 -binary < \"$DMG\" | openssl dgst -dss1 -sign ../DSA/dsa_priv.pem | openssl enc -base64)\nsed -e \"s|dsaSignature=\\\".*\\\"|dsaSignature=\\\"$SIGNATURE\\\"|\" ${APPCAST}.xml > ${APPCAST}2.xml\n\n\nLENGTH=$(ls -l \"$DMG\" | sed -e 's/  */ /g' | cut -d ' ' -f5  | tr -d '\\012')\nsed -e \"s/length=\\\".*\\\"/length=\\\"$LENGTH\\\"/\"  ${APPCAST}2.xml > ${APPCAST}3.xml\n\nmv ${APPCAST}3.xml ${APPCAST}_New.xml\nrm ${APPCAST}2.xml";
+			shellPath = /usr/bin/ruby;
+			shellScript = "require 'pathname'\nVER = `cat Info.plist |tr -d '\\012'| perl -e \"while(<>){if (\\\\$_ =~ /CFBundleVersion\\\\<\\\\/key\\\\>\\\\t\\\\<string\\\\>(.+?)\\<\\\\/string\\\\>/) {print \\\\$1;}}\"`\nBUILD_DIR = ENV['BUILD_DIR']\nCONFIGURATION = ENV['CONFIGURATION']\nPRODUCT_NAME = ENV['PRODUCT_NAME']\nDMG = \"#{BUILD_DIR}/#{CONFIGURATION}/#{PRODUCT_NAME}_#{VER}.dmg\"\nAPPCAST = Pathname.pwd.parent.join(\"#{PRODUCT_NAME}_Appcast\").to_s\nOUTPUT = \"#{BUILD_DIR}/#{CONFIGURATION}/deploy.sh\"\n\nscript = <<EOS\nAPPCAST=#{APPCAST}\nif [ -e \"#{DMG}\" ]; then rm \"#{DMG}\"; fi\nif [ -e ${APPCAST}2.xml ]; then rm ${APPCAST}2.xml; fi\nif [ -e ${APPCAST}3.xml ]; then rm ${APPCAST}3.xml; fi\nif [ -e ${APPCAST}_New.xml ]; then rm ${APPCAST}_New.xml; fi\n\nhdiutil create -ov -srcfolder \"#{BUILD_DIR}/#{CONFIGURATION}/#{PRODUCT_NAME}.app\" -fs HFS+ -format UDZO -imagekey zlib-level=9 -volname \"#{PRODUCT_NAME}\" \"#{DMG}\"\n\nSIGNATURE=$(openssl dgst -sha1 -binary < \"#{DMG}\" | openssl dgst -dss1 -sign #{Pathname.pwd.parent.parent.join(\"証明書/dsa_priv.pem\").to_s} | openssl enc -base64)\nsed -e \"s|dsaSignature=\\\".*\\\"|dsaSignature=\\\"$SIGNATURE\\\"|\" ${APPCAST}.xml > ${APPCAST}2.xml\n\n\nLENGTH=$(ls -l \"#{DMG}\" | sed -e 's/  */ /g' | cut -d ' ' -f5  | tr -d '\\012')\nsed -e \"s/length=\\\".*\\\"/length=\\\"$LENGTH\\\"/\"  ${APPCAST}2.xml > ${APPCAST}3.xml\n\nmv ${APPCAST}3.xml ${APPCAST}_New.xml\nrm ${APPCAST}2.xml\nEOS\n\nopen(OUTPUT, \"w\"){|f| f.write script}\nsystem(\"chmod +x #{OUTPUT}\")";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -336,6 +345,7 @@
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
 				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,
 				705DC7A70F1197E90052AFA5 /* mainc.m in Sources */,
+				34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,6 +365,7 @@
 				348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */,
 				348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */,
 				34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */,
+				34D41D1E17A6BE2C00997795 /* NSString-Extension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,7 +408,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -409,7 +419,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = tex2img;
 			};
 			name = Debug;
@@ -420,7 +429,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
@@ -431,7 +439,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = tex2img;
 				ZERO_LINK = NO;
 			};
@@ -441,6 +448,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -448,7 +456,6 @@
 					"\"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Frameworks\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -463,6 +470,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -482,14 +490,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CODE_SIGN_IDENTITY = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -497,13 +505,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Yusuke Terada";
+				CODE_SIGN_IDENTITY = "Developer ID Application: Yusuke Terada (86GWZ48925)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};

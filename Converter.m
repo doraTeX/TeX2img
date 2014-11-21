@@ -7,12 +7,15 @@
 #define MAX_LEN 1024
 
 #import "NSDictionary-Extension.h"
+#import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
 #import "Converter.h"
 
 @implementation Converter
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
 {
+    pageCount = 1;
+    
 	platexPath = [aProfile stringForKey:@"platexPath"];
 	dvipdfmxPath = [aProfile stringForKey:@"dvipdfmxPath"];
 	gsPath = [aProfile stringForKey:@"gsPath"];
@@ -53,6 +56,11 @@
 	return [converter autorelease];
 }
 
+- (NSUInteger)pageCount
+{
+    return pageCount;
+}
+
 
 // JIS 外の文字を \UTF に置き換える
 - (NSMutableString *)substituteUTF:(NSString*)dataString
@@ -78,12 +86,12 @@
 		{
 			if ( [subString characterAtIndex: 0] == 0x2015)
 			{
-				utfString = [NSMutableString stringWithFormat:@"%C", 0x2014];
+				utfString = [NSMutableString stringWithFormat:@"%C", (unsigned short)0x2014];
 			}
 			else
 			{
 				utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}",
-							 texChar, [subString characterAtIndex: 0]];
+							 (unsigned short)texChar, [subString characterAtIndex: 0]];
 			}
 			if ((charRange.location + charRange.length) == end)
 			{
@@ -245,13 +253,15 @@
 	return (status==0) ? YES : NO;
 }
 
-- (int)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(int)resolution;
+- (int)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(int)resolution page:(NSUInteger)page;
 {
 	int status = [self execCommand:gsPath atDirectory:tempdir 
 					 withArguments:[NSArray arrayWithObjects:
 									@"-sDEVICE=epswrite",
 									@"-dNOPAUSE",
 									@"-dBATCH",
+									[NSString stringWithFormat:@"-dFirstPage=%lu", page],
+									[NSString stringWithFormat:@"-dLastPage=%lu", page],
 									[NSString stringWithFormat:@"-r%d", resolution],
 									[NSString stringWithFormat:@"-sOutputFile=%@", outputEpsFileName],
 									[NSString stringWithFormat:@"%@.pdf", tempFileBaseName],
@@ -301,7 +311,7 @@
 	return [[[NSBitmapImageRep alloc] initWithData:[backgroundImage TIFFRepresentation]] autorelease];
 }
 
-- (void)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName
+- (void)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page
 {
 	NSString* extension = [[outputFileName pathExtension] lowercaseString];
 
@@ -309,7 +319,7 @@
 	[self pdfcrop:pdfFilePath outputFileName:pdfFilePath addMargin:NO];
 	
 	// PDFの先頭ページを読み取り，NSPDFImageRep オブジェクトを作成
-	NSData* pageData = [[[[[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]] autorelease] pageAtIndex:0] dataRepresentation];
+	NSData* pageData = [[[[[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]] autorelease] pageAtIndex:(page-1)] dataRepresentation];
 	NSPDFImageRep *pdfImageRep = [[[NSPDFImageRep alloc] initWithData:pageData] autorelease];
 
 	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
@@ -477,11 +487,64 @@
 }
 */
 
+- (BOOL)convertPDF:(NSString*)pdfFileName outputEpsFileName:(NSString*)outputEpsFileName outputFileName:(NSString*)outputFileName page:(NSUInteger)page
+{
+	NSString* extension = [[outputFileName pathExtension] lowercaseString];
+
+    int resolution = 20016;
+
+    // PDF→EPS の変換の実行
+    if(![self pdf2eps:pdfFileName outputEpsFileName:outputEpsFileName resolution:resolution page:page]
+       || ![fileManager fileExistsAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName]])
+    {
+        [controller showExecError:@"ghostscript"];
+        return NO;
+    }
+    
+    if([@"pdf" isEqualToString:extension]) // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す
+    {
+        [self eps2pdf:outputEpsFileName outputFileName:outputFileName];
+    }
+    else if([@"eps" isEqualToString:extension])  // 最終出力が EPS の場合
+    {
+        // 余白を付け加えるようバウンディングボックスを改変
+        if(topMargin + bottomMargin + leftMargin + rightMargin > 0)
+        {
+            [self enlargeBB:outputEpsFileName];
+        }
+        //生成したEPSファイルの名前を最終出力ファイル名へ変更する
+        if([fileManager fileExistsAtPath:outputFileName])
+        {
+            [fileManager removeItemAtPath:outputFileName error:nil];
+        }
+        [fileManager moveItemAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
+    }
+    else if([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) // 文字化け対策JPEG/PNG出力の場合，EPSをPDFに戻した上で，それをさらにJPEG/PNGに変換する
+    {
+        NSString* outlinedPdfFileName = [NSString stringWithFormat:@"%@.outline.pdf", tempFileBaseName];
+        [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName]; // アウトラインを取ったEPSをPDFへ戻す
+        [self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1]; // PDFを目的の画像ファイルへ変換
+    }
+    
+    return YES;
+}
+
+- (BOOL)copyTargetFrom:(NSString*)sourcePath toPath:(NSString*)destPath
+{
+	if([fileManager fileExistsAtPath:destPath] && [fileManager removeItemAtPath:destPath error:nil]==NO)
+	{
+		[controller showCannotOverrideError:destPath];
+		return NO;
+	}
+	return [fileManager copyItemAtPath:sourcePath toPath:destPath error:nil];
+}
+
 - (BOOL)compileAndConvert
 {
 	NSString* teXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	NSString* dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	NSString* pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+    NSString* pdfFileName = [NSString stringWithFormat:@"%@.pdf", tempFileBaseName];
 	NSString* outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
 	NSString* outputFileName = [outputFilePath lastPathComponent];
 	NSString* extension = [[outputFilePath pathExtension] lowercaseString];
@@ -505,16 +568,21 @@
 		[controller showExecError:@"dvipdfmx"];
 		return NO;
 	}
+    
+    pageCount = [[[[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]] autorelease] pageCount];
 	
 	if(([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) && leaveTextFlag) // 文字化け対策を行わない jpg/png の場合，PDFから直接変換
 	{
-		[self pdf2image:pdfFilePath outputFileName:outputFileName];
+		[self pdf2image:pdfFilePath outputFileName:outputFileName page:1];
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i];
+        }
 	}
 	else if([@"pdf" isEqualToString:extension] && leaveTextFlag) // 最終出力が文字埋め込み PDF の場合，EPSを経由しなくてよいので，pdfcrop で直接生成する。
 	{
 		[self pdfcrop:pdfFilePath outputFileName:outputFileName addMargin:YES];
 	}
-	else // EPS を経由する形式(.eps/アウトラインを取ったpdf / 文字化け対策 jpg,png )の場合
+	else // EPS を経由する形式(.eps/ アウトラインを取ったpdf / 文字化け対策 jpg,png )の場合
 	{
 		/*
 		// PDF→EPS の変換の準備
@@ -532,42 +600,17 @@
 			outputEpsFileName = outputFileName;
 		}
 		*/
+        
+        BOOL success = [self convertPDF:pdfFileName outputEpsFileName:outputEpsFileName outputFileName:outputFileName page:1];
+        if(!success) return success;
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            success = [self convertPDF:pdfFileName
+                     outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                        outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                  page:i];
+            if(!success) return success;
+        }
 
-		int resolution = 20016;
-		
-		// PDF→EPS の変換の実行
-		if(![self pdf2eps:[NSString stringWithFormat:@"%@.pdf", tempFileBaseName] outputEpsFileName:outputEpsFileName resolution:resolution] 
-		   || ![fileManager fileExistsAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName]])
-		{
-			[controller showExecError:@"ghostscript"];
-			return NO;
-		}
-		
-		if([@"pdf" isEqualToString:extension]) // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す
-		{
-			[self eps2pdf:outputEpsFileName outputFileName:outputFileName];
-		}
-		else if([@"eps" isEqualToString:extension])  // 最終出力が EPS の場合
-		{
-			// 余白を付け加えるようバウンディングボックスを改変
-			if(topMargin + bottomMargin + leftMargin + rightMargin > 0)
-			{
-				[self enlargeBB:outputEpsFileName];
-			}
-			//生成したEPSファイルの名前を最終出力ファイル名へ変更する
-			if([fileManager fileExistsAtPath:outputFileName])
-			{
-				[fileManager removeFileAtPath:outputFileName handler:nil];
-			}
-			[fileManager movePath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName handler:nil];
-		}
-		else if([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) // 文字化け対策JPEG/PNG出力の場合，EPSをPDFに戻した上で，それをさらにJPEG/PNGに変換する
-		{
-			NSString* outlinedPdfFileName = [NSString stringWithFormat:@"%@.outline.pdf", tempFileBaseName];
-			[self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName]; // アウトラインを取ったEPSをPDFへ戻す
-			[self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName]; // PDFを目的の画像ファイルへ変換
-		}
-		
 		/*
 		// 出力画像が JPEG または PNG の場合の EPS からの変換処理
 		if([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension])
@@ -583,12 +626,11 @@
 	}
 	
 	// 最終出力ファイルを目的地へコピー
-	if([fileManager fileExistsAtPath:outputFilePath] && [fileManager removeFileAtPath:outputFilePath handler:nil]==NO)
-	{
-		[controller showCannotOverrideError:outputFilePath];
-		return NO;
-	}
-	[fileManager copyPath:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath handler:nil];
+    [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
+    for (NSUInteger i=2; i<=pageCount; i++) {
+        [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
+                      toPath:[outputFilePath pathStringByAppendingPageNumber:i]];
+    }
 	
 	return YES;
 }
@@ -627,6 +669,11 @@
 		if(status && previewFlag)
 		{
 			[[NSWorkspace sharedWorkspace] openFile:outputFilePath withApplication:@"Preview.app"];
+            if (pageCount > 1 && !([@"pdf" isEqualToString:extension] && leaveTextFlag)) {
+                for (NSUInteger i=2; i<=pageCount; i++) {
+                    [[NSWorkspace sharedWorkspace] openFile:[outputFilePath pathStringByAppendingPageNumber:i] withApplication:@"Preview.app"];
+                }
+            }
 		}
 	}
 	
@@ -635,15 +682,20 @@
 	{
 		NSString* outputFileName = [outputFilePath lastPathComponent];
 		NSString* basePath = [tempdir stringByAppendingPathComponent:tempFileBaseName];
-		[fileManager removeFileAtPath:[NSString stringWithFormat:@"%@.tex", basePath] handler:nil];
-		[fileManager removeFileAtPath:[NSString stringWithFormat:@"%@.dvi", basePath] handler:nil];
-		[fileManager removeFileAtPath:[NSString stringWithFormat:@"%@.log", basePath] handler:nil];
-		[fileManager removeFileAtPath:[NSString stringWithFormat:@"%@.aux", basePath] handler:nil];
-		[fileManager removeFileAtPath:[NSString stringWithFormat:@"%@.pdf", basePath] handler:nil];
-		[fileManager removeFileAtPath:[NSString stringWithFormat:@"%@.outline.pdf", basePath] handler:nil];
-		[fileManager removeFileAtPath:[NSString stringWithFormat:@"%@.eps", basePath] handler:nil];
-		[fileManager removeFileAtPath:[NSString stringWithFormat:@"%@.eps.trim.pdf", basePath] handler:nil];
-		[fileManager removeFileAtPath:[tempdir stringByAppendingPathComponent:outputFileName] handler:nil];
+		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.tex", basePath] error:nil];
+		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.dvi", basePath] error:nil];
+		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.log", basePath] error:nil];
+		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.aux", basePath] error:nil];
+		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.pdf", basePath] error:nil];
+		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.outline.pdf", basePath] error:nil];
+		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps", basePath] error:nil];
+		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps.trim.pdf", basePath] error:nil];
+		[fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:outputFileName] error:nil];
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
+            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps", basePath, i] error:nil];
+            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps.trim.pdf", basePath, i] error:nil];
+        }
 	}
 	
 	return status;
@@ -673,7 +725,7 @@
 - (BOOL)compileAndConvertWithInputPath:(NSString*)texSourcePath
 {
 	NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-	if(![fileManager copyPath:texSourcePath toPath:tempTeXFilePath handler:nil])
+	if(![fileManager copyItemAtPath:texSourcePath toPath:tempTeXFilePath error:nil])
 	{
 		[controller showFileGenerateError:tempTeXFilePath];
 		return NO;
