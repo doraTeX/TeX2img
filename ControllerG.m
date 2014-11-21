@@ -309,7 +309,7 @@
 - (NSString*)searchProgram:(NSString*)programName
 {
 	NSArray *searchPaths = [NSArray arrayWithObjects:
-							@"/usr/local/teTeX/bin", @"/usr/local/bin", @"/opt/local/bin", @"/sw/bin", nil];
+							@"/Applications/pTeX.app/teTeX/bin", @"/usr/local/teTeX/bin", @"/usr/local/bin", @"/opt/local/bin", @"/sw/bin", nil];
 	NSEnumerator *enumerator = [searchPaths objectEnumerator];
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 	
