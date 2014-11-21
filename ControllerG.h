@@ -22,6 +22,7 @@
 	IBOutlet NSButton *generateButton;
 	IBOutlet NSButton *transparentCheckBox;
 	IBOutlet NSButton *showOutputDrawerCheckBox;
+	IBOutlet NSButton *threadingCheckBox;
 	IBOutlet NSButton *previewCheckBox;
 	IBOutlet NSButton *deleteTmpFileCheckBox;
 	IBOutlet NSWindow *preferenceWindow;

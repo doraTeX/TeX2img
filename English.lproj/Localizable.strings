@@ -9,7 +9,7 @@
 "fileGenerateErrorMsg" = " can't be created so generation has been aborted.\nCheck permission.";
 "execErrorMsg" = " can't be executed.\nCheck errors in the source code.";
 "cannotOverrideErrorMsg" = " can't be overridden.";
-"compileErrorMsg" = "TeX Compile error.\nCheck errors in the source code.";
+"compileErrorMsg" = "TeX Compile error.\nCheck errors in the source code.\nIf there are no errors in the source, check encodings in Preferences.";
 "initSettingsMsg" = "Initial Settings";
 "setPathMsg1" = "Automatic engine settings: ";
 "setPathMsg2" = "(editable in Prefernces)";

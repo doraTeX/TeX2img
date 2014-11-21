@@ -15,10 +15,12 @@
 - (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(BOOL)quiet
 {
 	if(quiet) return;
-	
-	[[[outputTextView textStorage] mutableString] appendString:mStr];
-	[outputTextView scrollRangeToVisible: NSMakeRange([[outputTextView string] length], 0)]; // 最下部までスクロール
-	[outputTextView display]; // 再描画
+	if(mStr != nil)
+	{
+		[[[outputTextView textStorage] mutableString] appendString:mStr];
+		[outputTextView scrollRangeToVisible: NSMakeRange([[outputTextView string] length], 0)]; // 最下部までスクロール
+		//[outputTextView display]; // 再描画
+	}
 }
 
 - (void)clearOutputTextView
@@ -135,6 +137,7 @@
 	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:@"outputFile"];
 	
 	[showOutputDrawerCheckBox setState:[aProfile integerForKey:@"showOutputDrawer"]];
+	[threadingCheckBox setState:[aProfile integerForKey:@"threading"]];
 	[previewCheckBox setState:[aProfile integerForKey:@"preview"]];
 	[deleteTmpFileCheckBox setState:[aProfile integerForKey:@"deleteTmpFile"]];
 	
@@ -242,6 +245,7 @@
 	[currentProfile setObject:[outputFileTextField stringValue] forKey:@"outputFile"];
 	
 	[currentProfile setInteger:[showOutputDrawerCheckBox state] forKey:@"showOutputDrawer"];
+	[currentProfile setInteger:[threadingCheckBox state] forKey:@"threading"];
 	[currentProfile setInteger:[previewCheckBox state] forKey:@"preview"];
 	[currentProfile setInteger:[deleteTmpFileCheckBox state] forKey:@"deleteTmpFile"];
 	
@@ -614,7 +618,8 @@
 - (void)doGeneratingThread
 {
 	NSAutoreleasePool* pool;
-    pool = [[NSAutoreleasePool alloc]init];
+	BOOL threading = ([threadingCheckBox state] == NSOnState);
+    if(threading) pool = [[NSAutoreleasePool alloc]init];
 
 	NSMutableDictionary *aProfile = [self currentProfile];
 	[aProfile setObject:[[NSBundle mainBundle] pathForResource:@"pdfcrop" ofType:nil] forKey:@"pdfcropPath"];
@@ -631,8 +636,12 @@
 	[generateButton setEnabled:YES];
 	[generateMenuItem setEnabled:YES];
 
-    [pool release];
-    [NSThread exit]; 
+	if(threading)
+	{
+		[outputTextView display]; // 再描画
+		[pool release];
+		[NSThread exit]; 
+	}
 }
 
 - (IBAction)generate:(id)sender
@@ -640,7 +649,16 @@
 	if([showOutputDrawerCheckBox state]) [self showOutputDrawer];
 	[generateButton setEnabled:NO];
 	[generateMenuItem setEnabled:NO];
-	[NSThread detachNewThreadSelector:@selector(doGeneratingThread) toTarget:self withObject:nil];
+	if ([threadingCheckBox state])
+	{
+		[NSThread detachNewThreadSelector:@selector(doGeneratingThread) toTarget:self withObject:nil];
+	}
+	else
+	{
+		[self doGeneratingThread];
+	}
+
+	
 }
 
 @end

@@ -177,7 +177,7 @@
  }
 */
 
-- (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments withStdout:(NSMutableString*)stdoutMStr
+- (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments
 {
 	char str[MAX_LEN];
 	FILE *fp;
@@ -204,12 +204,11 @@
 	}
 	while(YES)
 	{
-		fgets(str, MAX_LEN-1, fp);
-		if(feof(fp))
+		if(fgets(str, MAX_LEN-1, fp) == NULL)
 		{
 			break;
 		}
-		[stdoutMStr appendString:[NSString stringWithUTF8String:str]];
+		[controller appendOutputAndScroll:[NSMutableString stringWithUTF8String:str] quiet:quietFlag];
 	}
 	int status = pclose(fp);
 	return (ignoreErrorsFlag || status==0) ? YES : NO;
@@ -218,12 +217,7 @@
 
 - (int)tex2dvi:(NSString*)teXFilePath
 {
-	NSMutableString* outputMStr = [NSMutableString stringWithCapacity:0];
-	int status = [self execCommand:platexPath atDirectory:tempdir withArguments:[NSArray arrayWithObjects:@"-interaction=nonstopmode", [NSString stringWithFormat:@"-kanji=%@", encoding], teXFilePath, nil] withStdout:outputMStr];
-	if(outputMStr != nil)
-	{
-		[controller appendOutputAndScroll:outputMStr quiet:quietFlag];
-	}
+	int status = [self execCommand:platexPath atDirectory:tempdir withArguments:[NSArray arrayWithObjects:@"-interaction=nonstopmode", [NSString stringWithFormat:@"-kanji=%@", encoding], teXFilePath, nil]];
 	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];
 	
 	return status;
@@ -231,12 +225,7 @@
 
 - (int)dvi2pdf:(NSString*)dviFilePath
 {
-	NSMutableString* outputMStr = [NSMutableString stringWithCapacity:0];
-	int status = [self execCommand:dvipdfmxPath atDirectory:tempdir withArguments:[NSArray arrayWithObjects:@"-vv", dviFilePath, nil] withStdout:outputMStr];
-	if(outputMStr != nil)
-	{
-		[controller appendOutputAndScroll:outputMStr quiet:quietFlag];
-	}
+	int status = [self execCommand:dvipdfmxPath atDirectory:tempdir withArguments:[NSArray arrayWithObjects:@"-vv", dviFilePath, nil]];
 	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];	
 	
 	return status;
@@ -249,21 +238,17 @@
 		return NO;
 	}
 	
-	NSMutableString* outputMStr = [NSMutableString stringWithCapacity:0];
 	int status = [self execCommand:[NSString stringWithFormat:@"export PATH=$PATH:%@;%@", [gsPath stringByDeletingLastPathComponent], pdfcropPath] atDirectory:tempdir
 					 withArguments:[NSArray arrayWithObjects:
 									addMargin ? [NSString stringWithFormat:@"--margins \"%d %d %d %d\"", leftMargin, topMargin, rightMargin, bottomMargin] : @"",
 									[pdfPath lastPathComponent],
 									outputFileName,
-									nil] withStdout:outputMStr];
-	[controller appendOutputAndScroll:outputMStr quiet:quietFlag];
-	
+									nil]];
 	return (status==0) ? YES : NO;
 }
 
 - (int)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(int)resolution;
 {
-	NSMutableString* outputMStr = [NSMutableString stringWithCapacity:0];
 	int status = [self execCommand:gsPath atDirectory:tempdir 
 					 withArguments:[NSArray arrayWithObjects:
 									@"-sDEVICE=epswrite",
@@ -272,9 +257,7 @@
 									[NSString stringWithFormat:@"-r%d", resolution],
 									[NSString stringWithFormat:@"-sOutputFile=%@", outputEpsFileName],
 									[NSString stringWithFormat:@"%@.pdf", tempFileBaseName],
-									nil]
-						withStdout:outputMStr];
-	[controller appendOutputAndScroll:outputMStr quiet:quietFlag];
+									nil]];
 	return status;
 }
 
@@ -289,7 +272,7 @@
 					 withArguments:[NSArray arrayWithObjects:
 									[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
 									epsName,
-									nil] withStdout:nil];
+									nil]];
 	return YES;
 }
 
