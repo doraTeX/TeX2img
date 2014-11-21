@@ -15,7 +15,7 @@
 		34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 34670DD5125B7AC3002308EF /* dsa_pub.pem */; };
 		34821EC810282CF9008DEB1F /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34821EC710282CF9008DEB1F /* ProfileController.m */; };
 		348507F8125AC21E0058A26B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; };
-		34850828125AC9E30058A26B /* Sparkle.framework in フレームワークをコピー */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; };
+		34850828125AC9E30058A26B /* Sparkle.framework in フレームワークをコピー */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		348BB5190F08C3850063003D /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
 		348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */; };
 		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
@@ -39,13 +39,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		34850826125AC99A0058A26B /* フレームワークをコピー */ = {
+		34850826125AC99A0058A26B /* フレームワークをコピー */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				34850828125AC9E30058A26B /* Sparkle.framework in フレームワークをコピー */,
+				34850828125AC9E30058A26B /* Sparkle.framework in フレームワークをコピー */,
 			);
 			name = "フレームワークをコピー";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -248,7 +248,7 @@
 			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "TeX2img" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
-				34850826125AC99A0058A26B /* フレームワークをコピー */,
+				34850826125AC99A0058A26B /* フレームワークをコピー */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				34670E17125B7F6F002308EF /* ShellScript */,
@@ -269,7 +269,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0600;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "TeX2img" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -320,7 +320,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/ruby;
-			shellScript = "require 'pathname'\nVER = `cat Info.plist |tr -d '\\012'| perl -e \"while(<>){if (\\\\$_ =~ /CFBundleVersion\\\\<\\\\/key\\\\>\\\\t\\\\<string\\\\>(.+?)\\<\\\\/string\\\\>/) {print \\\\$1;}}\"`\nBUILD_DIR = ENV['BUILD_DIR']\nCONFIGURATION = ENV['CONFIGURATION']\nPRODUCT_NAME = ENV['PRODUCT_NAME']\nDMG = \"#{BUILD_DIR}/#{CONFIGURATION}/#{PRODUCT_NAME}_#{VER}.dmg\"\nAPPCAST = Pathname.pwd.parent.join(\"#{PRODUCT_NAME}_Appcast\").to_s\nOUTPUT = \"#{BUILD_DIR}/#{CONFIGURATION}/deploy.sh\"\n\nscript = <<EOS\nAPPCAST=#{APPCAST}\nif [ -e \"#{DMG}\" ]; then rm \"#{DMG}\"; fi\nif [ -e ${APPCAST}2.xml ]; then rm ${APPCAST}2.xml; fi\nif [ -e ${APPCAST}3.xml ]; then rm ${APPCAST}3.xml; fi\nif [ -e ${APPCAST}_New.xml ]; then rm ${APPCAST}_New.xml; fi\n\nhdiutil create -ov -srcfolder \"#{BUILD_DIR}/#{CONFIGURATION}/#{PRODUCT_NAME}.app\" -fs HFS+ -format UDZO -imagekey zlib-level=9 -volname \"#{PRODUCT_NAME}\" \"#{DMG}\"\n\nSIGNATURE=$(openssl dgst -sha1 -binary < \"#{DMG}\" | openssl dgst -dss1 -sign #{Pathname.pwd.parent.parent.join(\"証明書/dsa_priv.pem\").to_s} | openssl enc -base64)\nsed -e \"s|dsaSignature=\\\".*\\\"|dsaSignature=\\\"$SIGNATURE\\\"|\" ${APPCAST}.xml > ${APPCAST}2.xml\n\n\nLENGTH=$(ls -l \"#{DMG}\" | sed -e 's/  */ /g' | cut -d ' ' -f5  | tr -d '\\012')\nsed -e \"s/length=\\\".*\\\"/length=\\\"$LENGTH\\\"/\"  ${APPCAST}2.xml > ${APPCAST}3.xml\n\nmv ${APPCAST}3.xml ${APPCAST}_New.xml\nrm ${APPCAST}2.xml\nEOS\n\nopen(OUTPUT, \"w\"){|f| f.write script}\nsystem(\"chmod +x #{OUTPUT}\")";
+			shellScript = "require 'pathname'\nVER = `cat Info.plist |tr -d '\\012'| perl -e \"while(<>){if (\\\\$_ =~ /CFBundleVersion\\\\<\\\\/key\\\\>\\\\t\\\\<string\\\\>(.+?)\\<\\\\/string\\\\>/) {print \\\\$1;}}\"`\nBUILD_DIR = ENV['BUILD_DIR']\nCONFIGURATION = ENV['CONFIGURATION']\nPRODUCT_NAME = ENV['PRODUCT_NAME']\nDMG = \"#{BUILD_DIR}/#{CONFIGURATION}/#{PRODUCT_NAME}_#{VER}.dmg\"\nAPPCAST = Pathname.pwd.parent.join(\"#{PRODUCT_NAME}_Appcast\").to_s\nOUTPUT = \"#{BUILD_DIR}/#{CONFIGURATION}/deploy.sh\"\n\nscript = <<EOS\nAPPCAST=#{APPCAST}\nif [ -e \"#{DMG}\" ]; then rm \"#{DMG}\"; fi\nif [ -e ${APPCAST}2.xml ]; then rm ${APPCAST}2.xml; fi\nif [ -e ${APPCAST}3.xml ]; then rm ${APPCAST}3.xml; fi\nif [ -e ${APPCAST}_New.xml ]; then rm ${APPCAST}_New.xml; fi\n\nhdiutil create -ov -srcfolder \"#{BUILD_DIR}/#{CONFIGURATION}/#{PRODUCT_NAME}.app\" -fs HFS+ -format UDZO -imagekey zlib-level=9 -volname \"#{PRODUCT_NAME}\" \"#{DMG}\"\n\nSIGNATURE=$(openssl dgst -sha1 -binary < \"#{DMG}\" | openssl dgst -dss1 -sign #{Pathname.pwd.parent.parent.join(\"設定/証明書/dsa_priv.pem\").to_s} | openssl enc -base64)\nsed -e \"s|dsaSignature=\\\\\".*\\\\\"|dsaSignature=\\\\\"$SIGNATURE\\\\\"|\" ${APPCAST}.xml > ${APPCAST}2.xml\n\n\nLENGTH=$(ls -l \"#{DMG}\" | sed -e 's/  */ /g' | cut -d ' ' -f5  | tr -d '\\012')\nsed -e \"s/length=\\\\\".*\\\\\"/length=\\\\\"$LENGTH\\\\\"/\"  ${APPCAST}2.xml > ${APPCAST}3.xml\n\nmv ${APPCAST}3.xml ${APPCAST}_New.xml\nrm ${APPCAST}2.xml\nEOS\n\nopen(OUTPUT, \"w\"){|f| f.write script}\nsystem(\"chmod +x #{OUTPUT}\")";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -414,7 +414,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -437,7 +436,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -463,7 +461,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -486,7 +483,6 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "Developer ID Application: Yusuke Terada (86GWZ48925)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -503,7 +499,6 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "Developer ID Application: Yusuke Terada (86GWZ48925)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = "";

@@ -6,7 +6,7 @@
 
 #define OPTION_NUM 16
 #define MAX_LEN 1024
-#define VERSION "1.7.6"
+#define VERSION "1.7.7"
 
 static void version()
 {
@@ -64,7 +64,7 @@ NSString* getFullPath(NSString* filename)
 	char str[MAX_LEN];
 	FILE* fp;
 	
-	if((fp=popen([[NSString stringWithFormat:@"ruby -e \"print File::expand_path('%@')\"", filename] UTF8String],"r"))==NULL){
+	if((fp=popen([[NSString stringWithFormat:@"perl -e \"use File::Spec;print File::Spec->rel2abs('%@');\"", filename] UTF8String],"r"))==NULL){
 		return NO;
 	}
 	fgets(str, MAX_LEN-1, fp);

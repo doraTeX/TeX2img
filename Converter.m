@@ -401,10 +401,10 @@
 	regcomp(&regexBB, "^\\%\\%BoundingBox\\: ([0-9]+) ([0-9]+) ([0-9]+) ([0-9]+)$", REG_EXTENDED|REG_NEWLINE);
 	regcomp(&regexHiResBB, "^\\%\\%HiResBoundingBox\\: ([0-9\\.]+) ([0-9\\.]+) ([0-9\\.]+) ([0-9\\.]+)$", REG_EXTENDED|REG_NEWLINE);
 
-	int leftbottom_x = 0;
-	int leftbottom_y = 0;
-	int righttop_x = 0;
-	int righttop_y = 0;
+	float leftbottom_x = 0;
+	float leftbottom_y = 0;
+	float righttop_x = 0;
+	float righttop_y = 0;
 
 	char str[MAX_LEN];
 	NSMutableArray* lines = [NSMutableArray arrayWithArray:0];
@@ -422,12 +422,17 @@
 			leftbottom_y  = [[line substringWithRange:NSMakeRange(pmatch[2].rm_so, pmatch[2].rm_eo - pmatch[2].rm_so)] intValue] - bottomMargin;
 			righttop_x    = [[line substringWithRange:NSMakeRange(pmatch[3].rm_so, pmatch[3].rm_eo - pmatch[3].rm_so)] intValue]  + rightMargin;
 			righttop_y    = [[line substringWithRange:NSMakeRange(pmatch[4].rm_so, pmatch[4].rm_eo - pmatch[4].rm_so)] intValue] + topMargin;
-			[lines addObject:[NSString stringWithFormat:@"%%%%BoundingBox: %d %d %d %d\n", leftbottom_x, leftbottom_y, righttop_x, righttop_y]];
+			[lines addObject:[NSString stringWithFormat:@"%%%%BoundingBox: %ld %ld %ld %ld\n", (NSInteger)leftbottom_x, (NSInteger)leftbottom_y, (NSInteger)righttop_x, (NSInteger)righttop_y]];
 			continue;
 		}
 		
 		if(regexec(&regexHiResBB, str, nmatch, pmatch, 0) == 0)
 		{
+            leftbottom_x  = [[line substringWithRange:NSMakeRange(pmatch[1].rm_so, pmatch[1].rm_eo - pmatch[1].rm_so)] floatValue] - leftMargin;
+            leftbottom_y  = [[line substringWithRange:NSMakeRange(pmatch[2].rm_so, pmatch[2].rm_eo - pmatch[2].rm_so)] floatValue] - bottomMargin;
+            righttop_x    = [[line substringWithRange:NSMakeRange(pmatch[3].rm_so, pmatch[3].rm_eo - pmatch[3].rm_so)] floatValue]  + rightMargin;
+            righttop_y    = [[line substringWithRange:NSMakeRange(pmatch[4].rm_so, pmatch[4].rm_eo - pmatch[4].rm_so)] floatValue] + topMargin;
+            [lines addObject:[NSString stringWithFormat:@"%%%%HiResBoundingBox: %f %f %f %f\n", leftbottom_x, leftbottom_y, righttop_x, righttop_y]];
 			continue;
 		}
 		
