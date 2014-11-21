@@ -3,10 +3,11 @@
 #import <getopt.h>
 #import "Converter.h"
 #import "ControllerC.h"
+#import "global.h"
 
-#define OPTION_NUM 16
+#define OPTION_NUM 17
 #define MAX_LEN 1024
-#define VERSION "1.7.7"
+#define VERSION "1.8.0"
 
 static void version()
 {
@@ -22,19 +23,20 @@ static void usage()
     printf("  OutputFile              : path of output file (extension: eps/png/jpg/pdf)\n");
     printf("Options:\n");
     printf("  --compiler   COMPILER   : set compiler   (default: platex)\n");
-    printf("  --resolution RESOLUTION : set resolution level   (default: 15)\n");
-    printf("  --left-margin    MARGIN : set left margin   (px) (default: 0)\n");
-    printf("  --right-margin   MARGIN : set right margin  (px) (default: 0)\n");
-    printf("  --top-margin     MARGIN : set top margin    (px) (default: 0)\n");
-    printf("  --bottom-margin  MARGIN : set bottom margin (px) (default: 0)\n");
-    printf("  --create-outline        : create outline of text to prevent garbling (for JPEG/PNG/PDF)\n");
+    printf("  --resolution RESOLUTION : set resolution level (default: 15)\n");
+    printf("  --left-margin    MARGIN : set left margin   (default: 0)\n");
+    printf("  --right-margin   MARGIN : set right margin  (default: 0)\n");
+    printf("  --top-margin     MARGIN : set top margin    (default: 0)\n");
+    printf("  --bottom-margin  MARGIN : set bottom margin (default: 0)\n");
+    printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF)\n");
+    printf("  --create-outline        : outline text in PDF\n");
     printf("  --transparent           : generate transparent PNG file\n");
     printf("  --kanji ENCODING        : set Japanese encoding  (sjis|jis|euc|utf8|uptex) (default: utf8)\n");
     printf("  --ignore-errors         : force converting by ignoring nonfatal errors\n");
-    printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS characters\n");
+    printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS X 0208 characters\n");
     printf("  --quiet                 : do not output logs or messages\n");
     printf("  --no-delete             : do not delete temporary files (for debug)\n");
-    printf("  --version               : display version\n");
+    printf("  --version               : display version info\n");
     printf("  --help                  : display this message\n");
     exit(1);
 }
@@ -45,13 +47,15 @@ NSString* getPath(NSString* cmdName)
 	FILE* fp;
 	char* pStr;
     
-	if((fp=popen([[NSString stringWithFormat:@"which %@", cmdName] UTF8String],"r")) == NULL){
+	if ((fp=popen([NSString stringWithFormat:@"which %@", cmdName].UTF8String, "r")) == NULL) {
 		return NO;
 	}
 	fgets(str, MAX_LEN-1, fp);
 	
 	pStr = str;
-	while((*pStr != '\r') && (*pStr != '\n') && (*pStr != EOF)) pStr++;
+    while ((*pStr != '\r') && (*pStr != '\n') && (*pStr != EOF)) {
+        pStr++;
+    }
 	*pStr = '\0';
 	
 	pclose(fp);
@@ -64,7 +68,7 @@ NSString* getFullPath(NSString* filename)
 	char str[MAX_LEN];
 	FILE* fp;
 	
-	if((fp=popen([[NSString stringWithFormat:@"perl -e \"use File::Spec;print File::Spec->rel2abs('%@');\"", filename] UTF8String],"r"))==NULL){
+	if ((fp=popen([NSString stringWithFormat:@"perl -e \"use File::Spec;print File::Spec->rel2abs('%@');\"", filename].UTF8String, "r")) == NULL) {
 		return NO;
 	}
 	fgets(str, MAX_LEN-1, fp);
@@ -82,12 +86,12 @@ int strtoi(char* str)
     val = strtol(str, &endptr, 10);
 	
     if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
-		|| (errno != 0 && val == 0)){
+		|| (errno != 0 && val == 0)) {
 		fprintf(stderr, "error : %s cannot be converted to a number.\n", str);
 		exit(1);
     }
 	
-    if (*endptr != '\0'){
+    if (*endptr != '\0') {
 		fprintf(stderr, "error : %s is not a number.\n", str);
 		exit(1);
 	}
@@ -112,6 +116,7 @@ int main (int argc, char *argv[]) {
         BOOL quietFlag = NO;
         NSString* encoding = @"utf8";
         NSString* compiler = @"platex";
+        NSNumber* unitTag = @(PXUNITTAG);
         
         // getopt_long を使った，長いオプション対応のオプション解析
         struct option *options;
@@ -184,6 +189,11 @@ int main (int argc, char *argv[]) {
         options[12].has_arg = required_argument;
         options[12].flag = NULL;
         options[12].val = 13;
+
+        options[13].name = "unit";
+        options[13].has_arg = required_argument;
+        options[13].flag = NULL;
+        options[13].val = 14;
         
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
@@ -201,50 +211,50 @@ int main (int argc, char *argv[]) {
         options[OPTION_NUM - 1].flag = 0;
         options[OPTION_NUM - 1].val = 0;
         
-        while(1){
+        while (YES) {
             // オプションの取得
             opt = getopt_long(argc, argv, "", options, &option_index);
             
             // オプション文字が見つからなくなればオプション解析終了
-            if(opt == -1){
+            if (opt == -1) {
                 break;
             }
             
-            switch(opt){
+            switch (opt) {
                 case 0:
                     break;
                 case 1: // --resolution
-                    if(optarg){
+                    if (optarg) {
                         resolutoinLevel = strtof(optarg, NULL);
-                    }else{
+                    } else {
                         usage();
                     }
                     break;
                 case 2: // --left-margin
-                    if(optarg){
+                    if (optarg) {
                         leftMargin = strtoi(optarg);
-                    }else{
+                    } else {
                         usage();
                     }
                     break;
                 case 3: // --right-margin
-                    if(optarg){
+                    if (optarg) {
                         rightMargin = strtoi(optarg);
-                    }else{
+                    } else {
                         usage();
                     }
                     break;
                 case 4: // --top-margin
-                    if(optarg){
+                    if (optarg) {
                         topMargin = strtoi(optarg);
-                    }else{
+                    } else {
                         usage();
                     }
                     break;
                 case 5: // --bottom-margin
-                    if(optarg){
+                    if (optarg) {
                         bottomMargin = strtoi(optarg);
-                    }else{
+                    } else {
                         usage();
                     }
                     break;
@@ -264,9 +274,9 @@ int main (int argc, char *argv[]) {
                     utfExportFlag = YES;
                     break;
                 case 11: // --kanji
-                    if(optarg){
+                    if (optarg) {
                         encoding = @(optarg);
-                    }else{
+                    } else {
                         usage();
                     }
                     break;
@@ -274,9 +284,23 @@ int main (int argc, char *argv[]) {
                     quietFlag = YES;
                     break;
                 case 13: // --compiler
-                    if(optarg){
+                    if (optarg) {
                         compiler = @(optarg);
-                    }else{
+                    } else {
+                        usage();
+                    }
+                    break;
+                case 14: // --unit
+                    if (optarg) {
+                        NSString *unitString = @(optarg);
+                        if ([unitString isEqualToString:@"px"]){
+                            unitTag = @(PXUNITTAG);
+                        } else if ([unitString isEqualToString:@"bp"]){
+                            unitTag = @(BPUNITTAG);
+                        } else {
+                            usage();
+                        }
+                    } else {
                         usage();
                     }
                     break;
@@ -297,18 +321,22 @@ int main (int argc, char *argv[]) {
         argc -= optind; 
         argv += optind; 
         
-        if (argc != 2) usage();
+        if (argc != 2) {
+            usage();
+        }
         
         NSString* inputFilePath = @(argv[0]);
         NSString* outputFilePath = getFullPath(@(argv[1]));
         
-        if(!quietFlag) version();
-        if(![[NSFileManager defaultManager] fileExistsAtPath:inputFilePath]){
-            fprintf(stderr, "tex2img : %s : No such file or directory\n", [inputFilePath UTF8String]);
+        if (!quietFlag) {
+            version();
+        }
+        if (![NSFileManager.defaultManager fileExistsAtPath:inputFilePath]) {
+            fprintf(stderr, "tex2img : %s : No such file or directory\n", inputFilePath.UTF8String);
             exit(1);
         }
         
-        ControllerC* controller = [[ControllerC alloc] init];
+        ControllerC* controller = ControllerC.new;
         
         NSMutableDictionary *aProfile = [NSMutableDictionary dictionary];
         aProfile[@"platexPath"] = getPath(compiler);
@@ -336,15 +364,16 @@ int main (int argc, char *argv[]) {
         aProfile[@"utfExport"] = @(utfExportFlag);
         aProfile[@"quiet"] = @(quietFlag);
         aProfile[@"controller"] = controller;
+        aProfile[@"unit"] = unitTag;
         
         Converter *converter = [Converter converterWithProfile:aProfile];
-        BOOL succeed = [converter compileAndConvertWithInputPath:inputFilePath];
+        BOOL success = [converter compileAndConvertWithInputPath:inputFilePath];
         
-        if(succeed && !quietFlag){
-            printf("\n%s is generated.\n", [outputFilePath UTF8String]);
+        if (success && !quietFlag) {
+            printf("\n%s is generated.\n", outputFilePath.UTF8String);
         }
         
-        return succeed ? 0 : 1;
+        return success ? 0 : 1;
     }
     
 }

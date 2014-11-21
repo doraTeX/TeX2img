@@ -25,19 +25,19 @@
 	if (!profileNames) return nil;
 	
 	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
-	return (targetIndex==NSNotFound) ? nil : [NSMutableDictionary dictionaryWithDictionary:profiles[targetIndex]];
+	return (targetIndex == NSNotFound) ? nil : [NSMutableDictionary dictionaryWithDictionary:profiles[targetIndex]];
 }
 
 - (void)loadProfilesFromPlist
 {
-	profileNames = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"profileNames"]]; // retain しておかないと失われる
+	profileNames = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"profileNames"]];
 	profiles =  [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"profiles"]];
 }
 
 - (void)initProfiles
 {
-	profileNames = [NSMutableArray arrayWithCapacity:0]; // retain しておかないと失われる
-	profiles = [NSMutableArray arrayWithCapacity:0];
+	profileNames = NSMutableArray.array;
+	profiles = NSMutableArray.array;
 }
 
 - (void)releaseProfiles
@@ -47,7 +47,9 @@
 - (void)removeProfileForName:(NSString*)profileName
 {
 	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
-	if(targetIndex == NSNotFound) return;
+    if (targetIndex == NSNotFound) {
+        return;
+    }
 	[profileNames removeObjectAtIndex:targetIndex];
 	[profiles removeObjectAtIndex:targetIndex];
 }
@@ -55,13 +57,10 @@
 - (void)updateProfile:(NSDictionary*)aProfile forName:(NSString*)profileName
 {
 	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
-	if(targetIndex == NSNotFound)
-	{
+	if (targetIndex == NSNotFound) {
 		[profileNames addObject:profileName];
 		[profiles addObject:aProfile];
-	}
-	else
-	{
+	} else {
 		profileNames[targetIndex] = profileName;
 		profiles[targetIndex] = aProfile;
 	}
@@ -69,7 +68,7 @@
 
 - (void)saveProfiles
 {
-	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	NSUserDefaults *userDefaults = NSUserDefaults.standardUserDefaults;
 	[userDefaults setObject:profileNames forKey:@"profileNames"];
 	[userDefaults setObject:profiles forKey:@"profiles"];
 	[userDefaults synchronize];
@@ -90,31 +89,22 @@
 
 - (IBAction)addProfile:(id)sender
 {
-	NSString *newProfileName = [saveAsTextField stringValue];
+	NSString *newProfileName = saveAsTextField.stringValue;
 	
-	if([newProfileName isEqualToString:@""])
-	{
+	if ([newProfileName isEqualToString:@""]) {
 		NSBeep();
 		NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"emptyProfileNameErrMsg", nil), @"OK", nil, nil);	
-	}
-	else
-	{
+	} else {
 		NSUInteger aIndex = [profileNames indexOfObject:newProfileName];
-		if(aIndex == NSNotFound)
-		{
-			[self updateProfile:[controllerG currentProfile] forName:newProfileName];
-			[saveAsTextField setStringValue:@""];
+		if (aIndex == NSNotFound) {
+			[self updateProfile:controllerG.currentProfile forName:newProfileName];
+			saveAsTextField.StringValue = @"";
 			[profilesWindow makeFirstResponder:saveAsTextField]; // フォーカスを入力欄に
-		}
-		else
-		{
-			if(NSRunAlertPanel(NSLocalizedString(@"Confirm", nil), NSLocalizedString(@"profileOverwriteMsg", nil), @"OK", NSLocalizedString(@"Cancel", nil), nil) == NSOKButton)
-			{
-				[self updateProfile:[controllerG currentProfile] forName:newProfileName];
-				[saveAsTextField setStringValue:@""];
-			}
-			else
-			{
+		} else {
+			if (NSRunAlertPanel(NSLocalizedString(@"Confirm", nil), NSLocalizedString(@"profileOverwriteMsg", nil), @"OK", NSLocalizedString(@"Cancel", nil), nil) == NSOKButton) {
+				[self updateProfile:controllerG.currentProfile forName:newProfileName];
+				saveAsTextField.StringValue = @"";
+			} else {
 				[profilesWindow makeFirstResponder:saveAsTextField]; // フォーカスを入力欄に
 			}
 		}
@@ -125,8 +115,10 @@
 
 - (IBAction)loadProfile:(id)sender
 {
-    NSInteger selectedIndex = [profilesTableView selectedRow];
-	if(selectedIndex == -1) return;
+    NSInteger selectedIndex = profilesTableView.selectedRow;
+    if (selectedIndex == -1) {
+        return;
+    }
 	
 	[controllerG adoptProfile:profiles[selectedIndex]];
 	[profilesWindow close];
@@ -134,8 +126,10 @@
 
 - (IBAction)removeProfile:(id)sender
 {
-    NSInteger selectedIndex = [profilesTableView selectedRow];
-	if(selectedIndex == -1) return;
+    NSInteger selectedIndex = profilesTableView.selectedRow;
+    if (selectedIndex == -1) {
+        return;
+    }
 	
 	[profileNames removeObjectAtIndex:selectedIndex];
 	[profiles removeObjectAtIndex:selectedIndex];
@@ -146,9 +140,9 @@
 
 - (void)awakeFromNib
 {
-	[profilesTableView setTarget:self];
-	[profilesTableView setAction:@selector(setSelectedProfileName:)];
-	[profilesTableView setDoubleAction:@selector(loadProfile:)];
+	profilesTableView.Target = self;
+	profilesTableView.Action = @selector(setSelectedProfileName:);
+	profilesTableView.DoubleAction = @selector(loadProfile:);
 
 	[profilesTableView setDraggingSourceOperationMask:NSDragOperationMove forLocal:YES];
 	[profilesTableView registerForDraggedTypes:@[MovedRowsType]];
@@ -161,10 +155,12 @@
 
 - (IBAction)setSelectedProfileName:(id)sender
 {
-	NSInteger selectedIndex = [profilesTableView selectedRow];
-	if(selectedIndex == -1) return;
+	NSInteger selectedIndex = profilesTableView.selectedRow;
+    if (selectedIndex == -1) {
+        return;
+    }
 
-	[saveAsTextField setStringValue:profileNames[selectedIndex]];
+	saveAsTextField.StringValue = profileNames[selectedIndex];
 }
 
 - (void)showProfileWindow
@@ -172,8 +168,8 @@
 	[profilesWindow makeKeyAndOrderFront:nil];
 }
 
-
-////////// ここからドラッグ＆ドロップによる行の並べ替え関連 //////////
+#pragma mark -
+#pragma mark ドラッグ＆ドロップによる行の並べ替え関連
 - (BOOL)tableView:(NSTableView *)aTableView
 writeRowsWithIndexes:(NSIndexSet *)rowIndexes 
 	 toPasteboard:(NSPasteboard *)pboard
@@ -198,8 +194,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	// 行間へのドロップは許すが，行自体へのドロップ(NSTableViewDropOn)は許さない
     [aTableView setDropRow:row dropOperation:NSTableViewDropAbove];
 
-    if ([info draggingSource] == profilesTableView)
-	{
+    if (info.draggingSource == profilesTableView) {
 		return NSDragOperationMove;
     }
 	return NSDragOperationNone;
@@ -212,7 +207,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	// If any of the removed objects come before the insertion index,
 	// we need to decrement the index appropriately
 	NSUInteger adjustedInsertIndex = insertIndex - [fromIndexSet countOfIndexesInRange:(NSRange){0, insertIndex}];
-	NSRange destinationRange = NSMakeRange(adjustedInsertIndex, [fromIndexSet count]);
+	NSRange destinationRange = NSMakeRange(adjustedInsertIndex, fromIndexSet.count);
 	NSIndexSet *destinationIndexes = [NSIndexSet indexSetWithIndexesInRange:destinationRange];
 	
 	NSArray *objectsToMove = [anArray objectsAtIndexes:fromIndexSet];
@@ -228,20 +223,17 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 			  row:(NSInteger)insertionRow
 	dropOperation:(NSTableViewDropOperation)op
 {
-    if (insertionRow < 0)
-	{
+    if (insertionRow < 0) {
 		insertionRow = 0;
 	}
 	// if drag source is self, it's a move unless the Option key is pressed
-    if ([info draggingSource] == profilesTableView)
-	{
+    if (info.draggingSource == profilesTableView) {
 		
 		NSEvent *currentEvent = [NSApp currentEvent];
-		NSUInteger optionKeyPressed = [currentEvent modifierFlags] & NSAlternateKeyMask;
+		NSUInteger optionKeyPressed = currentEvent.modifierFlags & NSAlternateKeyMask;
 		
-		if (optionKeyPressed == 0)
-		{
-			NSData *rowsData = [[info draggingPasteboard] dataForType:MovedRowsType];
+		if (optionKeyPressed == 0) {
+			NSData *rowsData = [info.draggingPasteboard dataForType:MovedRowsType];
 			NSIndexSet *indexSet = [NSKeyedUnarchiver unarchiveObjectWithData:rowsData];
 			NSIndexSet *newIndexes = [self moveObjectsOf:profileNames fromIndexes:indexSet toIndex:insertionRow];
 			[self moveObjectsOf:profiles fromIndexes:indexSet toIndex:insertionRow];
@@ -253,6 +245,6 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	
     return NO;
 }
-////////// ここまでドラッグ＆ドロップによる行の並べ替え関連 //////////
+#pragma mark -
 
 @end

@@ -1,7 +1,7 @@
 #import "TeXTextView.h"
 #import "NSDictionary-Extension.h"
 
-static BOOL isValidTeXCommandChar(int c)
+static BOOL isValidTeXCommandChar(unichar c)
 {
 	if ((c >= 'A') && (c <= 'Z'))
 		return YES;
@@ -37,26 +37,32 @@ static BOOL isValidTeXCommandChar(int c)
 	r = 0.0;
 	g = 0.0;
 	b = 1.0;
-	if(colorize) color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
-	commandColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
+    if (colorize) {
+        color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
+    }
+	commandColorAttribute = [NSDictionary.alloc initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
 	
 	r = 1.0;
 	g = 0.0;
 	b = 0.0;
-	if(colorize) color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
-	commentColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
+    if (colorize) {
+        color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
+    }
+	commentColorAttribute = [NSDictionary.alloc initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
 	
 	r = 0.02;
 	g = 0.51;
 	b = 0.13;
-	if(colorize) color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
-	markerColorAttribute = [[NSDictionary alloc] initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
+    if (colorize) {
+        color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
+    }
+	markerColorAttribute = [NSDictionary.alloc initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
 	
 	
 	// Fetch the underlying layout manager and string.
-	layoutManager = [self layoutManager];
-	textString = [self string];
-	length = [textString length];
+	layoutManager = self.layoutManager;
+	textString = self.string;
+	length = textString.length;
 	
 	NSRange range = NSMakeRange(0, length);
 	
@@ -120,7 +126,7 @@ static BOOL isValidTeXCommandChar(int c)
 
 - (void)resetHighlight:(id)sender
 {
-	[self colorizeText:[[controller currentProfile] boolForKey:@"colorizeText"]];
+	[self colorizeText:[controller.currentProfile boolForKey:@"colorizeText"]];
 	braceHighlighting = NO;
 }
 
@@ -131,46 +137,48 @@ static BOOL isValidTeXCommandChar(int c)
 
 - (void)resetBackgroundColorOfTextView:(id)sender
 {
-	[self setBackgroundColor:[NSColor controlBackgroundColor]];
+	self.BackgroundColor = NSColor.controlBackgroundColor;
 }
 
 - (void)resetBackgroundColor:(id)sender
 {
-	[[self layoutManager] removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:NSMakeRange(0, [[self textStorage] length])];
+	[self.layoutManager removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:NSMakeRange(0, self.textStorage.length)];
 	contentHighlighting = NO;
 }
 
 - (void)highlightContent:(NSString*)range
 {
 	contentHighlighting = YES;
-	[[self layoutManager] addTemporaryAttributes: @{NSBackgroundColorAttributeName: [NSColor colorWithDeviceRed:1 green:1 blue:0.5 alpha:1]}	 // added by Taylor
+	[self.layoutManager addTemporaryAttributes: @{NSBackgroundColorAttributeName: [NSColor colorWithDeviceRed:1 green:1 blue:0.5 alpha:1]}	 // added by Taylor
 							   forCharacterRange:NSRangeFromString(range)];
 }
 
 - (void)textViewDidChangeSelection:(NSNotification *)inNotification
 {
-	NSLayoutManager* layoutManager = [self layoutManager];
-	NSDictionary* profile = [controller currentProfile];
+	NSLayoutManager* layoutManager = self.layoutManager;
+	NSDictionary* profile = controller.currentProfile;
 
 	// Notification の処理で色づけの変更を行うと，delete を押したときにバグるので，performSelector で別途呼び出して処理する
-	if(contentHighlighting){
+	if (contentHighlighting) {
 		[self performSelector:@selector(resetBackgroundColor:) 
 				   withObject:nil afterDelay:0]; // 既存の背景色の消去
 	}
 	
 	HighlightPattern highlightPattern = [profile integerForKey:@"highlightPattern"];
 
-	if(highlightPattern == SOLID || braceHighlighting){
+	if (highlightPattern == SOLID || braceHighlighting) {
 		[self resetHighlight:nil];
 	}
 
-	highlightBracesColorDict = @{NSForegroundColorAttributeName: [NSColor magentaColor]};
+	highlightBracesColorDict = @{NSForegroundColorAttributeName: NSColor.magentaColor};
 	unichar k_braceCharList[] = {0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E}; // == ()[]{}<>
     
-	NSString *theString = [[self textStorage] string];
-    NSUInteger theStringLength = [theString length];
-    if (theStringLength == 0) { return; }
-    NSRange theSelectedRange = [self selectedRange];
+	NSString *theString = self.textStorage.string;
+    NSUInteger theStringLength = theString.length;
+    if (theStringLength == 0) {
+        return;
+    }
+    NSRange theSelectedRange = self.selectedRange;
     NSInteger theLocation = theSelectedRange.location;
     NSInteger theDifference = theLocation - lastCursorLocation;
     lastCursorLocation = theLocation;
@@ -203,7 +211,7 @@ static BOOL isValidTeXCommandChar(int c)
 	unichar previousChar = (theLocation > 0) ? [theString characterAtIndex:theLocation-1] : 0;
 	BOOL notCS = ((previousChar != '\\') && (previousChar != 0x00a5));
     unichar theCurChar, theBraceChar;
-	int inc;
+	NSInteger inc;
     if (theUnichar == ')' && checkParen && notCS) {
         theBraceChar = k_braceCharList[0];
 		inc = -1;
@@ -250,7 +258,7 @@ static BOOL isValidTeXCommandChar(int c)
 				 [self setSelectedRange: theSelectedRange];
 				 */
 				
-				if (highlightPattern != NOHIGHLIGHT){
+				if (highlightPattern != NOHIGHLIGHT) {
 					// 色づけ方式での強調表示
 					braceHighlighting = YES;
 					[layoutManager addTemporaryAttributes:highlightBracesColorDict 
@@ -260,7 +268,7 @@ static BOOL isValidTeXCommandChar(int c)
 					[self display];
 				}
 
-                if([profile boolForKey:@"highlightContent"]){
+                if ([profile boolForKey:@"highlightContent"]) {
 					[self performSelector:@selector(highlightContent:) 
 							   withObject:NSStringFromRange(NSMakeRange(MIN(originalLocation, theLocation), ABS(originalLocation - theLocation)+1)) afterDelay:0];
 				}
@@ -284,9 +292,11 @@ static BOOL isValidTeXCommandChar(int c)
         }
     }
 	// 対応する開始括弧がなかったときの処理
-    if([profile boolForKey:@"beep"]) NSBeep();
-	if([profile boolForKey:@"flashBackground"]) {
-		[self setBackgroundColor:[NSColor colorWithDeviceRed:1 green:0.95 blue:1 alpha:1]];
+    if ([profile boolForKey:@"beep"]) {
+        NSBeep();
+    }
+	if ([profile boolForKey:@"flashBackground"]) {
+		self.BackgroundColor = [NSColor colorWithDeviceRed:1 green:0.95 blue:1 alpha:1];
 		[self performSelector:@selector(resetBackgroundColorOfTextView:) 
 				   withObject:nil afterDelay:0.20];
 	}
@@ -298,15 +308,15 @@ static BOOL isValidTeXCommandChar(int c)
 	
 	NSRange			matchRange;
 	NSString		*textString;
-	int				i, j, count, uchar, leftpar, rightpar;
+	NSInteger       i, j, count, uchar, leftpar, rightpar;
 //	NSDate			*myDate;
 	
-	if ([replacementString length] != 1)
+	if (replacementString.length != 1)
 		return YES;
 	
 	rightpar = [replacementString characterAtIndex:0];
 
-	NSDictionary* profile = [controller currentProfile];
+	NSDictionary* profile = controller.currentProfile;
 
 	HighlightPattern highlightPattern = [profile integerForKey:@"highlightPattern"];
 	BOOL checkBrace = [profile boolForKey:@"checkBrace"];
@@ -331,7 +341,7 @@ static BOOL isValidTeXCommandChar(int c)
 		else
 			leftpar = '[';
 		
-		textString = [self string];
+		textString = self.string;
 		i = affectedCharRange.location;
 		j = 1;
 		count = 1;

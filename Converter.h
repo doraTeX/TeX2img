@@ -3,9 +3,9 @@
 @protocol OutputController
 - (void)showExtensionError;
 - (void)showNotFoundError:(NSString*)aPath;
-- (BOOL)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath;
-- (BOOL)checkPdfcropExistence;
-- (BOOL)checkEpstopdfExistence;
+- (BOOL)platexExistsAtPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath;
+- (BOOL)pdfcropExists;
+- (BOOL)epstopdfExists;
 - (void)showFileGenerateError:(NSString*)aPath;
 - (void)showExecError:(NSString*)command;
 - (void)showCannotOverrideError:(NSString*)path;

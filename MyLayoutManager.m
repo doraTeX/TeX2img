@@ -11,7 +11,9 @@
 @implementation MyLayoutManager
 - (id)init
 {
-	if (!(self = [super init])) return nil;
+    if (!(self = [super init])) {
+        return nil;
+    }
 	unichar u_tabCharacter = 0x2023; // 他の候補：0x00AC, 0x21E5, 0x25B9
 	unichar u_returnCharacter = 0x21B5; // 他の候補：0x00B6, 0x21A9, 0x23CE
 	unichar u_fullwidthSpaceCharacter = 0x25A1; // 他の候補：0x22A0, 0x25A0, 0x2022
@@ -36,7 +38,7 @@
 
 - (void)drawGlyphsForGlyphRange:(NSRange)inGlyphRange atPoint:(NSPoint)inContainerOrigin
 {
-    NSString *theCompleteStr = [[self textStorage] string];
+    NSString *theCompleteStr = self.textStorage.string;
     NSUInteger theLengthToRedraw = NSMaxRange(inGlyphRange);
     NSUInteger theGlyphIndex, theCharIndex = 0;
     unichar theCharacter;
@@ -46,12 +48,12 @@
 	float theInsetHeight = 4.0;
 	NSSize theSize = NSMakeSize(theInsetWidth, theInsetHeight);
 	
-    NSFont *theFont = [[self textStorage] font];
-    NSColor *theColor = [NSColor orangeColor];
+    NSFont *theFont = self.textStorage.font;
+    NSColor *theColor = NSColor.orangeColor;
     NSDictionary* _attributes = @{NSFontAttributeName: theFont, 
 								 NSForegroundColorAttributeName: theColor};
 	
-	NSDictionary* currentProfile = [_controller currentProfile];
+	NSDictionary* currentProfile = _controller.currentProfile;
 	
 	for (theGlyphIndex = inGlyphRange.location; theGlyphIndex < theLengthToRedraw; theGlyphIndex++) {
 		theCharIndex = [self characterIndexForGlyphAtIndex:theGlyphIndex];

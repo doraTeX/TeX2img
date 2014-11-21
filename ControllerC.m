@@ -4,7 +4,7 @@
 BOOL checkWhich(NSString* cmdName)
 {
 	int status = system([[NSString stringWithFormat:@"which %@ > /dev/null", cmdName] cStringUsingEncoding:NSUTF8StringEncoding]);
-	return (status==0) ? YES : NO;
+	return (status == 0) ? YES : NO;
 }
 
 @implementation ControllerC
@@ -26,26 +26,26 @@ BOOL checkWhich(NSString* cmdName)
 	fprintf(stderr, [[NSString stringWithFormat:@"tex2img : %@ can't be found.\nCheck environment variable $PATH.\n", aPath] cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
-- (BOOL)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
+- (BOOL)platexExistsAtPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
 {
-	if(!checkWhich(platexPath)){
+	if (!checkWhich(platexPath)) {
 		[self showNotFoundError:@"platex"];
 		return NO;
 	}
-	if(!checkWhich(dvipdfmxPath)){
+	if (!checkWhich(dvipdfmxPath)) {
 		[self showNotFoundError:@"dvipdfmx"];
 		return NO;
 	}
-	if(!checkWhich(gsPath)){
+	if (!checkWhich(gsPath)) {
 		[self showNotFoundError:@"gs"];
 		return NO;
 	}
 	return YES;
 }
 
-- (BOOL)checkPdfcropExistence;
+- (BOOL)pdfcropExists;
 {
-	if(!checkWhich(@"pdfcrop")){
+	if (!checkWhich(@"pdfcrop")) {
 		[self showNotFoundError:@"epstopdf"];
 		return NO;
 	}
@@ -53,9 +53,9 @@ BOOL checkWhich(NSString* cmdName)
 	return YES;
 }
 
-- (BOOL)checkEpstopdfExistence;
+- (BOOL)epstopdfExists;
 {
-	if(!checkWhich(@"pdfcrop")){
+	if (!checkWhich(@"pdfcrop")) {
 		[self showNotFoundError:@"pdfcrop"];
 		return NO;
 	}
@@ -90,7 +90,9 @@ BOOL checkWhich(NSString* cmdName)
 
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet
 {
-	if(!quiet) printf([str cStringUsingEncoding:NSUTF8StringEncoding]);
+    if (!quiet) {
+        printf([str cStringUsingEncoding:NSUTF8StringEncoding]);
+    }
 }
 ////// ここまで OutputController プロトコルの実装 //////
 
