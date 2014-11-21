@@ -31,6 +31,10 @@ typedef enum  {
 	IBOutlet NSMenuItem *highlightContentMenuItem;
 	IBOutlet NSMenuItem *beepMenuItem;
 	IBOutlet NSMenuItem *flashBackgroundMenuItem;
+	IBOutlet NSMenuItem *checkBraceMenuItem;
+	IBOutlet NSMenuItem *checkBracketMenuItem;
+	IBOutlet NSMenuItem *checkSquareBracketMenuItem;
+	IBOutlet NSMenuItem *checkParenMenuItem;
 	IBOutlet NSMenuItem *autoCompleteMenuItem;
 	IBOutlet NSMenuItem *showTabCharacterMenuItem;
 	IBOutlet NSMenuItem *showSpaceCharacterMenuItem;

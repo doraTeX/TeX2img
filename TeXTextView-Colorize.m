@@ -153,6 +153,7 @@ static BOOL isValidTeXCommandChar(int c)
 - (void)textViewDidChangeSelection:(NSNotification *)inNotification
 {
 	NSLayoutManager* layoutManager = [self layoutManager];
+	NSDictionary* profile = [controller currentProfile];
 
 	// Notification の処理で色づけの変更を行うと，delete を押したときにバグるので，performSelector で別途呼び出して処理する
 	[self performSelector:@selector(resetBackgroundColor:) 
@@ -160,7 +161,7 @@ static BOOL isValidTeXCommandChar(int c)
 	
 	[self resetHighlight:nil];
 	
-	HighlightPattern highlightPattern = [[controller currentProfile] integerForKey:@"highlightPattern"];
+	HighlightPattern highlightPattern = [profile integerForKey:@"highlightPattern"];
 
 	highlightBracesColorDict = [NSDictionary dictionaryWithObjectsAndKeys:
 								[NSColor magentaColor], NSForegroundColorAttributeName, nil ];
@@ -187,31 +188,36 @@ static BOOL isValidTeXCommandChar(int c)
     }
 	int originalLocation = theLocation;
 	
+	BOOL checkBrace = [profile boolForKey:@"checkBrace"];
+	BOOL checkBracket = [profile boolForKey:@"checkBracket"];
+	BOOL checkSquareBracket = [profile boolForKey:@"checkSquareBracket"];
+	BOOL checkParen = [profile boolForKey:@"checkParen"];
+	
     unichar theUnichar = [theString characterAtIndex:theLocation];
     unichar theCurChar, theBraceChar;
 	int inc;
-    if (theUnichar == ')') {
+    if (theUnichar == ')' && checkParen) {
         theBraceChar = k_braceCharList[0];
 		inc = -1;
-    } else if (theUnichar == '(') {
+    } else if (theUnichar == '(' && checkParen) {
         theBraceChar = k_braceCharList[1];
 		inc = 1;
-    } else if (theUnichar == ']') {
+    } else if (theUnichar == ']' && checkSquareBracket) {
         theBraceChar = k_braceCharList[2];
 		inc = -1;
-    } else if (theUnichar == '[') {
+    } else if (theUnichar == '[' && checkSquareBracket) {
         theBraceChar = k_braceCharList[3];
 		inc = 1;
-    } else if (theUnichar == '}') {
+    } else if (theUnichar == '}' && checkBrace) {
         theBraceChar = k_braceCharList[4];
 		inc = -1;
-    } else if (theUnichar == '{') {
+    } else if (theUnichar == '{' && checkBrace) {
         theBraceChar = k_braceCharList[5];
 		inc = 1;
-    } else if (theUnichar == '>') {
+    } else if (theUnichar == '>' && checkBracket) {
         theBraceChar = k_braceCharList[6];
 		inc = -1;
-    } else if (theUnichar == '<') {
+    } else if (theUnichar == '<' && checkBracket) {
         theBraceChar = k_braceCharList[7];
 		inc = 1;
     } else {
@@ -243,12 +249,12 @@ static BOOL isValidTeXCommandChar(int c)
 					[self display];
 				}
 
-                if([[controller currentProfile] boolForKey:@"highlightContent"]){
+                if([profile boolForKey:@"highlightContent"]){
 					[self performSelector:@selector(highlightContent:) 
 							   withObject:NSStringFromRange(NSMakeRange(MIN(originalLocation, theLocation), ABS(originalLocation - theLocation)+1)) afterDelay:0];
 				}
 				
-				if (NSFoundationVersionNumber > LEOPARD  && !autoCompleting && [[controller currentProfile] boolForKey:@"flashInMoving"]) {
+				if (NSFoundationVersionNumber > LEOPARD  && !autoCompleting && [profile boolForKey:@"flashInMoving"]) {
 					[self performSelector:@selector(showIndicator:) 
 							   withObject:NSStringFromRange(NSMakeRange(theLocation, 1)) 
 							   afterDelay:0];
@@ -267,8 +273,8 @@ static BOOL isValidTeXCommandChar(int c)
         }
     }
 	// 対応する開始括弧がなかったときの処理
-    if([[controller currentProfile] boolForKey:@"beep"]) NSBeep();
-	if([[controller currentProfile] boolForKey:@"flashBackground"]) {
+    if([profile boolForKey:@"beep"]) NSBeep();
+	if([profile boolForKey:@"flashBackground"]) {
 		[self setBackgroundColor:[NSColor colorWithDeviceRed:1 green:0.95 blue:1 alpha:1]];
 		[self performSelector:@selector(resetBackgroundColorOfTextView:) 
 				   withObject:nil afterDelay:0.20];
@@ -289,11 +295,21 @@ static BOOL isValidTeXCommandChar(int c)
 	
 	rightpar = [replacementString characterAtIndex:0];
 
-	HighlightPattern highlightPattern = [[controller currentProfile] integerForKey:@"highlightPattern"];
+	NSDictionary* profile = [controller currentProfile];
+
+	HighlightPattern highlightPattern = [profile integerForKey:@"highlightPattern"];
+	BOOL checkBrace = [profile boolForKey:@"checkBrace"];
+	BOOL checkBracket = [profile boolForKey:@"checkBracket"];
+	BOOL checkSquareBracket = [profile boolForKey:@"checkSquareBracket"];
+	BOOL checkParen = [profile boolForKey:@"checkParen"];
 	
 	if (highlightPattern != NOHIGHLIGHT) {
-		if ((rightpar != '}') &&  (rightpar != ')') &&  (rightpar != ']') &&  (rightpar != '>'))
+		if (!(   ((rightpar == '}') && checkBrace)
+			  || ((rightpar == ')') && checkParen)
+			  || ((rightpar == '>') && checkBracket)
+			  || ((rightpar == ']') && checkSquareBracket ))){
 			return YES;
+		}
 		
 		if (rightpar == '}')
 			leftpar = '{';
