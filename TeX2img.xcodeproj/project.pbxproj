@@ -15,6 +15,8 @@
 		3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
 		34821EC810282CF9008DEB1F /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34821EC710282CF9008DEB1F /* ProfileController.m */; };
 		348BB5190F08C3850063003D /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
+		348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */; };
+		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
 		34B632BE1028FB87009A052F /* NSIndexSet-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B632BD1028FB87009A052F /* NSIndexSet-Extension.m */; };
 		34CF2F261025FA30009A8CA6 /* NSMutableDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF2F251025FA30009A8CA6 /* NSMutableDictionary-Extension.m */; };
 		34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
@@ -51,6 +53,9 @@
 		34821EC710282CF9008DEB1F /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
 		348BB5170F08C3850063003D /* Converter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Converter.h; sourceTree = "<group>"; };
 		348BB5180F08C3850063003D /* Converter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Converter.m; sourceTree = "<group>"; };
+		348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-CommandCompletion.m"; sourceTree = "<group>"; };
+		348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-Colorize.m"; sourceTree = "<group>"; };
+		348D72A1125A57B8003AF902 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
 		34B632BC1028FB87009A052F /* NSIndexSet-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet-Extension.h"; sourceTree = "<group>"; };
 		34B632BD1028FB87009A052F /* NSIndexSet-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet-Extension.m"; sourceTree = "<group>"; };
 		34CF2F241025FA30009A8CA6 /* NSMutableDictionary-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary-Extension.h"; sourceTree = "<group>"; };
@@ -109,6 +114,8 @@
 				705DC3550F10E4670052AFA5 /* ControllerC.m */,
 				70254EEE10353485000D6D05 /* TeXTextView.h */,
 				70254EEF10353485000D6D05 /* TeXTextView.m */,
+				348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */,
+				348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */,
 				34CF2F241025FA30009A8CA6 /* NSMutableDictionary-Extension.h */,
 				34CF2F251025FA30009A8CA6 /* NSMutableDictionary-Extension.m */,
 				34CF33A210260315009A8CA6 /* NSDictionary-Extension.h */,
@@ -164,6 +171,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				348D72A1125A57B8003AF902 /* global.h */,
 				32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				705DC2BB0F10E0B00052AFA5 /* mainc.m */,
@@ -291,6 +299,8 @@
 				34B632BE1028FB87009A052F /* NSIndexSet-Extension.m in Sources */,
 				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,
 				7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */,
+				348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */,
+				348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

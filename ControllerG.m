@@ -455,6 +455,29 @@
 //		[getOutlineCheckBox setState:NO];
 //		[getOutlineCheckBox setEnabled:NO];
 //	}
+
+	// CommandComepletion.txt のロード
+	unichar esc = 0x001B;
+	g_commandCompletionChar = [NSString stringWithCharacters: &esc length: 1];
+	NSData 	*myData = nil;
+
+	NSString *completionPath = [@"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt" stringByStandardizingPath];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: completionPath])
+		myData = [NSData dataWithContentsOfFile:completionPath];
+	
+	if(myData)
+	{
+		NSStringEncoding myEncoding = NSUTF8StringEncoding;
+		g_commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding: myEncoding];
+		if (! g_commandCompletionList) {
+			g_commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding: myEncoding];
+		}
+		
+		[g_commandCompletionList insertString: @"\n" atIndex: 0];
+		if ([g_commandCompletionList characterAtIndex: [g_commandCompletionList length]-1] != '\n')
+			[g_commandCompletionList appendString: @"\n"];
+	}
+
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification

@@ -2,6 +2,8 @@
 #import "Converter.h"
 #import "ProfileController.h"
 #import "TeXTextView.h"
+#import "global.h"
+
 @class ProfileController;
 @class TeXTextView;
 
