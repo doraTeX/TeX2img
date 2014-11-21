@@ -69,9 +69,7 @@
 
 - (id)tableView:(NSTableView*)aTableView objectValueForTableColumn:(NSTableColumn*)aTableColumn row:(int)rowIndex
 {
-	NSString* profileName = [profileNames objectAtIndex:rowIndex];
-	NSString* currentProfileName = @"*currentSettings*";
-	return [profileName isEqualToString:currentProfileName] ? NSLocalizedString(currentProfileName, nil) : profileName;
+	return [profileNames objectAtIndex:rowIndex];
 }
 
 
@@ -138,7 +136,7 @@
 	[profilesTableView setDoubleAction:@selector(loadProfile:)];
 
 	[profilesTableView setDraggingSourceOperationMask:NSDragOperationMove forLocal:YES];
-	[profilesTableView registerForDraggedTypes:[NSArray arrayWithObjects:MovedRowsType, NSURLPboardType, nil]];
+	[profilesTableView registerForDraggedTypes:[NSArray arrayWithObjects:MovedRowsType, nil]];
 }
 
 - (void)dealloc
@@ -162,7 +160,7 @@
 
 
 ////////// ここからドラッグ＆ドロップによる行の並べ替え関連 //////////
-- (bool)tableView:(NSTableView *)aTableView
+- (BOOL)tableView:(NSTableView *)aTableView
 writeRowsWithIndexes:(NSIndexSet *)rowIndexes 
 	 toPasteboard:(NSPasteboard *)pboard
 {
@@ -211,7 +209,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	
 }
 
-- (bool)tableView:(NSTableView*)aTableView
+- (BOOL)tableView:(NSTableView*)aTableView
 	   acceptDrop:(id <NSDraggingInfo>)info
 			  row:(int)insertionRow
 	dropOperation:(NSTableViewDropOperation)op

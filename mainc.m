@@ -7,7 +7,7 @@
 
 #define OPTION_NUM 15
 #define MAX_LEN 1024
-#define VERSION "1.4.0"
+#define VERSION "1.4.1"
 
 static void version()
 {
@@ -19,7 +19,7 @@ static void usage()
 	version();
     printf("Usage: tex2img [options] InputTeXFile OutputFile\n"); 
     printf("Arguments:\n"); 
-    printf("  InputTeXFile            : path of TeX source file (ShiftJIS)\n"); 
+    printf("  InputTeXFile            : path of TeX source file\n"); 
     printf("  OutputFile              : path of output file (extension: eps/png/jpg/pdf)\n"); 
     printf("Options:\n"); 
     printf("  --resolution RESOLUTION : set resolution level   (default: 15)\n"); 
@@ -29,9 +29,9 @@ static void usage()
     printf("  --bottom-margin  MARGIN : set bottom margin (px) (default: 0)\n"); 
     printf("  --create-outline        : create outline of text to prevent garbling (for JPEG/PNG/PDF)\n"); 
     printf("  --transparent           : generate transparent PNG file\n"); 
-    printf("  --kanji ENCODING        : set Japanese encoding  (default: sjis)\n"); 
+    printf("  --kanji ENCODING        : set Japanese encoding  (sjis|jis|euc|utf8|uptex) (default: sjis)\n"); 
     printf("  --ignore-errors         : force converting by ignoring nonfatal errors\n"); 
-    printf("  --utf-export            : substitute \\UTF{xxxx} for non-SJIS characters\n"); 
+    printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS characters\n"); 
     printf("  --quiet                 : do not output logs or messages\n"); 
     printf("  --no-delete             : do not delete temporary files (for debug)\n"); 
     printf("  --version               : display version\n"); 
@@ -106,12 +106,12 @@ int main (int argc, char *argv[]) {
 	int rightMargin = 0;
 	int topMargin = 0;
 	int bottomMargin = 0;
-	bool getOutline = NO;
-	bool transparentPngFlag = NO;
-	bool deleteTmpFileFlag = YES;
-	bool ignoreErrorFlag = NO;
-	bool utfExportFlag = NO;
-	bool quietFlag = NO;
+	BOOL getOutline = NO;
+	BOOL transparentPngFlag = NO;
+	BOOL deleteTmpFileFlag = YES;
+	BOOL ignoreErrorFlag = NO;
+	BOOL utfExportFlag = NO;
+	BOOL quietFlag = NO;
 	NSString* encoding = @"sjis";
 
 	// getopt_long を使った，長いオプション対応のオプション解析
@@ -344,14 +344,14 @@ int main (int argc, char *argv[]) {
 	[aProfile setObject:controller forKey:@"controller"];
 	
 	Converter *converter = [Converter converterWithProfile:aProfile];
-	bool succeed = [converter compileAndConvertWithInputPath:inputFilePath];
+	BOOL succeed = [converter compileAndConvertWithInputPath:inputFilePath];
 	
 	if(succeed && !quietFlag)
 	{
 		printf("\n%s is generated.\n", [outputFilePath cString]);
 	}
 
-	[pool release];
+	[pool drain];
 
 	return succeed ? 0 : 1;
 }

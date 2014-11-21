@@ -11,6 +11,7 @@
     IBOutlet NSTextView *outputTextView;
     IBOutlet NSWindow *preambleWindow;
     IBOutlet NSTextView *preambleTextView;
+	IBOutlet NSMenuItem *convertYenMarkMenuItem;
 	IBOutlet NSMenuItem *outputWindowMenuItem;
 	IBOutlet NSMenuItem *preambleWindowMenuItem;
 	IBOutlet NSTextField *outputFileTextField;
@@ -35,6 +36,12 @@
 	IBOutlet NSButton *getOutlineCheckBox;
 	IBOutlet NSButton *ignoreErrorCheckBox;
 	IBOutlet NSButton *utfExportCheckBox;
+	IBOutlet NSButtonCell *sjisRadioButton;
+	IBOutlet NSButtonCell *eucRadioButton;
+	IBOutlet NSButtonCell *jisRadioButton;
+	IBOutlet NSButtonCell *utf8RadioButton;
+	IBOutlet NSButtonCell *upTeXRadioButton;
+	
 	
 }
 - (IBAction)generate:(id)sender;
@@ -48,6 +55,9 @@
 - (IBAction)showSavePanel:(id)sender;
 - (IBAction)restoreDefaultPreamble:(id)sender;
 - (IBAction)openTempDir:(id)sender;
+- (IBAction)showFontPanelOfSource:(id)sender;
+- (IBAction)showFontPanelOfPreamble:(id)sender;
+- (IBAction)searchPrograms:(id)sender;
 - (void)adoptProfile:(NSDictionary*)aProfile;
 - (NSMutableDictionary*)currentProfile;
 @end

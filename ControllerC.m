@@ -1,7 +1,7 @@
 #import "ControllerC.h"
 #import <stdio.h>
 
-bool checkWhich(NSString* cmdName)
+BOOL checkWhich(NSString* cmdName)
 {
 	int status = system([[NSString stringWithFormat:@"which %@ > /dev/null", cmdName] cString]);
 	return (status==0) ? YES : NO;
@@ -26,7 +26,7 @@ bool checkWhich(NSString* cmdName)
 	fprintf(stderr, [[NSString stringWithFormat:@"tex2img : %@ can't be found.\nCheck environment variable $PATH.\n", aPath] cString]);
 }
 
-- (bool)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
+- (BOOL)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
 {
 	if(!checkWhich(platexPath))
 	{
@@ -46,7 +46,7 @@ bool checkWhich(NSString* cmdName)
 	return YES;
 }
 
-- (bool)checkPdfcropExistence;
+- (BOOL)checkPdfcropExistence;
 {
 	if(!checkWhich(@"pdfcrop"))
 	{
@@ -57,7 +57,7 @@ bool checkWhich(NSString* cmdName)
 	return YES;
 }
 
-- (bool)checkEpstopdfExistence;
+- (BOOL)checkEpstopdfExistence;
 {
 	if(!checkWhich(@"pdfcrop"))
 	{
@@ -93,7 +93,7 @@ bool checkWhich(NSString* cmdName)
 	fprintf(stderr, [@"tex2img : TeX Compile error.\nCheck errors in the source code.\n" cString]);
 }
 
-- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(bool)quiet
+- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(BOOL)quiet
 {
 	if(!quiet) printf([mStr cString]);
 }

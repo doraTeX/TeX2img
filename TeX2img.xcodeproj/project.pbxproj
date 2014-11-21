@@ -18,6 +18,8 @@
 		34B632BE1028FB87009A052F /* NSIndexSet-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B632BD1028FB87009A052F /* NSIndexSet-Extension.m */; };
 		34CF2F261025FA30009A8CA6 /* NSMutableDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF2F251025FA30009A8CA6 /* NSMutableDictionary-Extension.m */; };
 		34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
+		70254EF010353485000D6D05 /* TeXTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70254EEF10353485000D6D05 /* TeXTextView.m */; };
+		7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7025539810353D33000D6D05 /* NSMutableString-Extension.m */; };
 		7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */; };
 		705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC3550F10E4670052AFA5 /* ControllerC.m */; };
 		705DC7A60F1197E90052AFA5 /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
@@ -67,6 +69,10 @@
 		34CF2F251025FA30009A8CA6 /* NSMutableDictionary-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary-Extension.m"; sourceTree = "<group>"; };
 		34CF33A210260315009A8CA6 /* NSDictionary-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary-Extension.h"; sourceTree = "<group>"; };
 		34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary-Extension.m"; sourceTree = "<group>"; };
+		70254EEE10353485000D6D05 /* TeXTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeXTextView.h; sourceTree = "<group>"; };
+		70254EEF10353485000D6D05 /* TeXTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeXTextView.m; sourceTree = "<group>"; };
+		7025539710353D33000D6D05 /* NSMutableString-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableString-Extension.h"; sourceTree = "<group>"; };
+		7025539810353D33000D6D05 /* NSMutableString-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableString-Extension.m"; sourceTree = "<group>"; };
 		7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = TeX2imgIcon.icns; sourceTree = "<group>"; };
 		705DC2BB0F10E0B00052AFA5 /* mainc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mainc.m; sourceTree = "<group>"; };
 		705DC3540F10E4670052AFA5 /* ControllerC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerC.h; sourceTree = "<group>"; };
@@ -113,12 +119,16 @@
 				3424A8E20E4F2DC1003C9F96 /* ControllerG.m */,
 				705DC3540F10E4670052AFA5 /* ControllerC.h */,
 				705DC3550F10E4670052AFA5 /* ControllerC.m */,
+				70254EEE10353485000D6D05 /* TeXTextView.h */,
+				70254EEF10353485000D6D05 /* TeXTextView.m */,
 				34CF2F241025FA30009A8CA6 /* NSMutableDictionary-Extension.h */,
 				34CF2F251025FA30009A8CA6 /* NSMutableDictionary-Extension.m */,
 				34CF33A210260315009A8CA6 /* NSDictionary-Extension.h */,
 				34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */,
 				34B632BC1028FB87009A052F /* NSIndexSet-Extension.h */,
 				34B632BD1028FB87009A052F /* NSIndexSet-Extension.m */,
+				7025539710353D33000D6D05 /* NSMutableString-Extension.h */,
+				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -292,6 +302,8 @@
 				34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */,
 				34821EC810282CF9008DEB1F /* ProfileController.m in Sources */,
 				34B632BE1028FB87009A052F /* NSIndexSet-Extension.m in Sources */,
+				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,
+				7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

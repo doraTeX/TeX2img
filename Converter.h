@@ -3,14 +3,14 @@
 @protocol OutputController
 - (void)showExtensionError;
 - (void)showNotFoundError:(NSString*)aPath;
-- (bool)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath;
-- (bool)checkPdfcropExistence;
-- (bool)checkEpstopdfExistence;
+- (BOOL)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath;
+- (BOOL)checkPdfcropExistence;
+- (BOOL)checkEpstopdfExistence;
 - (void)showFileGenerateError:(NSString*)aPath;
 - (void)showExecError:(NSString*)command;
 - (void)showCannotOverrideError:(NSString*)path;
 - (void)showCompileError;
-- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(bool)quiet;
+- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(BOOL)quiet;
 - (void)clearOutputTextView;
 - (void)showOutputWindow;
 - (void)showMainWindow;
@@ -25,7 +25,7 @@
 	NSString* preambleStr;
 	float resolutionLevel;
 	int leftMargin, rightMargin, topMargin, bottomMargin;
-	bool leaveTextFlag, transparentPngFlag, showOutputWindowFlag, previewFlag, deleteTmpFileFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+	BOOL leaveTextFlag, transparentPngFlag, showOutputWindowFlag, previewFlag, deleteTmpFileFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 	id<OutputController> controller;
 
 	NSFileManager* fileManager;
@@ -36,7 +36,7 @@
 	NSString* epstopdfPath;
 }
 + (Converter*)converterWithProfile:(NSDictionary*)aProfile;
-- (bool)compileAndConvertWithInputPath:(NSString*)texSourcePath;
-- (bool)compileAndConvertWithSource:(NSString*)texSourceStr;
-- (bool)compileAndConvertWithBody:(NSString*)texBodyStr;
+- (BOOL)compileAndConvertWithInputPath:(NSString*)texSourcePath;
+- (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr;
+- (BOOL)compileAndConvertWithBody:(NSString*)texBodyStr;
 @end

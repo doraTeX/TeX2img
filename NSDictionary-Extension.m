@@ -11,7 +11,7 @@
 	return [((NSNumber*)[self objectForKey:aKey]) intValue];
 }
 
--(bool)boolForKey:(NSString *)aKey
+-(BOOL)boolForKey:(NSString *)aKey
 {
 	return [((NSNumber*)[self objectForKey:aKey]) boolValue];
 }

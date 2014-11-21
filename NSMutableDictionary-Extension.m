@@ -11,7 +11,7 @@
 	[self setObject:[NSNumber numberWithInt:value] forKey:aKey];
 }
 
--(void)setBool:(bool)value forKey:(NSString *)aKey
+-(void)setBool:(BOOL)value forKey:(NSString *)aKey
 {
 	[self setObject:[NSNumber numberWithBool:value] forKey:aKey];
 }

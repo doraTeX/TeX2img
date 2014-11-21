@@ -10,7 +10,7 @@
 	[mainWindow makeKeyAndOrderFront:nil];
 }
 
-- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(bool)quiet
+- (void)appendOutputAndScroll:(NSMutableString*)mStr quiet:(BOOL)quiet
 {
 	if(quiet) return;
 	
@@ -50,7 +50,7 @@
 	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", aPath, NSLocalizedString(@"programNotFoundErrorMsg", nil)], @"OK", nil, nil);
 }
 
-- (bool)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
+- (BOOL)checkPlatexPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
 {
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 	
@@ -73,12 +73,12 @@
 	return YES;
 }
 
-- (bool)checkPdfcropExistence;
+- (BOOL)checkPdfcropExistence;
 {
 	return YES;
 }
 
-- (bool)checkEpstopdfExistence;
+- (BOOL)checkEpstopdfExistence;
 {
 	return YES;
 }
@@ -142,6 +142,37 @@
 	[ignoreErrorCheckBox setState:[aProfile boolForKey:@"ignoreError"]];
 	[utfExportCheckBox setState:[aProfile boolForKey:@"utfExport"]];
 	
+	[convertYenMarkMenuItem setState:[aProfile boolForKey:@"convertYenMark"]];
+	
+	NSString *encoding = [aProfile stringForKey:@"encoding"];
+	[sjisRadioButton setState:NSOffState];
+	[jisRadioButton setState:NSOffState];
+	[eucRadioButton setState:NSOffState];
+	[utf8RadioButton setState:NSOffState];
+	[upTeXRadioButton setState:NSOffState];
+
+	if([encoding isEqualToString:@"jis"])
+	{
+		[jisRadioButton setState:NSOnState];
+	}
+	else if([encoding isEqualToString:@"euc"])
+	{
+		[eucRadioButton setState:NSOnState];
+	}
+	else if([encoding isEqualToString:@"utf8"])
+	{
+		[utf8RadioButton setState:NSOnState];
+	}
+	else if([encoding isEqualToString:@"uptex"])
+	{
+		[upTeXRadioButton setState:NSOnState];
+	}
+	else
+	{
+		[sjisRadioButton setState:NSOnState];
+	}
+	
+	
 	[self loadSettingForTextField:platexPathTextField fromProfile:aProfile forKey:@"platexPath"];
 	[self loadSettingForTextField:dvipdfmxPathTextField fromProfile:aProfile forKey:@"dvipdfmxPath"];
 	[self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:@"gsPath"];
@@ -159,9 +190,22 @@
 	[bottomMarginSlider setIntValue:[aProfile integerForKey:@"bottomMargin"]];
 	
 	[self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:@"preamble"];
+	
+	NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:@"sourceFontName"] size:[aProfile floatForKey:@"sourceFontSize"]];
+	if(aFont != nil)
+	{
+		[sourceTextView setFont:aFont];
+	}
+	
+	aFont = [NSFont fontWithName:[aProfile stringForKey:@"preambleFontName"] size:[aProfile floatForKey:@"preambleFontSize"]];
+	if(aFont != nil)
+	{
+		[preambleTextView setFont:aFont];
+	}
+	
 }
 
-- (bool)adoptProfileWithWindowFrameForName:(NSString*)profileName
+- (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
 {
 	NSDictionary* aProfile = [profileController profileForName:profileName];
 	if(aProfile == nil) return NO;
@@ -218,7 +262,35 @@
 	[currentProfile setInteger:[topMarginSlider intValue] forKey:@"topMargin"];
 	[currentProfile setInteger:[bottomMarginSlider intValue] forKey:@"bottomMargin"];
 	
+	[currentProfile setInteger:[convertYenMarkMenuItem state] forKey:@"convertYenMark"];
+	[currentProfile setObject:[[sourceTextView font] fontName] forKey:@"sourceFontName"];
+	[currentProfile setFloat:[[sourceTextView font] pointSize] forKey:@"sourceFontSize"];
+	[currentProfile setObject:[[preambleTextView font] fontName] forKey:@"preambleFontName"];
+	[currentProfile setFloat:[[preambleTextView font] pointSize] forKey:@"preambleFontSize"];
+	
 	[currentProfile setObject:[[preambleTextView textStorage] string] forKey:@"preamble"];
+
+	if([sjisRadioButton state])
+	{
+		[currentProfile setObject:@"sjis" forKey:@"encoding"];
+	}
+	else if([eucRadioButton state])
+	{
+		[currentProfile setObject:@"euc" forKey:@"encoding"];
+	}
+	else if([jisRadioButton state])
+	{
+		[currentProfile setObject:@"jis" forKey:@"encoding"];
+	}
+	else if([utf8RadioButton state])
+	{
+		[currentProfile setObject:@"utf8" forKey:@"encoding"];
+	}
+	else if([upTeXRadioButton state])
+	{
+		[currentProfile setObject:@"uptex" forKey:@"encoding"];
+	}
+	
 	return currentProfile;
 }
 
@@ -228,7 +300,7 @@
 - (NSString*)searchProgram:(NSString*)programName
 {
 	NSArray *searchPaths = [NSArray arrayWithObjects:
-							@"/usr/local/bin", @"/opt/local/bin", @"/sw/bin", nil];
+							@"/usr/local/teTeX/bin", @"/usr/local/bin", @"/opt/local/bin", @"/sw/bin", nil];
 	NSEnumerator *enumerator = [searchPaths objectEnumerator];
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 	
@@ -304,7 +376,7 @@
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 	NSString* plistFile = [NSString stringWithFormat:@"%@/Library/Preferences/%@.plist", NSHomeDirectory(), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
 	
-	bool loadLastProfileSuccess = NO;
+	BOOL loadLastProfileSuccess = NO;
 	
 	if([fileManager fileExistsAtPath:plistFile])
 	{
@@ -345,6 +417,13 @@
 						[NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",
 						 NSLocalizedString(@"setPathMsg1", nil), platexPath, dvipdfmxPath, gsPath, NSLocalizedString(@"setPathMsg2", nil)],
 						@"OK", nil, nil);
+		
+		NSFont *defaultFont = [NSFont fontWithName:@"Osaka-Mono" size:13];
+		if(defaultFont != nil)
+		{
+			[sourceTextView setFont:defaultFont];
+			[preambleTextView setFont:defaultFont];
+		}
 	}
 }
 
@@ -460,12 +539,62 @@
 	[[NSApp keyWindow] close];
 }
 
+- (IBAction)showFontPanelOfSource:(id)sender
+{
+	NSFontPanel* panel = [NSFontPanel sharedFontPanel];
+	[panel makeKeyAndOrderFront:self];
+	[panel setPanelFont:[sourceTextView font] isMultiple:NO];
+}
+
+- (IBAction)showFontPanelOfPreamble:(id)sender
+{
+	NSFontPanel* panel = [NSFontPanel sharedFontPanel];
+	[panel makeKeyAndOrderFront:self];
+	[panel setPanelFont:[preambleTextView font] isMultiple:NO];
+	
+	/*
+	 NSFontManager *fontManager = [NSFontManager sharedFontManager];
+	 [fontManager setDelegate:self];
+	 [fontManager orderFrontFontPanel:self];
+	 [fontManager setSelectedFont:[sourceTextView font] isMultiple:NO];
+	 [fontManager setSelectedFont:[preambleTextView font] isMultiple:NO];
+	 [fontManager setSelectedFont:[outputTextView font] isMultiple:NO];
+	 */
+}
+
+
+- (IBAction)searchPrograms:(id)sender
+{
+	NSString* platexPath;
+	NSString* dvipdfmxPath;
+	NSString* gsPath;
+	
+	platexPath = ([upTeXRadioButton state] == NSOnState) ? [self searchProgram:@"uplatex"] : [self searchProgram:@"platex"];
+	if(!platexPath)
+	{
+		platexPath = @"";
+		[self showNotFoundError:@"platex"];
+	}
+	if(!(dvipdfmxPath = [self searchProgram:@"dvipdfmx"]))
+	{
+		dvipdfmxPath = @"";
+		[self showNotFoundError:@"dvipdfmx"];
+	}
+	if(!(gsPath = [self searchProgram:@"gs"]))
+	{
+		gsPath = @"";
+		[self showNotFoundError:@"ghostscript"];
+	}
+	
+	[platexPathTextField setStringValue:platexPath];
+	[dvipdfmxPathTextField setStringValue:dvipdfmxPath];
+	[gsPathTextField setStringValue:gsPath];
+}
 
 
 - (IBAction)generate:(id)sender
 {
 	NSMutableDictionary *aProfile = [self currentProfile];
-	[aProfile setObject:@"sjis" forKey:@"encoding"];
 	[aProfile setObject:[[NSBundle mainBundle] pathForResource:@"pdfcrop" ofType:nil] forKey:@"pdfcropPath"];
 	[aProfile setObject:[[NSBundle mainBundle] pathForResource:@"epstopdf" ofType:nil] forKey:@"epstopdfPath"];
 	[aProfile setBool:NO forKey:@"quiet"];

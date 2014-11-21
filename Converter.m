@@ -5,6 +5,7 @@
 #define MAX_LEN 1024
 
 #import "NSDictionary-Extension.h"
+#import "NSMutableString-Extension.h"
 #import "Converter.h"
 
 @implementation Converter
@@ -34,7 +35,7 @@
 	utfExportFlag = [aProfile boolForKey:@"utfExport"];
 	quietFlag = [aProfile boolForKey:@"quiet"];
 	controller = [aProfile objectForKey:@"controller"];
-	
+
 	fileManager = [NSFileManager defaultManager];
 	tempdir = NSTemporaryDirectory();
 	pid = (int)getpid();
@@ -51,7 +52,7 @@
 }
 
 
-// Shift-JIS 外の文字を \UTF に置き換える
+// JIS 外の文字を \UTF に置き換える
 - (NSMutableString *)substituteUTF:(NSString*)dataString
 {
 	NSMutableString *utfString, *newString = [NSMutableString string];
@@ -101,19 +102,35 @@
 
 
 // 文字列の円マーク・バックスラッシュを全てバックスラッシュに統一してファイルに書き込む。
-// 返り値：書き込みの正否(bool)
-- (bool)writeStringWithYenBackslashConverting:(NSString*)targetString toFile:(NSString*)path
+// 返り値：書き込みの正否(BOOL)
+- (BOOL)writeStringWithYenBackslashConverting:(NSString*)targetString toFile:(NSString*)path
 {
 	NSMutableString* mstr = [[[NSMutableString alloc] initWithCapacity:0] autorelease];
 	[mstr appendString:targetString];
-
-	NSString* yenMark = [NSString stringWithUTF8String:"\xC2\xA5"];
-	NSString* backslash = [NSString stringWithUTF8String:"\x5C"];
 	
-	// 円マーク (0xC20xA5) をバックスラッシュ（0x5C）に置換
-	[mstr replaceOccurrencesOfString:yenMark withString:backslash options:0 range:NSMakeRange(0, [mstr length])];
+	[mstr replaceYenWithBackSlash];
+		
 	if(utfExportFlag) mstr = [self substituteUTF:mstr];
-	return [mstr writeToFile:path atomically:NO encoding:CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese) error:NULL];
+	
+	UInt32 enc;
+	if([encoding isEqualToString:@"sjis"])
+	{
+		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese);
+	}
+	else if([encoding isEqualToString:@"euc"])
+	{
+		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP);
+	}
+	else if([encoding isEqualToString:@"jis"])
+	{
+		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
+	}
+	else // utf8 or uptex
+	{
+		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
+	}
+	
+	return [mstr writeToFile:path atomically:NO encoding:enc error:NULL];
 	
 	// バックスラッシュ（0x5C）を円マーク (0xC20xA5) に置換
 	//NSString* yenMark = NSLocalizedString(@"YenMark", @"");
@@ -147,11 +164,11 @@
  
  if(stdoutMStr != nil && stdoutChars != nil)
  {
- [stdoutMStr appendString:[NSString stringWithCString:stdoutChars]];
+ [stdoutMStr appendString:[NSString stringWithUTF8String:stdoutChars]];
  }
  if(stderrMStr != nil && stderrChars != nil)
  {
- [stderrMStr appendString:[NSString stringWithCString:stderrChars]];
+ [stderrMStr appendString:[NSString stringWithUTF8String:stderrChars]];
  }
  
  return [task terminationStatus];
@@ -163,7 +180,7 @@
 	char str[MAX_LEN];
 	FILE *fp;
 	
-	chdir([path cString]);
+	chdir([path UTF8String]);
 	
 	NSMutableString *cmdline = [NSMutableString stringWithCapacity:0];
 	[cmdline appendString:command];
@@ -179,7 +196,7 @@
 	[cmdline appendString:@" 2>&1"];
 	[controller appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:quietFlag];
 
-	if((fp=popen([cmdline cString],"r"))==NULL)
+	if((fp=popen([cmdline UTF8String],"r"))==NULL)
 	{
 		return NO;
 	}
@@ -190,7 +207,7 @@
 		{
 			break;
 		}
-		[stdoutMStr appendString:[NSString stringWithCString:str]];
+		[stdoutMStr appendString:[NSString stringWithUTF8String:str]];
 	}
 	int status = pclose(fp);
 	return (ignoreErrorsFlag || status==0) ? YES : NO;
@@ -223,7 +240,7 @@
 	return status;
 }
 
-- (int)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName addMargin:(bool)addMargin
+- (int)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName addMargin:(BOOL)addMargin
 {
 	if(![controller checkPdfcropExistence])
 	{
@@ -260,7 +277,7 @@
 	return status;
 }
 
-- (bool)epstopdf:(NSString*)epsName outputPdfFileName:(NSString*)outputPdfFileName
+- (BOOL)epstopdf:(NSString*)epsName outputPdfFileName:(NSString*)outputPdfFileName
 {
 	if(![controller checkEpstopdfExistence])
 	{
@@ -275,7 +292,7 @@
 	return YES;
 }
 
-- (bool)eps2pdf:(NSString*)epsName outputFileName:(NSString*)outputFileName
+- (BOOL)eps2pdf:(NSString*)epsName outputFileName:(NSString*)outputFileName
 {
 	// まず，epstopdf を使って PDF に戻し，次に，pdfcrop を使って余白を付け加える
 	NSString* trimFileName = [NSString stringWithFormat:@"%@.trim.pdf", epsName];
@@ -368,10 +385,10 @@
 	
 	char line[MAX_LEN];
 	FILE *fp;
-	fp = fopen([[tempdir stringByAppendingPathComponent:epsName] cString], "r");
+	fp = fopen([[tempdir stringByAppendingPathComponent:epsName] UTF8String], "r");
 	
 	while ((fgets(line, MAX_LEN - 1, fp)) != NULL) {
-		matchEnum = [regex matchEnumeratorInString:[NSString stringWithCString:line]]; // 正規表現マッチを実行
+		matchEnum = [regex matchEnumeratorInString:[NSString stringWithUTF8String:line]]; // 正規表現マッチを実行
 		if((match = [matchEnum nextObject]) != nil)
 		{
 			leftbottom_x  = [[match substringAtIndex:1] intValue] - leftMargin / resolutionLevel;
@@ -385,15 +402,15 @@
 	
 	
 	// 次にトリミングするためのEPSファイルを作成
-	fp = fopen([[tempdir stringByAppendingPathComponent:trimFileName] cString], "w");
+	fp = fopen([[tempdir stringByAppendingPathComponent:trimFileName] UTF8String], "w");
 	fputs("/NumbDict countdictstack def\n", fp);
 	fputs("1 dict begin\n", fp);
 	fputs("/showpage {} def\n", fp);
 	fputs("userdict begin\n", fp);
-	fputs([[NSString stringWithFormat:@"%d.000000 %d.000000 translate\n", -leftbottom_x, -leftbottom_y] cString], fp);
+	fputs([[NSString stringWithFormat:@"%d.000000 %d.000000 translate\n", -leftbottom_x, -leftbottom_y] UTF8String], fp);
 	fputs("1.000000 1.000000 scale\n", fp);
 	fputs("0.000000 0.000000 translate\n", fp);
-	fputs([[NSString stringWithFormat:@"(%@) run\n", epsName] cString], fp);
+	fputs([[NSString stringWithFormat:@"(%@) run\n", epsName] UTF8String], fp);
 	fputs("countdictstack NumbDict sub {end} repeat\n", fp);
 	fputs("showpage\n", fp);
 	fclose(fp);
@@ -423,7 +440,7 @@
 }
 */
 
-- (bool)compileAndConvert
+- (BOOL)compileAndConvert
 {
 	NSString* teXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	NSString* dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
@@ -495,6 +512,10 @@
 		}
 		else if([@"eps" isEqualToString:extension])  // 最終出力が EPS の場合，生成したEPSファイルの名前を最終出力ファイル名へ変更する
 		{
+			if([fileManager fileExistsAtPath:outputFileName])
+			{
+				[fileManager removeFileAtPath:outputFileName handler:nil];
+			}
 			[fileManager movePath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName handler:nil];
 		}
 		else if([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) // 文字化け対策JPEG/PNG出力の場合，EPSをPDFに戻した上で，それをさらにJPEG/PNGに変換する
@@ -529,9 +550,9 @@
 	return YES;
 }
 
-- (bool)compileAndConvertWithCheck
+- (BOOL)compileAndConvertWithCheck
 {
-	bool status = YES;
+	BOOL status = YES;
 	// 最初にプログラムの存在確認と出力ファイル形式確認
 	if(![controller checkPlatexPath:platexPath dvipdfmxPath:dvipdfmxPath gsPath:gsPath])
 	{
@@ -585,7 +606,7 @@
 	return status;
 }
 
-- (bool)compileAndConvertWithSource:(NSString*)texSourceStr
+- (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr
 {
 	//TeX ソースを準備
 	NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
@@ -599,14 +620,14 @@
 	return [self compileAndConvertWithCheck];
 }
 
-- (bool)compileAndConvertWithBody:(NSString*)texBodyStr
+- (BOOL)compileAndConvertWithBody:(NSString*)texBodyStr
 {
 	// TeX ソースを用意
 	NSString* texSourceStr = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}", preambleStr, texBodyStr];
 	return [self compileAndConvertWithSource:texSourceStr];
 }
 
-- (bool)compileAndConvertWithInputPath:(NSString*)texSourcePath
+- (BOOL)compileAndConvertWithInputPath:(NSString*)texSourcePath
 {
 	NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	if(![fileManager copyPath:texSourcePath toPath:tempTeXFilePath handler:nil])
