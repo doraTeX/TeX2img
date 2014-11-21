@@ -151,7 +151,9 @@
 	
 	[convertYenMarkMenuItem setState:[aProfile boolForKey:@"convertYenMark"]];
 	[colorizeTextMenuItem setState:[aProfile boolForKey:@"colorizeText"]];
-	[highlightBraceMenuItem setState:[aProfile boolForKey:@"highlightBrace"]];
+	
+	highlightPattern = [aProfile integerForKey:@"highlightPattern"];
+	[self changeHighlight:nil];
 	
 	NSString *encoding = [aProfile stringForKey:@"encoding"];
 	[sjisRadioButton setState:NSOffState];
@@ -275,7 +277,7 @@
 	
 	[currentProfile setInteger:[convertYenMarkMenuItem state] forKey:@"convertYenMark"];
 	[currentProfile setInteger:[colorizeTextMenuItem state] forKey:@"colorizeText"];
-	[currentProfile setInteger:[highlightBraceMenuItem state] forKey:@"highlightBrace"];
+	[currentProfile setInteger:highlightPattern forKey:@"highlightPattern"];
 	[currentProfile setObject:[[sourceTextView font] fontName] forKey:@"sourceFontName"];
 	[currentProfile setFloat:[[sourceTextView font] pointSize] forKey:@"sourceFontSize"];
 	[currentProfile setObject:[[preambleTextView font] fontName] forKey:@"preambleFontName"];
@@ -577,6 +579,43 @@
 	}
     
 }
+
+- (HighlightPattern)highlightPattern
+{
+	return highlightPattern;
+}
+
+-(IBAction)changeHighlight:(id)sender
+{
+	[flashHighlightMenuItem setState:NSOffState];
+	[solidHighlightMenuItem setState:NSOffState];
+	[noHighlightMenuItem setState:NSOffState];
+	if (sender == flashHighlightMenuItem) {
+		highlightPattern = FLASH;
+	}
+	if (sender == solidHighlightMenuItem) {
+		highlightPattern = SOLID;
+	}
+	if (sender == noHighlightMenuItem) {
+		highlightPattern = NOHIGHLIGHT;
+	}
+	
+	switch (highlightPattern) {
+		case FLASH:
+			[flashHighlightMenuItem setState:NSOnState];
+			break;
+		case SOLID:
+			[solidHighlightMenuItem setState:NSOnState];
+			break;
+		case NOHIGHLIGHT:
+			[noHighlightMenuItem setState:NSOnState];
+			break;
+		default:
+			break;
+	}
+	
+}
+
 
 - (IBAction)togglePreambleWindow:(id)sender
 {

@@ -127,10 +127,12 @@ static BOOL isValidTeXCommandChar(int c)
 {
 	[self resetBackgroundColor:nil];
 	
-	if(![[controller currentProfile] boolForKey:@"highlightBrace"]) return;
+	HighlightPattern highlightPattern = [[controller currentProfile] integerForKey:@"highlightPattern"];
+	
+	if(highlightPattern == NOHIGHLIGHT) return;
+
 	highlightBracesColorDict = [NSDictionary dictionaryWithObjectsAndKeys:
 								[NSColor redColor], NSForegroundColorAttributeName, nil ];
-	
 	unichar k_braceCharList[] = {0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E}; // == ()[]{}<>
     
 	NSString *theString = [[self textStorage] string];
@@ -207,8 +209,10 @@ static BOOL isValidTeXCommandChar(int c)
 				[[self layoutManager] addTemporaryAttributes:highlightBracesColorDict 
 										   forCharacterRange:NSMakeRange(originalLocation, 1)];
 				[self display];
-                [self performSelector:@selector(resetBackgroundColor:) 
-						   withObject:NSStringFromRange(NSMakeRange(theLocation, 1)) afterDelay:0.30];
+				if (highlightPattern == FLASH) {
+					[self performSelector:@selector(resetBackgroundColor:) 
+							   withObject:NSStringFromRange(NSMakeRange(theLocation, 1)) afterDelay:0.30];
+				}
                 return;
             } else {
                 theSkipMatchingBrace += inc;
@@ -233,8 +237,10 @@ static BOOL isValidTeXCommandChar(int c)
 		return YES;
 	
 	rightpar = [replacementString characterAtIndex:0];
+
+	HighlightPattern highlightPattern = [[controller currentProfile] integerForKey:@"highlightPattern"];
 	
-	if ([[controller currentProfile] boolForKey:@"highlightBrace"]) {
+	if (highlightPattern != NOHIGHLIGHT) {
 		if ((rightpar != '}') &&  (rightpar != ')') &&  (rightpar != ']') &&  (rightpar != '>'))
 			return YES;
 		
@@ -262,13 +268,13 @@ static BOOL isValidTeXCommandChar(int c)
 			if (count == 0) {
 				matchRange.location = i;
 				matchRange.length = 1;
+				
 				[self setSelectedRange: matchRange
 							  affinity: NSSelectByCharacter stillSelecting: YES];
 				[self display];
 				myDate = [NSDate date];
 				while ([myDate timeIntervalSinceNow] > - 0.075);
 				[self setSelectedRange: affectedCharRange];
-				
 				break;
 			}
 		}

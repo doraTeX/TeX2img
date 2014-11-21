@@ -4,6 +4,10 @@
 #import "TeXTextView.h"
 #import "global.h"
 
+typedef enum  {
+	FLASH, SOLID, NOHIGHLIGHT
+} HighlightPattern;
+
 @class ProfileController;
 @class TeXTextView;
 
@@ -17,10 +21,12 @@
     IBOutlet TeXTextView *preambleTextView;
 	IBOutlet NSMenuItem *convertYenMarkMenuItem;
 	IBOutlet NSMenuItem *colorizeTextMenuItem;
-	IBOutlet NSMenuItem *highlightBraceMenuItem;
 	IBOutlet NSMenuItem *outputDrawerMenuItem;
 	IBOutlet NSMenuItem *preambleWindowMenuItem;
 	IBOutlet NSMenuItem *generateMenuItem;
+	IBOutlet NSMenuItem *flashHighlightMenuItem;
+	IBOutlet NSMenuItem *solidHighlightMenuItem;
+	IBOutlet NSMenuItem *noHighlightMenuItem;
 	IBOutlet NSTextField *outputFileTextField;
 	IBOutlet NSButton *generateButton;
 	IBOutlet NSButton *transparentCheckBox;
@@ -51,7 +57,7 @@
 	IBOutlet NSButtonCell *utf8RadioButton;
 	IBOutlet NSButtonCell *upTeXRadioButton;
 	
-	
+	HighlightPattern highlightPattern;
 }
 - (IBAction)generate:(id)sender;
 - (IBAction)closeWindow:(id)sender;
@@ -59,6 +65,7 @@
 - (IBAction)togglePreambleWindow:(id)sender;
 - (IBAction)showMainWindow:(id)sender;
 - (IBAction)toggleMenuItem:(id)sender;
+- (IBAction)changeHighlight:(id)sender;
 - (IBAction)showPreferenceWindow:(id)sender;
 - (IBAction)showProfilesWindow:(id)sender;
 - (IBAction)showSavePanel:(id)sender;
