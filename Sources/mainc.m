@@ -8,6 +8,7 @@
 #define OPTION_NUM 20
 #define MAX_LEN 1024
 #define VERSION "1.8.5"
+#define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
 {
@@ -24,7 +25,7 @@ static void usage()
     printf("Options:\n");
     printf("  --compiler   COMPILER   : set compiler   (default: platex)\n");
     printf("  --guess-compile         : guess the appropriate number of compilation\n");
-    printf("  --num        NUMBER     : set the maximal number of compilation (default: 10)\n");
+    printf("  --num        NUMBER     : set the (maximal) number of compilation\n");
     printf("  --resolution RESOLUTION : set resolution level (default: 15)\n");
     printf("  --left-margin    MARGIN : set left margin   (default: 0)\n");
     printf("  --right-margin   MARGIN : set right margin  (default: 0)\n");
@@ -107,7 +108,7 @@ int main (int argc, char *argv[]) {
         NSApplicationLoad(); // PDFKit を使ったときに _NXCreateWindow: error setting window property のエラーを防ぐため
         
         float resolutoinLevel = 15;
-        int numberOfCompilation = 10;
+        int numberOfCompilation = -1;
         int leftMargin = 0;
         int rightMargin = 0;
         int topMargin = 0;
@@ -368,6 +369,11 @@ int main (int argc, char *argv[]) {
         if (![NSFileManager.defaultManager fileExistsAtPath:inputFilePath]) {
             fprintf(stderr, "tex2img : %s : No such file or directory\n", inputFilePath.UTF8String);
             exit(1);
+        }
+        
+        // --num が指定されなかった場合のデフォルト値の適用
+        if (numberOfCompilation == -1) {
+            numberOfCompilation = guessFlag ? DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION : 1;
         }
         
         ControllerC* controller = ControllerC.new;

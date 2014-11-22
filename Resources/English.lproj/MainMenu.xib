@@ -1017,7 +1017,7 @@ DQ
                                                         <rect key="frame" x="18" y="14" width="332" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="164" height="18"/>
+                                                        <size key="cellSize" width="112" height="18"/>
                                                         <size key="intercellSpacing" width="4" height="2"/>
                                                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="zc7-oM-Bmw">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1175,9 +1175,9 @@ DQ
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" id="0pw-MJ-kbM">
-                                            <rect key="frame" x="265" y="201" width="35" height="16"/>
+                                            <rect key="frame" x="13" y="200" width="214" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Max:" id="Iox-iz-baP">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="(Maximal) number of compilation: " id="Iox-iz-baP">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1199,16 +1199,8 @@ DQ
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
-                                        <button id="nMD-49-FUm">
-                                            <rect key="frame" x="13" y="199" width="227" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Guess the number of compilation" bezelStyle="regularSquare" imagePosition="left" inset="2" id="0av-3U-OXX">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                        </button>
                                         <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="X9l-Yh-wIQ">
-                                            <rect key="frame" x="353" y="194" width="19" height="27"/>
+                                            <rect key="frame" x="280" y="194" width="19" height="27"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="10" doubleValue="1" id="NNR-bg-o2d"/>
                                             <connections>
@@ -1216,9 +1208,9 @@ DQ
                                             </connections>
                                         </stepper>
                                         <textField verticalHuggingPriority="750" id="dpd-O4-qxE">
-                                            <rect key="frame" x="306" y="198" width="47" height="22"/>
+                                            <rect key="frame" x="233" y="198" width="47" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="10" drawsBackground="YES" id="ZoJ-Y8-MRN">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="3" drawsBackground="YES" id="ZoJ-Y8-MRN">
                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="1m5-XE-jae">
                                                     <real key="minimum" value="1"/>
                                                     <real key="maximum" value="100"/>
@@ -1231,6 +1223,14 @@ DQ
                                                 <action selector="takeIntValueFrom:" target="X9l-Yh-wIQ" id="Itm-aP-BqK"/>
                                             </connections>
                                         </textField>
+                                        <button id="nMD-49-FUm">
+                                            <rect key="frame" x="310" y="199" width="61" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Guess" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="0av-3U-OXX">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>

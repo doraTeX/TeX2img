@@ -1,4 +1,12 @@
 .DS_Store
+*~.nib
+# Xcode project files except for the project file
 *.xcodeproj/*
+!*.xcodeproj/xcshareddata
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/default.*
+xcuserdata
+# User-specific project settings
+*.mode1v3
+*.mode2v3
+

@@ -1193,24 +1193,16 @@ DQ
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" id="FC5-GE-HNZ">
-                                            <rect key="frame" x="224" y="192" width="69" height="18"/>
+                                            <rect key="frame" x="15" y="190" width="173" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="最大回数：" id="WmO-jJ-pYZ">
-                                                <font key="font" metaFont="system"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="コンパイルの（最大）回数：" id="WmO-jJ-pYZ">
+                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button id="exl-Am-4h5">
-                                            <rect key="frame" x="14" y="192" width="178" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="コンパイル回数を自動推定" bezelStyle="regularSquare" imagePosition="left" inset="2" id="BiY-gx-Jao">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                        </button>
                                         <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="NID-iG-ZgO">
-                                            <rect key="frame" x="341" y="188" width="19" height="27"/>
+                                            <rect key="frame" x="241" y="186" width="19" height="27"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="10" doubleValue="1" id="GtD-za-8WU"/>
                                             <connections>
@@ -1218,9 +1210,9 @@ DQ
                                             </connections>
                                         </stepper>
                                         <textField verticalHuggingPriority="750" id="qJq-qV-HLt">
-                                            <rect key="frame" x="294" y="191" width="47" height="22"/>
+                                            <rect key="frame" x="194" y="189" width="47" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="10" drawsBackground="YES" id="5Jh-J3-UCx">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="3" drawsBackground="YES" id="5Jh-J3-UCx">
                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="wla-zr-d3n">
                                                     <real key="minimum" value="1"/>
                                                     <real key="maximum" value="100"/>
@@ -1233,6 +1225,14 @@ DQ
                                                 <action selector="takeIntValueFrom:" target="NID-iG-ZgO" id="exP-3V-kbM"/>
                                             </connections>
                                         </textField>
+                                        <button id="exl-Am-4h5">
+                                            <rect key="frame" x="273" y="190" width="100" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="回数自動推定" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="BiY-gx-Jao">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                            </buttonCell>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>

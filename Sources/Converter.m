@@ -272,14 +272,27 @@
     }
     
     if (guessCompilation) {
-        NSData *oldAuxData = nil;
+        NSData *oldAuxData = [NSData dataWithContentsOfFile:auxFilePath];
         NSData *newAuxData = nil;
+        
+        // aux が \relax のみのときは終了
+        if ([oldAuxData isEqualToData:[@"\\relax \n" dataUsingEncoding:NSUTF8StringEncoding]]) {
+            return YES;
+        }
+ 
         for (NSInteger i=1; i<numberOfCompilation; i++) {
+            success = [self compileWithArguments:arguments];
+            if (!success) {
+                return NO;
+            }
             newAuxData = [NSData dataWithContentsOfFile:auxFilePath];
             if ([newAuxData isEqualToData:oldAuxData]) {
                 return YES;
             }
             oldAuxData = newAuxData;
+        }
+    } else {
+        for (NSInteger i=1; i<numberOfCompilation; i++) {
             success = [self compileWithArguments:arguments];
             if (!success) {
                 return NO;
