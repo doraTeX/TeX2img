@@ -5,9 +5,9 @@
 #import "ControllerC.h"
 #import "global.h"
 
-#define OPTION_NUM 20
+#define OPTION_NUM 21
 #define MAX_LEN 1024
-#define VERSION "1.8.6"
+#define VERSION "1.8.6.1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -40,6 +40,7 @@ static void usage()
     printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS X 0208 characters\n");
     printf("  --quiet                 : do not output logs or messages\n");
     printf("  --no-delete             : do not delete temporary files (for debug)\n");
+    printf("  --preview               : open the generated file(s)\n");
     printf("  --version               : display version info\n");
     printf("  --help                  : display this message\n");
     exit(1);
@@ -121,6 +122,7 @@ int main (int argc, char *argv[]) {
         BOOL quietFlag = NO;
         BOOL quickFlag = NO;
         BOOL guessFlag = NO;
+        BOOL previewFlag = NO;
         NSString* encoding = @"utf8";
         NSString* compiler = @"platex";
         NSNumber* unitTag = @(PXUNITTAG);
@@ -217,6 +219,11 @@ int main (int argc, char *argv[]) {
         options[16].flag = NULL;
         options[16].val = 17;
 
+        options[17].name = "preview";
+        options[17].has_arg = no_argument;
+        options[17].flag = NULL;
+        options[17].val = 18;
+        
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
         options[OPTION_NUM - 3].flag = NULL;
@@ -339,6 +346,9 @@ int main (int argc, char *argv[]) {
                 case 17: // --guess-compile
                     guessFlag = YES;
                     break;
+                case 18: // --preview
+                    previewFlag = YES;
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -397,7 +407,7 @@ int main (int argc, char *argv[]) {
         aProfile[@"getOutline"] = @(getOutline);
         aProfile[@"transparent"] = @(transparentPngFlag);
         aProfile[@"showOutputDrawer"] = @(NO);
-        aProfile[@"preview"] = @(NO);
+        aProfile[@"preview"] = @(previewFlag);
         aProfile[@"deleteTmpFile"] = @(deleteTmpFileFlag);
         aProfile[@"embedInIllustrator"] = @(NO);
         aProfile[@"ungroup"] = @(NO);
