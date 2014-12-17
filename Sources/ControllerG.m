@@ -747,7 +747,7 @@ typedef enum {
     NSString *preamble = @"";
     NSString *body = @"";
     
-    NSRegularExpression *regex = [NSRegularExpression.alloc initWithPattern:@"^(.*)(?:\\\\|¥)begin\\{document\\}(?:\\r|\\n|\\r\\n)*(.*)(?:\\\\|¥)end\\{document\\}" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    NSRegularExpression *regex = [NSRegularExpression.alloc initWithPattern:@"^(.*?)(?:\\\\|¥)begin\\{document\\}(?:\\r|\\n|\\r\\n)*(.*)(?:\\\\|¥)end\\{document\\}" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     NSTextCheckingResult *match = [regex firstMatchInString:contents options:0 range:NSMakeRange(0, contents.length)];
     if (match) {
         preamble = [contents substringWithRange: [match rangeAtIndex: 1]];
@@ -812,7 +812,7 @@ typedef enum {
             lastSavedPath = outputPath;
             NSString *preamble = preambleTextView.textStorage.mutableString;
             NSString *body = sourceTextView.textStorage.mutableString;
-            NSString *contents = [NSString stringWithFormat:@"%@\\begin{document}\n%@\n\\end{document}\n", preamble, body];
+            NSString *contents = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}\n", preamble, body];
             
             NSString *targetEncoding = [self.currentProfile stringForKey:@"encoding"];
             NSStringEncoding encoding = NSUTF8StringEncoding;
