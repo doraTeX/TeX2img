@@ -6,6 +6,11 @@
 #import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
 
+typedef enum {
+    DIRECT = 0,
+    FROMFILE = 1
+} InputMethod;
+
 @class ProfileController;
 @class TeXTextView;
 
@@ -41,6 +46,12 @@
 @property IBOutlet NSMenuItem *showNewLineCharacterMenuItem;
 @property IBOutlet NSMenuItem *showFullwidthSpaceCharacterMenuItem;
 @property IBOutlet NSTextField *outputFileTextField;
+
+@property IBOutlet NSButton *directInputButton;
+@property IBOutlet NSButton *inputSourceFileButton;
+@property IBOutlet NSTextField *inputSourceFileTextField;
+@property IBOutlet NSButton *browseSourceFileButton;
+
 @property IBOutlet NSButton *generateButton;
 @property IBOutlet NSButton *transparentCheckBox;
 @property IBOutlet NSButton *showOutputDrawerCheckBox;
@@ -72,7 +83,6 @@
 @property IBOutlet NSButtonCell *eucRadioButton;
 @property IBOutlet NSButtonCell *jisRadioButton;
 @property IBOutlet NSButtonCell *utf8RadioButton;
-@property IBOutlet NSButtonCell *upTeXRadioButton;
 @property IBOutlet NSMatrix *unitMatrix;
 @property IBOutlet NSMatrix *priorityMatrix;
 @property HighlightPattern highlightPattern;
@@ -109,6 +119,12 @@
 @synthesize showNewLineCharacterMenuItem;
 @synthesize showFullwidthSpaceCharacterMenuItem;
 @synthesize outputFileTextField;
+
+@synthesize directInputButton;
+@synthesize inputSourceFileButton;
+@synthesize inputSourceFileTextField;
+@synthesize browseSourceFileButton;
+
 @synthesize generateButton;
 @synthesize transparentCheckBox;
 @synthesize showOutputDrawerCheckBox;
@@ -140,7 +156,6 @@
 @synthesize eucRadioButton;
 @synthesize jisRadioButton;
 @synthesize utf8RadioButton;
-@synthesize upTeXRadioButton;
 @synthesize unitMatrix;
 @synthesize priorityMatrix;
 @synthesize highlightPattern;
@@ -323,7 +338,6 @@
         jisRadioButton.State = NSOffState;
         eucRadioButton.State = NSOffState;
         utf8RadioButton.State = NSOffState;
-        upTeXRadioButton.State = NSOffState;
         
         if ([encoding isEqualToString:@"jis"]) {
             jisRadioButton.State = NSOnState;
@@ -332,7 +346,7 @@
         } else if ([encoding isEqualToString:@"utf8"]) {
             utf8RadioButton.State = NSOnState;
         } else if ([encoding isEqualToString:@"uptex"]) {
-            upTeXRadioButton.State = NSOnState;
+            utf8RadioButton.State = NSOnState;
         } else {
             sjisRadioButton.State = NSOnState;
         }
@@ -465,6 +479,9 @@
         currentProfile[@"preambleFontSize"] = @(preambleTextView.font.pointSize);
 		
 		currentProfile[@"preamble"] = [NSString stringWithString:preambleTextView.textStorage.string]; // stringWithString は必須
+        
+        currentProfile[@"inputMethod"] = (directInputButton.state == NSOnState) ? @(DIRECT) : @(FROMFILE);
+        currentProfile[@"inputSourceFilePath"] = inputSourceFileTextField.stringValue;
 	}
 	@catch (NSException *e) {
 	}
@@ -477,8 +494,6 @@
 		currentProfile[@"encoding"] = @"jis";
 	} else if (utf8RadioButton.state) {
 		currentProfile[@"encoding"] = @"utf8";
-	} else if (upTeXRadioButton.state) {
-		currentProfile[@"encoding"] = @"uptex";
 	}
 	
 	return currentProfile;
@@ -526,9 +541,17 @@
 	return nil;
 }
 
+- (NSString*)defaultPreamble:(BOOL)uplatex
+{
+    NSString *uplatexOption = uplatex ? @",uplatex" : @"";
+    return [NSString stringWithFormat:@"\\documentclass[fleqn,papersize%@]{jsarticle}\n\\usepackage{amsmath,amssymb}\n\\pagestyle{empty}\n", uplatexOption];
+}
+
 - (void)restoreDefaultPreambleLogic
 {
-	preambleTextView.textStorage.mutableString.String = @"\\documentclass[fleqn,papersize]{jsarticle}\n\\usepackage{amsmath,amssymb}\n\\pagestyle{empty}\n";
+    BOOL colorizeText = [self.currentProfile boolForKey:@"colorizeText"];
+    BOOL uplatex = [[[self.currentProfile stringForKey:@"platexPath"] lastPathComponent] isEqualToString:@"uplatex"];
+    [preambleTextView replaceEntireContentsWithString:[self defaultPreamble:uplatex] colorize:colorizeText];
 }
 
 #pragma mark -
@@ -758,16 +781,10 @@
                     NSString *body = (NSString*)(parts[1]);
                     
                     if (![preamble isEqualToString:@""]) {
-                        [preambleTextView insertText:preamble replacementRange:NSMakeRange(0, preambleTextView.textStorage.mutableString.length)];
-                        [preambleTextView colorizeText:colorizeText];
-                        [preambleTextView setSelectedRange:NSMakeRange(0, 0)];
-                        [preambleTextView scrollRangeToVisible: NSMakeRange(0, 0)];
+                        [preambleTextView replaceEntireContentsWithString:preamble colorize:colorizeText];
                     }
                     if (![body isEqualToString:@""]) {
-                        [sourceTextView insertText:body replacementRange:NSMakeRange(0, sourceTextView.textStorage.mutableString.length)];
-                        [sourceTextView colorizeText:colorizeText];
-                        [sourceTextView setSelectedRange:NSMakeRange(0, 0)];
-                        [sourceTextView scrollRangeToVisible: NSMakeRange(0, 0)];
+                        [sourceTextView replaceEntireContentsWithString:body colorize:colorizeText];
                     }
                 } else {
                     NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:NSLocalizedString(@"cannotReadErrorMsg", nil), inputPath], @"OK", nil, nil);
@@ -838,13 +855,60 @@
 	[profileController showProfileWindow];
 }
 
+- (IBAction)sourceSettingChanged:(id)sender
+{
+    switch ([sender tag]) {
+        case 0: // 直接入力
+            directInputButton.state = NSOnState;
+            inputSourceFileButton.state = NSOffState;
+            sourceTextView.enabled = YES;
+            inputSourceFileTextField.enabled = NO;
+            browseSourceFileButton.enabled = NO;
+            break;
+        case 1: // ソースファイル読み込み
+            directInputButton.state = NSOffState;
+            inputSourceFileButton.state = NSOnState;
+            sourceTextView.enabled = NO;
+            inputSourceFileTextField.enabled = YES;
+            browseSourceFileButton.enabled = YES;
+            break;
+        default:
+            break;
+    }
+}
+
+- (IBAction)showInputSourceFilePanel:(id)sender
+{
+    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+    openPanel.canChooseDirectories = NO;
+    openPanel.canChooseFiles = YES;
+    openPanel.allowsMultipleSelection = NO;
+    openPanel.AllowedFileTypes = @[@"tex"];
+    
+    [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode){
+        if (returnCode == NSFileHandlingPanelOKButton) {
+            inputSourceFileTextField.stringValue = openPanel.URL.path;
+        }
+    }];
+    
+}
 
 - (IBAction)showSavePanel:(id)sender
 {
-	NSSavePanel *aPanel = NSSavePanel.savePanel;
-	if ([aPanel runModal] == NSFileHandlingPanelOKButton) {
-		outputFileTextField.StringValue = aPanel.URL.path;
-	}
+    NSSavePanel *savePanel = [NSSavePanel savePanel];
+    savePanel.AllowedFileTypes = @[@"eps", @"png", @"jpg", @"pdf"];
+    savePanel.extensionHidden = NO;
+    savePanel.canSelectHiddenExtension = NO;
+    
+    NSString *defaultFilePath = outputFileTextField.stringValue;
+    savePanel.nameFieldStringValue = defaultFilePath.lastPathComponent;
+        savePanel.directoryURL = [NSURL fileURLWithPath:defaultFilePath.stringByDeletingLastPathComponent];
+    
+    [savePanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode){
+        if (returnCode == NSFileHandlingPanelOKButton) {
+            outputFileTextField.stringValue = savePanel.URL.path;
+        }
+    }];
 }
 
 - (IBAction)toggleMenuItem:(id)sender
@@ -954,7 +1018,7 @@
 	NSString *dvipdfmxPath;
 	NSString *gsPath;
 	
-	platexPath = (upTeXRadioButton.state == NSOnState) ? [self searchProgram:@"uplatex"] : [self searchProgram:@"platex"];
+	platexPath = (utf8RadioButton.state == NSOnState) ? [self searchProgram:@"uplatex"] : [self searchProgram:@"platex"];
 	if (!platexPath) {
 		platexPath = @"";
 		[self showNotFoundError:@"platex"];
@@ -978,14 +1042,13 @@
     sjisRadioButton.State = NSOffState;
     jisRadioButton.State = NSOffState;
     eucRadioButton.State = NSOffState;
-    utf8RadioButton.State = NSOffState;
-    upTeXRadioButton.State = NSOnState;
+    utf8RadioButton.State = NSOnState;
 	platexPathTextField.StringValue = @"/usr/texbin/uplatex";
 	dvipdfmxPathTextField.StringValue = @"/usr/texbin/dvipdfmx";
 	gsPathTextField.StringValue = @"/usr/local/bin/gs";
     
-    if (NSRunAlertPanel(NSLocalizedString(@"Confirm", @"Confirm"), NSLocalizedString(@"preambleForTeXLiveMsg", @"preambleForTeXLiveMsg"), @"OK", NSLocalizedString(@"Cancel", @"Cancel"), nil) == NSOKButton) {
-        preambleTextView.textStorage.mutableString.String = @"\\documentclass[fleqn,papersize,uplatex]{jsarticle}\n\\usepackage{amsmath,amssymb}\n\\pagestyle{empty}\n";
+    if (NSRunAlertPanel(NSLocalizedString(@"Confirm", nil), NSLocalizedString(@"preambleForTeXLiveMsg", nil), @"OK", NSLocalizedString(@"Cancel", nil), nil) == NSOKButton) {
+        [preambleTextView replaceEntireContentsWithString:[self defaultPreamble:YES] colorize:[self.currentProfile boolForKey:@"colorizeText"]];
     }
 }
 
@@ -1002,9 +1065,16 @@
         
         Converter *converter = [Converter converterWithProfile:aProfile];
         
-        NSString *texBodyStr = sourceTextView.textStorage.string;
-        
-        [converter compileAndConvertWithBody:texBodyStr];
+        switch ([aProfile integerForKey:@"inputMethod"]) {
+            case DIRECT:
+                [converter compileAndConvertWithBody:sourceTextView.textStorage.string];
+                break;
+            case FROMFILE:
+                [converter compileAndConvertWithInputPath:[aProfile stringForKey:@"inputSourceFilePath"]];
+                break;
+            default:
+                break;
+        }
         
         generateButton.Enabled = YES;
         generateMenuItem.Enabled = YES;

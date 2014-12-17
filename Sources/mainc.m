@@ -1,5 +1,4 @@
 #import <stdio.h>
-//#import <unistd.h>
 #import <getopt.h>
 #import "Converter.h"
 #import "ControllerC.h"
@@ -7,7 +6,7 @@
 
 #define OPTION_NUM 21
 #define MAX_LEN 1024
-#define VERSION "1.8.6.1"
+#define VERSION "1.8.7"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -35,7 +34,7 @@ static void usage()
     printf("  --create-outline        : outline text in PDF\n");
     printf("  --transparent           : generate transparent PNG file\n");
     printf("  --quick                 : convert in a speed priority mode\n");
-    printf("  --kanji ENCODING        : set Japanese encoding  (sjis|jis|euc|utf8|uptex) (default: utf8)\n");
+    printf("  --kanji ENCODING        : set Japanese encoding  (sjis|jis|euc|utf8) (default: utf8)\n");
     printf("  --ignore-errors         : force converting by ignoring nonfatal errors\n");
     printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS X 0208 characters\n");
     printf("  --quiet                 : do not output logs or messages\n");

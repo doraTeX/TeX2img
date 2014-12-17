@@ -95,8 +95,13 @@
 
 	fileManager = NSFileManager.defaultManager;
 	tempdir = NSTemporaryDirectory();
-	pid = getpid();
-	tempFileBaseName = [NSString stringWithFormat:@"temp%d", pid]; 
+    
+    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
+    NSString *uuidStr = (__bridge_transfer NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid);
+    CFRelease(uuid);
+    
+    pid = getpid();
+	tempFileBaseName = [NSString stringWithFormat:@"temp%d-%@", pid, uuidStr];
 	
 	return self;
 }
@@ -167,7 +172,7 @@
 		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP);
 	} else if ([encoding isEqualToString:@"jis"]) {
 		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
-    } else { // utf8 or uptex
+    } else { // utf8
 		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
 	}
 	

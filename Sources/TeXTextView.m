@@ -198,4 +198,26 @@ static BOOL isValidTeXCommandChar(unichar c)
 	}
 	return [super readSelectionFromPasteboard:pboard type:type];
 }
+
+- (void)setEnabled:(BOOL)enabled
+{
+    self.Selectable = enabled;
+    self.Editable = enabled;
+    
+    if (enabled) {
+        self.textColor = NSColor.controlTextColor;
+    } else {
+        self.textColor = NSColor.disabledControlTextColor;
+    }
+}
+
+- (void)replaceEntireContentsWithString:(NSString*)contents colorize:(BOOL)colorize
+{
+    [self insertText:contents replacementRange:NSMakeRange(0, self.textStorage.mutableString.length)];
+    [self colorizeText:colorize];
+    [self setSelectedRange:NSMakeRange(0, 0)];
+    [self scrollRangeToVisible: NSMakeRange(0, 0)];
+}
+
+
 @end

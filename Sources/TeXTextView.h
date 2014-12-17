@@ -17,6 +17,8 @@
 }
 - (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation
                         length: (unsigned)newLength key:(NSString *)key;
+- (void)setEnabled:(BOOL)enabled;
+- (void)replaceEntireContentsWithString:(NSString*)contents colorize:(BOOL)colorize;
 @end
 
 @interface TeXTextView (Colorize)
