@@ -786,6 +786,7 @@ typedef enum {
                     if (![body isEqualToString:@""]) {
                         [sourceTextView replaceEntireContentsWithString:body colorize:colorizeText];
                     }
+                    [self sourceSettingChanged:directInputButton];
                 } else {
                     NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:NSLocalizedString(@"cannotReadErrorMsg", nil), inputPath], @"OK", nil, nil);
                 }
@@ -812,7 +813,7 @@ typedef enum {
             lastSavedPath = outputPath;
             NSString *preamble = preambleTextView.textStorage.mutableString;
             NSString *body = sourceTextView.textStorage.mutableString;
-            NSString *contents = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}\n", preamble, body];
+            NSString *contents = [NSString stringWithFormat:@"%@\n\n\\begin{document}\n\n%@\n\n\\end{document}\n", preamble, body];
             
             NSString *targetEncoding = [self.currentProfile stringForKey:@"encoding"];
             NSStringEncoding encoding = NSUTF8StringEncoding;
