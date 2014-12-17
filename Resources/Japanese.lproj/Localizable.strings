@@ -18,3 +18,6 @@
 "emptyProfileNameErrMsg" = "保存する設定に名前を付けてください。";
 "profileOverwriteMsg" = "既に同名の設定が存在します。\n既存の同名の設定を置き換えてよろしいですか？";
 "preambleForTeXLiveMsg" = "プリアンブル部にも MacTeX 向け推奨設定を適用しますか？";
+"overwriteContentsWarningMsg" = "現在の編集内容（本文・プリアンブル）が上書きされます。\nよろしいですか？";
+"cannotReadErrorMsg" = "ファイルの読み込みに失敗しました。\n%@";
+"cannotWriteErrorMsg" = "ファイルの書き込みに失敗しました。\n%@";

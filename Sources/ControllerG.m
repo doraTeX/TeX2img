@@ -3,13 +3,13 @@
 #import "global.h"
 #import "ControllerG.h"
 #import "NSDictionary-Extension.h"
-//#import <Sparkle/Sparkle.h>
+#import "NSString-Extension.h"
+#import "NSMutableString-Extension.h"
 
 @class ProfileController;
 @class TeXTextView;
 
 #define AutoSavedProfileName @"*AutoSavedProfile*"
-//#define SNOWLEOPARD 678
 
 @interface ControllerG()
 @property IBOutlet ProfileController *profileController;
@@ -76,6 +76,7 @@
 @property IBOutlet NSMatrix *unitMatrix;
 @property IBOutlet NSMatrix *priorityMatrix;
 @property HighlightPattern highlightPattern;
+@property NSString *lastSavedPath;
 @end
 
 @implementation ControllerG
@@ -143,6 +144,7 @@
 @synthesize unitMatrix;
 @synthesize priorityMatrix;
 @synthesize highlightPattern;
+@synthesize lastSavedPath;
 
 #pragma mark -
 #pragma mark OutputController プロトコルの実装
@@ -196,7 +198,7 @@
 
 - (BOOL)platexExistsAtPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
 {
-	NSFileManager* fileManager = NSFileManager.defaultManager;
+	NSFileManager *fileManager = NSFileManager.defaultManager;
 	
 	if (![fileManager fileExistsAtPath:[platexPath componentsSeparatedByString:@" "][0]]) {
 		[self showNotFoundError:platexPath];
@@ -253,7 +255,7 @@
 #pragma mark プロファイルの読み書き関連
 - (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
 {
-	NSString* tempStr = [aProfile stringForKey:aKey];
+	NSString *tempStr = [aProfile stringForKey:aKey];
 	
 	if (tempStr != nil) {
 		textField.StringValue = tempStr;
@@ -262,7 +264,7 @@
 
 - (void)loadSettingForTextView:(NSTextView*)textView fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
 {
-	NSString* tempStr = [aProfile stringForKey:aKey];
+	NSString *tempStr = [aProfile stringForKey:aKey];
 	
 	if (tempStr != nil) {
 		textView.textStorage.mutableString.String = tempStr;
@@ -375,7 +377,7 @@
 
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
 {
-	NSDictionary* aProfile = [profileController profileForName:profileName];
+	NSDictionary *aProfile = [profileController profileForName:profileName];
     if (aProfile == nil){
         return NO;
     }
@@ -464,7 +466,7 @@
 		
 		currentProfile[@"preamble"] = [NSString stringWithString:preambleTextView.textStorage.string]; // stringWithString は必須
 	}
-	@catch (NSException * e) {
+	@catch (NSException *e) {
 	}
 	
 	if (sjisRadioButton.state) {
@@ -493,7 +495,7 @@
     NSAppleEventDescriptor *eventResult = [appleScript executeAndReturnError:&errorInfo];
     
     NSString *userPath = eventResult.stringValue;
-    NSMutableArray* searchPaths = [NSMutableArray arrayWithArray:[userPath componentsSeparatedByString:@":"]];
+    NSMutableArray *searchPaths = [NSMutableArray arrayWithArray:[userPath componentsSeparatedByString:@":"]];
 
     [searchPaths addObjectsFromArray: @[@"/Applications/TeXLive/texlive/2014/bin/x86_64-darwin",
                                         @"/Applications/TeXLive/texlive/2013/bin/x86_64-darwin",
@@ -512,7 +514,7 @@
                                         @"/sw/bin"
                                         ]];
     
-	NSFileManager* fileManager = NSFileManager.defaultManager;
+	NSFileManager *fileManager = NSFileManager.defaultManager;
 	
 	for (NSString *aPath in searchPaths) {
 		NSString *aFullPath = [aPath stringByAppendingPathComponent:programName];
@@ -533,7 +535,7 @@
 #pragma mark デリゲート・ノティフィケーションのコールバック
 - (void)awakeFromNib
 {
-	//SUUpdater* updater = [SUUpdater updaterForBundle:[NSBundle bundleForClass:[self class]];
+	//SUUpdater *updater = [SUUpdater updaterForBundle:[NSBundle bundleForClass:[self class]];
 	//[updater setAutomaticallyChecksForUpdates:YES];
 	//[updater resetUpdateCycle];
 	//[updater checkForUpdates:self];	
@@ -593,8 +595,8 @@
 	outputFileTextField.StringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
 	
 	// 保存された設定を読み込む
-	NSFileManager* fileManager = NSFileManager.defaultManager;
-	NSString* plistFile = [NSString stringWithFormat:@"%@/Library/Preferences/%@.plist", NSHomeDirectory(), [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
+	NSFileManager *fileManager = NSFileManager.defaultManager;
+	NSString *plistFile = [NSString stringWithFormat:@"%@/Library/Preferences/%@.plist", NSHomeDirectory(), [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
 	
 	BOOL loadLastProfileSuccess = NO;
 	
@@ -709,7 +711,110 @@
 {
 	[self showMainWindow];
 }
-#pragma mark -
+
+#pragma mark - IBAction
+
+- (NSArray*)analyzeContents:(NSString*)contents
+{
+    BOOL convertYenMark = [self.currentProfile boolForKey:@"convertYenMark"];
+    if (convertYenMark) {
+        contents = [[NSMutableString stringWithString:contents] replaceYenWithBackSlash];
+    }
+    
+    NSString *preamble = @"";
+    NSString *body = @"";
+    
+    NSRegularExpression *regex = [NSRegularExpression.alloc initWithPattern:@"^(.*)(?:\\\\|¥)begin\\{document\\}(?:\\r|\\n|\\r\\n)*(.*)(?:\\\\|¥)end\\{document\\}" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    NSTextCheckingResult *match = [regex firstMatchInString:contents options:0 range:NSMakeRange(0, contents.length)];
+    if (match) {
+        preamble = [contents substringWithRange: [match rangeAtIndex: 1]];
+        body = [contents substringWithRange: [match rangeAtIndex: 2]];
+    } else {
+        NSLog(@"mismatch");
+        body = contents;
+    }
+    
+    return @[preamble, body];
+}
+
+- (IBAction)importSource:(id)sender
+{
+    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+    openPanel.canChooseDirectories = NO;
+    openPanel.canChooseFiles = YES;
+    openPanel.allowsMultipleSelection = NO;
+    openPanel.AllowedFileTypes = @[@"tex"];
+    BOOL colorizeText = [self.currentProfile boolForKey:@"colorizeText"];
+    
+    [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode){
+        if (returnCode == NSFileHandlingPanelOKButton) {
+            if (NSRunAlertPanel(NSLocalizedString(@"Confirm", nil), NSLocalizedString(@"overwriteContentsWarningMsg", nil), @"OK", NSLocalizedString(@"Cancel", nil), nil) == NSOKButton) {
+                NSString *inputPath = openPanel.URL.path;
+                NSData *data = [NSData dataWithContentsOfFile:inputPath];
+                NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data];
+                if (contents) {
+                    NSArray *parts = [self analyzeContents:contents];
+                    NSString *preamble = (NSString*)(parts[0]);
+                    NSString *body = (NSString*)(parts[1]);
+                    
+                    if (![preamble isEqualToString:@""]) {
+                        [preambleTextView insertText:preamble replacementRange:NSMakeRange(0, preambleTextView.textStorage.mutableString.length)];
+                        [preambleTextView colorizeText:colorizeText];
+                        [preambleTextView setSelectedRange:NSMakeRange(0, 0)];
+                        [preambleTextView scrollRangeToVisible: NSMakeRange(0, 0)];
+                    }
+                    if (![body isEqualToString:@""]) {
+                        [sourceTextView insertText:body replacementRange:NSMakeRange(0, sourceTextView.textStorage.mutableString.length)];
+                        [sourceTextView colorizeText:colorizeText];
+                        [sourceTextView setSelectedRange:NSMakeRange(0, 0)];
+                        [sourceTextView scrollRangeToVisible: NSMakeRange(0, 0)];
+                    }
+                } else {
+                    NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:NSLocalizedString(@"cannotReadErrorMsg", nil), inputPath], @"OK", nil, nil);
+                }
+            }
+        }
+    }];
+}
+
+- (IBAction)exportSource:(id)sender
+{
+    NSSavePanel *savePanel = [NSSavePanel savePanel];
+    savePanel.AllowedFileTypes = @[@"tex"];
+    savePanel.extensionHidden = NO;
+    savePanel.canSelectHiddenExtension = YES;
+    
+    if (lastSavedPath) {
+        savePanel.nameFieldStringValue = lastSavedPath.lastPathComponent;
+        savePanel.directoryURL = [NSURL fileURLWithPath:lastSavedPath.stringByDeletingLastPathComponent];
+    }
+    
+    [savePanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode){
+        if (returnCode == NSFileHandlingPanelOKButton) {
+            NSString *outputPath = savePanel.URL.path;
+            lastSavedPath = outputPath;
+            NSString *preamble = preambleTextView.textStorage.mutableString;
+            NSString *body = sourceTextView.textStorage.mutableString;
+            NSString *contents = [NSString stringWithFormat:@"%@\\begin{document}\n%@\n\\end{document}\n", preamble, body];
+            
+            NSString *targetEncoding = [self.currentProfile stringForKey:@"encoding"];
+            NSStringEncoding encoding = NSUTF8StringEncoding;
+            
+            if ([targetEncoding isEqualToString:@"sjis"]) {
+                encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese);
+            } else if ([targetEncoding isEqualToString:@"euc"]) {
+                encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP);
+            } else if ([targetEncoding isEqualToString:@"jis"]) {
+                encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
+            }
+            
+            if (![contents writeToFile:outputPath atomically:YES encoding:encoding error:nil]) {
+                NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:NSLocalizedString(@"cannotWriteErrorMsg", nil), outputPath], @"OK", nil, nil);
+            }
+        
+        }
+    }];
+}
 
 - (IBAction)restoreDefaultPreamble:(id)sender
 {
@@ -736,7 +841,7 @@
 
 - (IBAction)showSavePanel:(id)sender
 {
-	NSSavePanel* aPanel = NSSavePanel.savePanel;
+	NSSavePanel *aPanel = NSSavePanel.savePanel;
 	if ([aPanel runModal] == NSFileHandlingPanelOKButton) {
 		outputFileTextField.StringValue = aPanel.URL.path;
 	}
@@ -821,14 +926,14 @@
 
 - (IBAction)showFontPanelOfSource:(id)sender
 {
-	NSFontPanel* panel = NSFontPanel.sharedFontPanel;
+	NSFontPanel *panel = NSFontPanel.sharedFontPanel;
 	[panel makeKeyAndOrderFront:self];
 	[panel setPanelFont:sourceTextView.font isMultiple:NO];
 }
 
 - (IBAction)showFontPanelOfPreamble:(id)sender
 {
-	NSFontPanel* panel = NSFontPanel.sharedFontPanel;
+	NSFontPanel *panel = NSFontPanel.sharedFontPanel;
 	[panel makeKeyAndOrderFront:self];
 	[panel setPanelFont:preambleTextView.font isMultiple:NO];
 	
@@ -845,9 +950,9 @@
 
 - (IBAction)searchPrograms:(id)sender
 {
-	NSString* platexPath;
-	NSString* dvipdfmxPath;
-	NSString* gsPath;
+	NSString *platexPath;
+	NSString *dvipdfmxPath;
+	NSString *gsPath;
 	
 	platexPath = (upTeXRadioButton.state == NSOnState) ? [self searchProgram:@"uplatex"] : [self searchProgram:@"platex"];
 	if (!platexPath) {
@@ -895,9 +1000,9 @@
         aProfile[@"quiet"] = @(NO);
         aProfile[@"controller"] = self;
         
-        Converter* converter = [Converter converterWithProfile:aProfile];
+        Converter *converter = [Converter converterWithProfile:aProfile];
         
-        NSString* texBodyStr = sourceTextView.textStorage.string;
+        NSString *texBodyStr = sourceTextView.textStorage.string;
         
         [converter compileAndConvertWithBody:texBodyStr];
         
