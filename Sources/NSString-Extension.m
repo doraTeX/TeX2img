@@ -3,10 +3,21 @@
 @implementation NSString (Extension)
 - (NSString*)pathStringByAppendingPageNumber:(NSUInteger)page
 {
-    NSString* dir = self.stringByDeletingLastPathComponent;
-    NSString* basename = self.lastPathComponent.stringByDeletingPathExtension;
-    NSString* ext = self.pathExtension;
+    NSString *dir = self.stringByDeletingLastPathComponent;
+    NSString *basename = self.lastPathComponent.stringByDeletingPathExtension;
+    NSString *ext = self.pathExtension;
     return [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-%lu.%@", basename, page, ext]];
+}
+
+- (NSString*)stringByDeletingLastReturnCharacters
+{
+    NSRegularExpression *regex = [NSRegularExpression.alloc initWithPattern:@"^(.*?)(?:\\r|\\n|\\r\\n)*$" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    NSTextCheckingResult *match = [regex firstMatchInString:self options:0 range:NSMakeRange(0, self.length)];
+    if (match) {
+        return [self substringWithRange:[match rangeAtIndex:1]];
+    } else {
+        return self;
+    }
 }
 
 // データから指定エンコードで文字列を得る
