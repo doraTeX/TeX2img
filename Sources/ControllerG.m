@@ -377,15 +377,30 @@ typedef enum {
     [self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:PreambleKey];
     
     NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
-    if (aFont != nil) {
+    if (aFont) {
         sourceTextView.Font = aFont;
     }
     
     aFont = [NSFont fontWithName:[aProfile stringForKey:PreambleFontNameKey] size:[aProfile floatForKey:PreambleFontSizeKey]];
-    if (aFont != nil) {
+    if (aFont) {
         preambleTextView.Font = aFont;
     }
     [preambleTextView colorizeText:[aProfile boolForKey:ColorizeTextKey]];
+    
+    NSString *inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
+    if (inputSourceFilePath) {
+        inputSourceFileTextField.stringValue = inputSourceFilePath;
+    }
+    
+    InputMethod inputMethod = [aProfile integerForKey:InputMethodKey];
+    switch (inputMethod) {
+        case FROMFILE:
+            [self sourceSettingChanged:inputSourceFileButton];
+            break;
+        default:
+            [self sourceSettingChanged:directInputButton];
+            break;
+    }
 }
 
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
