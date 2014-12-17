@@ -62,36 +62,36 @@
 {
     pageCount = 1;
     
-	platexPath = [aProfile stringForKey:@"platexPath"];
-	dvipdfmxPath = [aProfile stringForKey:@"dvipdfmxPath"];
-	gsPath = [aProfile stringForKey:@"gsPath"];
-	pdfcropPath = [aProfile stringForKey:@"pdfcropPath"];
-	epstopdfPath = [aProfile stringForKey:@"epstopdfPath"];
-    guessCompilation = [aProfile boolForKey:@"guessCompilation"];
-    numberOfCompilation = [aProfile integerForKey:@"numberOfCompilation"];
-	
-	outputFilePath = [aProfile stringForKey:@"outputFile"];
-	preambleStr = [aProfile stringForKey:@"preamble"];
-	
-	encoding = [aProfile stringForKey:@"encoding"];
-	resolutionLevel = [aProfile floatForKey:@"resolution"] / 5.0;
-	leftMargin = [aProfile integerForKey:@"leftMargin"];
-	rightMargin = [aProfile integerForKey:@"rightMargin"];
-	topMargin = [aProfile integerForKey:@"topMargin"];
-	bottomMargin = [aProfile integerForKey:@"bottomMargin"];
-	leaveTextFlag = ![aProfile boolForKey:@"getOutline"];
-	transparentPngFlag = [aProfile boolForKey:@"transparent"];
-	showOutputDrawerFlag = [aProfile boolForKey:@"showOutputDrawer"];
-	previewFlag = [aProfile boolForKey:@"preview"];
-	deleteTmpFileFlag = [aProfile boolForKey:@"deleteTmpFile"];
-	embedInIllustratorFlag = [aProfile boolForKey:@"embedInIllustrator"];
-	ungroupFlag = [aProfile boolForKey:@"ungroup"];
-	ignoreErrorsFlag = [aProfile boolForKey:@"ignoreError"];
-	utfExportFlag = [aProfile boolForKey:@"utfExport"];
-	quietFlag = [aProfile boolForKey:@"quiet"];
-	controller = aProfile[@"controller"];
-    useBP = ([aProfile integerForKey:@"unit"] == BPUNITTAG);
-    speedPriorityMode = ([aProfile integerForKey:@"priority"] == SPEED_PRIORITY_TAG);
+    platexPath = [aProfile stringForKey:PlatexPathKey];
+    dvipdfmxPath = [aProfile stringForKey:DvipdfmxPathKey];
+    gsPath = [aProfile stringForKey:GsPathKey];
+    pdfcropPath = [aProfile stringForKey:PdfcropPathKey];
+    epstopdfPath = [aProfile stringForKey:EpstopdfPathKey];
+    guessCompilation = [aProfile boolForKey:GuessCompilationKey];
+    numberOfCompilation = [aProfile integerForKey:NumberOfCompilationKey];
+    
+    outputFilePath = [aProfile stringForKey:OutputFileKey];
+    preambleStr = [aProfile stringForKey:PreambleKey];
+    
+    encoding = [aProfile stringForKey:EncodingKey];
+    resolutionLevel = [aProfile floatForKey:ResolutionKey] / 5.0;
+    leftMargin = [aProfile integerForKey:LeftMarginKey];
+    rightMargin = [aProfile integerForKey:RightMarginKey];
+    topMargin = [aProfile integerForKey:TopMarginKey];
+    bottomMargin = [aProfile integerForKey:BottomMarginKey];
+    leaveTextFlag = ![aProfile boolForKey:GetOutlineKey];
+    transparentPngFlag = [aProfile boolForKey:TransparentKey];
+    showOutputDrawerFlag = [aProfile boolForKey:ShowOutputDrawerKey];
+    previewFlag = [aProfile boolForKey:PreviewKey];
+    deleteTmpFileFlag = [aProfile boolForKey:DeleteTmpFileKey];
+    embedInIllustratorFlag = [aProfile boolForKey:EmbedInIllustratorKey];
+    ungroupFlag = [aProfile boolForKey:UngroupKey];
+    ignoreErrorsFlag = [aProfile boolForKey:IgnoreErrorKey];
+    utfExportFlag = [aProfile boolForKey:UtfExportKey];
+    quietFlag = [aProfile boolForKey:QuietKey];
+    controller = aProfile[ControllerKey];
+    useBP = ([aProfile integerForKey:UnitKey] == BPUNITTAG);
+    speedPriorityMode = ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG);
 
 	fileManager = NSFileManager.defaultManager;
 	tempdir = NSTemporaryDirectory();

@@ -169,7 +169,7 @@ static NSString* endcommentString = @"›";
 				  NSMakeRange(replaceLocation, currentLength)]
 				 isEqualToString: currentString] &&
 				[self.undoManager.undoActionName isEqualToString:
-				 NSLocalizedString(@"Completion", @"Completion")]) {
+				 NSLocalizedString(@"Completion", nil)]) {
 				// revert the completion:
 				// by doing this, even after showing several completion candidates
 				// you can get back to the uncompleted string by one undo.
@@ -314,10 +314,7 @@ static NSString* endcommentString = @"›";
 			// register undo
 			[self registerUndoWithString:originalString location:replaceLocation
 								  length:newString.length
-									 key:NSLocalizedString(@"Completion", @"Completion")];
-			//[self registerUndoWithString:originalString location:replaceLocation
-			//		length:[newString length]
-			//		key:NSLocalizedString(@"Completion", @"Completion")];
+									 key:NSLocalizedString(@"Completion", nil)];
 			// clean up
 			[self resetBackgroundColor:nil];
 			currentString = newString;

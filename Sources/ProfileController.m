@@ -1,5 +1,6 @@
 #import "ProfileController.h"
 #import "NSDictionary-Extension.h"
+#import "global.h"
 
 #define MovedRowsType @"TeX2imgMovedRowsType"
 
@@ -32,8 +33,8 @@
 
 - (void)loadProfilesFromPlist
 {
-	profileNames = [NSMutableArray arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:@"profileNames"]];
-	profiles =  [NSMutableArray arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:@"profiles"]];
+	profileNames = [NSMutableArray arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:ProfileNamesKey]];
+	profiles =  [NSMutableArray arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:ProfilesKey]];
 }
 
 - (void)initProfiles
@@ -67,8 +68,8 @@
 - (void)saveProfiles
 {
 	NSUserDefaults *userDefaults = NSUserDefaults.standardUserDefaults;
-	[userDefaults setObject:profileNames forKey:@"profileNames"];
-	[userDefaults setObject:profiles forKey:@"profiles"];
+	[userDefaults setObject:profileNames forKey:ProfileNamesKey];
+	[userDefaults setObject:profiles forKey:ProfilesKey];
 	[userDefaults synchronize];
     system("killall -SIGTERM cfprefsd"); // for 10.9 bug
 }

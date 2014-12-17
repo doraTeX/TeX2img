@@ -1,6 +1,76 @@
 NSString *g_commandCompletionChar;
 NSMutableString *g_commandCompletionList;
+
+#define ProfileNamesKey @"profileNames"
+#define ProfilesKey @"profiles"
+
+#define XKey @"x"
+#define YKey @"y"
+#define MainWindowWidthKey @"mainWindowWidth"
+#define MainWindowHeightKey @"mainWindowHeight"
+#define OutputFileKey @"outputFile"
+#define ShowOutputDrawerKey @"showOutputDrawer"
+#define ThreadingKey @"threading"
+#define PreviewKey @"preview"
+#define DeleteTmpFileKey @"deleteTmpFile"
+#define EmbedInIllustratorKey @"embedInIllustrator"
+#define UngroupKey @"ungroup"
+#define TransparentKey @"transparent"
+#define GetOutlineKey @"getOutline"
+#define IgnoreErrorKey @"ignoreError"
+#define UtfExportKey @"utfExport"
+#define PlatexPathKey @"platexPath"
+#define DvipdfmxPathKey @"dvipdfmxPath"
+#define GsPathKey @"gsPath"
+#define GuessCompilationKey @"guessCompilation"
+#define NumberOfCompilationKey @"numberOfCompilation"
+#define ResolutionLabelKey @"resolutionLabel"
+#define LeftMarginLabelKey @"leftMarginLabel"
+#define RightMarginLabelKey @"rightMarginLabel"
+#define TopMarginLabelKey @"topMarginLabel"
+#define BottomMarginLabelKey @"bottomMarginLabel"
+#define ResolutionKey @"resolution"
+#define LeftMarginKey @"leftMargin"
+#define RightMarginKey @"rightMargin"
+#define TopMarginKey @"topMargin"
+#define BottomMarginKey @"bottomMargin"
+#define UnitKey @"unit"
+#define PriorityKey @"priority"
+#define ConvertYenMarkKey @"convertYenMark"
+#define ColorizeTextKey @"colorizeText"
+#define HighlightPatternKey @"highlightPattern"
+#define FlashInMovingKey @"flashInMoving"
+#define HighlightContentKey @"highlightContent"
+#define BeepKey @"beep"
+#define FlashBackgroundKey @"flashBackground"
+#define CheckBraceKey @"checkBrace"
+#define CheckBracketKey @"checkBracket"
+#define CheckSquareBracketKey @"checkSquareBracket"
+#define CheckParenKey @"checkParen"
+#define AutoCompleteKey @"autoComplete"
+#define ShowTabCharacterKey @"showTabCharacter"
+#define ShowSpaceCharacterKey @"showSpaceCharacter"
+#define ShowFullwidthSpaceCharacterKey @"showFullwidthSpaceCharacter"
+#define ShowNewLineCharacterKey @"showNewLineCharacter"
+#define SourceFontNameKey @"sourceFontName"
+#define SourceFontSizeKey @"sourceFontSize"
+#define PreambleFontNameKey @"preambleFontName"
+#define PreambleFontSizeKey @"preambleFontSize"
+#define PreambleKey @"preamble"
+#define InputMethodKey @"inputMethod"
+#define InputSourceFilePathKey @"inputSourceFilePath"
+#define EncodingKey @"encoding"
+#define PdfcropPathKey @"pdfcropPath"
+#define EpstopdfPathKey @"epstopdfPath"
+#define QuietKey @"quiet"
+#define ControllerKey @"controller"
+
+
+
 #define PXUNITTAG 1
 #define BPUNITTAG 2
 #define QUALITY_PRIORITY_TAG 1
 #define SPEED_PRIORITY_TAG 2
+#define DIRECT_INPUT_TAG 0
+#define INPUT_FILE_TAG 1
+

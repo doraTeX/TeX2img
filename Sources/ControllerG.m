@@ -292,47 +292,46 @@ typedef enum {
         return;
     }
 	
-	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:@"outputFile"];
+	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
 	
-	showOutputDrawerCheckBox.State = [aProfile integerForKey:@"showOutputDrawer"];
-//	threadingCheckBox.State = [aProfile integerForKey:@"threading"];
-	previewCheckBox.State = [aProfile integerForKey:@"preview"];
-	deleteTmpFileCheckBox.State = [aProfile integerForKey:@"deleteTmpFile"];
+	showOutputDrawerCheckBox.State = [aProfile integerForKey:ShowOutputDrawerKey];
+	previewCheckBox.State = [aProfile integerForKey:PreviewKey];
+	deleteTmpFileCheckBox.State = [aProfile integerForKey:DeleteTmpFileKey];
 
-	embedInIllustratorCheckBox.State = [aProfile integerForKey:@"embedInIllustrator"];
-	ungroupCheckBox.State = [aProfile integerForKey:@"ungroup"];
+	embedInIllustratorCheckBox.State = [aProfile integerForKey:EmbedInIllustratorKey];
+	ungroupCheckBox.State = [aProfile integerForKey:UngroupKey];
 	
-	transparentCheckBox.State = [aProfile boolForKey:@"transparent"];
-	getOutlineCheckBox.State = [aProfile boolForKey:@"getOutline"];
+	transparentCheckBox.State = [aProfile boolForKey:TransparentKey];
+	getOutlineCheckBox.State = [aProfile boolForKey:GetOutlineKey];
 	
-	ignoreErrorCheckBox.State = [aProfile boolForKey:@"ignoreError"];
-	utfExportCheckBox.State = [aProfile boolForKey:@"utfExport"];
+	ignoreErrorCheckBox.State = [aProfile boolForKey:IgnoreErrorKey];
+	utfExportCheckBox.State = [aProfile boolForKey:UtfExportKey];
 	
-	convertYenMarkMenuItem.State = [aProfile boolForKey:@"convertYenMark"];
-	colorizeTextMenuItem.State = [aProfile boolForKey:@"colorizeText"];
+	convertYenMarkMenuItem.State = [aProfile boolForKey:ConvertYenMarkKey];
+	colorizeTextMenuItem.State = [aProfile boolForKey:ColorizeTextKey];
 	
-	highlightPattern = [aProfile integerForKey:@"highlightPattern"];
+	highlightPattern = [aProfile integerForKey:HighlightPatternKey];
 	[self changeHighlight:nil];
 
-	flashInMovingMenuItem.State = [aProfile boolForKey:@"flashInMoving"];
+	flashInMovingMenuItem.State = [aProfile boolForKey:FlashInMovingKey];
 
-	highlightContentMenuItem.State = [aProfile boolForKey:@"highlightContent"];
-	beepMenuItem.State = [aProfile boolForKey:@"beep"];
-	flashBackgroundMenuItem.State = [aProfile boolForKey:@"flashBackground"];
+	highlightContentMenuItem.State = [aProfile boolForKey:HighlightContentKey];
+	beepMenuItem.State = [aProfile boolForKey:BeepKey];
+	flashBackgroundMenuItem.State = [aProfile boolForKey:FlashBackgroundKey];
 
-	checkBraceMenuItem.State = [aProfile boolForKey:@"checkBrace"];
-	checkBracketMenuItem.State = [aProfile boolForKey:@"checkBracket"];
-	checkSquareBracketMenuItem.State = [aProfile boolForKey:@"checkSquareBracket"];
-	checkParenMenuItem.State = [aProfile boolForKey:@"checkParen"];
+	checkBraceMenuItem.State = [aProfile boolForKey:CheckBraceKey];
+	checkBracketMenuItem.State = [aProfile boolForKey:CheckBracketKey];
+	checkSquareBracketMenuItem.State = [aProfile boolForKey:CheckSquareBracketKey];
+	checkParenMenuItem.State = [aProfile boolForKey:CheckParenKey];
 
-	autoCompleteMenuItem.State = [aProfile boolForKey:@"autoComplete"];
-	showTabCharacterMenuItem.State = [aProfile boolForKey:@"showTabCharacter"];
-	showSpaceCharacterMenuItem.State = [aProfile boolForKey:@"showSpaceCharacter"];
-	showFullwidthSpaceCharacterMenuItem.State = [aProfile boolForKey:@"showFullwidthSpaceCharacter"];
-	showNewLineCharacterMenuItem.State = [aProfile boolForKey:@"showNewLineCharacter"];
-	guessCompilationButton.State = [aProfile boolForKey:@"guessCompilation"];
+	autoCompleteMenuItem.State = [aProfile boolForKey:AutoCompleteKey];
+	showTabCharacterMenuItem.State = [aProfile boolForKey:ShowTabCharacterKey];
+	showSpaceCharacterMenuItem.State = [aProfile boolForKey:ShowSpaceCharacterKey];
+	showFullwidthSpaceCharacterMenuItem.State = [aProfile boolForKey:ShowFullwidthSpaceCharacterKey];
+	showNewLineCharacterMenuItem.State = [aProfile boolForKey:ShowNewLineCharacterKey];
+	guessCompilationButton.State = [aProfile boolForKey:GuessCompilationKey];
     
-    NSString *encoding = [aProfile stringForKey:@"encoding"];
+    NSString *encoding = [aProfile stringForKey:EncodingKey];
     if (encoding) {
         sjisRadioButton.State = NSOffState;
         jisRadioButton.State = NSOffState;
@@ -352,41 +351,41 @@ typedef enum {
         }
     }
 	
-	[self loadSettingForTextField:platexPathTextField fromProfile:aProfile forKey:@"platexPath"];
-	[self loadSettingForTextField:dvipdfmxPathTextField fromProfile:aProfile forKey:@"dvipdfmxPath"];
-	[self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:@"gsPath"];
+	[self loadSettingForTextField:platexPathTextField fromProfile:aProfile forKey:PlatexPathKey];
+	[self loadSettingForTextField:dvipdfmxPathTextField fromProfile:aProfile forKey:DvipdfmxPathKey];
+	[self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
 	
-	[self loadSettingForTextField:resolutionLabel fromProfile:aProfile forKey:@"resolutionLabel"];
-	[self loadSettingForTextField:leftMarginLabel fromProfile:aProfile forKey:@"leftMarginLabel"];
-	[self loadSettingForTextField:rightMarginLabel fromProfile:aProfile forKey:@"rightMarginLabel"];
-	[self loadSettingForTextField:topMarginLabel fromProfile:aProfile forKey:@"topMarginLabel"];
-	[self loadSettingForTextField:bottomMarginLabel fromProfile:aProfile forKey:@"bottomMarginLabel"];
-	
-    numberOfCompilationTextField.IntValue = MAX(1, [aProfile integerForKey:@"numberOfCompilation"]);
-	resolutionSlider.FloatValue = [aProfile integerForKey:@"resolution"];
-	leftMarginSlider.IntValue = [aProfile integerForKey:@"leftMargin"];
-	rightMarginSlider.IntValue = [aProfile integerForKey:@"rightMargin"];
-	topMarginSlider.IntValue = [aProfile integerForKey:@"topMargin"];
-	bottomMarginSlider.IntValue = [aProfile integerForKey:@"bottomMargin"];
+	[self loadSettingForTextField:resolutionLabel fromProfile:aProfile forKey:ResolutionLabelKey];
+    [self loadSettingForTextField:leftMarginLabel fromProfile:aProfile forKey:LeftMarginLabelKey];
+    [self loadSettingForTextField:rightMarginLabel fromProfile:aProfile forKey:RightMarginLabelKey];
+    [self loadSettingForTextField:topMarginLabel fromProfile:aProfile forKey:TopMarginLabelKey];
+    [self loadSettingForTextField:bottomMarginLabel fromProfile:aProfile forKey:BottomMarginLabelKey];
     
-    NSInteger unitTag = [aProfile integerForKey:@"unit"];
+    numberOfCompilationTextField.IntValue = MAX(1, [aProfile integerForKey:NumberOfCompilationKey]);
+    resolutionSlider.FloatValue = [aProfile integerForKey:ResolutionKey];
+    leftMarginSlider.IntValue = [aProfile integerForKey:LeftMarginKey];
+    rightMarginSlider.IntValue = [aProfile integerForKey:RightMarginKey];
+    topMarginSlider.IntValue = [aProfile integerForKey:TopMarginKey];
+    bottomMarginSlider.IntValue = [aProfile integerForKey:BottomMarginKey];
+    
+    NSInteger unitTag = [aProfile integerForKey:UnitKey];
     [unitMatrix selectCellWithTag:unitTag];
-
-    NSInteger priorityTag = [aProfile integerForKey:@"priority"];
+    
+    NSInteger priorityTag = [aProfile integerForKey:PriorityKey];
     [priorityMatrix selectCellWithTag:priorityTag];
-
-	[self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:@"preamble"];
-	
-	NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:@"sourceFontName"] size:[aProfile floatForKey:@"sourceFontSize"]];
-	if (aFont != nil) {
-		sourceTextView.Font = aFont;
-	}
-	
-	aFont = [NSFont fontWithName:[aProfile stringForKey:@"preambleFontName"] size:[aProfile floatForKey:@"preambleFontSize"]];
-	if (aFont != nil) {
-		preambleTextView.Font = aFont;
-	}
-	[preambleTextView colorizeText:[aProfile boolForKey:@"colorizeText"]];
+    
+    [self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:PreambleKey];
+    
+    NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
+    if (aFont != nil) {
+        sourceTextView.Font = aFont;
+    }
+    
+    aFont = [NSFont fontWithName:[aProfile stringForKey:PreambleFontNameKey] size:[aProfile floatForKey:PreambleFontSizeKey]];
+    if (aFont != nil) {
+        preambleTextView.Font = aFont;
+    }
+    [preambleTextView colorizeText:[aProfile boolForKey:ColorizeTextKey]];
 }
 
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
@@ -399,10 +398,10 @@ typedef enum {
 	[self adoptProfile:aProfile];
 
 	float x, y, mainWindowWidth, mainWindowHeight; 
-	x = [aProfile floatForKey:@"x"];
-	y = [aProfile floatForKey:@"y"];
-	mainWindowWidth = [aProfile floatForKey:@"mainWindowWidth"];
-	mainWindowHeight = [aProfile floatForKey:@"mainWindowHeight"];
+	x = [aProfile floatForKey:XKey];
+	y = [aProfile floatForKey:YKey];
+	mainWindowWidth = [aProfile floatForKey:MainWindowWidthKey];
+	mainWindowHeight = [aProfile floatForKey:MainWindowHeightKey];
 	
 	if (x!=0 && y!=0 && mainWindowWidth!=0 && mainWindowHeight!=0) {
 		[mainWindow setFrame:NSMakeRect(x, y, mainWindowWidth, mainWindowHeight) display:YES];
@@ -417,84 +416,83 @@ typedef enum {
 {
 	NSMutableDictionary *currentProfile = NSMutableDictionary.dictionary;
 	@try {
-		currentProfile[@"x"] = @(NSMinX(mainWindow.frame));
-		currentProfile[@"y"] = @(NSMinY(mainWindow.frame));
-        currentProfile[@"mainWindowWidth"] = @(NSWidth(mainWindow.frame));
-        currentProfile[@"mainWindowHeight"] = @(NSHeight(mainWindow.frame));
-        currentProfile[@"outputFile"] = outputFileTextField.stringValue;
+        currentProfile[XKey] = @(NSMinX(mainWindow.frame));
+        currentProfile[YKey] = @(NSMinY(mainWindow.frame));
+        currentProfile[MainWindowWidthKey] = @(NSWidth(mainWindow.frame));
+        currentProfile[MainWindowHeightKey] = @(NSHeight(mainWindow.frame));
+        currentProfile[OutputFileKey] = outputFileTextField.stringValue;
         
-        currentProfile[@"showOutputDrawer"] = @(showOutputDrawerCheckBox.state);
-//        currentProfile[@"threading"] = @(threadingCheckBox.state);
-        currentProfile[@"preview"] = @(previewCheckBox.state);
-        currentProfile[@"deleteTmpFile"] = @(deleteTmpFileCheckBox.state);
+        currentProfile[ShowOutputDrawerKey] = @(showOutputDrawerCheckBox.state);
+        currentProfile[PreviewKey] = @(previewCheckBox.state);
+        currentProfile[DeleteTmpFileKey] = @(deleteTmpFileCheckBox.state);
         
-        currentProfile[@"embedInIllustrator"] = @(embedInIllustratorCheckBox.state);
-        currentProfile[@"ungroup"] = @(ungroupCheckBox.state);
+        currentProfile[EmbedInIllustratorKey] = @(embedInIllustratorCheckBox.state);
+        currentProfile[UngroupKey] = @(ungroupCheckBox.state);
         
-        currentProfile[@"transparent"] = @(transparentCheckBox.state);
-        currentProfile[@"getOutline"] = @(getOutlineCheckBox.state);
-        currentProfile[@"ignoreError"] = @(ignoreErrorCheckBox.state);
-        currentProfile[@"utfExport"] = @(utfExportCheckBox.state);
+        currentProfile[TransparentKey] = @(transparentCheckBox.state);
+        currentProfile[GetOutlineKey] = @(getOutlineCheckBox.state);
+        currentProfile[IgnoreErrorKey] = @(ignoreErrorCheckBox.state);
+        currentProfile[UtfExportKey] = @(utfExportCheckBox.state);
         
-        currentProfile[@"platexPath"] = platexPathTextField.stringValue;
-        currentProfile[@"dvipdfmxPath"] = dvipdfmxPathTextField.stringValue;
-        currentProfile[@"gsPath"] = gsPathTextField.stringValue;
-        currentProfile[@"guessCompilation"] = @(guessCompilationButton.state);
-        currentProfile[@"numberOfCompilation"] = @(numberOfCompilationTextField.integerValue);
+        currentProfile[PlatexPathKey] = platexPathTextField.stringValue;
+        currentProfile[DvipdfmxPathKey] = dvipdfmxPathTextField.stringValue;
+        currentProfile[GsPathKey] = gsPathTextField.stringValue;
+        currentProfile[GuessCompilationKey] = @(guessCompilationButton.state);
+        currentProfile[NumberOfCompilationKey] = @(numberOfCompilationTextField.integerValue);
         
-        currentProfile[@"resolutionLabel"] = resolutionLabel.stringValue;
-        currentProfile[@"leftMarginLabel"] = leftMarginLabel.stringValue;
-        currentProfile[@"rightMarginLabel"] = rightMarginLabel.stringValue;
-        currentProfile[@"topMarginLabel"] = topMarginLabel.stringValue;
-        currentProfile[@"bottomMarginLabel"] = bottomMarginLabel.stringValue;
+        currentProfile[ResolutionLabelKey] = resolutionLabel.stringValue;
+        currentProfile[LeftMarginLabelKey] = leftMarginLabel.stringValue;
+        currentProfile[RightMarginLabelKey] = rightMarginLabel.stringValue;
+        currentProfile[TopMarginLabelKey] = topMarginLabel.stringValue;
+        currentProfile[BottomMarginLabelKey] = bottomMarginLabel.stringValue;
         
-        currentProfile[@"resolution"] = @(resolutionLabel.floatValue);
-        currentProfile[@"leftMargin"] = @(leftMarginLabel.intValue);
-        currentProfile[@"rightMargin"] = @(rightMarginLabel.intValue);
-        currentProfile[@"topMargin"] = @(topMarginLabel.intValue);
-        currentProfile[@"bottomMargin"] = @(bottomMarginLabel.intValue);
+        currentProfile[ResolutionKey] = @(resolutionLabel.floatValue);
+        currentProfile[LeftMarginKey] = @(leftMarginLabel.intValue);
+        currentProfile[RightMarginKey] = @(rightMarginLabel.intValue);
+        currentProfile[TopMarginKey] = @(topMarginLabel.intValue);
+        currentProfile[BottomMarginKey] = @(bottomMarginLabel.intValue);
         
-        currentProfile[@"unit"] = @(unitMatrix.selectedTag);
-        currentProfile[@"priority"] = @(priorityMatrix.selectedTag);
+        currentProfile[UnitKey] = @(unitMatrix.selectedTag);
+        currentProfile[PriorityKey] = @(priorityMatrix.selectedTag);
         
-        currentProfile[@"convertYenMark"] = @(convertYenMarkMenuItem.state);
-        currentProfile[@"colorizeText"] = @(colorizeTextMenuItem.state);
-        currentProfile[@"highlightPattern"] = @(highlightPattern);
-        currentProfile[@"flashInMoving"] = @(flashInMovingMenuItem.state);
-        currentProfile[@"highlightContent"] = @(highlightContentMenuItem.state);
-        currentProfile[@"beep"] = @(beepMenuItem.state);
-        currentProfile[@"flashBackground"] = @(flashBackgroundMenuItem.state);
-        currentProfile[@"checkBrace"] = @(checkBraceMenuItem.state);
-        currentProfile[@"checkBracket"] = @(checkBracketMenuItem.state);
-        currentProfile[@"checkSquareBracket"] = @(checkSquareBracketMenuItem.state);
-        currentProfile[@"checkParen"] = @(checkParenMenuItem.state);
-        currentProfile[@"autoComplete"] = @(autoCompleteMenuItem.state);
-        currentProfile[@"showTabCharacter"] = @(showTabCharacterMenuItem.state);
-        currentProfile[@"showSpaceCharacter"] = @(showSpaceCharacterMenuItem.state);
-        currentProfile[@"showFullwidthSpaceCharacter"] = @(showFullwidthSpaceCharacterMenuItem.state);
-        currentProfile[@"showNewLineCharacter"] = @(showNewLineCharacterMenuItem.state);
-        currentProfile[@"sourceFontName"] = sourceTextView.font.fontName;
-        currentProfile[@"sourceFontSize"] = @(sourceTextView.font.pointSize);
-        currentProfile[@"preambleFontName"] = preambleTextView.font.fontName;
-        currentProfile[@"preambleFontSize"] = @(preambleTextView.font.pointSize);
-		
-		currentProfile[@"preamble"] = [NSString stringWithString:preambleTextView.textStorage.string]; // stringWithString は必須
+        currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
+        currentProfile[ColorizeTextKey] = @(colorizeTextMenuItem.state);
+        currentProfile[HighlightPatternKey] = @(highlightPattern);
+        currentProfile[FlashInMovingKey] = @(flashInMovingMenuItem.state);
+        currentProfile[HighlightContentKey] = @(highlightContentMenuItem.state);
+        currentProfile[BeepKey] = @(beepMenuItem.state);
+        currentProfile[FlashBackgroundKey] = @(flashBackgroundMenuItem.state);
+        currentProfile[CheckBraceKey] = @(checkBraceMenuItem.state);
+        currentProfile[CheckBracketKey] = @(checkBracketMenuItem.state);
+        currentProfile[CheckSquareBracketKey] = @(checkSquareBracketMenuItem.state);
+        currentProfile[CheckParenKey] = @(checkParenMenuItem.state);
+        currentProfile[AutoCompleteKey] = @(autoCompleteMenuItem.state);
+        currentProfile[ShowTabCharacterKey] = @(showTabCharacterMenuItem.state);
+        currentProfile[ShowSpaceCharacterKey] = @(showSpaceCharacterMenuItem.state);
+        currentProfile[ShowFullwidthSpaceCharacterKey] = @(showFullwidthSpaceCharacterMenuItem.state);
+        currentProfile[ShowNewLineCharacterKey] = @(showNewLineCharacterMenuItem.state);
+        currentProfile[SourceFontNameKey] = sourceTextView.font.fontName;
+        currentProfile[SourceFontSizeKey] = @(sourceTextView.font.pointSize);
+        currentProfile[PreambleFontNameKey] = preambleTextView.font.fontName;
+        currentProfile[PreambleFontSizeKey] = @(preambleTextView.font.pointSize);
         
-        currentProfile[@"inputMethod"] = (directInputButton.state == NSOnState) ? @(DIRECT) : @(FROMFILE);
-        currentProfile[@"inputSourceFilePath"] = inputSourceFileTextField.stringValue;
-	}
-	@catch (NSException *e) {
-	}
-	
-	if (sjisRadioButton.state) {
-		currentProfile[@"encoding"] = @"sjis";
-	} else if (eucRadioButton.state) {
-		currentProfile[@"encoding"] = @"euc";
-	} else if (jisRadioButton.state) {
-		currentProfile[@"encoding"] = @"jis";
-	} else if (utf8RadioButton.state) {
-		currentProfile[@"encoding"] = @"utf8";
-	}
+        currentProfile[PreambleKey] = [NSString stringWithString:preambleTextView.textStorage.string]; // stringWithString は必須
+        
+        currentProfile[InputMethodKey] = (directInputButton.state == NSOnState) ? @(DIRECT) : @(FROMFILE);
+        currentProfile[InputSourceFilePathKey] = inputSourceFileTextField.stringValue;
+    }
+    @catch (NSException *e) {
+    }
+    
+    if (sjisRadioButton.state) {
+        currentProfile[EncodingKey] = @"sjis";
+    } else if (eucRadioButton.state) {
+        currentProfile[EncodingKey] = @"euc";
+    } else if (jisRadioButton.state) {
+        currentProfile[EncodingKey] = @"jis";
+    } else if (utf8RadioButton.state) {
+        currentProfile[EncodingKey] = @"utf8";
+    }
 	
 	return currentProfile;
 }
@@ -549,8 +547,8 @@ typedef enum {
 
 - (void)restoreDefaultPreambleLogic
 {
-    BOOL colorizeText = [self.currentProfile boolForKey:@"colorizeText"];
-    BOOL uplatex = [[[self.currentProfile stringForKey:@"platexPath"] lastPathComponent] isEqualToString:@"uplatex"];
+    BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
+    BOOL uplatex = [[[self.currentProfile stringForKey:PlatexPathKey] lastPathComponent] isEqualToString:@"uplatex"];
     [preambleTextView replaceEntireContentsWithString:[self defaultPreamble:uplatex] colorize:colorizeText];
 }
 
@@ -655,9 +653,9 @@ typedef enum {
 		gsPathTextField.StringValue = gsPath;
 		
         [self performSelectorOnMainThread:@selector(showInitMessage:)
-                               withObject:@{@"platexPath": platexPath,
-                                            @"dvipdfmxPath": dvipdfmxPath,
-                                            @"gsPath": gsPath
+                               withObject:@{PlatexPathKey: platexPath,
+                                            DvipdfmxPathKey: dvipdfmxPath,
+                                            GsPathKey: gsPath
                                             }
                             waitUntilDone:NO];
 		
@@ -698,7 +696,7 @@ typedef enum {
 {
     NSRunAlertPanel(NSLocalizedString(@"initSettingsMsg", nil),
                     [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",
-                     NSLocalizedString(@"setPathMsg1", nil), paths[@"platexPath"], paths[@"dvipdfmxPath"], paths[@"gsPath"], NSLocalizedString(@"setPathMsg2", nil)],
+                     NSLocalizedString(@"setPathMsg1", nil), paths[PlatexPathKey], paths[DvipdfmxPathKey], paths[GsPathKey], NSLocalizedString(@"setPathMsg2", nil)],
                     @"OK", nil, nil);
 }
 
@@ -739,7 +737,7 @@ typedef enum {
 
 - (NSArray*)analyzeContents:(NSString*)contents
 {
-    BOOL convertYenMark = [self.currentProfile boolForKey:@"convertYenMark"];
+    BOOL convertYenMark = [self.currentProfile boolForKey:ConvertYenMarkKey];
     if (convertYenMark) {
         contents = [[NSMutableString stringWithString:contents] replaceYenWithBackSlash];
     }
@@ -766,7 +764,7 @@ typedef enum {
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
     openPanel.AllowedFileTypes = @[@"tex"];
-    BOOL colorizeText = [self.currentProfile boolForKey:@"colorizeText"];
+    BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode){
         if (returnCode == NSFileHandlingPanelOKButton) {
@@ -814,7 +812,7 @@ typedef enum {
             NSString *body = sourceTextView.textStorage.mutableString;
             NSString *contents = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}\n", preamble, body];
             
-            NSString *targetEncoding = [self.currentProfile stringForKey:@"encoding"];
+            NSString *targetEncoding = [self.currentProfile stringForKey:EncodingKey];
             NSStringEncoding encoding = NSUTF8StringEncoding;
             
             if ([targetEncoding isEqualToString:@"sjis"]) {
@@ -858,14 +856,14 @@ typedef enum {
 - (IBAction)sourceSettingChanged:(id)sender
 {
     switch ([sender tag]) {
-        case 0: // 直接入力
+        case DIRECT_INPUT_TAG: // 直接入力
             directInputButton.state = NSOnState;
             inputSourceFileButton.state = NSOffState;
             sourceTextView.enabled = YES;
             inputSourceFileTextField.enabled = NO;
             browseSourceFileButton.enabled = NO;
             break;
-        case 1: // ソースファイル読み込み
+        case INPUT_FILE_TAG: // ソースファイル読み込み
             directInputButton.state = NSOffState;
             inputSourceFileButton.state = NSOnState;
             sourceTextView.enabled = NO;
@@ -915,7 +913,7 @@ typedef enum {
 {
     [sender setState:![sender state]];
 	
-	BOOL colorize = [self.currentProfile boolForKey:@"colorizeText"];
+	BOOL colorize = [self.currentProfile boolForKey:ColorizeTextKey];
 	[sourceTextView colorizeText:colorize];
 	[preambleTextView colorizeText:colorize];
 }
@@ -978,7 +976,7 @@ typedef enum {
 											NSWidth(preambleWindowRect), NSHeight(preambleWindowRect))
 						 display:NO];
 		[preambleWindow makeKeyAndOrderFront:nil];
-        [preambleTextView colorizeText:[self.currentProfile boolForKey:@"colorizeText"]];
+        [preambleTextView colorizeText:[self.currentProfile boolForKey:ColorizeTextKey]];
 	}
     
 }
@@ -1048,7 +1046,7 @@ typedef enum {
 	gsPathTextField.StringValue = @"/usr/local/bin/gs";
     
     if (NSRunAlertPanel(NSLocalizedString(@"Confirm", nil), NSLocalizedString(@"preambleForTeXLiveMsg", nil), @"OK", NSLocalizedString(@"Cancel", nil), nil) == NSOKButton) {
-        [preambleTextView replaceEntireContentsWithString:[self defaultPreamble:YES] colorize:[self.currentProfile boolForKey:@"colorizeText"]];
+        [preambleTextView replaceEntireContentsWithString:[self defaultPreamble:YES] colorize:[self.currentProfile boolForKey:ColorizeTextKey]];
     }
 }
 
@@ -1058,10 +1056,10 @@ typedef enum {
 //        BOOL threading = (threadingCheckBox.state == NSOnState);
         
         NSMutableDictionary *aProfile = self.currentProfile;
-        aProfile[@"pdfcropPath"] = [NSBundle.mainBundle pathForResource:@"pdfcrop" ofType:nil];
-        aProfile[@"epstopdfPath"] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
-        aProfile[@"quiet"] = @(NO);
-        aProfile[@"controller"] = self;
+        aProfile[PdfcropPathKey] = [NSBundle.mainBundle pathForResource:@"pdfcrop" ofType:nil];
+        aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
+        aProfile[QuietKey] = @(NO);
+        aProfile[ControllerKey] = self;
         
         Converter *converter = [Converter converterWithProfile:aProfile];
         
@@ -1070,7 +1068,7 @@ typedef enum {
                 [converter compileAndConvertWithBody:sourceTextView.textStorage.string];
                 break;
             case FROMFILE:
-                [converter compileAndConvertWithInputPath:[aProfile stringForKey:@"inputSourceFilePath"]];
+                [converter compileAndConvertWithInputPath:[aProfile stringForKey:InputSourceFilePathKey]];
                 break;
             default:
                 break;

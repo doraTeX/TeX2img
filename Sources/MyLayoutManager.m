@@ -1,5 +1,6 @@
 #import "MyLayoutManager.h"
 #import "NSDictionary-Extension.h"
+#import "global.h"
 
 @interface MyLayoutManager()
 @property NSString *tabCharacter;
@@ -59,16 +60,16 @@
 		theCharIndex = [self characterIndexForGlyphAtIndex:theGlyphIndex];
 		theCharacter = [theCompleteStr characterAtIndex:theCharIndex];
 		
-		if (theCharacter == '\t' && [currentProfile boolForKey:@"showTabCharacter"]) {
+		if (theCharacter == '\t' && [currentProfile boolForKey:ShowTabCharacterKey]) {
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
 			[_tabCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
-		} else if (theCharacter == '\n' && [currentProfile boolForKey:@"showNewLineCharacter"]) {
+		} else if (theCharacter == '\n' && [currentProfile boolForKey:ShowNewLineCharacterKey]) {
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
 			[_returnCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
-		} else if (theCharacter == 0x3000 && [currentProfile boolForKey:@"showFullwidthSpaceCharacter"]) { // Fullwidth-space (JP)
+		} else if (theCharacter == 0x3000 && [currentProfile boolForKey:ShowFullwidthSpaceCharacterKey]) { // Fullwidth-space (JP)
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
 			[_fullwidthSpaceCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
-		} else if (theCharacter == ' ' && [currentProfile boolForKey:@"showSpaceCharacter"]) {
+		} else if (theCharacter == ' ' && [currentProfile boolForKey:ShowSpaceCharacterKey]) {
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
 			[_spaceCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
 		}
