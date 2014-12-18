@@ -793,23 +793,7 @@ typedef enum {
                 NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
 
                 if (contents) {
-                    NSString *userEncodingOption = [self.currentProfile stringForKey:EncodingKey];
-                    NSStringEncoding userEncoding = [self stringEncodingFromEncodingOption:userEncodingOption];
-                    
-                    if (userEncoding == detectedEncoding) {
-                        [self placeImportedSource:contents];
-                    } else {
-                        if (NSRunAlertPanel(localizedString(@"Confirm"), [NSString stringWithFormat:localizedString(@"MismatchEncodingWarningMsg"), userEncodingOption], localizedString(@"YES"), localizedString(@"NO"), nil) == NSOKButton) {
-                            [self placeImportedSource:contents];
-                        } else {
-                            contents = [NSString.alloc initWithData:data encoding:userEncoding];
-                            if (contents) {
-                                [self placeImportedSource:contents];
-                            } else {
-                                NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), inputPath], @"OK", nil, nil);
-                            }
-                        }
-                    }
+                    [self placeImportedSource:contents];
                 } else {
                     NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), inputPath], @"OK", nil, nil);
                 }

@@ -24,4 +24,3 @@
 "overwriteContentsWarningMsg" = "Current contents including preamble will be replaced.\nDo you want to continue?";
 "cannotReadErrorMsg" = "Failed to read the file.\n%@";
 "cannotWriteErrorMsg" = "Failed to write the file.\n%@";
-"MismatchEncodingWarningMsg" = "The auto-detected encoding is not %@.\nDo you prefer the auto-detected result?";

@@ -24,4 +24,3 @@
 "overwriteContentsWarningMsg" = "現在の編集内容（本文・プリアンブル）が上書きされます。\nよろしいですか？";
 "cannotReadErrorMsg" = "ファイルの読み込みに失敗しました。\n%@";
 "cannotWriteErrorMsg" = "ファイルの書き込みに失敗しました。\n%@";
-"MismatchEncodingWarningMsg" = "自動判定した文字コードは %@ ではありませんでした。\n自動判定結果を優先しますか？";
