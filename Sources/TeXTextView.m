@@ -22,9 +22,9 @@ static BOOL isValidTeXCommandChar(unichar c)
 - (void)awakeFromNib
 {
 	NSString* autoCompletionPath = @"~/Library/TeXShop/Keyboard/autocompletion.plist".stringByStandardizingPath;
-	if ([NSFileManager.defaultManager fileExistsAtPath: autoCompletionPath]){
+	if ([NSFileManager.defaultManager fileExistsAtPath: autoCompletionPath]) {
 		autocompletionDictionary = [NSDictionary dictionaryWithContentsOfFile:autoCompletionPath];
-	}else {
+	} else {
 		autocompletionDictionary = nil;
 	}
 	lastCursorLocation = 0;

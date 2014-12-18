@@ -171,7 +171,7 @@ typedef enum {
     if (quiet) {
         return;
     }
-	if (str != nil) {
+	if (str) {
 		[outputTextView.textStorage.mutableString appendString:str];
 		[outputTextView scrollRangeToVisible: NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
 	}
@@ -393,7 +393,7 @@ typedef enum {
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
 {
 	NSDictionary *aProfile = [profileController profileForName:profileName];
-    if (!aProfile){
+    if (!aProfile) {
         return NO;
     }
 	
@@ -1030,6 +1030,7 @@ typedef enum {
 
 - (void)generateImage
 {
+    NSString *inputSourceFilePath;
     NSMutableDictionary *aProfile = self.currentProfile;
     aProfile[PdfcropPathKey] = [NSBundle.mainBundle pathForResource:@"pdfcrop" ofType:nil];
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
@@ -1043,7 +1044,12 @@ typedef enum {
             [converter compileAndConvertWithBody:sourceTextView.textStorage.string];
             break;
         case FROMFILE:
-            [converter compileAndConvertWithInputPath:[aProfile stringForKey:InputSourceFilePathKey]];
+            inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:inputSourceFilePath]) {
+                [converter compileAndConvertWithInputPath:inputSourceFilePath];
+            } else {
+                NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath], @"OK", nil, nil);
+            }
             break;
         default:
             break;
