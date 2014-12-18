@@ -776,6 +776,22 @@ typedef enum {
     return encoding;
 }
 
+- (void)importSourceLogic:(NSString*)inputPath
+{
+    [NSApp activateIgnoringOtherApps:YES];
+    if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"overwriteContentsWarningMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
+        NSData *data = [NSData dataWithContentsOfFile:inputPath];
+        NSStringEncoding detectedEncoding;
+        NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
+        
+        if (contents) {
+            [self placeImportedSource:contents];
+        } else {
+            NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), inputPath], @"OK", nil, nil);
+        }
+    }
+}
+
 - (IBAction)importSource:(id)sender
 {
     NSOpenPanel *openPanel = [NSOpenPanel openPanel];
@@ -786,18 +802,7 @@ typedef enum {
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
-            if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"overwriteContentsWarningMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
-                NSString *inputPath = openPanel.URL.path;
-                NSData *data = [NSData dataWithContentsOfFile:inputPath];
-                NSStringEncoding detectedEncoding;
-                NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
-
-                if (contents) {
-                    [self placeImportedSource:contents];
-                } else {
-                    NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), inputPath], @"OK", nil, nil);
-                }
-            }
+            [self importSourceLogic:openPanel.URL.path];
         }
     }];
 }
@@ -829,6 +834,13 @@ typedef enum {
         
         }
     }];
+}
+
+#pragma mark - Drag & Drop
+
+- (void)textViewDroppedFile:(NSString*)file;
+{
+    [self importSourceLogic:file];
 }
 
 #pragma mark - IBAction

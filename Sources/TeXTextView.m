@@ -34,6 +34,10 @@ static BOOL isValidTeXCommandChar(unichar c)
 	braceHighlighting = NO;
 	MyLayoutManager *layoutManager = MyLayoutManager.new;
 	layoutManager.controller = controller;
+    self.dropDelegate = controller;
+    dragging = NO;
+    currentDragOperation = NSDragOperationNone;
+    
 	[self.textContainer replaceLayoutManager:layoutManager];
 
     self.ContinuousSpellCheckingEnabled = NO;
@@ -44,6 +48,8 @@ static BOOL isValidTeXCommandChar(unichar c)
     self.AutomaticQuoteSubstitutionEnabled = NO;
     self.AutomaticSpellingCorrectionEnabled = NO;
     self.AutomaticTextReplacementEnabled = NO;
+    
+    [self registerForDraggedTypes:@[NSFilenamesPboardType]];
 }
 
 - (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation
@@ -140,9 +146,9 @@ static BOOL isValidTeXCommandChar(unichar c)
         [super insertText:aString];
         return;
     }
-    NSString* theString = (NSString*)aString;
+    NSString *theString = (NSString*)aString;
 
-	NSDictionary* currentProfile = controller.currentProfile;
+	NSDictionary *currentProfile = controller.currentProfile;
 
 	unichar texChar = 0x5c;
 	
@@ -173,7 +179,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 // クリップボードから貼り付けられる円マークをバックスラッシュに置き換えて貼り付ける
 - (BOOL)readSelectionFromPasteboard:(NSPasteboard*)pboard type:(NSString*)type
 {
-	NSDictionary* currentProfile = controller.currentProfile;
+	NSDictionary *currentProfile = controller.currentProfile;
 
 	if ([type isEqualToString:NSStringPboardType] && [currentProfile boolForKey:ConvertYenMarkKey]) {
 		NSMutableString *string = [NSMutableString stringWithString:[pboard stringForType:NSStringPboardType]];
@@ -216,5 +222,92 @@ static BOOL isValidTeXCommandChar(unichar c)
     [self scrollRangeToVisible: NSMakeRange(0, 0)];
 }
 
+#pragma mark - Drag & Drop
+
+// ドラッグ中のフィールド枠の強調表示用にオーバーライド
+- (void)drawRect:(NSRect)rect
+{
+    [super drawRect:rect];
+    
+    if (dragging) {
+        // ドラッギング中はフレーム枠を強調表示
+        [NSColor.selectedControlColor set];
+        NSFrameRectWithWidth(rect, 2.0);
+    }
+}
+
+- (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)info
+{
+    return YES;
+}
+
+- (NSArray*)filelistInDraggingInfo:(id<NSDraggingInfo>)info
+{
+    return [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
+}
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)info
+{
+    NSArray *draggedFiles = [self filelistInDraggingInfo:info];
+    
+    // 複数のドラッグは受付不可
+    if (draggedFiles.count > 1) {
+        return NSDragOperationNone;
+    }
+    
+    // ドラッグされたパスが受付可能であるかチェック
+    NSString *draggedFilePath = (NSString*)(draggedFiles[0]);
+    BOOL isDir;
+    
+    BOOL fileExists = [NSFileManager.defaultManager fileExistsAtPath:draggedFilePath isDirectory:&isDir];
+    
+    // 非存在ファイルやディレクトリのドラッグは受付不可
+    if (!fileExists || isDir) {
+        return NSDragOperationNone;
+    }
+    
+    // 拡張子 .tex 以外は受付不可
+    if (![draggedFilePath.pathExtension isEqualToString:@"tex"]) {
+        return NSDragOperationNone;
+    }
+
+    [self setDraggingState:YES];
+    
+    return currentDragOperation;
+}
+
+- (void)draggingExited:(id <NSDraggingInfo>)info
+{
+    [self setDraggingState:NO];
+    return;
+}
+
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)info
+{
+    return currentDragOperation;
+}
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)info
+{
+    return YES;
+}
+
+- (void)concludeDragOperation:(id<NSDraggingInfo>)info
+{
+    [self setDraggingState:NO];
+    [self.dropDelegate textViewDroppedFile:[self filelistInDraggingInfo:info][0]];
+}
+
+- (void)setDraggingState:(BOOL)draggingState
+{
+    if (draggingState) {
+        dragging = YES;
+        currentDragOperation = NSDragOperationCopy;
+    } else {
+        dragging = NO;
+        currentDragOperation = NSDragOperationNone;
+    }
+    self.needsDisplay = YES;
+}
 
 @end
