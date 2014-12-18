@@ -550,7 +550,7 @@ typedef enum {
 - (void)restoreDefaultPreambleLogic
 {
     BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
-    BOOL uplatex = [[[self.currentProfile stringForKey:PlatexPathKey] lastPathComponent] isEqualToString:@"uplatex"];
+    BOOL uplatex = [[[[self.currentProfile stringForKey:PlatexPathKey] componentsSeparatedByString:@" "][0] lastPathComponent] isEqualToString:@"uplatex"];
     [preambleTextView replaceEntireContentsWithString:[self defaultPreamble:uplatex] colorize:colorizeText];
 }
 
