@@ -1,6 +1,8 @@
 NSString *g_commandCompletionChar;
 NSMutableString *g_commandCompletionList;
 
+#define localizedString(str) (NSLocalizedString(str, nil))
+
 #define ProfileNamesKey @"profileNames"
 #define ProfilesKey @"profiles"
 
@@ -64,8 +66,6 @@ NSMutableString *g_commandCompletionList;
 #define EpstopdfPathKey @"epstopdfPath"
 #define QuietKey @"quiet"
 #define ControllerKey @"controller"
-
-
 
 #define PXUNITTAG 1
 #define BPUNITTAG 2

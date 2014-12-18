@@ -83,7 +83,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 	
 	from = undoRange.location;
 	to = from + newString.length;
-	[self colorizeText:[controller.currentProfile boolForKey:@"colorizeText"]];
+	[self colorizeText:[controller.currentProfile boolForKey:ColorizeTextKey]];
 }
 
 
@@ -113,7 +113,6 @@ static BOOL isValidTeXCommandChar(unichar c)
 		[stringBuf replaceCharactersInRange:searchRange withString:@""];
 	
 	// Filtering for Japanese
-	//newString = [self filterBackslashes:stringBuf];
 	newString = stringBuf;
 	
 	// Insert the new text
@@ -122,12 +121,10 @@ static BOOL isValidTeXCommandChar(unichar c)
 	// register undo
 	[self registerUndoWithString:oldString location:oldRange.location
 						  length:newString.length key:key];
-	//[textView registerUndoWithString:oldString location:oldRange.location
-	//					length:[newString length] key:key];
 	
 	from = oldRange.location;
 	to = from + newString.length;
-	[self colorizeText:[controller.currentProfile boolForKey:@"colorizeText"]];
+	[self colorizeText:[controller.currentProfile boolForKey:ColorizeTextKey]];
 	
 	// Place insertion mark
 	if (searchRange.location != NSNotFound) {
@@ -149,10 +146,10 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 	unichar texChar = 0x5c;
 	
-	if ([theString isEqualToString:@"¥"] && [currentProfile boolForKey:@"convertYenMark"]) {
+	if ([theString isEqualToString:@"¥"] && [currentProfile boolForKey:ConvertYenMarkKey]) {
 		[super insertText:@"\\"];
 	} else {
-        if (theString.length == 1 && [currentProfile boolForKey:@"autoComplete"] && autocompletionDictionary) {
+        if (theString.length == 1 && [currentProfile boolForKey:AutoCompleteKey] && autocompletionDictionary) {
             if ([theString characterAtIndex:0] >= 128 ||
                 self.selectedRange.location == 0 ||
                 [self.string characterAtIndex:self.selectedRange.location - 1 ] != texChar ) {
@@ -169,7 +166,7 @@ static BOOL isValidTeXCommandChar(unichar c)
         
 		[super insertText:aString];
 	}
-	[self colorizeText:[currentProfile boolForKey:@"colorizeText"]];
+	[self colorizeText:[currentProfile boolForKey:ColorizeTextKey]];
 }
 
 
@@ -178,7 +175,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 {
 	NSDictionary* currentProfile = controller.currentProfile;
 
-	if ([type isEqualToString:NSStringPboardType] && [currentProfile boolForKey:@"convertYenMark"]) {
+	if ([type isEqualToString:NSStringPboardType] && [currentProfile boolForKey:ConvertYenMarkKey]) {
 		NSMutableString *string = [NSMutableString stringWithString:[pboard stringForType:NSStringPboardType]];
 		if (string)	{
 			[string replaceYenWithBackSlash];
@@ -190,7 +187,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 				[self didChangeText];
 			}
 			// by returning YES, "Undo Paste" menu item will be set up by system
-			[self colorizeText:[currentProfile boolForKey:@"colorizeText"]];
+			[self colorizeText:[currentProfile boolForKey:ColorizeTextKey]];
 			return YES;
 		} else {
 			return NO;

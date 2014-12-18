@@ -55,7 +55,6 @@ typedef enum {
 @property IBOutlet NSButton *generateButton;
 @property IBOutlet NSButton *transparentCheckBox;
 @property IBOutlet NSButton *showOutputDrawerCheckBox;
-//@property IBOutlet NSButton *threadingCheckBox;
 @property IBOutlet NSButton *previewCheckBox;
 @property IBOutlet NSButton *deleteTmpFileCheckBox;
 @property IBOutlet NSButton *embedInIllustratorCheckBox;
@@ -128,7 +127,6 @@ typedef enum {
 @synthesize generateButton;
 @synthesize transparentCheckBox;
 @synthesize showOutputDrawerCheckBox;
-//@synthesize threadingCheckBox;
 @synthesize previewCheckBox;
 @synthesize deleteTmpFileCheckBox;
 @synthesize embedInIllustratorCheckBox;
@@ -176,7 +174,6 @@ typedef enum {
 	if (str != nil) {
 		[outputTextView.textStorage.mutableString appendString:str];
 		[outputTextView scrollRangeToVisible: NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
-		//[outputTextView display]; // 再描画
 	}
 }
 
@@ -189,26 +186,16 @@ typedef enum {
 {
 	outputDrawerMenuItem.State = YES;
 	[outputDrawer open];
-/*	if(![outputWindow isVisible])
-	{
-		NSRect mainWindowRect = [mainWindow frame];
-		NSRect outputWindowRect = [outputWindow frame];
-		[outputWindow setFrame:NSMakeRect(NSMinX(mainWindowRect) + NSWidth(mainWindowRect), 
-										  NSMinY(mainWindowRect) + NSHeight(mainWindowRect) - NSHeight(outputWindowRect), 
-										  NSWidth(outputWindowRect), NSHeight(outputWindowRect))
-					   display:NO];
-	}
-	[outputWindow makeKeyAndOrderFront:nil];*/
 }
 
 - (void)showExtensionError
 {
-	NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"extensionErrMsg", nil), @"OK", nil, nil);	
+	NSRunAlertPanel(localizedString(@"Error"), localizedString(@"extensionErrMsg"), @"OK", nil, nil);
 }
 
 - (void)showNotFoundError:(NSString*)aPath
 {
-	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", aPath, NSLocalizedString(@"programNotFoundErrorMsg", nil)], @"OK", nil, nil);
+	NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg")], @"OK", nil, nil);
 }
 
 - (BOOL)platexExistsAtPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
@@ -243,27 +230,27 @@ typedef enum {
 
 - (void)showFileGenerateError:(NSString*)aPath
 {
-	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", aPath, NSLocalizedString(@"fileGenerateErrorMsg", nil)], @"OK", nil, nil);
+	NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", aPath, localizedString(@"fileGenerateErrorMsg")], @"OK", nil, nil);
 }
 
 - (void)showExecError:(NSString*)command
 {
-	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", command, NSLocalizedString(@"execErrorMsg", nil)], @"OK", nil, nil);
+	NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", command, localizedString(@"execErrorMsg")], @"OK", nil, nil);
 }
 
 - (void)showCannotOverwriteError:(NSString*)path
 {
-	NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", path, NSLocalizedString(@"cannotOverwriteErrorMsg", nil)], @"OK", nil, nil);
+	NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", path, localizedString(@"cannotOverwriteErrorMsg")], @"OK", nil, nil);
 }
 
 - (void)showCannotCreateDirectoryError:(NSString*)dir
 {
-    NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@%@", dir, NSLocalizedString(@"cannotCreateDirectoryErrorMsg", nil)], @"OK", nil, nil);
+    NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", dir, localizedString(@"cannotCreateDirectoryErrorMsg")], @"OK", nil, nil);
 }
 
 - (void)showCompileError
 {
-	NSRunAlertPanel(NSLocalizedString(@"Alert", nil), NSLocalizedString(@"compileErrorMsg", nil), @"OK", nil, nil);
+	NSRunAlertPanel(localizedString(@"Alert"), localizedString(@"compileErrorMsg"), @"OK", nil, nil);
 }
 
 #pragma mark -
@@ -272,7 +259,7 @@ typedef enum {
 {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
-	if (tempStr != nil) {
+	if (tempStr) {
 		textField.StringValue = tempStr;
 	}
 }
@@ -281,14 +268,14 @@ typedef enum {
 {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
-	if (tempStr != nil) {
+	if (tempStr) {
 		textView.textStorage.mutableString.String = tempStr;
 	}
 }
 
 - (void)adoptProfile:(NSDictionary*)aProfile
 {
-    if (aProfile == nil) {
+    if (!aProfile) {
         return;
     }
 	
@@ -406,7 +393,7 @@ typedef enum {
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
 {
 	NSDictionary *aProfile = [profileController profileForName:profileName];
-    if (aProfile == nil){
+    if (!aProfile){
         return NO;
     }
 	
@@ -571,14 +558,8 @@ typedef enum {
 #pragma mark デリゲート・ノティフィケーションのコールバック
 - (void)awakeFromNib
 {
-	//SUUpdater *updater = [SUUpdater updaterForBundle:[NSBundle bundleForClass:[self class]];
-	//[updater setAutomaticallyChecksForUpdates:YES];
-	//[updater resetUpdateCycle];
-	//[updater checkForUpdates:self];	
-	
 	//	以下は Interface Builder 上で設定できる
 	//	[mainWindow setReleasedWhenClosed:NO];
-	//	[outputWindow setReleasedWhenClosed:NO];
 	//	[preambleWindow setReleasedWhenClosed:NO];
 	
 	// ノティフィケーションの設定
@@ -595,14 +576,6 @@ typedef enum {
 				selector: @selector(applicationWillTerminate:)
 					name: NSApplicationWillTerminateNotification
 				  object: NSApp];
-	
-	/*
-	// アウトプットウィンドウが閉じられるときにメニューのチェックを外す
-	[aCenter addObserver: self
-				selector: @selector(uncheckOutputWindowMenuItem:)
-					name: NSWindowWillCloseNotification
-				  object: outputWindow];
-	 */
 	
 	// プリアンブルウィンドウが閉じられるときにメニューのチェックを外す
 	[aCenter addObserver: self
@@ -675,7 +648,7 @@ typedef enum {
                             waitUntilDone:NO];
 		
 		NSFont *defaultFont = [NSFont fontWithName:@"Osaka-Mono" size:13];
-		if (defaultFont != nil) {
+		if (defaultFont) {
 			sourceTextView.Font = defaultFont;
 			preambleTextView.Font = defaultFont;
 		}
@@ -709,9 +682,9 @@ typedef enum {
 
 - (void)showInitMessage:(NSDictionary*)paths
 {
-    NSRunAlertPanel(NSLocalizedString(@"initSettingsMsg", nil),
+    NSRunAlertPanel(localizedString(@"initSettingsMsg"),
                     [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",
-                     NSLocalizedString(@"setPathMsg1", nil), paths[PlatexPathKey], paths[DvipdfmxPathKey], paths[GsPathKey], NSLocalizedString(@"setPathMsg2", nil)],
+                     localizedString(@"setPathMsg1"), paths[PlatexPathKey], paths[DvipdfmxPathKey], paths[GsPathKey], localizedString(@"setPathMsg2")],
                     @"OK", nil, nil);
 }
 
@@ -730,7 +703,6 @@ typedef enum {
 {
 	[preambleWindow close];
 	[preferenceWindow close];
-	//[outputWindow close];
 }
 
 - (void)uncheckOutputDrawerMenuItem:(NSNotification *)aNotification
@@ -781,9 +753,9 @@ typedef enum {
     openPanel.AllowedFileTypes = @[@"tex"];
     BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
     
-    [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode){
+    [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
-            if (NSRunAlertPanel(NSLocalizedString(@"Confirm", nil), NSLocalizedString(@"overwriteContentsWarningMsg", nil), @"OK", NSLocalizedString(@"Cancel", nil), nil) == NSOKButton) {
+            if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"overwriteContentsWarningMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
                 NSString *inputPath = openPanel.URL.path;
                 NSData *data = [NSData dataWithContentsOfFile:inputPath];
                 NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data];
@@ -800,7 +772,7 @@ typedef enum {
                     }
                     [self sourceSettingChanged:directInputButton];
                 } else {
-                    NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:NSLocalizedString(@"cannotReadErrorMsg", nil), inputPath], @"OK", nil, nil);
+                    NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), inputPath], @"OK", nil, nil);
                 }
             }
         }
@@ -819,7 +791,7 @@ typedef enum {
         savePanel.directoryURL = [NSURL fileURLWithPath:lastSavedPath.stringByDeletingLastPathComponent];
     }
     
-    [savePanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode){
+    [savePanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
             NSString *outputPath = savePanel.URL.path;
             lastSavedPath = outputPath;
@@ -839,7 +811,7 @@ typedef enum {
             }
             
             if (![contents writeToFile:outputPath atomically:YES encoding:encoding error:nil]) {
-                NSRunAlertPanel(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:NSLocalizedString(@"cannotWriteErrorMsg", nil), outputPath], @"OK", nil, nil);
+                NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotWriteErrorMsg"), outputPath], @"OK", nil, nil);
             }
         
         }
@@ -848,7 +820,7 @@ typedef enum {
 
 - (IBAction)restoreDefaultPreamble:(id)sender
 {
-	if (NSRunAlertPanel(NSLocalizedString(@"Confirm", nil), NSLocalizedString(@"resotreDefaultPreambleMsg", nil), @"OK", NSLocalizedString(@"Cancel", nil), nil) == NSOKButton) {
+	if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"resotreDefaultPreambleMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
 		[self restoreDefaultPreambleLogic];
 	}
 }
@@ -898,7 +870,7 @@ typedef enum {
     openPanel.allowsMultipleSelection = NO;
     openPanel.AllowedFileTypes = @[@"tex"];
     
-    [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode){
+    [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
             inputSourceFileTextField.stringValue = openPanel.URL.path;
         }
@@ -917,7 +889,7 @@ typedef enum {
     savePanel.nameFieldStringValue = defaultFilePath.lastPathComponent;
         savePanel.directoryURL = [NSURL fileURLWithPath:defaultFilePath.stringByDeletingLastPathComponent];
     
-    [savePanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode){
+    [savePanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
             outputFileTextField.stringValue = savePanel.URL.path;
         }
@@ -1013,15 +985,6 @@ typedef enum {
 	NSFontPanel *panel = NSFontPanel.sharedFontPanel;
 	[panel makeKeyAndOrderFront:self];
 	[panel setPanelFont:preambleTextView.font isMultiple:NO];
-	
-	/*
-	 NSFontManager *fontManager = [NSFontManager sharedFontManager];
-	 [fontManager setDelegate:self];
-	 [fontManager orderFrontFontPanel:self];
-	 [fontManager setSelectedFont:[sourceTextView font] isMultiple:NO];
-	 [fontManager setSelectedFont:[preambleTextView font] isMultiple:NO];
-	 [fontManager setSelectedFont:[outputTextView font] isMultiple:NO];
-	 */
 }
 
 
@@ -1060,45 +1023,34 @@ typedef enum {
 	dvipdfmxPathTextField.StringValue = @"/usr/texbin/dvipdfmx";
 	gsPathTextField.StringValue = @"/usr/local/bin/gs";
     
-    if (NSRunAlertPanel(NSLocalizedString(@"Confirm", nil), NSLocalizedString(@"preambleForTeXLiveMsg", nil), @"OK", NSLocalizedString(@"Cancel", nil), nil) == NSOKButton) {
+    if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"preambleForTeXLiveMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
         [preambleTextView replaceEntireContentsWithString:[self defaultPreamble:YES] colorize:[self.currentProfile boolForKey:ColorizeTextKey]];
     }
 }
 
-- (void)doGeneratingThread
+- (void)generateImage
 {
-    @autoreleasepool {
-//        BOOL threading = (threadingCheckBox.state == NSOnState);
-        
-        NSMutableDictionary *aProfile = self.currentProfile;
-        aProfile[PdfcropPathKey] = [NSBundle.mainBundle pathForResource:@"pdfcrop" ofType:nil];
-        aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
-        aProfile[QuietKey] = @(NO);
-        aProfile[ControllerKey] = self;
-        
-        Converter *converter = [Converter converterWithProfile:aProfile];
-        
-        switch ([aProfile integerForKey:@"inputMethod"]) {
-            case DIRECT:
-                [converter compileAndConvertWithBody:sourceTextView.textStorage.string];
-                break;
-            case FROMFILE:
-                [converter compileAndConvertWithInputPath:[aProfile stringForKey:InputSourceFilePathKey]];
-                break;
-            default:
-                break;
-        }
-        
-        generateButton.Enabled = YES;
-        generateMenuItem.Enabled = YES;
-
-        /*
-        if (threading) {
-            [outputTextView display]; // 再描画
-            [NSThread exit];
-        }
-         */
+    NSMutableDictionary *aProfile = self.currentProfile;
+    aProfile[PdfcropPathKey] = [NSBundle.mainBundle pathForResource:@"pdfcrop" ofType:nil];
+    aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
+    aProfile[QuietKey] = @(NO);
+    aProfile[ControllerKey] = self;
+    
+    Converter *converter = [Converter converterWithProfile:aProfile];
+    
+    switch ([aProfile integerForKey:InputMethodKey]) {
+        case DIRECT:
+            [converter compileAndConvertWithBody:sourceTextView.textStorage.string];
+            break;
+        case FROMFILE:
+            [converter compileAndConvertWithInputPath:[aProfile stringForKey:InputSourceFilePathKey]];
+            break;
+        default:
+            break;
     }
+    
+    generateButton.Enabled = YES;
+    generateMenuItem.Enabled = YES;
 }
 
 - (IBAction)generate:(id)sender
@@ -1109,15 +1061,8 @@ typedef enum {
 	
     generateButton.Enabled = NO;
 	generateMenuItem.Enabled = NO;
-
-    /*
-    if (threadingCheckBox.state) {
-		[NSThread detachNewThreadSelector:@selector(doGeneratingThread) toTarget:self withObject:nil];
-	} else {
-		[self doGeneratingThread];
-	}*/
     
-    [self doGeneratingThread];
+    [self generateImage];
 }
 
 @end

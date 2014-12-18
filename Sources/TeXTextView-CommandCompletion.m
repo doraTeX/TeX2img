@@ -35,7 +35,6 @@ static NSString* endcommentString = @"›";
 		[self scrollRangeToVisible:markerRange];
     }
     else NSBeep();
-	//NSLog(@"Next • hit");
 }
 
 - (IBAction) doPreviousBullet: (id)sender // modified by (HS)
@@ -67,7 +66,6 @@ static NSString* endcommentString = @"›";
 		[self scrollRangeToVisible:markerRange];
     }
     else NSBeep();
-	//NSLog(@"Next • hit");
 }
 
 
@@ -98,7 +96,7 @@ static NSString* endcommentString = @"›";
 - (void)keyDown:(NSEvent *)theEvent
 {
 	if (self.hasMarkedText) {
-		[super keyDown: theEvent]; // 日本語入力中および10.4以下ではそのままイベントを通す
+		[super keyDown: theEvent]; // 日本語入力中ではそのままイベントを通す
 		return;
 	}
 	
@@ -169,7 +167,7 @@ static NSString* endcommentString = @"›";
 				  NSMakeRange(replaceLocation, currentLength)]
 				 isEqualToString: currentString] &&
 				[self.undoManager.undoActionName isEqualToString:
-				 NSLocalizedString(@"Completion", nil)]) {
+				 localizedString(@"Completion")]) {
 				// revert the completion:
 				// by doing this, even after showing several completion candidates
 				// you can get back to the uncompleted string by one undo.
@@ -314,7 +312,7 @@ static NSString* endcommentString = @"›";
 			// register undo
 			[self registerUndoWithString:originalString location:replaceLocation
 								  length:newString.length
-									 key:NSLocalizedString(@"Completion", nil)];
+									 key:localizedString(@"Completion")];
 			// clean up
 			[self resetBackgroundColor:nil];
 			currentString = newString;
@@ -342,7 +340,6 @@ static NSString* endcommentString = @"›";
 				[super keyDown:theEvent];
             }
 			wasCompleted = NO;
-			//NSLog(@"called super");
 		}
 		return;
 	} else if (wasCompleted) { // we are not doing the completion

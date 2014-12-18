@@ -128,7 +128,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (void)resetHighlight:(id)sender
 {
-	[self colorizeText:[controller.currentProfile boolForKey:@"colorizeText"]];
+	[self colorizeText:[controller.currentProfile boolForKey:ColorizeTextKey]];
 	braceHighlighting = NO;
 }
 
@@ -151,7 +151,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 - (void)highlightContent:(NSString*)range
 {
 	contentHighlighting = YES;
-	[self.layoutManager addTemporaryAttributes: @{NSBackgroundColorAttributeName: [NSColor colorWithDeviceRed:1 green:1 blue:0.5 alpha:1]}	 // added by Taylor
+	[self.layoutManager addTemporaryAttributes: @{NSBackgroundColorAttributeName: [NSColor colorWithDeviceRed:1 green:1 blue:0.5 alpha:1]}
 							   forCharacterRange:NSRangeFromString(range)];
 }
 
@@ -166,7 +166,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 				   withObject:nil afterDelay:0]; // 既存の背景色の消去
 	}
 	
-	HighlightPattern highlightPattern = [profile integerForKey:@"highlightPattern"];
+	HighlightPattern highlightPattern = [profile integerForKey:HighlightPatternKey];
 
 	if (highlightPattern == SOLID || braceHighlighting) {
 		[self resetHighlight:nil];
@@ -204,10 +204,10 @@ static BOOL isValidTeXCommandChar(unichar c)
     }
 	NSInteger originalLocation = theLocation;
 	
-	BOOL checkBrace = [profile boolForKey:@"checkBrace"];
-	BOOL checkBracket = [profile boolForKey:@"checkBracket"];
-	BOOL checkSquareBracket = [profile boolForKey:@"checkSquareBracket"];
-	BOOL checkParen = [profile boolForKey:@"checkParen"];
+	BOOL checkBrace = [profile boolForKey:CheckBraceKey];
+	BOOL checkBracket = [profile boolForKey:CheckBracketKey];
+	BOOL checkSquareBracket = [profile boolForKey:CheckSquareBracketKey];
+	BOOL checkParen = [profile boolForKey:CheckParenKey];
 	
     unichar theUnichar = [theString characterAtIndex:theLocation];
 	unichar previousChar = (theLocation > 0) ? [theString characterAtIndex:theLocation-1] : 0;
@@ -250,16 +250,6 @@ static BOOL isValidTeXCommandChar(unichar c)
 		notCS = ((previousChar != '\\') && (previousChar != 0x00a5));
         if (theUnichar == theBraceChar && notCS) {
             if (!theSkipMatchingBrace) {
-				// 一瞬選択する方式での強調表示
-				/*
-				 [self setSelectedRange: NSMakeRange(theLocation, 1)
-				 affinity: NSSelectByCharacter stillSelecting: YES];
-				 [self display];
-				 NSDate* myDate = [NSDate date];
-				 while ([myDate timeIntervalSinceNow] > - 0.075);
-				 [self setSelectedRange: theSelectedRange];
-				 */
-				
 				if (highlightPattern != NOHIGHLIGHT) {
 					// 色づけ方式での強調表示
 					braceHighlighting = YES;
@@ -270,12 +260,12 @@ static BOOL isValidTeXCommandChar(unichar c)
 					[self display];
 				}
 
-                if ([profile boolForKey:@"highlightContent"]) {
+                if ([profile boolForKey:HighlightContentKey]) {
 					[self performSelector:@selector(highlightContent:) 
 							   withObject:NSStringFromRange(NSMakeRange(MIN(originalLocation, theLocation), ABS(originalLocation - theLocation)+1)) afterDelay:0];
 				}
 				
-				if (!autoCompleting && [profile boolForKey:@"flashInMoving"]) {
+				if (!autoCompleting && [profile boolForKey:FlashInMovingKey]) {
 					[self performSelector:@selector(showIndicator:) 
 							   withObject:NSStringFromRange(NSMakeRange(theLocation, 1)) 
 							   afterDelay:0];
@@ -294,10 +284,10 @@ static BOOL isValidTeXCommandChar(unichar c)
         }
     }
 	// 対応する開始括弧がなかったときの処理
-    if ([profile boolForKey:@"beep"]) {
+    if ([profile boolForKey:BeepKey]) {
         NSBeep();
     }
-	if ([profile boolForKey:@"flashBackground"]) {
+	if ([profile boolForKey:FlashBackgroundKey]) {
 		self.BackgroundColor = [NSColor colorWithDeviceRed:1 green:0.95 blue:1 alpha:1];
 		[self performSelector:@selector(resetBackgroundColorOfTextView:) 
 				   withObject:nil afterDelay:0.20];
@@ -306,89 +296,78 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (BOOL)shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString
 {
-	[super shouldChangeTextInRange:affectedCharRange replacementString:replacementString];
-	
-	NSRange			matchRange;
-	NSString		*textString;
-	NSInteger       i, j, count, uchar, leftpar, rightpar;
-//	NSDate			*myDate;
-	
-	if (replacementString.length != 1)
-		return YES;
-	
-	rightpar = [replacementString characterAtIndex:0];
-
-	NSDictionary* profile = controller.currentProfile;
-
-	HighlightPattern highlightPattern = [profile integerForKey:@"highlightPattern"];
-	BOOL checkBrace = [profile boolForKey:@"checkBrace"];
-	BOOL checkBracket = [profile boolForKey:@"checkBracket"];
-	BOOL checkSquareBracket = [profile boolForKey:@"checkSquareBracket"];
-	BOOL checkParen = [profile boolForKey:@"checkParen"];
-	
-	if (highlightPattern != NOHIGHLIGHT) {
-		if (!(   ((rightpar == '}') && checkBrace)
-			  || ((rightpar == ')') && checkParen)
-			  || ((rightpar == '>') && checkBracket)
-			  || ((rightpar == ']') && checkSquareBracket ))){
-			return YES;
-		}
-		
-        if (rightpar == '}') {
-			leftpar = '{';
-        } else if (rightpar == ')') {
-			leftpar = '(';
-        } else if (rightpar == '>') {
-			leftpar = '<';
-        } else {
-			leftpar = '[';
+    [super shouldChangeTextInRange:affectedCharRange replacementString:replacementString];
+    
+    NSRange			matchRange;
+    NSString		*textString;
+    NSInteger       i, j, count, uchar, leftpar, rightpar;
+    
+    if (replacementString.length != 1)
+        return YES;
+    
+    rightpar = [replacementString characterAtIndex:0];
+    
+    NSDictionary* profile = controller.currentProfile;
+    
+    HighlightPattern highlightPattern = [profile integerForKey:HighlightPatternKey];
+    BOOL checkBrace = [profile boolForKey:CheckBraceKey];
+    BOOL checkBracket = [profile boolForKey:CheckBracketKey];
+    BOOL checkSquareBracket = [profile boolForKey:CheckSquareBracketKey];
+    BOOL checkParen = [profile boolForKey:CheckParenKey];
+    
+    if (highlightPattern != NOHIGHLIGHT) {
+        if (!(   ((rightpar == '}') && checkBrace)
+              || ((rightpar == ')') && checkParen)
+              || ((rightpar == '>') && checkBracket)
+              || ((rightpar == ']') && checkSquareBracket ))){
+            return YES;
         }
-		
-		textString = self.string;
-		i = affectedCharRange.location;
-		j = 1;
-		count = 1;
-		
-		unichar previousChar = (i > 0) ? [textString characterAtIndex:i-1] : 0;
-		BOOL notCS = ((previousChar != '\\') && (previousChar != 0x00a5));
-		if (!notCS) {
-			return YES;
-		}
-		
-		while ((i > 0) && (j < 5000)) {
-			i--; j++;
-			uchar = [textString characterAtIndex:i];
-			previousChar = (i > 0) ? [textString characterAtIndex:i-1] : 0;
-			notCS = ((previousChar != '\\') && (previousChar != 0x00a5));
+        
+        if (rightpar == '}') {
+            leftpar = '{';
+        } else if (rightpar == ')') {
+            leftpar = '(';
+        } else if (rightpar == '>') {
+            leftpar = '<';
+        } else {
+            leftpar = '[';
+        }
+        
+        textString = self.string;
+        i = affectedCharRange.location;
+        j = 1;
+        count = 1;
+        
+        unichar previousChar = (i > 0) ? [textString characterAtIndex:i-1] : 0;
+        BOOL notCS = ((previousChar != '\\') && (previousChar != 0x00a5));
+        if (!notCS) {
+            return YES;
+        }
+        
+        while ((i > 0) && (j < 5000)) {
+            i--; j++;
+            uchar = [textString characterAtIndex:i];
+            previousChar = (i > 0) ? [textString characterAtIndex:i-1] : 0;
+            notCS = ((previousChar != '\\') && (previousChar != 0x00a5));
             if (uchar == rightpar && notCS) {
-				count++;
+                count++;
             } else if (uchar == leftpar && notCS) {
-				count--;
+                count--;
             }
-			if (count == 0) {
-				matchRange.location = i;
-				matchRange.length = 1;
-				
-//				if (NSFoundationVersionNumber > LEOPARD) {
-					[self performSelector:@selector(showIndicator:) 
-							   withObject:NSStringFromRange(matchRange)
-							   afterDelay:0.0];
-//				}
-//				else {
-//					[self setSelectedRange: matchRange
-//								  affinity: NSSelectByCharacter stillSelecting: YES];
-//					[self display];
-//					myDate = [NSDate date];
-//					while ([myDate timeIntervalSinceNow] > - 0.075);
-//					[self setSelectedRange: affectedCharRange];
-//				}
-				
-				break;
-			}
-		}
-	}
-	
-	return YES;
+            if (count == 0) {
+                matchRange.location = i;
+                matchRange.length = 1;
+                
+                [self performSelector:@selector(showIndicator:)
+                           withObject:NSStringFromRange(matchRange)
+                           afterDelay:0.0];
+                
+                break;
+            }
+        }
+    }
+    
+    return YES;
 }
 
 @end

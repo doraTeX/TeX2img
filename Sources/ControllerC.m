@@ -8,7 +8,7 @@ BOOL checkWhich(NSString *cmdName)
 }
 
 @implementation ControllerC
-////// ここから OutputController プロトコルの実装 //////
+#pragma mark OutputController プロトコルの実装
 - (void)clearOutputTextView
 {	
 }
@@ -99,7 +99,7 @@ BOOL checkWhich(NSString *cmdName)
         printf(str.UTF8String);
     }
 }
-////// ここまで OutputController プロトコルの実装 //////
+#pragma mark -
 
 
 @end

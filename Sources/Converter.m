@@ -1,8 +1,5 @@
 #import <stdio.h>
 #import <Quartz/Quartz.h>
-//#import <OgreKit/OgreKit.h>
-//#import <unistd.h>
-//#include <regex.h>
 #import "global.h"
 
 #define MAX_LEN 1024
@@ -113,7 +110,7 @@
 
 
 
-// JIS 外の文字を \UTF に置き換える
+// JIS X 0208 外の文字を \UTF に置き換える
 - (NSMutableString*)substituteUTF:(NSString*)dataString
 {
 	NSMutableString *utfString, *newString = NSMutableString.string;
@@ -177,50 +174,9 @@
 	}
 	
 	return [mstr writeToFile:path atomically:NO encoding:enc error:NULL];
-	
-	// バックスラッシュ（0x5C）を円マーク (0xC20xA5) に置換
-	//NSString* yenMark = NSLocalizedString(@"YenMark", @"");
-	//NSString* backslash = NSLocalizedString(@"Backslash", @"");
-	//[mstr replaceOccurrencesOfString:backslash withString:yenMark options:0 range:NSMakeRange(0, [mstr length])];
-	
-	//// CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingShiftJIS) で保存すると，円マークは0x5cに，バックスラッシュは全角になって保存される。
-	//return [mstr writeToFile:path atomically:NO encoding:CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingShiftJIS) error:NULL];
-
 }
 
-
-/*
- - (NSInteger)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments withStdout:(NSMutableString*)stdoutMStr withStdErr:(NSMutableString*)stderrMStr
- {
- NSTask* task = [[[NSTask alloc] init] autorelease];
- [task setCurrentDirectoryPath:path];
- [task setLaunchPath:command];
- [task setArguments:arguments];
- 
- NSPipe* pipeStdout = [NSPipe pipe];
- NSPipe* pipeStdErr = [NSPipe pipe];
- [task setStandardOutput:pipeStdout];
- [task setStandardError:pipeStdErr];
- 
- [task launch];
- [task waitUntilExit];
- 
- char* stdoutChars = [[[pipeStdout fileHandleForReading] availableData] bytes];
- char* stderrChars = [[[pipeStdErr fileHandleForReading] availableData] bytes];
- 
- if(stdoutMStr != nil && stdoutChars != nil)
- {
- [stdoutMStr appendString:[NSString stringWithUTF8String:stdoutChars]];
- }
- if(stderrMStr != nil && stderrChars != nil)
- {
- [stderrMStr appendString:[NSString stringWithUTF8String:stderrChars]];
- }
- 
- return [task terminationStatus];
- }
-*/
-
+// TODO: execCommand を NSTask / NSPipe で書き直す？
 - (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments
 {
 	char str[MAX_LEN];
@@ -494,137 +450,7 @@
     fclose(fp);
     
     system([NSString stringWithFormat:@"/usr/bin/ruby %@; rm %@", scriptPath, scriptPath].UTF8String);
-    
-    /*
-	regex_t regexBB, regexHiResBB;
-	size_t nmatch = 5;
-	regmatch_t pmatch[nmatch];
-	
-	regcomp(&regexBB, "^\\%\\%BoundingBox\\: ([0-9]+) ([0-9]+) ([0-9]+) ([0-9]+)$", REG_EXTENDED|REG_NEWLINE);
-	regcomp(&regexHiResBB, "^\\%\\%HiResBoundingBox\\: ([0-9\\.]+) ([0-9\\.]+) ([0-9\\.]+) ([0-9\\.]+)$", REG_EXTENDED|REG_NEWLINE);
-
-	float leftbottom_x = 0;
-	float leftbottom_y = 0;
-	float righttop_x = 0;
-	float righttop_y = 0;
-
-	char str[MAX_LEN];
-    NSMutableArray* lines = NSMutableArray.array;
-
-	FILE *fp;
-	NSString* epsFilePath = [tempdir stringByAppendingPathComponent:epsName];
-
-	fp = fopen(epsFilePath.UTF8String, "r");
-    while ((fgets(str, MAX_LEN - 1, fp)) != NULL) {
-        NSString* line = @(str);
-        if (line) {
-            if (regexec(&regexBB, str, nmatch, pmatch, 0) == 0) {
-                leftbottom_x  = [[line substringWithRange:NSMakeRange(pmatch[1].rm_so, pmatch[1].rm_eo - pmatch[1].rm_so)] intValue] - leftMargin;
-                leftbottom_y  = [[line substringWithRange:NSMakeRange(pmatch[2].rm_so, pmatch[2].rm_eo - pmatch[2].rm_so)] intValue] - bottomMargin;
-                righttop_x    = [[line substringWithRange:NSMakeRange(pmatch[3].rm_so, pmatch[3].rm_eo - pmatch[3].rm_so)] intValue]  + rightMargin;
-                righttop_y    = [[line substringWithRange:NSMakeRange(pmatch[4].rm_so, pmatch[4].rm_eo - pmatch[4].rm_so)] intValue] + topMargin;
-                [lines addObject:[NSString stringWithFormat:@"%%%%BoundingBox: %ld %ld %ld %ld\n", (NSInteger)leftbottom_x, (NSInteger)leftbottom_y, (NSInteger)righttop_x, (NSInteger)righttop_y]];
-                continue;
-            }
-            
-            if (regexec(&regexHiResBB, str, nmatch, pmatch, 0) == 0) {
-                leftbottom_x  = [[line substringWithRange:NSMakeRange(pmatch[1].rm_so, pmatch[1].rm_eo - pmatch[1].rm_so)] floatValue] - leftMargin;
-                leftbottom_y  = [[line substringWithRange:NSMakeRange(pmatch[2].rm_so, pmatch[2].rm_eo - pmatch[2].rm_so)] floatValue] - bottomMargin;
-                righttop_x    = [[line substringWithRange:NSMakeRange(pmatch[3].rm_so, pmatch[3].rm_eo - pmatch[3].rm_so)] floatValue]  + rightMargin;
-                righttop_y    = [[line substringWithRange:NSMakeRange(pmatch[4].rm_so, pmatch[4].rm_eo - pmatch[4].rm_so)] floatValue] + topMargin;
-                [lines addObject:[NSString stringWithFormat:@"%%%%HiResBoundingBox: %f %f %f %f\n", leftbottom_x, leftbottom_y, righttop_x, righttop_y]];
-                continue;
-            }
-            
-            [lines addObject:line];
-        }
-    }
-	fclose(fp);
-	
-	fp = fopen(epsFilePath.UTF8String, "w");
-	
-	for (NSString* line in lines) {
-		fputs(line.UTF8String, fp);
-	}
-	fclose(fp);
-	
-	regfree(&regexBB);
-	regfree(&regexHiResBB);	
-    */
 }
-
-/*
-- (NSInteger)eps2image:(NSString*)epsName outputFileName:(NSString*)outputFileName resolution:(NSInteger)resolution
-{
-	NSString* trimFileName = [NSString stringWithFormat:@"%@.trim.eps", epsName];
-	NSString* extension = [[outputFileName pathExtension] lowercaseString];
-
-	// まずはEPSファイルのバウンディングボックスを取得
-	OGRegularExpression *regex = [OGRegularExpression regularExpressionWithString:@"^\\%\\%BoundingBox\\: (\\d+) (\\d+) (\\d+) (\\d+)$"]; // バウンディングボックス情報の正規表現
-	OGRegularExpressionMatch *match;
-	NSEnumerator *matchEnum;
-	
-	NSInteger leftbottom_x  = 0;
-	NSInteger leftbottom_y  = 0;
-	NSInteger righttop_x  = 0;
-	NSInteger righttop_y  = 0;
-	
-	char line[MAX_LEN];
-	FILE *fp;
-	fp = fopen([[tempdir stringByAppendingPathComponent:epsName] UTF8String], "r");
-	
-	while ((fgets(line, MAX_LEN - 1, fp)) != NULL) {
-		matchEnum = [regex matchEnumeratorInString:[NSString stringWithUTF8String:line]]; // 正規表現マッチを実行
-		if((match = [matchEnum nextObject]) != nil)
-		{
-			leftbottom_x  = [[match substringAtIndex:1] intValue] - leftMargin / resolutionLevel;
-			leftbottom_y  = [[match substringAtIndex:2] intValue] - bottomMargin / resolutionLevel;
-			righttop_x  = [[match substringAtIndex:3] intValue] + rightMargin / resolutionLevel;
-			righttop_y  = [[match substringAtIndex:4] intValue] + topMargin / resolutionLevel;
-			break;
-		}
-	}
-	fclose(fp);
-	
-	
-	// 次にトリミングするためのEPSファイルを作成
-	fp = fopen([[tempdir stringByAppendingPathComponent:trimFileName] UTF8String], "w");
-	fputs("/NumbDict countdictstack def\n", fp);
-	fputs("1 dict begin\n", fp);
-	fputs("/showpage {} def\n", fp);
-	fputs("userdict begin\n", fp);
-	fputs([[NSString stringWithFormat:@"%d.000000 %d.000000 translate\n", -leftbottom_x, -leftbottom_y] UTF8String], fp);
-	fputs("1.000000 1.000000 scale\n", fp);
-	fputs("0.000000 0.000000 translate\n", fp);
-	fputs([[NSString stringWithFormat:@"(%@) run\n", epsName] UTF8String], fp);
-	fputs("countdictstack NumbDict sub {end} repeat\n", fp);
-	fputs("showpage\n", fp);
-	fclose(fp);
-	
-	// 最後に目的の形式に変換
-	NSString *device = @"jpeg";
-	if([@"png" isEqualToString:extension])
-	{
-		device = transparentPngFlag ? @"pngalpha" : @"png256";
-	}
-	
-	NSInteger status = [self execCommand:gsPath atDirectory:tempdir withArguments:
-				  [NSArray arrayWithObjects:
-				   @"-q",
-				   [NSString stringWithFormat:@"-sDEVICE=%@", device],
-				   [NSString stringWithFormat:@"-sOutputFile=%@", outputFileName],
-				   @"-dNOPAUSE",
-				   @"-dBATCH",
-				   @"-dPDFFitPage",
-				   [NSString stringWithFormat:@"-r%d", resolution],
-				   [NSString stringWithFormat:@"-g%dx%d", (righttop_x - leftbottom_x) * resolutionLevel, (righttop_y - leftbottom_y) * resolutionLevel],
-				   trimFileName,
-				   nil]
-						withStdout:nil];
-	
-	return status;
-}
-*/
 
 - (BOOL)convertPDF:(NSString*)pdfFileName outputEpsFileName:(NSString*)outputEpsFileName outputFileName:(NSString*)outputFileName page:(NSUInteger)page
 {
@@ -722,23 +548,6 @@
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPSを経由しなくてよいので，pdfcrop で直接生成する。
 		[self pdfcrop:pdfFilePath outputFileName:outputFileName addMargin:YES];
 	} else { // EPS を経由する形式(EPS/outlined-PDF/JPEG/PNG)の場合
-		/*
-		// PDF→EPS の変換の準備
-		NSInteger resolution;
-		 
-		if([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension])
-		{
-			resolution = 72 * resolutionLevel;
-			outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
-			
-		}
-		else // .eps/.pdf 出力の場合
-		{ 
-			resolution = 20016;
-			outputEpsFileName = outputFileName;
-		}
-		*/
-        
         BOOL success = [self convertPDF:pdfFileName
                       outputEpsFileName:outputEpsFileName
                          outputFileName:outputFileName
@@ -756,19 +565,6 @@
                 return success;
             }
         }
-
-		/*
-		// 出力画像が JPEG または PNG の場合の EPS からの変換処理
-		if([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension])
-		{
-			if(![self eps2image:outputEpsFileName outputFileName:outputFileName resolution:resolution] 
-			   || ![fileManager fileExistsAtPath:[tempdir stringByAppendingPathComponent:outputFileName]])
-			{
-				[controller showExecError:@"ghostscript"];
-				return NO;
-			}
-		}
-		*/
 	}
 	
 	// 最終出力ファイルを目的地へコピー
@@ -828,7 +624,7 @@
                 [embededFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
             }
             
-            [embededFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL *stop){
+            [embededFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL *stop) {
                 [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
                 if (ungroupFlag) {
                     [script appendFormat:@"move page items of selection of current document to end of current document\n"];

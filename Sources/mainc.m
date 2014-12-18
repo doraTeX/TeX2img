@@ -45,11 +45,11 @@ static void usage()
     exit(1);
 }
 
-NSString* getPath(NSString* cmdName)
+NSString* getPath(NSString *cmdName)
 {
 	char str[MAX_LEN];
-	FILE* fp;
-	char* pStr;
+	FILE *fp;
+	char *pStr;
     
 	if ((fp=popen([NSString stringWithFormat:@"which %@", cmdName].UTF8String, "r")) == NULL) {
 		return NO;
@@ -67,10 +67,10 @@ NSString* getPath(NSString* cmdName)
 	return @(str);
 }
 
-NSString* getFullPath(NSString* filename)
+NSString* getFullPath(NSString *filename)
 {
 	char str[MAX_LEN];
-	FILE* fp;
+	FILE *fp;
 	
 	if ((fp=popen([NSString stringWithFormat:@"perl -e \"use File::Spec;print File::Spec->rel2abs('%@');\"", filename].UTF8String, "r")) == NULL) {
 		return NO;
@@ -81,7 +81,7 @@ NSString* getFullPath(NSString* filename)
 	return @(str);
 }
 
-int strtoi(char* str)
+int strtoi(char *str)
 {
 	char *endptr;
 	long val;
@@ -122,9 +122,9 @@ int main (int argc, char *argv[]) {
         BOOL quickFlag = NO;
         BOOL guessFlag = NO;
         BOOL previewFlag = NO;
-        NSString* encoding = @"utf8";
-        NSString* compiler = @"platex";
-        NSNumber* unitTag = @(PXUNITTAG);
+        NSString *encoding = @"utf8";
+        NSString *compiler = @"platex";
+        NSNumber *unitTag = @(PXUNITTAG);
         
         // getopt_long を使った，長いオプション対応のオプション解析
         struct option *options;
@@ -385,7 +385,7 @@ int main (int argc, char *argv[]) {
             numberOfCompilation = guessFlag ? DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION : 1;
         }
         
-        ControllerC* controller = ControllerC.new;
+        ControllerC *controller = ControllerC.new;
         
         NSMutableDictionary *aProfile = NSMutableDictionary.dictionary;
         aProfile[PlatexPathKey] = getPath(compiler);
