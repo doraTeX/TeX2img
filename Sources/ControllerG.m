@@ -720,7 +720,7 @@ typedef enum {
 	[self showMainWindow];
 }
 
-#pragma mark - IBAction
+#pragma mark - Import / Export
 
 - (NSArray*)analyzeContents:(NSString*)contents
 {
@@ -744,6 +744,38 @@ typedef enum {
     return @[preamble, body];
 }
 
+- (void)placeImportedSource:(NSString*)contents
+{
+    BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
+
+    NSArray *parts = [self analyzeContents:contents];
+    NSString *preamble = (NSString*)(parts[0]);
+    NSString *body = (NSString*)(parts[1]);
+    
+    if (![preamble isEqualToString:@""]) {
+        [preambleTextView replaceEntireContentsWithString:preamble colorize:colorizeText];
+    }
+    if (![body isEqualToString:@""]) {
+        [sourceTextView replaceEntireContentsWithString:body colorize:colorizeText];
+    }
+    [self sourceSettingChanged:directInputButton];
+}
+
+- (NSStringEncoding)stringEncodingFromEncodingOption:(NSString*)option
+{
+    NSStringEncoding encoding = NSUTF8StringEncoding;
+    
+    if ([option isEqualToString:@"sjis"]) {
+        encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese);
+    } else if ([option isEqualToString:@"euc"]) {
+        encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP);
+    } else if ([option isEqualToString:@"jis"]) {
+        encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
+    }
+    
+    return encoding;
+}
+
 - (IBAction)importSource:(id)sender
 {
     NSOpenPanel *openPanel = [NSOpenPanel openPanel];
@@ -751,26 +783,33 @@ typedef enum {
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
     openPanel.AllowedFileTypes = @[@"tex"];
-    BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
             if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"overwriteContentsWarningMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
                 NSString *inputPath = openPanel.URL.path;
                 NSData *data = [NSData dataWithContentsOfFile:inputPath];
-                NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data];
+                NSStringEncoding detectedEncoding;
+                NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
+
                 if (contents) {
-                    NSArray *parts = [self analyzeContents:contents];
-                    NSString *preamble = (NSString*)(parts[0]);
-                    NSString *body = (NSString*)(parts[1]);
+                    NSString *userEncodingOption = [self.currentProfile stringForKey:EncodingKey];
+                    NSStringEncoding userEncoding = [self stringEncodingFromEncodingOption:userEncodingOption];
                     
-                    if (![preamble isEqualToString:@""]) {
-                        [preambleTextView replaceEntireContentsWithString:preamble colorize:colorizeText];
+                    if (userEncoding == detectedEncoding) {
+                        [self placeImportedSource:contents];
+                    } else {
+                        if (NSRunAlertPanel(localizedString(@"Confirm"), [NSString stringWithFormat:localizedString(@"MismatchEncodingWarningMsg"), userEncodingOption], localizedString(@"YES"), localizedString(@"NO"), nil) == NSOKButton) {
+                            [self placeImportedSource:contents];
+                        } else {
+                            contents = [NSString.alloc initWithData:data encoding:userEncoding];
+                            if (contents) {
+                                [self placeImportedSource:contents];
+                            } else {
+                                NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), inputPath], @"OK", nil, nil);
+                            }
+                        }
                     }
-                    if (![body isEqualToString:@""]) {
-                        [sourceTextView replaceEntireContentsWithString:body colorize:colorizeText];
-                    }
-                    [self sourceSettingChanged:directInputButton];
                 } else {
                     NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), inputPath], @"OK", nil, nil);
                 }
@@ -798,17 +837,7 @@ typedef enum {
             NSString *preamble = preambleTextView.textStorage.mutableString;
             NSString *body = sourceTextView.textStorage.mutableString;
             NSString *contents = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}\n", preamble, body];
-            
-            NSString *targetEncoding = [self.currentProfile stringForKey:EncodingKey];
-            NSStringEncoding encoding = NSUTF8StringEncoding;
-            
-            if ([targetEncoding isEqualToString:@"sjis"]) {
-                encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese);
-            } else if ([targetEncoding isEqualToString:@"euc"]) {
-                encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP);
-            } else if ([targetEncoding isEqualToString:@"jis"]) {
-                encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
-            }
+            NSStringEncoding encoding = [self stringEncodingFromEncodingOption:[self.currentProfile stringForKey:EncodingKey]];
             
             if (![contents writeToFile:outputPath atomically:YES encoding:encoding error:nil]) {
                 NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotWriteErrorMsg"), outputPath], @"OK", nil, nil);
@@ -817,6 +846,8 @@ typedef enum {
         }
     }];
 }
+
+#pragma mark - IBAction
 
 - (IBAction)restoreDefaultPreamble:(id)sender
 {

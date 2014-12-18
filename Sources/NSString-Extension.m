@@ -22,13 +22,13 @@
 
 // データから指定エンコードで文字列を得る
 // CotEditor の CEDocument.m より借用
-+ (NSString*)stringWithAutoEncodingDetectionOfData:(NSData *)data
++ (NSString*)stringWithAutoEncodingDetectionOfData:(NSData *)data detectedEncoding:(NSStringEncoding*)encoding
 {
     NSString *string = nil;
     BOOL shouldSkipISO2022JP = NO;
     BOOL shouldSkipUTF8 = NO;
     BOOL shouldSkipUTF16 = NO;
-    NSStringEncoding encoding = 0;
+    *encoding = 0;
     
     CFStringEncodings const StringEncodingList[] = {
         kCFStringEncodingUTF8, // Unicode (UTF-8)
@@ -105,39 +105,38 @@
             shouldSkipUTF8 = YES;
             string = [NSString.alloc initWithData:data encoding:NSUTF8StringEncoding];
             if (string) {
-                encoding = NSUTF8StringEncoding;
+                *encoding = NSUTF8StringEncoding;
             }
             // UTF-16判定
         } else if ((memchr(data.bytes, 0xfffe, 2) != NULL) || (memchr(data.bytes, 0xfeff, 2) != NULL)) {
             shouldSkipUTF16 = YES;
             string = [NSString.alloc initWithData:data encoding:NSUnicodeStringEncoding];
             if (string) {
-                encoding = NSUnicodeStringEncoding;
+                *encoding = NSUnicodeStringEncoding;
             }
             // ISO 2022-JP判定
         } else if (memchr(data.bytes, 0x1b, data.length) != NULL) {
             shouldSkipISO2022JP = YES;
             string = [NSString.alloc initWithData:data encoding:NSISO2022JPStringEncoding];
             if (string) {
-                encoding = NSISO2022JPStringEncoding;
+                *encoding = NSISO2022JPStringEncoding;
             }
         }
     }
     
     if (!string) {
         for (NSUInteger i=0; i<kSizeOfCFStringEncodingList; i++) {
-            encoding = CFStringConvertEncodingToNSStringEncoding(StringEncodingList[i]);
-            if ((encoding == NSISO2022JPStringEncoding) && shouldSkipISO2022JP) {
+            *encoding = CFStringConvertEncodingToNSStringEncoding(StringEncodingList[i]);
+            if ((*encoding == NSISO2022JPStringEncoding) && shouldSkipISO2022JP) {
                 break;
-            } else if ((encoding == NSUTF8StringEncoding) && shouldSkipUTF8) {
+            } else if ((*encoding == NSUTF8StringEncoding) && shouldSkipUTF8) {
                 break;
-            } else if ((encoding == NSUnicodeStringEncoding) && shouldSkipUTF16) {
+            } else if ((*encoding == NSUnicodeStringEncoding) && shouldSkipUTF16) {
                 break;
-            } else if (encoding == NSProprietaryStringEncoding) {
-                NSLog(@"encoding == NSProprietaryStringEncoding");
+            } else if (*encoding == NSProprietaryStringEncoding) {
                 break;
             }
-            string = [[NSString alloc] initWithData:data encoding:encoding];
+            string = [NSString.alloc initWithData:data encoding:*encoding];
             if (string) {
                 break;
             }

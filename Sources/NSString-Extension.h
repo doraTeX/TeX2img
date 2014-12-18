@@ -3,5 +3,5 @@
 @interface NSString (Extension)
 - (NSString*)pathStringByAppendingPageNumber:(NSUInteger)page;
 - (NSString*)stringByDeletingLastReturnCharacters;
-+ (NSString*)stringWithAutoEncodingDetectionOfData:(NSData *)data;
++ (NSString*)stringWithAutoEncodingDetectionOfData:(NSData *)data detectedEncoding:(NSStringEncoding*)encoding;
 @end
