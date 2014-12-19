@@ -250,6 +250,11 @@ static BOOL isValidTeXCommandChar(unichar c)
 {
     NSArray *draggedFiles = [self filelistInDraggingInfo:info];
     
+    // sourceTextView へのドロップのみ可
+    if (self != controller.sourceTextView) {
+        return NSDragOperationNone;
+    }
+    
     // 複数のドラッグは受付不可
     if (draggedFiles.count > 1) {
         return NSDragOperationNone;
@@ -289,13 +294,13 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (BOOL)performDragOperation:(id<NSDraggingInfo>)info
 {
+    [self.dropDelegate textViewDroppedFile:[self filelistInDraggingInfo:info][0]];
     return YES;
 }
 
 - (void)concludeDragOperation:(id<NSDraggingInfo>)info
 {
     [self setDraggingState:NO];
-    [self.dropDelegate textViewDroppedFile:[self filelistInDraggingInfo:info][0]];
 }
 
 - (void)setDraggingState:(BOOL)draggingState

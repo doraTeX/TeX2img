@@ -1,10 +1,10 @@
 #import "ProfileController.h"
-#import "TeXTextView.h"
 #import "global.h"
 #import "ControllerG.h"
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
+#import "TeXTextView.h"
 
 typedef enum {
     DIRECT = 0,
@@ -19,7 +19,6 @@ typedef enum {
 @interface ControllerG()
 @property IBOutlet ProfileController *profileController;
 @property IBOutlet NSWindow *mainWindow;
-@property IBOutlet TeXTextView *sourceTextView;
 @property IBOutlet NSDrawer *outputDrawer;
 @property IBOutlet NSTextView *outputTextView;
 @property IBOutlet NSWindow *preambleWindow;
