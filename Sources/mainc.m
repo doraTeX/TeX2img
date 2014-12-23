@@ -6,7 +6,7 @@
 
 #define OPTION_NUM 21
 #define MAX_LEN 1024
-#define VERSION "1.8.7"
+#define VERSION "1.8.7.1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -52,7 +52,7 @@ NSString* getPath(NSString *cmdName)
 	char *pStr;
     
 	if ((fp=popen([NSString stringWithFormat:@"which %@", cmdName].UTF8String, "r")) == NULL) {
-		return NO;
+		return nil;
 	}
 	fgets(str, MAX_LEN-1, fp);
 	
@@ -73,7 +73,7 @@ NSString* getFullPath(NSString *filename)
 	FILE *fp;
 	
 	if ((fp=popen([NSString stringWithFormat:@"perl -e \"use File::Spec;print File::Spec->rel2abs('%@');\"", filename].UTF8String, "r")) == NULL) {
-		return NO;
+		return nil;
 	}
 	fgets(str, MAX_LEN-1, fp);
 	pclose(fp);
@@ -386,6 +386,34 @@ int main (int argc, char *argv[]) {
         }
         
         ControllerC *controller = ControllerC.new;
+        
+        // 実行プログラムのパスチェック
+        NSString *platexPath = getPath(compiler);
+        NSString *dvipdfmxPath = getPath(@"dvipdfmx");
+        NSString *gsPath = getPath(@"gs");
+        NSString *pdfcropPath = getPath(@"pdfcrop");
+        NSString *epstopdfPath = getPath(@"epstopdf");
+        
+        if (!platexPath) {
+            [controller showNotFoundError:@"(u)platex"];
+            return 1;
+        }
+        if (!dvipdfmxPath) {
+            [controller showNotFoundError:@"dvipdfmx"];
+            return 1;
+        }
+        if (!gsPath) {
+            [controller showNotFoundError:@"gs"];
+            return 1;
+        }
+        if (!pdfcropPath) {
+            [controller showNotFoundError:@"pdfcrop"];
+            return 1;
+        }
+        if (!epstopdfPath) {
+            [controller showNotFoundError:@"epstopdf"];
+            return 1;
+        }
         
         NSMutableDictionary *aProfile = NSMutableDictionary.dictionary;
         aProfile[PlatexPathKey] = getPath(compiler);

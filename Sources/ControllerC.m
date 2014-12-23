@@ -29,7 +29,7 @@ BOOL checkWhich(NSString *cmdName)
 - (BOOL)platexExistsAtPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
 {
 	if (!checkWhich(platexPath)) {
-		[self showNotFoundError:@"platex"];
+		[self showNotFoundError:@"(u)platex"];
 		return NO;
 	}
 	if (!checkWhich(dvipdfmxPath)) {
