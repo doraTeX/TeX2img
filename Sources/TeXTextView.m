@@ -52,8 +52,8 @@ static BOOL isValidTeXCommandChar(unichar c)
     [self registerForDraggedTypes:@[NSFilenamesPboardType]];
 }
 
-- (void)registerUndoWithString:(NSString *)oldString location:(unsigned)oldLocation
-                        length: (unsigned)newLength key:(NSString *)key
+- (void)registerUndoWithString:(NSString*)oldString location:(unsigned)oldLocation
+                        length: (unsigned)newLength key:(NSString*)key
 {
     NSUndoManager *myManager = self.undoManager;
     [myManager registerUndoWithTarget:self selector:@selector(undoSpecial:) object: @{
@@ -94,7 +94,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 
 // to be used in AutoCompletion
-- (void)insertSpecialNonStandard:(NSString *)theString undoKey:(NSString *)key
+- (void)insertSpecialNonStandard:(NSString*)theString undoKey:(NSString*)key
 {
 	NSRange		oldRange, searchRange;
 	NSMutableString	*stringBuf;

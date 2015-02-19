@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
+		3408053D1A96E6B50067AA56 /* NSFileManager-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* NSFileManager-Extension.m */; };
 		3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */ = {isa = PBXBuildFile; fileRef = 3424A8E20E4F2DC1003C9F96 /* ControllerG.m */; };
 		342C6196101E637F00E29FEB /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 342C6194101E637F00E29FEB /* epstopdf */; };
 		342C6197101E637F00E29FEB /* pdfcrop in Resources */ = {isa = PBXBuildFile; fileRef = 342C6195101E637F00E29FEB /* pdfcrop */; };
@@ -22,6 +23,7 @@
 		348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */; };
 		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
+		34CCBB071A964E8A0061842E /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 34CCBB061A964E8A0061842E /* Templates */; };
 		34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
 		34D41D1E17A6BE2C00997795 /* NSString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D41D1D17A6BE2C00997795 /* NSString-Extension.m */; };
 		34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D41D1D17A6BE2C00997795 /* NSString-Extension.m */; };
@@ -63,6 +65,8 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeX2img_Prefix.pch; sourceTree = "<group>"; };
+		3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager-Extension.h"; sourceTree = "<group>"; };
+		3408053C1A96E6B50067AA56 /* NSFileManager-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager-Extension.m"; sourceTree = "<group>"; };
 		3424A8DF0E4F2C3B003C9F96 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Japanese; path = Japanese.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		3424A8E10E4F2DC1003C9F96 /* ControllerG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerG.h; sourceTree = "<group>"; };
 		3424A8E20E4F2DC1003C9F96 /* ControllerG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerG.m; sourceTree = "<group>"; };
@@ -81,6 +85,7 @@
 		348D72A1125A57B8003AF902 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
 		34BF870A12AC10D20099654C /* MyLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyLayoutManager.h; sourceTree = "<group>"; };
 		34BF870B12AC10D20099654C /* MyLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyLayoutManager.m; sourceTree = "<group>"; };
+		34CCBB061A964E8A0061842E /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
 		34CF33A210260315009A8CA6 /* NSDictionary-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary-Extension.h"; sourceTree = "<group>"; };
 		34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary-Extension.m"; sourceTree = "<group>"; };
 		34D41D1C17A6BE2C00997795 /* NSString-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Extension.h"; sourceTree = "<group>"; };
@@ -148,6 +153,8 @@
 				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
 				34D41D1C17A6BE2C00997795 /* NSString-Extension.h */,
 				34D41D1D17A6BE2C00997795 /* NSString-Extension.m */,
+				3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */,
+				3408053C1A96E6B50067AA56 /* NSFileManager-Extension.m */,
 				348CA6DA1A957BC90070B079 /* NSDate-Extension.h */,
 				348CA6DB1A957BC90070B079 /* NSDate-Extension.m */,
 			);
@@ -211,6 +218,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				34CCBB061A964E8A0061842E /* Templates */,
 				34670DD5125B7AC3002308EF /* dsa_pub.pem */,
 				342C6194101E637F00E29FEB /* epstopdf */,
 				342C6195101E637F00E29FEB /* pdfcrop */,
@@ -304,6 +312,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34CCBB071A964E8A0061842E /* Templates in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				CE4A31F10E5036500095D4FC /* Localizable.strings in Resources */,
@@ -360,6 +369,7 @@
 				7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */,
 				348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */,
 				348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */,
+				3408053D1A96E6B50067AA56 /* NSFileManager-Extension.m in Sources */,
 				34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */,
 				34D41D1E17A6BE2C00997795 /* NSString-Extension.m in Sources */,
 			);

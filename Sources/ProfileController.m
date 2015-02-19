@@ -164,9 +164,9 @@
 
 #pragma mark -
 #pragma mark ドラッグ＆ドロップによる行の並べ替え関連
-- (BOOL)tableView:(NSTableView *)aTableView
-writeRowsWithIndexes:(NSIndexSet *)rowIndexes 
-	 toPasteboard:(NSPasteboard *)pboard
+- (BOOL)tableView:(NSTableView*)aTableView
+    writeRowsWithIndexes:(NSIndexSet*)rowIndexes
+     toPasteboard:(NSPasteboard*)pboard
 {
 	// declare our own pasteboard types
     NSArray *typesArray = @[MovedRowsType];

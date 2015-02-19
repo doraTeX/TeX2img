@@ -5,7 +5,7 @@
 "Confirm" = "確認";
 "YES" = "はい";
 "NO" = "いいえ";
-"resotreDefaultPreambleMsg" = "プリアンブル部をデフォルトに戻してよろしいですか？";
+"resotrePreambleMsg" = "プリアンブル部が次の内容にリセットされます。よろしいですか？";
 "Cancel" = "キャンセル";
 "programNotFoundErrorMsg" = " が見つかりません。\nLaTeX / Ghostscript 一式がインストールされているか，「環境設定」で設定されたパスが実際にインストールされているパスと合致してているか確認してください。";
 "inputFileNotFoundErrorMsg" = "入力ファイルが見つかりません。\n%@";
@@ -24,3 +24,4 @@
 "overwriteContentsWarningMsg" = "現在の編集内容（本文・プリアンブル）が上書きされます。\nよろしいですか？";
 "cannotReadErrorMsg" = "ファイルの読み込みに失敗しました。\n%@";
 "cannotWriteErrorMsg" = "ファイルの書き込みに失敗しました。\n%@";
+"saveCurrentPreambleAsTemplate" = "プリアンブルをテンプレートとして保存";

@@ -5,7 +5,7 @@
 "Confirm" = "Confirm";
 "YES" = "Yes";
 "NO" = "No";
-"resotreDefaultPreambleMsg" = "The default preamble will be restored.\nDo you want to continue?";
+"resotrePreambleMsg" = "The preamble will be restored as follows.\nDo you want to continue?";
 "Cancel" = "Cancel";
 "programNotFoundErrorMsg" = " cannot be found.\nMake sure that LaTeX/Ghostscript are installed and configured in Preferences.";
 "inputFileNotFoundErrorMsg" = "Input file does not exist.\n%@";
@@ -24,3 +24,4 @@
 "overwriteContentsWarningMsg" = "Current contents including preamble will be replaced.\nDo you want to continue?";
 "cannotReadErrorMsg" = "Failed to read the file.\n%@";
 "cannotWriteErrorMsg" = "Failed to write the file.\n%@";
+"saveCurrentPreambleAsTemplate" = "Save current preamble as a template";

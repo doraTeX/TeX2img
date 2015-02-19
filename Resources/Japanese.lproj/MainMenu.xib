@@ -682,6 +682,7 @@ DQ
                 <outlet property="showTabCharacterMenuItem" destination="833" id="843"/>
                 <outlet property="solidHighlightMenuItem" destination="818" id="821"/>
                 <outlet property="sourceTextView" destination="466" id="467"/>
+                <outlet property="templatePopupButton" destination="88N-oX-Kx7" id="XUy-wr-UJD"/>
                 <outlet property="topMarginLabel" destination="559" id="619"/>
                 <outlet property="topMarginSlider" destination="558" id="624"/>
                 <outlet property="transparentCheckBox" destination="521" id="615"/>
@@ -695,7 +696,7 @@ DQ
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="137" width="327" height="373"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
-            <value key="minSize" type="size" width="300" height="100"/>
+            <value key="minSize" type="size" width="327" height="100"/>
             <view key="contentView" id="481">
                 <rect key="frame" x="0.0" y="0.0" width="327" height="373"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -732,17 +733,6 @@ DQ
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <button verticalHuggingPriority="750" id="629">
-                        <rect key="frame" x="165" y="1" width="148" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
-                        <buttonCell key="cell" type="push" title="デフォルトに戻す" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="630">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="restoreDefaultPreamble:" target="450" id="632"/>
-                        </connections>
-                    </button>
                     <button id="767">
                         <rect key="frame" x="20" y="9" width="115" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -754,6 +744,30 @@ DQ
                             <action selector="showFontPanelOfPreamble:" target="450" id="770"/>
                         </connections>
                     </button>
+                    <popUpButton verticalHuggingPriority="750" id="88N-oX-Kx7">
+                        <rect key="frame" x="148" y="8" width="162" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <popUpButtonCell key="cell" type="push" title="テンプレート" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" selectedItem="27r-21-rhm" id="ixJ-k4-Ee5">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                            <menu key="menu" autoenablesItems="NO" id="wOe-7y-tf5">
+                                <items>
+                                    <menuItem title="テンプレート" state="on" hidden="YES" id="58H-Aq-Z6Z"/>
+                                    <menuItem isSeparatorItem="YES" id="Lma-QF-hXn"/>
+                                    <menuItem title="現在のプリアンブルを保存..." id="pS4-TP-9Uw">
+                                        <connections>
+                                            <action selector="saveAsTemplate:" target="450" id="ipF-4o-K1a"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="テンプレートを管理..." id="27r-21-rhm">
+                                        <connections>
+                                            <action selector="openTemplateDirectory:" target="450" id="B2X-R8-4Cb"/>
+                                        </connections>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                    </popUpButton>
                 </subviews>
             </view>
         </window>
@@ -1345,7 +1359,7 @@ DQ
                     </tabView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="28" y="922"/>
+            <point key="canvasLocation" x="390" y="1077"/>
         </window>
         <window title="設定の保存・読み込み" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="672" userLabel="Window (設定の保存・読み込み)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>

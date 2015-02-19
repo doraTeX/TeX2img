@@ -4,9 +4,9 @@
 #import "ControllerC.h"
 #import "global.h"
 
-#define OPTION_NUM 21
+#define OPTION_NUM 23
 #define MAX_LEN 1024
-#define VERSION "1.8.8b2"
+#define VERSION "1.8.8b3"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -22,9 +22,11 @@ static void usage()
     printf("  InputTeXFile            : path of TeX source file\n");
     printf("  OutputFile              : path of output file (extension: eps/png/jpg/pdf)\n");
     printf("Options:\n");
-    printf("  --compiler   COMPILER   : set compiler   (default: platex)\n");
+    printf("  --compiler   COMPILER   : set compiler      (default: platex)\n");
     printf("  --guess-compile         : guess the appropriate number of compilation\n");
     printf("  --num        NUMBER     : set the (maximal) number of compilation\n");
+    printf("  --dvipdfmx   DVIPDFMX   : set dvipdfmx      (default: dvipdfmx)\n");
+    printf("  --gs         GS         : set ghostscript   (default: gs)\n");
     printf("  --resolution RESOLUTION : set resolution level (default: 15)\n");
     printf("  --left-margin    MARGIN : set left margin   (default: 0)\n");
     printf("  --right-margin   MARGIN : set right margin  (default: 0)\n");
@@ -124,6 +126,8 @@ int main (int argc, char *argv[]) {
         BOOL previewFlag = NO;
         NSString *encoding = @"none";
         NSString *compiler = @"platex";
+        NSString *dvipdfmx = @"dvipdfmx";
+        NSString *gs       = @"gs";
         NSNumber *unitTag = @(PXUNITTAG);
         
         // getopt_long を使った，長いオプション対応のオプション解析
@@ -223,6 +227,16 @@ int main (int argc, char *argv[]) {
         options[17].flag = NULL;
         options[17].val = 18;
         
+        options[18].name = "dvipdfmx";
+        options[18].has_arg = required_argument;
+        options[18].flag = NULL;
+        options[18].val = 19;
+
+        options[19].name = "gs";
+        options[19].has_arg = required_argument;
+        options[19].flag = NULL;
+        options[19].val = 20;
+
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
         options[OPTION_NUM - 3].flag = NULL;
@@ -348,6 +362,20 @@ int main (int argc, char *argv[]) {
                 case 18: // --preview
                     previewFlag = YES;
                     break;
+                case 19: // --dvipdfmx
+                    if (optarg) {
+                        dvipdfmx = @(optarg);
+                    } else {
+                        usage();
+                    }
+                    break;
+                case 20: // --gs
+                    if (optarg) {
+                        gs = @(optarg);
+                    } else {
+                        usage();
+                    }
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -389,8 +417,8 @@ int main (int argc, char *argv[]) {
         
         // 実行プログラムのパスチェック
         NSString *latexPath = getPath(compiler);
-        NSString *dvipdfmxPath = getPath(@"dvipdfmx");
-        NSString *gsPath = getPath(@"gs");
+        NSString *dvipdfmxPath = getPath(dvipdfmx);
+        NSString *gsPath = getPath(gs);
         NSString *pdfcropPath = getPath(@"pdfcrop");
         NSString *epstopdfPath = getPath(@"epstopdf");
         
@@ -416,11 +444,11 @@ int main (int argc, char *argv[]) {
         }
         
         NSMutableDictionary *aProfile = NSMutableDictionary.dictionary;
-        aProfile[LatexPathKey] = getPath(compiler);
-        aProfile[DvipdfmxPathKey] = getPath(@"dvipdfmx");
-        aProfile[GsPathKey] = getPath(@"gs");
-        aProfile[PdfcropPathKey] = getPath(@"pdfcrop");
-        aProfile[EpstopdfPathKey] = getPath(@"epstopdf");
+        aProfile[LatexPathKey] = latexPath;
+        aProfile[DvipdfmxPathKey] = dvipdfmxPath;
+        aProfile[GsPathKey] = gsPath;
+        aProfile[PdfcropPathKey] = pdfcropPath;
+        aProfile[EpstopdfPathKey] = epstopdfPath;
         
         aProfile[OutputFileKey] = outputFilePath;
         

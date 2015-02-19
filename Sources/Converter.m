@@ -95,7 +95,7 @@
 	tempdir = NSTemporaryDirectory();
     
     CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
-    NSString *uuidStr = (__bridge_transfer NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid);
+    NSString *uuidStr = (__bridge_transfer NSString*)CFUUIDCreateString(kCFAllocatorDefault, uuid);
     CFRelease(uuid);
     
     pid = getpid();
@@ -223,7 +223,7 @@
 {
     NSMutableArray *arguments = [NSMutableArray arrayWithObject:@"-interaction=nonstopmode"];
  
-    if (![encoding isEqualToString:@"none"] && ([latexPath.programName isEqualToString:@"platex"] || [latexPath.programName isEqualToString:@"uplatex"])) {
+    if (![encoding isEqualToString:@"none"]) {
         [arguments addObject:[NSString stringWithFormat:@"-kanji=%@", encoding]];
     }
     

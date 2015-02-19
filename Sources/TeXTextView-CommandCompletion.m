@@ -93,7 +93,7 @@ static NSString* endcommentString = @"›";
 	[self resetBackgroundColor:nil];
 }
 
-- (void)keyDown:(NSEvent *)theEvent
+- (void)keyDown:(NSEvent*)theEvent
 {
 	if (self.hasMarkedText) {
 		[super keyDown: theEvent]; // 日本語入力中ではそのままイベントを通す

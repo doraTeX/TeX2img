@@ -675,6 +675,7 @@ DQ
                 <outlet property="showTabCharacterMenuItem" destination="811" id="820"/>
                 <outlet property="solidHighlightMenuItem" destination="790" id="796"/>
                 <outlet property="sourceTextView" destination="aKZ-WF-zY9" id="Q4i-tH-xWD"/>
+                <outlet property="templatePopupButton" destination="8yt-cH-L8O" id="cye-en-aa4"/>
                 <outlet property="topMarginLabel" destination="559" id="619"/>
                 <outlet property="topMarginSlider" destination="558" id="624"/>
                 <outlet property="transparentCheckBox" destination="521" id="615"/>
@@ -688,7 +689,7 @@ DQ
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="138" width="327" height="372"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
-            <value key="minSize" type="size" width="300" height="100"/>
+            <value key="minSize" type="size" width="327" height="100"/>
             <view key="contentView" id="481">
                 <rect key="frame" x="0.0" y="0.0" width="327" height="372"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -725,17 +726,6 @@ DQ
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <button verticalHuggingPriority="750" id="629">
-                        <rect key="frame" x="165" y="4" width="148" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
-                        <buttonCell key="cell" type="push" title="Revert" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="630">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="restoreDefaultPreamble:" target="450" id="632"/>
-                        </connections>
-                    </button>
                     <button id="736">
                         <rect key="frame" x="20" y="12" width="115" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -747,6 +737,30 @@ DQ
                             <action selector="showFontPanelOfPreamble:" target="450" id="739"/>
                         </connections>
                     </button>
+                    <popUpButton verticalHuggingPriority="750" id="8yt-cH-L8O">
+                        <rect key="frame" x="148" y="10" width="162" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <popUpButtonCell key="cell" type="push" title="Template" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" id="qcC-kl-qNF">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                            <menu key="menu" autoenablesItems="NO" id="b6L-Hh-fhH">
+                                <items>
+                                    <menuItem title="Template" state="on" hidden="YES" id="F4Z-eh-NOT"/>
+                                    <menuItem isSeparatorItem="YES" id="thQ-hB-ZJG"/>
+                                    <menuItem title="Save current as a template..." id="ikr-oq-w1q">
+                                        <connections>
+                                            <action selector="saveAsTemplate:" target="450" id="zhP-cH-Kde"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Manage templates..." id="npW-wV-L2r">
+                                        <connections>
+                                            <action selector="openTemplateDirectory:" target="450" id="APp-w7-gdx"/>
+                                        </connections>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                    </popUpButton>
                 </subviews>
             </view>
         </window>
@@ -1101,7 +1115,7 @@ DQ
                                         <textField verticalHuggingPriority="750" id="595">
                                             <rect key="frame" x="46" y="318" width="44" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="platex" id="596">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="LaTeX" id="596">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

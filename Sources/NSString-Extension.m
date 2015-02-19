@@ -27,7 +27,7 @@
 
 // データから指定エンコードで文字列を得る
 // CotEditor の CEDocument.m より借用
-+ (NSString*)stringWithAutoEncodingDetectionOfData:(NSData *)data detectedEncoding:(NSStringEncoding*)encoding
++ (NSString*)stringWithAutoEncodingDetectionOfData:(NSData*)data detectedEncoding:(NSStringEncoding*)encoding
 {
     NSString *string = nil;
     BOOL shouldSkipISO2022JP = NO;

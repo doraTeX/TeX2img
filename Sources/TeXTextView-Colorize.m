@@ -155,7 +155,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 							   forCharacterRange:NSRangeFromString(range)];
 }
 
-- (void)textViewDidChangeSelection:(NSNotification *)inNotification
+- (void)textViewDidChangeSelection:(NSNotification*)inNotification
 {
 	NSLayoutManager* layoutManager = self.layoutManager;
 	NSDictionary* profile = controller.currentProfile;
@@ -294,7 +294,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 	}
 }
 
-- (BOOL)shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString
+- (BOOL)shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString*)replacementString
 {
     [super shouldChangeTextInRange:affectedCharRange replacementString:replacementString];
     

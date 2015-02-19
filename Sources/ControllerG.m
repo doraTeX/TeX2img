@@ -4,6 +4,7 @@
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
+#import "NSFileManager-Extension.h"
 #import "TeXTextView.h"
 
 typedef enum {
@@ -23,6 +24,7 @@ typedef enum {
 @class TeXTextView;
 
 #define AutoSavedProfileName @"*AutoSavedProfile*"
+#define TemplateDirectoryName @"Templates"
 
 @interface ControllerG()
 @property IBOutlet ProfileController *profileController;
@@ -53,6 +55,8 @@ typedef enum {
 @property IBOutlet NSMenuItem *showNewLineCharacterMenuItem;
 @property IBOutlet NSMenuItem *showFullwidthSpaceCharacterMenuItem;
 @property IBOutlet NSTextField *outputFileTextField;
+
+@property IBOutlet NSPopUpButton *templatePopupButton;
 
 @property IBOutlet NSButton *directInputButton;
 @property IBOutlet NSButton *inputSourceFileButton;
@@ -122,6 +126,8 @@ typedef enum {
 @synthesize showNewLineCharacterMenuItem;
 @synthesize showFullwidthSpaceCharacterMenuItem;
 @synthesize outputFileTextField;
+
+@synthesize templatePopupButton;
 
 @synthesize directInputButton;
 @synthesize inputSourceFileButton;
@@ -526,9 +532,9 @@ typedef enum {
                                         @"/opt/local/texlive/2013/bin/x86_64-darwin",
                                         @"/opt/texlive/2014/bin/x86_64-darwin",
                                         @"/opt/texlive/2013/bin/x86_64-darwin",
+                                        @"/usr/texbin",
                                         @"/Applications/pTeX.app/teTeX/bin",
                                         @"/Applications/UpTeX.app/teTeX/bin",
-                                        @"/usr/texbin",
                                         @"/usr/local/teTeX/bin",
                                         @"/usr/local/bin",
                                         @"/opt/local/bin",
@@ -547,46 +553,109 @@ typedef enum {
 	return nil;
 }
 
+#pragma mark -
+#pragma mark プリアンブルの管理
 - (NSString*)defaultPreamble
 {
-    NSString *engineName = self.latexEngineName;
-    
-    if ([engineName isEqualToString:@"platex"]) {
-        return @"\\documentclass[fleqn,papersize]{jsarticle}\n"
-               @"\\usepackage{amsmath,amssymb}\n"
-               @"\\pagestyle{empty}\n";
-    } else if ([engineName isEqualToString:@"uplatex"]) {
-        return @"\\documentclass[fleqn,papersize,uplatex]{jsarticle}\n"
-               @"\\usepackage{amsmath,amssymb}\n"
-               @"\\pagestyle{empty}\n";
-    } else if ([engineName isEqualToString:@"xelatex"]) {
-        return @"\\documentclass[fleqn]{bxjsarticle}\n"
-               @"\\usepackage{zxjatype}\n"
-               @"\\setCJKmainfont[BoldFont=ヒラギノ明朝 ProN W6]{ヒラギノ明朝 ProN W3}\n"
-               @"\\setCJKsansfont[BoldFont=ヒラギノ角ゴ ProN W6]{ヒラギノ角ゴ ProN W3}\n"
-               @"\\usepackage{amsmath,amssymb}\n"
-               @"\\pagestyle{empty}\n";
-    } else if ([engineName isEqualToString:@"lualatex"]) {
-        return @"\\documentclass[fleqn]{ltjsarticle}\n"
-               @"\\usepackage[deluxe,hiragino-pron,jis2004]{luatexja-preset}\n"
-               @"\\usepackage{amsmath,amssymb}\n"
-               @"\\pagestyle{empty}\n";
-    } else {
-        return @"\\documentclass[fleqn]{article}\n"
-               @"\\usepackage{amsmath,amssymb}\n"
-               @"\\pagestyle{empty}\n";
-    }
-}
-
-- (NSString*)latexEngineName
-{
-    return [self.currentProfile stringForKey:LatexPathKey].programName;
+   return @"\\documentclass[fleqn,papersize]{jsarticle}\n"
+          @"\\usepackage{amsmath,amssymb}\n"
+          @"\\pagestyle{empty}\n";
 }
 
 - (void)restoreDefaultPreambleLogic
 {
     BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
     [preambleTextView replaceEntireContentsWithString:[self defaultPreamble] colorize:colorizeText];
+}
+
+- (void)constructTemplatePopup:(id)sender
+{
+    NSMenu *menu = templatePopupButton.menu;
+    
+    while (menu.numberOfItems > 4) {
+        [menu removeItemAtIndex:1];
+    }
+    
+    NSString *templateDirectoryPath = self.templateDirectoryPath;
+    NSFileManager *fileManager = NSFileManager.defaultManager;
+    NSEnumerator *enumerator = [[fileManager contentsOfDirectoryAtPath:templateDirectoryPath error:nil] reverseObjectEnumerator];
+    
+    NSString *filename;
+    while ((filename = enumerator.nextObject) != nil) {
+        NSString *fullPath = [templateDirectoryPath stringByAppendingPathComponent:filename];
+        
+        if ([filename hasSuffix:@"tex"]) {
+            NSString *title = filename.stringByDeletingPathExtension;
+            NSMenuItem *menuItem = [NSMenuItem.alloc initWithTitle:title action:@selector(templateSelected:) keyEquivalent:@""];
+            menuItem.target = self;
+            menuItem.toolTip = fullPath; // tooltip文字列の部分にフルパスを保持
+            [menu insertItem:menuItem atIndex:1];
+        }
+        
+        BOOL isDirectory;
+        if ([fileManager fileExistsAtPath:fullPath isDirectory:&isDirectory] && isDirectory) {
+            NSMenuItem *itemWithSubmenu = [NSMenuItem.alloc initWithTitle:filename action:nil keyEquivalent:@""];
+            NSMenu *submenu = NSMenu.new;
+            submenu.autoenablesItems = NO;
+            [self constructTemplatePopupRecursivelyAtDirectory:[templateDirectoryPath stringByAppendingPathComponent:filename] parentMenu:submenu];
+            itemWithSubmenu.submenu = submenu;
+            [menu insertItem:itemWithSubmenu atIndex:1];
+        }
+    }
+}
+
+- (void)constructTemplatePopupRecursivelyAtDirectory:(NSString*)directory parentMenu:(NSMenu*)menu
+{
+    NSFileManager *fileManager = NSFileManager.defaultManager;
+    NSArray *files = [fileManager contentsOfDirectoryAtPath:directory error:nil];
+    
+    for (NSString *filename in files) {
+        NSString *fullPath = [directory stringByAppendingPathComponent:filename];
+        
+        if ([filename hasSuffix:@"tex"]) {
+            NSString *title = filename.stringByDeletingPathExtension;
+            NSMenuItem *menuItem = [NSMenuItem.alloc initWithTitle:title action:@selector(templateSelected:) keyEquivalent:@""];
+            menuItem.target = self;
+            menuItem.toolTip = fullPath; // tooltip文字列の部分にフルパスを保持
+            [menu addItem:menuItem];
+        }
+        
+        BOOL isDirectory;
+        if ([fileManager fileExistsAtPath:fullPath isDirectory:&isDirectory] && isDirectory) {
+            NSMenuItem *itemWithSubmenu = [NSMenuItem.alloc initWithTitle:filename action:nil keyEquivalent:@""];
+            NSMenu *submenu = NSMenu.new;
+            submenu.autoenablesItems = NO;
+            [self constructTemplatePopupRecursivelyAtDirectory:[directory stringByAppendingPathComponent:filename] parentMenu:submenu];
+            itemWithSubmenu.submenu = submenu;
+            [menu addItem:itemWithSubmenu];
+        }
+    }
+}
+
+- (void)templateSelected:(id)sender
+{
+    NSString *templatePath = ((NSMenuItem*)sender).toolTip;
+    NSData *data = [NSData dataWithContentsOfFile:templatePath];
+    NSStringEncoding detectedEncoding;
+    NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
+
+    if (contents) {
+        NSString *message = [NSString stringWithFormat:@"%@\n\n%@", localizedString(@"resotrePreambleMsg"), [contents stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]];
+        
+        if (NSRunAlertPanel(localizedString(@"Confirm"), message, @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
+            BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
+            [preambleTextView replaceEntireContentsWithString:contents colorize:colorizeText];
+        }
+    } else {
+        NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), templatePath], @"OK", nil, nil);
+        return;
+    }
+}
+
+- (NSString*)templateDirectoryPath
+{
+    NSString *applicationSupportDirectoryPath = NSFileManager.defaultManager.applicationSupportDirectory;
+    return [applicationSupportDirectoryPath stringByAppendingPathComponent:TemplateDirectoryName];
 }
 
 #pragma mark -
@@ -634,6 +703,12 @@ typedef enum {
 				selector: @selector(textViewDidChangeSelection:)
 					name: NSTextViewDidChangeSelectionNotification
 				  object: preambleTextView];
+    
+    // テンプレートボタンのポップアップ寸前
+    [aCenter addObserver: self
+                selector: @selector(constructTemplatePopup:)
+                    name: NSPopUpButtonWillPopUpNotification
+                  object: templatePopupButton];
 	
 	// デフォルトのアウトプットファイルのパスをセット
 	outputFileTextField.StringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
@@ -698,7 +773,7 @@ typedef enum {
 	NSData 	*myData = nil;
 
 	NSString *completionPath = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt".stringByStandardizingPath;
-	if ([NSFileManager.defaultManager fileExistsAtPath:completionPath])
+	if ([fileManager fileExistsAtPath:completionPath])
 		myData = [NSData dataWithContentsOfFile:completionPath];
 	
 	if (myData) {
@@ -713,6 +788,15 @@ typedef enum {
 			[g_commandCompletionList appendString:@"\n"];
 	}
 
+    // Application Support の準備
+    NSString *templateDirectoryPath = self.templateDirectoryPath;
+    if (![fileManager fileExistsAtPath:templateDirectoryPath isDirectory:nil]) {
+        [fileManager createDirectoryAtPath:templateDirectoryPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    // app bundle 内のテンプレートをコピー（同名ファイルが存在する場合は上書きしない）
+    NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
+    system([NSString stringWithFormat:@"/bin/cp -pn \"%@\"/* \"%@\"", originalTemplateDirectory, templateDirectoryPath].UTF8String);
+    
 }
 
 - (void)showInitMessage:(NSDictionary*)paths
@@ -723,7 +807,7 @@ typedef enum {
                     @"OK", nil, nil);
 }
 
-- (void)applicationWillTerminate:(NSNotification *)aNotification
+- (void)applicationWillTerminate:(NSNotification*)aNotification
 {
 	[profileController updateProfile:self.currentProfile forName:AutoSavedProfileName];
 	[profileController saveProfiles];
@@ -734,18 +818,18 @@ typedef enum {
 	[NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
-- (void)closeOtherWindows:(NSNotification *)aNotification
+- (void)closeOtherWindows:(NSNotification*)aNotification
 {
 	[preambleWindow close];
 	[preferenceWindow close];
 }
 
-- (void)uncheckOutputDrawerMenuItem:(NSNotification *)aNotification
+- (void)uncheckOutputDrawerMenuItem:(NSNotification*)aNotification
 {
 	outputDrawerMenuItem.State = NO;
 }
 
-- (void)uncheckPreambleWindowMenuItem:(NSNotification *)aNotification
+- (void)uncheckPreambleWindowMenuItem:(NSNotification*)aNotification
 {
 	preambleWindowMenuItem.State = NO;
 }
@@ -880,11 +964,88 @@ typedef enum {
 
 #pragma mark - IBAction
 
-- (IBAction)restoreDefaultPreamble:(id)sender
+- (void)dialogOk:(id)sender
 {
-	if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"resotreDefaultPreambleMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
-		[self restoreDefaultPreambleLogic];
-	}
+    [NSApp stopModalWithCode:YES];
+}
+
+- (void)dialogCancel:(id)sender
+{
+    [NSApp stopModalWithCode:NO];
+}
+
+- (IBAction)saveAsTemplate:(id)sender
+{
+    NSSize dialogSize = NSMakeSize(340, 120);
+    NSRect dialogRect = NSMakeRect(0, 0, dialogSize.width, dialogSize.height);
+    
+    NSWindow *dialog = [NSWindow.alloc initWithContentRect:dialogRect
+                                                 styleMask:(NSTitledWindowMask|NSResizableWindowMask)
+                                                   backing:NSBackingStoreBuffered
+                                                     defer:NO];
+    [dialog setFrame:dialogRect display:NO];
+    dialog.minSize = NSMakeSize(250, dialogSize.height);
+    dialog.maxSize = NSMakeSize(10000, dialogSize.height);
+    dialog.title = localizedString(@"saveCurrentPreambleAsTemplate");
+    
+    NSTextField *input = NSTextField.new;
+    input.frame = NSMakeRect(17, 54, dialogSize.width - 40, 25);
+    input.autoresizingMask = NSViewWidthSizable;
+    [dialog.contentView addSubview:input];
+    
+    if ([sender isKindOfClass:NSString.class]) {
+        input.stringValue = (NSString*)sender;
+    }
+    
+    NSButton* cancelButton = NSButton.new;
+    cancelButton.title = localizedString(@"Cancel");
+    cancelButton.frame = NSMakeRect(dialogSize.width - 206, 12, 96, 32);
+    cancelButton.bezelStyle = NSRoundedBezelStyle;
+    cancelButton.autoresizingMask = NSViewMinXMargin;
+    cancelButton.keyEquivalent = @"\033";
+    cancelButton.target = self;
+    cancelButton.action = @selector(dialogCancel:);
+    [dialog.contentView addSubview:cancelButton];
+    
+    NSButton* okButton = NSButton.new;
+    okButton.title = @"OK";
+    okButton.frame = NSMakeRect(dialogSize.width - 110, 12, 96, 32);
+    okButton.bezelStyle = NSRoundedBezelStyle;
+    okButton.autoresizingMask = NSViewMinXMargin;
+    okButton.keyEquivalent = @"\r";
+    okButton.target = self;
+    okButton.action = @selector(dialogOk:);
+    [dialog.contentView addSubview:okButton];
+    
+    BOOL returnCode = [NSApp runModalForWindow:dialog];
+    [dialog orderOut:self];
+    
+    if (returnCode) {
+        NSFileManager *fileManager = NSFileManager.defaultManager;
+        NSString *title = input.stringValue;
+        
+        if ([title isEqualToString:@""]) {
+            [self saveAsTemplate:title];
+            return;
+        }
+
+        NSString *filePath = [self.templateDirectoryPath stringByAppendingPathComponent:[title stringByAppendingPathExtension:@"tex"]];
+        
+        if ([fileManager fileExistsAtPath:filePath isDirectory:nil] && (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"profileOverwriteMsg"), @"OK", localizedString(@"Cancel"), nil) == NSCancelButton)) {
+            [self saveAsTemplate:title];
+        } else {
+            NSString *preamble = preambleTextView.textStorage.mutableString;
+            BOOL success = [preamble writeToFile:filePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
+            if (!success) {
+                NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotWriteErrorMsg"), filePath], @"OK", nil, nil);
+            }
+        }
+    }
+}
+
+- (IBAction)openTemplateDirectory:(id)sender
+{
+    [NSWorkspace.sharedWorkspace openFile:self.templateDirectoryPath withApplication:@"Finder.app"];
 }
 
 - (IBAction)openTempDir:(id)sender
@@ -1056,8 +1217,7 @@ typedef enum {
 	NSString *dvipdfmxPath;
 	NSString *gsPath;
 	
-	latexPath = (encodingPopUpButton.selectedTag == UTF8) ? [self searchProgram:@"uplatex"] : [self searchProgram:@"platex"];
-	if (!latexPath) {
+	if (!(latexPath = [self searchProgram:@"platex"])) {
 		latexPath = @"";
 		[self showNotFoundError:@"LaTeX"];
 	}
@@ -1077,8 +1237,8 @@ typedef enum {
 
 - (IBAction)setParametersForTeXLive:(id)sender
 {
-    [encodingPopUpButton selectItemWithTag:UTF8];
-	latexPathTextField.StringValue = @"/usr/texbin/uplatex";
+    [encodingPopUpButton selectItemWithTag:NONE];
+	latexPathTextField.StringValue = @"/usr/texbin/platex";
 	dvipdfmxPathTextField.StringValue = @"/usr/texbin/dvipdfmx";
 	gsPathTextField.StringValue = @"/usr/local/bin/gs";
     
@@ -1104,7 +1264,7 @@ typedef enum {
             break;
         case FROMFILE:
             inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:inputSourceFilePath]) {
+            if ([NSFileManager.defaultManager fileExistsAtPath:inputSourceFilePath]) {
                 [converter compileAndConvertWithInputPath:inputSourceFilePath];
             } else {
                 NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath], @"OK", nil, nil);
