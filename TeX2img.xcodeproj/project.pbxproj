@@ -17,6 +17,8 @@
 		348507F8125AC21E0058A26B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; };
 		34850828125AC9E30058A26B /* Sparkle.framework in フレームワークをコピー */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		348BB5190F08C3850063003D /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
+		348CA6DC1A957BC90070B079 /* NSDate-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CA6DB1A957BC90070B079 /* NSDate-Extension.m */; };
+		348CA6DD1A957BC90070B079 /* NSDate-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CA6DB1A957BC90070B079 /* NSDate-Extension.m */; };
 		348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */; };
 		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
@@ -72,6 +74,8 @@
 		348507F7125AC21E0058A26B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		348BB5170F08C3850063003D /* Converter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Converter.h; sourceTree = "<group>"; };
 		348BB5180F08C3850063003D /* Converter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Converter.m; sourceTree = "<group>"; };
+		348CA6DA1A957BC90070B079 /* NSDate-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate-Extension.h"; sourceTree = "<group>"; };
+		348CA6DB1A957BC90070B079 /* NSDate-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate-Extension.m"; sourceTree = "<group>"; };
 		348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-CommandCompletion.m"; sourceTree = "<group>"; };
 		348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-Colorize.m"; sourceTree = "<group>"; };
 		348D72A1125A57B8003AF902 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
@@ -144,6 +148,8 @@
 				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
 				34D41D1C17A6BE2C00997795 /* NSString-Extension.h */,
 				34D41D1D17A6BE2C00997795 /* NSString-Extension.m */,
+				348CA6DA1A957BC90070B079 /* NSDate-Extension.h */,
+				348CA6DB1A957BC90070B079 /* NSDate-Extension.m */,
 			);
 			name = Classes;
 			path = Sources;
@@ -333,6 +339,7 @@
 			files = (
 				3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */,
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
+				348CA6DD1A957BC90070B079 /* NSDate-Extension.m in Sources */,
 				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,
 				705DC7A70F1197E90052AFA5 /* mainc.m in Sources */,
 				34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */,
@@ -345,6 +352,7 @@
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */,
+				348CA6DC1A957BC90070B079 /* NSDate-Extension.m in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
 				34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */,
 				34821EC810282CF9008DEB1F /* ProfileController.m in Sources */,

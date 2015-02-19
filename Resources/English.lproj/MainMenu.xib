@@ -634,7 +634,7 @@ DQ
                 <outlet property="directInputButton" destination="Jlp-tG-8jx" id="nfr-l4-glA"/>
                 <outlet property="dvipdfmxPathTextField" destination="600" id="608"/>
                 <outlet property="embedInIllustratorCheckBox" destination="857" id="861"/>
-                <outlet property="eucRadioButton" destination="714" id="723"/>
+                <outlet property="encodingPopUpButton" destination="Gzh-vl-KcH" id="XMi-XA-snF"/>
                 <outlet property="flashBackgroundMenuItem" destination="829" id="835"/>
                 <outlet property="flashHighlightMenuItem" destination="789" id="795"/>
                 <outlet property="flashInMovingMenuItem" destination="799" id="801"/>
@@ -647,7 +647,6 @@ DQ
                 <outlet property="ignoreErrorCheckBox" destination="653" id="655"/>
                 <outlet property="inputSourceFileButton" destination="fNB-7d-xgA" id="8gZ-Pk-OFj"/>
                 <outlet property="inputSourceFileTextField" destination="cz9-Hs-JtF" id="2fT-96-ciu"/>
-                <outlet property="jisRadioButton" destination="715" id="722"/>
                 <outlet property="latexPathTextField" destination="597" id="4Yg-1y-ORR"/>
                 <outlet property="leftMarginLabel" destination="546" id="617"/>
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
@@ -674,7 +673,6 @@ DQ
                 <outlet property="showOutputDrawerCheckBox" destination="650" id="742"/>
                 <outlet property="showSpaceCharacterMenuItem" destination="809" id="817"/>
                 <outlet property="showTabCharacterMenuItem" destination="811" id="820"/>
-                <outlet property="sjisRadioButton" destination="717" id="721"/>
                 <outlet property="solidHighlightMenuItem" destination="790" id="796"/>
                 <outlet property="sourceTextView" destination="aKZ-WF-zY9" id="Q4i-tH-xWD"/>
                 <outlet property="topMarginLabel" destination="559" id="619"/>
@@ -682,7 +680,6 @@ DQ
                 <outlet property="transparentCheckBox" destination="521" id="615"/>
                 <outlet property="ungroupCheckBox" destination="859" id="862"/>
                 <outlet property="unitMatrix" destination="GVy-l5-MNs" id="t08-0y-0me"/>
-                <outlet property="utf8RadioButton" destination="713" id="724"/>
                 <outlet property="utfExportCheckBox" destination="657" id="659"/>
             </connections>
         </customObject>
@@ -1067,7 +1064,7 @@ DQ
                                                         <rect key="frame" x="18" y="14" width="332" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="164" height="18"/>
+                                                        <size key="cellSize" width="112" height="18"/>
                                                         <size key="intercellSpacing" width="4" height="2"/>
                                                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="zc7-oM-Bmw">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1234,49 +1231,34 @@ DQ
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
-                                        <box autoresizesSubviews="NO" title="Encoding" borderType="line" id="710">
-                                            <rect key="frame" x="12" y="5" width="360" height="118"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                            <view key="contentView">
-                                                <rect key="frame" x="1" y="1" width="358" height="102"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" id="711">
-                                                        <rect key="frame" x="18" y="14" width="322" height="78"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="322" height="18"/>
-                                                        <size key="intercellSpacing" width="4" height="2"/>
-                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="716">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <cells>
-                                                            <column>
-                                                                <buttonCell type="radio" title="Shift-JIS" imagePosition="left" alignment="left" tag="1" inset="2" id="717">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                </buttonCell>
-                                                                <buttonCell type="radio" title="JIS" imagePosition="left" alignment="left" inset="2" id="715">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                </buttonCell>
-                                                                <buttonCell type="radio" title="EUC-JP" imagePosition="left" alignment="left" inset="2" id="714">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                </buttonCell>
-                                                                <buttonCell type="radio" title="UTF8" imagePosition="left" alignment="left" state="on" inset="2" id="713">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                </buttonCell>
-                                                            </column>
-                                                        </cells>
-                                                    </matrix>
-                                                </subviews>
-                                            </view>
-                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </box>
+                                        <textField verticalHuggingPriority="750" id="WVU-Qj-Er7">
+                                            <rect key="frame" x="14" y="119" width="99" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Kanji encoding" id="yuQ-SF-Ml7">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <popUpButton verticalHuggingPriority="750" id="Gzh-vl-KcH">
+                                            <rect key="frame" x="117" y="112" width="131" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <popUpButtonCell key="cell" type="push" title="default" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="ppR-nR-KSH" id="g6m-Ld-cXB">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="menu"/>
+                                                <menu key="menu" id="cIC-yD-3Zc">
+                                                    <items>
+                                                        <menuItem title="default" state="on" id="ppR-nR-KSH">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="UTF-8" tag="1" id="wSb-td-5CB"/>
+                                                        <menuItem title="Shift-JIS" tag="2" id="cXf-4S-fnr"/>
+                                                        <menuItem title="JIS" tag="3" id="Hm3-Cf-YUI"/>
+                                                        <menuItem title="EUC-JP" tag="4" id="8hK-Jg-kXM"/>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                        </popUpButton>
                                     </subviews>
                                 </view>
                             </tabViewItem>

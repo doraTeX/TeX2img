@@ -1072,7 +1072,7 @@ DQ
                                                         <rect key="frame" x="18" y="13" width="332" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="164" height="18"/>
+                                                        <size key="cellSize" width="74" height="18"/>
                                                         <size key="intercellSpacing" width="4" height="2"/>
                                                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="sw5-6C-440">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1108,7 +1108,7 @@ DQ
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField verticalHuggingPriority="750" id="595">
-                                            <rect key="frame" x="46" y="273" width="44" height="17"/>
+                                            <rect key="frame" x="46" y="323" width="44" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="LaTeX" id="596">
                                                 <font key="font" metaFont="system"/>
@@ -1117,7 +1117,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="597">
-                                            <rect key="frame" x="95" y="271" width="276" height="22"/>
+                                            <rect key="frame" x="95" y="321" width="276" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="598">
                                                 <font key="font" metaFont="system"/>
@@ -1126,7 +1126,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="599">
-                                            <rect key="frame" x="26" y="243" width="64" height="17"/>
+                                            <rect key="frame" x="26" y="293" width="64" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="dvipdfmx" id="602">
                                                 <font key="font" metaFont="system"/>
@@ -1135,7 +1135,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="600">
-                                            <rect key="frame" x="95" y="241" width="276" height="22"/>
+                                            <rect key="frame" x="95" y="291" width="276" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="601">
                                                 <font key="font" metaFont="system"/>
@@ -1144,7 +1144,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="603">
-                                            <rect key="frame" x="14" y="213" width="76" height="17"/>
+                                            <rect key="frame" x="14" y="263" width="76" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="ghostscript" id="606">
                                                 <font key="font" metaFont="system"/>
@@ -1153,7 +1153,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="604">
-                                            <rect key="frame" x="95" y="211" width="276" height="22"/>
+                                            <rect key="frame" x="95" y="261" width="276" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="605">
                                                 <font key="font" metaFont="system"/>
@@ -1162,7 +1162,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button id="654">
-                                            <rect key="frame" x="14" y="121" width="334" height="18"/>
+                                            <rect key="frame" x="14" y="171" width="334" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="少々のコンパイルエラーは無視して画像化を強行する" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="655">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1170,7 +1170,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button verticalHuggingPriority="750" id="714">
-                                            <rect key="frame" x="149" y="176" width="96" height="32"/>
+                                            <rect key="frame" x="149" y="226" width="96" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="自動判定" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="715">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1181,7 +1181,7 @@ DQ
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" id="873">
-                                            <rect key="frame" x="245" y="176" width="132" height="32"/>
+                                            <rect key="frame" x="245" y="226" width="132" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="MacTeX 用設定" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="874">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1192,7 +1192,7 @@ DQ
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" id="FC5-GE-HNZ">
-                                            <rect key="frame" x="15" y="150" width="173" height="18"/>
+                                            <rect key="frame" x="15" y="200" width="173" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="コンパイルの（最大）回数：" id="WmO-jJ-pYZ">
                                                 <font key="font" size="13" name="HiraKakuProN-W3"/>
@@ -1201,7 +1201,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="NID-iG-ZgO">
-                                            <rect key="frame" x="241" y="146" width="19" height="27"/>
+                                            <rect key="frame" x="241" y="196" width="19" height="27"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="10" doubleValue="1" id="GtD-za-8WU"/>
                                             <connections>
@@ -1209,7 +1209,7 @@ DQ
                                             </connections>
                                         </stepper>
                                         <textField verticalHuggingPriority="750" id="qJq-qV-HLt">
-                                            <rect key="frame" x="194" y="149" width="47" height="22"/>
+                                            <rect key="frame" x="194" y="199" width="47" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="3" drawsBackground="YES" id="5Jh-J3-UCx">
                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="wla-zr-d3n">
@@ -1225,7 +1225,7 @@ DQ
                                             </connections>
                                         </textField>
                                         <button id="exl-Am-4h5">
-                                            <rect key="frame" x="273" y="150" width="100" height="18"/>
+                                            <rect key="frame" x="273" y="200" width="100" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="回数自動推定" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="BiY-gx-Jao">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1233,7 +1233,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="659">
-                                            <rect key="frame" x="14" y="98" width="273" height="18"/>
+                                            <rect key="frame" x="14" y="148" width="273" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="JIS X 0208 外の文字を \UTF{xxxx} に変換" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="660">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1241,7 +1241,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <textField verticalHuggingPriority="750" id="bEk-zp-Lf1">
-                                            <rect key="frame" x="14" y="65" width="95" height="17"/>
+                                            <rect key="frame" x="14" y="115" width="95" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="文字コード指定" id="WAa-1J-cUd">
                                                 <font key="font" size="13" name="HiraKakuProN-W3"/>
@@ -1250,7 +1250,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <popUpButton verticalHuggingPriority="750" id="SEX-u4-2gO">
-                                            <rect key="frame" x="113" y="60" width="131" height="26"/>
+                                            <rect key="frame" x="113" y="110" width="131" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="指定しない" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="UXG-02-mia" id="YJO-Ve-3V6">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1264,31 +1264,6 @@ DQ
                                                         <menuItem title="Shift-JIS" tag="2" id="FkU-0G-oGA"/>
                                                         <menuItem title="JIS" tag="3" id="QE0-N9-G4X"/>
                                                         <menuItem title="EUC-JP" tag="4" id="aTV-Ug-ACV"/>
-                                                    </items>
-                                                </menu>
-                                            </popUpButtonCell>
-                                        </popUpButton>
-                                        <textField verticalHuggingPriority="750" id="kG9-Nm-QoO">
-                                            <rect key="frame" x="14" y="324" width="94" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="コンパイル手順" id="3v0-ZW-LWP">
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
-                                        <popUpButton verticalHuggingPriority="750" id="G2E-RG-Gw2">
-                                            <rect key="frame" x="112" y="319" width="159" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <popUpButtonCell key="cell" type="push" title="TeX → DVI → PDF" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="SHQ-pv-6W9" id="x9W-QC-FVy">
-                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="menu"/>
-                                                <menu key="menu" id="omp-KR-WmM">
-                                                    <items>
-                                                        <menuItem title="TeX → DVI → PDF" state="on" tag="1" id="SHQ-pv-6W9">
-                                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                                        </menuItem>
-                                                        <menuItem title="TeX → PDF" tag="2" id="w1W-T3-5GO"/>
                                                     </items>
                                                 </menu>
                                             </popUpButtonCell>

@@ -7,6 +7,7 @@
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
+#import "NSDate-Extension.h"
 #import "Converter.h"
 
 @interface Converter()
@@ -195,7 +196,7 @@
 	[cmdline appendString:@" 2>&1"];
 	[controller appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:quietFlag];
 
-	if ((fp=popen(cmdline.UTF8String, "r")) == NULL) {
+	if ((fp = popen(cmdline.UTF8String, "r")) == NULL) {
 		return NO;
 	}
 	while (YES) {
@@ -211,7 +212,9 @@
 
 - (BOOL)compileWithArguments:(NSArray*)arguments
 {
-    BOOL status = [self execCommand:latexPath atDirectory:tempdir withArguments:arguments];
+    BOOL status = [self execCommand:[NSString stringWithFormat:@"export PATH=$PATH:\"%@\"; %@", latexPath.stringByDeletingLastPathComponent, latexPath.lastPathComponent]
+                        atDirectory:tempdir
+                      withArguments:arguments];
     [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
     return status;
 }
@@ -516,9 +519,22 @@
     return [fileManager copyItemAtPath:sourcePath toPath:destPath error:nil];
 }
 
+- (NSDate*)fileModificationDateAtPath:(NSString*)filePath
+{
+    NSError *error = nil;
+    
+    NSDictionary *attributes = [fileManager attributesOfItemAtPath:filePath error:&error];
+    
+    if (error != nil) {
+        return nil;
+    } else {
+        return (NSDate*)[attributes objectForKey:NSFileModificationDate];
+    }
+}
+
 - (BOOL)compileAndConvert
 {
-	NSString* teXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString* texFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	NSString* dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	NSString* pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
     NSString* pdfFileName = [NSString stringWithFormat:@"%@.pdf", tempFileBaseName];
@@ -526,19 +542,40 @@
 	NSString* outputFileName = outputFilePath.lastPathComponent;
 	NSString* extension = outputFilePath.pathExtension.lowercaseString;
 	
-	// TeX→DVI
-	if (![self tex2dvi:teXFilePath]) {
+	// TeX コンパイル
+	if (![self tex2dvi:texFilePath]) {
 		[controller showCompileError];
 		return NO;
 	}
 	
-	if (![fileManager fileExistsAtPath:dviFilePath]) {
-		[controller showExecError:@"LaTeX"];
-		return NO;
-	}
+    BOOL compilationSuceeded = NO;
+    BOOL requireDvipdfmx = NO;
+    
+    NSDate *texDate = [self fileModificationDateAtPath:texFilePath];
+
+    if ([fileManager fileExistsAtPath:pdfFilePath]) { // PDF が存在する場合
+        NSDate *pdfDate = [self fileModificationDateAtPath:pdfFilePath];
+        if (pdfDate && [pdfDate isNewerThan:texDate]) {
+            requireDvipdfmx = NO; // 新しい PDF が生成されていれば dvipdfmx の必要なしと見なす
+            compilationSuceeded = YES;
+        }
+    }
+
+    if (!compilationSuceeded && [fileManager fileExistsAtPath:dviFilePath]) { // 新しい PDF が存在せず，DVI が存在する場合
+        NSDate *dviDate = [self fileModificationDateAtPath:dviFilePath];
+        if (dviDate && [dviDate isNewerThan:texDate]) {
+            requireDvipdfmx = YES; // 新しい PDF が存在せず，新しい DVI が生成されていれば dvipdfmx の必要ありと見なす
+            compilationSuceeded = YES;
+        }
+    }
+    
+    if (!compilationSuceeded) {
+        [controller showExecError:@"LaTeX"];
+        return NO;
+    }
 	
 	// DVI→PDF
-	if (![self dvi2pdf:dviFilePath] || ![fileManager fileExistsAtPath:pdfFilePath]) {
+	if (requireDvipdfmx && (![self dvi2pdf:dviFilePath] || ![fileManager fileExistsAtPath:pdfFilePath])) {
 		[controller showExecError:@"dvipdfmx"];
 		return NO;
 	}

@@ -6,7 +6,7 @@
 
 #define OPTION_NUM 21
 #define MAX_LEN 1024
-#define VERSION "1.8.7.1"
+#define VERSION "1.8.8b1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
