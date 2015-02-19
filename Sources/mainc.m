@@ -34,8 +34,8 @@ static void usage()
     printf("  --create-outline        : outline text in PDF\n");
     printf("  --transparent           : generate transparent PNG file\n");
     printf("  --quick                 : convert in a speed priority mode\n");
-    printf("  --kanji ENCODING        : set Japanese encoding  (sjis|jis|euc|utf8) (default: utf8)\n");
-    printf("  --ignore-errors         : force converting by ignoring nonfatal errors\n");
+    printf("  --kanji ENCODING        : set Japanese encoding  (none|utf8|sjis|jis|euc) (default: none)\n");
+    printf("  --ignore-errors         : force conversion by ignoring nonfatal errors\n");
     printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS X 0208 characters\n");
     printf("  --quiet                 : do not output logs or messages\n");
     printf("  --no-delete             : do not delete temporary files (for debug)\n");
@@ -122,7 +122,7 @@ int main (int argc, char *argv[]) {
         BOOL quickFlag = NO;
         BOOL guessFlag = NO;
         BOOL previewFlag = NO;
-        NSString *encoding = @"utf8";
+        NSString *encoding = @"none";
         NSString *compiler = @"platex";
         NSNumber *unitTag = @(PXUNITTAG);
         

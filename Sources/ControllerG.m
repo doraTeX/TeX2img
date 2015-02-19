@@ -11,6 +11,14 @@ typedef enum {
     FROMFILE = 1
 } InputMethod;
 
+typedef enum {
+    NONE = 0,
+    UTF8 = 1,
+    SJIS = 2,
+    JIS = 3,
+    EUC = 4
+} EncodingTag;
+
 @class ProfileController;
 @class TeXTextView;
 
@@ -77,10 +85,7 @@ typedef enum {
 @property IBOutlet NSButton *getOutlineCheckBox;
 @property IBOutlet NSButton *ignoreErrorCheckBox;
 @property IBOutlet NSButton *utfExportCheckBox;
-@property IBOutlet NSButtonCell *sjisRadioButton;
-@property IBOutlet NSButtonCell *eucRadioButton;
-@property IBOutlet NSButtonCell *jisRadioButton;
-@property IBOutlet NSButtonCell *utf8RadioButton;
+@property IBOutlet NSPopUpButton *encodingPopUpButton;
 @property IBOutlet NSMatrix *unitMatrix;
 @property IBOutlet NSMatrix *priorityMatrix;
 @property HighlightPattern highlightPattern;
@@ -149,10 +154,7 @@ typedef enum {
 @synthesize getOutlineCheckBox;
 @synthesize ignoreErrorCheckBox;
 @synthesize utfExportCheckBox;
-@synthesize sjisRadioButton;
-@synthesize eucRadioButton;
-@synthesize jisRadioButton;
-@synthesize utf8RadioButton;
+@synthesize encodingPopUpButton;
 @synthesize unitMatrix;
 @synthesize priorityMatrix;
 @synthesize highlightPattern;
@@ -319,22 +321,19 @@ typedef enum {
     
     NSString *encoding = [aProfile stringForKey:EncodingKey];
     if (encoding) {
-        sjisRadioButton.State = NSOffState;
-        jisRadioButton.State = NSOffState;
-        eucRadioButton.State = NSOffState;
-        utf8RadioButton.State = NSOffState;
+        EncodingTag tag = NONE;
         
-        if ([encoding isEqualToString:@"jis"]) {
-            jisRadioButton.State = NSOnState;
+        if ([encoding isEqualToString:@"utf8"] || [encoding isEqualToString:@"uptex"]) {
+            tag = UTF8;
+        } else if ([encoding isEqualToString:@"sjis"]) {
+            tag = SJIS;
+        } else if ([encoding isEqualToString:@"jis"]) {
+            tag = JIS;
         } else if ([encoding isEqualToString:@"euc"]) {
-            eucRadioButton.State = NSOnState;
-        } else if ([encoding isEqualToString:@"utf8"]) {
-            utf8RadioButton.State = NSOnState;
-        } else if ([encoding isEqualToString:@"uptex"]) {
-            utf8RadioButton.State = NSOnState;
-        } else {
-            sjisRadioButton.State = NSOnState;
+            tag = EUC;
         }
+        
+        [encodingPopUpButton selectItemWithTag:tag];
     }
 	
 	[self loadSettingForTextField:platexPathTextField fromProfile:aProfile forKey:PlatexPathKey];
@@ -485,14 +484,22 @@ typedef enum {
     @catch (NSException *e) {
     }
     
-    if (sjisRadioButton.state) {
-        currentProfile[EncodingKey] = @"sjis";
-    } else if (eucRadioButton.state) {
-        currentProfile[EncodingKey] = @"euc";
-    } else if (jisRadioButton.state) {
-        currentProfile[EncodingKey] = @"jis";
-    } else if (utf8RadioButton.state) {
-        currentProfile[EncodingKey] = @"utf8";
+    switch (encodingPopUpButton.selectedTag) {
+        case UTF8:
+            currentProfile[EncodingKey] = @"utf8";
+            break;
+        case SJIS:
+            currentProfile[EncodingKey] = @"sjis";
+            break;
+        case JIS:
+            currentProfile[EncodingKey] = @"jis";
+            break;
+        case EUC:
+            currentProfile[EncodingKey] = @"euc";
+            break;
+        default:
+            currentProfile[EncodingKey] = @"none";
+            break;
     }
 	
 	return currentProfile;
@@ -1020,7 +1027,7 @@ typedef enum {
 	NSString *dvipdfmxPath;
 	NSString *gsPath;
 	
-	platexPath = (utf8RadioButton.state == NSOnState) ? [self searchProgram:@"uplatex"] : [self searchProgram:@"platex"];
+	platexPath = (encodingPopUpButton.selectedTag == UTF8) ? [self searchProgram:@"uplatex"] : [self searchProgram:@"platex"];
 	if (!platexPath) {
 		platexPath = @"";
 		[self showNotFoundError:@"platex"];
@@ -1041,10 +1048,7 @@ typedef enum {
 
 - (IBAction)setParametersForTeXLive:(id)sender
 {
-    sjisRadioButton.State = NSOffState;
-    jisRadioButton.State = NSOffState;
-    eucRadioButton.State = NSOffState;
-    utf8RadioButton.State = NSOnState;
+    [encodingPopUpButton selectItemWithTag:UTF8];
 	platexPathTextField.StringValue = @"/usr/texbin/uplatex";
 	dvipdfmxPathTextField.StringValue = @"/usr/texbin/dvipdfmx";
 	gsPathTextField.StringValue = @"/usr/local/bin/gs";

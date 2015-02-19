@@ -218,7 +218,13 @@
 
 - (BOOL)tex2dvi:(NSString*)teXFilePath
 {
-    NSArray *arguments = @[@"-interaction=nonstopmode", [NSString stringWithFormat:@"-kanji=%@", encoding], teXFilePath];
+    NSMutableArray *arguments = [NSMutableArray arrayWithObject:@"-interaction=nonstopmode"];
+ 
+    if (![encoding isEqualToString:@"none"]) {
+        [arguments addObject:[NSString stringWithFormat:@"-kanji=%@", encoding]];
+    }
+    
+    [arguments addObject:teXFilePath];
     
     NSString *auxFilePath = [NSString stringWithFormat:@"%@.aux", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
     
