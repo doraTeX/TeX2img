@@ -223,7 +223,7 @@
 {
     NSMutableArray *arguments = [NSMutableArray arrayWithObject:@"-interaction=nonstopmode"];
  
-    if (![encoding isEqualToString:@"none"]) {
+    if (![encoding isEqualToString:@"none"] && ([latexPath.programName isEqualToString:@"platex"] || [latexPath.programName isEqualToString:@"uplatex"])) {
         [arguments addObject:[NSString stringWithFormat:@"-kanji=%@", encoding]];
     }
     

@@ -547,17 +547,46 @@ typedef enum {
 	return nil;
 }
 
-- (NSString*)defaultPreamble:(BOOL)uplatex
+- (NSString*)defaultPreamble
 {
-    NSString *uplatexOption = uplatex ? @",uplatex" : @"";
-    return [NSString stringWithFormat:@"\\documentclass[fleqn,papersize%@]{jsarticle}\n\\usepackage{amsmath,amssymb}\n\\pagestyle{empty}\n", uplatexOption];
+    NSString *engineName = self.latexEngineName;
+    
+    if ([engineName isEqualToString:@"platex"]) {
+        return @"\\documentclass[fleqn,papersize]{jsarticle}\n"
+               @"\\usepackage{amsmath,amssymb}\n"
+               @"\\pagestyle{empty}\n";
+    } else if ([engineName isEqualToString:@"uplatex"]) {
+        return @"\\documentclass[fleqn,papersize,uplatex]{jsarticle}\n"
+               @"\\usepackage{amsmath,amssymb}\n"
+               @"\\pagestyle{empty}\n";
+    } else if ([engineName isEqualToString:@"xelatex"]) {
+        return @"\\documentclass[fleqn]{bxjsarticle}\n"
+               @"\\usepackage{zxjatype}\n"
+               @"\\setCJKmainfont[BoldFont=ヒラギノ明朝 ProN W6]{ヒラギノ明朝 ProN W3}\n"
+               @"\\setCJKsansfont[BoldFont=ヒラギノ角ゴ ProN W6]{ヒラギノ角ゴ ProN W3}\n"
+               @"\\usepackage{amsmath,amssymb}\n"
+               @"\\pagestyle{empty}\n";
+    } else if ([engineName isEqualToString:@"lualatex"]) {
+        return @"\\documentclass[fleqn]{ltjsarticle}\n"
+               @"\\usepackage[deluxe,hiragino-pron,jis2004]{luatexja-preset}\n"
+               @"\\usepackage{amsmath,amssymb}\n"
+               @"\\pagestyle{empty}\n";
+    } else {
+        return @"\\documentclass[fleqn]{article}\n"
+               @"\\usepackage{amsmath,amssymb}\n"
+               @"\\pagestyle{empty}\n";
+    }
+}
+
+- (NSString*)latexEngineName
+{
+    return [self.currentProfile stringForKey:LatexPathKey].programName;
 }
 
 - (void)restoreDefaultPreambleLogic
 {
     BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
-    BOOL uplatex = [[[[self.currentProfile stringForKey:LatexPathKey] componentsSeparatedByString:@" "][0] lastPathComponent] isEqualToString:@"uplatex"];
-    [preambleTextView replaceEntireContentsWithString:[self defaultPreamble:uplatex] colorize:colorizeText];
+    [preambleTextView replaceEntireContentsWithString:[self defaultPreamble] colorize:colorizeText];
 }
 
 #pragma mark -
@@ -1054,7 +1083,7 @@ typedef enum {
 	gsPathTextField.StringValue = @"/usr/local/bin/gs";
     
     if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"preambleForTeXLiveMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
-        [preambleTextView replaceEntireContentsWithString:[self defaultPreamble:YES] colorize:[self.currentProfile boolForKey:ColorizeTextKey]];
+        [preambleTextView replaceEntireContentsWithString:[self defaultPreamble] colorize:[self.currentProfile boolForKey:ColorizeTextKey]];
     }
 }
 

@@ -1,6 +1,11 @@
 #import "NSString-Extension.h"
 
 @implementation NSString (Extension)
+- (NSString*)programName
+{
+    return [[self componentsSeparatedByString:@" "][0] lastPathComponent];
+}
+
 - (NSString*)pathStringByAppendingPageNumber:(NSUInteger)page
 {
     NSString *dir = self.stringByDeletingLastPathComponent;
