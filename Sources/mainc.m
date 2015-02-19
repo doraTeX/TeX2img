@@ -388,14 +388,14 @@ int main (int argc, char *argv[]) {
         ControllerC *controller = ControllerC.new;
         
         // 実行プログラムのパスチェック
-        NSString *platexPath = getPath(compiler);
+        NSString *latexPath = getPath(compiler);
         NSString *dvipdfmxPath = getPath(@"dvipdfmx");
         NSString *gsPath = getPath(@"gs");
         NSString *pdfcropPath = getPath(@"pdfcrop");
         NSString *epstopdfPath = getPath(@"epstopdf");
         
-        if (!platexPath) {
-            [controller showNotFoundError:@"(u)platex"];
+        if (!latexPath) {
+            [controller showNotFoundError:@"LaTeX"];
             return 1;
         }
         if (!dvipdfmxPath) {
@@ -416,7 +416,7 @@ int main (int argc, char *argv[]) {
         }
         
         NSMutableDictionary *aProfile = NSMutableDictionary.dictionary;
-        aProfile[PlatexPathKey] = getPath(compiler);
+        aProfile[LatexPathKey] = getPath(compiler);
         aProfile[DvipdfmxPathKey] = getPath(@"dvipdfmx");
         aProfile[GsPathKey] = getPath(@"gs");
         aProfile[PdfcropPathKey] = getPath(@"pdfcrop");

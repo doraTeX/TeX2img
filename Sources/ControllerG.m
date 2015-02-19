@@ -77,7 +77,7 @@ typedef enum {
 @property IBOutlet NSSlider *rightMarginSlider;
 @property IBOutlet NSSlider *topMarginSlider;
 @property IBOutlet NSSlider *bottomMarginSlider;
-@property IBOutlet NSTextField *platexPathTextField;
+@property IBOutlet NSTextField *latexPathTextField;
 @property IBOutlet NSTextField *dvipdfmxPathTextField;
 @property IBOutlet NSTextField *gsPathTextField;
 @property IBOutlet NSButton *guessCompilationButton;
@@ -146,7 +146,7 @@ typedef enum {
 @synthesize rightMarginSlider;
 @synthesize topMarginSlider;
 @synthesize bottomMarginSlider;
-@synthesize platexPathTextField;
+@synthesize latexPathTextField;
 @synthesize dvipdfmxPathTextField;
 @synthesize gsPathTextField;
 @synthesize guessCompilationButton;
@@ -199,12 +199,12 @@ typedef enum {
 	NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg")], @"OK", nil, nil);
 }
 
-- (BOOL)platexExistsAtPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
+- (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
 {
 	NSFileManager *fileManager = NSFileManager.defaultManager;
 	
-	if (![fileManager fileExistsAtPath:[platexPath componentsSeparatedByString:@" "][0]]) {
-		[self showNotFoundError:platexPath];
+	if (![fileManager fileExistsAtPath:[latexPath componentsSeparatedByString:@" "][0]]) {
+		[self showNotFoundError:latexPath];
 		return NO;
 	}
 	if (![fileManager fileExistsAtPath:[dvipdfmxPath componentsSeparatedByString:@" "][0]]) {
@@ -336,7 +336,7 @@ typedef enum {
         [encodingPopUpButton selectItemWithTag:tag];
     }
 	
-	[self loadSettingForTextField:platexPathTextField fromProfile:aProfile forKey:PlatexPathKey];
+	[self loadSettingForTextField:latexPathTextField fromProfile:aProfile forKey:LatexPathKey];
 	[self loadSettingForTextField:dvipdfmxPathTextField fromProfile:aProfile forKey:DvipdfmxPathKey];
 	[self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
 	
@@ -434,7 +434,7 @@ typedef enum {
         currentProfile[IgnoreErrorKey] = @(ignoreErrorCheckBox.state);
         currentProfile[UtfExportKey] = @(utfExportCheckBox.state);
         
-        currentProfile[PlatexPathKey] = platexPathTextField.stringValue;
+        currentProfile[LatexPathKey] = latexPathTextField.stringValue;
         currentProfile[DvipdfmxPathKey] = dvipdfmxPathTextField.stringValue;
         currentProfile[GsPathKey] = gsPathTextField.stringValue;
         currentProfile[GuessCompilationKey] = @(guessCompilationButton.state);
@@ -556,7 +556,7 @@ typedef enum {
 - (void)restoreDefaultPreambleLogic
 {
     BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
-    BOOL uplatex = [[[[self.currentProfile stringForKey:PlatexPathKey] componentsSeparatedByString:@" "][0] lastPathComponent] isEqualToString:@"uplatex"];
+    BOOL uplatex = [[[[self.currentProfile stringForKey:LatexPathKey] componentsSeparatedByString:@" "][0] lastPathComponent] isEqualToString:@"uplatex"];
     [preambleTextView replaceEntireContentsWithString:[self defaultPreamble:uplatex] colorize:colorizeText];
 }
 
@@ -625,12 +625,12 @@ typedef enum {
 		[profileController initProfiles];
 		[self restoreDefaultPreambleLogic];
 		
-		NSString *platexPath;
+		NSString *latexPath;
 		NSString *dvipdfmxPath;
 		NSString *gsPath;
 		
-		if (!(platexPath = [self searchProgram:@"platex"])) {
-			platexPath = @"/usr/local/bin/platex";
+		if (!(latexPath = [self searchProgram:@"platex"])) {
+			latexPath = @"/usr/local/bin/platex";
 			[self showNotFoundError:@"platex"];
 		}
 		if (!(dvipdfmxPath = [self searchProgram:@"dvipdfmx"])) {
@@ -642,12 +642,12 @@ typedef enum {
 			[self showNotFoundError:@"ghostscript"];
 		}
 		
-		platexPathTextField.StringValue = platexPath;
+		latexPathTextField.StringValue = latexPath;
 		dvipdfmxPathTextField.StringValue = dvipdfmxPath;
 		gsPathTextField.StringValue = gsPath;
 		
         [self performSelectorOnMainThread:@selector(showInitMessage:)
-                               withObject:@{PlatexPathKey: platexPath,
+                               withObject:@{LatexPathKey: latexPath,
                                             DvipdfmxPathKey: dvipdfmxPath,
                                             GsPathKey: gsPath
                                             }
@@ -690,7 +690,7 @@ typedef enum {
 {
     NSRunAlertPanel(localizedString(@"initSettingsMsg"),
                     [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",
-                     localizedString(@"setPathMsg1"), paths[PlatexPathKey], paths[DvipdfmxPathKey], paths[GsPathKey], localizedString(@"setPathMsg2")],
+                     localizedString(@"setPathMsg1"), paths[LatexPathKey], paths[DvipdfmxPathKey], paths[GsPathKey], localizedString(@"setPathMsg2")],
                     @"OK", nil, nil);
 }
 
@@ -1023,14 +1023,14 @@ typedef enum {
 
 - (IBAction)searchPrograms:(id)sender
 {
-	NSString *platexPath;
+	NSString *latexPath;
 	NSString *dvipdfmxPath;
 	NSString *gsPath;
 	
-	platexPath = (encodingPopUpButton.selectedTag == UTF8) ? [self searchProgram:@"uplatex"] : [self searchProgram:@"platex"];
-	if (!platexPath) {
-		platexPath = @"";
-		[self showNotFoundError:@"platex"];
+	latexPath = (encodingPopUpButton.selectedTag == UTF8) ? [self searchProgram:@"uplatex"] : [self searchProgram:@"platex"];
+	if (!latexPath) {
+		latexPath = @"";
+		[self showNotFoundError:@"LaTeX"];
 	}
     if (!(dvipdfmxPath = [self searchProgram:@"dvipdfmx"])) {
 		dvipdfmxPath = @"";
@@ -1041,7 +1041,7 @@ typedef enum {
 		[self showNotFoundError:@"ghostscript"];
 	}
 	
-	platexPathTextField.StringValue = platexPath;
+	latexPathTextField.StringValue = latexPath;
 	dvipdfmxPathTextField.StringValue = dvipdfmxPath;
 	gsPathTextField.StringValue = gsPath;
 }
@@ -1049,7 +1049,7 @@ typedef enum {
 - (IBAction)setParametersForTeXLive:(id)sender
 {
     [encodingPopUpButton selectItemWithTag:UTF8];
-	platexPathTextField.StringValue = @"/usr/texbin/uplatex";
+	latexPathTextField.StringValue = @"/usr/texbin/uplatex";
 	dvipdfmxPathTextField.StringValue = @"/usr/texbin/dvipdfmx";
 	gsPathTextField.StringValue = @"/usr/local/bin/gs";
     

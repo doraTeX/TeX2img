@@ -654,6 +654,7 @@ DQ
                 <outlet property="ignoreErrorCheckBox" destination="654" id="656"/>
                 <outlet property="inputSourceFileButton" destination="J9r-D6-YSd" id="dz3-fb-S7i"/>
                 <outlet property="inputSourceFileTextField" destination="Kxp-Ue-6HR" id="G1E-gR-J5p"/>
+                <outlet property="latexPathTextField" destination="597" id="M67-Rd-WNW"/>
                 <outlet property="leftMarginLabel" destination="546" id="617"/>
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
@@ -663,7 +664,6 @@ DQ
                 <outlet property="outputDrawerMenuItem" destination="487" id="782"/>
                 <outlet property="outputFileTextField" destination="461" id="502"/>
                 <outlet property="outputTextView" destination="476" id="477"/>
-                <outlet property="platexPathTextField" destination="597" id="607"/>
                 <outlet property="preambleTextView" destination="485" id="496"/>
                 <outlet property="preambleWindow" destination="480" id="495"/>
                 <outlet property="preambleWindowMenuItem" destination="486" id="498"/>
@@ -1072,7 +1072,7 @@ DQ
                                                         <rect key="frame" x="18" y="13" width="332" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="74" height="18"/>
+                                                        <size key="cellSize" width="164" height="18"/>
                                                         <size key="intercellSpacing" width="4" height="2"/>
                                                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="sw5-6C-440">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1250,7 +1250,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <popUpButton verticalHuggingPriority="750" id="SEX-u4-2gO">
-                                            <rect key="frame" x="113" y="60" width="100" height="26"/>
+                                            <rect key="frame" x="113" y="60" width="131" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="指定しない" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="UXG-02-mia" id="YJO-Ve-3V6">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1264,6 +1264,31 @@ DQ
                                                         <menuItem title="Shift-JIS" tag="2" id="FkU-0G-oGA"/>
                                                         <menuItem title="JIS" tag="3" id="QE0-N9-G4X"/>
                                                         <menuItem title="EUC-JP" tag="4" id="aTV-Ug-ACV"/>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                        </popUpButton>
+                                        <textField verticalHuggingPriority="750" id="kG9-Nm-QoO">
+                                            <rect key="frame" x="14" y="324" width="94" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="コンパイル手順" id="3v0-ZW-LWP">
+                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <popUpButton verticalHuggingPriority="750" id="G2E-RG-Gw2">
+                                            <rect key="frame" x="112" y="319" width="159" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <popUpButtonCell key="cell" type="push" title="TeX → DVI → PDF" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="SHQ-pv-6W9" id="x9W-QC-FVy">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="menu"/>
+                                                <menu key="menu" id="omp-KR-WmM">
+                                                    <items>
+                                                        <menuItem title="TeX → DVI → PDF" state="on" tag="1" id="SHQ-pv-6W9">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="TeX → PDF" tag="2" id="w1W-T3-5GO"/>
                                                     </items>
                                                 </menu>
                                             </popUpButtonCell>

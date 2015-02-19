@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14C81f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1050" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
@@ -648,6 +648,7 @@ DQ
                 <outlet property="inputSourceFileButton" destination="fNB-7d-xgA" id="8gZ-Pk-OFj"/>
                 <outlet property="inputSourceFileTextField" destination="cz9-Hs-JtF" id="2fT-96-ciu"/>
                 <outlet property="jisRadioButton" destination="715" id="722"/>
+                <outlet property="latexPathTextField" destination="597" id="4Yg-1y-ORR"/>
                 <outlet property="leftMarginLabel" destination="546" id="617"/>
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
@@ -657,7 +658,6 @@ DQ
                 <outlet property="outputDrawerMenuItem" destination="487" id="741"/>
                 <outlet property="outputFileTextField" destination="461" id="502"/>
                 <outlet property="outputTextView" destination="476" id="477"/>
-                <outlet property="platexPathTextField" destination="597" id="607"/>
                 <outlet property="preambleTextView" destination="485" id="496"/>
                 <outlet property="preambleWindow" destination="480" id="495"/>
                 <outlet property="preambleWindowMenuItem" destination="486" id="498"/>

@@ -21,7 +21,7 @@ NSMutableString *g_commandCompletionList;
 #define GetOutlineKey @"getOutline"
 #define IgnoreErrorKey @"ignoreError"
 #define UtfExportKey @"utfExport"
-#define PlatexPathKey @"platexPath"
+#define LatexPathKey @"platexPath"
 #define DvipdfmxPathKey @"dvipdfmxPath"
 #define GsPathKey @"gsPath"
 #define GuessCompilationKey @"guessCompilation"
@@ -74,3 +74,5 @@ NSMutableString *g_commandCompletionList;
 #define DIRECT_INPUT_TAG 0
 #define INPUT_FILE_TAG 1
 
+#define TeXtoDVItoPDF 1
+#define TeXtoPDF 2

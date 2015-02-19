@@ -3,7 +3,7 @@
 @protocol OutputController
 - (void)showExtensionError;
 - (void)showNotFoundError:(NSString*)aPath;
-- (BOOL)platexExistsAtPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath;
+- (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath;
 - (BOOL)pdfcropExists;
 - (BOOL)epstopdfExists;
 - (void)showFileGenerateError:(NSString*)aPath;

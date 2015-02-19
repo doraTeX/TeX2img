@@ -26,10 +26,10 @@ BOOL checkWhich(NSString *cmdName)
 	fprintf(stderr, [NSString stringWithFormat:@"tex2img : %@ cannot be found.\nCheck environment variable $PATH.\n", aPath].UTF8String);
 }
 
-- (BOOL)platexExistsAtPath:(NSString*)platexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
+- (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
 {
-	if (!checkWhich(platexPath)) {
-		[self showNotFoundError:@"(u)platex"];
+	if (!checkWhich(latexPath)) {
+		[self showNotFoundError:@"LaTeX"];
 		return NO;
 	}
 	if (!checkWhich(dvipdfmxPath)) {

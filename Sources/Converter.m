@@ -10,7 +10,7 @@
 #import "Converter.h"
 
 @interface Converter()
-@property NSString* platexPath;
+@property NSString* latexPath;
 @property NSString* dvipdfmxPath;
 @property NSString* gsPath;
 @property NSString* encoding;
@@ -33,7 +33,7 @@
 @end
 
 @implementation Converter
-@synthesize platexPath;
+@synthesize latexPath;
 @synthesize dvipdfmxPath;
 @synthesize gsPath;
 @synthesize encoding;
@@ -59,7 +59,7 @@
 {
     pageCount = 1;
     
-    platexPath = [aProfile stringForKey:PlatexPathKey];
+    latexPath = [aProfile stringForKey:LatexPathKey];
     dvipdfmxPath = [aProfile stringForKey:DvipdfmxPathKey];
     gsPath = [aProfile stringForKey:GsPathKey];
     pdfcropPath = [aProfile stringForKey:PdfcropPathKey];
@@ -211,7 +211,7 @@
 
 - (BOOL)compileWithArguments:(NSArray*)arguments
 {
-    BOOL status = [self execCommand:platexPath atDirectory:tempdir withArguments:arguments];
+    BOOL status = [self execCommand:latexPath atDirectory:tempdir withArguments:arguments];
     [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
     return status;
 }
@@ -285,7 +285,7 @@
 	}
 	
 	BOOL status = [self execCommand:[NSString stringWithFormat:@"export PATH=$PATH:\"%@\":\"%@\";/usr/bin/perl \"%@\"",
-                                    platexPath.stringByDeletingLastPathComponent,
+                                    latexPath.stringByDeletingLastPathComponent,
                                     gsPath.stringByDeletingLastPathComponent,
                                     pdfcropPath]
                        atDirectory:tempdir
@@ -533,7 +533,7 @@
 	}
 	
 	if (![fileManager fileExistsAtPath:dviFilePath]) {
-		[controller showExecError:@"platex"];
+		[controller showExecError:@"LaTeX"];
 		return NO;
 	}
 	
@@ -587,7 +587,7 @@
 {
 	BOOL status = YES;
 	// 最初にプログラムの存在確認と出力ファイル形式確認
-	if (![controller platexExistsAtPath:platexPath dvipdfmxPath:dvipdfmxPath gsPath:gsPath]) {
+	if (![controller latexExistsAtPath:latexPath dvipdfmxPath:dvipdfmxPath gsPath:gsPath]) {
 		status = NO;
 	}
 	
