@@ -792,10 +792,10 @@ typedef enum {
     NSString *templateDirectoryPath = self.templateDirectoryPath;
     if (![fileManager fileExistsAtPath:templateDirectoryPath isDirectory:nil]) {
         [fileManager createDirectoryAtPath:templateDirectoryPath withIntermediateDirectories:YES attributes:nil error:nil];
+        // 初回起動時には app bundle 内のテンプレートをコピー（同名ファイルが存在する場合は上書きしない）
+        NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
+        system([NSString stringWithFormat:@"/bin/cp -pn \"%@\"/* \"%@\"", originalTemplateDirectory, templateDirectoryPath].UTF8String);
     }
-    // app bundle 内のテンプレートをコピー（同名ファイルが存在する場合は上書きしない）
-    NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
-    system([NSString stringWithFormat:@"/bin/cp -pn \"%@\"/* \"%@\"", originalTemplateDirectory, templateDirectoryPath].UTF8String);
     
 }
 
