@@ -6,7 +6,7 @@
 
 #define OPTION_NUM 23
 #define MAX_LEN 1024
-#define VERSION "1.8.8b3"
+#define VERSION "1.8.8b4"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -53,7 +53,7 @@ NSString* getPath(NSString *cmdName)
 	FILE *fp;
 	char *pStr;
     
-	if ((fp=popen([NSString stringWithFormat:@"which %@", cmdName].UTF8String, "r")) == NULL) {
+	if ((fp = popen([NSString stringWithFormat:@"which %@", cmdName].UTF8String, "r")) == NULL) {
 		return nil;
 	}
 	fgets(str, MAX_LEN-1, fp);
@@ -74,7 +74,7 @@ NSString* getFullPath(NSString *filename)
 	char str[MAX_LEN];
 	FILE *fp;
 	
-	if ((fp=popen([NSString stringWithFormat:@"perl -e \"use File::Spec;print File::Spec->rel2abs('%@');\"", filename].UTF8String, "r")) == NULL) {
+	if ((fp = popen([NSString stringWithFormat:@"perl -e \"use File::Spec;print File::Spec->rel2abs('%@');\"", filename].UTF8String, "r")) == NULL) {
 		return nil;
 	}
 	fgets(str, MAX_LEN-1, fp);

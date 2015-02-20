@@ -1235,18 +1235,6 @@ typedef enum {
 	gsPathTextField.StringValue = gsPath;
 }
 
-- (IBAction)setParametersForTeXLive:(id)sender
-{
-    [encodingPopUpButton selectItemWithTag:NONE];
-	latexPathTextField.StringValue = @"/usr/texbin/platex";
-	dvipdfmxPathTextField.StringValue = @"/usr/texbin/dvipdfmx";
-	gsPathTextField.StringValue = @"/usr/local/bin/gs";
-    
-    if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"preambleForTeXLiveMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
-        [preambleTextView replaceEntireContentsWithString:[self defaultPreamble] colorize:[self.currentProfile boolForKey:ColorizeTextKey]];
-    }
-}
-
 - (void)generateImage
 {
     NSString *inputSourceFilePath;

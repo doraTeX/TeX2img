@@ -1183,28 +1183,6 @@ DQ
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
-                                        <button verticalHuggingPriority="750" id="714">
-                                            <rect key="frame" x="149" y="226" width="96" height="32"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="push" title="自動判定" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="715">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="searchPrograms:" target="450" id="716"/>
-                                            </connections>
-                                        </button>
-                                        <button verticalHuggingPriority="750" id="873">
-                                            <rect key="frame" x="245" y="226" width="132" height="32"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="push" title="MacTeX 用設定" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="874">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="setParametersForTeXLive:" target="450" id="876"/>
-                                            </connections>
-                                        </button>
                                         <textField verticalHuggingPriority="750" id="FC5-GE-HNZ">
                                             <rect key="frame" x="15" y="200" width="173" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -1282,6 +1260,17 @@ DQ
                                                 </menu>
                                             </popUpButtonCell>
                                         </popUpButton>
+                                        <button verticalHuggingPriority="750" id="714">
+                                            <rect key="frame" x="281" y="225" width="96" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="push" title="自動判定" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="715">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="searchPrograms:" target="450" id="716"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>

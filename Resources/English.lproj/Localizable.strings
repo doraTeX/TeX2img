@@ -20,7 +20,6 @@
 "extensionErrMsg" = "The extention must be .eps/.png/.jpg/.pdf.";
 "emptyProfileNameErrMsg" = "Enter the name of the new profile.";
 "profileOverwriteMsg" = "A profile of the same name already exists. Do you want to replace it?";
-"preambleForTeXLiveMsg" = "Do you use the preamble optimized for MacTeX?";
 "overwriteContentsWarningMsg" = "Current contents including preamble will be replaced.\nDo you want to continue?";
 "cannotReadErrorMsg" = "Failed to read the file.\n%@";
 "cannotWriteErrorMsg" = "Failed to write the file.\n%@";
