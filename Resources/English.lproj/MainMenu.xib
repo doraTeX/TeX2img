@@ -740,7 +740,7 @@ DQ
                     <popUpButton verticalHuggingPriority="750" id="8yt-cH-L8O">
                         <rect key="frame" x="148" y="10" width="162" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="Template" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" id="qcC-kl-qNF">
+                        <popUpButtonCell key="cell" type="push" title="Template" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" selectedItem="a3h-Iz-rmi" id="qcC-kl-qNF">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                             <menu key="menu" autoenablesItems="NO" id="b6L-Hh-fhH">
@@ -755,6 +755,11 @@ DQ
                                     <menuItem title="Manage templates..." id="npW-wV-L2r">
                                         <connections>
                                             <action selector="openTemplateDirectory:" target="450" id="APp-w7-gdx"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Restore default templates..." id="a3h-Iz-rmi">
+                                        <connections>
+                                            <action selector="restoreDefaultTemplates:" target="450" id="QUa-Hy-h0b"/>
                                         </connections>
                                     </menuItem>
                                 </items>
@@ -1514,5 +1519,10 @@ DQ
         </drawer>
         <customObject id="769" customClass="SUUpdater"/>
         <userDefaultsController representsSharedInstance="YES" id="781"/>
+        <menuItem title="Manage templates..." id="aE7-Pk-rpp">
+            <connections>
+                <action selector="openTemplateDirectory:" target="450" id="3rS-k2-1KK"/>
+            </connections>
+        </menuItem>
     </objects>
 </document>

@@ -24,3 +24,4 @@
 "cannotReadErrorMsg" = "ファイルの読み込みに失敗しました。\n%@";
 "cannotWriteErrorMsg" = "ファイルの書き込みに失敗しました。\n%@";
 "saveCurrentPreambleAsTemplate" = "プリアンブルをテンプレートとして保存";
+"restoreTemplatesConfirmationMsg" = "デフォルトのテンプレートを復元します。\n（同名の既存テンプレートは上書きされません。）\nよろしいですか？";

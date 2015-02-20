@@ -422,6 +422,8 @@ typedef enum {
 {
 	NSMutableDictionary *currentProfile = NSMutableDictionary.dictionary;
 	@try {
+        currentProfile[TeX2imgVersionKey] = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"];
+        
         currentProfile[XKey] = @(NSMinX(mainWindow.frame));
         currentProfile[YKey] = @(NSMinY(mainWindow.frame));
         currentProfile[MainWindowWidthKey] = @(NSWidth(mainWindow.frame));
@@ -572,7 +574,7 @@ typedef enum {
 {
     NSMenu *menu = templatePopupButton.menu;
     
-    while (menu.numberOfItems > 4) {
+    while (menu.numberOfItems > 5) { // この数はテンプレートメニューの初期項目数
         [menu removeItemAtIndex:1];
     }
     
@@ -657,6 +659,20 @@ typedef enum {
     NSString *applicationSupportDirectoryPath = NSFileManager.defaultManager.applicationSupportDirectory;
     return [applicationSupportDirectoryPath stringByAppendingPathComponent:TemplateDirectoryName];
 }
+
+- (IBAction)restoreDefaultTemplates:(id)sender
+{
+    if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"restoreTemplatesConfirmationMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
+        [self restoreDefaultTemplatesLogic];
+    }
+}
+
+- (void)restoreDefaultTemplatesLogic
+{
+    NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
+    system([NSString stringWithFormat:@"/bin/cp -pn \"%@\"/* \"%@\"", originalTemplateDirectory, self.templateDirectoryPath].UTF8String);
+}
+
 
 #pragma mark -
 #pragma mark デリゲート・ノティフィケーションのコールバック
@@ -792,9 +808,8 @@ typedef enum {
     NSString *templateDirectoryPath = self.templateDirectoryPath;
     if (![fileManager fileExistsAtPath:templateDirectoryPath isDirectory:nil]) {
         [fileManager createDirectoryAtPath:templateDirectoryPath withIntermediateDirectories:YES attributes:nil error:nil];
-        // 初回起動時には app bundle 内のテンプレートをコピー（同名ファイルが存在する場合は上書きしない）
-        NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
-        system([NSString stringWithFormat:@"/bin/cp -pn \"%@\"/* \"%@\"", originalTemplateDirectory, templateDirectoryPath].UTF8String);
+        // 初回起動時には app bundle 内のテンプレートをコピー
+        [self restoreDefaultTemplatesLogic];
     }
     
 }

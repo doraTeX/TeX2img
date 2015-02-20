@@ -747,7 +747,7 @@ DQ
                     <popUpButton verticalHuggingPriority="750" id="88N-oX-Kx7">
                         <rect key="frame" x="148" y="8" width="162" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="テンプレート" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" selectedItem="27r-21-rhm" id="ixJ-k4-Ee5">
+                        <popUpButtonCell key="cell" type="push" title="テンプレート" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" selectedItem="BCU-Nx-qNP" id="ixJ-k4-Ee5">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                             <menu key="menu" autoenablesItems="NO" id="wOe-7y-tf5">
@@ -762,6 +762,11 @@ DQ
                                     <menuItem title="テンプレートを管理..." id="27r-21-rhm">
                                         <connections>
                                             <action selector="openTemplateDirectory:" target="450" id="B2X-R8-4Cb"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="デフォルトのテンプレートを復元..." id="BCU-Nx-qNP">
+                                        <connections>
+                                            <action selector="restoreDefaultTemplates:" target="450" id="AuQ-6F-jlo"/>
                                         </connections>
                                     </menuItem>
                                 </items>
@@ -1086,7 +1091,7 @@ DQ
                                                         <rect key="frame" x="18" y="13" width="332" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="74" height="18"/>
+                                                        <size key="cellSize" width="164" height="18"/>
                                                         <size key="intercellSpacing" width="4" height="2"/>
                                                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="sw5-6C-440">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>

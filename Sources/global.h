@@ -66,6 +66,7 @@ NSMutableString *g_commandCompletionList;
 #define EpstopdfPathKey @"epstopdfPath"
 #define QuietKey @"quiet"
 #define ControllerKey @"controller"
+#define TeX2imgVersionKey @"TeX2imgVersion"
 
 #define PXUNITTAG 1
 #define BPUNITTAG 2
