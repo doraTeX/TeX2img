@@ -36,7 +36,7 @@ static void usage()
     printf("  --create-outline        : outline text in PDF\n");
     printf("  --transparent           : generate transparent PNG file\n");
     printf("  --quick                 : convert in a speed priority mode\n");
-    printf("  --kanji ENCODING        : set Japanese encoding  (none|utf8|sjis|jis|euc) (default: none)\n");
+    printf("  --kanji ENCODING        : set Japanese encoding  (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --ignore-errors         : force conversion by ignoring nonfatal errors\n");
     printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS X 0208 characters\n");
     printf("  --quiet                 : do not output logs or messages\n");
@@ -124,7 +124,7 @@ int main (int argc, char *argv[]) {
         BOOL quickFlag = NO;
         BOOL guessFlag = NO;
         BOOL previewFlag = NO;
-        NSString *encoding = @"none";
+        NSString *encoding = @"no";
         NSString *compiler = @"platex";
         NSString *dvipdfmx = @"dvipdfmx";
         NSString *gs       = @"gs";
@@ -269,6 +269,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         resolutoinLevel = strtof(optarg, NULL);
                     } else {
+                        printf("--resolution is wrong.\n");
                         usage();
                     }
                     break;
@@ -276,6 +277,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         leftMargin = strtoi(optarg);
                     } else {
+                        printf("--left-margin is wrong.\n");
                         usage();
                     }
                     break;
@@ -283,6 +285,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         rightMargin = strtoi(optarg);
                     } else {
+                        printf("--right-margin is wrong.\n");
                         usage();
                     }
                     break;
@@ -290,6 +293,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         topMargin = strtoi(optarg);
                     } else {
+                        printf("--top-margin is wrong.\n");
                         usage();
                     }
                     break;
@@ -297,6 +301,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         bottomMargin = strtoi(optarg);
                     } else {
+                        printf("--bottom-margin is wrong.\n");
                         usage();
                     }
                     break;
@@ -318,7 +323,17 @@ int main (int argc, char *argv[]) {
                 case 11: // --kanji
                     if (optarg) {
                         encoding = @(optarg);
+                        if ([encoding isEqualToString:@"no"]) {
+                            encoding = PTEX_ENCODING_NONE;
+                        } else if (![encoding isEqualToString:PTEX_ENCODING_UTF8]
+                                   && ![encoding isEqualToString:PTEX_ENCODING_SJIS]
+                                   && ![encoding isEqualToString:PTEX_ENCODING_JIS]
+                                   && ![encoding isEqualToString:PTEX_ENCODING_EUC]) {
+                            printf("--kanji is wrong.\n");
+                            usage();
+                        }
                     } else {
+                        printf("--kanji is wrong.\n");
                         usage();
                     }
                     break;
@@ -329,6 +344,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         compiler = @(optarg);
                     } else {
+                        printf("--compiler is wrong.\n");
                         usage();
                     }
                     break;
@@ -340,9 +356,11 @@ int main (int argc, char *argv[]) {
                         } else if ([unitString isEqualToString:@"bp"]) {
                             unitTag = @(BPUNITTAG);
                         } else {
+                            printf("--unit is wrong.\n");
                             usage();
                         }
                     } else {
+                        printf("--unit is wrong.\n");
                         usage();
                     }
                     break;
@@ -353,6 +371,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         numberOfCompilation = strtoi(optarg);
                     } else {
+                        printf("--num is wrong.\n");
                         usage();
                     }
                     break;
@@ -366,6 +385,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         dvipdfmx = @(optarg);
                     } else {
+                        printf("--dvipdfmx is wrong.\n");
                         usage();
                     }
                     break;
@@ -373,6 +393,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         gs = @(optarg);
                     } else {
+                        printf("--gs is wrong.\n");
                         usage();
                     }
                     break;

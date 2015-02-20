@@ -329,13 +329,13 @@ typedef enum {
     if (encoding) {
         EncodingTag tag = NONE;
         
-        if ([encoding isEqualToString:@"utf8"] || [encoding isEqualToString:@"uptex"]) {
+        if ([encoding isEqualToString:PTEX_ENCODING_UTF8] || [encoding isEqualToString:@"uptex"]) {
             tag = UTF8;
-        } else if ([encoding isEqualToString:@"sjis"]) {
+        } else if ([encoding isEqualToString:PTEX_ENCODING_SJIS]) {
             tag = SJIS;
-        } else if ([encoding isEqualToString:@"jis"]) {
+        } else if ([encoding isEqualToString:PTEX_ENCODING_JIS]) {
             tag = JIS;
-        } else if ([encoding isEqualToString:@"euc"]) {
+        } else if ([encoding isEqualToString:PTEX_ENCODING_EUC]) {
             tag = EUC;
         }
         
@@ -492,19 +492,19 @@ typedef enum {
     
     switch (encodingPopUpButton.selectedTag) {
         case UTF8:
-            currentProfile[EncodingKey] = @"utf8";
+            currentProfile[EncodingKey] = PTEX_ENCODING_UTF8;
             break;
         case SJIS:
-            currentProfile[EncodingKey] = @"sjis";
+            currentProfile[EncodingKey] = PTEX_ENCODING_SJIS;
             break;
         case JIS:
-            currentProfile[EncodingKey] = @"jis";
+            currentProfile[EncodingKey] = PTEX_ENCODING_JIS;
             break;
         case EUC:
-            currentProfile[EncodingKey] = @"euc";
+            currentProfile[EncodingKey] = PTEX_ENCODING_EUC;
             break;
         default:
-            currentProfile[EncodingKey] = @"none";
+            currentProfile[EncodingKey] = PTEX_ENCODING_NONE;
             break;
     }
 	
@@ -884,11 +884,11 @@ typedef enum {
 {
     NSStringEncoding encoding = NSUTF8StringEncoding;
     
-    if ([option isEqualToString:@"sjis"]) {
+    if ([option isEqualToString:PTEX_ENCODING_SJIS]) {
         encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese);
-    } else if ([option isEqualToString:@"euc"]) {
+    } else if ([option isEqualToString:PTEX_ENCODING_EUC]) {
         encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP);
-    } else if ([option isEqualToString:@"jis"]) {
+    } else if ([option isEqualToString:PTEX_ENCODING_JIS]) {
         encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
     }
     

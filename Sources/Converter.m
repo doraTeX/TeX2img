@@ -164,11 +164,11 @@
     }
 	
 	UInt32 enc;
-	if ([encoding isEqualToString:@"sjis"]) {
+	if ([encoding isEqualToString:PTEX_ENCODING_SJIS]) {
 		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese);
-	} else if ([encoding isEqualToString:@"euc"]) {
+	} else if ([encoding isEqualToString:PTEX_ENCODING_EUC]) {
 		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP);
-	} else if ([encoding isEqualToString:@"jis"]) {
+	} else if ([encoding isEqualToString:PTEX_ENCODING_JIS]) {
 		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
     } else { // utf8
 		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
@@ -223,7 +223,7 @@
 {
     NSMutableArray *arguments = [NSMutableArray arrayWithObject:@"-interaction=nonstopmode"];
  
-    if (![encoding isEqualToString:@"none"]) {
+    if (![encoding isEqualToString:PTEX_ENCODING_NONE]) {
         [arguments addObject:[NSString stringWithFormat:@"-kanji=%@", encoding]];
     }
     

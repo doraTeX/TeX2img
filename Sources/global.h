@@ -76,3 +76,9 @@ NSMutableString *g_commandCompletionList;
 
 #define TeXtoDVItoPDF 1
 #define TeXtoPDF 2
+
+#define PTEX_ENCODING_NONE @"none"
+#define PTEX_ENCODING_UTF8 @"utf8"
+#define PTEX_ENCODING_SJIS @"sjis"
+#define PTEX_ENCODING_JIS @"jis"
+#define PTEX_ENCODING_EUC @"euc"
