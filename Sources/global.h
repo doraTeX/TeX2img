@@ -38,6 +38,7 @@ NSMutableString *g_commandCompletionList;
 #define BottomMarginKey @"bottomMargin"
 #define UnitKey @"unit"
 #define PriorityKey @"priority"
+
 #define ConvertYenMarkKey @"convertYenMark"
 #define ColorizeTextKey @"colorizeText"
 #define HighlightPatternKey @"highlightPattern"
@@ -83,3 +84,5 @@ NSMutableString *g_commandCompletionList;
 #define PTEX_ENCODING_SJIS @"sjis"
 #define PTEX_ENCODING_JIS @"jis"
 #define PTEX_ENCODING_EUC @"euc"
+
+#define EAKey "com.loveinequality.TeX2img"

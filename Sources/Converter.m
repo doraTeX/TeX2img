@@ -1,5 +1,6 @@
 #import <stdio.h>
 #import <Quartz/Quartz.h>
+#include <sys/xattr.h>
 #import "global.h"
 
 #define MAX_LEN 1024
@@ -519,6 +520,19 @@
     return [fileManager copyItemAtPath:sourcePath toPath:destPath error:nil];
 }
 
+- (void)embedSource:(NSString*)texFilePath intoFile:(NSString*)filePath
+{
+    const char *target = filePath.fileSystemRepresentation;
+   
+    NSData *data = [NSData dataWithContentsOfFile:texFilePath];
+    NSStringEncoding detectedEncoding;
+    NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
+    
+    const char *val = contents.UTF8String;
+    
+    setxattr(target, EAKey, val, strlen(val), 0, 0);
+}
+
 - (NSDate*)fileModificationDateAtPath:(NSString*)filePath
 {
     NSError *error = nil;
@@ -612,9 +626,13 @@
 	
 	// 最終出力ファイルを目的地へコピー
     [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
+    [self embedSource:texFilePath intoFile:outputFilePath];
+
     for (NSUInteger i=2; i<=pageCount; i++) {
+        NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
         [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
-                      toPath:[outputFilePath pathStringByAppendingPageNumber:i]];
+                      toPath:destPath];
+        [self embedSource:texFilePath intoFile:destPath];
     }
 	
 	return YES;

@@ -271,8 +271,9 @@ static BOOL isValidTeXCommandChar(unichar c)
         return NSDragOperationNone;
     }
     
-    // 拡張子 .tex 以外は受付不可
-    if (![draggedFilePath.pathExtension isEqualToString:@"tex"]) {
+    // 拡張子 .tex / .pdf / .eps / .jpg / .png 以外は受付不可
+    NSString *ext = draggedFilePath.pathExtension;
+    if (![ext isEqualToString:@"tex"] && ![ext isEqualToString:@"pdf"] && ![ext isEqualToString:@"eps"] && ![ext isEqualToString:@"jpg"] && ![ext isEqualToString:@"png"]) {
         return NSDragOperationNone;
     }
 

@@ -25,3 +25,4 @@
 "cannotWriteErrorMsg" = "ファイルの書き込みに失敗しました。\n%@";
 "saveCurrentPreambleAsTemplate" = "プリアンブルをテンプレートとして保存";
 "restoreTemplatesConfirmationMsg" = "デフォルトのテンプレートを復元します。\n同名の既存テンプレートは上書きされます。\nよろしいですか？";
+"doesNotContainSource" = "この画像ファイルにはソース情報が含まれていません。";

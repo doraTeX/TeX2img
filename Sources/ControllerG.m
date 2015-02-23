@@ -1,3 +1,4 @@
+#include <sys/xattr.h>
 #import "ProfileController.h"
 #import "global.h"
 #import "ControllerG.h"
@@ -920,9 +921,32 @@ typedef enum {
 {
     [NSApp activateIgnoringOtherApps:YES];
     if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"overwriteContentsWarningMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
-        NSData *data = [NSData dataWithContentsOfFile:inputPath];
-        NSStringEncoding detectedEncoding;
-        NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
+
+        NSString *contents = nil;
+        
+        if ([inputPath.pathExtension isEqualToString:@"tex"]) { // TeX ソースのインプット
+            NSData *data = [NSData dataWithContentsOfFile:inputPath];
+            NSStringEncoding detectedEncoding;
+            contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
+        } else { // 画像ファイルのインプット
+            int bufferLength = getxattr(inputPath.UTF8String, EAKey, NULL, 0, 0, 0);
+            if (bufferLength < 0){
+                NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"doesNotContainSource"), inputPath], @"OK", nil, nil);
+                return;
+            } else {
+                // make a buffer of sufficient length
+                char *buffer = malloc(bufferLength);
+                
+                // now actually get the attribute string
+                getxattr(inputPath.UTF8String, EAKey, buffer, bufferLength, 0, 0);
+                
+                // convert to NSString
+                contents = [NSString.alloc initWithBytes:buffer length:bufferLength encoding:NSUTF8StringEncoding];
+                
+                // release buffer
+                free(buffer);
+            }
+        }
         
         if (contents) {
             [self placeImportedSource:contents];
@@ -938,7 +962,7 @@ typedef enum {
     openPanel.canChooseDirectories = NO;
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
-    openPanel.AllowedFileTypes = @[@"tex"];
+    openPanel.AllowedFileTypes = @[@"tex", @"pdf", @"eps", @"jpg", @"png"];
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {

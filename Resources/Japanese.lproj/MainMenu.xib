@@ -747,7 +747,7 @@ DQ
                     <popUpButton verticalHuggingPriority="750" id="88N-oX-Kx7">
                         <rect key="frame" x="148" y="8" width="162" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="テンプレート" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" selectedItem="BCU-Nx-qNP" id="ixJ-k4-Ee5">
+                        <popUpButtonCell key="cell" type="push" title="テンプレート" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" id="ixJ-k4-Ee5">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                             <menu key="menu" autoenablesItems="NO" id="wOe-7y-tf5">

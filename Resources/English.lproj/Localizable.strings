@@ -25,3 +25,4 @@
 "cannotWriteErrorMsg" = "Failed to write the file.\n%@";
 "saveCurrentPreambleAsTemplate" = "Save current preamble as a template";
 "restoreTemplatesConfirmationMsg" = "Default templates will be retored.\nThe existing ones will be overwritten.\nDo you want to continue?";
+"doesNotContainSource" = "This image does not contain any source information.";
