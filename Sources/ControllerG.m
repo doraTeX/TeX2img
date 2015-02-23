@@ -669,8 +669,15 @@ typedef enum {
 
 - (void)restoreDefaultTemplatesLogic
 {
+    NSFileManager *fileManager = NSFileManager.defaultManager;
+    NSString *templateDirectoryPath = self.templateDirectoryPath;
     NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
-    system([NSString stringWithFormat:@"/bin/cp -pn \"%@\"/* \"%@\"", originalTemplateDirectory, self.templateDirectoryPath].UTF8String);
+    
+    if (![fileManager fileExistsAtPath:templateDirectoryPath isDirectory:nil]) {
+        [fileManager createDirectoryAtPath:templateDirectoryPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    system([NSString stringWithFormat:@"/bin/cp -p \"%@\"/* \"%@\"", originalTemplateDirectory, self.templateDirectoryPath].UTF8String);
 }
 
 
@@ -807,7 +814,6 @@ typedef enum {
     // Application Support の準備
     NSString *templateDirectoryPath = self.templateDirectoryPath;
     if (![fileManager fileExistsAtPath:templateDirectoryPath isDirectory:nil]) {
-        [fileManager createDirectoryAtPath:templateDirectoryPath withIntermediateDirectories:YES attributes:nil error:nil];
         // 初回起動時には app bundle 内のテンプレートをコピー
         [self restoreDefaultTemplatesLogic];
     }
