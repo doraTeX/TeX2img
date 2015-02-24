@@ -210,15 +210,15 @@ typedef enum {
 {
 	NSFileManager *fileManager = NSFileManager.defaultManager;
 	
-	if (![fileManager fileExistsAtPath:[latexPath componentsSeparatedByString:@" "][0]]) {
+	if (![fileManager fileExistsAtPath:latexPath.programPath]) {
 		[self showNotFoundError:latexPath];
 		return NO;
 	}
-	if (![fileManager fileExistsAtPath:[dvipdfmxPath componentsSeparatedByString:@" "][0]]) {
+	if (![fileManager fileExistsAtPath:dvipdfmxPath.programPath]) {
 		[self showNotFoundError:dvipdfmxPath];
 		return NO;
 	}
-	if (![fileManager fileExistsAtPath:[gsPath componentsSeparatedByString:@" "][0]]) {
+	if (![fileManager fileExistsAtPath:gsPath.programPath]) {
 		[self showNotFoundError:gsPath];
 		return NO;
 	}
@@ -519,7 +519,7 @@ typedef enum {
 - (NSString*)searchProgram:(NSString*)programName
 {
     NSDictionary *errorInfo = NSDictionary.new;
-    NSString *script =  [NSString stringWithFormat:@"do shell script \"%@\"", @"eval `/usr/libexec/path_helper -s`; echo $PATH"];
+    NSString *script = [NSString stringWithFormat:@"do shell script \"%@\"", @"eval `/usr/libexec/path_helper -s`; echo $PATH"];
     
     NSAppleScript *appleScript = [NSAppleScript.alloc initWithSource:script];
     NSAppleEventDescriptor *eventResult = [appleScript executeAndReturnError:&errorInfo];
@@ -929,21 +929,14 @@ typedef enum {
             NSStringEncoding detectedEncoding;
             contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
         } else { // 画像ファイルのインプット
-            int bufferLength = getxattr(inputPath.UTF8String, EAKey, NULL, 0, 0, 0);
-            if (bufferLength < 0){
+            int bufferLength = getxattr(inputPath.UTF8String, EAKey, NULL, 0, 0, 0); // EAを取得
+            if (bufferLength < 0){ // ソース情報が含まれない画像ファイルの場合はエラー
                 NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"doesNotContainSource"), inputPath], @"OK", nil, nil);
                 return;
-            } else {
-                // make a buffer of sufficient length
+            } else { // ソース情報が含まれる画像ファイルの場合はそれをEAから取得して contents にセット（EAに保存されたソースは常にUTF8）
                 char *buffer = malloc(bufferLength);
-                
-                // now actually get the attribute string
                 getxattr(inputPath.UTF8String, EAKey, buffer, bufferLength, 0, 0);
-                
-                // convert to NSString
                 contents = [NSString.alloc initWithBytes:buffer length:bufferLength encoding:NSUTF8StringEncoding];
-                
-                // release buffer
                 free(buffer);
             }
         }

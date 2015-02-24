@@ -1,9 +1,14 @@
 #import "NSString-Extension.h"
 
 @implementation NSString (Extension)
+- (NSString*)programPath
+{
+    return [self componentsSeparatedByString:@" "][0];
+}
+
 - (NSString*)programName
 {
-    return [[self componentsSeparatedByString:@" "][0] lastPathComponent];
+    return self.programPath.lastPathComponent;
 }
 
 - (NSString*)pathStringByAppendingPageNumber:(NSUInteger)page

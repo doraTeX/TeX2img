@@ -524,6 +524,7 @@
 {
     const char *target = filePath.fileSystemRepresentation;
    
+    // ソース情報を UTF8 で EA に保存
     NSData *data = [NSData dataWithContentsOfFile:texFilePath];
     NSStringEncoding detectedEncoding;
     NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
