@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14D87h" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1040" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
@@ -641,6 +641,7 @@ DQ
                 <outlet property="directInputButton" destination="TFq-OD-TeI" id="hA5-5h-RAw"/>
                 <outlet property="dvipdfmxPathTextField" destination="600" id="608"/>
                 <outlet property="embedInIllustratorCheckBox" destination="877" id="881"/>
+                <outlet property="embedSourceCheckBox" destination="Bld-79-KdN" id="fcB-Wi-hye"/>
                 <outlet property="encodingPopUpButton" destination="SEX-u4-2gO" id="9ZB-Jt-h0v"/>
                 <outlet property="flashBackgroundMenuItem" destination="851" id="858"/>
                 <outlet property="flashHighlightMenuItem" destination="819" id="820"/>
@@ -1284,14 +1285,6 @@ DQ
                                     <rect key="frame" x="10" y="33" width="388" height="346"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button id="651">
-                                            <rect key="frame" x="21" y="327" width="334" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="コンパイル後出力ビューを自動的に表示" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="652">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
-                                            </buttonCell>
-                                        </button>
                                         <button id="811">
                                             <rect key="frame" x="21" y="32" width="229" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1331,7 +1324,7 @@ DQ
                                             </connections>
                                         </button>
                                         <button id="877">
-                                            <rect key="frame" x="21" y="220" width="222" height="18"/>
+                                            <rect key="frame" x="21" y="200" width="222" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="生成ファイルを Illustrator に配置" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="878">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1339,11 +1332,27 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="879">
-                                            <rect key="frame" x="42" y="200" width="165" height="18"/>
+                                            <rect key="frame" x="42" y="180" width="165" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="配置後にグループ化解除" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="880">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" size="13" name="AquaKana"/>
+                                            </buttonCell>
+                                        </button>
+                                        <button id="Bld-79-KdN">
+                                            <rect key="frame" x="21" y="220" width="308" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="生成ファイルからソースを復元できるようにする" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="aep-8a-PVd">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" size="13" name="AquaKana"/>
+                                            </buttonCell>
+                                        </button>
+                                        <button id="651">
+                                            <rect key="frame" x="21" y="325" width="334" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="コンパイル後出力ビューを自動的に表示" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="652">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
                                             </buttonCell>
                                         </button>
                                     </subviews>

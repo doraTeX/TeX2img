@@ -4,9 +4,9 @@
 #import "ControllerC.h"
 #import "global.h"
 
-#define OPTION_NUM 23
+#define OPTION_NUM 24
 #define MAX_LEN 1024
-#define VERSION "1.8.8"
+#define VERSION "1.8.8.1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -35,6 +35,7 @@ static void usage()
     printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF)\n");
     printf("  --create-outline        : outline text in PDF\n");
     printf("  --transparent           : generate transparent PNG file\n");
+    printf("  --no-embed-source       : do not embed the source in image files\n");
     printf("  --quick                 : convert in a speed priority mode\n");
     printf("  --kanji ENCODING        : set Japanese encoding  (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --ignore-errors         : force conversion by ignoring nonfatal errors\n");
@@ -124,6 +125,7 @@ int main (int argc, char *argv[]) {
         BOOL quickFlag = NO;
         BOOL guessFlag = NO;
         BOOL previewFlag = NO;
+        BOOL embedSourceFlag = YES;
         NSString *encoding = @"no";
         NSString *compiler = @"platex";
         NSString *dvipdfmx = @"dvipdfmx";
@@ -237,6 +239,11 @@ int main (int argc, char *argv[]) {
         options[19].flag = NULL;
         options[19].val = 20;
 
+        options[20].name = "no-embed-source";
+        options[20].has_arg = no_argument;
+        options[20].flag = NULL;
+        options[20].val = 21;
+        
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
         options[OPTION_NUM - 3].flag = NULL;
@@ -397,6 +404,9 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
+                case 21: // --no-embed-source
+                    embedSourceFlag = NO;
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -494,6 +504,7 @@ int main (int argc, char *argv[]) {
         aProfile[ControllerKey] = controller;
         aProfile[UnitKey] = unitTag;
         aProfile[PriorityKey] = quickFlag ? @(SPEED_PRIORITY_TAG) : @(QUALITY_PRIORITY_TAG);
+        aProfile[EmbedSourceKey] = @(embedSourceFlag);
         
         Converter *converter = [Converter converterWithProfile:aProfile];
         BOOL success = [converter compileAndConvertWithInputPath:inputFilePath];

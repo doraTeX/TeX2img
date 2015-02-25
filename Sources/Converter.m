@@ -32,6 +32,7 @@
 @property NSUInteger pageCount;
 @property BOOL useBP;
 @property BOOL speedPriorityMode;
+@property BOOL embedSource;
 @end
 
 @implementation Converter
@@ -55,6 +56,7 @@
 @synthesize pageCount;
 @synthesize useBP;
 @synthesize speedPriorityMode;
+@synthesize embedSource;
 
 
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
@@ -91,6 +93,7 @@
     controller = aProfile[ControllerKey];
     useBP = ([aProfile integerForKey:UnitKey] == BPUNITTAG);
     speedPriorityMode = ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG);
+    embedSource = [aProfile boolForKey:EmbedSourceKey];
 
 	fileManager = NSFileManager.defaultManager;
 	tempdir = NSTemporaryDirectory();
@@ -522,6 +525,8 @@
 
 - (void)embedSource:(NSString*)texFilePath intoFile:(NSString*)filePath
 {
+    if (!embedSource) return;
+    
     const char *target = filePath.fileSystemRepresentation;
    
     // ソース情報を UTF8 で EA に保存

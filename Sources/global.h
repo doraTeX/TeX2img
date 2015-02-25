@@ -38,6 +38,7 @@ NSMutableString *g_commandCompletionList;
 #define BottomMarginKey @"bottomMargin"
 #define UnitKey @"unit"
 #define PriorityKey @"priority"
+#define EmbedSourceKey @"embedSource"
 
 #define ConvertYenMarkKey @"convertYenMark"
 #define ColorizeTextKey @"colorizeText"
