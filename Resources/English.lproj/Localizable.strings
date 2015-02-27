@@ -5,6 +5,7 @@
 "Confirm" = "Confirm";
 "YES" = "Yes";
 "NO" = "No";
+"Completion" = "Command Completion";
 "resotrePreambleMsg" = "The preamble will be restored as follows.\nDo you want to continue?";
 "Cancel" = "Cancel";
 "programNotFoundErrorMsg" = " cannot be found.\nMake sure that LaTeX/Ghostscript are installed and configured in Preferences.";

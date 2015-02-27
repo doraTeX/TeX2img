@@ -5,6 +5,7 @@
 "Confirm" = "確認";
 "YES" = "はい";
 "NO" = "いいえ";
+"Completion" = "コマンド補完";
 "resotrePreambleMsg" = "プリアンブル部が次の内容にリセットされます。よろしいですか？";
 "Cancel" = "キャンセル";
 "programNotFoundErrorMsg" = " が見つかりません。\nLaTeX / Ghostscript 一式がインストールされているか，「環境設定」で設定されたパスが実際にインストールされているパスと合致してているか確認してください。";
