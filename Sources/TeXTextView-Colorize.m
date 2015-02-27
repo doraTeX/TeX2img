@@ -33,7 +33,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 	NSDictionary	*commentColorAttribute;
 	NSDictionary	*markerColorAttribute;
 	
-	color = [NSColor textColor];
+	color = NSColor.textColor;
 	
 	r = 0.0;
 	g = 0.0;
@@ -41,7 +41,7 @@ static BOOL isValidTeXCommandChar(unichar c)
     if (colorize) {
         color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
     }
-	commandColorAttribute = [NSDictionary.alloc initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
+    commandColorAttribute = @{NSForegroundColorAttributeName: color};
 	
 	r = 1.0;
 	g = 0.0;
@@ -49,7 +49,7 @@ static BOOL isValidTeXCommandChar(unichar c)
     if (colorize) {
         color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
     }
-	commentColorAttribute = [NSDictionary.alloc initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
+    commentColorAttribute = @{NSForegroundColorAttributeName: color};
 	
 	r = 0.02;
 	g = 0.51;
@@ -57,7 +57,7 @@ static BOOL isValidTeXCommandChar(unichar c)
     if (colorize) {
         color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
     }
-	markerColorAttribute = [NSDictionary.alloc initWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil];
+    markerColorAttribute = @{NSForegroundColorAttributeName: color};
 	
 	
 	// Fetch the underlying layout manager and string.
