@@ -97,12 +97,12 @@
 		NSUInteger aIndex = [profileNames indexOfObject:newProfileName];
 		if (aIndex == NSNotFound) {
 			[self updateProfile:controllerG.currentProfile forName:newProfileName];
-			saveAsTextField.StringValue = @"";
+			saveAsTextField.stringValue = @"";
 			[profilesWindow makeFirstResponder:saveAsTextField]; // フォーカスを入力欄に
 		} else {
 			if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"profileOverwriteMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
 				[self updateProfile:controllerG.currentProfile forName:newProfileName];
-				saveAsTextField.StringValue = @"";
+				saveAsTextField.stringValue = @"";
 			} else {
 				[profilesWindow makeFirstResponder:saveAsTextField]; // フォーカスを入力欄に
 			}
@@ -139,9 +139,9 @@
 
 - (void)awakeFromNib
 {
-	profilesTableView.Target = self;
-	profilesTableView.Action = @selector(setSelectedProfileName:);
-	profilesTableView.DoubleAction = @selector(loadProfile:);
+	profilesTableView.target = self;
+	profilesTableView.action = @selector(setSelectedProfileName:);
+	profilesTableView.doubleAction = @selector(loadProfile:);
 
 	[profilesTableView setDraggingSourceOperationMask:NSDragOperationMove forLocal:YES];
 	[profilesTableView registerForDraggedTypes:@[MovedRowsType]];
@@ -154,7 +154,7 @@
         return;
     }
 
-	saveAsTextField.StringValue = profileNames[selectedIndex];
+	saveAsTextField.stringValue = profileNames[selectedIndex];
 }
 
 - (void)showProfileWindow

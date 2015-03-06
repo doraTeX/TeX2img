@@ -139,7 +139,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (void)resetBackgroundColorOfTextView:(id)sender
 {
-	self.BackgroundColor = NSColor.controlBackgroundColor;
+	self.backgroundColor = NSColor.controlBackgroundColor;
 }
 
 - (void)resetBackgroundColor:(id)sender
@@ -288,7 +288,7 @@ static BOOL isValidTeXCommandChar(unichar c)
         NSBeep();
     }
 	if ([profile boolForKey:FlashBackgroundKey]) {
-		self.BackgroundColor = [NSColor colorWithDeviceRed:1 green:0.95 blue:1 alpha:1];
+		self.backgroundColor = [NSColor colorWithDeviceRed:1 green:0.95 blue:1 alpha:1];
 		[self performSelector:@selector(resetBackgroundColorOfTextView:) 
 				   withObject:nil afterDelay:0.20];
 	}

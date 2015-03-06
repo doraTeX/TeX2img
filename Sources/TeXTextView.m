@@ -40,14 +40,14 @@ static BOOL isValidTeXCommandChar(unichar c)
     
 	[self.textContainer replaceLayoutManager:layoutManager];
 
-    self.ContinuousSpellCheckingEnabled = NO;
-    self.SmartInsertDeleteEnabled = NO;
-    self.AutomaticDashSubstitutionEnabled = NO;
-    self.AutomaticDataDetectionEnabled = NO;
-    self.AutomaticLinkDetectionEnabled = NO;
-    self.AutomaticQuoteSubstitutionEnabled = NO;
-    self.AutomaticSpellingCorrectionEnabled = NO;
-    self.AutomaticTextReplacementEnabled = NO;
+    self.continuousSpellCheckingEnabled = NO;
+    self.smartInsertDeleteEnabled = NO;
+    self.automaticDashSubstitutionEnabled = NO;
+    self.automaticDataDetectionEnabled = NO;
+    self.automaticLinkDetectionEnabled = NO;
+    self.automaticQuoteSubstitutionEnabled = NO;
+    self.automaticSpellingCorrectionEnabled = NO;
+    self.automaticTextReplacementEnabled = NO;
     
     [self registerForDraggedTypes:@[NSFilenamesPboardType]];
 }
@@ -136,7 +136,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 	if (searchRange.location != NSNotFound) {
 		searchRange.location += oldRange.location;
 		searchRange.length = 0;
-		self.SelectedRange = searchRange;
+		self.selectedRange = searchRange;
 	}
 }
 
@@ -204,8 +204,8 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (void)setEnabled:(BOOL)enabled
 {
-    self.Selectable = enabled;
-    self.Editable = enabled;
+    self.selectable = enabled;
+    self.editable = enabled;
     
     if (enabled) {
         self.textColor = NSColor.controlTextColor;

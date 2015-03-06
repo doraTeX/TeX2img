@@ -308,9 +308,9 @@
     
     NSTask *task = NSTask.new;
     NSPipe *pipe = NSPipe.new;
-    task.LaunchPath = gsPath;
-    task.Arguments = @[@"--version"];
-    task.StandardOutput = pipe;
+    task.launchPath = gsPath;
+    task.arguments = @[@"--version"];
+    task.standardOutput = pipe;
     [task launch];
     
     NSData *data = pipe.fileHandleForReading.readDataToEndOfFile;

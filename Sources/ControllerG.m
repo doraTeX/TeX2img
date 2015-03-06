@@ -189,12 +189,12 @@ typedef enum {
 
 - (void)clearOutputTextView
 {
-	outputTextView.textStorage.mutableString.String = @"";
+	outputTextView.textStorage.mutableString.string = @"";
 }
 
 - (void)showOutputDrawer
 {
-	outputDrawerMenuItem.State = YES;
+	outputDrawerMenuItem.state = YES;
 	[outputDrawer open];
 }
 
@@ -270,7 +270,7 @@ typedef enum {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
 	if (tempStr) {
-		textField.StringValue = tempStr;
+		textField.stringValue = tempStr;
 	}
 }
 
@@ -279,7 +279,7 @@ typedef enum {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
 	if (tempStr) {
-		textView.textStorage.mutableString.String = tempStr;
+		textView.textStorage.mutableString.string = tempStr;
 	}
 }
 
@@ -291,48 +291,48 @@ typedef enum {
 	
 	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
 	
-	showOutputDrawerCheckBox.State = [aProfile integerForKey:ShowOutputDrawerKey];
-	previewCheckBox.State = [aProfile integerForKey:PreviewKey];
-	deleteTmpFileCheckBox.State = [aProfile integerForKey:DeleteTmpFileKey];
+	showOutputDrawerCheckBox.state = [aProfile integerForKey:ShowOutputDrawerKey];
+	previewCheckBox.state = [aProfile integerForKey:PreviewKey];
+	deleteTmpFileCheckBox.state = [aProfile integerForKey:DeleteTmpFileKey];
 
     if ([aProfile.allKeys containsObject:EmbedSourceKey]) {
-        embedSourceCheckBox.State = [aProfile integerForKey:EmbedSourceKey];
+        embedSourceCheckBox.state = [aProfile integerForKey:EmbedSourceKey];
     } else {
-        embedSourceCheckBox.State = NSOnState;
+        embedSourceCheckBox.state = NSOnState;
     }
     
-	embedInIllustratorCheckBox.State = [aProfile integerForKey:EmbedInIllustratorKey];
-	ungroupCheckBox.State = [aProfile integerForKey:UngroupKey];
+	embedInIllustratorCheckBox.state = [aProfile integerForKey:EmbedInIllustratorKey];
+	ungroupCheckBox.state = [aProfile integerForKey:UngroupKey];
 	
-	transparentCheckBox.State = [aProfile boolForKey:TransparentKey];
-	getOutlineCheckBox.State = [aProfile boolForKey:GetOutlineKey];
+	transparentCheckBox.state = [aProfile boolForKey:TransparentKey];
+	getOutlineCheckBox.state = [aProfile boolForKey:GetOutlineKey];
 	
-	ignoreErrorCheckBox.State = [aProfile boolForKey:IgnoreErrorKey];
-	utfExportCheckBox.State = [aProfile boolForKey:UtfExportKey];
+	ignoreErrorCheckBox.state = [aProfile boolForKey:IgnoreErrorKey];
+	utfExportCheckBox.state = [aProfile boolForKey:UtfExportKey];
 	
-	convertYenMarkMenuItem.State = [aProfile boolForKey:ConvertYenMarkKey];
-	colorizeTextMenuItem.State = [aProfile boolForKey:ColorizeTextKey];
+	convertYenMarkMenuItem.state = [aProfile boolForKey:ConvertYenMarkKey];
+	colorizeTextMenuItem.state = [aProfile boolForKey:ColorizeTextKey];
 	
 	highlightPattern = [aProfile integerForKey:HighlightPatternKey];
 	[self changeHighlight:nil];
 
-	flashInMovingMenuItem.State = [aProfile boolForKey:FlashInMovingKey];
+	flashInMovingMenuItem.state = [aProfile boolForKey:FlashInMovingKey];
 
-	highlightContentMenuItem.State = [aProfile boolForKey:HighlightContentKey];
-	beepMenuItem.State = [aProfile boolForKey:BeepKey];
-	flashBackgroundMenuItem.State = [aProfile boolForKey:FlashBackgroundKey];
+	highlightContentMenuItem.state = [aProfile boolForKey:HighlightContentKey];
+	beepMenuItem.state = [aProfile boolForKey:BeepKey];
+	flashBackgroundMenuItem.state = [aProfile boolForKey:FlashBackgroundKey];
 
-	checkBraceMenuItem.State = [aProfile boolForKey:CheckBraceKey];
-	checkBracketMenuItem.State = [aProfile boolForKey:CheckBracketKey];
-	checkSquareBracketMenuItem.State = [aProfile boolForKey:CheckSquareBracketKey];
-	checkParenMenuItem.State = [aProfile boolForKey:CheckParenKey];
+	checkBraceMenuItem.state = [aProfile boolForKey:CheckBraceKey];
+	checkBracketMenuItem.state = [aProfile boolForKey:CheckBracketKey];
+	checkSquareBracketMenuItem.state = [aProfile boolForKey:CheckSquareBracketKey];
+	checkParenMenuItem.state = [aProfile boolForKey:CheckParenKey];
 
-	autoCompleteMenuItem.State = [aProfile boolForKey:AutoCompleteKey];
-	showTabCharacterMenuItem.State = [aProfile boolForKey:ShowTabCharacterKey];
-	showSpaceCharacterMenuItem.State = [aProfile boolForKey:ShowSpaceCharacterKey];
-	showFullwidthSpaceCharacterMenuItem.State = [aProfile boolForKey:ShowFullwidthSpaceCharacterKey];
-	showNewLineCharacterMenuItem.State = [aProfile boolForKey:ShowNewLineCharacterKey];
-	guessCompilationButton.State = [aProfile boolForKey:GuessCompilationKey];
+	autoCompleteMenuItem.state = [aProfile boolForKey:AutoCompleteKey];
+	showTabCharacterMenuItem.state = [aProfile boolForKey:ShowTabCharacterKey];
+	showSpaceCharacterMenuItem.state = [aProfile boolForKey:ShowSpaceCharacterKey];
+	showFullwidthSpaceCharacterMenuItem.state = [aProfile boolForKey:ShowFullwidthSpaceCharacterKey];
+	showNewLineCharacterMenuItem.state = [aProfile boolForKey:ShowNewLineCharacterKey];
+	guessCompilationButton.state = [aProfile boolForKey:GuessCompilationKey];
     
     NSString *encoding = [aProfile stringForKey:EncodingKey];
     if (encoding) {
@@ -361,12 +361,12 @@ typedef enum {
     [self loadSettingForTextField:topMarginLabel fromProfile:aProfile forKey:TopMarginLabelKey];
     [self loadSettingForTextField:bottomMarginLabel fromProfile:aProfile forKey:BottomMarginLabelKey];
     
-    numberOfCompilationTextField.IntValue = MAX(1, [aProfile integerForKey:NumberOfCompilationKey]);
-    resolutionSlider.FloatValue = [aProfile integerForKey:ResolutionKey];
-    leftMarginSlider.IntValue = [aProfile integerForKey:LeftMarginKey];
-    rightMarginSlider.IntValue = [aProfile integerForKey:RightMarginKey];
-    topMarginSlider.IntValue = [aProfile integerForKey:TopMarginKey];
-    bottomMarginSlider.IntValue = [aProfile integerForKey:BottomMarginKey];
+    numberOfCompilationTextField.intValue = MAX(1, [aProfile integerForKey:NumberOfCompilationKey]);
+    resolutionSlider.floatValue = [aProfile integerForKey:ResolutionKey];
+    leftMarginSlider.intValue = [aProfile integerForKey:LeftMarginKey];
+    rightMarginSlider.intValue = [aProfile integerForKey:RightMarginKey];
+    topMarginSlider.intValue = [aProfile integerForKey:TopMarginKey];
+    bottomMarginSlider.intValue = [aProfile integerForKey:BottomMarginKey];
     
     NSInteger unitTag = [aProfile integerForKey:UnitKey];
     [unitMatrix selectCellWithTag:unitTag];
@@ -378,12 +378,12 @@ typedef enum {
     
     NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
     if (aFont) {
-        sourceTextView.Font = aFont;
+        sourceTextView.font = aFont;
     }
     
     aFont = [NSFont fontWithName:[aProfile stringForKey:PreambleFontNameKey] size:[aProfile floatForKey:PreambleFontSizeKey]];
     if (aFont) {
-        preambleTextView.Font = aFont;
+        preambleTextView.font = aFont;
     }
     [preambleTextView colorizeText:[aProfile boolForKey:ColorizeTextKey]];
     
@@ -744,7 +744,7 @@ typedef enum {
                   object: templatePopupButton];
 	
 	// デフォルトのアウトプットファイルのパスをセット
-	outputFileTextField.StringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
+	outputFileTextField.stringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
 	
 	// 保存された設定を読み込む
 	NSFileManager *fileManager = NSFileManager.defaultManager;
@@ -779,9 +779,9 @@ typedef enum {
 			[self showNotFoundError:@"ghostscript"];
 		}
 		
-		latexPathTextField.StringValue = latexPath;
-		dvipdfmxPathTextField.StringValue = dvipdfmxPath;
-		gsPathTextField.StringValue = gsPath;
+		latexPathTextField.stringValue = latexPath;
+		dvipdfmxPathTextField.stringValue = dvipdfmxPath;
+		gsPathTextField.stringValue = gsPath;
 		
         [self performSelectorOnMainThread:@selector(showInitMessage:)
                                withObject:@{LatexPathKey: latexPath,
@@ -792,8 +792,8 @@ typedef enum {
 		
 		NSFont *defaultFont = [NSFont fontWithName:@"Osaka-Mono" size:13];
 		if (defaultFont) {
-			sourceTextView.Font = defaultFont;
-			preambleTextView.Font = defaultFont;
+			sourceTextView.font = defaultFont;
+			preambleTextView.font = defaultFont;
 		}
 		
 		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"SUEnableAutomaticChecks"];
@@ -857,12 +857,12 @@ typedef enum {
 
 - (void)uncheckOutputDrawerMenuItem:(NSNotification*)aNotification
 {
-	outputDrawerMenuItem.State = NO;
+	outputDrawerMenuItem.state = NO;
 }
 
 - (void)uncheckPreambleWindowMenuItem:(NSNotification*)aNotification
 {
-	preambleWindowMenuItem.State = NO;
+	preambleWindowMenuItem.state = NO;
 }
 
 - (IBAction)showMainWindow:(id)sender
@@ -964,7 +964,7 @@ typedef enum {
     openPanel.canChooseDirectories = NO;
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
-    openPanel.AllowedFileTypes = @[@"tex", @"pdf", @"eps", @"jpg", @"png"];
+    openPanel.allowedFileTypes = @[@"tex", @"pdf", @"eps", @"jpg", @"png"];
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
@@ -976,7 +976,7 @@ typedef enum {
 - (IBAction)exportSource:(id)sender
 {
     NSSavePanel *savePanel = [NSSavePanel savePanel];
-    savePanel.AllowedFileTypes = @[@"tex"];
+    savePanel.allowedFileTypes = @[@"tex"];
     savePanel.extensionHidden = NO;
     savePanel.canSelectHiddenExtension = YES;
     
@@ -1138,7 +1138,7 @@ typedef enum {
     openPanel.canChooseDirectories = NO;
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
-    openPanel.AllowedFileTypes = @[@"tex"];
+    openPanel.allowedFileTypes = @[@"tex"];
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
@@ -1151,7 +1151,7 @@ typedef enum {
 - (IBAction)showSavePanel:(id)sender
 {
     NSSavePanel *savePanel = [NSSavePanel savePanel];
-    savePanel.AllowedFileTypes = @[@"eps", @"png", @"jpg", @"pdf"];
+    savePanel.allowedFileTypes = @[@"eps", @"png", @"jpg", @"pdf"];
     savePanel.extensionHidden = NO;
     savePanel.canSelectHiddenExtension = NO;
     
@@ -1178,7 +1178,7 @@ typedef enum {
 - (IBAction)toggleOutputDrawer:(id)sender 
 {
 	if (outputDrawer.state == NSDrawerOpenState) {
-		outputDrawerMenuItem.State = NO;
+		outputDrawerMenuItem.state = NO;
 		[outputDrawer close];
 	} else {
 		[self showOutputDrawer];
@@ -1188,9 +1188,9 @@ typedef enum {
 
 -(IBAction)changeHighlight:(id)sender
 {
-	flashHighlightMenuItem.State = NSOffState;
-	solidHighlightMenuItem.State = NSOffState;
-	noHighlightMenuItem.State = NSOffState;
+	flashHighlightMenuItem.state = NSOffState;
+	solidHighlightMenuItem.state = NSOffState;
+	noHighlightMenuItem.state = NSOffState;
     
 	if (sender == flashHighlightMenuItem) {
 		highlightPattern = FLASH;
@@ -1204,13 +1204,13 @@ typedef enum {
 	
 	switch (highlightPattern) {
 		case FLASH:
-			flashHighlightMenuItem.State = NSOnState;
+			flashHighlightMenuItem.state = NSOnState;
 			break;
 		case SOLID:
-			solidHighlightMenuItem.State = NSOnState;
+			solidHighlightMenuItem.state = NSOnState;
 			break;
 		case NOHIGHLIGHT:
-			noHighlightMenuItem.State = NSOnState;
+			noHighlightMenuItem.state = NSOnState;
 			break;
 		default:
 			break;
@@ -1224,7 +1224,7 @@ typedef enum {
 	if (preambleWindow.isVisible) {
 		[preambleWindow close];
 	} else {
-		preambleWindowMenuItem.State = YES;
+		preambleWindowMenuItem.state = YES;
 
 		NSRect mainWindowRect = mainWindow.frame;
 		NSRect preambleWindowRect = preambleWindow.frame;
@@ -1277,9 +1277,9 @@ typedef enum {
 		[self showNotFoundError:@"ghostscript"];
 	}
 	
-	latexPathTextField.StringValue = latexPath;
-	dvipdfmxPathTextField.StringValue = dvipdfmxPath;
-	gsPathTextField.StringValue = gsPath;
+	latexPathTextField.stringValue = latexPath;
+	dvipdfmxPathTextField.stringValue = dvipdfmxPath;
+	gsPathTextField.stringValue = gsPath;
 }
 
 - (void)generateImage
@@ -1309,8 +1309,8 @@ typedef enum {
             break;
     }
     
-    generateButton.Enabled = YES;
-    generateMenuItem.Enabled = YES;
+    generateButton.enabled = YES;
+    generateMenuItem.enabled = YES;
 }
 
 - (IBAction)generate:(id)sender
@@ -1319,8 +1319,8 @@ typedef enum {
         [self showOutputDrawer];
     }
 	
-    generateButton.Enabled = NO;
-	generateMenuItem.Enabled = NO;
+    generateButton.enabled = NO;
+	generateMenuItem.enabled = NO;
     
     [self generateImage];
 }
