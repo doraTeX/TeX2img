@@ -104,6 +104,7 @@ typedef enum {
 @property NSString *lastSavedPath;
 
 @property NSWindow *lastActiveWindow;
+@property NSColor *lastColor;
 @end
 
 @implementation ControllerG
@@ -184,6 +185,7 @@ typedef enum {
 @synthesize lastSavedPath;
 
 @synthesize lastActiveWindow;
+@synthesize lastColor;
 
 
 #pragma mark -
@@ -775,13 +777,18 @@ typedef enum {
                 selector: @selector(lastActiveWindowChenaged:)
                     name: NSWindowDidBecomeKeyNotification
                   object: preambleWindow];
+    [aCenter addObserver: self
+                selector: @selector(colorWindowDidBecomeKey:)
+                    name: NSWindowDidBecomeKeyNotification
+                  object: colorWindow];
+    
 	
 	// デフォルトのアウトプットファイルのパスをセット
 	outputFileTextField.stringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
     
 
     // 色パレットが表示されていれば消す
-    [NSColorPanel.sharedColorPanel performSelector:@selector(orderOut:) withObject:self afterDelay:0];
+    [self closeColorPanel];
 
     lastActiveWindow = mainWindow;
     
@@ -887,7 +894,7 @@ typedef enum {
 {
     // 色パレットが表示されていれば消す
     if (NSColorPanel.sharedColorPanelExists) {
-        [NSColorPanel.sharedColorPanel performSelector:@selector(orderOut:) withObject:self afterDelay:0];
+        [self closeColorPanel];
     }
 
 	[profileController updateProfile:self.currentProfile forName:AutoSavedProfileName];
@@ -915,17 +922,13 @@ typedef enum {
 	preambleWindowMenuItem.state = NO;
 }
 
-- (void)uncheckColorWindowMenuItem:(NSNotification*)aNotification
-{
-    colorWindowMenuItem.state = NO;
-    if (NSColorPanel.sharedColorPanelExists) {
-        [NSColorPanel.sharedColorPanel orderOut:self];
-    }
-}
 
 - (void)lastActiveWindowChenaged:(NSNotification*)aNotification
 {
     lastActiveWindow = aNotification.object;
+
+    // 色パレットが表示されていれば消す
+    [self closeColorPanel];
 }
 
 - (IBAction)showMainWindow:(id)sender
@@ -1078,14 +1081,19 @@ typedef enum {
         [colorWindow close];
     } else {
         colorWindowMenuItem.state = YES;
-        NSRect mainWindowRect = colorWindow.frame;
         [colorWindow makeKeyAndOrderFront:nil];
+        [colorStyleMatrix sendAction];
     }
 }
 
 
 - (IBAction)setColor:(id)sender {
     NSColor *color = colorWell.color;
+    if (!colorWindow.isKeyWindow) {
+        return;
+    }
+    
+    lastColor = color;
     NSString *formatString;
     CGFloat r, g, b;
     @try {
@@ -1132,6 +1140,31 @@ typedef enum {
     [pasteBoard setString:colorTextField.stringValue forType:NSStringPboardType];
     [colorTextField becomeFirstResponder];
 }
+
+- (void)uncheckColorWindowMenuItem:(NSNotification*)aNotification
+{
+    colorWindowMenuItem.state = NO;
+    if (NSColorPanel.sharedColorPanelExists) {
+        [NSColorPanel.sharedColorPanel orderOut:self];
+    }
+}
+
+- (void)colorWindowDidBecomeKey:(NSNotification*)aNotification
+{
+    if (lastColor) {
+        colorWell.color = lastColor;
+    }
+}
+
+- (void)closeColorPanel
+{
+    [colorWell deactivate];
+    [NSColorPanel.sharedColorPanel performSelector:@selector(orderOut:) withObject:self afterDelay:0];
+    if (lastColor) {
+        colorWell.color = lastColor;
+    }
+}
+
 
 
 #pragma mark - IBAction
