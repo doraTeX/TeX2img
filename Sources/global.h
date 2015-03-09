@@ -66,6 +66,7 @@ NSMutableString *g_commandCompletionList;
 #define EncodingKey @"encoding"
 #define PdfcropPathKey @"pdfcropPath"
 #define EpstopdfPathKey @"epstopdfPath"
+#define Pdf2svgPathKey @"pdf2svgPath"
 #define QuietKey @"quiet"
 #define ControllerKey @"controller"
 #define TeX2imgVersionKey @"TeX2imgVersion"
@@ -93,3 +94,6 @@ NSMutableString *g_commandCompletionList;
 #define PTEX_ENCODING_EUC @"euc"
 
 #define EAKey "com.loveinequality.TeX2img"
+
+#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/pdf2svg"
+

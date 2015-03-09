@@ -29,6 +29,7 @@
 @property NSString* tempFileBaseName;
 @property NSString* pdfcropPath;
 @property NSString* epstopdfPath;
+@property NSString* pdf2svgPath;
 @property NSUInteger pageCount;
 @property BOOL useBP;
 @property BOOL speedPriorityMode;
@@ -53,6 +54,7 @@
 @synthesize tempFileBaseName;
 @synthesize pdfcropPath;
 @synthesize epstopdfPath;
+@synthesize pdf2svgPath;
 @synthesize pageCount;
 @synthesize useBP;
 @synthesize speedPriorityMode;
@@ -68,6 +70,7 @@
     gsPath = [aProfile stringForKey:GsPathKey];
     pdfcropPath = [aProfile stringForKey:PdfcropPathKey];
     epstopdfPath = [aProfile stringForKey:EpstopdfPathKey];
+    pdf2svgPath = [aProfile stringForKey:Pdf2svgPathKey];
     guessCompilation = [aProfile boolForKey:GuessCompilationKey];
     numberOfCompilation = [aProfile integerForKey:NumberOfCompilationKey];
     
@@ -465,9 +468,36 @@
     system([NSString stringWithFormat:@"/usr/bin/ruby %@; rm %@", scriptPath, scriptPath].UTF8String);
 }
 
+- (BOOL)pdf2svg:(NSString*)pdfFilePath outputFileName:(NSString*)svgFilePath
+{
+    if (!controller.pdf2svgExists) {
+        return NO;
+    }
+    
+    BOOL success = [self execCommand:pdf2svgPath
+                         atDirectory:tempdir
+                       withArguments:@[pdfFilePath, svgFilePath]];
+    if (!success ) {
+        return NO;
+    }
+    
+    // SVG の width="20pt" height="20pt" のような指定を削除する
+    NSMutableString *mstr = [NSMutableString stringWithString:[NSString stringWithContentsOfFile:svgFilePath encoding:NSUTF8StringEncoding error:nil]];
+    NSString *pattern = @"width=\"\\d+pt\" height=\"\\d+pt\"";
+    NSRange match = [mstr rangeOfString:pattern options:NSRegularExpressionSearch];
+    if (match.location != NSNotFound) {
+        [mstr replaceCharactersInRange:match withString:@""];
+    }
+    [mstr writeToFile:svgFilePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
+    
+    return YES;
+}
+
+
 - (BOOL)convertPDF:(NSString*)pdfFileName outputEpsFileName:(NSString*)outputEpsFileName outputFileName:(NSString*)outputFileName page:(NSUInteger)page
 {
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
+    NSString* outlinedPdfFileName = [NSString stringWithFormat:@"%@.outline.pdf", tempFileBaseName];
 
     NSInteger resolution = speedPriorityMode ? resolutionLevel*5*2*72 : 20016;
 
@@ -480,6 +510,9 @@
     
     if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す（ここでpdfcropで余白付与）
         [self eps2pdf:outputEpsFileName outputFileName:outputFileName addMargin:YES];
+    } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，EPS から PDF に戻し（ここでpdfcropで余白付与），次に pdf2svg で SVG に変換。
+        [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:YES];
+        return [self pdf2svg:outlinedPdfFileName outputFileName:outputFileName];
     } else if ([@"eps" isEqualToString:extension]) { // 最終出力が EPS の場合
         // 余白を付け加えるようバウンディングボックスを改変
         if (topMargin + bottomMargin + leftMargin + rightMargin > 0) {
@@ -491,7 +524,6 @@
         }
         [fileManager moveItemAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
     } else if ([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) { // JPEG/PNG出力の場合，EPSをPDFに戻した上で，それをさらにJPEG/PNGに変換する
-        NSString* outlinedPdfFileName = [NSString stringWithFormat:@"%@.outline.pdf", tempFileBaseName];
         [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:NO]; // アウトラインを取ったEPSをPDFへ戻す（余白はこの時点では付与しない）
         [self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1 crop:NO]; // PDFを目的の画像ファイルへ変換（ここで余白付与）
     }
@@ -654,7 +686,7 @@
 	
 	NSString* extension = outputFilePath.pathExtension.lowercaseString;
 	
-    if (![@"eps" isEqualToString:extension] && ![@"png" isEqualToString:extension] && ![@"jpg" isEqualToString:extension] && ![@"pdf" isEqualToString:extension]) {
+    if (![@[@"eps", @"png", @"jpg", @"pdf", @"svg"] containsObject:extension]) {
 		[controller showExtensionError];
 		status = NO;
 	}
@@ -672,10 +704,19 @@
 		
 		// プレビュー処理
 		if (status && previewFlag) {
-			[NSWorkspace.sharedWorkspace openFile:outputFilePath withApplication:@"Preview.app"];
-            if (pageCount > 1 && !([@"pdf" isEqualToString:extension] && leaveTextFlag)) {
-                for (NSUInteger i=2; i<=pageCount; i++) {
-                    [NSWorkspace.sharedWorkspace openFile:[outputFilePath pathStringByAppendingPageNumber:i] withApplication:@"Preview.app"];
+            if ([extension isEqualToString:@"svg"]) {
+                system([NSString stringWithFormat:@"/usr/bin/qlmanage -p \"%@\" &", outputFilePath].UTF8String);
+                if (pageCount > 1) {
+                    for (NSUInteger i=2; i<=pageCount; i++) {
+                        system([NSString stringWithFormat:@"/usr/bin/qlmanage -p \"%@\" &", [outputFilePath pathStringByAppendingPageNumber:i]].UTF8String);
+                    }
+                }
+            } else {
+                [NSWorkspace.sharedWorkspace openFile:outputFilePath withApplication:@"Preview.app"];
+                if (pageCount > 1 && !([@"pdf" isEqualToString:extension] && leaveTextFlag)) {
+                    for (NSUInteger i=2; i<=pageCount; i++) {
+                        [NSWorkspace.sharedWorkspace openFile:[outputFilePath pathStringByAppendingPageNumber:i] withApplication:@"Preview.app"];
+                    }
                 }
             }
 		}

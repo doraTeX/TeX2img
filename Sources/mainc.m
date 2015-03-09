@@ -6,7 +6,7 @@
 
 #define OPTION_NUM 24
 #define MAX_LEN 1024
-#define VERSION "1.8.8.1"
+#define VERSION "1.8.9b3"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -20,7 +20,7 @@ static void usage()
     printf("Usage: tex2img [options] InputTeXFile OutputFile\n");
     printf("Arguments:\n");
     printf("  InputTeXFile            : path of TeX source file\n");
-    printf("  OutputFile              : path of output file (extension: eps/png/jpg/pdf)\n");
+    printf("  OutputFile              : path of output file (extension: eps/png/jpg/pdf/svg)\n");
     printf("Options:\n");
     printf("  --compiler   COMPILER   : set compiler      (default: platex)\n");
     printf("  --guess-compile         : guess the appropriate number of compilation\n");
@@ -54,7 +54,7 @@ NSString* getPath(NSString *cmdName)
 	FILE *fp;
 	char *pStr;
     
-	if ((fp = popen([NSString stringWithFormat:@"which %@", cmdName].UTF8String, "r")) == NULL) {
+	if ((fp = popen([NSString stringWithFormat:@"PATH=$PATH:%@; /usr/bin/which %@", ADDITIONAL_PATH, cmdName].UTF8String, "r")) == NULL) {
 		return nil;
 	}
 	fgets(str, MAX_LEN-1, fp);
@@ -126,7 +126,7 @@ int main (int argc, char *argv[]) {
         BOOL guessFlag = NO;
         BOOL previewFlag = NO;
         BOOL embedSourceFlag = YES;
-        NSString *encoding = @"no";
+        NSString *encoding = PTEX_ENCODING_NONE;
         NSString *compiler = @"platex";
         NSString *dvipdfmx = @"dvipdfmx";
         NSString *gs       = @"gs";
@@ -452,6 +452,7 @@ int main (int argc, char *argv[]) {
         NSString *gsPath = getPath(gs);
         NSString *pdfcropPath = getPath(@"pdfcrop");
         NSString *epstopdfPath = getPath(@"epstopdf");
+        NSString *pdf2svgPath = getPath(@"pdf2svg");
         
         if (!latexPath) {
             [controller showNotFoundError:@"LaTeX"];
@@ -473,6 +474,9 @@ int main (int argc, char *argv[]) {
             [controller showNotFoundError:@"epstopdf"];
             return 1;
         }
+        if (!pdf2svgPath) {
+            pdf2svgPath = @"pdf2svg";
+        }
         
         NSMutableDictionary *aProfile = NSMutableDictionary.dictionary;
         aProfile[LatexPathKey] = latexPath;
@@ -480,6 +484,7 @@ int main (int argc, char *argv[]) {
         aProfile[GsPathKey] = gsPath;
         aProfile[PdfcropPathKey] = pdfcropPath;
         aProfile[EpstopdfPathKey] = epstopdfPath;
+        aProfile[Pdf2svgPathKey] = pdf2svgPath;
         
         aProfile[OutputFileKey] = outputFilePath;
         

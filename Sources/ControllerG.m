@@ -257,6 +257,11 @@ typedef enum {
 	return YES;
 }
 
+- (BOOL)pdf2svgExists;
+{
+    return YES;
+}
+
 - (void)showFileGenerateError:(NSString*)aPath
 {
 	NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", aPath, localizedString(@"fileGenerateErrorMsg")], @"OK", nil, nil);
@@ -1030,7 +1035,7 @@ typedef enum {
     openPanel.canChooseDirectories = NO;
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
-    openPanel.allowedFileTypes = @[@"tex", @"pdf", @"eps", @"jpg", @"png"];
+    openPanel.allowedFileTypes = @[@"tex", @"pdf", @"eps", @"jpg", @"png", @"svg"];
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
@@ -1309,7 +1314,7 @@ typedef enum {
 - (IBAction)showSavePanel:(id)sender
 {
     NSSavePanel *savePanel = [NSSavePanel savePanel];
-    savePanel.allowedFileTypes = @[@"eps", @"png", @"jpg", @"pdf"];
+    savePanel.allowedFileTypes = @[@"eps", @"png", @"jpg", @"pdf", @"svg"];
     savePanel.extensionHidden = NO;
     savePanel.canSelectHiddenExtension = NO;
     
@@ -1446,6 +1451,7 @@ typedef enum {
     NSMutableDictionary *aProfile = self.currentProfile;
     aProfile[PdfcropPathKey] = [NSBundle.mainBundle pathForResource:@"pdfcrop" ofType:nil];
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
+    aProfile[Pdf2svgPathKey] = [[NSBundle.mainBundle pathForResource:@"pdf2svg" ofType:nil] stringByAppendingPathComponent:@"pdf2svg"];
     aProfile[QuietKey] = @(NO);
     aProfile[ControllerKey] = self;
     

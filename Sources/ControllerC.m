@@ -1,9 +1,10 @@
 #import "ControllerC.h"
+#import "global.h"
 #import <stdio.h>
 
 BOOL checkWhich(NSString *cmdName)
 {
-	int status = system([NSString stringWithFormat:@"which %@ > /dev/null", cmdName].UTF8String);
+	int status = system([NSString stringWithFormat:@"PATH=$PATH:%@; /usr/bin/which %@ > /dev/null", ADDITIONAL_PATH, cmdName].UTF8String);
 	return (status == 0) ? YES : NO;
 }
 
@@ -61,6 +62,16 @@ BOOL checkWhich(NSString *cmdName)
 	}
 	
 	return YES;
+}
+
+- (BOOL)pdf2svgExists;
+{
+    if (!checkWhich(@"pdf2svg")) {
+        [self showNotFoundError:@"pdf2svg"];
+        return NO;
+    }
+    
+    return YES;
 }
 
 - (void)showExtensionError

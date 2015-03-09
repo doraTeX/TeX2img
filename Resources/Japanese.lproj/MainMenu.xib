@@ -571,7 +571,7 @@ DQ
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
                     </box>
-                    <box autoresizesSubviews="NO" title="出力画像ファイル名（拡張子：.eps / .png / .jpg / .pdf ）" borderType="line" id="460">
+                    <box autoresizesSubviews="NO" title="出力画像ファイル名（拡張子：.eps / .png / .jpg / .pdf / .svg）" borderType="line" id="460">
                         <rect key="frame" x="11" y="56" width="520" height="59"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                         <view key="contentView">
@@ -998,9 +998,9 @@ DQ
                                                         </cells>
                                                     </matrix>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="A8Q-v6-iNx">
-                                                        <rect key="frame" x="156" y="10" width="196" height="17"/>
+                                                        <rect key="frame" x="153" y="10" width="216" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="（EPS / PDF は bp (big point) 固定）" id="9sU-Pg-yh4">
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="（EPS/PDF/SVG は bp (big point) 固定）" id="9sU-Pg-yh4">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
