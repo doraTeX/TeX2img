@@ -59,6 +59,12 @@ typedef enum {
 
 @property IBOutlet NSPopUpButton *templatePopupButton;
 
+@property IBOutlet NSWindow *colorWindow;
+@property IBOutlet NSMenuItem *colorWindowMenuItem;
+@property IBOutlet NSColorWell *colorWell;
+@property IBOutlet NSMatrix *colorStyleMatrix;
+@property IBOutlet NSTextField *colorTextField;
+
 @property IBOutlet NSButton *directInputButton;
 @property IBOutlet NSButton *inputSourceFileButton;
 @property IBOutlet NSTextField *inputSourceFileTextField;
@@ -96,6 +102,8 @@ typedef enum {
 @property IBOutlet NSMatrix *priorityMatrix;
 @property HighlightPattern highlightPattern;
 @property NSString *lastSavedPath;
+
+@property NSWindow *lastActiveWindow;
 @end
 
 @implementation ControllerG
@@ -130,6 +138,12 @@ typedef enum {
 @synthesize outputFileTextField;
 
 @synthesize templatePopupButton;
+
+@synthesize colorWindow;
+@synthesize colorWindowMenuItem;
+@synthesize colorWell;
+@synthesize colorStyleMatrix;
+@synthesize colorTextField;
 
 @synthesize directInputButton;
 @synthesize inputSourceFileButton;
@@ -168,6 +182,9 @@ typedef enum {
 @synthesize priorityMatrix;
 @synthesize highlightPattern;
 @synthesize lastSavedPath;
+
+@synthesize lastActiveWindow;
+
 
 #pragma mark -
 #pragma mark OutputController プロトコルの実装
@@ -719,6 +736,12 @@ typedef enum {
 				selector: @selector(uncheckPreambleWindowMenuItem:)
 					name: NSWindowWillCloseNotification
 				  object: preambleWindow];
+
+    // 色入力支援パレットが閉じられるときにメニューのチェックを外す
+    [aCenter addObserver: self
+                selector: @selector(uncheckColorWindowMenuItem:)
+                    name: NSWindowWillCloseNotification
+                  object: colorWindow];
 	
 	// メインウィンドウが閉じられるときに他のウィンドウも閉じる
 	[aCenter addObserver: self
@@ -742,13 +765,35 @@ typedef enum {
                 selector: @selector(constructTemplatePopup:)
                     name: NSPopUpButtonWillPopUpNotification
                   object: templatePopupButton];
+
+    // ウィンドウがアクティブになったときにその通知を受け取る
+    [aCenter addObserver: self
+                selector: @selector(lastActiveWindowChenaged:)
+                    name: NSWindowDidBecomeKeyNotification
+                  object: mainWindow];
+    [aCenter addObserver: self
+                selector: @selector(lastActiveWindowChenaged:)
+                    name: NSWindowDidBecomeKeyNotification
+                  object: preambleWindow];
 	
 	// デフォルトのアウトプットファイルのパスをセット
 	outputFileTextField.stringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
+    
+
+    // 色パレットが表示されていれば消す
+    [NSColorPanel.sharedColorPanel performSelector:@selector(orderOut:) withObject:self afterDelay:0];
+
+    lastActiveWindow = mainWindow;
+    
+    // 色入力支援パレットにデフォルトの文字を入れる
+    colorWell.color = NSColor.redColor;
+    [self setColor:nil];
+
 	
 	// 保存された設定を読み込む
 	NSFileManager *fileManager = NSFileManager.defaultManager;
 	NSString *plistFile = [NSString stringWithFormat:@"%@/Library/Preferences/%@.plist", NSHomeDirectory(), [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
+    
 	
 	BOOL loadLastProfileSuccess = NO;
 	
@@ -840,6 +885,11 @@ typedef enum {
 
 - (void)applicationWillTerminate:(NSNotification*)aNotification
 {
+    // 色パレットが表示されていれば消す
+    if (NSColorPanel.sharedColorPanelExists) {
+        [NSColorPanel.sharedColorPanel performSelector:@selector(orderOut:) withObject:self afterDelay:0];
+    }
+
 	[profileController updateProfile:self.currentProfile forName:AutoSavedProfileName];
 	[profileController saveProfiles];
 }
@@ -863,6 +913,19 @@ typedef enum {
 - (void)uncheckPreambleWindowMenuItem:(NSNotification*)aNotification
 {
 	preambleWindowMenuItem.state = NO;
+}
+
+- (void)uncheckColorWindowMenuItem:(NSNotification*)aNotification
+{
+    colorWindowMenuItem.state = NO;
+    if (NSColorPanel.sharedColorPanelExists) {
+        [NSColorPanel.sharedColorPanel orderOut:self];
+    }
+}
+
+- (void)lastActiveWindowChenaged:(NSNotification*)aNotification
+{
+    lastActiveWindow = aNotification.object;
 }
 
 - (IBAction)showMainWindow:(id)sender
@@ -1008,6 +1071,68 @@ typedef enum {
 {
     [self importSourceLogic:file];
 }
+
+#pragma mark - 色選択パネル
+- (IBAction)toggleColorWindow:(id)sender {
+    if (colorWindow.isVisible) {
+        [colorWindow close];
+    } else {
+        colorWindowMenuItem.state = YES;
+        NSRect mainWindowRect = colorWindow.frame;
+        [colorWindow makeKeyAndOrderFront:nil];
+    }
+}
+
+
+- (IBAction)setColor:(id)sender {
+    NSColor *color = colorWell.color;
+    NSString *formatString;
+    CGFloat r, g, b;
+    @try {
+        r = color.redComponent;
+        g = color.greenComponent;
+        b = color.blueComponent;
+        switch (colorStyleMatrix.selectedTag) {
+            case COLOR_TAG:
+                formatString = @"\\color[rgb]{%lf,%lf,%lf}";
+                break;
+            case TEXTCOLOR_TAG:
+                formatString = @"\\textcolor[rgb]{%lf,%lf,%lf}{}";
+                break;
+            case COLORBOX_TAG:
+                formatString = @"\\colorbox[rgb]{%lf,%lf,%lf}{}";
+                break;
+            case DEFINECOLOR_TAG:
+                formatString = @"\\definecolor{}{rgb}{%lf,%lf,%lf}";
+                break;
+            default:
+                break;
+        }
+    }
+    @catch (NSException *exception) {
+    }
+    @finally {
+        if (formatString) {
+            colorTextField.stringValue = [NSString stringWithFormat:formatString, r, g, b];
+        }
+    }
+}
+
+- (IBAction)insertColorCommand:(id)sender {
+    if (lastActiveWindow == mainWindow) {
+        [sourceTextView insertTextWithIndicator:colorTextField.stringValue];
+    } else if (lastActiveWindow == preambleWindow) {
+        [preambleTextView insertTextWithIndicator:colorTextField.stringValue];
+    }
+}
+
+- (IBAction)copyColorCommand:(id)sender {
+    NSPasteboard *pasteBoard = NSPasteboard.generalPasteboard;
+    [pasteBoard declareTypes:@[NSStringPboardType] owner:nil];
+    [pasteBoard setString:colorTextField.stringValue forType:NSStringPboardType];
+    [colorTextField becomeFirstResponder];
+}
+
 
 #pragma mark - IBAction
 

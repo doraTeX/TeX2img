@@ -175,6 +175,18 @@ static BOOL isValidTeXCommandChar(unichar c)
 	[self colorizeText:[currentProfile boolForKey:ColorizeTextKey]];
 }
 
+- (void)insertTextWithIndicator:(id)aString {
+    [self insertText:aString];
+
+    if (![aString isKindOfClass:NSString.class]) {
+        return;
+    }
+    
+    NSUInteger length = ((NSString*)aString).length;
+    [self showFindIndicatorForRange:NSMakeRange(self.selectedRange.location - length, length)];
+
+}
+
 
 // クリップボードから貼り付けられる円マークをバックスラッシュに置き換えて貼り付ける
 - (BOOL)readSelectionFromPasteboard:(NSPasteboard*)pboard type:(NSString*)type

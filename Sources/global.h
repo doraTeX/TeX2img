@@ -77,6 +77,12 @@ NSMutableString *g_commandCompletionList;
 #define DIRECT_INPUT_TAG 0
 #define INPUT_FILE_TAG 1
 
+#define COLOR_TAG 1
+#define TEXTCOLOR_TAG 2
+#define COLORBOX_TAG 3
+#define DEFINECOLOR_TAG 4
+
+
 #define TeXtoDVItoPDF 1
 #define TeXtoPDF 2
 

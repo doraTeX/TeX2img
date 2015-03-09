@@ -21,6 +21,7 @@
                         length: (unsigned)newLength key:(NSString*)key;
 - (void)setEnabled:(BOOL)enabled;
 - (void)replaceEntireContentsWithString:(NSString*)contents colorize:(BOOL)colorize;
+- (void)insertTextWithIndicator:(id)aString;
 @property(nonatomic, assign) id<DnDDelegate> dropDelegate;
 @end
 
