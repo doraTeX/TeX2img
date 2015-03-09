@@ -331,7 +331,7 @@
 
 - (BOOL)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(NSInteger)resolution page:(NSUInteger)page;
 {
-    NSMutableArray *arguments = [NSMutableArray arrayWithArray:@[@"-dNOPAUSE", @"-dBATCH"]];
+    NSMutableArray *arguments = [NSMutableArray arrayWithArray:@[@"-dNOPAUSE", @"-dBATCH", @"-dNOCACHE"]];
     
     if (self.shouldUseEps2WriteDevice) {
         [arguments addObject:@"-sDEVICE=eps2write"];
