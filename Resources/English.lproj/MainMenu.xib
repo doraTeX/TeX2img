@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14D87h" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1050" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
@@ -425,6 +425,12 @@
                                     <action selector="toggleOutputDrawer:" target="450" id="743"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Color Picker" keyEquivalent="C" id="Y4d-p8-ynZ">
+                                <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
+                                <connections>
+                                    <action selector="toggleColorWindow:" target="450" id="tl9-8n-wfq"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>
@@ -631,6 +637,11 @@ DQ
                 <outlet property="checkBracketMenuItem" destination="838" id="849"/>
                 <outlet property="checkParenMenuItem" destination="839" id="848"/>
                 <outlet property="checkSquareBracketMenuItem" destination="840" id="847"/>
+                <outlet property="colorStyleMatrix" destination="ZdF-pn-USE" id="sul-BX-2Ez"/>
+                <outlet property="colorTextField" destination="FSu-oQ-wrx" id="2Pb-rY-fhi"/>
+                <outlet property="colorWell" destination="5Hf-8k-PN5" id="PAk-d3-V84"/>
+                <outlet property="colorWindow" destination="r0I-g2-mDW" id="JFs-tb-tQc"/>
+                <outlet property="colorWindowMenuItem" destination="Y4d-p8-ynZ" id="6JN-TZ-Zc1"/>
                 <outlet property="colorizeTextMenuItem" destination="772" id="777"/>
                 <outlet property="convertYenMarkMenuItem" destination="730" id="731"/>
                 <outlet property="deleteTmpFileCheckBox" destination="591" id="594"/>
@@ -1531,10 +1542,98 @@ DQ
         </drawer>
         <customObject id="769" customClass="SUUpdater"/>
         <userDefaultsController representsSharedInstance="YES" id="781"/>
-        <menuItem title="Manage templates..." id="aE7-Pk-rpp">
-            <connections>
-                <action selector="openTemplateDirectory:" target="450" id="3rS-k2-1KK"/>
-            </connections>
-        </menuItem>
+        <window title="Color Picker" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="r0I-g2-mDW">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <rect key="contentRect" x="335" y="390" width="555" height="93"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <value key="minSize" type="size" width="555" height="93"/>
+            <value key="maxSize" type="size" width="1000" height="93"/>
+            <view key="contentView" id="Agn-2i-r5v">
+                <rect key="frame" x="0.0" y="0.0" width="555" height="93"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" id="OJt-Si-ke3">
+                        <rect key="frame" x="383" y="13" width="79" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Copy" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Fvu-mN-wc2">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="copyColorCommand:" target="450" id="ECO-Gc-ldu"/>
+                        </connections>
+                    </button>
+                    <colorWell id="5Hf-8k-PN5">
+                        <rect key="frame" x="459" y="56" width="76" height="23"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <connections>
+                            <action selector="setColor:" target="450" id="mbV-nv-Lf4"/>
+                        </connections>
+                    </colorWell>
+                    <button verticalHuggingPriority="750" id="BSN-in-joM">
+                        <rect key="frame" x="462" y="13" width="79" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Insert" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="J8a-yz-IHn">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="insertColorCommand:" target="450" id="LxN-ZO-dpg"/>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" id="FSu-oQ-wrx">
+                        <rect key="frame" x="20" y="19" width="361" height="22"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="r3G-lx-Lcz">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="ZdF-pn-USE">
+                        <rect key="frame" x="20" y="57" width="431" height="20"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="107" height="20"/>
+                        <size key="intercellSpacing" width="1" height="1"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="5dt-Tc-yMg">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="\color" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="jkp-4k-FFR">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="radio" title="\textcolor" imagePosition="left" alignment="left" tag="2" inset="2" id="le4-oN-feQ">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="radio" title="\colorbox" imagePosition="left" alignment="left" tag="3" inset="2" id="K9T-2K-hS1">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="radio" title="\definecolor" imagePosition="left" alignment="left" tag="4" inset="2" id="hNy-cl-OPN">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                        <connections>
+                            <action selector="setColor:" target="450" id="Q3B-Im-3V1"/>
+                        </connections>
+                    </matrix>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="352.5" y="341.5"/>
+        </window>
     </objects>
 </document>
