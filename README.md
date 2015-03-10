@@ -7,6 +7,7 @@
 - JPEG ファイル
 - PNG ファイル
 - 背景を透過させた PNG ファイル
+- SVG ファイル
 
 出力した EPS/PDF/JPEG/PNG ファイルは Word / Excel / PowerPoint や，Illustrator / InDesign 等に貼り付けて利用することができます。
 
