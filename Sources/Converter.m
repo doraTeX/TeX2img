@@ -642,7 +642,7 @@
         }
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPSを経由しなくてよいので，pdfcrop で直接生成する。
 		[self pdfcrop:pdfFilePath outputFileName:outputFileName addMargin:YES];
-	} else { // EPS を経由する形式(EPS/outlined-PDF/JPEG/PNG)の場合
+	} else { // EPS を経由する形式(EPS/outlined-PDF/SVG/JPEG/PNG)の場合
         BOOL success = [self convertPDF:pdfFileName
                       outputEpsFileName:outputEpsFileName
                          outputFileName:outputFileName
