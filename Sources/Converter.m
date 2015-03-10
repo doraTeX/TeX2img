@@ -701,25 +701,18 @@
 		
 		// 一連のコンパイル処理を実行
 		status = [self compileAndConvert];
+        
+        NSString *previewApp = [extension isEqualToString:@"svg"] ? @"Safari.app" : @"Preview.app";
 		
-		// プレビュー処理
-		if (status && previewFlag) {
-            if ([extension isEqualToString:@"svg"]) {
-                system([NSString stringWithFormat:@"/usr/bin/qlmanage -p \"%@\" &", outputFilePath].UTF8String);
-                if (pageCount > 1) {
-                    for (NSUInteger i=2; i<=pageCount; i++) {
-                        system([NSString stringWithFormat:@"/usr/bin/qlmanage -p \"%@\" &", [outputFilePath pathStringByAppendingPageNumber:i]].UTF8String);
-                    }
-                }
-            } else {
-                [NSWorkspace.sharedWorkspace openFile:outputFilePath withApplication:@"Preview.app"];
-                if (pageCount > 1 && !([@"pdf" isEqualToString:extension] && leaveTextFlag)) {
-                    for (NSUInteger i=2; i<=pageCount; i++) {
-                        [NSWorkspace.sharedWorkspace openFile:[outputFilePath pathStringByAppendingPageNumber:i] withApplication:@"Preview.app"];
-                    }
+        // プレビュー処理
+        if (status && previewFlag) {
+            [NSWorkspace.sharedWorkspace openFile:outputFilePath withApplication:previewApp];
+            if (pageCount > 1 && !([@"pdf" isEqualToString:extension] && leaveTextFlag)) {
+                for (NSUInteger i=2; i<=pageCount; i++) {
+                    [NSWorkspace.sharedWorkspace openFile:[outputFilePath pathStringByAppendingPageNumber:i] withApplication:previewApp];
                 }
             }
-		}
+        }
 
         // Illustrator に配置
         if (status && embedInIllustratorFlag) {
