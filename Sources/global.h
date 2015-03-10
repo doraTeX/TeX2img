@@ -95,5 +95,5 @@ NSMutableString *g_commandCompletionList;
 
 #define EAKey "com.loveinequality.TeX2img"
 
-#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/pdf2svg"
+#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/pdf2svg:/Applications/TeXLive/TeX2img.app/Contents/Resources/pdf2svg"
 
