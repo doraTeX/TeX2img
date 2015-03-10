@@ -32,7 +32,7 @@ static void usage()
     printf("  --right-margin   MARGIN : set right margin  (default: 0)\n");
     printf("  --top-margin     MARGIN : set top margin    (default: 0)\n");
     printf("  --bottom-margin  MARGIN : set bottom margin (default: 0)\n");
-    printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF)\n");
+    printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF/SVG)\n");
     printf("  --create-outline        : outline text in PDF\n");
     printf("  --transparent           : generate transparent PNG file\n");
     printf("  --no-embed-source       : do not embed the source in image files\n");

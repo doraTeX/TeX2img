@@ -483,7 +483,7 @@
     
     // SVG の width="20pt" height="20pt" のような指定を削除する
     NSMutableString *mstr = [NSMutableString stringWithString:[NSString stringWithContentsOfFile:svgFilePath encoding:NSUTF8StringEncoding error:nil]];
-    NSString *pattern = @"width=\"\\d+pt\" height=\"\\d+pt\" ";
+    NSString *pattern = @"width=\"[\\d\\.]+pt\" height=\"[\\d\\.]+pt\" ";
     NSRange match = [mstr rangeOfString:pattern options:NSRegularExpressionSearch];
     if (match.location != NSNotFound) {
         [mstr replaceCharactersInRange:match withString:@""];
