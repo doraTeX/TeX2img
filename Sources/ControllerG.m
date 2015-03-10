@@ -1139,13 +1139,6 @@ typedef enum {
     }
 }
 
-- (IBAction)copyColorCommand:(id)sender {
-    NSPasteboard *pasteBoard = NSPasteboard.generalPasteboard;
-    [pasteBoard declareTypes:@[NSStringPboardType] owner:nil];
-    [pasteBoard setString:colorTextField.stringValue forType:NSStringPboardType];
-    [colorTextField becomeFirstResponder];
-}
-
 - (void)uncheckColorWindowMenuItem:(NSNotification*)aNotification
 {
     colorWindowMenuItem.state = NO;
