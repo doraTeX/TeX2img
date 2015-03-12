@@ -334,13 +334,14 @@
 
 - (BOOL)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(NSInteger)resolution page:(NSUInteger)page;
 {
-    NSMutableArray *arguments = [NSMutableArray arrayWithArray:@[@"-dNOPAUSE", @"-dBATCH", @"-dNOCACHE"]];
+    NSMutableArray *arguments = [NSMutableArray arrayWithArray:@[@"-dNOPAUSE", @"-dBATCH"]];
     
     if (self.shouldUseEps2WriteDevice) {
         [arguments addObject:@"-sDEVICE=eps2write"];
         [arguments addObject:@"-dNoOutputFonts"];
     } else {
         [arguments addObject:@"-sDEVICE=epswrite"];
+        [arguments addObject:@"-dNOCACHE"];
     }
 
     [arguments addObjectsFromArray:@[[NSString stringWithFormat:@"-dFirstPage=%lu", page],
