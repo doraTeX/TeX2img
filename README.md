@@ -9,7 +9,7 @@
 - 背景を透過させた PNG ファイル
 - SVG ファイル
 
-出力した EPS/PDF/JPEG/PNG ファイルは Word / Excel / PowerPoint や，Illustrator / InDesign 等に貼り付けて利用することができます。
+出力した画像ファイルは Word / Excel / PowerPoint や，Illustrator / InDesign などに貼り付けて利用することができます。
 
 その他詳細は[公式配布サイト](http://island.geocities.jp/loveinequality/)参照。
 
