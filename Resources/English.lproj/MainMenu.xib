@@ -690,6 +690,7 @@ DQ
                 <outlet property="showTabCharacterMenuItem" destination="811" id="820"/>
                 <outlet property="solidHighlightMenuItem" destination="790" id="796"/>
                 <outlet property="sourceTextView" destination="aKZ-WF-zY9" id="Q4i-tH-xWD"/>
+                <outlet property="specifySvgSizeCheckBox" destination="H7g-7q-uFe" id="FB8-6s-YnL"/>
                 <outlet property="templatePopupButton" destination="8yt-cH-L8O" id="cye-en-aa4"/>
                 <outlet property="topMarginLabel" destination="559" id="619"/>
                 <outlet property="topMarginSlider" destination="558" id="624"/>
@@ -1087,18 +1088,18 @@ DQ
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
-                                        <box autoresizesSubviews="NO" title="Conversion" borderType="line" id="lBe-ki-f48">
-                                            <rect key="frame" x="6" y="4" width="370" height="58"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                        <box autoresizesSubviews="NO" title="Priority in Conversion" borderType="line" id="lBe-ki-f48">
+                                            <rect key="frame" x="177" y="5" width="199" height="58"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES"/>
                                             <view key="contentView">
-                                                <rect key="frame" x="1" y="1" width="368" height="42"/>
+                                                <rect key="frame" x="1" y="1" width="197" height="42"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="UtA-j3-7c0">
-                                                        <rect key="frame" x="18" y="14" width="332" height="18"/>
+                                                        <rect key="frame" x="18" y="14" width="160" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="164" height="18"/>
+                                                        <size key="cellSize" width="78" height="18"/>
                                                         <size key="intercellSpacing" width="4" height="2"/>
                                                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="zc7-oM-Bmw">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1106,19 +1107,39 @@ DQ
                                                         </buttonCell>
                                                         <cells>
                                                             <column>
-                                                                <buttonCell type="radio" title="Quality priority" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="W8I-Up-M9K">
+                                                                <buttonCell type="radio" title="Quality" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="W8I-Up-M9K">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
                                                             </column>
                                                             <column>
-                                                                <buttonCell type="radio" title="Speed priority" imagePosition="left" alignment="left" tag="2" inset="2" id="7p4-19-gjL">
+                                                                <buttonCell type="radio" title="Speed" imagePosition="left" alignment="left" tag="2" inset="2" id="7p4-19-gjL">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
                                                             </column>
                                                         </cells>
                                                     </matrix>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
+                                        <box autoresizesSubviews="NO" title="SVG Setting (for only SVG)" borderType="line" id="StZ-qM-83h">
+                                            <rect key="frame" x="6" y="4" width="169" height="59"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <view key="contentView">
+                                                <rect key="frame" x="1" y="1" width="167" height="43"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <button id="H7g-7q-uFe">
+                                                        <rect key="frame" x="16" y="6" width="336" height="34"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Specify size" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="ss8-Tf-CTS">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                    </button>
                                                 </subviews>
                                             </view>
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>

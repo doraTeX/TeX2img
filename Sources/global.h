@@ -19,6 +19,7 @@ NSMutableString *g_commandCompletionList;
 #define UngroupKey @"ungroup"
 #define TransparentKey @"transparent"
 #define GetOutlineKey @"getOutline"
+#define SpecifySvgSizeKey @"specifySvgSize"
 #define IgnoreErrorKey @"ignoreError"
 #define UtfExportKey @"utfExport"
 #define LatexPathKey @"platexPath"

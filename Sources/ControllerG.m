@@ -72,6 +72,7 @@ typedef enum {
 
 @property IBOutlet NSButton *generateButton;
 @property IBOutlet NSButton *transparentCheckBox;
+@property IBOutlet NSButton *specifySvgSizeCheckBox;
 @property IBOutlet NSButton *showOutputDrawerCheckBox;
 @property IBOutlet NSButton *previewCheckBox;
 @property IBOutlet NSButton *deleteTmpFileCheckBox;
@@ -153,6 +154,7 @@ typedef enum {
 
 @synthesize generateButton;
 @synthesize transparentCheckBox;
+@synthesize specifySvgSizeCheckBox;
 @synthesize showOutputDrawerCheckBox;
 @synthesize previewCheckBox;
 @synthesize deleteTmpFileCheckBox;
@@ -330,6 +332,7 @@ typedef enum {
 	
 	transparentCheckBox.state = [aProfile boolForKey:TransparentKey];
 	getOutlineCheckBox.state = [aProfile boolForKey:GetOutlineKey];
+    specifySvgSizeCheckBox.state = [aProfile boolForKey:SpecifySvgSizeKey];
 	
 	ignoreErrorCheckBox.state = [aProfile boolForKey:IgnoreErrorKey];
 	utfExportCheckBox.state = [aProfile boolForKey:UtfExportKey];
@@ -473,6 +476,7 @@ typedef enum {
         
         currentProfile[TransparentKey] = @(transparentCheckBox.state);
         currentProfile[GetOutlineKey] = @(getOutlineCheckBox.state);
+        currentProfile[SpecifySvgSizeKey] = @(specifySvgSizeCheckBox.state);
         currentProfile[IgnoreErrorKey] = @(ignoreErrorCheckBox.state);
         currentProfile[UtfExportKey] = @(utfExportCheckBox.state);
         

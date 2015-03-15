@@ -4,9 +4,9 @@
 #import "ControllerC.h"
 #import "global.h"
 
-#define OPTION_NUM 24
+#define OPTION_NUM 25
 #define MAX_LEN 1024
-#define VERSION "1.8.9.1"
+#define VERSION "1.8.9.2b1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -35,6 +35,7 @@ static void usage()
     printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF/SVG)\n");
     printf("  --create-outline        : outline text in PDF\n");
     printf("  --transparent           : generate transparent PNG file\n");
+    printf("  --specify-svg-size      : specify width and height of SVG file\n");
     printf("  --no-embed-source       : do not embed the source in image files\n");
     printf("  --quick                 : convert in a speed priority mode\n");
     printf("  --kanji ENCODING        : set Japanese encoding  (no|utf8|sjis|jis|euc) (default: no)\n");
@@ -118,6 +119,7 @@ int main (int argc, char *argv[]) {
         int bottomMargin = 0;
         BOOL getOutline = NO;
         BOOL transparentPngFlag = NO;
+        BOOL specifySvgSizeFlag = NO;
         BOOL deleteTmpFileFlag = YES;
         BOOL ignoreErrorFlag = NO;
         BOOL utfExportFlag = NO;
@@ -243,6 +245,11 @@ int main (int argc, char *argv[]) {
         options[20].has_arg = no_argument;
         options[20].flag = NULL;
         options[20].val = 21;
+
+        options[21].name = "specify-svg-size";
+        options[21].has_arg = no_argument;
+        options[21].flag = NULL;
+        options[21].val = 22;
         
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
@@ -407,6 +414,9 @@ int main (int argc, char *argv[]) {
                 case 21: // --no-embed-source
                     embedSourceFlag = NO;
                     break;
+                case 22: // --specify-svg-size
+                    specifySvgSizeFlag = YES;
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -497,6 +507,7 @@ int main (int argc, char *argv[]) {
         aProfile[BottomMarginKey] = @(bottomMargin);
         aProfile[GetOutlineKey] = @(getOutline);
         aProfile[TransparentKey] = @(transparentPngFlag);
+        aProfile[SpecifySvgSizeKey] = @(specifySvgSizeFlag);
         aProfile[ShowOutputDrawerKey] = @(NO);
         aProfile[PreviewKey] = @(previewFlag);
         aProfile[DeleteTmpFileKey] = @(deleteTmpFileFlag);

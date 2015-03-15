@@ -21,7 +21,7 @@
 @property float resolutionLevel;
 @property BOOL guessCompilation;
 @property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property BOOL leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property BOOL leaveTextFlag, transparentPngFlag, specifySvgSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property id<OutputController> controller;
 @property NSFileManager* fileManager;
 @property NSString* tempdir;
@@ -46,7 +46,7 @@
 @synthesize resolutionLevel;
 @synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@synthesize leaveTextFlag, transparentPngFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize leaveTextFlag, transparentPngFlag, specifySvgSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
 @synthesize fileManager;
 @synthesize tempdir;
@@ -85,6 +85,7 @@
     bottomMargin = [aProfile integerForKey:BottomMarginKey];
     leaveTextFlag = ![aProfile boolForKey:GetOutlineKey];
     transparentPngFlag = [aProfile boolForKey:TransparentKey];
+    specifySvgSizeFlag = [aProfile boolForKey:SpecifySvgSizeKey];
     showOutputDrawerFlag = [aProfile boolForKey:ShowOutputDrawerKey];
     previewFlag = [aProfile boolForKey:PreviewKey];
     deleteTmpFileFlag = [aProfile boolForKey:DeleteTmpFileKey];
@@ -484,14 +485,16 @@
         return NO;
     }
     
-    // SVG の width="20pt" height="20pt" のような指定を削除する
-    NSMutableString *mstr = [NSMutableString stringWithString:[NSString stringWithContentsOfFile:svgFilePath encoding:NSUTF8StringEncoding error:nil]];
-    NSString *pattern = @"width=\".+?\" height=\".+?\" ";
-    NSRange match = [mstr rangeOfString:pattern options:NSRegularExpressionSearch];
-    if (match.location != NSNotFound) {
-        [mstr replaceCharactersInRange:match withString:@""];
+    // SVG の width, height 属性を削除する
+    if (!specifySvgSizeFlag) {
+        NSMutableString *mstr = [NSMutableString stringWithString:[NSString stringWithContentsOfFile:svgFilePath encoding:NSUTF8StringEncoding error:nil]];
+        NSString *pattern = @"width=\".+?\" height=\".+?\" ";
+        NSRange match = [mstr rangeOfString:pattern options:NSRegularExpressionSearch];
+        if (match.location != NSNotFound) {
+            [mstr replaceCharactersInRange:match withString:@""];
+        }
+        [mstr writeToFile:svgFilePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
     }
-    [mstr writeToFile:svgFilePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
     
     return YES;
 }
