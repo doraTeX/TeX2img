@@ -249,11 +249,6 @@ typedef enum {
 	return YES;
 }
 
-- (BOOL)pdfcropExists;
-{
-	return YES;
-}
-
 - (BOOL)epstopdfExists;
 {
 	return YES;
@@ -1446,7 +1441,6 @@ typedef enum {
 {
     NSString *inputSourceFilePath;
     NSMutableDictionary *aProfile = self.currentProfile;
-    aProfile[PdfcropPathKey] = [NSBundle.mainBundle pathForResource:@"pdfcrop" ofType:nil];
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
     aProfile[MudrawPathKey] = [[NSBundle.mainBundle pathForResource:@"mupdf" ofType:nil] stringByAppendingPathComponent:@"mudraw"];
     aProfile[QuietKey] = @(NO);

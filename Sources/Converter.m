@@ -27,7 +27,6 @@
 @property NSString* tempdir;
 @property pid_t pid;
 @property NSString* tempFileBaseName;
-@property NSString* pdfcropPath;
 @property NSString* epstopdfPath;
 @property NSString* mudrawPath;
 @property NSUInteger pageCount;
@@ -52,7 +51,6 @@
 @synthesize tempdir;
 @synthesize pid;
 @synthesize tempFileBaseName;
-@synthesize pdfcropPath;
 @synthesize epstopdfPath;
 @synthesize mudrawPath;
 @synthesize pageCount;
@@ -68,7 +66,6 @@
     latexPath = [aProfile stringForKey:LatexPathKey];
     dvipdfmxPath = [aProfile stringForKey:DvipdfmxPathKey];
     gsPath = [aProfile stringForKey:GsPathKey];
-    pdfcropPath = [aProfile stringForKey:PdfcropPathKey];
     epstopdfPath = [aProfile stringForKey:EpstopdfPathKey];
     mudrawPath = [aProfile stringForKey:MudrawPathKey];
     guessCompilation = [aProfile boolForKey:GuessCompilationKey];
@@ -289,21 +286,76 @@
 	return status;
 }
 
-- (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName addMargin:(BOOL)addMargin
+- (NSString*)buildCropTeXSource:(NSString*)pdfPath page:(NSUInteger)page addMargin:(BOOL)addMargin
 {
-	if (!controller.pdfcropExists) {
-		return NO;
-	}
-	
-	BOOL status = [self execCommand:[NSString stringWithFormat:@"export PATH=$PATH:\"%@\":\"%@\";/usr/bin/perl \"%@\"",
-                                    latexPath.stringByDeletingLastPathComponent,
-                                    gsPath.stringByDeletingLastPathComponent,
-                                    pdfcropPath]
+    // gsを実行してbb情報を取得
+    char str[MAX_LEN];
+    FILE *fp;
+    NSMutableString *bbStr = NSMutableString.new;
+    
+    NSString *cmdline = [NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -q -sDEVICE=bbox -dFirstPage=%ld -dLastPage=%ld \"%@\" 2>&1 | grep %%%%BoundingBox", gsPath, page, page, pdfPath];
+    
+    if ((fp = popen(cmdline.UTF8String, "r")) == NULL) {
+        return NO;
+    }
+    while (YES) {
+        if (fgets(str, MAX_LEN-1, fp) == NULL) {
+            break;
+        }
+        [bbStr appendString:@(str)];
+    }
+    if (pclose(fp) != 0) {
+        return NO;
+    }
+    
+    NSInteger leftmargin = addMargin ? leftMargin : 0;
+    NSInteger rightmargin = addMargin ? rightMargin : 0;
+    NSInteger topmargin = addMargin ? topMargin : 0;
+    NSInteger bottommargin = addMargin ? bottomMargin : 0;
+    
+    return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin-#1bp \\pdfvorigin#2bp \\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax \\advance\\pdfpagewidth by %ldbp\\relax \\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax \\advance\\pdfpageheight by %ldbp\\relax \\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight \\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
+}
+
+// page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
+- (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin
+{
+    NSUInteger totalPages = [PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfPath]].pageCount;
+    NSMutableString *cropTeX = NSMutableString.new;
+    if (page > 0) {
+        [cropTeX appendString:[self buildCropTeXSource:pdfPath page:page addMargin:addMargin]];
+    } else {
+        for (NSUInteger i=1; i<=totalPages; i++) {
+            [cropTeX appendString:[self buildCropTeXSource:pdfPath page:i addMargin:addMargin]];
+        }
+    }
+    [cropTeX appendString:@"\\end"];
+    
+    NSString *cropFileBasePath = [[tempdir stringByAppendingPathComponent:tempFileBaseName] stringByAppendingString:@"-pdfcrop"];
+    NSString *cropTeXSourcePath = [cropFileBasePath stringByAppendingString:@".tex"];
+    NSString *cropPdfSourcePath = [cropFileBasePath stringByAppendingString:@".pdf"];
+    NSString *cropLogSourcePath = [cropFileBasePath stringByAppendingString:@".log"];
+    
+    [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
+    [cropTeX writeToFile:cropTeXSourcePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
+
+    NSString *pdfTeXPath = [latexPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
+    
+	BOOL status = [self execCommand:pdfTeXPath
                        atDirectory:tempdir
-					 withArguments:@[addMargin ? [NSString stringWithFormat:@"--margins \"%ld %ld %ld %ld\"", leftMargin, topMargin, rightMargin, bottomMargin] : @"",
-									pdfPath.lastPathComponent,
-									outputFileName]];
-	return status;
+					 withArguments:@[cropFileBasePath.lastPathComponent]
+                   ];
+    
+    [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
+    [fileManager removeItemAtPath:cropLogSourcePath error:nil];
+
+    if (!status) {
+        return NO;
+    }
+    
+    [fileManager removeItemAtPath:outputFileName error:nil];
+    [fileManager moveItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
+    
+	return YES;
 }
 
 - (BOOL)shouldUseEps2WriteDevice
@@ -373,7 +425,7 @@
     if (addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0)) {
         NSString* trimFileName = [NSString stringWithFormat:@"%@.trim.pdf", epsName];
         // まず，epstopdf を使って PDF に戻し，次に，pdfcrop を使って余白を付け加える
-        return [self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName addMargin:YES];
+        return [self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName page:0 addMargin:YES];
     } else {
         // epstopdf を使って PDF に戻すのみ
         return [self epstopdf:epsName outputPdfFileName:outputFileName];
@@ -404,7 +456,7 @@
 
 	// PDFのバウンディングボックスで切り取る
     if (crop) {
-        [self pdfcrop:pdfFilePath outputFileName:pdfFilePath addMargin:NO];
+        [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO];
     }
 	
 	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
@@ -645,9 +697,22 @@
             [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i crop:YES];
         }
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPSを経由しなくてよいので，pdfcrop で直接生成する。
-		[self pdfcrop:pdfFilePath outputFileName:outputFileName addMargin:YES];
+        BOOL success = [self pdfcrop:pdfFilePath outputFileName:outputFileName page:1 addMargin:YES];
+        if (!success) {
+            return success;
+        }
+        
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            success = [self pdfcrop:pdfFilePath
+                     outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                               page:i
+                          addMargin:YES];
+            if (!success) {
+                return success;
+            }
+        }
     } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，pdfcrop してから1ページずつ mudraw にかける
-        [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath addMargin:YES];
+        [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES];
 
         BOOL success = [self pdf2svg:croppedPdfFilePath
                       outputFileName:outputFileName
@@ -729,7 +794,7 @@
         // プレビュー処理
         if (status && previewFlag) {
             [NSWorkspace.sharedWorkspace openFile:outputFilePath withApplication:previewApp];
-            if (pageCount > 1 && !([@"pdf" isEqualToString:extension] && leaveTextFlag)) {
+            if (pageCount > 1) {
                 for (NSUInteger i=2; i<=pageCount; i++) {
                     [NSWorkspace.sharedWorkspace openFile:[outputFilePath pathStringByAppendingPageNumber:i] withApplication:previewApp];
                 }

@@ -65,7 +65,6 @@ NSMutableString *g_commandCompletionList;
 #define InputMethodKey @"inputMethod"
 #define InputSourceFilePathKey @"inputSourceFilePath"
 #define EncodingKey @"encoding"
-#define PdfcropPathKey @"pdfcropPath"
 #define EpstopdfPathKey @"epstopdfPath"
 #define MudrawPathKey @"mudrawPath"
 #define QuietKey @"quiet"

@@ -44,16 +44,6 @@ BOOL checkWhich(NSString *cmdName)
 	return YES;
 }
 
-- (BOOL)pdfcropExists;
-{
-	if (!checkWhich(@"pdfcrop")) {
-		[self showNotFoundError:@"pdfcrop"];
-		return NO;
-	}
-
-	return YES;
-}
-
 - (BOOL)epstopdfExists;
 {
 	if (!checkWhich(@"epstopdf")) {

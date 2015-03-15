@@ -4,7 +4,6 @@
 - (void)showExtensionError;
 - (void)showNotFoundError:(NSString*)aPath;
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath;
-- (BOOL)pdfcropExists;
 - (BOOL)epstopdfExists;
 - (BOOL)mudrawExists;
 - (void)showFileGenerateError:(NSString*)aPath;
