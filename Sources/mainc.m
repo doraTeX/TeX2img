@@ -460,7 +460,6 @@ int main (int argc, char *argv[]) {
         NSString *latexPath = getPath(compiler);
         NSString *dvipdfmxPath = getPath(dvipdfmx);
         NSString *gsPath = getPath(gs);
-        NSString *pdfcropPath = getPath(@"pdfcrop");
         NSString *epstopdfPath = getPath(@"epstopdf");
         NSString *mudrawPath = getPath(@"mudraw");
         
@@ -476,10 +475,6 @@ int main (int argc, char *argv[]) {
             [controller showNotFoundError:@"gs"];
             return 1;
         }
-        if (!pdfcropPath) {
-            [controller showNotFoundError:@"pdfcrop"];
-            return 1;
-        }
         if (!epstopdfPath) {
             [controller showNotFoundError:@"epstopdf"];
             return 1;
@@ -492,7 +487,6 @@ int main (int argc, char *argv[]) {
         aProfile[LatexPathKey] = latexPath;
         aProfile[DvipdfmxPathKey] = dvipdfmxPath;
         aProfile[GsPathKey] = gsPath;
-        aProfile[PdfcropPathKey] = pdfcropPath;
         aProfile[EpstopdfPathKey] = epstopdfPath;
         aProfile[MudrawPathKey] = mudrawPath;
         
