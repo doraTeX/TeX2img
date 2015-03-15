@@ -320,7 +320,7 @@
 - (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin
 {
     NSUInteger totalPages = [PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfPath]].pageCount;
-    NSMutableString *cropTeX = NSMutableString.new;
+    NSMutableString *cropTeX = [NSMutableString stringWithString:@"\\pdfoutput=1"];
     if (page > 0) {
         [cropTeX appendString:[self buildCropTeXSource:pdfPath page:page addMargin:addMargin]];
     } else {
@@ -342,7 +342,7 @@
     
 	BOOL status = [self execCommand:pdfTeXPath
                        atDirectory:tempdir
-					 withArguments:@[cropFileBasePath.lastPathComponent]
+					 withArguments:@[@"-no-shell-escape", @"-interaction=batchmode", cropFileBasePath.lastPathComponent]
                    ];
     
     [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
