@@ -257,7 +257,7 @@ typedef enum {
 	return YES;
 }
 
-- (BOOL)pdf2svgExists;
+- (BOOL)mudrawExists;
 {
     return YES;
 }
@@ -1444,7 +1444,7 @@ typedef enum {
     NSMutableDictionary *aProfile = self.currentProfile;
     aProfile[PdfcropPathKey] = [NSBundle.mainBundle pathForResource:@"pdfcrop" ofType:nil];
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
-    aProfile[Pdf2svgPathKey] = [[NSBundle.mainBundle pathForResource:@"pdf2svg" ofType:nil] stringByAppendingPathComponent:@"pdf2svg"];
+    aProfile[MudrawPathKey] = [[NSBundle.mainBundle pathForResource:@"mupdf" ofType:nil] stringByAppendingPathComponent:@"mudraw"];
     aProfile[QuietKey] = @(NO);
     aProfile[ControllerKey] = self;
     

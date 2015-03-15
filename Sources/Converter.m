@@ -29,7 +29,7 @@
 @property NSString* tempFileBaseName;
 @property NSString* pdfcropPath;
 @property NSString* epstopdfPath;
-@property NSString* pdf2svgPath;
+@property NSString* mudrawPath;
 @property NSUInteger pageCount;
 @property BOOL useBP;
 @property BOOL speedPriorityMode;
@@ -54,7 +54,7 @@
 @synthesize tempFileBaseName;
 @synthesize pdfcropPath;
 @synthesize epstopdfPath;
-@synthesize pdf2svgPath;
+@synthesize mudrawPath;
 @synthesize pageCount;
 @synthesize useBP;
 @synthesize speedPriorityMode;
@@ -70,7 +70,7 @@
     gsPath = [aProfile stringForKey:GsPathKey];
     pdfcropPath = [aProfile stringForKey:PdfcropPathKey];
     epstopdfPath = [aProfile stringForKey:EpstopdfPathKey];
-    pdf2svgPath = [aProfile stringForKey:Pdf2svgPathKey];
+    mudrawPath = [aProfile stringForKey:MudrawPathKey];
     guessCompilation = [aProfile boolForKey:GuessCompilationKey];
     numberOfCompilation = [aProfile integerForKey:NumberOfCompilationKey];
     
@@ -469,22 +469,24 @@
     system([NSString stringWithFormat:@"/usr/bin/ruby %@; rm %@", scriptPath, scriptPath].UTF8String);
 }
 
-- (BOOL)pdf2svg:(NSString*)pdfFilePath outputFileName:(NSString*)svgFilePath
+- (BOOL)pdf2svg:(NSString*)pdfFilePath outputFileName:(NSString*)svgFilePath page:(NSUInteger)page
 {
-    if (!controller.pdf2svgExists) {
+    if (!controller.mudrawExists) {
         return NO;
     }
     
-    BOOL success = [self execCommand:pdf2svgPath
+    NSArray *arguments = @[@"-l", @"-o", svgFilePath, pdfFilePath, [NSString stringWithFormat:@"%ld", page]];
+    
+    BOOL success = [self execCommand:mudrawPath
                          atDirectory:tempdir
-                       withArguments:@[pdfFilePath, svgFilePath]];
+                       withArguments:arguments];
     if (!success ) {
         return NO;
     }
     
     // SVG の width="20pt" height="20pt" のような指定を削除する
     NSMutableString *mstr = [NSMutableString stringWithString:[NSString stringWithContentsOfFile:svgFilePath encoding:NSUTF8StringEncoding error:nil]];
-    NSString *pattern = @"width=\"[\\d\\.]+pt\" height=\"[\\d\\.]+pt\" ";
+    NSString *pattern = @"width=\".+?\" height=\".+?\" ";
     NSRange match = [mstr rangeOfString:pattern options:NSRegularExpressionSearch];
     if (match.location != NSNotFound) {
         [mstr replaceCharactersInRange:match withString:@""];
@@ -511,9 +513,6 @@
     
     if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す（ここでpdfcropで余白付与）
         [self eps2pdf:outputEpsFileName outputFileName:outputFileName addMargin:YES];
-    } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，EPS から PDF に戻し（ここでpdfcropで余白付与），次に pdf2svg で SVG に変換。
-        [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:YES];
-        return [self pdf2svg:outlinedPdfFileName outputFileName:outputFileName];
     } else if ([@"eps" isEqualToString:extension]) { // 最終出力が EPS の場合
         // 余白を付け加えるようバウンディングボックスを改変
         if (topMargin + bottomMargin + leftMargin + rightMargin > 0) {
@@ -590,6 +589,7 @@
 	NSString* texFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	NSString* dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	NSString* pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+    NSString* croppedPdfFilePath = [NSString stringWithFormat:@"%@-crop.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
     NSString* pdfFileName = [NSString stringWithFormat:@"%@.pdf", tempFileBaseName];
 	NSString* outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
 	NSString* outputFileName = outputFilePath.lastPathComponent;
@@ -643,7 +643,25 @@
         }
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPSを経由しなくてよいので，pdfcrop で直接生成する。
 		[self pdfcrop:pdfFilePath outputFileName:outputFileName addMargin:YES];
-	} else { // EPS を経由する形式(EPS/outlined-PDF/SVG/JPEG/PNG)の場合
+    } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，pdfcrop してから1ページずつ mudraw にかける
+        [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath addMargin:YES];
+
+        BOOL success = [self pdf2svg:croppedPdfFilePath
+                      outputFileName:outputFileName
+                                page:1];
+        if (!success) {
+            return success;
+        }
+        
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            success = [self pdf2svg:croppedPdfFilePath
+                     outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                               page:i];
+            if (!success) {
+                return success;
+            }
+        }
+	} else { // EPS を経由する形式(EPS/outlined-PDF/JPEG/PNG)の場合
         BOOL success = [self convertPDF:pdfFileName
                       outputEpsFileName:outputEpsFileName
                          outputFileName:outputFileName
@@ -747,6 +765,7 @@
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.log", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.aux", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.pdf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop.pdf", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.outline.pdf", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps.trim.pdf", basePath] error:nil];

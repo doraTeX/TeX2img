@@ -6,7 +6,7 @@
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath;
 - (BOOL)pdfcropExists;
 - (BOOL)epstopdfExists;
-- (BOOL)pdf2svgExists;
+- (BOOL)mudrawExists;
 - (void)showFileGenerateError:(NSString*)aPath;
 - (void)showExecError:(NSString*)command;
 - (void)showCannotOverwriteError:(NSString*)path;

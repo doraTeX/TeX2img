@@ -64,10 +64,10 @@ BOOL checkWhich(NSString *cmdName)
 	return YES;
 }
 
-- (BOOL)pdf2svgExists;
+- (BOOL)mudrawExists;
 {
-    if (!checkWhich(@"pdf2svg")) {
-        [self showNotFoundError:@"pdf2svg"];
+    if (!checkWhich(@"mudraw")) {
+        [self showNotFoundError:@"mudraw"];
         return NO;
     }
     

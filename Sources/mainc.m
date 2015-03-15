@@ -6,7 +6,7 @@
 
 #define OPTION_NUM 24
 #define MAX_LEN 1024
-#define VERSION "1.8.9"
+#define VERSION "1.8.9.1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -452,7 +452,7 @@ int main (int argc, char *argv[]) {
         NSString *gsPath = getPath(gs);
         NSString *pdfcropPath = getPath(@"pdfcrop");
         NSString *epstopdfPath = getPath(@"epstopdf");
-        NSString *pdf2svgPath = getPath(@"pdf2svg");
+        NSString *mudrawPath = getPath(@"mudraw");
         
         if (!latexPath) {
             [controller showNotFoundError:@"LaTeX"];
@@ -474,8 +474,8 @@ int main (int argc, char *argv[]) {
             [controller showNotFoundError:@"epstopdf"];
             return 1;
         }
-        if (!pdf2svgPath) {
-            pdf2svgPath = @"pdf2svg";
+        if (!mudrawPath) {
+            mudrawPath = @"mudraw";
         }
         
         NSMutableDictionary *aProfile = NSMutableDictionary.dictionary;
@@ -484,7 +484,7 @@ int main (int argc, char *argv[]) {
         aProfile[GsPathKey] = gsPath;
         aProfile[PdfcropPathKey] = pdfcropPath;
         aProfile[EpstopdfPathKey] = epstopdfPath;
-        aProfile[Pdf2svgPathKey] = pdf2svgPath;
+        aProfile[MudrawPathKey] = mudrawPath;
         
         aProfile[OutputFileKey] = outputFilePath;
         
