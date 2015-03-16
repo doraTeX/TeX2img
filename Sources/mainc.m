@@ -6,7 +6,7 @@
 
 #define OPTION_NUM 25
 #define MAX_LEN 1024
-#define VERSION "1.8.9.2b2"
+#define VERSION "1.8.9.2b3"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -28,14 +28,14 @@ static void usage()
     printf("  --dvipdfmx   DVIPDFMX   : set dvipdfmx      (default: dvipdfmx)\n");
     printf("  --gs         GS         : set ghostscript   (default: gs)\n");
     printf("  --resolution RESOLUTION : set resolution level (default: 15)\n");
-    printf("  --left-margin    MARGIN : set left margin   (default: 0)\n");
-    printf("  --right-margin   MARGIN : set right margin  (default: 0)\n");
-    printf("  --top-margin     MARGIN : set top margin    (default: 0)\n");
-    printf("  --bottom-margin  MARGIN : set bottom margin (default: 0)\n");
+    printf("  --left-margin    MARGIN : set the left margin   (default: 0)\n");
+    printf("  --right-margin   MARGIN : set the right margin  (default: 0)\n");
+    printf("  --top-margin     MARGIN : set the top margin    (default: 0)\n");
+    printf("  --bottom-margin  MARGIN : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF/SVG)\n");
-    printf("  --create-outline        : outline text in PDF\n");
-    printf("  --transparent           : generate transparent PNG file\n");
-    printf("  --specify-svg-size      : specify width and height of SVG file\n");
+    printf("  --text-pdf              : generate text-embedded PDF files\n");
+    printf("  --transparent           : generate transparent PNG files\n");
+    printf("  --specify-svg-size      : specify width and height of SVG files\n");
     printf("  --no-embed-source       : do not embed the source in image files\n");
     printf("  --quick                 : convert in a speed priority mode\n");
     printf("  --kanji ENCODING        : set Japanese encoding  (no|utf8|sjis|jis|euc) (default: no)\n");
@@ -43,7 +43,7 @@ static void usage()
     printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS X 0208 characters\n");
     printf("  --quiet                 : do not output logs or messages\n");
     printf("  --no-delete             : do not delete temporary files (for debug)\n");
-    printf("  --preview               : open the generated file(s)\n");
+    printf("  --preview               : open the generated files\n");
     printf("  --version               : display version info\n");
     printf("  --help                  : display this message\n");
     exit(1);
@@ -117,7 +117,7 @@ int main (int argc, char *argv[]) {
         int rightMargin = 0;
         int topMargin = 0;
         int bottomMargin = 0;
-        BOOL getOutline = NO;
+        BOOL textPdfFlag = NO;
         BOOL transparentPngFlag = NO;
         BOOL specifySvgSizeFlag = NO;
         BOOL deleteTmpFileFlag = YES;
@@ -166,7 +166,7 @@ int main (int argc, char *argv[]) {
         options[4].flag = NULL;
         options[4].val = 5;
         
-        options[5].name = "create-outline";
+        options[5].name = "text-pdf";
         options[5].has_arg = no_argument;
         options[5].flag = NULL;
         options[5].val = 6;
@@ -319,8 +319,8 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 6: // --create-outline
-                    getOutline = YES;
+                case 6: // --text-pdf
+                    textPdfFlag = YES;
                     break;
                 case 7: // --transparent
                     transparentPngFlag = YES;
@@ -499,7 +499,7 @@ int main (int argc, char *argv[]) {
         aProfile[RightMarginKey] = @(rightMargin);
         aProfile[TopMarginKey] = @(topMargin);
         aProfile[BottomMarginKey] = @(bottomMargin);
-        aProfile[GetOutlineKey] = @(getOutline);
+        aProfile[GetOutlineKey] = @(!textPdfFlag);
         aProfile[TransparentKey] = @(transparentPngFlag);
         aProfile[SpecifySvgSizeKey] = @(specifySvgSizeFlag);
         aProfile[ShowOutputDrawerKey] = @(NO);

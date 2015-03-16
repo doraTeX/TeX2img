@@ -95,7 +95,7 @@ typedef enum {
 @property IBOutlet NSTextField *gsPathTextField;
 @property IBOutlet NSButton *guessCompilationButton;
 @property IBOutlet NSTextField *numberOfCompilationTextField;
-@property IBOutlet NSButton *getOutlineCheckBox;
+@property IBOutlet NSButton *textPdfCheckBox;
 @property IBOutlet NSButton *ignoreErrorCheckBox;
 @property IBOutlet NSButton *utfExportCheckBox;
 @property IBOutlet NSPopUpButton *encodingPopUpButton;
@@ -177,7 +177,7 @@ typedef enum {
 @synthesize gsPathTextField;
 @synthesize guessCompilationButton;
 @synthesize numberOfCompilationTextField;
-@synthesize getOutlineCheckBox;
+@synthesize textPdfCheckBox;
 @synthesize ignoreErrorCheckBox;
 @synthesize utfExportCheckBox;
 @synthesize encodingPopUpButton;
@@ -326,7 +326,7 @@ typedef enum {
 	ungroupCheckBox.state = [aProfile integerForKey:UngroupKey];
 	
 	transparentCheckBox.state = [aProfile boolForKey:TransparentKey];
-	getOutlineCheckBox.state = [aProfile boolForKey:GetOutlineKey];
+	textPdfCheckBox.state = ![aProfile boolForKey:GetOutlineKey];
     specifySvgSizeCheckBox.state = [aProfile boolForKey:SpecifySvgSizeKey];
 	
 	ignoreErrorCheckBox.state = [aProfile boolForKey:IgnoreErrorKey];
@@ -470,7 +470,7 @@ typedef enum {
         currentProfile[UngroupKey] = @(ungroupCheckBox.state);
         
         currentProfile[TransparentKey] = @(transparentCheckBox.state);
-        currentProfile[GetOutlineKey] = @(getOutlineCheckBox.state);
+        currentProfile[GetOutlineKey] = @(!textPdfCheckBox.state);
         currentProfile[SpecifySvgSizeKey] = @(specifySvgSizeCheckBox.state);
         currentProfile[IgnoreErrorKey] = @(ignoreErrorCheckBox.state);
         currentProfile[UtfExportKey] = @(utfExportCheckBox.state);

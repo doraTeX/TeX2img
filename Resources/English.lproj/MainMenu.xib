@@ -655,7 +655,6 @@ DQ
                 <outlet property="flashInMovingMenuItem" destination="799" id="801"/>
                 <outlet property="generateButton" destination="453" id="754"/>
                 <outlet property="generateMenuItem" destination="468" id="755"/>
-                <outlet property="getOutlineCheckBox" destination="636" id="656"/>
                 <outlet property="gsPathTextField" destination="604" id="609"/>
                 <outlet property="guessCompilationButton" destination="nMD-49-FUm" id="Ybd-B7-grM"/>
                 <outlet property="highlightContentMenuItem" destination="824" id="830"/>
@@ -692,6 +691,7 @@ DQ
                 <outlet property="sourceTextView" destination="aKZ-WF-zY9" id="Q4i-tH-xWD"/>
                 <outlet property="specifySvgSizeCheckBox" destination="H7g-7q-uFe" id="FB8-6s-YnL"/>
                 <outlet property="templatePopupButton" destination="8yt-cH-L8O" id="cye-en-aa4"/>
+                <outlet property="textPdfCheckBox" destination="636" id="6cW-Hs-Ute"/>
                 <outlet property="topMarginLabel" destination="559" id="619"/>
                 <outlet property="topMarginSlider" destination="558" id="624"/>
                 <outlet property="transparentCheckBox" destination="521" id="615"/>
@@ -1018,7 +1018,7 @@ DQ
                                                     <button id="636">
                                                         <rect key="frame" x="16" y="6" width="336" height="34"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Outline text in PDF" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="637">
+                                                        <buttonCell key="cell" type="check" title="Embed text" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="637">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>

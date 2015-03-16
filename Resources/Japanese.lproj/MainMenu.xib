@@ -659,7 +659,6 @@ DQ
                 <outlet property="flashInMovingMenuItem" destination="827" id="829"/>
                 <outlet property="generateButton" destination="453" id="786"/>
                 <outlet property="generateMenuItem" destination="468" id="785"/>
-                <outlet property="getOutlineCheckBox" destination="646" id="658"/>
                 <outlet property="gsPathTextField" destination="604" id="609"/>
                 <outlet property="guessCompilationButton" destination="exl-Am-4h5" id="O3P-UU-2gn"/>
                 <outlet property="highlightContentMenuItem" destination="847" id="856"/>
@@ -696,6 +695,7 @@ DQ
                 <outlet property="sourceTextView" destination="466" id="467"/>
                 <outlet property="specifySvgSizeCheckBox" destination="afr-f7-ZEX" id="X2c-fc-swf"/>
                 <outlet property="templatePopupButton" destination="88N-oX-Kx7" id="XUy-wr-UJD"/>
+                <outlet property="textPdfCheckBox" destination="646" id="i2a-wp-iaK"/>
                 <outlet property="topMarginLabel" destination="559" id="619"/>
                 <outlet property="topMarginSlider" destination="558" id="624"/>
                 <outlet property="transparentCheckBox" destination="521" id="615"/>
@@ -1063,7 +1063,7 @@ DQ
                                                     <button id="646">
                                                         <rect key="frame" x="16" y="12" width="220" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="文字をアウトライン化" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="647">
+                                                        <buttonCell key="cell" type="check" title="テキストを保持する" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="647">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" size="13" name="HiraKakuProN-W3"/>
                                                         </buttonCell>
