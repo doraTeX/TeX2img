@@ -248,8 +248,7 @@ static BOOL isValidTeXCommandChar(unichar c)
     [self scrollRangeToVisible: NSMakeRange(0, 0)];
 }
 
-#pragma mark -
-#pragma mark ダブルクリック時の挙動
+#pragma mark - ダブルクリック時の挙動
 - (NSRange)selectionRangeForProposedRange:(NSRange)proposedSelRange granularity:(NSSelectionGranularity)granularity
 {
     NSRange	replacementRange = { 0, 0 };

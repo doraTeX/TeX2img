@@ -191,8 +191,7 @@ typedef enum {
 @synthesize lastColor;
 
 
-#pragma mark -
-#pragma mark OutputController プロトコルの実装
+#pragma mark - OutputController プロトコルの実装
 - (void)showMainWindow
 {
 	[mainWindow makeKeyAndOrderFront:nil];
@@ -285,8 +284,7 @@ typedef enum {
     runErrorPanel(localizedString(@"compileErrorMsg"));
 }
 
-#pragma mark -
-#pragma mark プロファイルの読み書き関連
+#pragma mark - プロファイルの読み書き関連
 - (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
 {
 	NSString *tempStr = [aProfile stringForKey:aKey];
@@ -547,8 +545,7 @@ typedef enum {
 	return currentProfile;
 }
 
-#pragma mark -
-#pragma mark 他のメソッドから呼び出されるユーティリティメソッド
+#pragma mark - 他のメソッドから呼び出されるユーティリティメソッド
 - (NSString*)searchProgram:(NSString*)programName
 {
     NSDictionary *errorInfo = NSDictionary.new;
@@ -589,8 +586,7 @@ typedef enum {
 	return nil;
 }
 
-#pragma mark -
-#pragma mark プリアンブルの管理
+#pragma mark - プリアンブルの管理
 - (NSString*)defaultPreamble
 {
    return @"\\documentclass[fleqn,papersize]{jsarticle}\n"
@@ -715,8 +711,7 @@ typedef enum {
 }
 
 
-#pragma mark -
-#pragma mark デリゲート・ノティフィケーションのコールバック
+#pragma mark - デリゲート・ノティフィケーションのコールバック
 - (void)awakeFromNib
 {
 	//	以下は Interface Builder 上で設定できる
