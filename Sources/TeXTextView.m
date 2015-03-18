@@ -50,6 +50,22 @@ static BOOL isValidTeXCommandChar(unichar c)
     self.automaticTextReplacementEnabled = NO;
     
     [self registerForDraggedTypes:@[NSFilenamesPboardType]];
+    
+    NSNotificationCenter *defaultCenter = NSNotificationCenter.defaultCenter;
+    NSUndoManager *undoManager = self.undoManager;
+    [defaultCenter addObserver:self
+                      selector:@selector(colorizeAfterUndoAndRedo)
+                          name:NSUndoManagerDidUndoChangeNotification
+                        object:undoManager];
+    [defaultCenter addObserver:self
+                      selector:@selector(colorizeAfterUndoAndRedo)
+                          name:NSUndoManagerDidRedoChangeNotification
+                        object:undoManager];
+}
+
+- (void)colorizeAfterUndoAndRedo
+{
+    [self colorizeText:[controller.currentProfile boolForKey:ColorizeTextKey]];
 }
 
 - (void)registerUndoWithString:(NSString*)oldString location:(unsigned)oldLocation
@@ -89,7 +105,6 @@ static BOOL isValidTeXCommandChar(unichar c)
                              key:undoKey];
     
     [self resetBackgroundColor:nil];
-    [self colorizeText:[controller.currentProfile boolForKey:ColorizeTextKey]];
 }
 
 // to be used in AutoCompletion
