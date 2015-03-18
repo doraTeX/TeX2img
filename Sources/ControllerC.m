@@ -68,7 +68,7 @@ BOOL checkWhich(NSString *cmdName)
 
 - (void)showExtensionError
 {
-    printStdErr("tex2img : The extention of output file must be either eps/png/jpg/pdf/svg.\n");
+    printStdErr("tex2img : The extention of output file must be either eps/pdf/jpg/png/gif/tiff/bmp/svg.\n");
 }
 
 - (void)showFileGenerateError:(NSString*)aPath

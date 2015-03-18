@@ -18,7 +18,7 @@
 "initSettingsMsg" = "初期設定";
 "setPathMsg1" = "TeX 関連プログラムのパスを";
 "setPathMsg2" = "に設定しました（環境設定パネルから変更できます）。";
-"extensionErrMsg" = "出力ファイルの拡張子は .eps / .png / .jpg / .pdf / .svg のいずれかにしてください。";
+"extensionErrMsg" = "出力ファイルの拡張子は .eps / .pdf / .jpg / .png / .gif / .tiff / .bmp / .svg のいずれかにしてください。";
 "emptyProfileNameErrMsg" = "保存する設定に名前を付けてください。";
 "profileOverwriteMsg" = "既に同名の設定が存在します。\n既存の同名の設定を置き換えてよろしいですか？";
 "overwriteContentsWarningMsg" = "現在の編集内容（本文・プリアンブル）が上書きされます。\nよろしいですか？";

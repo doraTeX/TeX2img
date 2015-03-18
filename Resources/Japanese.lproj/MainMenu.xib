@@ -524,9 +524,9 @@ DQ
                                     </scroller>
                                 </scrollView>
                                 <button id="TFq-OD-TeI">
-                                    <rect key="frame" x="11" y="203" width="438" height="16"/>
+                                    <rect key="frame" x="11" y="201" width="455" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="radio" title="TeX コードを直接入力（\begin{document}〜\end{document}の内部）" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="5rp-1J-8aY">
+                                    <buttonCell key="cell" type="radio" title="TeX コードを直接入力（ \begin{document} 〜 \end{document} の内部）" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="5rp-1J-8aY">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -571,7 +571,7 @@ DQ
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
                     </box>
-                    <box autoresizesSubviews="NO" title="出力画像ファイル名（拡張子：.eps / .png / .jpg / .pdf / .svg）" borderType="line" id="460">
+                    <box autoresizesSubviews="NO" title="出力画像ファイル名（拡張子：.eps / .pdf / .jpg / .png / .gif / .tiff / .bmp / .svg）" borderType="line" id="460">
                         <rect key="frame" x="11" y="56" width="520" height="59"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                         <view key="contentView">
@@ -1073,7 +1073,7 @@ DQ
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
-                                        <box autoresizesSubviews="NO" title="PNG 固有の設定" borderType="line" id="520">
+                                        <box autoresizesSubviews="NO" title="PNG / GIF / TIFF 固有の設定" borderType="line" id="520">
                                             <rect key="frame" x="191" y="64" width="185" height="57"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES"/>
                                             <view key="contentView">

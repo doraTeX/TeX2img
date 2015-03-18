@@ -484,7 +484,7 @@ DQ
                             <action selector="generate:" target="450" id="456"/>
                         </connections>
                     </button>
-                    <box autoresizesSubviews="NO" title="Output File Path (extention: .eps / .png / .jpg / .pdf / .svg )" borderType="line" id="460">
+                    <box autoresizesSubviews="NO" title="Output File Path (extention: .eps / .pdf / .jpg / .png / .gif / .tiff / .bmp / .svg )" borderType="line" id="460">
                         <rect key="frame" x="11" y="56" width="520" height="59"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                         <view key="contentView">
@@ -1008,7 +1008,7 @@ DQ
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
-                                        <box autoresizesSubviews="NO" title="PDF Setting (for only PDF)" borderType="line" id="635">
+                                        <box autoresizesSubviews="NO" title="PDF Setting" borderType="line" id="635">
                                             <rect key="frame" x="6" y="62" width="169" height="59"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <view key="contentView">
@@ -1068,7 +1068,7 @@ DQ
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
-                                        <box autoresizesSubviews="NO" title="PNG setting (for only PNG)" borderType="line" id="520">
+                                        <box autoresizesSubviews="NO" title="PNG / GIF / TIFF Setting" borderType="line" id="520">
                                             <rect key="frame" x="177" y="62" width="199" height="59"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES"/>
                                             <view key="contentView">
@@ -1125,7 +1125,7 @@ DQ
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
-                                        <box autoresizesSubviews="NO" title="SVG Setting (for only SVG)" borderType="line" id="StZ-qM-83h">
+                                        <box autoresizesSubviews="NO" title="SVG Setting" borderType="line" id="StZ-qM-83h">
                                             <rect key="frame" x="6" y="4" width="169" height="59"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <view key="contentView">

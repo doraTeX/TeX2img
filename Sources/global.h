@@ -1,6 +1,9 @@
 NSString *g_commandCompletionChar;
 NSMutableString *g_commandCompletionList;
 
+#define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg"])
+#define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"tex"])
+
 #define ProfileNamesKey @"profileNames"
 #define ProfilesKey @"profiles"
 

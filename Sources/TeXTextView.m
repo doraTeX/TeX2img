@@ -437,9 +437,9 @@ static BOOL isValidTeXCommandChar(unichar c)
         return NSDragOperationNone;
     }
     
-    // 拡張子 .tex / .pdf / .eps / .jpg / .png / .svg 以外は受付不可
+    // 指定拡張子以外は受付不可
     NSString *ext = draggedFilePath.pathExtension;
-    if (![ext isEqualToString:@"tex"] && ![ext isEqualToString:@"pdf"] && ![ext isEqualToString:@"eps"] && ![ext isEqualToString:@"jpg"] && ![ext isEqualToString:@"png"] && ![ext isEqualToString:@"svg"]) {
+    if (![ImportExtensionsArray containsObject:ext]) {
         return NSDragOperationNone;
     }
 

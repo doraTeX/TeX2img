@@ -8,7 +8,7 @@
 
 #define OPTION_NUM 25
 #define MAX_LEN 1024
-#define VERSION "1.8.9.2b4"
+#define VERSION "1.9.0b1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -22,7 +22,7 @@ static void usage()
     printf("Usage: tex2img [options] InputTeXFile OutputFile\n");
     printf("Arguments:\n");
     printf("  InputTeXFile            : path of TeX source file\n");
-    printf("  OutputFile              : path of output file (extension: eps/png/jpg/pdf/svg)\n");
+    printf("  OutputFile              : path of output file (extension: eps/pdf/jpg/png/gif/tiff/bmp/svg)\n");
     printf("Options:\n");
     printf("  --compiler   COMPILER   : set compiler      (default: platex)\n");
     printf("  --guess-compile         : guess the appropriate number of compilation\n");
@@ -36,11 +36,11 @@ static void usage()
     printf("  --bottom-margin  MARGIN : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF/SVG)\n");
     printf("  --text-pdf              : generate text-embedded PDF files\n");
-    printf("  --transparent           : generate transparent PNG files\n");
-    printf("  --delete-display-size   : specify width and height of SVG files\n");
+    printf("  --transparent           : generate transparent images (for PNG/GIF/TIFF)\n");
+    printf("  --delete-display-size   : delete width and height attributes of SVG files\n");
     printf("  --no-embed-source       : do not embed the source in image files\n");
     printf("  --quick                 : convert in a speed priority mode\n");
-    printf("  --kanji ENCODING        : set Japanese encoding  (no|utf8|sjis|jis|euc) (default: no)\n");
+    printf("  --kanji ENCODING        : set Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --ignore-errors         : force conversion by ignoring nonfatal errors\n");
     printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS X 0208 characters\n");
     printf("  --quiet                 : do not output logs or messages\n");
@@ -122,7 +122,7 @@ int main (int argc, char *argv[]) {
         int topMargin = 0;
         int bottomMargin = 0;
         BOOL textPdfFlag = NO;
-        BOOL transparentPngFlag = NO;
+        BOOL transparentFlag = NO;
         BOOL deleteDisplaySizeFlag = NO;
         BOOL deleteTmpFileFlag = YES;
         BOOL ignoreErrorFlag = NO;
@@ -327,7 +327,7 @@ int main (int argc, char *argv[]) {
                     textPdfFlag = YES;
                     break;
                 case 7: // --transparent
-                    transparentPngFlag = YES;
+                    transparentFlag = YES;
                     break;
                 case 8: // --no-delete
                     deleteTmpFileFlag = NO;
@@ -504,7 +504,7 @@ int main (int argc, char *argv[]) {
         aProfile[TopMarginKey] = @(topMargin);
         aProfile[BottomMarginKey] = @(bottomMargin);
         aProfile[GetOutlineKey] = @(!textPdfFlag);
-        aProfile[TransparentKey] = @(transparentPngFlag);
+        aProfile[TransparentKey] = @(transparentFlag);
         aProfile[DeleteDisplaySizeKey] = @(deleteDisplaySizeFlag);
         aProfile[ShowOutputDrawerKey] = @(NO);
         aProfile[PreviewKey] = @(previewFlag);

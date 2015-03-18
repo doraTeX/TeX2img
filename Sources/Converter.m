@@ -21,7 +21,7 @@
 @property float resolutionLevel;
 @property BOOL guessCompilation;
 @property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property BOOL leaveTextFlag, transparentPngFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property id<OutputController> controller;
 @property NSFileManager* fileManager;
 @property NSString* tempdir;
@@ -45,7 +45,7 @@
 @synthesize resolutionLevel;
 @synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@synthesize leaveTextFlag, transparentPngFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
 @synthesize fileManager;
 @synthesize tempdir;
@@ -81,7 +81,7 @@
     topMargin = [aProfile integerForKey:TopMarginKey];
     bottomMargin = [aProfile integerForKey:BottomMarginKey];
     leaveTextFlag = ![aProfile boolForKey:GetOutlineKey];
-    transparentPngFlag = [aProfile boolForKey:TransparentKey];
+    transparentFlag = [aProfile boolForKey:TransparentKey];
     deleteDisplaySizeFlag = [aProfile boolForKey:DeleteDisplaySizeKey];
     showOutputDrawerFlag = [aProfile boolForKey:ShowOutputDrawerKey];
     previewFlag = [aProfile boolForKey:PreviewKey];
@@ -487,19 +487,32 @@
 	// NSImage を TIFF 形式の NSBitmapImageRep に変換する
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep.alloc initWithData:image.TIFFRepresentation];
     
-	// JPEG / PNG に変換
+	// 指定のビットマップ形式に変換
     NSData *outputData;
 	if ([@"jpg" isEqualToString:extension]) {
-		NSDictionary *propJpeg = @{NSImageCompressionFactor: @1.0f};
 		imageRep = [self fillBackground:imageRep];
+        NSDictionary *propJpeg = @{NSImageCompressionFactor: @1.0f};
 		outputData = [imageRep representationUsingType:NSJPEGFileType properties:propJpeg];
-	} else { // png出力の場合
-		if (!transparentPngFlag) {
+	} else if ([@"png" isEqualToString:extension]) {
+		if (!transparentFlag) {
 			imageRep = [self fillBackground:imageRep];
 		}
-		NSDictionary *propPng = @{};
-		outputData = [imageRep representationUsingType:NSPNGFileType properties:propPng];
-	}
+		outputData = [imageRep representationUsingType:NSPNGFileType properties:nil];
+    } else if ([@"gif" isEqualToString:extension]) {
+        if (!transparentFlag) {
+            imageRep = [self fillBackground:imageRep];
+        }
+        NSDictionary *propGif = @{NSImageCompressionFactor: @1.0f};
+        outputData = [imageRep representationUsingType:NSGIFFileType properties:propGif];
+    } else if ([@"tiff" isEqualToString:extension]) {
+        if (!transparentFlag) {
+            imageRep = [self fillBackground:imageRep];
+        }
+        outputData = [imageRep representationUsingType:NSTIFFFileType properties:nil];
+    } else if ([@"bmp" isEqualToString:extension]) {
+        imageRep = [self fillBackground:imageRep];
+        outputData = [imageRep representationUsingType:NSBMPFileType properties:nil];
+    }
 	[outputData writeToFile:[tempdir stringByAppendingPathComponent:outputFileName] atomically: YES];
 
 }
@@ -578,7 +591,7 @@
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
         [fileManager moveItemAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
-    } else if ([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) { // JPEG/PNG出力の場合，EPSをPDFに戻した上で，それをさらにJPEG/PNGに変換する
+    } else { // ビットマップ形式出力の場合，EPSをPDFに戻した上で，それをさらにJPEG/PNG/GIF/TIFF/BMPに変換する
         [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:NO]; // アウトラインを取ったEPSをPDFへ戻す（余白はこの時点では付与しない）
         [self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1 crop:NO]; // PDFを目的の画像ファイルへ変換（ここで余白付与）
     }
@@ -690,8 +703,8 @@
     
     pageCount = [PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfFilePath]].pageCount;
 	
-    // 最終出力が JPEG/PNG で「速度優先」の場合は，PDFからQuartzで直接変換
-    if (([@"jpg" isEqualToString:extension] || [@"png" isEqualToString:extension]) && speedPriorityMode) {
+    // 最終出力がビットマップ形式で「速度優先」の場合は，PDFからQuartzで直接変換
+    if ([@[@"jpg", @"png", @"gif", @"tiff", @"bmp"] containsObject:extension] && speedPriorityMode) {
         [self pdf2image:pdfFilePath outputFileName:outputFileName page:1 crop:YES];
         for (NSUInteger i=2; i<=pageCount; i++) {
             [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i crop:YES];
@@ -729,7 +742,7 @@
                 return success;
             }
         }
-	} else { // EPS を経由する形式(EPS/outlined-PDF/JPEG/PNG)の場合
+	} else { // EPS を経由する形式(EPS/outlined-PDF/ビットマップ形式)の場合
         BOOL success = [self convertPDF:pdfFileName
                       outputEpsFileName:outputEpsFileName
                          outputFileName:outputFileName
@@ -772,7 +785,7 @@
 	
 	NSString* extension = outputFilePath.pathExtension.lowercaseString;
 
-    if (![@[@"eps", @"png", @"jpg", @"pdf", @"svg"] containsObject:extension]) {
+    if (![TargetExtensionsArray containsObject:extension]) {
 		[controller showExtensionError];
 		return NO;
 	}

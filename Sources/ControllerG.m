@@ -1034,7 +1034,7 @@ typedef enum {
     openPanel.canChooseDirectories = NO;
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
-    openPanel.allowedFileTypes = @[@"tex", @"pdf", @"eps", @"jpg", @"png", @"svg"];
+    openPanel.allowedFileTypes = ImportExtensionsArray;
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
@@ -1306,7 +1306,7 @@ typedef enum {
 - (IBAction)showSavePanel:(id)sender
 {
     NSSavePanel *savePanel = [NSSavePanel savePanel];
-    savePanel.allowedFileTypes = @[@"eps", @"png", @"jpg", @"pdf", @"svg"];
+    savePanel.allowedFileTypes = TargetExtensionsArray;
     savePanel.extensionHidden = NO;
     savePanel.canSelectHiddenExtension = NO;
     

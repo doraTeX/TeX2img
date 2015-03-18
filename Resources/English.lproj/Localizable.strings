@@ -18,7 +18,7 @@
 "initSettingsMsg" = "Initial Settings";
 "setPathMsg1" = "Automatic engine settings: ";
 "setPathMsg2" = "(editable in Preferences)";
-"extensionErrMsg" = "The extention must be eps/png/jpg/pdf/svg.";
+"extensionErrMsg" = "The extention must be eps/pdf/jpg/png/gif/tiff/bmp/svg.";
 "emptyProfileNameErrMsg" = "Enter the name of the new profile.";
 "profileOverwriteMsg" = "A profile of the same name already exists. Do you want to replace it?";
 "overwriteContentsWarningMsg" = "Current contents including preamble will be replaced.\nDo you want to continue?";
