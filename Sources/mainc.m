@@ -4,6 +4,7 @@
 #import "Converter.h"
 #import "ControllerC.h"
 #import "global.h"
+#import "UtilityC.h"
 
 #define OPTION_NUM 25
 #define MAX_LEN 1024
@@ -48,14 +49,6 @@ static void usage()
     printf("  --version               : display version info\n");
     printf("  --help                  : display this message\n");
     exit(1);
-}
-
-void printStdErr(const char *format, ...)
-{
-    va_list list;
-    va_start(list, format);
-    vfprintf(stderr, format, list);
-    va_end(list);
 }
 
 NSString* getPath(NSString *cmdName)

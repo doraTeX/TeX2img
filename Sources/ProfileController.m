@@ -1,7 +1,7 @@
 #import "ProfileController.h"
 #import "NSDictionary-Extension.h"
 #import "global.h"
-#import "Utility.h"
+#import "UtilityG.h"
 
 #define MovedRowsType @"TeX2imgMovedRowsType"
 

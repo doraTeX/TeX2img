@@ -7,7 +7,7 @@
 #import "NSMutableString-Extension.h"
 #import "NSFileManager-Extension.h"
 #import "TeXTextView.h"
-#import "Utility.h"
+#import "UtilityG.h"
 
 typedef enum {
     DIRECT = 0,

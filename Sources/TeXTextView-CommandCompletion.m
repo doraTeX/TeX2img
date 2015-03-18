@@ -1,4 +1,5 @@
 #import "TeXTextView.h"
+#import "UtilityG.h"
 
 static NSString* placeholderString = @"•";
 static NSString* startcommentString = @"•‹";

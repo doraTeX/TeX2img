@@ -1,6 +1,8 @@
 #import <stdarg.h>
-#ifndef TeX2img_Utility_h
-#define TeX2img_Utility_h
+#ifndef TeX2img_UtilityG_h
+#define TeX2img_UtilityG_h
+
+#define localizedString(str) (NSLocalizedString(str, nil))
 
 void runOkPanel(NSString *title, NSString *message, ...);
 void runErrorPanel(NSString *message, ...);

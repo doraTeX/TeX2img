@@ -1,5 +1,4 @@
-#import "global.h"
-#import "Utility.h"
+#import "UtilityG.h"
 
 void runOkPanel(NSString *title, NSString *message, ...)
 {

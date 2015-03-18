@@ -1,8 +1,6 @@
 NSString *g_commandCompletionChar;
 NSMutableString *g_commandCompletionList;
 
-#define localizedString(str) (NSLocalizedString(str, nil))
-
 #define ProfileNamesKey @"profileNames"
 #define ProfilesKey @"profiles"
 

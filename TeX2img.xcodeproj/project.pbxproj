@@ -24,8 +24,9 @@
 		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
 		34CCBB071A964E8A0061842E /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 34CCBB061A964E8A0061842E /* Templates */; };
-		34CEA1941AB970CE00F98258 /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CEA1931AB970CE00F98258 /* Utility.m */; };
+		34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CEA1931AB970CE00F98258 /* UtilityG.m */; };
 		34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
+		34D2A63E1AB9BC0F0040B4A5 /* UtilityC.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D2A63D1AB9BC0F0040B4A5 /* UtilityC.m */; };
 		34D41D1E17A6BE2C00997795 /* NSString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D41D1D17A6BE2C00997795 /* NSString-Extension.m */; };
 		34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D41D1D17A6BE2C00997795 /* NSString-Extension.m */; };
 		70254EF010353485000D6D05 /* TeXTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70254EEF10353485000D6D05 /* TeXTextView.m */; };
@@ -87,10 +88,12 @@
 		34BF870A12AC10D20099654C /* MyLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyLayoutManager.h; sourceTree = "<group>"; };
 		34BF870B12AC10D20099654C /* MyLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyLayoutManager.m; sourceTree = "<group>"; };
 		34CCBB061A964E8A0061842E /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
-		34CEA1931AB970CE00F98258 /* Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utility.m; sourceTree = "<group>"; };
-		34CEA1951AB970F600F98258 /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
+		34CEA1931AB970CE00F98258 /* UtilityG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilityG.m; sourceTree = "<group>"; };
+		34CEA1951AB970F600F98258 /* UtilityG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityG.h; sourceTree = "<group>"; };
 		34CF33A210260315009A8CA6 /* NSDictionary-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary-Extension.h"; sourceTree = "<group>"; };
 		34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary-Extension.m"; sourceTree = "<group>"; };
+		34D2A63D1AB9BC0F0040B4A5 /* UtilityC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilityC.m; sourceTree = "<group>"; };
+		34D2A63F1AB9BC260040B4A5 /* UtilityC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityC.h; sourceTree = "<group>"; };
 		34D41D1C17A6BE2C00997795 /* NSString-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Extension.h"; sourceTree = "<group>"; };
 		34D41D1D17A6BE2C00997795 /* NSString-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Extension.m"; sourceTree = "<group>"; };
 		70254EEE10353485000D6D05 /* TeXTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeXTextView.h; sourceTree = "<group>"; };
@@ -209,8 +212,10 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				34CEA1931AB970CE00F98258 /* Utility.m */,
-				34CEA1951AB970F600F98258 /* Utility.h */,
+				34CEA1951AB970F600F98258 /* UtilityG.h */,
+				34CEA1931AB970CE00F98258 /* UtilityG.m */,
+				34D2A63F1AB9BC260040B4A5 /* UtilityC.h */,
+				34D2A63D1AB9BC0F0040B4A5 /* UtilityC.m */,
 				348D72A1125A57B8003AF902 /* global.h */,
 				32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
@@ -353,6 +358,7 @@
 			files = (
 				3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */,
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
+				34D2A63E1AB9BC0F0040B4A5 /* UtilityC.m in Sources */,
 				348CA6DD1A957BC90070B079 /* NSDate-Extension.m in Sources */,
 				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,
 				705DC7A70F1197E90052AFA5 /* mainc.m in Sources */,
@@ -365,7 +371,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
-				34CEA1941AB970CE00F98258 /* Utility.m in Sources */,
+				34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */,
 				3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */,
 				348CA6DC1A957BC90070B079 /* NSDate-Extension.m in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,

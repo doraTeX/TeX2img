@@ -1,7 +1,8 @@
-#import "ControllerC.h"
-#import "global.h"
 #import <stdio.h>
 #import <stdarg.h>
+#import "ControllerC.h"
+#import "global.h"
+#import "UtilityC.h"
 
 BOOL checkWhich(NSString *cmdName)
 {
@@ -10,15 +11,6 @@ BOOL checkWhich(NSString *cmdName)
 }
 
 @implementation ControllerC
-- (void)printStdErr:(NSString*)format, ...
-{
-    va_list arguments;
-    va_start(arguments, format);
-    NSString *msg = [NSString.alloc initWithFormat:format arguments:arguments];
-    fprintf(stderr, "%s", msg.UTF8String);
-    va_end(arguments);
-}
-
 #pragma mark OutputController プロトコルの実装
 - (void)clearOutputTextView
 {	
@@ -34,7 +26,7 @@ BOOL checkWhich(NSString *cmdName)
 
 - (void)showNotFoundError:(NSString*)aPath
 {
-	[self printStdErr:@"tex2img : %@ cannot be found.\nCheck environment variable $PATH.\n", aPath];
+	printStdErr("tex2img : %s cannot be found.\nCheck the environment variable $PATH.\n", aPath.UTF8String);
 }
 
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
@@ -76,32 +68,32 @@ BOOL checkWhich(NSString *cmdName)
 
 - (void)showExtensionError
 {
-    [self printStdErr:@"tex2img : The extention of output file must be either eps/png/jpg/pdf/svg.\n"];
+    printStdErr("tex2img : The extention of output file must be either eps/png/jpg/pdf/svg.\n");
 }
 
 - (void)showFileGenerateError:(NSString*)aPath
 {
-	[self printStdErr:@"tex2img : %@ cannot be created, and so generation has been aborted.\nCheck permission.\n", aPath];
+	printStdErr("tex2img : %s cannot be created, and so generation has been aborted.\nCheck permission.\n", aPath.UTF8String);
 }
 
 - (void)showExecError:(NSString*)command
 {
-	[self printStdErr:@"tex2img : %@ cannot be executed.\nCheck errors in the source code.\n", command];
+	printStdErr("tex2img : %s cannot be executed.\nCheck errors in the source code.\n", command.UTF8String);
 }
 
 - (void)showCannotOverwriteError:(NSString*)path
 {
-	[self printStdErr:@"tex2img : %@ cannot be overwritten.\n", path];
+	printStdErr("tex2img : %s cannot be overwritten.\n", path.UTF8String);
 }
 
 - (void)showCannotCreateDirectoryError:(NSString*)dir
 {
-    [self printStdErr:@"tex2img : Directory %@ cannot be overwritten.\n", dir];
+    printStdErr("tex2img : Directory %s cannot be overwritten.\n", dir.UTF8String);
 }
 
 - (void)showCompileError
 {
-	[self printStdErr:@"tex2img : TeX Compile error.\nCheck errors in the source code.\n"];
+	printStdErr("tex2img : TeX Compile error.\nCheck errors in the source code.\n");
 }
 
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet
