@@ -206,6 +206,147 @@ static BOOL isValidTeXCommandChar(unichar c)
     [self scrollRangeToVisible: NSMakeRange(0, 0)];
 }
 
+#pragma mark -
+#pragma mark ダブルクリック時の挙動
+- (NSRange)selectionRangeForProposedRange:(NSRange)proposedSelRange granularity:(NSSelectionGranularity)granularity
+{
+    NSRange	replacementRange = { 0, 0 };
+    NSString *textString;
+    NSInteger length, i, j, leftpar, rightpar, nestingLevel, uchar;
+    BOOL done;
+    unichar BACKSLASH = 0x5c;
+    
+    textString = self.string;
+    if (textString == nil) {
+        return replacementRange;
+    }
+    
+    replacementRange = [super selectionRangeForProposedRange: proposedSelRange granularity: granularity];
+    
+    // Extend word selection to cover an initial backslash (TeX command)
+    if (granularity == NSSelectByWord) {
+        BOOL flag;
+        unichar c;
+        
+        if (replacementRange.location < textString.length) {
+            c = [textString characterAtIndex:replacementRange.location];
+            if ((c != '{') && (c != '(') && (c != '[') && (c != '<') && (c != ' ')) {
+                do {
+                    if (replacementRange.location >= 1) {
+                        c = [textString characterAtIndex: replacementRange.location - 1];
+                        if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == '@')) {
+                            replacementRange.location--;
+                            replacementRange.length++;
+                            flag = YES;
+                        } else {
+                            flag = NO;
+                        }
+                    } else {
+                        flag = NO;
+                    }
+                } while (flag);
+                
+                do {
+                    if (replacementRange.location + replacementRange.length  < textString.length) {
+                        c = [textString characterAtIndex: replacementRange.location + replacementRange.length];
+                        if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == '@')) {
+                            replacementRange.length++;
+                            flag = YES;
+                        } else {
+                            flag = NO;
+                        }
+                    } else {
+                        flag = NO;
+                    }
+                } while (flag);
+            }
+        }
+        
+        if (replacementRange.location >= 1 && [textString characterAtIndex: replacementRange.location - 1] == BACKSLASH) {
+            replacementRange.location--;
+            replacementRange.length++;
+            return replacementRange;
+        }
+    }
+    
+    if ((proposedSelRange.length != 0) || (granularity != NSSelectByWord)) {
+        return replacementRange;
+    }
+    
+/*    if (_alternateDown)
+        return replacementRange;*/
+    
+    length = textString.length;
+    i = proposedSelRange.location;
+    if (i >= length) {
+        return replacementRange;
+    }
+    uchar = [textString characterAtIndex: i];
+    
+    
+    if ((uchar == '}') || (uchar == ')') || (uchar == ']') || (uchar == '>')) {
+        j = i;
+        rightpar = uchar;
+        if (rightpar == '}') {
+            leftpar = '{';
+        } else if (rightpar == ')') {
+            leftpar = '(';
+        } else if (rightpar == '>') {
+            leftpar = '<';
+        } else {
+            leftpar = '[';
+        }
+        nestingLevel = 1;
+        done = NO;
+        // Try searching to the left to find a match...
+        while ((i > 0) && !done) {
+            i--;
+            uchar = [textString characterAtIndex: i];
+            if (uchar == rightpar) {
+                nestingLevel++;
+            } else if (uchar == leftpar) {
+                nestingLevel--;
+            }
+            if (nestingLevel == 0) {
+                done = YES;
+                replacementRange.location = i;
+                replacementRange.length = j - i + 1;
+            }
+        }
+    } else if ((uchar == '{') || (uchar == '(') || (uchar == '[') ||  (uchar == '<') ) {
+        j = i;
+        leftpar = uchar;
+        if (leftpar == '{') {
+            rightpar = '}';
+        } else if (leftpar == '(') {
+            rightpar = ')';
+        } else if (leftpar == '<') {
+            rightpar = '>';
+        } else {
+            rightpar = ']';
+        }
+        nestingLevel = 1;
+        done = NO;
+        while ((i < length-1) && !done) {
+            i++;
+            uchar = [textString characterAtIndex:i];
+            if (uchar == leftpar) {
+                nestingLevel++;
+            } else if (uchar == rightpar) {
+                nestingLevel--;
+            }
+            if (nestingLevel == 0) {
+                done = YES;
+                replacementRange.location = j;
+                replacementRange.length = i - j + 1;
+            }
+        }
+    }
+    
+    return replacementRange;
+}
+
+
 #pragma mark - Drag & Drop
 
 // ドラッグ中のフィールド枠の強調表示用にオーバーライド
