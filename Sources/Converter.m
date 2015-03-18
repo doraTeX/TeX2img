@@ -293,8 +293,8 @@
     FILE *fp;
     NSMutableString *bbStr = NSMutableString.new;
     
-    NSString *cmdline = [NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -q -sDEVICE=bbox -dFirstPage=%ld -dLastPage=%ld \"%@\" 2>&1 | grep %%%%BoundingBox", gsPath, page, page, pdfPath];
-    
+    NSString *cmdline = [NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -q -sDEVICE=bbox -dFirstPage=%ld -dLastPage=%ld \"%@\" 2>&1 | /usr/bin/grep %%%%BoundingBox", gsPath, page, page, pdfPath];
+
     if ((fp = popen(cmdline.UTF8String, "r")) == NULL) {
         return NO;
     }
@@ -765,64 +765,61 @@
 
 - (BOOL)compileAndConvertWithCheck
 {
-	BOOL status = YES;
 	// 最初にプログラムの存在確認と出力ファイル形式確認
 	if (![controller latexExistsAtPath:latexPath dvipdfmxPath:dvipdfmxPath gsPath:gsPath]) {
-		status = NO;
+		return NO;
 	}
 	
 	NSString* extension = outputFilePath.pathExtension.lowercaseString;
-	
+
     if (![@[@"eps", @"png", @"jpg", @"pdf", @"svg"] containsObject:extension]) {
 		[controller showExtensionError];
-		status = NO;
+		return NO;
 	}
-	
-	if (status) {
-		// 一連のコンパイル処理の開始準備
-		[controller clearOutputTextView];
-		if (showOutputDrawerFlag) {
-			[controller showOutputDrawer];
-		}
-		[controller showMainWindow];
-		
-		// 一連のコンパイル処理を実行
-		status = [self compileAndConvert];
-        
-        NSString *previewApp = [extension isEqualToString:@"svg"] ? @"Safari.app" : @"Preview.app";
-		
-        // プレビュー処理
-        if (status && previewFlag) {
-            [NSWorkspace.sharedWorkspace openFile:outputFilePath withApplication:previewApp];
-            if (pageCount > 1) {
-                for (NSUInteger i=2; i<=pageCount; i++) {
-                    [NSWorkspace.sharedWorkspace openFile:[outputFilePath pathStringByAppendingPageNumber:i] withApplication:previewApp];
-                }
-            }
-        }
-
-        // Illustrator に配置
-        if (status && embedInIllustratorFlag) {
-            NSMutableString *script = NSMutableString.string;
-            [script appendFormat:@"tell application \"Adobe Illustrator\"\n"];
-            [script appendFormat:@"activate\n"];
-            
-            NSMutableArray *embededFiles = [NSMutableArray arrayWithObject:outputFilePath];
+    
+    // 一連のコンパイル処理の開始準備
+    [controller clearOutputTextView];
+    if (showOutputDrawerFlag) {
+        [controller showOutputDrawer];
+    }
+    [controller showMainWindow];
+    
+    // 一連のコンパイル処理を実行
+    BOOL status = [self compileAndConvert];
+    
+    NSString *previewApp = [extension isEqualToString:@"svg"] ? @"Safari.app" : @"Preview.app";
+    
+    // プレビュー処理
+    if (status && previewFlag) {
+        [NSWorkspace.sharedWorkspace openFile:outputFilePath withApplication:previewApp];
+        if (pageCount > 1) {
             for (NSUInteger i=2; i<=pageCount; i++) {
-                [embededFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
+                [NSWorkspace.sharedWorkspace openFile:[outputFilePath pathStringByAppendingPageNumber:i] withApplication:previewApp];
             }
-            
-            [embededFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL *stop) {
-                [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
-                if (ungroupFlag) {
-                    [script appendFormat:@"move page items of selection of current document to end of current document\n"];
-                }
-            }];
-            
-            [script appendFormat:@"end tell\n"];
-            [[NSAppleScript.alloc initWithSource:script] executeAndReturnError:nil];
         }
-	}
+    }
+    
+    // Illustrator に配置
+    if (status && embedInIllustratorFlag) {
+        NSMutableString *script = NSMutableString.string;
+        [script appendFormat:@"tell application \"Adobe Illustrator\"\n"];
+        [script appendFormat:@"activate\n"];
+        
+        NSMutableArray *embededFiles = [NSMutableArray arrayWithObject:outputFilePath];
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            [embededFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
+        }
+        
+        [embededFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL *stop) {
+            [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
+            if (ungroupFlag) {
+                [script appendFormat:@"move page items of selection of current document to end of current document\n"];
+            }
+        }];
+        
+        [script appendFormat:@"end tell\n"];
+        [[NSAppleScript.alloc initWithSource:script] executeAndReturnError:nil];
+    }
 	
 	// 中間ファイルの削除
 	if (deleteTmpFileFlag) {

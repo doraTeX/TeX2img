@@ -1,4 +1,5 @@
 #import <stdio.h>
+#import <stdarg.h>
 #import <getopt.h>
 #import "Converter.h"
 #import "ControllerC.h"
@@ -6,7 +7,7 @@
 
 #define OPTION_NUM 25
 #define MAX_LEN 1024
-#define VERSION "1.8.9.2b3"
+#define VERSION "1.8.9.2b4"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -49,6 +50,14 @@ static void usage()
     exit(1);
 }
 
+void printStdErr(const char *format, ...)
+{
+    va_list list;
+    va_start(list, format);
+    vfprintf(stderr, format, list);
+    va_end(list);
+}
+
 NSString* getPath(NSString *cmdName)
 {
 	char str[MAX_LEN];
@@ -66,9 +75,11 @@ NSString* getPath(NSString *cmdName)
     }
 	*pStr = '\0';
 	
-	pclose(fp);
-    
-	return @(str);
+    if (pclose(fp) == 0) {
+        return @(str);
+    } else {
+        return nil;
+    }
 }
 
 NSString* getFullPath(NSString *filename)
@@ -76,7 +87,7 @@ NSString* getFullPath(NSString *filename)
 	char str[MAX_LEN];
 	FILE *fp;
 	
-	if ((fp = popen([NSString stringWithFormat:@"perl -e \"use File::Spec;print File::Spec->rel2abs('%@');\"", filename].UTF8String, "r")) == NULL) {
+	if ((fp = popen([NSString stringWithFormat:@"/usr/bin/perl -e \"use File::Spec;print File::Spec->rel2abs('%@');\"", filename].UTF8String, "r")) == NULL) {
 		return nil;
 	}
 	fgets(str, MAX_LEN-1, fp);
@@ -95,12 +106,12 @@ int strtoi(char *str)
 	
     if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
 		|| (errno != 0 && val == 0)) {
-		fprintf(stderr, "error : %s cannot be converted to a number.\n", str);
+		printStdErr("error : %s cannot be converted to a number.\n", str);
 		exit(1);
     }
 	
     if (*endptr != '\0') {
-		fprintf(stderr, "error : %s is not a number.\n", str);
+		printStdErr("error : %s is not a number.\n", str);
 		exit(1);
 	}
 	
@@ -445,7 +456,7 @@ int main (int argc, char *argv[]) {
             version();
         }
         if (![NSFileManager.defaultManager fileExistsAtPath:inputFilePath]) {
-            fprintf(stderr, "tex2img : %s : No such file or directory\n", inputFilePath.UTF8String);
+            printStdErr("tex2img : %s : No such file or directory\n", inputFilePath.UTF8String);
             exit(1);
         }
         
