@@ -1,6 +1,7 @@
 #import "ProfileController.h"
 #import "NSDictionary-Extension.h"
 #import "global.h"
+#import "Utility.h"
 
 #define MovedRowsType @"TeX2imgMovedRowsType"
 
@@ -92,7 +93,7 @@
 	
 	if ([newProfileName isEqualToString:@""]) {
 		NSBeep();
-		NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, localizedString(@"emptyProfileNameErrMsg"));
+        runErrorPanel(localizedString(@"emptyProfileNameErrMsg"));
 	} else {
 		NSUInteger aIndex = [profileNames indexOfObject:newProfileName];
 		if (aIndex == NSNotFound) {
@@ -100,7 +101,7 @@
 			saveAsTextField.stringValue = @"";
 			[profilesWindow makeFirstResponder:saveAsTextField]; // フォーカスを入力欄に
 		} else {
-			if (NSRunAlertPanel(localizedString(@"Confirm"), @"%@", @"OK", localizedString(@"Cancel"), nil, localizedString(@"profileOverwriteMsg")) == NSOKButton) {
+			if (runConfirmPanel(localizedString(@"profileOverwriteMsg"))) {
 				[self updateProfile:controllerG.currentProfile forName:newProfileName];
 				saveAsTextField.stringValue = @"";
 			} else {

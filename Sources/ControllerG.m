@@ -7,6 +7,7 @@
 #import "NSMutableString-Extension.h"
 #import "NSFileManager-Extension.h"
 #import "TeXTextView.h"
+#import "Utility.h"
 
 typedef enum {
     DIRECT = 0,
@@ -221,12 +222,12 @@ typedef enum {
 
 - (void)showExtensionError
 {
-	NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, localizedString(@"extensionErrMsg"));
+    runErrorPanel(localizedString(@"extensionErrMsg"));
 }
 
 - (void)showNotFoundError:(NSString*)aPath
 {
-	NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg")]);
+    runErrorPanel(@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg"));
 }
 
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
@@ -261,27 +262,27 @@ typedef enum {
 
 - (void)showFileGenerateError:(NSString*)aPath
 {
-	NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:@"%@%@", aPath, localizedString(@"fileGenerateErrorMsg")]);
+    runErrorPanel(@"%@%@", aPath, localizedString(@"fileGenerateErrorMsg"));
 }
 
 - (void)showExecError:(NSString*)command
 {
-	NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:@"%@%@", command, localizedString(@"execErrorMsg")]);
+    runErrorPanel(@"%@%@", command, localizedString(@"execErrorMsg"));
 }
 
 - (void)showCannotOverwriteError:(NSString*)path
 {
-	NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:@"%@%@", path, localizedString(@"cannotOverwriteErrorMsg")]);
+    runErrorPanel(@"%@%@", path, localizedString(@"cannotOverwriteErrorMsg"));
 }
 
 - (void)showCannotCreateDirectoryError:(NSString*)dir
 {
-    NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:@"%@%@", dir, localizedString(@"cannotCreateDirectoryErrorMsg")]);
+    runErrorPanel(@"%@%@", dir, localizedString(@"cannotCreateDirectoryErrorMsg"));
 }
 
 - (void)showCompileError
 {
-	NSRunAlertPanel(localizedString(@"Alert"), @"%@", @"OK", nil, nil, localizedString(@"compileErrorMsg"));
+    runErrorPanel(localizedString(@"compileErrorMsg"));
 }
 
 #pragma mark -
@@ -677,12 +678,12 @@ typedef enum {
     if (contents) {
         NSString *message = [NSString stringWithFormat:@"%@\n\n%@", localizedString(@"resotrePreambleMsg"), [contents stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]];
         
-        if (NSRunAlertPanel(localizedString(@"Confirm"), @"%@", @"OK", localizedString(@"Cancel"), nil, message) == NSOKButton) {
+        if (runConfirmPanel(message)) {
             BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
             [preambleTextView replaceEntireContentsWithString:contents colorize:colorizeText];
         }
     } else {
-        NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), templatePath]);
+        runErrorPanel(localizedString(@"cannotReadErrorMsg"), templatePath);
         return;
     }
 }
@@ -695,7 +696,7 @@ typedef enum {
 
 - (IBAction)restoreDefaultTemplates:(id)sender
 {
-    if (NSRunAlertPanel(localizedString(@"Confirm"), @"%@", @"OK", localizedString(@"Cancel"), nil,  localizedString(@"restoreTemplatesConfirmationMsg")) == NSOKButton) {
+    if (runConfirmPanel(localizedString(@"restoreTemplatesConfirmationMsg"))) {
         [self restoreDefaultTemplatesLogic];
     }
 }
@@ -888,14 +889,14 @@ typedef enum {
 
 - (void)showInitMessage:(NSDictionary*)paths
 {
-    NSRunAlertPanel(localizedString(@"initSettingsMsg"), @"%@", @"OK", nil, nil,
-                    [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",
-                     localizedString(@"setPathMsg1"),
-                     paths[LatexPathKey],
-                     paths[DvipdfmxPathKey],
-                     paths[GsPathKey],
-                     localizedString(@"setPathMsg2")]
-                    );
+    runOkPanel(localizedString(@"initSettingsMsg"),
+               @"%@\n%@\n%@\n%@\n%@",
+               localizedString(@"setPathMsg1"),
+               paths[LatexPathKey],
+               paths[DvipdfmxPathKey],
+               paths[GsPathKey],
+               localizedString(@"setPathMsg2")
+               );
 }
 
 - (void)applicationWillTerminate:(NSNotification*)aNotification
@@ -1003,7 +1004,7 @@ typedef enum {
 - (void)importSourceLogic:(NSString*)inputPath
 {
     [NSApp activateIgnoringOtherApps:YES];
-    if (NSRunAlertPanel(localizedString(@"Confirm"), @"%@", @"OK", localizedString(@"Cancel"), nil, localizedString(@"overwriteContentsWarningMsg")) == NSOKButton) {
+    if (runConfirmPanel(localizedString(@"overwriteContentsWarningMsg"))) {
 
         NSString *contents = nil;
         
@@ -1014,8 +1015,7 @@ typedef enum {
         } else { // 画像ファイルのインプット
             int bufferLength = getxattr(inputPath.UTF8String, EAKey, NULL, 0, 0, 0); // EAを取得
             if (bufferLength < 0){ // ソース情報が含まれない画像ファイルの場合はエラー
-                NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil,
-                                [NSString stringWithFormat:localizedString(@"doesNotContainSource"), inputPath]);
+                runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
                 return;
             } else { // ソース情報が含まれる画像ファイルの場合はそれをEAから取得して contents にセット（EAに保存されたソースは常にUTF8）
                 char *buffer = malloc(bufferLength);
@@ -1028,8 +1028,7 @@ typedef enum {
         if (contents) {
             [self placeImportedSource:contents];
         } else {
-            NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil,
-                            [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), inputPath]);
+            runErrorPanel(localizedString(@"cannotReadErrorMsg"), inputPath);
         }
     }
 }
@@ -1071,10 +1070,8 @@ typedef enum {
             NSStringEncoding encoding = [self stringEncodingFromEncodingOption:[self.currentProfile stringForKey:EncodingKey]];
             
             if (![contents writeToFile:outputPath atomically:YES encoding:encoding error:nil]) {
-                NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil,
-                                [NSString stringWithFormat:localizedString(@"cannotWriteErrorMsg"), outputPath]);
+                runErrorPanel(localizedString(@"cannotWriteErrorMsg"), outputPath);
             }
-        
         }
     }];
 }
@@ -1241,14 +1238,13 @@ typedef enum {
         NSString *filePath = [self.templateDirectoryPath stringByAppendingPathComponent:[title stringByAppendingPathExtension:@"tex"]];
         
         if ([fileManager fileExistsAtPath:filePath isDirectory:nil]
-            && (NSRunAlertPanel(localizedString(@"Confirm"), @"%@", @"OK", localizedString(@"Cancel"), nil, localizedString(@"profileOverwriteMsg")) == NSCancelButton)) {
+            && (!runConfirmPanel(localizedString(@"profileOverwriteMsg")))) {
             [self saveAsTemplate:title];
         } else {
             NSString *preamble = preambleTextView.textStorage.mutableString;
             BOOL success = [preamble writeToFile:filePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
             if (!success) {
-                NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil,
-                                [NSString stringWithFormat:localizedString(@"cannotWriteErrorMsg"), filePath]);
+                runErrorPanel(localizedString(@"cannotWriteErrorMsg"), filePath);
             }
         }
     }
@@ -1466,8 +1462,7 @@ typedef enum {
             if ([NSFileManager.defaultManager fileExistsAtPath:inputSourceFilePath]) {
                 [converter compileAndConvertWithInputPath:inputSourceFilePath];
             } else {
-                NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil,
-                                [NSString stringWithFormat:localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath]);
+                runErrorPanel(localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath);
             }
             break;
         default:

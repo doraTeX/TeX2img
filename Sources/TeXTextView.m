@@ -65,6 +65,33 @@ static BOOL isValidTeXCommandChar(unichar c)
     [myManager setActionName:key];
 }
 
+- (void)undoSpecial:(id)theDictionary
+{
+    NSRange		undoRange;
+    NSString	*oldString, *newString, *undoKey;
+    
+    // Retrieve undo info
+    undoRange.location = [theDictionary[@"oldLocation"] unsignedIntValue];
+    undoRange.length = [theDictionary[@"oldLength"] unsignedIntValue];
+    newString = theDictionary[@"oldString"];
+    undoKey = theDictionary[@"undoKey"];
+    
+    if (undoRange.location + undoRange.length > self.string.length)
+        return; // something wrong happened
+    
+    oldString = [self.string substringWithRange: undoRange];
+    
+    // Replace the text
+    [self replaceCharactersInRange:undoRange withString:newString];
+    [self registerUndoWithString:oldString
+                        location:undoRange.location
+                          length:newString.length
+                             key:undoKey];
+    
+    [self resetBackgroundColor:nil];
+    [self colorizeText:[controller.currentProfile boolForKey:ColorizeTextKey]];
+}
+
 // to be used in AutoCompletion
 - (void)insertSpecialNonStandard:(NSString*)theString undoKey:(NSString*)key
 {
