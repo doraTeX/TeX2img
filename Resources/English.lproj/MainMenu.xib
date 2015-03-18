@@ -644,6 +644,7 @@ DQ
                 <outlet property="colorWindowMenuItem" destination="Y4d-p8-ynZ" id="6JN-TZ-Zc1"/>
                 <outlet property="colorizeTextMenuItem" destination="772" id="777"/>
                 <outlet property="convertYenMarkMenuItem" destination="730" id="731"/>
+                <outlet property="deleteDisplaySizeCheckBox" destination="H7g-7q-uFe" id="3bf-7G-Nrb"/>
                 <outlet property="deleteTmpFileCheckBox" destination="591" id="594"/>
                 <outlet property="directInputButton" destination="Jlp-tG-8jx" id="nfr-l4-glA"/>
                 <outlet property="dvipdfmxPathTextField" destination="600" id="608"/>
@@ -689,7 +690,6 @@ DQ
                 <outlet property="showTabCharacterMenuItem" destination="811" id="820"/>
                 <outlet property="solidHighlightMenuItem" destination="790" id="796"/>
                 <outlet property="sourceTextView" destination="aKZ-WF-zY9" id="Q4i-tH-xWD"/>
-                <outlet property="specifySvgSizeCheckBox" destination="H7g-7q-uFe" id="FB8-6s-YnL"/>
                 <outlet property="templatePopupButton" destination="8yt-cH-L8O" id="cye-en-aa4"/>
                 <outlet property="textPdfCheckBox" destination="636" id="6cW-Hs-Ute"/>
                 <outlet property="topMarginLabel" destination="559" id="619"/>
@@ -1135,7 +1135,7 @@ DQ
                                                     <button id="H7g-7q-uFe">
                                                         <rect key="frame" x="16" y="6" width="336" height="34"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Specify size" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="ss8-Tf-CTS">
+                                                        <buttonCell key="cell" type="check" title="Delete display size" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ss8-Tf-CTS">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>

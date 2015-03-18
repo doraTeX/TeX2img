@@ -648,6 +648,7 @@ DQ
                 <outlet property="colorWindowMenuItem" destination="mwF-OF-D3d" id="hU2-fG-5MG"/>
                 <outlet property="colorizeTextMenuItem" destination="804" id="806"/>
                 <outlet property="convertYenMarkMenuItem" destination="760" id="762"/>
+                <outlet property="deleteDisplaySizeCheckBox" destination="afr-f7-ZEX" id="oSG-fY-bJT"/>
                 <outlet property="deleteTmpFileCheckBox" destination="591" id="594"/>
                 <outlet property="directInputButton" destination="TFq-OD-TeI" id="hA5-5h-RAw"/>
                 <outlet property="dvipdfmxPathTextField" destination="600" id="608"/>
@@ -693,7 +694,6 @@ DQ
                 <outlet property="showTabCharacterMenuItem" destination="833" id="843"/>
                 <outlet property="solidHighlightMenuItem" destination="818" id="821"/>
                 <outlet property="sourceTextView" destination="466" id="467"/>
-                <outlet property="specifySvgSizeCheckBox" destination="afr-f7-ZEX" id="X2c-fc-swf"/>
                 <outlet property="templatePopupButton" destination="88N-oX-Kx7" id="XUy-wr-UJD"/>
                 <outlet property="textPdfCheckBox" destination="646" id="i2a-wp-iaK"/>
                 <outlet property="topMarginLabel" destination="559" id="619"/>
@@ -760,7 +760,7 @@ DQ
                     <popUpButton verticalHuggingPriority="750" id="88N-oX-Kx7">
                         <rect key="frame" x="148" y="8" width="162" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="テンプレート" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" id="ixJ-k4-Ee5">
+                        <popUpButtonCell key="cell" type="push" title="テンプレート" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" selectedItem="58H-Aq-Z6Z" id="ixJ-k4-Ee5">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                             <menu key="menu" autoenablesItems="NO" id="wOe-7y-tf5">
@@ -1103,7 +1103,7 @@ DQ
                                                     <button id="afr-f7-ZEX">
                                                         <rect key="frame" x="16" y="12" width="220" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="表示寸法を等倍に固定" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="z5p-3V-PLU">
+                                                        <buttonCell key="cell" type="check" title="寸法情報を削除する" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="z5p-3V-PLU">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" size="13" name="HiraKakuProN-W3"/>
                                                         </buttonCell>

@@ -72,7 +72,7 @@ typedef enum {
 
 @property IBOutlet NSButton *generateButton;
 @property IBOutlet NSButton *transparentCheckBox;
-@property IBOutlet NSButton *specifySvgSizeCheckBox;
+@property IBOutlet NSButton *deleteDisplaySizeCheckBox;
 @property IBOutlet NSButton *showOutputDrawerCheckBox;
 @property IBOutlet NSButton *previewCheckBox;
 @property IBOutlet NSButton *deleteTmpFileCheckBox;
@@ -154,7 +154,7 @@ typedef enum {
 
 @synthesize generateButton;
 @synthesize transparentCheckBox;
-@synthesize specifySvgSizeCheckBox;
+@synthesize deleteDisplaySizeCheckBox;
 @synthesize showOutputDrawerCheckBox;
 @synthesize previewCheckBox;
 @synthesize deleteTmpFileCheckBox;
@@ -221,12 +221,12 @@ typedef enum {
 
 - (void)showExtensionError
 {
-	NSRunAlertPanel(localizedString(@"Error"), localizedString(@"extensionErrMsg"), @"OK", nil, nil);
+	NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, localizedString(@"extensionErrMsg"));
 }
 
 - (void)showNotFoundError:(NSString*)aPath
 {
-	NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg")], @"OK", nil, nil);
+	NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg")]);
 }
 
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
@@ -261,27 +261,27 @@ typedef enum {
 
 - (void)showFileGenerateError:(NSString*)aPath
 {
-	NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", aPath, localizedString(@"fileGenerateErrorMsg")], @"OK", nil, nil);
+	NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:@"%@%@", aPath, localizedString(@"fileGenerateErrorMsg")]);
 }
 
 - (void)showExecError:(NSString*)command
 {
-	NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", command, localizedString(@"execErrorMsg")], @"OK", nil, nil);
+	NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:@"%@%@", command, localizedString(@"execErrorMsg")]);
 }
 
 - (void)showCannotOverwriteError:(NSString*)path
 {
-	NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", path, localizedString(@"cannotOverwriteErrorMsg")], @"OK", nil, nil);
+	NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:@"%@%@", path, localizedString(@"cannotOverwriteErrorMsg")]);
 }
 
 - (void)showCannotCreateDirectoryError:(NSString*)dir
 {
-    NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:@"%@%@", dir, localizedString(@"cannotCreateDirectoryErrorMsg")], @"OK", nil, nil);
+    NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:@"%@%@", dir, localizedString(@"cannotCreateDirectoryErrorMsg")]);
 }
 
 - (void)showCompileError
 {
-	NSRunAlertPanel(localizedString(@"Alert"), localizedString(@"compileErrorMsg"), @"OK", nil, nil);
+	NSRunAlertPanel(localizedString(@"Alert"), @"%@", @"OK", nil, nil, localizedString(@"compileErrorMsg"));
 }
 
 #pragma mark -
@@ -327,7 +327,7 @@ typedef enum {
 	
 	transparentCheckBox.state = [aProfile boolForKey:TransparentKey];
 	textPdfCheckBox.state = ![aProfile boolForKey:GetOutlineKey];
-    specifySvgSizeCheckBox.state = [aProfile boolForKey:SpecifySvgSizeKey];
+    deleteDisplaySizeCheckBox.state = [aProfile boolForKey:DeleteDisplaySizeKey];
 	
 	ignoreErrorCheckBox.state = [aProfile boolForKey:IgnoreErrorKey];
 	utfExportCheckBox.state = [aProfile boolForKey:UtfExportKey];
@@ -471,7 +471,7 @@ typedef enum {
         
         currentProfile[TransparentKey] = @(transparentCheckBox.state);
         currentProfile[GetOutlineKey] = @(!textPdfCheckBox.state);
-        currentProfile[SpecifySvgSizeKey] = @(specifySvgSizeCheckBox.state);
+        currentProfile[DeleteDisplaySizeKey] = @(deleteDisplaySizeCheckBox.state);
         currentProfile[IgnoreErrorKey] = @(ignoreErrorCheckBox.state);
         currentProfile[UtfExportKey] = @(utfExportCheckBox.state);
         
@@ -677,12 +677,12 @@ typedef enum {
     if (contents) {
         NSString *message = [NSString stringWithFormat:@"%@\n\n%@", localizedString(@"resotrePreambleMsg"), [contents stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]];
         
-        if (NSRunAlertPanel(localizedString(@"Confirm"), message, @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
+        if (NSRunAlertPanel(localizedString(@"Confirm"), @"%@", @"OK", localizedString(@"Cancel"), nil, message) == NSOKButton) {
             BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
             [preambleTextView replaceEntireContentsWithString:contents colorize:colorizeText];
         }
     } else {
-        NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), templatePath], @"OK", nil, nil);
+        NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil, [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), templatePath]);
         return;
     }
 }
@@ -695,7 +695,7 @@ typedef enum {
 
 - (IBAction)restoreDefaultTemplates:(id)sender
 {
-    if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"restoreTemplatesConfirmationMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
+    if (NSRunAlertPanel(localizedString(@"Confirm"), @"%@", @"OK", localizedString(@"Cancel"), nil,  localizedString(@"restoreTemplatesConfirmationMsg")) == NSOKButton) {
         [self restoreDefaultTemplatesLogic];
     }
 }
@@ -888,10 +888,14 @@ typedef enum {
 
 - (void)showInitMessage:(NSDictionary*)paths
 {
-    NSRunAlertPanel(localizedString(@"initSettingsMsg"),
+    NSRunAlertPanel(localizedString(@"initSettingsMsg"), @"%@", @"OK", nil, nil,
                     [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",
-                     localizedString(@"setPathMsg1"), paths[LatexPathKey], paths[DvipdfmxPathKey], paths[GsPathKey], localizedString(@"setPathMsg2")],
-                    @"OK", nil, nil);
+                     localizedString(@"setPathMsg1"),
+                     paths[LatexPathKey],
+                     paths[DvipdfmxPathKey],
+                     paths[GsPathKey],
+                     localizedString(@"setPathMsg2")]
+                    );
 }
 
 - (void)applicationWillTerminate:(NSNotification*)aNotification
@@ -999,7 +1003,7 @@ typedef enum {
 - (void)importSourceLogic:(NSString*)inputPath
 {
     [NSApp activateIgnoringOtherApps:YES];
-    if (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"overwriteContentsWarningMsg"), @"OK", localizedString(@"Cancel"), nil) == NSOKButton) {
+    if (NSRunAlertPanel(localizedString(@"Confirm"), @"%@", @"OK", localizedString(@"Cancel"), nil, localizedString(@"overwriteContentsWarningMsg")) == NSOKButton) {
 
         NSString *contents = nil;
         
@@ -1010,7 +1014,8 @@ typedef enum {
         } else { // 画像ファイルのインプット
             int bufferLength = getxattr(inputPath.UTF8String, EAKey, NULL, 0, 0, 0); // EAを取得
             if (bufferLength < 0){ // ソース情報が含まれない画像ファイルの場合はエラー
-                NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"doesNotContainSource"), inputPath], @"OK", nil, nil);
+                NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil,
+                                [NSString stringWithFormat:localizedString(@"doesNotContainSource"), inputPath]);
                 return;
             } else { // ソース情報が含まれる画像ファイルの場合はそれをEAから取得して contents にセット（EAに保存されたソースは常にUTF8）
                 char *buffer = malloc(bufferLength);
@@ -1023,7 +1028,8 @@ typedef enum {
         if (contents) {
             [self placeImportedSource:contents];
         } else {
-            NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), inputPath], @"OK", nil, nil);
+            NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil,
+                            [NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), inputPath]);
         }
     }
 }
@@ -1065,7 +1071,8 @@ typedef enum {
             NSStringEncoding encoding = [self stringEncodingFromEncodingOption:[self.currentProfile stringForKey:EncodingKey]];
             
             if (![contents writeToFile:outputPath atomically:YES encoding:encoding error:nil]) {
-                NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotWriteErrorMsg"), outputPath], @"OK", nil, nil);
+                NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil,
+                                [NSString stringWithFormat:localizedString(@"cannotWriteErrorMsg"), outputPath]);
             }
         
         }
@@ -1233,13 +1240,15 @@ typedef enum {
 
         NSString *filePath = [self.templateDirectoryPath stringByAppendingPathComponent:[title stringByAppendingPathExtension:@"tex"]];
         
-        if ([fileManager fileExistsAtPath:filePath isDirectory:nil] && (NSRunAlertPanel(localizedString(@"Confirm"), localizedString(@"profileOverwriteMsg"), @"OK", localizedString(@"Cancel"), nil) == NSCancelButton)) {
+        if ([fileManager fileExistsAtPath:filePath isDirectory:nil]
+            && (NSRunAlertPanel(localizedString(@"Confirm"), @"%@", @"OK", localizedString(@"Cancel"), nil, localizedString(@"profileOverwriteMsg")) == NSCancelButton)) {
             [self saveAsTemplate:title];
         } else {
             NSString *preamble = preambleTextView.textStorage.mutableString;
             BOOL success = [preamble writeToFile:filePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
             if (!success) {
-                NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"cannotWriteErrorMsg"), filePath], @"OK", nil, nil);
+                NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil,
+                                [NSString stringWithFormat:localizedString(@"cannotWriteErrorMsg"), filePath]);
             }
         }
     }
@@ -1457,7 +1466,8 @@ typedef enum {
             if ([NSFileManager.defaultManager fileExistsAtPath:inputSourceFilePath]) {
                 [converter compileAndConvertWithInputPath:inputSourceFilePath];
             } else {
-                NSRunAlertPanel(localizedString(@"Error"), [NSString stringWithFormat:localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath], @"OK", nil, nil);
+                NSRunAlertPanel(localizedString(@"Error"), @"%@", @"OK", nil, nil,
+                                [NSString stringWithFormat:localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath]);
             }
             break;
         default:

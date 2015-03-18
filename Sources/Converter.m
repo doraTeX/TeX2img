@@ -21,7 +21,7 @@
 @property float resolutionLevel;
 @property BOOL guessCompilation;
 @property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property BOOL leaveTextFlag, transparentPngFlag, specifySvgSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property BOOL leaveTextFlag, transparentPngFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property id<OutputController> controller;
 @property NSFileManager* fileManager;
 @property NSString* tempdir;
@@ -45,7 +45,7 @@
 @synthesize resolutionLevel;
 @synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@synthesize leaveTextFlag, transparentPngFlag, specifySvgSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize leaveTextFlag, transparentPngFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
 @synthesize fileManager;
 @synthesize tempdir;
@@ -82,7 +82,7 @@
     bottomMargin = [aProfile integerForKey:BottomMarginKey];
     leaveTextFlag = ![aProfile boolForKey:GetOutlineKey];
     transparentPngFlag = [aProfile boolForKey:TransparentKey];
-    specifySvgSizeFlag = [aProfile boolForKey:SpecifySvgSizeKey];
+    deleteDisplaySizeFlag = [aProfile boolForKey:DeleteDisplaySizeKey];
     showOutputDrawerFlag = [aProfile boolForKey:ShowOutputDrawerKey];
     previewFlag = [aProfile boolForKey:PreviewKey];
     deleteTmpFileFlag = [aProfile boolForKey:DeleteTmpFileKey];
@@ -538,7 +538,7 @@
     }
     
     // SVG の width, height 属性を削除する
-    if (!specifySvgSizeFlag) {
+    if (deleteDisplaySizeFlag) {
         NSMutableString *mstr = [NSMutableString stringWithString:[NSString stringWithContentsOfFile:svgFilePath encoding:NSUTF8StringEncoding error:nil]];
         NSString *pattern = @"width=\".+?\" height=\".+?\" ";
         NSRange match = [mstr rangeOfString:pattern options:NSRegularExpressionSearch];

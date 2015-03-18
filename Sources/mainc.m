@@ -35,7 +35,7 @@ static void usage()
     printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF/SVG)\n");
     printf("  --text-pdf              : generate text-embedded PDF files\n");
     printf("  --transparent           : generate transparent PNG files\n");
-    printf("  --specify-svg-size      : specify width and height of SVG files\n");
+    printf("  --delete-display-size   : specify width and height of SVG files\n");
     printf("  --no-embed-source       : do not embed the source in image files\n");
     printf("  --quick                 : convert in a speed priority mode\n");
     printf("  --kanji ENCODING        : set Japanese encoding  (no|utf8|sjis|jis|euc) (default: no)\n");
@@ -119,7 +119,7 @@ int main (int argc, char *argv[]) {
         int bottomMargin = 0;
         BOOL textPdfFlag = NO;
         BOOL transparentPngFlag = NO;
-        BOOL specifySvgSizeFlag = NO;
+        BOOL deleteDisplaySizeFlag = NO;
         BOOL deleteTmpFileFlag = YES;
         BOOL ignoreErrorFlag = NO;
         BOOL utfExportFlag = NO;
@@ -246,7 +246,7 @@ int main (int argc, char *argv[]) {
         options[20].flag = NULL;
         options[20].val = 21;
 
-        options[21].name = "specify-svg-size";
+        options[21].name = "delete-display-size";
         options[21].has_arg = no_argument;
         options[21].flag = NULL;
         options[21].val = 22;
@@ -414,8 +414,8 @@ int main (int argc, char *argv[]) {
                 case 21: // --no-embed-source
                     embedSourceFlag = NO;
                     break;
-                case 22: // --specify-svg-size
-                    specifySvgSizeFlag = YES;
+                case 22: // --delete-display-size
+                    deleteDisplaySizeFlag = YES;
                     break;
                 case (OPTION_NUM - 2): // --version
                     version();
@@ -501,7 +501,7 @@ int main (int argc, char *argv[]) {
         aProfile[BottomMarginKey] = @(bottomMargin);
         aProfile[GetOutlineKey] = @(!textPdfFlag);
         aProfile[TransparentKey] = @(transparentPngFlag);
-        aProfile[SpecifySvgSizeKey] = @(specifySvgSizeFlag);
+        aProfile[DeleteDisplaySizeKey] = @(deleteDisplaySizeFlag);
         aProfile[ShowOutputDrawerKey] = @(NO);
         aProfile[PreviewKey] = @(previewFlag);
         aProfile[DeleteTmpFileKey] = @(deleteTmpFileFlag);
