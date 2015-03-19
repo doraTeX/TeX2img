@@ -6,9 +6,9 @@
 #import "global.h"
 #import "UtilityC.h"
 
-#define OPTION_NUM 25
+#define OPTION_NUM 26
 #define MAX_LEN 1024
-#define VERSION "1.9.0b1"
+#define VERSION "1.9.0b2"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -37,6 +37,7 @@ static void usage()
     printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF/SVG)\n");
     printf("  --text-pdf              : generate text-embedded PDF files\n");
     printf("  --transparent           : generate transparent images (for PNG/GIF/TIFF)\n");
+    printf("  --no-antialias          : disable anti-aliasing (for JPEG/PNG/GIF/TIFF/BMP)\n");
     printf("  --delete-display-size   : delete width and height attributes of SVG files\n");
     printf("  --no-embed-source       : do not embed the source in image files\n");
     printf("  --quick                 : convert in a speed priority mode\n");
@@ -132,6 +133,7 @@ int main (int argc, char *argv[]) {
         BOOL guessFlag = NO;
         BOOL previewFlag = NO;
         BOOL embedSourceFlag = YES;
+        BOOL antialiasFlag = YES;
         NSString *encoding = PTEX_ENCODING_NONE;
         NSString *compiler = @"platex";
         NSString *dvipdfmx = @"dvipdfmx";
@@ -254,7 +256,12 @@ int main (int argc, char *argv[]) {
         options[21].has_arg = no_argument;
         options[21].flag = NULL;
         options[21].val = 22;
-        
+
+        options[22].name = "no-antialias";
+        options[22].has_arg = no_argument;
+        options[22].flag = NULL;
+        options[22].val = 23;
+
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
         options[OPTION_NUM - 3].flag = NULL;
@@ -421,6 +428,9 @@ int main (int argc, char *argv[]) {
                 case 22: // --delete-display-size
                     deleteDisplaySizeFlag = YES;
                     break;
+                case 23: // --no-antialias
+                    antialiasFlag = NO;
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -505,6 +515,7 @@ int main (int argc, char *argv[]) {
         aProfile[BottomMarginKey] = @(bottomMargin);
         aProfile[GetOutlineKey] = @(!textPdfFlag);
         aProfile[TransparentKey] = @(transparentFlag);
+        aProfile[AntialiasKey] = @(antialiasFlag);
         aProfile[DeleteDisplaySizeKey] = @(deleteDisplaySizeFlag);
         aProfile[ShowOutputDrawerKey] = @(NO);
         aProfile[PreviewKey] = @(previewFlag);

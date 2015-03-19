@@ -74,6 +74,7 @@ typedef enum {
 @property IBOutlet NSButton *generateButton;
 @property IBOutlet NSButton *transparentCheckBox;
 @property IBOutlet NSButton *deleteDisplaySizeCheckBox;
+@property IBOutlet NSButton *antialiasCheckBox;
 @property IBOutlet NSButton *showOutputDrawerCheckBox;
 @property IBOutlet NSButton *previewCheckBox;
 @property IBOutlet NSButton *deleteTmpFileCheckBox;
@@ -155,6 +156,7 @@ typedef enum {
 
 @synthesize generateButton;
 @synthesize transparentCheckBox;
+@synthesize antialiasCheckBox;
 @synthesize deleteDisplaySizeCheckBox;
 @synthesize showOutputDrawerCheckBox;
 @synthesize previewCheckBox;
@@ -327,7 +329,13 @@ typedef enum {
 	transparentCheckBox.state = [aProfile boolForKey:TransparentKey];
 	textPdfCheckBox.state = ![aProfile boolForKey:GetOutlineKey];
     deleteDisplaySizeCheckBox.state = [aProfile boolForKey:DeleteDisplaySizeKey];
-	
+
+    if ([aProfile.allKeys containsObject:AntialiasKey]) {
+        antialiasCheckBox.state = [aProfile integerForKey:AntialiasKey];
+    } else {
+        antialiasCheckBox.state = NSOnState;
+    }
+
 	ignoreErrorCheckBox.state = [aProfile boolForKey:IgnoreErrorKey];
 	utfExportCheckBox.state = [aProfile boolForKey:UtfExportKey];
 	
@@ -470,6 +478,7 @@ typedef enum {
         
         currentProfile[TransparentKey] = @(transparentCheckBox.state);
         currentProfile[GetOutlineKey] = @(!textPdfCheckBox.state);
+        currentProfile[AntialiasKey] = @(antialiasCheckBox.state);
         currentProfile[DeleteDisplaySizeKey] = @(deleteDisplaySizeCheckBox.state);
         currentProfile[IgnoreErrorKey] = @(ignoreErrorCheckBox.state);
         currentProfile[UtfExportKey] = @(utfExportCheckBox.state);

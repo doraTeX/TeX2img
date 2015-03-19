@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14D105g" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1040" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
@@ -632,6 +632,7 @@ DQ
         <customObject id="420" customClass="NSFontManager"/>
         <customObject id="450" customClass="ControllerG">
             <connections>
+                <outlet property="antialiasCheckBox" destination="fkQ-aL-PBJ" id="0I0-V7-XSz"/>
                 <outlet property="autoCompleteMenuItem" destination="844" id="846"/>
                 <outlet property="beepMenuItem" destination="852" id="857"/>
                 <outlet property="bottomMarginLabel" destination="566" id="620"/>
@@ -681,7 +682,7 @@ DQ
                 <outlet property="preambleWindowMenuItem" destination="486" id="498"/>
                 <outlet property="preferenceWindow" destination="517" id="572"/>
                 <outlet property="previewCheckBox" destination="589" id="593"/>
-                <outlet property="priorityMatrix" destination="dUc-Ds-Xb4" id="JEn-jZ-Qzk"/>
+                <outlet property="priorityMatrix" destination="Szf-rE-S5f" id="Ova-R0-MYg"/>
                 <outlet property="profileController" destination="695" id="706"/>
                 <outlet property="resolutionLabel" destination="641" id="649"/>
                 <outlet property="resolutionSlider" destination="640" id="648"/>
@@ -1053,98 +1054,45 @@ DQ
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
-                                        <box autoresizesSubviews="NO" title="PDF 固有の設定" borderType="line" id="638">
-                                            <rect key="frame" x="6" y="64" width="183" height="57"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <box autoresizesSubviews="NO" title="出力画像の設定" borderType="line" id="cDD-5y-A58">
+                                            <rect key="frame" x="6" y="5" width="370" height="116"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <view key="contentView">
-                                                <rect key="frame" x="1" y="1" width="181" height="41"/>
+                                                <rect key="frame" x="1" y="1" width="368" height="100"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button id="646">
-                                                        <rect key="frame" x="16" y="12" width="220" height="18"/>
+                                                        <rect key="frame" x="16" y="53" width="220" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="テキストを保持する" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="647">
+                                                        <buttonCell key="cell" type="check" title="テキストを保持する (PDF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="647">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                            <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                     </button>
-                                                </subviews>
-                                            </view>
-                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </box>
-                                        <box autoresizesSubviews="NO" title="PNG / GIF / TIFF 固有の設定" borderType="line" id="520">
-                                            <rect key="frame" x="191" y="64" width="185" height="57"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES"/>
-                                            <view key="contentView">
-                                                <rect key="frame" x="1" y="1" width="183" height="41"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
                                                     <button id="521">
-                                                        <rect key="frame" x="16" y="13" width="139" height="18"/>
+                                                        <rect key="frame" x="16" y="74" width="293" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="背景色を透過させる" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
+                                                        <buttonCell key="cell" type="check" title="背景色を透過させる (PNG / GIF / TIFF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                     </button>
-                                                </subviews>
-                                            </view>
-                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </box>
-                                        <box autoresizesSubviews="NO" title="SVG 固有の設定" borderType="line" id="cDD-5y-A58">
-                                            <rect key="frame" x="6" y="2" width="183" height="57"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <view key="contentView">
-                                                <rect key="frame" x="1" y="1" width="181" height="41"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <button id="afr-f7-ZEX">
-                                                        <rect key="frame" x="16" y="12" width="220" height="18"/>
+                                                    <button id="fkQ-aL-PBJ">
+                                                        <rect key="frame" x="16" y="9" width="325" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="寸法情報を削除する" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="z5p-3V-PLU">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" size="13" name="HiraKakuProN-W3"/>
-                                                        </buttonCell>
-                                                    </button>
-                                                </subviews>
-                                            </view>
-                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </box>
-                                        <box autoresizesSubviews="NO" title="変換処理" borderType="line" id="u41-dX-bed">
-                                            <rect key="frame" x="191" y="2" width="185" height="57"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES"/>
-                                            <view key="contentView">
-                                                <rect key="frame" x="1" y="1" width="183" height="41"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="dUc-Ds-Xb4">
-                                                        <rect key="frame" x="15" y="13" width="162" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="79" height="18"/>
-                                                        <size key="intercellSpacing" width="4" height="2"/>
-                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="sw5-6C-440">
+                                                        <buttonCell key="cell" type="check" title="アンチエイリアス有効 (JPEG/PNG/GIF/TIFF/BMP)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="iM2-Aj-O63">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
-                                                        <cells>
-                                                            <column>
-                                                                <buttonCell type="radio" title="画質優先" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="Nj9-hK-8nl">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                </buttonCell>
-                                                            </column>
-                                                            <column>
-                                                                <buttonCell type="radio" title="速度優先" imagePosition="left" alignment="left" tag="2" inset="2" id="qhi-ar-93R">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                </buttonCell>
-                                                            </column>
-                                                        </cells>
-                                                    </matrix>
+                                                    </button>
+                                                    <button id="afr-f7-ZEX">
+                                                        <rect key="frame" x="16" y="31" width="220" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="寸法情報を削除する (SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="z5p-3V-PLU">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                    </button>
                                                 </subviews>
                                             </view>
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
@@ -1309,6 +1257,44 @@ DQ
                                                 <action selector="searchPrograms:" target="450" id="716"/>
                                             </connections>
                                         </button>
+                                        <box autoresizesSubviews="NO" title="変換処理" borderType="line" id="rl0-1h-G1Q">
+                                            <rect key="frame" x="13" y="36" width="361" height="57"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                            <view key="contentView">
+                                                <rect key="frame" x="1" y="1" width="359" height="41"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="Szf-rE-S5f">
+                                                        <rect key="frame" x="15" y="13" width="326" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="161" height="18"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="FaD-Kt-ONi">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="画質優先" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="AUh-C0-uz0">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </column>
+                                                            <column>
+                                                                <buttonCell type="radio" title="速度優先" imagePosition="left" alignment="left" tag="2" inset="2" id="aDM-FB-Yxj">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </column>
+                                                        </cells>
+                                                    </matrix>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
+                                        </box>
                                     </subviews>
                                 </view>
                             </tabViewItem>
