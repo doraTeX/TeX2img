@@ -491,8 +491,8 @@
     NSData *outputData;
 	if ([@"jpg" isEqualToString:extension]) {
 		imageRep = [self fillBackground:imageRep];
-        NSDictionary *propJpeg = @{NSImageCompressionFactor: @1.0f};
-		outputData = [imageRep representationUsingType:NSJPEGFileType properties:propJpeg];
+        NSDictionary *prop = @{NSImageCompressionFactor: @1.0f};
+		outputData = [imageRep representationUsingType:NSJPEGFileType properties:prop];
 	} else if ([@"png" isEqualToString:extension]) {
 		if (!transparentFlag) {
 			imageRep = [self fillBackground:imageRep];
@@ -502,13 +502,13 @@
         if (!transparentFlag) {
             imageRep = [self fillBackground:imageRep];
         }
-        NSDictionary *propGif = @{NSImageCompressionFactor: @1.0f};
-        outputData = [imageRep representationUsingType:NSGIFFileType properties:propGif];
+        outputData = [imageRep representationUsingType:NSGIFFileType properties:nil];
     } else if ([@"tiff" isEqualToString:extension]) {
         if (!transparentFlag) {
             imageRep = [self fillBackground:imageRep];
         }
-        outputData = [imageRep representationUsingType:NSTIFFFileType properties:nil];
+        NSDictionary *prop = @{NSImageCompressionFactor: @1.0f};
+        outputData = [imageRep representationUsingType:NSTIFFFileType properties:prop];
     } else if ([@"bmp" isEqualToString:extension]) {
         imageRep = [self fillBackground:imageRep];
         outputData = [imageRep representationUsingType:NSBMPFileType properties:nil];
