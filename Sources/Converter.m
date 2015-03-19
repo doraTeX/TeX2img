@@ -21,7 +21,7 @@
 @property float resolutionLevel;
 @property BOOL guessCompilation;
 @property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property BOOL leaveTextFlag, transparentFlag, antialiasFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property id<OutputController> controller;
 @property NSFileManager* fileManager;
 @property NSString* tempdir;
@@ -45,7 +45,7 @@
 @synthesize resolutionLevel;
 @synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@synthesize leaveTextFlag, transparentFlag, antialiasFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
 @synthesize fileManager;
 @synthesize tempdir;
@@ -82,7 +82,6 @@
     bottomMargin = [aProfile integerForKey:BottomMarginKey];
     leaveTextFlag = ![aProfile boolForKey:GetOutlineKey];
     transparentFlag = [aProfile boolForKey:TransparentKey];
-    antialiasFlag = [aProfile boolForKey:AntialiasKey];
     deleteDisplaySizeFlag = [aProfile boolForKey:DeleteDisplaySizeKey];
     showOutputDrawerFlag = [aProfile boolForKey:ShowOutputDrawerKey];
     previewFlag = [aProfile boolForKey:PreviewKey];
@@ -565,43 +564,6 @@
     return YES;
 }
 
-- (BOOL)eps2image:(NSString*)epsFileName outputFileName:(NSString*)outputFileName resolution:(NSInteger)resolution
-{
-    NSString *extension = outputFileName.pathExtension.lowercaseString;
-    NSString *outputDevice;
-    
-    if ([@"jpg" isEqualToString:extension]) {
-        outputDevice = @"jpeg";
-    }
-    if ([@"png" isEqualToString:extension]) {
-        outputDevice = transparentFlag ? @"pngalpha" : @"png16m";
-    }
-    if ([@"tiff" isEqualToString:extension]) {
-        outputDevice = @"tiffg4";
-    }
-    if ([@"bmp" isEqualToString:extension]) {
-        outputDevice = @"bmp32b";
-    }
-    NSArray *arguments = @[@"-dBATCH",
-                           @"-dNOPAUSE",
-                           @"-dEPSCrop",
-                           @"-dGraphicsAlphaBits=1",
-                           [@"-sDEVICE=" stringByAppendingString:outputDevice],
-                           [@"-sOutputFile=" stringByAppendingString:outputFileName],
-                           [NSString stringWithFormat:@"-r%ld", resolution],
-                           epsFileName,
-                           ];
-    
-    BOOL success = [self execCommand:gsPath
-                         atDirectory:tempdir
-                       withArguments:arguments];
-    if (!success ) {
-        return NO;
-    }
-    
-    return YES;
-}
-
 - (BOOL)convertPDF:(NSString*)pdfFileName outputEpsFileName:(NSString*)outputEpsFileName outputFileName:(NSString*)outputFileName page:(NSUInteger)page
 {
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
@@ -629,16 +591,9 @@
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
         [fileManager moveItemAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
-    } else if (antialiasFlag || [@"gif" isEqualToString:extension]) { // ビットマップ形式出力でアンチエイリアス有効（またはGIF出力）の場合，EPSをPDFに戻した上で，それをさらにビットマップ形式に変換する
+    } else { // ビットマップ形式出力の場合，EPSをPDFに戻した上で，それをさらにビットマップ形式に変換する
         [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:NO]; // アウトラインを取ったEPSをPDFへ戻す（余白はこの時点では付与しない）
         [self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1 crop:NO]; // PDFを目的の画像ファイルへ変換（ここで余白付与）
-    } else { // GIF以外のビットマップ形式出力でアンチエイリアス無効の場合，EPSを gs の -dGraphicsAlphaBits=1 でビットマップ化
-        // 余白を付け加えるようバウンディングボックスを改変
-        if (topMargin + bottomMargin + leftMargin + rightMargin > 0) {
-            [self enlargeBB:outputEpsFileName];
-        }
-        // gsでビットマップ化
-        [self eps2image:outputEpsFileName outputFileName:outputFileName resolution:lowResolution/9.78];
     }
     
     return YES;

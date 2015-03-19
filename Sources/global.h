@@ -20,7 +20,6 @@ NSMutableString *g_commandCompletionList;
 #define UngroupKey @"ungroup"
 #define TransparentKey @"transparent"
 #define GetOutlineKey @"getOutline"
-#define AntialiasKey @"antialias"
 #define DeleteDisplaySizeKey @"deleteDisplaySize"
 #define IgnoreErrorKey @"ignoreError"
 #define UtfExportKey @"utfExport"

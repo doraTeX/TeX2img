@@ -628,7 +628,6 @@ DQ
         <customObject id="420" customClass="NSFontManager"/>
         <customObject id="450" customClass="ControllerG">
             <connections>
-                <outlet property="antialiasCheckBox" destination="RAa-9C-Hjc" id="1rU-A0-Ja2"/>
                 <outlet property="autoCompleteMenuItem" destination="821" id="823"/>
                 <outlet property="beepMenuItem" destination="828" id="834"/>
                 <outlet property="bottomMarginLabel" destination="566" id="620"/>
@@ -1017,7 +1016,7 @@ DQ
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button id="521">
-                                                        <rect key="frame" x="16" y="74" width="287" height="18"/>
+                                                        <rect key="frame" x="16" y="70" width="287" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Transparent background (PNG / GIF / TIFF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1025,7 +1024,7 @@ DQ
                                                         </buttonCell>
                                                     </button>
                                                     <button id="636">
-                                                        <rect key="frame" x="16" y="52" width="336" height="18"/>
+                                                        <rect key="frame" x="16" y="43" width="336" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Embed text (PDF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="637">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1033,17 +1032,9 @@ DQ
                                                         </buttonCell>
                                                     </button>
                                                     <button id="H7g-7q-uFe">
-                                                        <rect key="frame" x="16" y="30" width="336" height="18"/>
+                                                        <rect key="frame" x="16" y="16" width="336" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Delete display size (SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ss8-Tf-CTS">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                    </button>
-                                                    <button id="RAa-9C-Hjc">
-                                                        <rect key="frame" x="16" y="8" width="347" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Enable anti-aliasing (JPEG / PNG / GIF / TIFF / BMP)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="z8t-4Q-3Ho">
+                                                        <buttonCell key="cell" type="check" title="Delete &quot;width&quot; and &quot;height&quot; attributes (SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ss8-Tf-CTS">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
