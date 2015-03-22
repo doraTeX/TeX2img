@@ -484,7 +484,7 @@ DQ
                             <action selector="generate:" target="450" id="456"/>
                         </connections>
                     </button>
-                    <box autoresizesSubviews="NO" title="Output File Path (extention: .eps / .pdf / .jpg / .png / .gif / .tiff / .bmp / .svg )" borderType="line" id="460">
+                    <box autoresizesSubviews="NO" title="Output File Path (extention: .eps / .pdf / .svg / .jpg / .png / .gif / .tiff / .bmp )" borderType="line" id="460">
                         <rect key="frame" x="11" y="56" width="520" height="59"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                         <view key="contentView">

@@ -571,7 +571,7 @@ DQ
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
                     </box>
-                    <box autoresizesSubviews="NO" title="出力画像ファイル名（拡張子：.eps / .pdf / .jpg / .png / .gif / .tiff / .bmp / .svg）" borderType="line" id="460">
+                    <box autoresizesSubviews="NO" title="出力画像ファイル名（拡張子：.eps / .pdf / .svg / .jpg / .png / .gif / .tiff / .bmp）" borderType="line" id="460">
                         <rect key="frame" x="11" y="56" width="520" height="59"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                         <view key="contentView">
