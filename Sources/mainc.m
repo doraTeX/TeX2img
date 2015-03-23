@@ -8,7 +8,7 @@
 
 #define OPTION_NUM 25
 #define MAX_LEN 1024
-#define VERSION "1.9.0"
+#define VERSION "1.9.1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -35,7 +35,7 @@ static void usage()
     printf("  --top-margin     MARGIN : set the top margin    (default: 0)\n");
     printf("  --bottom-margin  MARGIN : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF/SVG)\n");
-    printf("  --text-pdf              : generate text-embedded PDF files\n");
+    printf("  --with-text             : generate text-embedded PDF files\n");
     printf("  --transparent           : generate transparent images (for PNG/GIF/TIFF)\n");
     printf("  --delete-display-size   : delete width and height attributes of SVG files\n");
     printf("  --no-embed-source       : do not embed the source in image files\n");
@@ -170,7 +170,7 @@ int main (int argc, char *argv[]) {
         options[4].flag = NULL;
         options[4].val = 5;
         
-        options[5].name = "text-pdf";
+        options[5].name = "with-text";
         options[5].has_arg = no_argument;
         options[5].flag = NULL;
         options[5].val = 6;
@@ -323,7 +323,7 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 6: // --text-pdf
+                case 6: // --with-text
                     textPdfFlag = YES;
                     break;
                 case 7: // --transparent
