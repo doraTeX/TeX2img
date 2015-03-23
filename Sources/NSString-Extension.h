@@ -5,5 +5,7 @@
 - (NSString*)stringByDeletingLastReturnCharacters;
 - (NSString*)programPath;
 - (NSString*)programName;
+- (NSString*)argumentsString;
+- (NSString*)stringByAppendingStringSeparetedBySpace:(NSString*)string;
 + (NSString*)stringWithAutoEncodingDetectionOfData:(NSData*)data detectedEncoding:(NSStringEncoding*)encoding;
 @end

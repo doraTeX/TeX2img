@@ -11,12 +11,25 @@
     return self.programPath.lastPathComponent;
 }
 
+- (NSString*)argumentsString
+{
+    NSMutableArray *array = [NSMutableArray arrayWithArray:[self componentsSeparatedByString:@" "]];
+    [array removeObjectAtIndex:0];
+    return [array componentsJoinedByString:@" "];
+}
+
+
 - (NSString*)pathStringByAppendingPageNumber:(NSUInteger)page
 {
     NSString *dir = self.stringByDeletingLastPathComponent;
     NSString *basename = self.lastPathComponent.stringByDeletingPathExtension;
     NSString *ext = self.pathExtension;
     return [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-%lu.%@", basename, page, ext]];
+}
+
+- (NSString*)stringByAppendingStringSeparetedBySpace:(NSString*)string
+{
+    return [string isEqualToString:@""] ? self : [NSString stringWithFormat:@"%@ %@", self, string];
 }
 
 - (NSString*)stringByDeletingLastReturnCharacters

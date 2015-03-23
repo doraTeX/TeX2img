@@ -234,7 +234,7 @@
 {
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
     
-    [cmdline appendFormat:@"%@", latexPath.lastPathComponent];
+    [cmdline appendFormat:@"%@", latexPath];
     
     BOOL status = [self execCommand:cmdline
                         atDirectory:tempdir
@@ -314,7 +314,7 @@
     FILE *fp;
     NSMutableString *bbStr = NSMutableString.new;
     
-    NSString *cmdline = [NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -q -sDEVICE=bbox -dFirstPage=%ld -dLastPage=%ld \"%@\" 2>&1 | /usr/bin/grep %%%%BoundingBox", gsPath, page, page, pdfPath];
+    NSString *cmdline = [NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -q -sDEVICE=bbox -dFirstPage=%ld -dLastPage=%ld \"%@\" 2>&1 | /usr/bin/grep %%%%BoundingBox", gsPath.programPath, page, page, pdfPath];
 
     if ((fp = popen(cmdline.UTF8String, "r")) == NULL) {
         return NO;
@@ -385,7 +385,7 @@
     
     NSTask *task = NSTask.new;
     NSPipe *pipe = NSPipe.new;
-    task.launchPath = gsPath;
+    task.launchPath = gsPath.programPath;
     task.arguments = @[@"--version"];
     task.standardOutput = pipe;
     [task launch];
@@ -435,7 +435,7 @@
 		return NO;
 	}
 	
-	[self execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.stringByDeletingLastPathComponent, epstopdfPath] atDirectory:tempdir
+	[self execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath] atDirectory:tempdir
 					 withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
 									epsName]];
 	return YES;
@@ -800,7 +800,7 @@
 - (BOOL)compileAndConvertWithCheck
 {
 	// 最初にプログラムの存在確認と出力ファイル形式確認
-	if (![controller latexExistsAtPath:latexPath.programPath dvipdfmxPath:dvipdfmxPath gsPath:gsPath]) {
+	if (![controller latexExistsAtPath:latexPath.programPath dvipdfmxPath:dvipdfmxPath.programPath gsPath:gsPath.programPath]) {
 		return NO;
 	}
 	

@@ -5,9 +5,10 @@
 #import "ControllerC.h"
 #import "global.h"
 #import "UtilityC.h"
+#import "NSString-Extension.h"
 
 #define OPTION_NUM 25
-#define VERSION "1.9.1"
+#define VERSION "1.9.2"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -446,9 +447,9 @@ int main (int argc, char *argv[]) {
         ControllerC *controller = ControllerC.new;
         
         // 実行プログラムのパスチェック
-        NSString *latexPath = getPath(compiler);
-        NSString *dvipdfmxPath = getPath(dvipdfmx);
-        NSString *gsPath = getPath(gs);
+        NSString *latexPath = getPath(compiler.programPath);
+        NSString *dvipdfmxPath = getPath(dvipdfmx.programPath);
+        NSString *gsPath = getPath(gs.programPath);
         NSString *epstopdfPath = getPath(@"epstopdf");
         NSString *mudrawPath = getPath(@"mudraw");
         
@@ -473,9 +474,9 @@ int main (int argc, char *argv[]) {
         }
         
         NSMutableDictionary *aProfile = NSMutableDictionary.dictionary;
-        aProfile[LatexPathKey] = latexPath;
-        aProfile[DvipdfmxPathKey] = dvipdfmxPath;
-        aProfile[GsPathKey] = gsPath;
+        aProfile[LatexPathKey] = [latexPath stringByAppendingStringSeparetedBySpace:compiler.argumentsString];
+        aProfile[DvipdfmxPathKey] = [dvipdfmxPath stringByAppendingStringSeparetedBySpace:dvipdfmx.argumentsString];
+        aProfile[GsPathKey] = [gsPath stringByAppendingStringSeparetedBySpace:gs.argumentsString];
         aProfile[EpstopdfPathKey] = epstopdfPath;
         aProfile[MudrawPathKey] = mudrawPath;
         
