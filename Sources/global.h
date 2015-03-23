@@ -1,5 +1,6 @@
 NSString *g_commandCompletionChar;
 NSMutableString *g_commandCompletionList;
+#define MAX_LEN 1024
 
 #define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg"])
 #define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"tex"])

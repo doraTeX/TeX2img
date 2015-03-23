@@ -22,6 +22,8 @@
 		348CA6DD1A957BC90070B079 /* NSDate-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CA6DB1A957BC90070B079 /* NSDate-Extension.m */; };
 		348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */; };
 		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
+		349564B81ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
+		349564B91ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
 		34CCBB071A964E8A0061842E /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 34CCBB061A964E8A0061842E /* Templates */; };
 		34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CEA1931AB970CE00F98258 /* UtilityG.m */; };
@@ -85,6 +87,8 @@
 		348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-CommandCompletion.m"; sourceTree = "<group>"; };
 		348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-Colorize.m"; sourceTree = "<group>"; };
 		348D72A1125A57B8003AF902 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
+		349564B71ABFF3D1004B9C1D /* Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utility.m; sourceTree = "<group>"; };
+		349564BA1ABFF3E5004B9C1D /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
 		34BF870A12AC10D20099654C /* MyLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyLayoutManager.h; sourceTree = "<group>"; };
 		34BF870B12AC10D20099654C /* MyLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyLayoutManager.m; sourceTree = "<group>"; };
 		34CCBB061A964E8A0061842E /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
@@ -212,6 +216,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				349564BA1ABFF3E5004B9C1D /* Utility.h */,
+				349564B71ABFF3D1004B9C1D /* Utility.m */,
 				34CEA1951AB970F600F98258 /* UtilityG.h */,
 				34CEA1931AB970CE00F98258 /* UtilityG.m */,
 				34D2A63F1AB9BC260040B4A5 /* UtilityC.h */,
@@ -356,6 +362,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				349564B91ABFF3D1004B9C1D /* Utility.m in Sources */,
 				3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */,
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
 				34D2A63E1AB9BC0F0040B4A5 /* UtilityC.m in Sources */,
@@ -377,6 +384,7 @@
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
 				34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */,
 				34821EC810282CF9008DEB1F /* ProfileController.m in Sources */,
+				349564B81ABFF3D1004B9C1D /* Utility.m in Sources */,
 				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,
 				7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */,
 				348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */,

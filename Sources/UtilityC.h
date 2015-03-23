@@ -1,3 +1,5 @@
+#import "Utility.h"
+
 #ifndef TeX2img_UtilityC_h
 #define TeX2img_UtilityC_h
 

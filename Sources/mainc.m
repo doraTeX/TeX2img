@@ -7,7 +7,6 @@
 #import "UtilityC.h"
 
 #define OPTION_NUM 25
-#define MAX_LEN 1024
 #define VERSION "1.9.1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
@@ -73,20 +72,6 @@ NSString* getPath(NSString *cmdName)
     } else {
         return nil;
     }
-}
-
-NSString* getFullPath(NSString *filename)
-{
-	char str[MAX_LEN];
-	FILE *fp;
-	
-	if ((fp = popen([NSString stringWithFormat:@"/usr/bin/perl -e \"use File::Spec;print File::Spec->rel2abs('%@');\"", filename].UTF8String, "r")) == NULL) {
-		return nil;
-	}
-	fgets(str, MAX_LEN-1, fp);
-	pclose(fp);
-	
-	return @(str);
 }
 
 int strtoi(char *str)

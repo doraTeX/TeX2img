@@ -2,6 +2,7 @@
 #import <Quartz/Quartz.h>
 #include <sys/xattr.h>
 #import "global.h"
+#import "Utility.h"
 
 #define MAX_LEN 1024
 
@@ -33,6 +34,7 @@
 @property BOOL useBP;
 @property BOOL speedPriorityMode;
 @property BOOL embedSource;
+@property NSString* additionalInputPath;
 @end
 
 @implementation Converter
@@ -57,6 +59,7 @@
 @synthesize useBP;
 @synthesize speedPriorityMode;
 @synthesize embedSource;
+@synthesize additionalInputPath;
 
 
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
@@ -95,7 +98,8 @@
     useBP = ([aProfile integerForKey:UnitKey] == BPUNITTAG);
     speedPriorityMode = ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG);
     embedSource = [aProfile boolForKey:EmbedSourceKey];
-
+    additionalInputPath = nil;
+    
 	fileManager = NSFileManager.defaultManager;
 	tempdir = NSTemporaryDirectory();
     
@@ -217,7 +221,15 @@
 
 - (BOOL)compileWithArguments:(NSArray*)arguments
 {
-    BOOL status = [self execCommand:[NSString stringWithFormat:@"export PATH=$PATH:\"%@\"; %@", latexPath.stringByDeletingLastPathComponent, latexPath.lastPathComponent]
+    NSMutableString *cmdline = [NSMutableString stringWithFormat:@"export PATH=$PATH:\"%@\";", latexPath.programPath.stringByDeletingLastPathComponent];
+   
+    if (additionalInputPath) {
+        [cmdline appendFormat:@"export TEXINPUTS=%@:`kpsewhich -progname=%@ -expand-var=\\\\$TEXINPUTS`;", additionalInputPath, latexPath.programName];
+    }
+    
+    [cmdline appendFormat:@"%@", latexPath.lastPathComponent];
+    
+    BOOL status = [self execCommand:cmdline
                         atDirectory:tempdir
                       withArguments:arguments];
     [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
@@ -338,7 +350,7 @@
     [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
     [cropTeX writeToFile:cropTeXSourcePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
 
-    NSString *pdfTeXPath = [latexPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
+    NSString *pdfTeXPath = [latexPath.programPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
     
 	BOOL status = [self execCommand:pdfTeXPath
                        atDirectory:tempdir
@@ -779,7 +791,7 @@
 - (BOOL)compileAndConvertWithCheck
 {
 	// 最初にプログラムの存在確認と出力ファイル形式確認
-	if (![controller latexExistsAtPath:latexPath dvipdfmxPath:dvipdfmxPath gsPath:gsPath]) {
+	if (![controller latexExistsAtPath:latexPath.programPath dvipdfmxPath:dvipdfmxPath gsPath:gsPath]) {
 		return NO;
 	}
 	
@@ -860,7 +872,7 @@
 
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr
 {
-	//TeX ソースを準備
+	// TeX ソースを準備
 	NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	
 	if (![self writeStringWithYenBackslashConverting:texSourceStr toFile:tempTeXFilePath]) {
@@ -885,6 +897,8 @@
 		[controller showFileGenerateError:tempTeXFilePath];
 		return NO;
 	}
+    
+    additionalInputPath = getFullPath(texSourcePath.stringByDeletingLastPathComponent);
 	
 	return [self compileAndConvertWithCheck];
 }
