@@ -219,13 +219,20 @@
 	
 }
 
-- (BOOL)compileWithArguments:(NSArray*)arguments
+- (NSMutableString*)preliminaryCommandsForEnvironmentVariables
 {
     NSMutableString *cmdline = [NSMutableString stringWithFormat:@"export PATH=$PATH:\"%@\";", latexPath.programPath.stringByDeletingLastPathComponent];
-   
+    
     if (additionalInputPath) {
         [cmdline appendFormat:@"export TEXINPUTS=%@:`kpsewhich -progname=%@ -expand-var=\\\\$TEXINPUTS`;", additionalInputPath, latexPath.programName];
     }
+    
+    return cmdline;
+}
+
+- (BOOL)compileWithArguments:(NSArray*)arguments
+{
+    NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
     
     [cmdline appendFormat:@"%@", latexPath.lastPathComponent];
     
@@ -292,7 +299,9 @@
 
 - (BOOL)dvi2pdf:(NSString*)dviFilePath
 {
-	BOOL status = [self execCommand:dvipdfmxPath atDirectory:tempdir withArguments:@[@"-vv", dviFilePath]];
+    NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
+    [cmdline appendString:dvipdfmxPath];
+	BOOL status = [self execCommand:cmdline atDirectory:tempdir withArguments:@[@"-vv", dviFilePath]];
 	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];	
 	
 	return status;
