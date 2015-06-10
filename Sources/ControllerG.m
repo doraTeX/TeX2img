@@ -557,14 +557,19 @@ typedef enum {
     NSString *userPath = eventResult.stringValue;
     NSMutableArray *searchPaths = [NSMutableArray arrayWithArray:[userPath componentsSeparatedByString:@":"]];
 
-    [searchPaths addObjectsFromArray: @[@"/Applications/TeXLive/texlive/2014/bin/x86_64-darwin",
+    [searchPaths addObjectsFromArray: @[@"/Applications/TeXLive/texlive/2015/bin/x86_64-darwin",
+                                        @"/Applications/TeXLive/texlive/2014/bin/x86_64-darwin",
                                         @"/Applications/TeXLive/texlive/2013/bin/x86_64-darwin",
+                                        @"/usr/local/texlive/2015/bin/x86_64-darwin",
                                         @"/usr/local/texlive/2014/bin/x86_64-darwin",
                                         @"/usr/local/texlive/2013/bin/x86_64-darwin",
+                                        @"/opt/local/texlive/2015/bin/x86_64-darwin",
                                         @"/opt/local/texlive/2014/bin/x86_64-darwin",
                                         @"/opt/local/texlive/2013/bin/x86_64-darwin",
+                                        @"/opt/texlive/2015/bin/x86_64-darwin",
                                         @"/opt/texlive/2014/bin/x86_64-darwin",
                                         @"/opt/texlive/2013/bin/x86_64-darwin",
+                                        @"/Library/TeX/texbin",
                                         @"/usr/texbin",
                                         @"/Applications/pTeX.app/teTeX/bin",
                                         @"/Applications/UpTeX.app/teTeX/bin",
