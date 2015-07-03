@@ -63,6 +63,37 @@ static BOOL isValidTeXCommandChar(unichar c)
                         object:undoManager];
 }
 
+- (void)changeFont:(id)sender
+{
+    [super changeFont:sender];
+    [self fixupTabs];
+}
+
+- (void)fixupTabs
+{
+    NSMutableParagraphStyle* paragraphStyle = self.defaultParagraphStyle.mutableCopy;
+    
+    if (!paragraphStyle) {
+        paragraphStyle = NSParagraphStyle.defaultParagraphStyle.mutableCopy;
+    }
+    
+    CGFloat charWidth = [self.font advancementForGlyph:(NSGlyph)' '].width;
+    paragraphStyle.defaultTabInterval = charWidth * 4;
+    paragraphStyle.tabStops = @[];
+    
+    self.defaultParagraphStyle = paragraphStyle;
+    
+    NSMutableDictionary* typingAttributes = self.typingAttributes.mutableCopy;
+    typingAttributes[NSParagraphStyleAttributeName] = paragraphStyle;
+    typingAttributes[NSFontAttributeName] = self.font;
+    self.typingAttributes = typingAttributes;
+    
+    NSRange rangeOfChange = NSMakeRange(0, self.string.length);
+    [self shouldChangeTextInRange:rangeOfChange replacementString:nil];
+    [self.textStorage setAttributes:typingAttributes range:rangeOfChange];
+    [self didChangeText];
+}
+
 - (void)colorizeAfterUndoAndRedo
 {
     [self colorizeText:[controller.currentProfile boolForKey:ColorizeTextKey]];

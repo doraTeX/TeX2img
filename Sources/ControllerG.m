@@ -401,12 +401,14 @@ typedef enum {
     if (aFont) {
         sourceTextView.font = aFont;
     }
+    [sourceTextView fixupTabs];
     
     aFont = [NSFont fontWithName:[aProfile stringForKey:PreambleFontNameKey] size:[aProfile floatForKey:PreambleFontSizeKey]];
     if (aFont) {
         preambleTextView.font = aFont;
     }
     [preambleTextView colorizeText:[aProfile boolForKey:ColorizeTextKey]];
+    [preambleTextView fixupTabs];
     
     NSString *inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
     if (inputSourceFilePath) {

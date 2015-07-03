@@ -22,6 +22,7 @@
 - (void)setEnabled:(BOOL)enabled;
 - (void)replaceEntireContentsWithString:(NSString*)contents colorize:(BOOL)colorize;
 - (void)insertTextWithIndicator:(id)aString;
+- (void)fixupTabs;
 @property(nonatomic, assign) id<DnDDelegate> dropDelegate;
 @end
 
