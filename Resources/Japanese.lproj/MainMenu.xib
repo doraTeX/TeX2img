@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14D105g" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1040" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
@@ -1153,11 +1153,11 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button id="654">
-                                            <rect key="frame" x="14" y="171" width="334" height="18"/>
+                                            <rect key="frame" x="14" y="171" width="373" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="少々のコンパイルエラーは無視して画像化を強行する" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="655">
+                                            <buttonCell key="cell" type="check" title="少々のコンパイルエラーは無視して画像化を強行（非推奨）" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="655">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
                                             </buttonCell>
                                         </button>
                                         <textField verticalHuggingPriority="750" id="FC5-GE-HNZ">
@@ -1426,7 +1426,7 @@ DQ
                                     <rect key="frame" x="0.0" y="0.0" width="405" height="19"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
                                         <tableColumn identifier="ProfileName" editable="NO" width="402" minWidth="40" maxWidth="1000" id="685">

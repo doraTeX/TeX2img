@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14D105g" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1050" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
@@ -1156,17 +1156,9 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button id="653">
-                                            <rect key="frame" x="13" y="168" width="310" height="18"/>
+                                            <rect key="frame" x="13" y="168" width="294" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Force converting by ignoring nonfatal errors  " bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="654">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                        </button>
-                                        <button id="657">
-                                            <rect key="frame" x="13" y="144" width="345" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Substitute \UTF{xxxx} for non-JIS X 0208 characters" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="658">
+                                            <buttonCell key="cell" type="check" title="Force conversion by ignoring nonfatal errors" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="654">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -1203,34 +1195,6 @@ DQ
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
-                                        <textField verticalHuggingPriority="750" id="WVU-Qj-Er7">
-                                            <rect key="frame" x="14" y="119" width="99" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Kanji encoding" id="yuQ-SF-Ml7">
-                                                <font key="font" metaFont="system"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
-                                        <popUpButton verticalHuggingPriority="750" id="Gzh-vl-KcH">
-                                            <rect key="frame" x="117" y="112" width="131" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <popUpButtonCell key="cell" type="push" title="default" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="ppR-nR-KSH" id="g6m-Ld-cXB">
-                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="menu"/>
-                                                <menu key="menu" id="cIC-yD-3Zc">
-                                                    <items>
-                                                        <menuItem title="default" state="on" id="ppR-nR-KSH">
-                                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                                        </menuItem>
-                                                        <menuItem title="UTF-8" tag="1" id="wSb-td-5CB"/>
-                                                        <menuItem title="Shift-JIS" tag="2" id="cXf-4S-fnr"/>
-                                                        <menuItem title="JIS" tag="3" id="Hm3-Cf-YUI"/>
-                                                        <menuItem title="EUC-JP" tag="4" id="8hK-Jg-kXM"/>
-                                                    </items>
-                                                </menu>
-                                            </popUpButtonCell>
-                                        </popUpButton>
                                         <button verticalHuggingPriority="750" id="718">
                                             <rect key="frame" x="262" y="220" width="115" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
@@ -1243,7 +1207,7 @@ DQ
                                             </connections>
                                         </button>
                                         <box autoresizesSubviews="NO" title="Priority in Conversion" borderType="line" id="OkG-sC-Zd3">
-                                            <rect key="frame" x="13" y="37" width="361" height="58"/>
+                                            <rect key="frame" x="13" y="18" width="361" height="58"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                             <view key="contentView">
                                                 <rect key="frame" x="1" y="1" width="359" height="42"/>
@@ -1279,6 +1243,51 @@ DQ
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="1vz-wd-Muj">
+                                            <rect key="frame" x="31" y="152" width="112" height="14"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="(Unrecommended)" id="hRc-Df-MLu">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <button id="657">
+                                            <rect key="frame" x="13" y="119" width="345" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Substitute \UTF{xxxx} for non-JIS X 0208 characters" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="658">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </button>
+                                        <textField verticalHuggingPriority="750" id="WVU-Qj-Er7">
+                                            <rect key="frame" x="14" y="94" width="99" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Kanji encoding" id="yuQ-SF-Ml7">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <popUpButton verticalHuggingPriority="750" id="Gzh-vl-KcH">
+                                            <rect key="frame" x="117" y="87" width="131" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <popUpButtonCell key="cell" type="push" title="default" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="ppR-nR-KSH" id="g6m-Ld-cXB">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="menu"/>
+                                                <menu key="menu" id="cIC-yD-3Zc">
+                                                    <items>
+                                                        <menuItem title="default" state="on" id="ppR-nR-KSH">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="UTF-8" tag="1" id="wSb-td-5CB"/>
+                                                        <menuItem title="Shift-JIS" tag="2" id="cXf-4S-fnr"/>
+                                                        <menuItem title="JIS" tag="3" id="Hm3-Cf-YUI"/>
+                                                        <menuItem title="EUC-JP" tag="4" id="8hK-Jg-kXM"/>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                        </popUpButton>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -1364,7 +1373,7 @@ DQ
                     </tabView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="311.5" y="633"/>
+            <point key="canvasLocation" x="753.5" y="582"/>
         </window>
         <window title="Save / Load Profiles" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="670" userLabel="Window (ProfileWindow)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -1419,7 +1428,7 @@ DQ
                                     <rect key="frame" x="0.0" y="0.0" width="405" height="19"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
                                         <tableColumn identifier="ProfileName" editable="NO" width="402" minWidth="40" maxWidth="1000" id="685">
