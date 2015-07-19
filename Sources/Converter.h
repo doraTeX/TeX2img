@@ -19,7 +19,7 @@
 
 @interface Converter : NSObject
 + (Converter*)converterWithProfile:(NSDictionary*)aProfile;
-- (BOOL)compileAndConvertWithInputPath:(NSString*)texSourcePath;
+- (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath;
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr;
 - (BOOL)compileAndConvertWithBody:(NSString*)texBodyStr;
 - (NSUInteger)pageCount;

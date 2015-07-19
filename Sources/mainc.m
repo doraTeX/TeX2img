@@ -19,9 +19,9 @@ static void version()
 static void usage()
 {
 	version();
-    printf("Usage: tex2img [options] InputTeXFile OutputFile\n");
+    printf("Usage: tex2img [options] InputFile OutputFile\n");
     printf("Arguments:\n");
-    printf("  InputTeXFile            : path of TeX source file\n");
+    printf("  InputFile               : path of TeX source or PDF file\n");
     printf("  OutputFile              : path of output file (extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
     printf("Options:\n");
     printf("  --compiler   COMPILER   : set compiler      (default: platex)\n");

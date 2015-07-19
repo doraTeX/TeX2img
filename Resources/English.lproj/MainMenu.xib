@@ -588,7 +588,7 @@ DQ
                                 <button tag="1" id="fNB-7d-xgA">
                                     <rect key="frame" x="11" y="38" width="438" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <buttonCell key="cell" type="radio" title="Input TeX Source File" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="rID-WH-UXf">
+                                    <buttonCell key="cell" type="radio" title="Input TeX Source or PDF File" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="rID-WH-UXf">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>

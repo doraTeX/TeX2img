@@ -35,6 +35,7 @@
 @property BOOL speedPriorityMode;
 @property BOOL embedSource;
 @property NSString* additionalInputPath;
+@property BOOL pdfInputMode;
 @end
 
 @implementation Converter
@@ -60,6 +61,7 @@
 @synthesize speedPriorityMode;
 @synthesize embedSource;
 @synthesize additionalInputPath;
+@synthesize pdfInputMode;
 
 
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
@@ -99,6 +101,7 @@
     speedPriorityMode = ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG);
     embedSource = [aProfile boolForKey:EmbedSourceKey];
     additionalInputPath = nil;
+    pdfInputMode = NO;
     
 	fileManager = NSFileManager.defaultManager;
 	tempdir = NSTemporaryDirectory();
@@ -765,43 +768,45 @@
 	NSString* outputFileName = outputFilePath.lastPathComponent;
 	NSString* extension = outputFilePath.pathExtension.lowercaseString;
 	
-	// TeX コンパイル
-	if (![self tex2dvi:texFilePath]) {
-		[controller showCompileError];
-		return NO;
-	}
-	
-    BOOL compilationSuceeded = NO;
-    BOOL requireDvipdfmx = NO;
-    
-    NSDate *texDate = [self fileModificationDateAtPath:texFilePath];
-
-    if ([fileManager fileExistsAtPath:pdfFilePath]) { // PDF が存在する場合
-        NSDate *pdfDate = [self fileModificationDateAtPath:pdfFilePath];
-        if (pdfDate && [pdfDate isNewerThan:texDate]) {
-            requireDvipdfmx = NO; // 新しい PDF が生成されていれば dvipdfmx の必要なしと見なす
-            compilationSuceeded = YES;
+    if (!pdfInputMode) {
+        // TeX コンパイル
+        if (![self tex2dvi:texFilePath]) {
+            [controller showCompileError];
+            return NO;
+        }
+        
+        BOOL compilationSuceeded = NO;
+        BOOL requireDvipdfmx = NO;
+        
+        NSDate *texDate = [self fileModificationDateAtPath:texFilePath];
+        
+        if ([fileManager fileExistsAtPath:pdfFilePath]) { // PDF が存在する場合
+            NSDate *pdfDate = [self fileModificationDateAtPath:pdfFilePath];
+            if (pdfDate && [pdfDate isNewerThan:texDate]) {
+                requireDvipdfmx = NO; // 新しい PDF が生成されていれば dvipdfmx の必要なしと見なす
+                compilationSuceeded = YES;
+            }
+        }
+        
+        if (!compilationSuceeded && [fileManager fileExistsAtPath:dviFilePath]) { // 新しい PDF が存在せず，DVI が存在する場合
+            NSDate *dviDate = [self fileModificationDateAtPath:dviFilePath];
+            if (dviDate && [dviDate isNewerThan:texDate]) {
+                requireDvipdfmx = YES; // 新しい PDF が存在せず，新しい DVI が生成されていれば dvipdfmx の必要ありと見なす
+                compilationSuceeded = YES;
+            }
+        }
+        
+        if (!compilationSuceeded) {
+            [controller showExecError:@"LaTeX"];
+            return NO;
+        }
+        
+        // DVI→PDF
+        if (requireDvipdfmx && (![self dvi2pdf:dviFilePath] || ![fileManager fileExistsAtPath:pdfFilePath])) {
+            [controller showExecError:@"dvipdfmx"];
+            return NO;
         }
     }
-
-    if (!compilationSuceeded && [fileManager fileExistsAtPath:dviFilePath]) { // 新しい PDF が存在せず，DVI が存在する場合
-        NSDate *dviDate = [self fileModificationDateAtPath:dviFilePath];
-        if (dviDate && [dviDate isNewerThan:texDate]) {
-            requireDvipdfmx = YES; // 新しい PDF が存在せず，新しい DVI が生成されていれば dvipdfmx の必要ありと見なす
-            compilationSuceeded = YES;
-        }
-    }
-    
-    if (!compilationSuceeded) {
-        [controller showExecError:@"LaTeX"];
-        return NO;
-    }
-	
-	// DVI→PDF
-	if (requireDvipdfmx && (![self dvi2pdf:dviFilePath] || ![fileManager fileExistsAtPath:pdfFilePath])) {
-		[controller showExecError:@"dvipdfmx"];
-		return NO;
-	}
     
     pageCount = [PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfFilePath]].pageCount;
 	
@@ -986,15 +991,25 @@
 	return [self compileAndConvertWithSource:texSourceStr];
 }
 
-- (BOOL)compileAndConvertWithInputPath:(NSString*)texSourcePath
+- (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath
 {
-	NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-	if (![fileManager copyItemAtPath:texSourcePath toPath:tempTeXFilePath error:nil]) {
-		[controller showFileGenerateError:tempTeXFilePath];
-		return NO;
-	}
+    pdfInputMode = [sourcePath.pathExtension.lowercaseString isEqualToString:@"pdf"];
     
-    additionalInputPath = getFullPath(texSourcePath.stringByDeletingLastPathComponent);
+    if (pdfInputMode) {
+        NSString* tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+        if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
+            [controller showFileGenerateError:tempPdfFilePath];
+            return NO;
+        }
+    } else {
+        NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+        if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
+            [controller showFileGenerateError:tempTeXFilePath];
+            return NO;
+        }
+    }
+    
+    additionalInputPath = getFullPath(sourcePath.stringByDeletingLastPathComponent);
 	
 	return [self compileAndConvertWithCheck];
 }
