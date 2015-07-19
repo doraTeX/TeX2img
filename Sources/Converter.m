@@ -568,21 +568,32 @@
     NSRect rect = pdfImageRep.bounds;
     CGFloat width = rect.size.width;
     CGFloat height = rect.size.height;
+    
+    CGFloat thisLeftMargin = (CGFloat)leftMargin;
+    CGFloat thisRightMargin = (CGFloat)rightMargin;
+    CGFloat thisTopMargin = (CGFloat)topMargin;
+    CGFloat thisBottomMargin = (CGFloat)bottomMargin;
 
     if (useBP) {
-        leftMargin *= resolutionLevel;
-        rightMargin *= resolutionLevel;
-        topMargin *= resolutionLevel;
-        bottomMargin *= resolutionLevel;
+        thisLeftMargin *= resolutionLevel;
+        thisRightMargin *= resolutionLevel;
+        thisTopMargin *= resolutionLevel;
+        thisBottomMargin *= resolutionLevel;
     }
+
+    CGFloat factor = NSScreen.mainScreen.backingScaleFactor; // for Retina Display
+    thisLeftMargin /= factor;
+    thisRightMargin /= factor;
+    thisTopMargin /= factor;
+    thisBottomMargin /= factor;
     
 	NSSize size;
-	size.width  = (NSInteger)(width * resolutionLevel) + leftMargin + rightMargin;
-	size.height = (NSInteger)(height * resolutionLevel) + topMargin + bottomMargin;
+	size.width  = (NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin;
+	size.height = (NSInteger)(height * resolutionLevel) + thisTopMargin + thisBottomMargin;
 	
 	NSImage* image = [NSImage.alloc initWithSize:size];
 	[image lockFocus];
-	[pdfImageRep drawInRect:NSMakeRect(leftMargin, bottomMargin, (NSInteger)(width * resolutionLevel), (NSInteger)(height * resolutionLevel))];
+	[pdfImageRep drawInRect:NSMakeRect(thisLeftMargin, thisBottomMargin, width * resolutionLevel, height * resolutionLevel)];
 	[image unlockFocus];
 	
 	// NSImage を TIFF 形式の NSBitmapImageRep に変換する
