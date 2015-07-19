@@ -8,7 +8,7 @@
 #import "NSString-Extension.h"
 
 #define OPTION_NUM 25
-#define VERSION "1.9.2"
+#define VERSION "1.9.4"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()

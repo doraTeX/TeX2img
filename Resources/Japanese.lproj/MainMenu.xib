@@ -537,7 +537,7 @@ DQ
                                 <button tag="1" id="J9r-D6-YSd">
                                     <rect key="frame" x="11" y="38" width="438" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <buttonCell key="cell" type="radio" title="TeX ソースファイルまたは PDF を読み込む" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="pIE-hd-hRZ">
+                                    <buttonCell key="cell" type="radio" title="TeX ソースファイルまたは PDF ファイルを読み込む" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="pIE-hd-hRZ">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>

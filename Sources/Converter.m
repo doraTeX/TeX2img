@@ -579,13 +579,14 @@
         thisRightMargin *= resolutionLevel;
         thisTopMargin *= resolutionLevel;
         thisBottomMargin *= resolutionLevel;
+    } else {
+        CGFloat factor = NSScreen.mainScreen.backingScaleFactor; // for Retina Display
+        thisLeftMargin /= factor;
+        thisRightMargin /= factor;
+        thisTopMargin /= factor;
+        thisBottomMargin /= factor;
     }
 
-    CGFloat factor = NSScreen.mainScreen.backingScaleFactor; // for Retina Display
-    thisLeftMargin /= factor;
-    thisRightMargin /= factor;
-    thisTopMargin /= factor;
-    thisBottomMargin /= factor;
     
 	NSSize size;
 	size.width  = (NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin;
