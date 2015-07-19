@@ -622,6 +622,10 @@
 
 - (BOOL)copyTargetFrom:(NSString*)sourcePath toPath:(NSString*)destPath
 {
+    if ([sourcePath isEqualToString:destPath]) {
+        return YES;
+    }
+    
     BOOL isDir;
     BOOL fileExists = [fileManager fileExistsAtPath:destPath isDirectory:&isDir];
     
@@ -631,7 +635,7 @@
             return NO;
         }
     } else { // 同名ファイルが存在しないとき
-        NSString *destDir = [destPath stringByDeletingLastPathComponent];
+        NSString *destDir = destPath.stringByDeletingLastPathComponent;
         BOOL dirExists = [fileManager fileExistsAtPath:destDir isDirectory:&isDir];
         
         if ((!dirExists && ![fileManager createDirectoryAtPath:destDir withIntermediateDirectories:YES attributes:nil error:nil]) ||
@@ -865,12 +869,19 @@
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.aux", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop.pdf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.crop.pdf", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.outline.pdf", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps.trim.pdf", basePath] error:nil];
-		[fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:outputFileName] error:nil];
+        
+        NSString *outputDir = [outputFilePath.stringByDeletingLastPathComponent stringByAppendingString:@"/"];
+        if (![outputDir isEqualToString:tempdir]) {
+            [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:outputFileName] error:nil];
+        }
         for (NSUInteger i=2; i<=pageCount; i++) {
-            [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
+            if (![outputDir isEqualToString:tempdir]) {
+                [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
+            }
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps.trim.pdf", basePath, i] error:nil];
         }
