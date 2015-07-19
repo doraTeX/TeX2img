@@ -307,17 +307,17 @@
 	return status;
 }
 
-- (NSString*)buildCropTeXSource:(NSString*)pdfPath page:(NSUInteger)page addMargin:(BOOL)addMargin
+// gsを実行してBB情報を取得
+- (NSString*)bboxStringOfPdf:(NSString*)pdfPath page:(NSUInteger)page
 {
-    // gsを実行してbb情報を取得
     char str[MAX_LEN];
     FILE *fp;
     NSMutableString *bbStr = NSMutableString.new;
     
     NSString *cmdline = [NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -q -sDEVICE=bbox -dFirstPage=%ld -dLastPage=%ld \"%@\" 2>&1 | /usr/bin/grep %%%%BoundingBox", gsPath.programPath, page, page, pdfPath];
-
+    
     if ((fp = popen(cmdline.UTF8String, "r")) == NULL) {
-        return NO;
+        return nil;
     }
     while (YES) {
         if (fgets(str, MAX_LEN-1, fp) == NULL) {
@@ -326,13 +326,46 @@
         [bbStr appendString:@(str)];
     }
     if (pclose(fp) != 0) {
-        return NO;
+        return nil;
     }
+    
+    return bbStr;
+}
+
+// gsを実行してHiresBoundingBox情報を取得
+- (NSString*)hiresBBoxStringOfPdf:(NSString*)pdfPath page:(NSUInteger)page
+{
+    char str[MAX_LEN];
+    FILE *fp;
+    NSMutableString *bbStr = NSMutableString.new;
+    
+    NSString *cmdline = [NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -q -sDEVICE=bbox -dFirstPage=%ld -dLastPage=%ld \"%@\" 2>&1 | /usr/bin/grep %%%%HiResBoundingBox", gsPath.programPath, page, page, pdfPath];
+    
+    if ((fp = popen(cmdline.UTF8String, "r")) == NULL) {
+        return nil;
+    }
+    while (YES) {
+        if (fgets(str, MAX_LEN-1, fp) == NULL) {
+            break;
+        }
+        [bbStr appendString:@(str)];
+    }
+    if (pclose(fp) != 0) {
+        return nil;
+    }
+    
+    return bbStr;
+}
+
+- (NSString*)buildCropTeXSource:(NSString*)pdfPath page:(NSUInteger)page addMargin:(BOOL)addMargin
+{
     
     NSInteger leftmargin = addMargin ? leftMargin : 0;
     NSInteger rightmargin = addMargin ? rightMargin : 0;
     NSInteger topmargin = addMargin ? topMargin : 0;
     NSInteger bottommargin = addMargin ? bottomMargin : 0;
+    
+    NSString *bbStr = [self bboxStringOfPdf:pdfPath page:page];
     
     return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin-#1bp \\pdfvorigin#2bp \\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax \\advance\\pdfpagewidth by %ldbp\\relax \\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax \\advance\\pdfpageheight by %ldbp\\relax \\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight \\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
 }
@@ -406,26 +439,69 @@
     return result;
 }
 
+- (BOOL)replaceEpsBBox:(NSString*)epsName withBBoxOfPdf:(NSString*)pdfName page:(NSUInteger)page
+{
+    NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
+    NSString *bbStr = [self bboxStringOfPdf:pdfName page:page];
+    NSString *hiresBbStr = [self hiresBBoxStringOfPdf:pdfName page:page];
+    
+    if (!bbStr) {
+        return NO;
+    }
+    
+    bbStr = [bbStr stringByReplacingOccurrencesOfString:@"%%BoundingBox: " withString:@""];
+    hiresBbStr = hiresBbStr ? [hiresBbStr stringByReplacingOccurrencesOfString:@"%%HiResBoundingBox: " withString:@""] : bbStr;
+    
+    NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: .+?\\n/){ \"%%%%BoundingBox: %@\"}.sub(/%%%%HiResBoundingBox\\: .+?\\n/){ \"%%%%HiResBoundingBox: %@\"};File.open('%@', 'wb') {|f| f.write s}",
+                        epsPath,
+                        bbStr,
+                        hiresBbStr,
+                        epsPath
+                        ];
+    NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-replaceBB"];
+    
+    FILE *fp = fopen(scriptPath.UTF8String, "w");
+    fputs(script.UTF8String, fp);
+    fclose(fp);
+    
+    system([NSString stringWithFormat:@"/usr/bin/ruby %@; rm %@", scriptPath, scriptPath].UTF8String);
+
+    return YES;
+}
+
 - (BOOL)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(NSInteger)resolution page:(NSUInteger)page;
 {
-    NSMutableArray *arguments = [NSMutableArray arrayWithArray:@[@"-dNOPAUSE", @"-dBATCH"]];
+    NSMutableArray *arguments = [NSMutableArray arrayWithArray:@[@"-dNOPAUSE",
+                                                                 @"-dBATCH",
+                                                                 [NSString stringWithFormat:@"-r%ld", resolution],
+                                                                 [NSString stringWithFormat:@"-sOutputFile=%@", outputEpsFileName],
+                                                                 [NSString stringWithFormat:@"-dFirstPage=%lu", page],
+                                                                 [NSString stringWithFormat:@"-dLastPage=%lu", page],
+                                                                 ]];
     
-    if (self.shouldUseEps2WriteDevice) {
+    BOOL shouldUseEps2WriteDevice = self.shouldUseEps2WriteDevice;
+    
+    if (shouldUseEps2WriteDevice) {
         [arguments addObject:@"-sDEVICE=eps2write"];
         [arguments addObject:@"-dNoOutputFonts"];
     } else {
         [arguments addObject:@"-sDEVICE=epswrite"];
         [arguments addObject:@"-dNOCACHE"];
     }
-
-    [arguments addObjectsFromArray:@[[NSString stringWithFormat:@"-dFirstPage=%lu", page],
-                                     [NSString stringWithFormat:@"-dLastPage=%lu", page],
-                                     [NSString stringWithFormat:@"-r%ld", resolution],
-                                     [NSString stringWithFormat:@"-sOutputFile=%@", outputEpsFileName],
-                                     [NSString stringWithFormat:@"%@.pdf", tempFileBaseName]
-                                     ]];
+    
+    [arguments addObject:pdfName];
 
     BOOL status = [self execCommand:gsPath atDirectory:tempdir withArguments:arguments];
+    
+    if (!status) {
+        return NO;
+    }
+    
+    // epswrite デバイスを使っているときには，生成したEPSのBBox情報を，オリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する ( https://github.com/doraTeX/TeX2img/issues/18 )
+    if (!shouldUseEps2WriteDevice) {
+        return [self replaceEpsBBox:outputEpsFileName withBBoxOfPdf:pdfName page:page];
+    }
+    
 	return status;
 }
 
@@ -435,9 +511,10 @@
 		return NO;
 	}
 	
-	[self execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath] atDirectory:tempdir
-					 withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
-									epsName]];
+	[self execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
+          atDirectory:tempdir
+        withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
+                        epsName]];
 	return YES;
 }
 
@@ -869,7 +946,6 @@
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.aux", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop.pdf", basePath] error:nil];
-        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.crop.pdf", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.outline.pdf", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps", basePath] error:nil];
 		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps.trim.pdf", basePath] error:nil];
