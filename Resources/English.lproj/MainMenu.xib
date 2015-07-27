@@ -286,133 +286,6 @@
                 <menuItem title="View" id="295">
                     <menu key="submenu" title="View" id="296">
                         <items>
-                            <menuItem title="Colorize TeX Sources" state="on" id="772">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="toggleMenuItem:" target="450" id="773"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Hightlight Matching Braces" id="787">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Hightlight Matching Braces" id="788">
-                                    <items>
-                                        <menuItem title="Flash Highlight" id="789">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="changeHighlight:" target="450" id="792"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Solid Highlight" state="on" id="790">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="changeHighlight:" target="450" id="793"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="No Highlight" id="791">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="changeHighlight:" target="450" id="794"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="798"/>
-                                        <menuItem title="Kind of Observed Brackets" id="836">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Kind of Observed Brackets" id="837">
-                                                <items>
-                                                    <menuItem title="{ }" state="on" id="841">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="842"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="[ ]" id="840">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="843"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="( )" id="839">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="844"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="&lt; &gt;" id="838">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="845"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                </items>
-                                            </menu>
-                                        </menuItem>
-                                        <menuItem title="Flash In Moving" state="on" id="799">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="800"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Highlight Enclosed Characters" state="on" id="824">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="831"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="825"/>
-                                        <menuItem title="Isolated Brace" id="826">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Isolated Brace" id="827">
-                                                <items>
-                                                    <menuItem title="Beep" state="on" id="828">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="832"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="Flash Background" state="on" id="829">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="833"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                </items>
-                                            </menu>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
-                            <menuItem title="Show Invisible Characters" id="807">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Show Invisible Characters" id="808">
-                                    <items>
-                                        <menuItem title="Halfwidth Space" state="on" id="809">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="815"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Fullwidth Space" state="on" id="810">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="814"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Return" state="on" id="812">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="813"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Tab" state="on" id="811">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="816"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
-                            <menuItem isSeparatorItem="YES" id="776"/>
                             <menuItem title="Preamble Setting Window" keyEquivalent="P" id="486">
                                 <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                 <connections>
@@ -642,7 +515,6 @@ DQ
                 <outlet property="colorWell" destination="5Hf-8k-PN5" id="PAk-d3-V84"/>
                 <outlet property="colorWindow" destination="r0I-g2-mDW" id="JFs-tb-tQc"/>
                 <outlet property="colorWindowMenuItem" destination="Y4d-p8-ynZ" id="6JN-TZ-Zc1"/>
-                <outlet property="colorizeTextMenuItem" destination="772" id="777"/>
                 <outlet property="convertYenMarkMenuItem" destination="730" id="731"/>
                 <outlet property="deleteDisplaySizeCheckBox" destination="H7g-7q-uFe" id="3bf-7G-Nrb"/>
                 <outlet property="deleteTmpFileCheckBox" destination="591" id="594"/>
@@ -652,7 +524,6 @@ DQ
                 <outlet property="embedSourceCheckBox" destination="On1-La-dwy" id="VMh-uZ-oVY"/>
                 <outlet property="encodingPopUpButton" destination="Gzh-vl-KcH" id="XMi-XA-snF"/>
                 <outlet property="flashBackgroundCheckBox" destination="cqv-iM-ddW" id="6rE-vK-8l3"/>
-                <outlet property="flashHighlightButton" destination="789" id="viJ-Qa-hCu"/>
                 <outlet property="flashInMovingCheckBox" destination="Bh6-7t-qwa" id="ZIU-pC-csp"/>
                 <outlet property="generateButton" destination="453" id="754"/>
                 <outlet property="generateMenuItem" destination="468" id="755"/>
@@ -666,7 +537,6 @@ DQ
                 <outlet property="leftMarginLabel" destination="546" id="617"/>
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
-                <outlet property="noHighlightButton" destination="791" id="1oF-JF-wbg"/>
                 <outlet property="numberOfCompilationStepper" destination="X9l-Yh-wIQ" id="Qvp-0d-gZn"/>
                 <outlet property="numberOfCompilationTextField" destination="dpd-O4-qxE" id="KWX-AS-ogm"/>
                 <outlet property="outputDrawer" destination="748" id="753"/>
@@ -689,7 +559,6 @@ DQ
                 <outlet property="showOutputDrawerCheckBox" destination="650" id="742"/>
                 <outlet property="showSpaceCharacterCheckBox" destination="HQa-0J-uFs" id="phf-2q-oA4"/>
                 <outlet property="showTabCharacterCheckBox" destination="hZo-cQ-gku" id="NVt-tM-Zyf"/>
-                <outlet property="solidHighlightButton" destination="790" id="VHw-uC-R8B"/>
                 <outlet property="sourceTextView" destination="aKZ-WF-zY9" id="Q4i-tH-xWD"/>
                 <outlet property="tabWidthStepper" destination="dXP-6C-rYH" id="vPo-Gc-ffO"/>
                 <outlet property="tabWidthTextField" destination="GqY-X3-Qub" id="1hC-A2-Jlh"/>
