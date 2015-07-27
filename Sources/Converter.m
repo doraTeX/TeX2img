@@ -34,6 +34,7 @@
 @property BOOL useBP;
 @property BOOL speedPriorityMode;
 @property BOOL embedSource;
+@property BOOL copyToClipboard;
 @property NSString* additionalInputPath;
 @property BOOL pdfInputMode;
 @end
@@ -60,6 +61,7 @@
 @synthesize useBP;
 @synthesize speedPriorityMode;
 @synthesize embedSource;
+@synthesize copyToClipboard;
 @synthesize additionalInputPath;
 @synthesize pdfInputMode;
 
@@ -91,6 +93,7 @@
     showOutputDrawerFlag = [aProfile boolForKey:ShowOutputDrawerKey];
     previewFlag = [aProfile boolForKey:PreviewKey];
     deleteTmpFileFlag = [aProfile boolForKey:DeleteTmpFileKey];
+    copyToClipboard = [aProfile boolForKey:CopyToClipboardKey];
     embedInIllustratorFlag = [aProfile boolForKey:EmbedInIllustratorKey];
     ungroupFlag = [aProfile boolForKey:UngroupKey];
     ignoreErrorsFlag = [aProfile boolForKey:IgnoreErrorKey];
@@ -890,6 +893,21 @@
         [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
                       toPath:destPath];
         [self embedSource:texFilePath intoFile:destPath];
+    }
+    
+    // 生成ファイルをクリップボードへコピー
+    if (copyToClipboard) {
+        NSPasteboard *pboard = NSPasteboard.generalPasteboard;
+        [pboard declareTypes:@[NSURLPboardType] owner:nil];
+        
+        NSMutableArray *outputFiles = [NSMutableArray arrayWithObject:[NSURL.alloc initFileURLWithPath:outputFilePath]];
+
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            [outputFiles addObject: [NSURL.alloc initFileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
+        }
+
+        [pboard clearContents];
+        [pboard writeObjects:outputFiles];
     }
 	
 	return YES;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14F6a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1040" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
@@ -627,7 +627,7 @@ DQ
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="403" y="421.5"/>
+            <point key="canvasLocation" x="340" y="610.5"/>
         </window>
         <customObject id="420" customClass="NSFontManager"/>
         <customObject id="450" customClass="ControllerG">
@@ -696,6 +696,7 @@ DQ
                 <outlet property="sourceTextView" destination="466" id="467"/>
                 <outlet property="templatePopupButton" destination="88N-oX-Kx7" id="XUy-wr-UJD"/>
                 <outlet property="textPdfCheckBox" destination="646" id="i2a-wp-iaK"/>
+                <outlet property="toClipboardCheckBox" destination="sax-Ds-ZiZ" id="I75-d3-KyR"/>
                 <outlet property="topMarginLabel" destination="559" id="619"/>
                 <outlet property="topMarginSlider" destination="558" id="624"/>
                 <outlet property="transparentCheckBox" destination="521" id="615"/>
@@ -1332,22 +1333,6 @@ DQ
                                                 <action selector="openTempDir:" target="450" id="636"/>
                                             </connections>
                                         </button>
-                                        <button id="877">
-                                            <rect key="frame" x="21" y="200" width="222" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="生成ファイルを Illustrator に配置" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="878">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="AquaKana"/>
-                                            </buttonCell>
-                                        </button>
-                                        <button id="879">
-                                            <rect key="frame" x="42" y="180" width="165" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="配置後にグループ化解除" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="880">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="AquaKana"/>
-                                            </buttonCell>
-                                        </button>
                                         <button id="Bld-79-KdN">
                                             <rect key="frame" x="21" y="220" width="308" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -1362,6 +1347,30 @@ DQ
                                             <buttonCell key="cell" type="check" title="コンパイル後出力ビューを自動的に表示" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="652">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                            </buttonCell>
+                                        </button>
+                                        <button id="877">
+                                            <rect key="frame" x="21" y="180" width="222" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="生成ファイルを Illustrator に配置" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="878">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" size="13" name="AquaKana"/>
+                                            </buttonCell>
+                                        </button>
+                                        <button id="879">
+                                            <rect key="frame" x="42" y="160" width="165" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="配置後にグループ化解除" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="880">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" size="13" name="AquaKana"/>
+                                            </buttonCell>
+                                        </button>
+                                        <button id="sax-Ds-ZiZ">
+                                            <rect key="frame" x="21" y="200" width="256" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="生成ファイルをクリップボードにコピー" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="VeA-mw-5lg">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" size="13" name="AquaKana"/>
                                             </buttonCell>
                                         </button>
                                     </subviews>

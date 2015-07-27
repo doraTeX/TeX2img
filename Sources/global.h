@@ -17,6 +17,7 @@ NSMutableString *g_commandCompletionList;
 #define ThreadingKey @"threading"
 #define PreviewKey @"preview"
 #define DeleteTmpFileKey @"deleteTmpFile"
+#define CopyToClipboardKey @"copyToClipboard"
 #define EmbedInIllustratorKey @"embedInIllustrator"
 #define UngroupKey @"ungroup"
 #define TransparentKey @"transparent"

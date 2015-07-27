@@ -77,6 +77,7 @@ typedef enum {
 @property IBOutlet NSButton *showOutputDrawerCheckBox;
 @property IBOutlet NSButton *previewCheckBox;
 @property IBOutlet NSButton *deleteTmpFileCheckBox;
+@property IBOutlet NSButton *toClipboardCheckBox;
 @property IBOutlet NSButton *embedSourceCheckBox;
 @property IBOutlet NSButton *embedInIllustratorCheckBox;
 @property IBOutlet NSButton *ungroupCheckBox;
@@ -159,6 +160,7 @@ typedef enum {
 @synthesize showOutputDrawerCheckBox;
 @synthesize previewCheckBox;
 @synthesize deleteTmpFileCheckBox;
+@synthesize toClipboardCheckBox;
 @synthesize embedSourceCheckBox;
 @synthesize embedInIllustratorCheckBox;
 @synthesize ungroupCheckBox;
@@ -320,6 +322,7 @@ typedef enum {
     } else {
         embedSourceCheckBox.state = NSOnState;
     }
+    toClipboardCheckBox.state = [aProfile integerForKey:CopyToClipboardKey];
     
 	embedInIllustratorCheckBox.state = [aProfile integerForKey:EmbedInIllustratorKey];
 	ungroupCheckBox.state = [aProfile integerForKey:UngroupKey];
@@ -467,6 +470,7 @@ typedef enum {
         currentProfile[DeleteTmpFileKey] = @(deleteTmpFileCheckBox.state);
         
         currentProfile[EmbedSourceKey] = @(embedSourceCheckBox.state);
+        currentProfile[CopyToClipboardKey] = @(toClipboardCheckBox.state);
         currentProfile[EmbedInIllustratorKey] = @(embedInIllustratorCheckBox.state);
         currentProfile[UngroupKey] = @(ungroupCheckBox.state);
         
