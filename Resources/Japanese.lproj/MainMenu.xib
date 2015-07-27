@@ -489,7 +489,7 @@ DQ
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="368" y="373.5"/>
+            <point key="canvasLocation" x="73" y="498.5"/>
         </window>
         <customObject id="420" customClass="NSFontManager"/>
         <window title="プリアンブル部" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="480">

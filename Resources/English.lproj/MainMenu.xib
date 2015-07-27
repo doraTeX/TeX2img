@@ -423,6 +423,9 @@ DQ
                                                 <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <size key="minSize" width="497" height="131"/>
                                                 <size key="maxSize" width="996" height="10000000"/>
+                                                <connections>
+                                                    <outlet property="controller" destination="450" id="0w9-sT-7AR"/>
+                                                </connections>
                                             </textView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -547,7 +550,7 @@ DQ
                 <outlet property="showFullwidthSpaceCharacterCheckBox" destination="UOc-tL-oge" id="f0L-rP-JYJ"/>
                 <outlet property="showNewLineCharacterCheckBox" destination="tuH-Mu-6qj" id="9Ri-Ee-btf"/>
                 <outlet property="showOutputDrawerCheckBox" destination="650" id="742"/>
-                <outlet property="showSpaceCharacterCheckBox" destination="HQa-0J-uFs" id="phf-2q-oA4"/>
+                <outlet property="showSpaceCharacterCheckBox" destination="HQa-0J-uFs" id="P3q-Sr-DsE"/>
                 <outlet property="showTabCharacterCheckBox" destination="hZo-cQ-gku" id="NVt-tM-Zyf"/>
                 <outlet property="sourceTextView" destination="aKZ-WF-zY9" id="Q4i-tH-xWD"/>
                 <outlet property="tabWidthStepper" destination="dXP-6C-rYH" id="vPo-Gc-ffO"/>
