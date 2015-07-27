@@ -166,7 +166,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 				   withObject:nil afterDelay:0]; // 既存の背景色の消去
 	}
 	
-	HighlightPattern highlightPattern = [profile integerForKey:HighlightPatternKey];
+	HighlightPattern highlightPattern = SOLID;
 
 	if (highlightPattern == SOLID || braceHighlighting) {
 		[self resetHighlight:nil];
@@ -309,7 +309,7 @@ static BOOL isValidTeXCommandChar(unichar c)
     
     NSDictionary* profile = controller.currentProfile;
     
-    HighlightPattern highlightPattern = [profile integerForKey:HighlightPatternKey];
+    HighlightPattern highlightPattern = SOLID;
     BOOL checkBrace = [profile boolForKey:CheckBraceKey];
     BOOL checkBracket = [profile boolForKey:CheckBracketKey];
     BOOL checkSquareBracket = [profile boolForKey:CheckSquareBracketKey];

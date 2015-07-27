@@ -659,7 +659,6 @@ DQ
                 <outlet property="gsPathTextField" destination="604" id="609"/>
                 <outlet property="guessCompilationButton" destination="nMD-49-FUm" id="Ybd-B7-grM"/>
                 <outlet property="highlightContentCheckBox" destination="5Rq-aL-FFQ" id="l6e-Ek-LFX"/>
-                <outlet property="highlightPatternMatrix" destination="9hx-9A-wgY" id="UA8-S9-DIa"/>
                 <outlet property="ignoreErrorCheckBox" destination="653" id="655"/>
                 <outlet property="inputSourceFileButton" destination="fNB-7d-xgA" id="8gZ-Pk-OFj"/>
                 <outlet property="inputSourceFileTextField" destination="cz9-Hs-JtF" id="2fT-96-ciu"/>
@@ -1360,48 +1359,6 @@ DQ
                                                                         <action selector="refreshTextView:" target="450" id="Xy0-k2-YCV"/>
                                                                     </connections>
                                                                 </button>
-                                                            </subviews>
-                                                        </view>
-                                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    </box>
-                                                    <box autoresizesSubviews="NO" title="Style" borderType="line" id="o8L-gV-m8r">
-                                                        <rect key="frame" x="261" y="58" width="98" height="93"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <view key="contentView">
-                                                            <rect key="frame" x="1" y="1" width="96" height="77"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                            <subviews>
-                                                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="9hx-9A-wgY">
-                                                                    <rect key="frame" x="17" y="10" width="61" height="61"/>
-                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                    <size key="cellSize" width="55" height="18"/>
-                                                                    <size key="intercellSpacing" width="4" height="2"/>
-                                                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="eyM-Wb-Ksa">
-                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="system"/>
-                                                                    </buttonCell>
-                                                                    <cells>
-                                                                        <column>
-                                                                            <buttonCell type="radio" title="Flash" imagePosition="left" alignment="left" state="on" inset="2" id="bEr-zb-LGf">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <buttonCell type="radio" title="Solid" imagePosition="left" alignment="left" tag="1" inset="2" id="neh-eK-QkA">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <buttonCell type="radio" title="None" imagePosition="left" alignment="left" tag="2" inset="2" id="fVU-vE-Kz1">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                        </column>
-                                                                    </cells>
-                                                                    <connections>
-                                                                        <action selector="refreshTextView:" target="450" id="Tc9-RU-paz"/>
-                                                                    </connections>
-                                                                </matrix>
                                                             </subviews>
                                                         </view>
                                                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>

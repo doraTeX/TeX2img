@@ -44,7 +44,6 @@ typedef enum {
 @property IBOutlet NSMenuItem *generateMenuItem;
 @property IBOutlet NSMenuItem *autoCompleteMenuItem;
 
-@property IBOutlet NSMatrix *highlightPatternMatrix;
 @property IBOutlet NSButton *flashInMovingCheckBox;
 @property IBOutlet NSButton *highlightContentCheckBox;
 @property IBOutlet NSButton *beepCheckBox;
@@ -138,7 +137,6 @@ typedef enum {
 @synthesize showNewLineCharacterCheckBox;
 @synthesize showFullwidthSpaceCharacterCheckBox;
 @synthesize outputFileTextField;
-@synthesize highlightPatternMatrix;
 @synthesize tabWidthStepper;
 @synthesize tabWidthTextField;
 
@@ -337,8 +335,6 @@ typedef enum {
 	
 	convertYenMarkMenuItem.state = [aProfile boolForKey:ConvertYenMarkKey];
 	
-	[highlightPatternMatrix selectCellWithTag:[aProfile integerForKey:HighlightPatternKey]];
-
 	flashInMovingCheckBox.state = [aProfile boolForKey:FlashInMovingKey];
 
 	highlightContentCheckBox.state = [aProfile boolForKey:HighlightContentKey];
@@ -514,7 +510,6 @@ typedef enum {
         currentProfile[PriorityKey] = @(priorityMatrix.selectedTag);
         
         currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
-        currentProfile[HighlightPatternKey] = @(highlightPatternMatrix.selectedTag);
         currentProfile[FlashInMovingKey] = @(flashInMovingCheckBox.state);
         currentProfile[HighlightContentKey] = @(highlightContentCheckBox.state);
         currentProfile[BeepKey] = @(beepCheckBox.state);

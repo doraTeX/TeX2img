@@ -46,7 +46,6 @@ NSMutableString *g_commandCompletionList;
 #define TabWidthKey @"tabWidth"
 
 #define ConvertYenMarkKey @"convertYenMark"
-#define HighlightPatternKey @"highlightPattern"
 #define FlashInMovingKey @"flashInMoving"
 #define HighlightContentKey @"highlightContent"
 #define BeepKey @"beep"

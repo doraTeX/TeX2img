@@ -534,7 +534,6 @@ DQ
                 <outlet property="gsPathTextField" destination="604" id="609"/>
                 <outlet property="guessCompilationButton" destination="exl-Am-4h5" id="O3P-UU-2gn"/>
                 <outlet property="highlightContentCheckBox" destination="iTI-f0-HhC" id="Wxf-Lg-jTF"/>
-                <outlet property="highlightPatternMatrix" destination="Pu2-mX-KZn" id="dXx-2j-fyg"/>
                 <outlet property="ignoreErrorCheckBox" destination="654" id="656"/>
                 <outlet property="inputSourceFileButton" destination="J9r-D6-YSd" id="dz3-fb-S7i"/>
                 <outlet property="inputSourceFileTextField" destination="Kxp-Ue-6HR" id="G1E-gR-J5p"/>
@@ -1226,49 +1225,6 @@ DQ
                                                                         <action selector="refreshTextView:" target="450" id="4Ya-wv-RtX"/>
                                                                     </connections>
                                                                 </button>
-                                                            </subviews>
-                                                        </view>
-                                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
-                                                    </box>
-                                                    <box autoresizesSubviews="NO" title="強調方法" borderType="line" id="2QX-8w-tfK">
-                                                        <rect key="frame" x="261" y="58" width="98" height="93"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <view key="contentView">
-                                                            <rect key="frame" x="1" y="1" width="96" height="77"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                            <subviews>
-                                                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="Pu2-mX-KZn">
-                                                                    <rect key="frame" x="17" y="10" width="61" height="61"/>
-                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                    <size key="cellSize" width="48" height="18"/>
-                                                                    <size key="intercellSpacing" width="4" height="2"/>
-                                                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="HPV-XV-bIq">
-                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="system"/>
-                                                                    </buttonCell>
-                                                                    <cells>
-                                                                        <column>
-                                                                            <buttonCell type="radio" title="点滅" imagePosition="left" alignment="left" state="on" inset="2" id="viM-NO-dff">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <buttonCell type="radio" title="点灯" imagePosition="left" alignment="left" tag="1" inset="2" id="VHO-7C-grg">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <connections>
-                                                                                    <action selector="refreshTextView:" target="450" id="q2h-F0-uZG"/>
-                                                                                </connections>
-                                                                            </buttonCell>
-                                                                            <buttonCell type="radio" title="なし" imagePosition="left" alignment="left" tag="2" inset="2" id="g0Q-eX-cxN">
-                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                        </column>
-                                                                    </cells>
-                                                                </matrix>
                                                             </subviews>
                                                         </view>
                                                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
