@@ -61,8 +61,6 @@ NSMutableString *g_commandCompletionList;
 #define ShowNewLineCharacterKey @"showNewLineCharacter"
 #define SourceFontNameKey @"sourceFontName"
 #define SourceFontSizeKey @"sourceFontSize"
-#define PreambleFontNameKey @"preambleFontName"
-#define PreambleFontSizeKey @"preambleFontSize"
 #define PreambleKey @"preamble"
 #define InputMethodKey @"inputMethod"
 #define InputSourceFilePathKey @"inputSourceFilePath"

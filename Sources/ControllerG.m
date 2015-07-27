@@ -53,6 +53,7 @@ typedef enum {
 @property IBOutlet NSButton *checkSquareCheckBox;
 @property IBOutlet NSButton *checkParenCheckBox;
 
+@property IBOutlet NSTextField *fontTextField;
 @property IBOutlet NSTextField *tabWidthTextField;
 @property IBOutlet NSStepper *tabWidthStepper;
 
@@ -137,6 +138,7 @@ typedef enum {
 @synthesize showNewLineCharacterCheckBox;
 @synthesize showFullwidthSpaceCharacterCheckBox;
 @synthesize outputFileTextField;
+@synthesize fontTextField;
 @synthesize tabWidthStepper;
 @synthesize tabWidthTextField;
 
@@ -408,13 +410,13 @@ typedef enum {
     NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
     if (aFont) {
         sourceTextView.font = aFont;
+        preambleTextView.font = aFont;
+        [self setupFontTextField: aFont];
+    } else {
+        [self loadDefaultFont];
     }
     [sourceTextView fixupTabs];
     
-    aFont = [NSFont fontWithName:[aProfile stringForKey:PreambleFontNameKey] size:[aProfile floatForKey:PreambleFontSizeKey]];
-    if (aFont) {
-        preambleTextView.font = aFont;
-    }
     [preambleTextView colorizeText:YES];
     [preambleTextView fixupTabs];
     
@@ -525,8 +527,6 @@ typedef enum {
         currentProfile[ShowNewLineCharacterKey] = @(showNewLineCharacterCheckBox.state);
         currentProfile[SourceFontNameKey] = sourceTextView.font.fontName;
         currentProfile[SourceFontSizeKey] = @(sourceTextView.font.pointSize);
-        currentProfile[PreambleFontNameKey] = preambleTextView.font.fontName;
-        currentProfile[PreambleFontSizeKey] = @(preambleTextView.font.pointSize);
         
         currentProfile[PreambleKey] = [NSString stringWithString:preambleTextView.textStorage.string]; // stringWithString は必須
         
@@ -817,6 +817,9 @@ typedef enum {
     // 色パレットが表示されていれば消す
     [self closeColorPanel];
 
+    // フォントパネルが表示されていれば消す
+    [self closeFontPanel];
+
     lastActiveWindow = mainWindow;
     
     // 色入力支援パレットにデフォルトの文字を入れる
@@ -868,12 +871,8 @@ typedef enum {
                                             GsPathKey: gsPath
                                             }
                             waitUntilDone:NO];
-		
-		NSFont *defaultFont = [NSFont fontWithName:@"Osaka-Mono" size:13];
-		if (defaultFont) {
-			sourceTextView.font = defaultFont;
-			preambleTextView.font = defaultFont;
-		}
+
+        [self loadDefaultFont];
 		
 		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"SUEnableAutomaticChecks"];
 		
@@ -909,6 +908,21 @@ typedef enum {
     
 }
 
+- (void)loadDefaultFont
+{
+    NSFont *defaultFont = [NSFont fontWithName:@"Osaka-Mono" size:13];
+    if (defaultFont) {
+        sourceTextView.font = defaultFont;
+        preambleTextView.font = defaultFont;
+        [self setupFontTextField: defaultFont];
+    }
+}
+
+- (void)setupFontTextField:(NSFont*)font
+{
+    fontTextField.stringValue = [NSString stringWithFormat:@"%@ - %.1fpt", font.displayName, font.pointSize];
+}
+
 - (void)showInitMessage:(NSDictionary*)paths
 {
     runOkPanel(localizedString(@"initSettingsMsg"),
@@ -926,6 +940,11 @@ typedef enum {
     // 色パレットが表示されていれば消す
     if (NSColorPanel.sharedColorPanelExists) {
         [self closeColorPanel];
+    }
+    
+    // フォントパネルが表示されていれば消す
+    if (NSFontPanel.sharedFontPanelExists) {
+        [self closeFontPanel];
     }
 
 	[profileController updateProfile:self.currentProfile forName:AutoSavedProfileName];
@@ -1186,6 +1205,11 @@ typedef enum {
     }
 }
 
+- (void)closeFontPanel
+{
+    [NSFontPanel.sharedFontPanel performSelector:@selector(orderOut:) withObject:self afterDelay:0];
+}
+
 
 
 #pragma mark - IBAction
@@ -1408,18 +1432,24 @@ typedef enum {
 
 - (IBAction)showFontPanelOfSource:(id)sender
 {
-	NSFontPanel *panel = NSFontPanel.sharedFontPanel;
-	[panel makeKeyAndOrderFront:self];
-	[panel setPanelFont:sourceTextView.font isMultiple:NO];
+    NSFontManager *fontMgr = NSFontManager.sharedFontManager;
+    fontMgr.target = self;
+    fontMgr.action = @selector(changeFont:);
+    
+    NSFontPanel *panel = [fontMgr fontPanel:YES];
+    [panel setPanelFont:sourceTextView.font isMultiple:NO];
+    [panel makeKeyAndOrderFront:self];
+    panel.enabled = YES;
 }
 
-- (IBAction)showFontPanelOfPreamble:(id)sender
+- (void) changeFont:(id)sender
 {
-	NSFontPanel *panel = NSFontPanel.sharedFontPanel;
-	[panel makeKeyAndOrderFront:self];
-	[panel setPanelFont:preambleTextView.font isMultiple:NO];
+    NSFont *font = NSFontManager.sharedFontManager.selectedFont;
+    [self setupFontTextField:font];
+    sourceTextView.font = font;
+    preambleTextView.font = font;
+    
 }
-
 
 - (IBAction)searchPrograms:(id)sender
 {
