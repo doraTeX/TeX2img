@@ -38,7 +38,7 @@ static void usage()
     printf("  --with-text             : generate text-embedded PDF files\n");
     printf("  --transparent           : generate transparent images (for PNG/GIF/TIFF)\n");
     printf("  --delete-display-size   : delete width and height attributes of SVG files\n");
-    printf("  --copy                  : copy generated files to the clipboard\n");
+    printf("  --copy-to-clipboard     : copy generated files to the clipboard\n");
     printf("  --no-embed-source       : do not embed the source in image files\n");
     printf("  --quick                 : convert in a speed priority mode\n");
     printf("  --kanji ENCODING        : set Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
@@ -243,7 +243,7 @@ int main (int argc, char *argv[]) {
         options[21].flag = NULL;
         options[21].val = 22;
 
-        options[22].name = "copy";
+        options[22].name = "copy-to-clipboard";
         options[22].has_arg = no_argument;
         options[22].flag = NULL;
         options[22].val = 23;
@@ -414,7 +414,7 @@ int main (int argc, char *argv[]) {
                 case 22: // --delete-display-size
                     deleteDisplaySizeFlag = YES;
                     break;
-                case 23: // --copy
+                case 23: // --copy-to-clipboard
                     copyToClipboardFlag = YES;
                     break;
                 case (OPTION_NUM - 2): // --version
