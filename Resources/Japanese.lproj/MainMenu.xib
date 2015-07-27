@@ -286,133 +286,6 @@
                 <menuItem title="表示" id="295">
                     <menu key="submenu" title="表示" id="296">
                         <items>
-                            <menuItem title="ソースのカラー表示" state="on" id="804">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="toggleMenuItem:" target="450" id="805"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="対応する括弧の強調表示" id="815">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" id="816">
-                                    <items>
-                                        <menuItem title="点滅" id="819">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="changeHighlight:" target="450" id="823"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="点灯" state="on" id="818">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="changeHighlight:" target="450" id="824"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="しない" id="817">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="changeHighlight:" target="450" id="825"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="826"/>
-                                        <menuItem title="対応をチェックする括弧の種類" id="859">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="対応をチェックする括弧の種類" id="860">
-                                                <items>
-                                                    <menuItem title="{ }" state="on" id="861">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="865"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="[ ]" id="862">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="866"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="( )" id="863">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="867"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="&lt; &gt;" id="864">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="868"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                </items>
-                                            </menu>
-                                        </menuItem>
-                                        <menuItem title="カーソル移動時も黄色く強調" state="on" id="827">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="828"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="囲まれた内容も強調" state="on" id="847">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="853"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="848"/>
-                                        <menuItem title="対応する括弧のない孤立括弧" id="849">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="対応する括弧のない孤立括弧" id="850">
-                                                <items>
-                                                    <menuItem title="音で警告" state="on" id="852">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="854"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="背景色点滅" state="on" id="851">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="toggleMenuItem:" target="450" id="855"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                </items>
-                                            </menu>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
-                            <menuItem title="不可視文字の表示" id="830">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" id="831">
-                                    <items>
-                                        <menuItem title="半角スペース" state="on" id="835">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="836"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="全角スペース" state="on" id="834">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="837"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="改行" state="on" id="832">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="838"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="タブ" state="on" id="833">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleMenuItem:" target="450" id="839"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
-                            <menuItem isSeparatorItem="YES" id="810"/>
                             <menuItem title="プリアンブル設定ウインドウ" keyEquivalent="P" id="486">
                                 <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                 <connections>
@@ -633,20 +506,19 @@ DQ
         <customObject id="450" customClass="ControllerG">
             <connections>
                 <outlet property="autoCompleteMenuItem" destination="844" id="846"/>
-                <outlet property="beepMenuItem" destination="852" id="857"/>
+                <outlet property="beepCheckBox" destination="yFC-gL-sJa" id="qVA-sL-RUz"/>
                 <outlet property="bottomMarginLabel" destination="566" id="620"/>
                 <outlet property="bottomMarginSlider" destination="565" id="625"/>
                 <outlet property="browseSourceFileButton" destination="a0s-yn-OUV" id="6D3-yg-wGU"/>
-                <outlet property="checkBraceMenuItem" destination="861" id="869"/>
-                <outlet property="checkBracketMenuItem" destination="864" id="872"/>
-                <outlet property="checkParenMenuItem" destination="863" id="871"/>
-                <outlet property="checkSquareBracketMenuItem" destination="862" id="870"/>
+                <outlet property="checkBraceCheckBox" destination="Fup-Yd-IRL" id="JFg-l4-ZPc"/>
+                <outlet property="checkBracketCheckBox" destination="vjA-OV-uKu" id="BW5-Jc-AFx"/>
+                <outlet property="checkParenCheckBox" destination="YR5-Qz-XGG" id="yha-pw-APq"/>
+                <outlet property="checkSquareCheckBox" destination="ZTk-Vl-JfG" id="YcE-jj-8ng"/>
                 <outlet property="colorStyleMatrix" destination="Nw7-Li-duZ" id="oFc-ZQ-gnV"/>
                 <outlet property="colorTextField" destination="ece-oe-9xN" id="R9l-mw-NJG"/>
                 <outlet property="colorWell" destination="oDT-KK-Jah" id="OU6-jm-Dxl"/>
                 <outlet property="colorWindow" destination="LNT-gN-QW9" id="EOI-VJ-esD"/>
                 <outlet property="colorWindowMenuItem" destination="mwF-OF-D3d" id="hU2-fG-5MG"/>
-                <outlet property="colorizeTextMenuItem" destination="804" id="806"/>
                 <outlet property="convertYenMarkMenuItem" destination="760" id="762"/>
                 <outlet property="deleteDisplaySizeCheckBox" destination="afr-f7-ZEX" id="oSG-fY-bJT"/>
                 <outlet property="deleteTmpFileCheckBox" destination="591" id="594"/>
@@ -655,14 +527,14 @@ DQ
                 <outlet property="embedInIllustratorCheckBox" destination="877" id="881"/>
                 <outlet property="embedSourceCheckBox" destination="Bld-79-KdN" id="fcB-Wi-hye"/>
                 <outlet property="encodingPopUpButton" destination="SEX-u4-2gO" id="9ZB-Jt-h0v"/>
-                <outlet property="flashBackgroundMenuItem" destination="851" id="858"/>
-                <outlet property="flashHighlightMenuItem" destination="819" id="820"/>
-                <outlet property="flashInMovingMenuItem" destination="827" id="829"/>
+                <outlet property="flashBackgroundCheckBox" destination="KWP-Tu-qp2" id="QJB-80-Aeu"/>
+                <outlet property="flashInMovingCheckBox" destination="pL6-0n-Zv5" id="VGF-Ti-v8p"/>
                 <outlet property="generateButton" destination="453" id="786"/>
                 <outlet property="generateMenuItem" destination="468" id="785"/>
                 <outlet property="gsPathTextField" destination="604" id="609"/>
                 <outlet property="guessCompilationButton" destination="exl-Am-4h5" id="O3P-UU-2gn"/>
-                <outlet property="highlightContentMenuItem" destination="847" id="856"/>
+                <outlet property="highlightContentCheckBox" destination="iTI-f0-HhC" id="Wxf-Lg-jTF"/>
+                <outlet property="highlightPatternMatrix" destination="Pu2-mX-KZn" id="dXx-2j-fyg"/>
                 <outlet property="ignoreErrorCheckBox" destination="654" id="656"/>
                 <outlet property="inputSourceFileButton" destination="J9r-D6-YSd" id="dz3-fb-S7i"/>
                 <outlet property="inputSourceFileTextField" destination="Kxp-Ue-6HR" id="G1E-gR-J5p"/>
@@ -670,7 +542,7 @@ DQ
                 <outlet property="leftMarginLabel" destination="546" id="617"/>
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
-                <outlet property="noHighlightMenuItem" destination="817" id="822"/>
+                <outlet property="numberOfCompilationStepper" destination="NID-iG-ZgO" id="E4j-De-9eE"/>
                 <outlet property="numberOfCompilationTextField" destination="qJq-qV-HLt" id="L73-0t-9Br"/>
                 <outlet property="outputDrawer" destination="776" id="781"/>
                 <outlet property="outputDrawerMenuItem" destination="487" id="782"/>
@@ -687,13 +559,14 @@ DQ
                 <outlet property="resolutionSlider" destination="640" id="648"/>
                 <outlet property="rightMarginLabel" destination="552" id="618"/>
                 <outlet property="rightMarginSlider" destination="551" id="623"/>
-                <outlet property="showFullwidthSpaceCharacterMenuItem" destination="834" id="841"/>
-                <outlet property="showNewLineCharacterMenuItem" destination="832" id="842"/>
+                <outlet property="showFullwidthSpaceCharacterCheckBox" destination="0Sn-A8-Vjq" id="I2e-6w-ZL6"/>
+                <outlet property="showNewLineCharacterCheckBox" destination="wiV-Af-OwK" id="MZM-PT-3xi"/>
                 <outlet property="showOutputDrawerCheckBox" destination="651" id="783"/>
-                <outlet property="showSpaceCharacterMenuItem" destination="835" id="840"/>
-                <outlet property="showTabCharacterMenuItem" destination="833" id="843"/>
-                <outlet property="solidHighlightMenuItem" destination="818" id="821"/>
+                <outlet property="showSpaceCharacterCheckBox" destination="bzo-fD-ZZ1" id="IrY-lO-uRW"/>
+                <outlet property="showTabCharacterCheckBox" destination="XUH-Ml-0GU" id="utI-as-1m7"/>
                 <outlet property="sourceTextView" destination="466" id="467"/>
+                <outlet property="tabWidthStepper" destination="KVM-Fv-X4T" id="r77-EQ-6l6"/>
+                <outlet property="tabWidthTextField" destination="CxL-HX-LxM" id="aH4-Zc-Kx6"/>
                 <outlet property="templatePopupButton" destination="88N-oX-Kx7" id="XUy-wr-UJD"/>
                 <outlet property="textPdfCheckBox" destination="646" id="i2a-wp-iaK"/>
                 <outlet property="toClipboardCheckBox" destination="sax-Ds-ZiZ" id="I75-d3-KyR"/>
@@ -1158,14 +1031,14 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="少々のコンパイルエラーは無視して画像化を強行（非推奨）" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="655">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                         <textField verticalHuggingPriority="750" id="FC5-GE-HNZ">
                                             <rect key="frame" x="15" y="200" width="173" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="コンパイルの（最大）回数：" id="WmO-jJ-pYZ">
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -1199,7 +1072,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="回数自動推定" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="BiY-gx-Jao">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                         <button id="659">
@@ -1214,7 +1087,7 @@ DQ
                                             <rect key="frame" x="14" y="115" width="95" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="文字コード指定" id="WAa-1J-cUd">
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -1290,6 +1163,274 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
+                            <tabViewItem label="表示" identifier="Item 2" id="EnK-oW-z8i">
+                                <view key="view" id="dCI-tZ-eeA">
+                                    <rect key="frame" x="10" y="33" width="388" height="346"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <box autoresizesSubviews="NO" title="対応する括弧の強調表示" borderType="line" id="Qlb-Le-07g">
+                                            <rect key="frame" x="6" y="46" width="376" height="177"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <view key="contentView">
+                                                <rect key="frame" x="1" y="1" width="374" height="161"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <box autoresizesSubviews="NO" title="対応チェック対象" borderType="line" id="7rY-RS-z06">
+                                                        <rect key="frame" x="15" y="97" width="242" height="54"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <view key="contentView">
+                                                            <rect key="frame" x="1" y="1" width="240" height="38"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <button id="Fup-Yd-IRL">
+                                                                    <rect key="frame" x="16" y="12" width="36" height="18"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <buttonCell key="cell" type="check" title="{ }" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="64G-rW-cF9">
+                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                        <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="refreshTextView:" target="450" id="Hqe-yY-G1q"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <button id="YR5-Qz-XGG">
+                                                                    <rect key="frame" x="128" y="12" width="36" height="18"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <buttonCell key="cell" type="check" title="( )" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="T9t-Xx-y8k">
+                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                        <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="refreshTextView:" target="450" id="eth-IA-q87"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <button id="vjA-OV-uKu">
+                                                                    <rect key="frame" x="184" y="12" width="40" height="18"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <buttonCell key="cell" type="check" title="&lt; &gt;" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Pe5-1O-JSf">
+                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                        <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="refreshTextView:" target="450" id="4a7-0m-aUJ"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <button id="ZTk-Vl-JfG">
+                                                                    <rect key="frame" x="72" y="12" width="36" height="18"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <buttonCell key="cell" type="check" title="[ ]" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="eg6-Hc-bwZ">
+                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                        <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="refreshTextView:" target="450" id="4Ya-wv-RtX"/>
+                                                                    </connections>
+                                                                </button>
+                                                            </subviews>
+                                                        </view>
+                                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
+                                                    </box>
+                                                    <box autoresizesSubviews="NO" title="強調方法" borderType="line" id="2QX-8w-tfK">
+                                                        <rect key="frame" x="261" y="58" width="98" height="93"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <view key="contentView">
+                                                            <rect key="frame" x="1" y="1" width="96" height="77"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="Pu2-mX-KZn">
+                                                                    <rect key="frame" x="17" y="10" width="61" height="61"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    <size key="cellSize" width="48" height="18"/>
+                                                                    <size key="intercellSpacing" width="4" height="2"/>
+                                                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="HPV-XV-bIq">
+                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                        <font key="font" metaFont="system"/>
+                                                                    </buttonCell>
+                                                                    <cells>
+                                                                        <column>
+                                                                            <buttonCell type="radio" title="点滅" imagePosition="left" alignment="left" state="on" inset="2" id="viM-NO-dff">
+                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                                <font key="font" metaFont="system"/>
+                                                                            </buttonCell>
+                                                                            <buttonCell type="radio" title="点灯" imagePosition="left" alignment="left" tag="1" inset="2" id="VHO-7C-grg">
+                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                                <font key="font" metaFont="system"/>
+                                                                                <connections>
+                                                                                    <action selector="refreshTextView:" target="450" id="q2h-F0-uZG"/>
+                                                                                </connections>
+                                                                            </buttonCell>
+                                                                            <buttonCell type="radio" title="なし" imagePosition="left" alignment="left" tag="2" inset="2" id="g0Q-eX-cxN">
+                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                                <font key="font" metaFont="system"/>
+                                                                            </buttonCell>
+                                                                        </column>
+                                                                    </cells>
+                                                                </matrix>
+                                                            </subviews>
+                                                        </view>
+                                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
+                                                    </box>
+                                                    <button id="pL6-0n-Zv5">
+                                                        <rect key="frame" x="16" y="72" width="191" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="カーソル移動時も黄色く強調" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="hxj-7A-gXl">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="Rk4-Uc-Zdu"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="iTI-f0-HhC">
+                                                        <rect key="frame" x="16" y="52" width="139" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="囲まれた内容も強調" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="aDr-2m-fk2">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="BQn-Dx-XH9"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="yFC-gL-sJa">
+                                                        <rect key="frame" x="16" y="32" width="139" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="孤立括弧を音で警告" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="YQ4-S5-oqL">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="ZMb-0n-kku"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="KWP-Tu-qp2">
+                                                        <rect key="frame" x="16" y="12" width="191" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="孤立括弧を背景色点滅で警告" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="hfz-Ya-qbL">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="MZY-0H-DhC"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
+                                        </box>
+                                        <box autoresizesSubviews="NO" title="ソース表示" borderType="line" id="NwF-4V-z52">
+                                            <rect key="frame" x="6" y="232" width="201" height="114"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <view key="contentView">
+                                                <rect key="frame" x="1" y="1" width="199" height="98"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="aHu-v1-wTJ">
+                                                        <rect key="frame" x="16" y="69" width="56" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="タブ幅：" id="etH-G4-dbS">
+                                                            <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="CxL-HX-LxM">
+                                                        <rect key="frame" x="73" y="66" width="46" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="4" drawsBackground="YES" id="zAf-0d-j0b">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="lbm-lC-he2">
+                                                                <real key="minimum" value="1"/>
+                                                                <real key="maximum" value="100"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="takeIntValueFrom:" target="KVM-Fv-X4T" id="mcU-F7-MKf"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="KVM-Fv-X4T">
+                                                        <rect key="frame" x="120" y="63" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="100" doubleValue="1" id="fso-hT-t0F"/>
+                                                        <connections>
+                                                            <action selector="tabWidthStepperPressed:" target="450" id="U3o-x5-nCQ"/>
+                                                        </connections>
+                                                    </stepper>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
+                                        </box>
+                                        <box autoresizesSubviews="NO" title="不可視文字の表示" borderType="line" id="wIf-oC-qXE">
+                                            <rect key="frame" x="209" y="232" width="173" height="114"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView">
+                                                <rect key="frame" x="1" y="1" width="171" height="98"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <button id="bzo-fD-ZZ1">
+                                                        <rect key="frame" x="16" y="72" width="100" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="半角スペース" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="qeI-iK-HRe">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="sCV-fP-NEd"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="wiV-Af-OwK">
+                                                        <rect key="frame" x="16" y="32" width="48" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="改行" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="xfU-CU-lib">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="VV8-s4-Ybo"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="XUH-Ml-0GU">
+                                                        <rect key="frame" x="16" y="12" width="48" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="タブ" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="nhJ-Zp-ulk">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="02I-Gv-1cL"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="0Sn-A8-Vjq">
+                                                        <rect key="frame" x="16" y="52" width="100" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="全角スペース" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="YH7-9h-GzE">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="yPj-an-pYP"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
+                                        </box>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
                             <tabViewItem label="コンパイル後処理" identifier="Item 2" id="587">
                                 <view key="view" id="588">
                                     <rect key="frame" x="10" y="33" width="388" height="346"/>
@@ -1300,7 +1441,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="check" title="アップデートを自動的に確認" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="812">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
                                                 <binding destination="813" name="value" keyPath="values.SUEnableAutomaticChecks" id="814"/>
@@ -1311,7 +1452,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="コンパイル後プレビューする" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="590">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                         <button id="591">
@@ -1338,7 +1479,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="生成ファイルからソースを復元できるようにする" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="aep-8a-PVd">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="AquaKana"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                         <button id="651">
@@ -1346,7 +1487,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="コンパイル後出力ビューを自動的に表示" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="652">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                         <button id="877">
@@ -1354,7 +1495,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="生成ファイルを Illustrator に配置" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="878">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="AquaKana"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                         <button id="879">
@@ -1362,7 +1503,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="配置後にグループ化解除" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="880">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="AquaKana"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                         <button id="sax-Ds-ZiZ">
@@ -1370,7 +1511,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="生成ファイルをクリップボードにコピー" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="VeA-mw-5lg">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name="AquaKana"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                     </subviews>
@@ -1380,7 +1521,7 @@ DQ
                     </tabView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="390" y="1077"/>
+            <point key="canvasLocation" x="38" y="825"/>
         </window>
         <window title="設定の保存・読み込み" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="672" userLabel="Window (設定の保存・読み込み)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>

@@ -71,6 +71,8 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (void)fixupTabs
 {
+    NSDictionary *currentProfile = controller.currentProfile;
+
     NSMutableParagraphStyle* paragraphStyle = self.defaultParagraphStyle.mutableCopy;
     
     if (!paragraphStyle) {
@@ -78,7 +80,7 @@ static BOOL isValidTeXCommandChar(unichar c)
     }
     
     CGFloat charWidth = [self.font advancementForGlyph:(NSGlyph)' '].width;
-    paragraphStyle.defaultTabInterval = charWidth * 4;
+    paragraphStyle.defaultTabInterval = charWidth * [currentProfile integerForKey:TabWidthKey];
     paragraphStyle.tabStops = @[];
     
     self.defaultParagraphStyle = paragraphStyle;
@@ -96,7 +98,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (void)colorizeAfterUndoAndRedo
 {
-    [self colorizeText:[controller.currentProfile boolForKey:ColorizeTextKey]];
+    [self colorizeText:YES];
 }
 
 - (void)registerUndoWithString:(NSString*)oldString location:(unsigned)oldLocation
@@ -175,7 +177,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 	
 	from = oldRange.location;
 	to = from + newString.length;
-	[self colorizeText:[controller.currentProfile boolForKey:ColorizeTextKey]];
+	[self colorizeText:YES];
 	
 	// Place insertion mark
 	if (searchRange.location != NSNotFound) {
@@ -217,7 +219,7 @@ static BOOL isValidTeXCommandChar(unichar c)
         
 		[super insertText:aString];
 	}
-	[self colorizeText:[currentProfile boolForKey:ColorizeTextKey]];
+	[self colorizeText:YES];
 }
 
 - (void)insertTextWithIndicator:(id)aString {
@@ -250,7 +252,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 				[self didChangeText];
 			}
 			// by returning YES, "Undo Paste" menu item will be set up by system
-			[self colorizeText:[currentProfile boolForKey:ColorizeTextKey]];
+			[self colorizeText:YES];
 			return YES;
 		} else {
 			return NO;

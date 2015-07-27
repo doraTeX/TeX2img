@@ -33,32 +33,34 @@ typedef enum {
 @property IBOutlet NSWindow *mainWindow;
 @property IBOutlet NSDrawer *outputDrawer;
 @property IBOutlet NSTextView *outputTextView;
+@property IBOutlet NSTextField *outputFileTextField;
+@property IBOutlet NSPopUpButton *templatePopupButton;
+
 @property IBOutlet NSWindow *preambleWindow;
 @property IBOutlet TeXTextView *preambleTextView;
 @property IBOutlet NSMenuItem *convertYenMarkMenuItem;
-@property IBOutlet NSMenuItem *colorizeTextMenuItem;
 @property IBOutlet NSMenuItem *outputDrawerMenuItem;
 @property IBOutlet NSMenuItem *preambleWindowMenuItem;
 @property IBOutlet NSMenuItem *generateMenuItem;
-@property IBOutlet NSMenuItem *flashHighlightMenuItem;
-@property IBOutlet NSMenuItem *solidHighlightMenuItem;
-@property IBOutlet NSMenuItem *noHighlightMenuItem;
-@property IBOutlet NSMenuItem *flashInMovingMenuItem;
-@property IBOutlet NSMenuItem *highlightContentMenuItem;
-@property IBOutlet NSMenuItem *beepMenuItem;
-@property IBOutlet NSMenuItem *flashBackgroundMenuItem;
-@property IBOutlet NSMenuItem *checkBraceMenuItem;
-@property IBOutlet NSMenuItem *checkBracketMenuItem;
-@property IBOutlet NSMenuItem *checkSquareBracketMenuItem;
-@property IBOutlet NSMenuItem *checkParenMenuItem;
 @property IBOutlet NSMenuItem *autoCompleteMenuItem;
-@property IBOutlet NSMenuItem *showTabCharacterMenuItem;
-@property IBOutlet NSMenuItem *showSpaceCharacterMenuItem;
-@property IBOutlet NSMenuItem *showNewLineCharacterMenuItem;
-@property IBOutlet NSMenuItem *showFullwidthSpaceCharacterMenuItem;
-@property IBOutlet NSTextField *outputFileTextField;
 
-@property IBOutlet NSPopUpButton *templatePopupButton;
+@property IBOutlet NSMatrix *highlightPatternMatrix;
+@property IBOutlet NSButton *flashInMovingCheckBox;
+@property IBOutlet NSButton *highlightContentCheckBox;
+@property IBOutlet NSButton *beepCheckBox;
+@property IBOutlet NSButton *flashBackgroundCheckBox;
+@property IBOutlet NSButton *checkBraceCheckBox;
+@property IBOutlet NSButton *checkBracketCheckBox;
+@property IBOutlet NSButton *checkSquareCheckBox;
+@property IBOutlet NSButton *checkParenCheckBox;
+
+@property IBOutlet NSTextField *tabWidthTextField;
+@property IBOutlet NSStepper *tabWidthStepper;
+
+@property IBOutlet NSButton *showTabCharacterCheckBox;
+@property IBOutlet NSButton *showSpaceCharacterCheckBox;
+@property IBOutlet NSButton *showNewLineCharacterCheckBox;
+@property IBOutlet NSButton *showFullwidthSpaceCharacterCheckBox;
 
 @property IBOutlet NSWindow *colorWindow;
 @property IBOutlet NSMenuItem *colorWindowMenuItem;
@@ -97,13 +99,13 @@ typedef enum {
 @property IBOutlet NSTextField *gsPathTextField;
 @property IBOutlet NSButton *guessCompilationButton;
 @property IBOutlet NSTextField *numberOfCompilationTextField;
+@property IBOutlet NSStepper *numberOfCompilationStepper;
 @property IBOutlet NSButton *textPdfCheckBox;
 @property IBOutlet NSButton *ignoreErrorCheckBox;
 @property IBOutlet NSButton *utfExportCheckBox;
 @property IBOutlet NSPopUpButton *encodingPopUpButton;
 @property IBOutlet NSMatrix *unitMatrix;
 @property IBOutlet NSMatrix *priorityMatrix;
-@property HighlightPattern highlightPattern;
 @property NSString *lastSavedPath;
 
 @property NSWindow *lastActiveWindow;
@@ -119,27 +121,26 @@ typedef enum {
 @synthesize preambleWindow;
 @synthesize preambleTextView;
 @synthesize convertYenMarkMenuItem;
-@synthesize colorizeTextMenuItem;
 @synthesize outputDrawerMenuItem;
 @synthesize preambleWindowMenuItem;
 @synthesize generateMenuItem;
-@synthesize flashHighlightMenuItem;
-@synthesize solidHighlightMenuItem;
-@synthesize noHighlightMenuItem;
-@synthesize flashInMovingMenuItem;
-@synthesize highlightContentMenuItem;
-@synthesize beepMenuItem;
-@synthesize flashBackgroundMenuItem;
-@synthesize checkBraceMenuItem;
-@synthesize checkBracketMenuItem;
-@synthesize checkSquareBracketMenuItem;
-@synthesize checkParenMenuItem;
+@synthesize flashInMovingCheckBox;
+@synthesize highlightContentCheckBox;
+@synthesize beepCheckBox;
+@synthesize flashBackgroundCheckBox;
+@synthesize checkBraceCheckBox;
+@synthesize checkBracketCheckBox;
+@synthesize checkSquareCheckBox;
+@synthesize checkParenCheckBox;
 @synthesize autoCompleteMenuItem;
-@synthesize showTabCharacterMenuItem;
-@synthesize showSpaceCharacterMenuItem;
-@synthesize showNewLineCharacterMenuItem;
-@synthesize showFullwidthSpaceCharacterMenuItem;
+@synthesize showTabCharacterCheckBox;
+@synthesize showSpaceCharacterCheckBox;
+@synthesize showNewLineCharacterCheckBox;
+@synthesize showFullwidthSpaceCharacterCheckBox;
 @synthesize outputFileTextField;
+@synthesize highlightPatternMatrix;
+@synthesize tabWidthStepper;
+@synthesize tabWidthTextField;
 
 @synthesize templatePopupButton;
 
@@ -180,13 +181,13 @@ typedef enum {
 @synthesize gsPathTextField;
 @synthesize guessCompilationButton;
 @synthesize numberOfCompilationTextField;
+@synthesize numberOfCompilationStepper;
 @synthesize textPdfCheckBox;
 @synthesize ignoreErrorCheckBox;
 @synthesize utfExportCheckBox;
 @synthesize encodingPopUpButton;
 @synthesize unitMatrix;
 @synthesize priorityMatrix;
-@synthesize highlightPattern;
 @synthesize lastSavedPath;
 
 @synthesize lastActiveWindow;
@@ -335,27 +336,33 @@ typedef enum {
 	utfExportCheckBox.state = [aProfile boolForKey:UtfExportKey];
 	
 	convertYenMarkMenuItem.state = [aProfile boolForKey:ConvertYenMarkKey];
-	colorizeTextMenuItem.state = [aProfile boolForKey:ColorizeTextKey];
 	
-	highlightPattern = [aProfile integerForKey:HighlightPatternKey];
-	[self changeHighlight:nil];
+	[highlightPatternMatrix selectCellWithTag:[aProfile integerForKey:HighlightPatternKey]];
 
-	flashInMovingMenuItem.state = [aProfile boolForKey:FlashInMovingKey];
+	flashInMovingCheckBox.state = [aProfile boolForKey:FlashInMovingKey];
 
-	highlightContentMenuItem.state = [aProfile boolForKey:HighlightContentKey];
-	beepMenuItem.state = [aProfile boolForKey:BeepKey];
-	flashBackgroundMenuItem.state = [aProfile boolForKey:FlashBackgroundKey];
+	highlightContentCheckBox.state = [aProfile boolForKey:HighlightContentKey];
+	beepCheckBox.state = [aProfile boolForKey:BeepKey];
+	flashBackgroundCheckBox.state = [aProfile boolForKey:FlashBackgroundKey];
 
-	checkBraceMenuItem.state = [aProfile boolForKey:CheckBraceKey];
-	checkBracketMenuItem.state = [aProfile boolForKey:CheckBracketKey];
-	checkSquareBracketMenuItem.state = [aProfile boolForKey:CheckSquareBracketKey];
-	checkParenMenuItem.state = [aProfile boolForKey:CheckParenKey];
+	checkBraceCheckBox.state = [aProfile boolForKey:CheckBraceKey];
+	checkBracketCheckBox.state = [aProfile boolForKey:CheckBracketKey];
+	checkSquareCheckBox.state = [aProfile boolForKey:CheckSquareBracketKey];
+	checkParenCheckBox.state = [aProfile boolForKey:CheckParenKey];
+    
+    NSInteger tabWidth = [aProfile integerForKey:TabWidthKey];
+    if (tabWidth > 0) {
+        [tabWidthTextField setIntValue:tabWidth];
+    } else {
+        [tabWidthTextField setIntValue:4];
+    }
+    [tabWidthStepper takeIntValueFrom:tabWidthTextField];
 
 	autoCompleteMenuItem.state = [aProfile boolForKey:AutoCompleteKey];
-	showTabCharacterMenuItem.state = [aProfile boolForKey:ShowTabCharacterKey];
-	showSpaceCharacterMenuItem.state = [aProfile boolForKey:ShowSpaceCharacterKey];
-	showFullwidthSpaceCharacterMenuItem.state = [aProfile boolForKey:ShowFullwidthSpaceCharacterKey];
-	showNewLineCharacterMenuItem.state = [aProfile boolForKey:ShowNewLineCharacterKey];
+	showTabCharacterCheckBox.state = [aProfile boolForKey:ShowTabCharacterKey];
+	showSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowSpaceCharacterKey];
+	showFullwidthSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowFullwidthSpaceCharacterKey];
+	showNewLineCharacterCheckBox.state = [aProfile boolForKey:ShowNewLineCharacterKey];
 	guessCompilationButton.state = [aProfile boolForKey:GuessCompilationKey];
     
     NSString *encoding = [aProfile stringForKey:EncodingKey];
@@ -386,6 +393,8 @@ typedef enum {
     [self loadSettingForTextField:bottomMarginLabel fromProfile:aProfile forKey:BottomMarginLabelKey];
     
     numberOfCompilationTextField.intValue = MAX(1, [aProfile integerForKey:NumberOfCompilationKey]);
+    [numberOfCompilationStepper takeIntValueFrom:numberOfCompilationTextField];
+    
     resolutionSlider.floatValue = [aProfile integerForKey:ResolutionKey];
     leftMarginSlider.intValue = [aProfile integerForKey:LeftMarginKey];
     rightMarginSlider.intValue = [aProfile integerForKey:RightMarginKey];
@@ -410,7 +419,7 @@ typedef enum {
     if (aFont) {
         preambleTextView.font = aFont;
     }
-    [preambleTextView colorizeText:[aProfile boolForKey:ColorizeTextKey]];
+    [preambleTextView colorizeText:YES];
     [preambleTextView fixupTabs];
     
     NSString *inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
@@ -498,25 +507,27 @@ typedef enum {
         currentProfile[TopMarginKey] = @(topMarginLabel.intValue);
         currentProfile[BottomMarginKey] = @(bottomMarginLabel.intValue);
         
+        NSInteger tabWidth = tabWidthTextField.integerValue;
+        currentProfile[TabWidthKey] = @((tabWidth > 0) ? tabWidth : 4);
+        
         currentProfile[UnitKey] = @(unitMatrix.selectedTag);
         currentProfile[PriorityKey] = @(priorityMatrix.selectedTag);
         
         currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
-        currentProfile[ColorizeTextKey] = @(colorizeTextMenuItem.state);
-        currentProfile[HighlightPatternKey] = @(highlightPattern);
-        currentProfile[FlashInMovingKey] = @(flashInMovingMenuItem.state);
-        currentProfile[HighlightContentKey] = @(highlightContentMenuItem.state);
-        currentProfile[BeepKey] = @(beepMenuItem.state);
-        currentProfile[FlashBackgroundKey] = @(flashBackgroundMenuItem.state);
-        currentProfile[CheckBraceKey] = @(checkBraceMenuItem.state);
-        currentProfile[CheckBracketKey] = @(checkBracketMenuItem.state);
-        currentProfile[CheckSquareBracketKey] = @(checkSquareBracketMenuItem.state);
-        currentProfile[CheckParenKey] = @(checkParenMenuItem.state);
+        currentProfile[HighlightPatternKey] = @(highlightPatternMatrix.selectedTag);
+        currentProfile[FlashInMovingKey] = @(flashInMovingCheckBox.state);
+        currentProfile[HighlightContentKey] = @(highlightContentCheckBox.state);
+        currentProfile[BeepKey] = @(beepCheckBox.state);
+        currentProfile[FlashBackgroundKey] = @(flashBackgroundCheckBox.state);
+        currentProfile[CheckBraceKey] = @(checkBraceCheckBox.state);
+        currentProfile[CheckBracketKey] = @(checkBracketCheckBox.state);
+        currentProfile[CheckSquareBracketKey] = @(checkSquareCheckBox.state);
+        currentProfile[CheckParenKey] = @(checkParenCheckBox.state);
         currentProfile[AutoCompleteKey] = @(autoCompleteMenuItem.state);
-        currentProfile[ShowTabCharacterKey] = @(showTabCharacterMenuItem.state);
-        currentProfile[ShowSpaceCharacterKey] = @(showSpaceCharacterMenuItem.state);
-        currentProfile[ShowFullwidthSpaceCharacterKey] = @(showFullwidthSpaceCharacterMenuItem.state);
-        currentProfile[ShowNewLineCharacterKey] = @(showNewLineCharacterMenuItem.state);
+        currentProfile[ShowTabCharacterKey] = @(showTabCharacterCheckBox.state);
+        currentProfile[ShowSpaceCharacterKey] = @(showSpaceCharacterCheckBox.state);
+        currentProfile[ShowFullwidthSpaceCharacterKey] = @(showFullwidthSpaceCharacterCheckBox.state);
+        currentProfile[ShowNewLineCharacterKey] = @(showNewLineCharacterCheckBox.state);
         currentProfile[SourceFontNameKey] = sourceTextView.font.fontName;
         currentProfile[SourceFontSizeKey] = @(sourceTextView.font.pointSize);
         currentProfile[PreambleFontNameKey] = preambleTextView.font.fontName;
@@ -602,13 +613,13 @@ typedef enum {
 {
    return @"\\documentclass[fleqn,papersize]{jsarticle}\n"
           @"\\usepackage{amsmath,amssymb}\n"
+          @"\\usepackage[dvipdfmx]{graphicx,xcolor}\n"
           @"\\pagestyle{empty}\n";
 }
 
 - (void)restoreDefaultPreambleLogic
 {
-    BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
-    [preambleTextView replaceEntireContentsWithString:[self defaultPreamble] colorize:colorizeText];
+    [preambleTextView replaceEntireContentsWithString:self.defaultPreamble colorize:YES];
 }
 
 - (void)constructTemplatePopup:(id)sender
@@ -686,8 +697,7 @@ typedef enum {
         NSString *message = [NSString stringWithFormat:@"%@\n\n%@", localizedString(@"resotrePreambleMsg"), [contents stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]];
         
         if (runConfirmPanel(message)) {
-            BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
-            [preambleTextView replaceEntireContentsWithString:contents colorize:colorizeText];
+            [preambleTextView replaceEntireContentsWithString:contents colorize:YES];
         }
     } else {
         runErrorPanel(localizedString(@"cannotReadErrorMsg"), templatePath);
@@ -793,6 +803,17 @@ typedef enum {
                     name: NSWindowDidBecomeKeyNotification
                   object: colorWindow];
     
+    // コンパイル回数の変更
+    [aCenter addObserver: self
+                selector: @selector(refreshNumberOfCompilation:)
+                    name: NSControlTextDidChangeNotification
+                  object: numberOfCompilationTextField];
+
+    // タブ幅の変更
+    [aCenter addObserver: self
+                selector: @selector(refreshTextView:)
+                    name: NSControlTextDidChangeNotification
+                  object: tabWidthTextField];
 	
 	// デフォルトのアウトプットファイルのパスをセット
 	outputFileTextField.stringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
@@ -977,17 +998,15 @@ typedef enum {
 
 - (void)placeImportedSource:(NSString*)contents
 {
-    BOOL colorizeText = [self.currentProfile boolForKey:ColorizeTextKey];
-
     NSArray *parts = [self analyzeContents:contents];
     NSString *preamble = (NSString*)(parts[0]);
     NSString *body = (NSString*)(parts[1]);
     
     if (![preamble isEqualToString:@""]) {
-        [preambleTextView replaceEntireContentsWithString:preamble colorize:colorizeText];
+        [preambleTextView replaceEntireContentsWithString:preamble colorize:YES];
     }
     if (![body isEqualToString:@""]) {
-        [sourceTextView replaceEntireContentsWithString:body colorize:colorizeText];
+        [sourceTextView replaceEntireContentsWithString:body colorize:YES];
     }
     [self sourceSettingChanged:directInputButton];
 }
@@ -1335,13 +1354,30 @@ typedef enum {
 - (IBAction)toggleMenuItem:(id)sender
 {
     [sender setState:![sender state]];
-	
-	BOOL colorize = [self.currentProfile boolForKey:ColorizeTextKey];
-	[sourceTextView colorizeText:colorize];
-	[preambleTextView colorizeText:colorize];
+    [self refreshTextView:sender];
 }
 
-- (IBAction)toggleOutputDrawer:(id)sender 
+- (IBAction)refreshTextView:(id)sender
+{
+    [tabWidthStepper takeIntValueFrom:tabWidthTextField];
+    [sourceTextView colorizeText:YES];
+    [sourceTextView fixupTabs];
+    [preambleTextView colorizeText:YES];
+    [preambleTextView fixupTabs];
+}
+
+- (IBAction)tabWidthStepperPressed:(id)sender
+{
+    [tabWidthTextField takeIntValueFrom:tabWidthStepper];
+    [self refreshTextView:sender];
+}
+
+- (void)refreshNumberOfCompilation:(id)sender
+{
+    [numberOfCompilationStepper takeIntValueFrom:numberOfCompilationTextField];
+}
+
+- (IBAction)toggleOutputDrawer:(id)sender
 {
 	if (outputDrawer.state == NSDrawerOpenState) {
 		outputDrawerMenuItem.state = NO;
@@ -1349,41 +1385,7 @@ typedef enum {
 	} else {
 		[self showOutputDrawer];
 	}
-    
 }
-
--(IBAction)changeHighlight:(id)sender
-{
-	flashHighlightMenuItem.state = NSOffState;
-	solidHighlightMenuItem.state = NSOffState;
-	noHighlightMenuItem.state = NSOffState;
-    
-	if (sender == flashHighlightMenuItem) {
-		highlightPattern = FLASH;
-	}
-	if (sender == solidHighlightMenuItem) {
-		highlightPattern = SOLID;
-	}
-	if (sender == noHighlightMenuItem) {
-		highlightPattern = NOHIGHLIGHT;
-	}
-	
-	switch (highlightPattern) {
-		case FLASH:
-			flashHighlightMenuItem.state = NSOnState;
-			break;
-		case SOLID:
-			solidHighlightMenuItem.state = NSOnState;
-			break;
-		case NOHIGHLIGHT:
-			noHighlightMenuItem.state = NSOnState;
-			break;
-		default:
-			break;
-	}
-	
-}
-
 
 - (IBAction)togglePreambleWindow:(id)sender
 {
@@ -1399,7 +1401,7 @@ typedef enum {
 											NSWidth(preambleWindowRect), NSHeight(preambleWindowRect))
 						 display:NO];
 		[preambleWindow makeKeyAndOrderFront:nil];
-        [preambleTextView colorizeText:[self.currentProfile boolForKey:ColorizeTextKey]];
+        [preambleTextView colorizeText:YES];
 	}
     
 }

@@ -43,9 +43,9 @@ NSMutableString *g_commandCompletionList;
 #define UnitKey @"unit"
 #define PriorityKey @"priority"
 #define EmbedSourceKey @"embedSource"
+#define TabWidthKey @"tabWidth"
 
 #define ConvertYenMarkKey @"convertYenMark"
-#define ColorizeTextKey @"colorizeText"
 #define HighlightPatternKey @"highlightPattern"
 #define FlashInMovingKey @"flashInMoving"
 #define HighlightContentKey @"highlightContent"

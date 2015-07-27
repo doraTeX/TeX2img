@@ -8,7 +8,9 @@
 @end
 
 typedef enum  {
-	FLASH, SOLID, NOHIGHLIGHT
+	FLASH = 0,
+    SOLID = 1,
+    NOHIGHLIGHT = 2
 } HighlightPattern;
 
 @interface ControllerG : NSObject<OutputController, DnDDelegate>

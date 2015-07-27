@@ -629,14 +629,14 @@ DQ
         <customObject id="450" customClass="ControllerG">
             <connections>
                 <outlet property="autoCompleteMenuItem" destination="821" id="823"/>
-                <outlet property="beepMenuItem" destination="828" id="834"/>
+                <outlet property="beepCheckBox" destination="S8e-Q4-bYm" id="7DT-5Z-H81"/>
                 <outlet property="bottomMarginLabel" destination="566" id="620"/>
                 <outlet property="bottomMarginSlider" destination="565" id="625"/>
                 <outlet property="browseSourceFileButton" destination="rDs-Du-gHM" id="rUD-Um-NP3"/>
-                <outlet property="checkBraceMenuItem" destination="841" id="846"/>
-                <outlet property="checkBracketMenuItem" destination="838" id="849"/>
-                <outlet property="checkParenMenuItem" destination="839" id="848"/>
-                <outlet property="checkSquareBracketMenuItem" destination="840" id="847"/>
+                <outlet property="checkBraceCheckBox" destination="iIL-tw-OME" id="RcC-3J-yvm"/>
+                <outlet property="checkBracketCheckBox" destination="WUZ-m6-b4G" id="t85-Tl-B3e"/>
+                <outlet property="checkParenCheckBox" destination="C1n-Uc-w6m" id="MBF-ng-lde"/>
+                <outlet property="checkSquareCheckBox" destination="VuB-s7-60B" id="8go-P6-s41"/>
                 <outlet property="colorStyleMatrix" destination="ZdF-pn-USE" id="sul-BX-2Ez"/>
                 <outlet property="colorTextField" destination="FSu-oQ-wrx" id="2Pb-rY-fhi"/>
                 <outlet property="colorWell" destination="5Hf-8k-PN5" id="PAk-d3-V84"/>
@@ -651,14 +651,15 @@ DQ
                 <outlet property="embedInIllustratorCheckBox" destination="857" id="861"/>
                 <outlet property="embedSourceCheckBox" destination="On1-La-dwy" id="VMh-uZ-oVY"/>
                 <outlet property="encodingPopUpButton" destination="Gzh-vl-KcH" id="XMi-XA-snF"/>
-                <outlet property="flashBackgroundMenuItem" destination="829" id="835"/>
-                <outlet property="flashHighlightMenuItem" destination="789" id="795"/>
-                <outlet property="flashInMovingMenuItem" destination="799" id="801"/>
+                <outlet property="flashBackgroundCheckBox" destination="cqv-iM-ddW" id="6rE-vK-8l3"/>
+                <outlet property="flashHighlightButton" destination="789" id="viJ-Qa-hCu"/>
+                <outlet property="flashInMovingCheckBox" destination="Bh6-7t-qwa" id="ZIU-pC-csp"/>
                 <outlet property="generateButton" destination="453" id="754"/>
                 <outlet property="generateMenuItem" destination="468" id="755"/>
                 <outlet property="gsPathTextField" destination="604" id="609"/>
                 <outlet property="guessCompilationButton" destination="nMD-49-FUm" id="Ybd-B7-grM"/>
-                <outlet property="highlightContentMenuItem" destination="824" id="830"/>
+                <outlet property="highlightContentCheckBox" destination="5Rq-aL-FFQ" id="l6e-Ek-LFX"/>
+                <outlet property="highlightPatternMatrix" destination="9hx-9A-wgY" id="UA8-S9-DIa"/>
                 <outlet property="ignoreErrorCheckBox" destination="653" id="655"/>
                 <outlet property="inputSourceFileButton" destination="fNB-7d-xgA" id="8gZ-Pk-OFj"/>
                 <outlet property="inputSourceFileTextField" destination="cz9-Hs-JtF" id="2fT-96-ciu"/>
@@ -666,7 +667,8 @@ DQ
                 <outlet property="leftMarginLabel" destination="546" id="617"/>
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
-                <outlet property="noHighlightMenuItem" destination="791" id="797"/>
+                <outlet property="noHighlightButton" destination="791" id="1oF-JF-wbg"/>
+                <outlet property="numberOfCompilationStepper" destination="X9l-Yh-wIQ" id="Qvp-0d-gZn"/>
                 <outlet property="numberOfCompilationTextField" destination="dpd-O4-qxE" id="KWX-AS-ogm"/>
                 <outlet property="outputDrawer" destination="748" id="753"/>
                 <outlet property="outputDrawerMenuItem" destination="487" id="741"/>
@@ -683,13 +685,15 @@ DQ
                 <outlet property="resolutionSlider" destination="640" id="646"/>
                 <outlet property="rightMarginLabel" destination="552" id="618"/>
                 <outlet property="rightMarginSlider" destination="551" id="623"/>
-                <outlet property="showFullwidthSpaceCharacterMenuItem" destination="810" id="818"/>
-                <outlet property="showNewLineCharacterMenuItem" destination="812" id="819"/>
+                <outlet property="showFullwidthSpaceCharacterCheckBox" destination="UOc-tL-oge" id="f0L-rP-JYJ"/>
+                <outlet property="showNewLineCharacterCheckBox" destination="tuH-Mu-6qj" id="9Ri-Ee-btf"/>
                 <outlet property="showOutputDrawerCheckBox" destination="650" id="742"/>
-                <outlet property="showSpaceCharacterMenuItem" destination="809" id="817"/>
-                <outlet property="showTabCharacterMenuItem" destination="811" id="820"/>
-                <outlet property="solidHighlightMenuItem" destination="790" id="796"/>
+                <outlet property="showSpaceCharacterCheckBox" destination="HQa-0J-uFs" id="phf-2q-oA4"/>
+                <outlet property="showTabCharacterCheckBox" destination="hZo-cQ-gku" id="NVt-tM-Zyf"/>
+                <outlet property="solidHighlightButton" destination="790" id="VHw-uC-R8B"/>
                 <outlet property="sourceTextView" destination="aKZ-WF-zY9" id="Q4i-tH-xWD"/>
+                <outlet property="tabWidthStepper" destination="dXP-6C-rYH" id="vPo-Gc-ffO"/>
+                <outlet property="tabWidthTextField" destination="GqY-X3-Qub" id="1hC-A2-Jlh"/>
                 <outlet property="templatePopupButton" destination="8yt-cH-L8O" id="cye-en-aa4"/>
                 <outlet property="textPdfCheckBox" destination="636" id="6cW-Hs-Ute"/>
                 <outlet property="toClipboardCheckBox" destination="6An-yj-dxn" id="ApG-vL-Jku"/>
@@ -785,6 +789,7 @@ DQ
                     </popUpButton>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="635.5" y="680"/>
         </window>
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="517">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -1292,6 +1297,269 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
+                            <tabViewItem label="View" identifier="Item 2" id="sci-do-lkd">
+                                <view key="view" id="RZt-Sg-m5Y">
+                                    <rect key="frame" x="10" y="33" width="387" height="351"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <box autoresizesSubviews="NO" title="Highlight Matching Brackets" borderType="line" id="IW1-X2-Kne">
+                                            <rect key="frame" x="6" y="51" width="375" height="177"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <view key="contentView">
+                                                <rect key="frame" x="1" y="1" width="373" height="161"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <box autoresizesSubviews="NO" title="Target" borderType="line" id="csC-GF-SWd">
+                                                        <rect key="frame" x="15" y="97" width="242" height="54"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <view key="contentView">
+                                                            <rect key="frame" x="1" y="1" width="240" height="38"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <button id="iIL-tw-OME">
+                                                                    <rect key="frame" x="16" y="12" width="36" height="18"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <buttonCell key="cell" type="check" title="{ }" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="QBI-wb-afS">
+                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                        <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="refreshTextView:" target="450" id="oWI-G0-9vo"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <button id="C1n-Uc-w6m">
+                                                                    <rect key="frame" x="128" y="12" width="36" height="18"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <buttonCell key="cell" type="check" title="( )" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="kSf-nA-noa">
+                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                        <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="refreshTextView:" target="450" id="qRS-IC-IcF"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <button id="WUZ-m6-b4G">
+                                                                    <rect key="frame" x="184" y="12" width="40" height="18"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <buttonCell key="cell" type="check" title="&lt; &gt;" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Ilj-Bg-RZ1">
+                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                        <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="refreshTextView:" target="450" id="YUf-mZ-1KH"/>
+                                                                    </connections>
+                                                                </button>
+                                                                <button id="VuB-s7-60B">
+                                                                    <rect key="frame" x="72" y="12" width="36" height="18"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <buttonCell key="cell" type="check" title="[ ]" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="ZhB-VV-Ch6">
+                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                        <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                                    </buttonCell>
+                                                                    <connections>
+                                                                        <action selector="refreshTextView:" target="450" id="Xy0-k2-YCV"/>
+                                                                    </connections>
+                                                                </button>
+                                                            </subviews>
+                                                        </view>
+                                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    </box>
+                                                    <box autoresizesSubviews="NO" title="Style" borderType="line" id="o8L-gV-m8r">
+                                                        <rect key="frame" x="261" y="58" width="98" height="93"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <view key="contentView">
+                                                            <rect key="frame" x="1" y="1" width="96" height="77"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="9hx-9A-wgY">
+                                                                    <rect key="frame" x="17" y="10" width="61" height="61"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    <size key="cellSize" width="55" height="18"/>
+                                                                    <size key="intercellSpacing" width="4" height="2"/>
+                                                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="eyM-Wb-Ksa">
+                                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                        <font key="font" metaFont="system"/>
+                                                                    </buttonCell>
+                                                                    <cells>
+                                                                        <column>
+                                                                            <buttonCell type="radio" title="Flash" imagePosition="left" alignment="left" state="on" inset="2" id="bEr-zb-LGf">
+                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                                <font key="font" metaFont="system"/>
+                                                                            </buttonCell>
+                                                                            <buttonCell type="radio" title="Solid" imagePosition="left" alignment="left" tag="1" inset="2" id="neh-eK-QkA">
+                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                                <font key="font" metaFont="system"/>
+                                                                            </buttonCell>
+                                                                            <buttonCell type="radio" title="None" imagePosition="left" alignment="left" tag="2" inset="2" id="fVU-vE-Kz1">
+                                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                                <font key="font" metaFont="system"/>
+                                                                            </buttonCell>
+                                                                        </column>
+                                                                    </cells>
+                                                                    <connections>
+                                                                        <action selector="refreshTextView:" target="450" id="Tc9-RU-paz"/>
+                                                                    </connections>
+                                                                </matrix>
+                                                            </subviews>
+                                                        </view>
+                                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    </box>
+                                                    <button id="Bh6-7t-qwa">
+                                                        <rect key="frame" x="16" y="72" width="184" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Flash indicators in moving" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="8yE-Y7-QFv">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="TYr-4c-31w"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="5Rq-aL-FFQ">
+                                                        <rect key="frame" x="16" y="52" width="206" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Highlight enclosed characters" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Kmm-Kn-LbB">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="22k-Ba-Xro"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="S8e-Q4-bYm">
+                                                        <rect key="frame" x="16" y="32" width="185" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Beep for isolated brackets" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="dbk-x5-9qc">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="ri6-Ox-QPl"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="cqv-iM-ddW">
+                                                        <rect key="frame" x="16" y="12" width="263" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Flash background for isolated brackets" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="tv7-et-9N3">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="z0j-eO-KTn"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
+                                        <box autoresizesSubviews="NO" title="Source Style" borderType="line" id="Zts-dg-dde">
+                                            <rect key="frame" x="6" y="237" width="201" height="114"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <view key="contentView">
+                                                <rect key="frame" x="1" y="1" width="199" height="98"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="iEM-GL-Ypt">
+                                                        <rect key="frame" x="16" y="69" width="73" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Tab width:" id="9Gj-i6-ayJ">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="GqY-X3-Qub">
+                                                        <rect key="frame" x="92" y="66" width="46" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="4" drawsBackground="YES" id="1Ov-gw-QBC">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="Hu5-5x-XUh">
+                                                                <real key="minimum" value="1"/>
+                                                                <real key="maximum" value="100"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="takeIntValueFrom:" target="dXP-6C-rYH" id="tIR-u9-3S7"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="dXP-6C-rYH">
+                                                        <rect key="frame" x="139" y="63" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="100" doubleValue="1" id="4Dg-ZH-Tho"/>
+                                                        <connections>
+                                                            <action selector="tabWidthStepperPressed:" target="450" id="6Wt-ey-lcS"/>
+                                                        </connections>
+                                                    </stepper>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
+                                        <box autoresizesSubviews="NO" title="Show Invisible Characters" borderType="line" id="Ch8-g0-Xrf">
+                                            <rect key="frame" x="209" y="237" width="172" height="114"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView">
+                                                <rect key="frame" x="1" y="1" width="170" height="98"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <button id="HQa-0J-uFs">
+                                                        <rect key="frame" x="16" y="72" width="108" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Normal space" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="04l-ob-DLr">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="8NU-LV-6yv"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="tuH-Mu-6qj">
+                                                        <rect key="frame" x="16" y="32" width="64" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Return" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="2a9-L8-dhu">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="ArL-8g-Ke1"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="UOc-tL-oge">
+                                                        <rect key="frame" x="16" y="52" width="141" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Fullwidth space (ja)" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Pca-qy-0gw">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="bR3-s9-3kV"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="hZo-cQ-gku">
+                                                        <rect key="frame" x="16" y="12" width="44" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Tab" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Vvo-N6-zWE">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="PAW-1j-nAE"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
                             <tabViewItem label="After Compiling" identifier="Item 2" id="587">
                                 <view key="view" id="588">
                                     <rect key="frame" x="10" y="33" width="387" height="351"/>
@@ -1382,7 +1650,7 @@ DQ
                     </tabView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="753.5" y="582"/>
+            <point key="canvasLocation" x="93.5" y="875"/>
         </window>
         <window title="Save / Load Profiles" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="670" userLabel="Window (ProfileWindow)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>

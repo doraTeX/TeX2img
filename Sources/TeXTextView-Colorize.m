@@ -128,7 +128,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (void)resetHighlight:(id)sender
 {
-	[self colorizeText:[controller.currentProfile boolForKey:ColorizeTextKey]];
+	[self colorizeText:YES];
 	braceHighlighting = NO;
 }
 
