@@ -208,6 +208,7 @@ typedef enum {
 	if (str) {
 		[outputTextView.textStorage.mutableString appendString:str];
 		[outputTextView scrollRangeToVisible: NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
+        outputTextView.font = sourceTextView.font;
 	}
 }
 
@@ -411,6 +412,7 @@ typedef enum {
     if (aFont) {
         sourceTextView.font = aFont;
         preambleTextView.font = aFont;
+        outputTextView.font = aFont;
         [self setupFontTextField: aFont];
     } else {
         [self loadDefaultFont];
@@ -1448,6 +1450,7 @@ typedef enum {
     [self setupFontTextField:font];
     sourceTextView.font = font;
     preambleTextView.font = font;
+    outputTextView.font = font;
     
 }
 
