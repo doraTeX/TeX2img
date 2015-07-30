@@ -37,6 +37,7 @@
 @property BOOL copyToClipboard;
 @property NSString* additionalInputPath;
 @property BOOL pdfInputMode;
+@property BOOL errorsIgnored;
 @end
 
 @implementation Converter
@@ -64,6 +65,7 @@
 @synthesize copyToClipboard;
 @synthesize additionalInputPath;
 @synthesize pdfInputMode;
+@synthesize errorsIgnored;
 
 
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
@@ -221,7 +223,7 @@
 		[controller appendOutputAndScroll:[NSMutableString stringWithUTF8String:str] quiet:quietFlag];
 	}
 	NSInteger status = pclose(fp);
-	return (ignoreErrorsFlag || status == 0) ? YES : NO;
+	return (status == 0) ? YES : NO;
 	
 }
 
@@ -267,7 +269,7 @@
     }
     
     BOOL success = [self compileWithArguments:arguments];
-    if (!success) {
+    if (!success && !ignoreErrorsFlag) {
         return NO;
     }
     
@@ -277,30 +279,30 @@
         
         // aux が \relax のみのときは終了
         if ([oldAuxData isEqualToData:[@"\\relax \n" dataUsingEncoding:NSUTF8StringEncoding]]) {
-            return YES;
+            return success;
         }
  
         for (NSInteger i=1; i<numberOfCompilation; i++) {
             success = [self compileWithArguments:arguments];
-            if (!success) {
+            if (!success && !ignoreErrorsFlag) {
                 return NO;
             }
             newAuxData = [NSData dataWithContentsOfFile:auxFilePath];
             if ([newAuxData isEqualToData:oldAuxData]) {
-                return YES;
+                return success;
             }
             oldAuxData = newAuxData;
         }
     } else {
         for (NSInteger i=1; i<numberOfCompilation; i++) {
             success = [self compileWithArguments:arguments];
-            if (!success) {
+            if (!success && !ignoreErrorsFlag) {
                 return NO;
             }
         }
     }
     
-    return YES;
+    return success;
 }
 
 - (BOOL)dvi2pdf:(NSString*)dviFilePath
@@ -783,11 +785,18 @@
 	NSString* outputFileName = outputFilePath.lastPathComponent;
 	NSString* extension = outputFilePath.pathExtension.lowercaseString;
 	
+    errorsIgnored = NO;
+    
     if (!pdfInputMode) {
         // TeX コンパイル
-        if (![self tex2dvi:texFilePath]) {
-            [controller showCompileError];
-            return NO;
+        BOOL success = [self tex2dvi:texFilePath];
+        if (!success) {
+            if (ignoreErrorsFlag) {
+                errorsIgnored = YES;
+            } else {
+                [controller showCompileError];
+                return NO;
+            }
         }
         
         BOOL compilationSuceeded = NO;
@@ -997,6 +1006,11 @@
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps.trim.pdf", basePath, i] error:nil];
         }
 	}
+    
+    // エラーを無視した場合は警告
+    if (ignoreErrorsFlag && errorsIgnored) {
+        [controller showErrorsIgnoredWarning];
+    }
 	
 	return status;
 }

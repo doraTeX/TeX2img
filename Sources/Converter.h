@@ -15,6 +15,7 @@
 - (void)clearOutputTextView;
 - (void)showOutputDrawer;
 - (void)showMainWindow;
+- (void)showErrorsIgnoredWarning;
 @end
 
 @interface Converter : NSObject

@@ -102,6 +102,14 @@ BOOL checkWhich(NSString *cmdName)
         printf("%s", str.UTF8String);
     }
 }
+
+- (void)showErrorsIgnoredWarning
+{
+    if (!quiet) {
+        printStdErr("Warning: Some errors were ignored. The result may be different from what you expected.");
+    }
+}
+
 #pragma mark -
 
 

@@ -288,6 +288,11 @@ typedef enum {
     runErrorPanel(localizedString(@"compileErrorMsg"));
 }
 
+- (void)showErrorsIgnoredWarning
+{
+    runWarningPanel(localizedString(@"errorsIgnoredWarning"));
+}
+
 #pragma mark - プロファイルの読み書き関連
 - (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
 {

@@ -18,6 +18,15 @@ void runErrorPanel(NSString *message, ...)
     va_end(arguments);
 }
 
+void runWarningPanel(NSString *message, ...)
+{
+    va_list arguments;
+    va_start(arguments, message);
+    NSString *msg = [NSString.alloc initWithFormat:message arguments:arguments];
+    runOkPanel(localizedString(@"Warning"), msg);
+    va_end(arguments);
+}
+
 BOOL runConfirmPanel(NSString *message, ...)
 {
     va_list arguments;

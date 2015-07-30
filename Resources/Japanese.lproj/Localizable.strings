@@ -1,7 +1,7 @@
 "YenMark" = "¥";
 "Backslash" = "\\";
 "Error" = "エラー";
-"Alert" = "警告";
+"Warning" = "警告";
 "Confirm" = "確認";
 "YES" = "はい";
 "NO" = "いいえ";
@@ -27,3 +27,4 @@
 "saveCurrentPreambleAsTemplate" = "プリアンブルをテンプレートとして保存";
 "restoreTemplatesConfirmationMsg" = "デフォルトのテンプレートを復元します。\n同名の既存テンプレートは上書きされます。\nよろしいですか？";
 "doesNotContainSource" = "この画像ファイルにはソース情報が含まれていません。";
+"errorsIgnoredWarning" = "コンパイルエラーを無視して画像化を強行しました。\n組版結果は期待と異なる可能性があります。\nソースを修正してエラーを解決することを推奨します。";
