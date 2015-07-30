@@ -24,11 +24,6 @@ BOOL checkWhich(NSString *cmdName)
 {	
 }
 
-- (void)showNotFoundError:(NSString*)aPath
-{
-	printStdErr("tex2img : %s cannot be found.\nCheck the environment variable $PATH.\n", aPath.UTF8String);
-}
-
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
 {
 	if (!checkWhich(latexPath)) {
@@ -66,34 +61,39 @@ BOOL checkWhich(NSString *cmdName)
     return YES;
 }
 
+- (void)showNotFoundError:(NSString*)aPath
+{
+    printStdErr("tex2img: [Error] %s cannot be found.\nCheck the environment variable $PATH.\n", aPath.UTF8String);
+}
+
 - (void)showExtensionError
 {
-    printStdErr("tex2img : The extention of output file must be either eps/pdf/jpg/png/gif/tiff/bmp/svg.\n");
+    printStdErr("tex2img: [Error] The extention of output file must be either eps/pdf/jpg/png/gif/tiff/bmp/svg.\n");
 }
 
 - (void)showFileGenerateError:(NSString*)aPath
 {
-	printStdErr("tex2img : %s cannot be created, and so generation has been aborted.\nCheck permission.\n", aPath.UTF8String);
+	printStdErr("tex2img: [Error] %s cannot be created, and so generation has been aborted.\nCheck permission.\n", aPath.UTF8String);
 }
 
 - (void)showExecError:(NSString*)command
 {
-	printStdErr("tex2img : %s cannot be executed.\nCheck errors in the source code.\n", command.UTF8String);
+	printStdErr("tex2img: [Error] %s cannot be executed.\nCheck errors in the source code.\n", command.UTF8String);
 }
 
 - (void)showCannotOverwriteError:(NSString*)path
 {
-	printStdErr("tex2img : %s cannot be overwritten.\n", path.UTF8String);
+	printStdErr("tex2img: [Error] %s cannot be overwritten.\n", path.UTF8String);
 }
 
 - (void)showCannotCreateDirectoryError:(NSString*)dir
 {
-    printStdErr("tex2img : Directory %s cannot be overwritten.\n", dir.UTF8String);
+    printStdErr("tex2img: [Error] Directory %s cannot be overwritten.\n", dir.UTF8String);
 }
 
 - (void)showCompileError
 {
-	printStdErr("tex2img : TeX Compile error.\nCheck errors in the source code.\n");
+	printStdErr("tex2img: [Error] TeX Compile error.\nCheck errors in the source code.\n");
 }
 
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet
@@ -105,9 +105,7 @@ BOOL checkWhich(NSString *cmdName)
 
 - (void)showErrorsIgnoredWarning
 {
-    if (!quiet) {
-        printStdErr("Warning: Some errors were ignored. The result may be different from what you expected.");
-    }
+    printStdErr("tex2img: [Warning] Some errors were ignored. The result may be different from what you expected.\n");
 }
 
 #pragma mark -
