@@ -2,6 +2,12 @@
 #import "NSDictionary-Extension.h"
 #import "NSMutableString-Extension.h"
 #import "MyLayoutManager.h"
+#import "UtilityG.h"
+
+#define CommentOutTag 1
+#define UncommentTag 2
+#define ShiftRightTag 3
+#define ShiftLeftTag 4
 
 static BOOL isValidTeXCommandChar(unichar c);
 
@@ -272,6 +278,178 @@ static BOOL isValidTeXCommandChar(unichar c)
         self.textColor = NSColor.disabledControlTextColor;
     }
 }
+
+// コメントアウト・アンコメント・左右シフト
+- (IBAction)doCommentOrIndent:(id)sender
+{
+    NSString    *text, *oldString;
+    NSRange     modifyRange;
+    NSUInteger  blockStart, blockEnd, lineStart, lineContentsEnd, lineEnd;
+    NSInteger   theChar = 0, increment = 0, rangeIncrement;
+    NSString    *theCommand = nil;
+    NSUInteger  tabWidth, i;
+    NSString    *indentString;
+    BOOL useTabForIndent = YES;
+    
+    text = self.string;
+    NSRange oldRange = self.selectedRange;
+    
+    [text getLineStart:&blockStart end:&blockEnd contentsEnd:NULL forRange:self.selectedRange];
+    tabWidth = [controller.currentProfile integerForKey:TabWidthKey];
+    
+    modifyRange.location = blockStart;
+    modifyRange.length = blockEnd - blockStart;
+    oldString = [self.string substringWithRange:modifyRange];
+    
+    lineStart = blockStart;
+    BOOL firstLine = YES;
+    BOOL fixRangeStart = NO;
+
+    do {
+        modifyRange.location = lineStart;
+        modifyRange.length = 0;
+        [text getLineStart:NULL end:&lineEnd contentsEnd:&lineContentsEnd forRange:modifyRange];
+
+        switch ([sender tag]) {
+            case CommentOutTag:
+                [self replaceCharactersInRange:modifyRange withString:@"%"];
+                blockEnd++;
+                lineEnd++;
+                increment++;
+                theCommand = localizedString(@"CommentOut");
+                break;
+                
+            case UncommentTag:
+                if (lineStart<lineContentsEnd) {
+                    theChar = [text characterAtIndex:lineStart];
+                } else if (firstLine) {
+                    fixRangeStart = YES;
+                    break;
+                } else {
+                    break;
+                }
+                if (theChar == '%') {
+                    modifyRange.length = 1;
+                    [self replaceCharactersInRange:modifyRange withString:@""];
+                    blockEnd--;
+                    lineEnd--;
+                    increment--;
+                    if (oldRange.location == blockStart && firstLine) {
+                        fixRangeStart = YES;
+                    }
+                    theCommand = localizedString(@"Uncomment");
+                } else if (firstLine) {
+                    fixRangeStart = YES;
+                }
+                break;
+                
+            case ShiftRightTag:
+                indentString = @"";
+                if (tabWidth > 0) {
+                    for (i = 1; i <= tabWidth; i++) {
+                        indentString = [indentString stringByAppendingString: @" "];
+                    }
+                }
+                if (useTabForIndent) {
+                    [self replaceCharactersInRange:modifyRange withString:@"\t"];
+                    blockEnd++;
+                    lineEnd++;
+                    increment++;
+                } else {
+                    [self replaceCharactersInRange:modifyRange withString:indentString];
+                    blockEnd = blockEnd + tabWidth;
+                    lineEnd = lineEnd + tabWidth;
+                    increment = increment + tabWidth;
+                }
+                
+                theCommand = localizedString(@"Indent");
+                break;
+                
+            case ShiftLeftTag:
+                if (lineStart < lineContentsEnd) {
+                    theChar = [text characterAtIndex:lineStart];
+                } else if (firstLine) {
+                    fixRangeStart = YES;
+                    break;
+                } else {
+                    break;
+                }
+                
+                if (!useTabForIndent && theChar == ' ') {
+                    modifyRange.location = lineStart;
+                    modifyRange.length = 1;
+                    [self replaceCharactersInRange:modifyRange withString:@""];
+                    blockEnd--;
+                    lineEnd--;
+                    increment--;
+                    i = 1;
+                    theChar = [text characterAtIndex:lineStart+1];
+                    while (((lineStart + i) < lineContentsEnd) && (i < tabWidth) && (theChar == ' ')) {
+                        modifyRange.location = lineStart;
+                        modifyRange.length = 1;
+                        [self replaceCharactersInRange:modifyRange withString:@""];
+                        blockEnd--;
+                        lineEnd--;
+                        increment--;
+                        i++;
+                    }
+                    if (oldRange.location == blockStart && firstLine) {
+                        fixRangeStart = YES;
+                    }
+                    theCommand = localizedString(@"Unindent");
+                } else if (useTabForIndent && theChar == '\t') {
+                    modifyRange.length = 1;
+                    [self replaceCharactersInRange:modifyRange withString:@""];
+                    blockEnd--;
+                    lineEnd--;
+                    increment--;
+                    
+                    if (oldRange.location == blockStart && firstLine) {
+                        fixRangeStart = YES;
+                    }
+                    theCommand = localizedString(@"Unindent");
+                } else if (firstLine) {
+                    fixRangeStart = YES;
+                }
+                break;
+        }
+        lineStart = lineEnd;
+        firstLine = NO;
+    } while (lineStart < blockEnd);
+    
+    if (!theCommand) {
+        return; // If no change was made, do nothing.
+    }
+    
+    modifyRange.location = blockStart;
+    modifyRange.length = blockEnd - blockStart;
+    self.selectedRange = modifyRange;
+    
+    [self registerUndoWithString:oldString location:modifyRange.location
+                          length:modifyRange.length key: theCommand];
+    
+    rangeIncrement = increment + ((increment > 0) ? (-1) : 1);
+    if (fixRangeStart) {
+        rangeIncrement--;
+    } else {
+        oldRange.location += (increment > 0) ? 1 : -1;
+    }
+    if (!(oldRange.length == 0 && rangeIncrement < 0)) {
+        oldRange.length += rangeIncrement;
+    }
+    
+    self.selectedRange = oldRange;
+    
+    // we now fix the selected range, which was sometimes one or two of
+    text = self.string;
+    [text getLineStart:&blockStart end:&blockEnd contentsEnd:NULL forRange:self.selectedRange];
+    modifyRange.location = blockStart;
+    modifyRange.length = blockEnd - blockStart;
+    self.selectedRange = modifyRange;
+
+    [self colorizeText:YES];
+}
+
 
 - (void)replaceEntireContentsWithString:(NSString*)contents colorize:(BOOL)colorize
 {

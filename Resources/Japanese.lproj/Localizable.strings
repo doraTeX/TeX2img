@@ -5,6 +5,10 @@
 "Confirm" = "確認";
 "YES" = "はい";
 "NO" = "いいえ";
+"CommentOut" = "コメントアウト";
+"Uncomment" = "非コメント化";
+"Indent" = "行を右へシフト";
+"Unindent" = "行を左へシフト";
 "Completion" = "コマンド補完";
 "resotrePreambleMsg" = "プリアンブル部が次の内容にリセットされます。よろしいですか？";
 "Cancel" = "キャンセル";

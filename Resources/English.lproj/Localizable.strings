@@ -5,6 +5,10 @@
 "Confirm" = "Confirm";
 "YES" = "Yes";
 "NO" = "No";
+"CommentOut" = "Comment Out";
+"Uncomment" = "Uncomment";
+"Indent" = "Shift Right";
+"Unindent" = "Shift Left";
 "Completion" = "Command Completion";
 "resotrePreambleMsg" = "The preamble will be restored as follows.\nDo you want to continue?";
 "Cancel" = "Cancel";
