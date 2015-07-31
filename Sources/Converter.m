@@ -107,6 +107,7 @@
     embedSource = [aProfile boolForKey:EmbedSourceKey];
     additionalInputPath = nil;
     pdfInputMode = NO;
+    errorsIgnored = NO;
     
 	fileManager = NSFileManager.defaultManager;
 	tempdir = NSTemporaryDirectory();
