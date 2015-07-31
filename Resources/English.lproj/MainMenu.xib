@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14F6a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14F19a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1050" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
@@ -278,14 +278,12 @@
                                     <action selector="doCommentOrIndent:" target="-1" id="dSw-69-0xk"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Shift Right" tag="3" id="OTT-GP-nfN">
-                                <modifierMask key="keyEquivalentModifierMask"/>
+                            <menuItem title="Shift Right" tag="3" keyEquivalent="&gt;" id="OTT-GP-nfN">
                                 <connections>
                                     <action selector="doCommentOrIndent:" target="-1" id="ehM-vJ-U4a"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Shift Left" tag="4" id="4V8-qQ-H9T">
-                                <modifierMask key="keyEquivalentModifierMask"/>
+                            <menuItem title="Shift Left" tag="4" keyEquivalent="&lt;" id="4V8-qQ-H9T">
                                 <connections>
                                     <action selector="doCommentOrIndent:" target="-1" id="KVO-Mk-cGg"/>
                                 </connections>
