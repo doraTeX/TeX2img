@@ -574,6 +574,7 @@ DQ
                 <outlet property="showSpaceCharacterCheckBox" destination="HQa-0J-uFs" id="P3q-Sr-DsE"/>
                 <outlet property="showTabCharacterCheckBox" destination="hZo-cQ-gku" id="NVt-tM-Zyf"/>
                 <outlet property="sourceTextView" destination="aKZ-WF-zY9" id="Q4i-tH-xWD"/>
+                <outlet property="tabIndentCheckBox" destination="7as-lr-wdO" id="cqO-q5-pl6"/>
                 <outlet property="tabWidthStepper" destination="dXP-6C-rYH" id="vPo-Gc-ffO"/>
                 <outlet property="tabWidthTextField" destination="GqY-X3-Qub" id="1hC-A2-Jlh"/>
                 <outlet property="templatePopupButton" destination="8yt-cH-L8O" id="cye-en-aa4"/>
@@ -1293,16 +1294,16 @@ DQ
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="iEM-GL-Ypt">
-                                                        <rect key="frame" x="16" y="69" width="73" height="17"/>
+                                                        <rect key="frame" x="10" y="69" width="38" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Tab width:" id="9Gj-i6-ayJ">
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Tab:" id="9Gj-i6-ayJ">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
                                                     <textField verticalHuggingPriority="750" id="GqY-X3-Qub">
-                                                        <rect key="frame" x="92" y="66" width="46" height="22"/>
+                                                        <rect key="frame" x="43" y="66" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="4" drawsBackground="YES" id="1Ov-gw-QBC">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="Hu5-5x-XUh">
@@ -1318,7 +1319,7 @@ DQ
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="dXP-6C-rYH">
-                                                        <rect key="frame" x="139" y="63" width="19" height="27"/>
+                                                        <rect key="frame" x="77" y="64" width="19" height="27"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="100" doubleValue="1" id="4Dg-ZH-Tho"/>
                                                         <connections>
@@ -1326,7 +1327,7 @@ DQ
                                                         </connections>
                                                     </stepper>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="H1k-tV-Nig">
-                                                        <rect key="frame" x="58" y="43" width="142" height="17"/>
+                                                        <rect key="frame" x="52" y="43" width="142" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Font" id="yx9-Z0-QOx">
                                                             <font key="font" metaFont="system"/>
@@ -1335,7 +1336,7 @@ DQ
                                                         </textFieldCell>
                                                     </textField>
                                                     <button id="nBY-hr-otx">
-                                                        <rect key="frame" x="18" y="40" width="34" height="22"/>
+                                                        <rect key="frame" x="12" y="40" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="square" title="Font" bezelStyle="shadowlessSquare" imagePosition="left" alignment="center" borderStyle="border" inset="2" id="l2z-eQ-qMa">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1344,6 +1345,14 @@ DQ
                                                         <connections>
                                                             <action selector="showFontPanelOfSource:" target="450" id="XLZ-aq-BUS"/>
                                                         </connections>
+                                                    </button>
+                                                    <button id="7as-lr-wdO">
+                                                        <rect key="frame" x="103" y="68" width="91" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Tab indent" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="U9U-kg-YjG">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
                                                     </button>
                                                 </subviews>
                                             </view>

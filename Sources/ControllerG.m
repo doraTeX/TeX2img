@@ -56,6 +56,7 @@ typedef enum {
 @property IBOutlet NSTextField *fontTextField;
 @property IBOutlet NSTextField *tabWidthTextField;
 @property IBOutlet NSStepper *tabWidthStepper;
+@property IBOutlet NSButton *tabIndentCheckBox;
 
 @property IBOutlet NSButton *showTabCharacterCheckBox;
 @property IBOutlet NSButton *showSpaceCharacterCheckBox;
@@ -141,6 +142,7 @@ typedef enum {
 @synthesize fontTextField;
 @synthesize tabWidthStepper;
 @synthesize tabWidthTextField;
+@synthesize tabIndentCheckBox;
 
 @synthesize templatePopupButton;
 
@@ -329,6 +331,7 @@ typedef enum {
     } else {
         embedSourceCheckBox.state = NSOnState;
     }
+
     toClipboardCheckBox.state = [aProfile integerForKey:CopyToClipboardKey];
     
 	embedInIllustratorCheckBox.state = [aProfile integerForKey:EmbedInIllustratorKey];
@@ -362,6 +365,12 @@ typedef enum {
     }
     [tabWidthStepper takeIntValueFrom:tabWidthTextField];
 
+    if ([aProfile.allKeys containsObject:TabIndentKey]) {
+        tabIndentCheckBox.state = [aProfile integerForKey:TabIndentKey];
+    } else {
+        tabIndentCheckBox.state = NSOnState;
+    }
+    
 	autoCompleteMenuItem.state = [aProfile boolForKey:AutoCompleteKey];
 	showTabCharacterCheckBox.state = [aProfile boolForKey:ShowTabCharacterKey];
 	showSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowSpaceCharacterKey];
@@ -514,6 +523,8 @@ typedef enum {
         
         NSInteger tabWidth = tabWidthTextField.integerValue;
         currentProfile[TabWidthKey] = @((tabWidth > 0) ? tabWidth : 4);
+        
+        currentProfile[TabIndentKey] = @(tabIndentCheckBox.state);
         
         currentProfile[UnitKey] = @(unitMatrix.selectedTag);
         currentProfile[PriorityKey] = @(priorityMatrix.selectedTag);

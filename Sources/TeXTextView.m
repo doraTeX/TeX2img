@@ -289,13 +289,14 @@ static BOOL isValidTeXCommandChar(unichar c)
     NSString    *theCommand = nil;
     NSUInteger  tabWidth, i;
     NSString    *indentString;
-    BOOL useTabForIndent = YES;
+    NSDictionary *aProfile = controller.currentProfile;
+    BOOL useTabForIndent = [aProfile boolForKey:TabIndentKey];
+    tabWidth = [aProfile integerForKey:TabWidthKey];
     
     text = self.string;
     NSRange oldRange = self.selectedRange;
     
     [text getLineStart:&blockStart end:&blockEnd contentsEnd:NULL forRange:self.selectedRange];
-    tabWidth = [controller.currentProfile integerForKey:TabWidthKey];
     
     modifyRange.location = blockStart;
     modifyRange.length = blockEnd - blockStart;

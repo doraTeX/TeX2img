@@ -44,6 +44,7 @@ NSMutableString *g_commandCompletionList;
 #define PriorityKey @"priority"
 #define EmbedSourceKey @"embedSource"
 #define TabWidthKey @"tabWidth"
+#define TabIndentKey @"tabIndent"
 
 #define ConvertYenMarkKey @"convertYenMark"
 #define FlashInMovingKey @"flashInMoving"
