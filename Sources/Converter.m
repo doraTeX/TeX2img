@@ -5,6 +5,7 @@
 #import "Utility.h"
 
 #define MAX_LEN 1024
+#define EMPTY_BBOX @"%%BoundingBox: 0 0 0 0\n"
 
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
@@ -376,7 +377,7 @@
     
     NSString *bbStr = [self bboxStringOfPdf:pdfPath page:page]; // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiReSのBBoxを使うのが得策。
     
-    if ([bbStr isEqualToString:@"%%BoundingBox: 0 0 0 0\n"]) {
+    if ([bbStr isEqualToString:EMPTY_BBOX]) {
         return [NSString stringWithFormat:@"\\pdfhorigin=0bp\\relax\\pdfvorigin=0bp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\pdfpagewidth=\\wd0\\relax\\pdfpageheight=\\dimexpr\\ht0+\\dp0\\relax\\shipout\\hbox{\\raise\\dp0\\box0\\relax}", page, pdfPath];
     } else {
         return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin=-#1bp\\relax\\pdfvorigin=#2bp\\relax\\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight=\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight\\relax\\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
@@ -460,6 +461,10 @@
     
     if (!bbStr) {
         return NO;
+    }
+    
+    if ([bbStr isEqualToString:EMPTY_BBOX]) { // 白紙ページの場合は置換を行わない
+        return YES;
     }
     
     bbStr = [bbStr stringByReplacingOccurrencesOfString:@"%%BoundingBox: " withString:@""];
