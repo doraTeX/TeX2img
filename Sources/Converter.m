@@ -68,7 +68,6 @@
 @synthesize pdfInputMode;
 @synthesize errorsIgnored;
 
-
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
 {
     pageCount = 1;
@@ -196,39 +195,6 @@
 	return [mstr writeToFile:path atomically:NO encoding:enc error:NULL];
 }
 
-// TODO: execCommand を NSTask / NSPipe で書き直す？
-- (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments
-{
-	char str[MAX_LEN];
-	FILE *fp;
-	
-	chdir(path.UTF8String);
-	
-	NSMutableString *cmdline = NSMutableString.string;
-	[cmdline appendString:command];
-	[cmdline appendString:@" "];
-	
-	for (NSString *argument in arguments) {
-		[cmdline appendString:argument];
-		[cmdline appendString:@" "];
-	}
-	[cmdline appendString:@" 2>&1"];
-	[controller appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:quietFlag];
-
-	if ((fp = popen(cmdline.UTF8String, "r")) == NULL) {
-		return NO;
-	}
-	while (YES) {
-		if (fgets(str, MAX_LEN-1, fp) == NULL) {
-			break;
-		}
-		[controller appendOutputAndScroll:[NSMutableString stringWithUTF8String:str] quiet:quietFlag];
-	}
-	NSInteger status = pclose(fp);
-	return (status == 0) ? YES : NO;
-	
-}
-
 - (NSMutableString*)preliminaryCommandsForEnvironmentVariables
 {
     NSMutableString *cmdline = [NSMutableString stringWithFormat:@"export PATH=$PATH:\"%@\";", latexPath.programPath.stringByDeletingLastPathComponent];
@@ -246,9 +212,10 @@
     
     [cmdline appendFormat:@"%@", latexPath];
     
-    BOOL status = [self execCommand:cmdline
-                        atDirectory:tempdir
-                      withArguments:arguments];
+    BOOL status = [controller execCommand:cmdline
+                              atDirectory:tempdir
+                            withArguments:arguments
+                                    quiet:quietFlag];
     [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
     return status;
 }
@@ -311,7 +278,11 @@
 {
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
     [cmdline appendString:dvipdfmxPath];
-	BOOL status = [self execCommand:cmdline atDirectory:tempdir withArguments:@[@"-vv", dviFilePath]];
+	BOOL status = [controller execCommand:cmdline
+                              atDirectory:tempdir
+                            withArguments:@[@"-vv", dviFilePath]
+                                    quiet:quietFlag
+                   ];
 	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];	
 	
 	return status;
@@ -408,9 +379,10 @@
 
     NSString *pdfTeXPath = [latexPath.programPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
     
-	BOOL status = [self execCommand:pdfTeXPath
-                       atDirectory:tempdir
-					 withArguments:@[@"-no-shell-escape", @"-interaction=batchmode", cropFileBasePath.lastPathComponent]
+	BOOL status = [controller execCommand:pdfTeXPath
+                              atDirectory:tempdir
+                            withArguments:@[@"-no-shell-escape", @"-interaction=batchmode", cropFileBasePath.lastPathComponent]
+                                    quiet:quietFlag
                    ];
     
     [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
@@ -509,7 +481,7 @@
     
     [arguments addObject:pdfName];
 
-    BOOL status = [self execCommand:gsPath atDirectory:tempdir withArguments:arguments];
+    BOOL status = [controller execCommand:gsPath atDirectory:tempdir withArguments:arguments quiet:quietFlag];
     
     if (!status) {
         return NO;
@@ -529,10 +501,12 @@
 		return NO;
 	}
 	
-	[self execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
-          atDirectory:tempdir
-        withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
-                        epsName]];
+	[controller execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
+                atDirectory:tempdir
+              withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
+                              epsName]
+                      quiet:quietFlag
+     ];
 	return YES;
 }
 
@@ -671,9 +645,11 @@
     
     NSArray *arguments = @[@"-l", @"-o", svgFilePath, pdfFilePath, [NSString stringWithFormat:@"%ld", page]];
     
-    BOOL success = [self execCommand:mudrawPath
-                         atDirectory:tempdir
-                       withArguments:arguments];
+    BOOL success = [controller execCommand:mudrawPath
+                               atDirectory:tempdir
+                             withArguments:arguments
+                                     quiet:quietFlag
+                    ];
     if (!success ) {
         return NO;
     }

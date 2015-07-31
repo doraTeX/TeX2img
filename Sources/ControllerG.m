@@ -111,6 +111,9 @@ typedef enum {
 
 @property NSWindow *lastActiveWindow;
 @property NSColor *lastColor;
+
+@property NSTask *task;
+@property NSPipe *outputPipe;
 @end
 
 @implementation ControllerG
@@ -195,8 +198,40 @@ typedef enum {
 @synthesize lastActiveWindow;
 @synthesize lastColor;
 
+@synthesize task;
+@synthesize outputPipe;
 
 #pragma mark - OutputController プロトコルの実装
+- (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments quiet:(BOOL)quiet
+{
+    NSMutableString *cmdline = NSMutableString.string;
+    [cmdline appendString:command];
+    [cmdline appendString:@" "];
+    
+    for (NSString *argument in arguments) {
+        [cmdline appendString:argument];
+        [cmdline appendString:@" "];
+    }
+    [cmdline appendString:@" 2>&1"];
+    [self appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:NO];
+    
+    task = NSTask.new;
+    outputPipe = NSPipe.pipe;
+    NSFileHandle *handle = outputPipe.fileHandleForReading;
+    [handle readInBackgroundAndNotify];
+    
+    task.currentDirectoryPath = path;
+    task.launchPath = @"/bin/bash";
+    task.standardOutput = outputPipe;
+    task.standardError = outputPipe;
+    task.arguments = @[@"-c", cmdline];
+    
+    [task launch];
+    [task waitUntilExit];
+    
+    return (task.terminationStatus == 0) ? YES : NO;
+}
+
 - (void)showMainWindow
 {
 	[mainWindow makeKeyAndOrderFront:nil];
@@ -827,6 +862,12 @@ typedef enum {
                 selector: @selector(refreshTextView:)
                     name: NSControlTextDidChangeNotification
                   object: tabWidthTextField];
+    
+    // NSTask からのアウトプット
+    [aCenter addObserver: self
+                selector: @selector(readOutputData:)
+                    name: NSFileHandleReadCompletionNotification
+                  object: nil];
 	
 	// デフォルトのアウトプットファイルのパスをセット
 	outputFileTextField.stringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
@@ -1003,6 +1044,17 @@ typedef enum {
 {
 	[self showMainWindow];
 }
+
+- (void)readOutputData:(NSNotification*)aNotification
+{
+    NSData *data = [aNotification.userInfo valueForKey:NSFileHandleNotificationDataItem];
+    NSString *string = [NSString.alloc initWithData:data encoding:NSUTF8StringEncoding];
+    
+    [self appendOutputAndScroll:string quiet:NO];
+    
+    [outputPipe.fileHandleForReading readInBackgroundAndNotify];
+}
+
 
 #pragma mark - Import / Export
 

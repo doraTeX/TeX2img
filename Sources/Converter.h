@@ -16,6 +16,7 @@
 - (void)showOutputDrawer;
 - (void)showMainWindow;
 - (void)showErrorsIgnoredWarning;
+- (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments quiet:(BOOL)quiet;
 @end
 
 @interface Converter : NSObject
