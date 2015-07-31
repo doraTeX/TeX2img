@@ -315,7 +315,7 @@
 	return status;
 }
 
-// gsを実行してBB情報を取得
+// gsを実行して(非HiRes)BoundingBox情報を取得
 - (NSString*)bboxStringOfPdf:(NSString*)pdfPath page:(NSUInteger)page
 {
     char str[MAX_LEN];
@@ -340,7 +340,7 @@
     return bbStr;
 }
 
-// gsを実行してHiresBoundingBox情報を取得
+// gsを実行してHiResBoundingBox情報を取得
 - (NSString*)hiresBBoxStringOfPdf:(NSString*)pdfPath page:(NSUInteger)page
 {
     char str[MAX_LEN];
@@ -373,9 +373,13 @@
     NSInteger topmargin = addMargin ? topMargin : 0;
     NSInteger bottommargin = addMargin ? bottomMargin : 0;
     
-    NSString *bbStr = [self bboxStringOfPdf:pdfPath page:page];
+    NSString *bbStr = [self bboxStringOfPdf:pdfPath page:page]; // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiReSのBBoxを使うのが得策。
     
-    return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin-#1bp \\pdfvorigin#2bp \\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax \\advance\\pdfpagewidth by %ldbp\\relax \\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax \\advance\\pdfpageheight by %ldbp\\relax \\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight \\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
+    if ([bbStr isEqualToString:@"%%BoundingBox: 0 0 0 0\n"]) {
+        return [NSString stringWithFormat:@"\\pdfhorigin=0bp\\relax\\pdfvorigin=0bp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\pdfpagewidth=\\wd0\\relax\\pdfpageheight=\\dimexpr\\ht0+\\dp0\\relax\\shipout\\hbox{\\raise\\dp0\\box0\\relax}", page, pdfPath];
+    } else {
+        return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin=-#1bp\\relax\\pdfvorigin=#2bp\\relax\\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight=\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight\\relax\\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
+    }
 }
 
 // page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
@@ -530,7 +534,7 @@
 {
     if (addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0)) {
         NSString* trimFileName = [NSString stringWithFormat:@"%@.trim.pdf", epsName];
-        // まず，epstopdf を使って PDF に戻し，次に，pdfcrop を使って余白を付け加える
+        // まず，epstopdf を使って PDF に戻し，次に，pdfcrop類似処理を使って余白を付け加える
         return [self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName page:0 addMargin:YES];
     } else {
         // epstopdf を使って PDF に戻すのみ
@@ -697,7 +701,7 @@
         return NO;
     }
     
-    if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す（ここでpdfcropで余白付与）
+    if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す（ここでpdfcrop類似処理で余白付与）
         [self eps2pdf:outputEpsFileName outputFileName:outputFileName addMargin:YES];
     } else if ([@"eps" isEqualToString:extension]) { // 最終出力が EPS の場合
         // 余白を付け加えるようバウンディングボックスを改変
@@ -834,6 +838,18 @@
     
     pageCount = [PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfFilePath]].pageCount;
 	
+    // ありうる経路
+    // 【gsを通さない経路]
+    //  1. 速度優先モードでのビットマップ生成 (PDF →[Quartz API でビットマップ化＋余白付与]→ JPEG/PNG/GIF/TIFF/BMP)
+    //  2. テキスト情報を残したPDF生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF)
+    //  3. テキスト情報を残したSVG生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF →[mudraw]→ SVG)
+    //
+    // 【gsを通す経路]
+    //  4. 画質優先モードでのビットマップ生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ]→ EPS →[epstopdf(gs)]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JPG/PNG/GIF/TIFF/BMP)
+    //  5. アウトライン化PDF生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[epstopdf(gs)]→ PDF →[pdfcrop類似処理で余白付与]→ PDF)
+    //  6. アウトライン化EPS生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS)
+    // [*1] このgsによるアウトライン化は，画質優先モードの場合は -r20016 固定，速度優先モードの場合は解像度レベル設定に従う
+    
     // 最終出力がビットマップ形式で「速度優先」の場合は，PDFからQuartzで直接変換
     if ([@[@"jpg", @"png", @"gif", @"tiff", @"bmp"] containsObject:extension] && speedPriorityMode) {
         [self pdf2image:pdfFilePath outputFileName:outputFileName page:1 crop:YES];
@@ -855,7 +871,7 @@
                 return success;
             }
         }
-    } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，pdfcrop してから1ページずつ mudraw にかける
+    } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
         [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES];
 
         BOOL success = [self pdf2svg:croppedPdfFilePath
