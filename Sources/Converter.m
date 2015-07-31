@@ -935,7 +935,7 @@
 	}
     
     // 一連のコンパイル処理の開始準備
-    [controller clearOutputTextView];
+    [controller prepareOutputTextView];
     if (showOutputDrawerFlag) {
         [controller showOutputDrawer];
     }
@@ -943,6 +943,8 @@
     
     // 一連のコンパイル処理を実行
     BOOL status = [self compileAndConvert];
+
+    [controller releaseOutputTextView];
     
     NSString *previewApp = [extension isEqualToString:@"svg"] ? @"Safari.app" : @"Preview.app";
     

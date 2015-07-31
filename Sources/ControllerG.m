@@ -249,9 +249,23 @@ typedef enum {
 	}
 }
 
-- (void)clearOutputTextView
+- (void)prepareOutputTextView
 {
 	outputTextView.textStorage.mutableString.string = @"";
+
+    // NSTask からのアウトプットを受ける
+    [NSNotificationCenter.defaultCenter addObserver: self
+                                           selector: @selector(readOutputData:)
+                                               name: NSFileHandleReadCompletionNotification
+                                             object: nil];
+}
+
+- (void)releaseOutputTextView
+{
+    // NSTask からのアウトプットの受け取りを中止
+    [NSNotificationCenter.defaultCenter removeObserver:self
+                                                  name:NSFileHandleReadCompletionNotification
+                                                object:nil];
 }
 
 - (void)showOutputDrawer
@@ -862,12 +876,6 @@ typedef enum {
                 selector: @selector(refreshTextView:)
                     name: NSControlTextDidChangeNotification
                   object: tabWidthTextField];
-    
-    // NSTask からのアウトプット
-    [aCenter addObserver: self
-                selector: @selector(readOutputData:)
-                    name: NSFileHandleReadCompletionNotification
-                  object: nil];
 	
 	// デフォルトのアウトプットファイルのパスをセット
 	outputFileTextField.stringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];

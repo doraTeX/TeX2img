@@ -43,8 +43,12 @@ BOOL checkWhich(NSString *cmdName)
     return (status == 0) ? YES : NO;
 }
 
-- (void)clearOutputTextView
+- (void)prepareOutputTextView
 {	
+}
+
+- (void)releaseOutputTextView
+{
 }
 
 - (void)showOutputDrawer

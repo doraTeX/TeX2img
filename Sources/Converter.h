@@ -12,7 +12,8 @@
 - (void)showCannotCreateDirectoryError:(NSString*)dir;
 - (void)showCompileError;
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet;
-- (void)clearOutputTextView;
+- (void)prepareOutputTextView;
+- (void)releaseOutputTextView;
 - (void)showOutputDrawer;
 - (void)showMainWindow;
 - (void)showErrorsIgnoredWarning;
