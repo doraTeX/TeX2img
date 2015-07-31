@@ -143,6 +143,11 @@ BOOL checkWhich(NSString *cmdName)
     printStdErr("tex2img: [Warning] Some errors were ignored. The result may be different from what you expected.\n");
 }
 
+- (void)showPageSkippedWarning
+{
+    printStdErr("tex2img: [Warning] Some pages were empty and they were skipped.\n");
+}
+
 #pragma mark -
 
 

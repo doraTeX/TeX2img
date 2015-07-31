@@ -32,3 +32,4 @@
 "restoreTemplatesConfirmationMsg" = "Default templates will be retored.\nThe existing ones will be overwritten.\nDo you want to continue?";
 "doesNotContainSource" = "This image does not contain any source information.";
 "errorsIgnoredWarning" = "Some errors were ignored.\nThe result may be different from what you expected.\nModification of the source is recommended.";
+"pageSkippedWarning" = "Some pages were empty and they were skipped.";

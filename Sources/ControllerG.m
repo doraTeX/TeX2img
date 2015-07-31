@@ -344,6 +344,11 @@ typedef enum {
     runWarningPanel(localizedString(@"errorsIgnoredWarning"));
 }
 
+- (void)showPageSkippedWarning
+{
+    runWarningPanel(localizedString(@"pageSkippedWarning"));
+}
+
 #pragma mark - プロファイルの読み書き関連
 - (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
 {

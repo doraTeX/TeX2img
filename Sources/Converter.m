@@ -39,6 +39,7 @@
 @property NSString* additionalInputPath;
 @property BOOL pdfInputMode;
 @property BOOL errorsIgnored;
+@property BOOL pageSkipped;
 @end
 
 @implementation Converter
@@ -67,6 +68,7 @@
 @synthesize additionalInputPath;
 @synthesize pdfInputMode;
 @synthesize errorsIgnored;
+@synthesize pageSkipped;
 
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
 {
@@ -108,6 +110,7 @@
     additionalInputPath = nil;
     pdfInputMode = NO;
     errorsIgnored = NO;
+    pageSkipped = NO;
     
 	fileManager = NSFileManager.defaultManager;
 	tempdir = NSTemporaryDirectory();
@@ -338,6 +341,16 @@
     return bbStr;
 }
 
+- (BOOL)isEmptyPage:(NSString*)pdfPath page:(NSUInteger)page
+{
+    return [[self bboxStringOfPdf:pdfPath page:page] isEqualToString:EMPTY_BBOX];
+}
+
+- (BOOL)willEmptyPageBeCreated:(NSString*)pdfPath page:(NSUInteger)page
+{
+    return [self isEmptyPage:pdfPath page:page] && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0));
+}
+
 - (NSString*)buildCropTeXSource:(NSString*)pdfPath page:(NSUInteger)page addMargin:(BOOL)addMargin
 {
     
@@ -348,11 +361,7 @@
     
     NSString *bbStr = [self bboxStringOfPdf:pdfPath page:page]; // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiReSのBBoxを使うのが得策。
     
-    if ([bbStr isEqualToString:EMPTY_BBOX]) {
-        return [NSString stringWithFormat:@"\\pdfhorigin=0bp\\relax\\pdfvorigin=0bp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\pdfpagewidth=\\wd0\\relax\\pdfpageheight=\\dimexpr\\ht0+\\dp0\\relax\\shipout\\hbox{\\raise\\dp0\\box0\\relax}", page, pdfPath];
-    } else {
-        return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin=-#1bp\\relax\\pdfvorigin=#2bp\\relax\\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight=\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight\\relax\\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
-    }
+    return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin=-#1bp\\relax\\pdfvorigin=#2bp\\relax\\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight=\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight\\relax\\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
 }
 
 // page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
@@ -543,6 +552,11 @@
 - (void)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page crop:(BOOL)crop
 {
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
+    
+    if ([self willEmptyPageBeCreated:pdfFilePath page:page]) {
+        pageSkipped = YES;
+        return;
+    }
 
 	// PDFのバウンディングボックスで切り取る
     if (crop) {
@@ -641,6 +655,11 @@
 {
     if (!controller.mudrawExists) {
         return NO;
+    }
+    
+    if ([self willEmptyPageBeCreated:pdfFilePath page:page]) {
+        pageSkipped = YES;
+        return YES;
     }
     
     NSArray *arguments = @[@"-l", @"-o", svgFilePath, pdfFilePath, [NSString stringWithFormat:@"%ld", page]];
@@ -772,6 +791,9 @@
 	NSString* extension = outputFilePath.pathExtension.lowercaseString;
 	
     errorsIgnored = NO;
+    pageSkipped = NO;
+    
+    [fileManager changeCurrentDirectoryPath:tempdir];
     
     if (!pdfInputMode) {
         // TeX コンパイル
@@ -1010,6 +1032,10 @@
     // エラーを無視した場合は警告
     if (ignoreErrorsFlag && errorsIgnored) {
         [controller showErrorsIgnoredWarning];
+    }
+    
+    if (pageSkipped) {
+        [controller showPageSkippedWarning];
     }
 	
 	return status;
