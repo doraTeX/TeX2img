@@ -40,6 +40,7 @@
 @property BOOL pdfInputMode;
 @property BOOL errorsIgnored;
 @property BOOL pageSkipped;
+@property NSMutableArray* emptyPageFlags;
 @end
 
 @implementation Converter
@@ -69,6 +70,8 @@
 @synthesize pdfInputMode;
 @synthesize errorsIgnored;
 @synthesize pageSkipped;
+@synthesize emptyPageFlags;
+
 
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
 {
@@ -468,6 +471,29 @@
     return YES;
 }
 
+- (BOOL)replaceEpsBBoxWithEmptyBBox:(NSString*)epsName
+{
+    NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
+    NSString *bbStr = @"0 0 0 0\n";
+    NSString *hiresBbStr = @"0.000000 0.000000 0.000000 0.000000\n";
+    
+    NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: .+?\\n/){ \"%%%%BoundingBox: %@\"}.sub(/%%%%HiResBoundingBox\\: .+?\\n/){ \"%%%%HiResBoundingBox: %@\"};File.open('%@', 'wb') {|f| f.write s}",
+                        epsPath,
+                        bbStr,
+                        hiresBbStr,
+                        epsPath
+                        ];
+    NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-replaceBB"];
+    
+    FILE *fp = fopen(scriptPath.UTF8String, "w");
+    fputs(script.UTF8String, fp);
+    fclose(fp);
+    
+    system([NSString stringWithFormat:@"/usr/bin/ruby %@; rm %@", scriptPath, scriptPath].UTF8String);
+    
+    return YES;
+}
+
 - (BOOL)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(NSInteger)resolution page:(NSUInteger)page;
 {
     NSMutableArray *arguments = [NSMutableArray arrayWithArray:@[@"-dNOPAUSE",
@@ -496,8 +522,10 @@
         return NO;
     }
     
-    // epswrite デバイスを使っているときには，生成したEPSのBBox情報を，オリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する ( https://github.com/doraTeX/TeX2img/issues/18 )
-    if (!shouldUseEps2WriteDevice) {
+    if ([self isEmptyPage:pdfName page:page]) {
+        return [self replaceEpsBBoxWithEmptyBBox:outputEpsFileName];
+    } if (!shouldUseEps2WriteDevice) {
+        // epswrite デバイスを使っているときには，生成したEPSのBBox情報を，オリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する ( https://github.com/doraTeX/TeX2img/issues/18 )
         return [self replaceEpsBBox:outputEpsFileName withBBoxOfPdf:pdfName page:page];
     }
     
@@ -553,7 +581,7 @@
 {
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
     
-    if ([self willEmptyPageBeCreated:pdfFilePath page:page]) {
+    if ([emptyPageFlags[page-1] boolValue]) {
         pageSkipped = YES;
         return;
     }
@@ -657,7 +685,7 @@
         return NO;
     }
     
-    if ([self willEmptyPageBeCreated:pdfFilePath page:page]) {
+    if ([emptyPageFlags[page-1] boolValue]) {
         pageSkipped = YES;
         return YES;
     }
@@ -695,6 +723,11 @@
     NSInteger lowResolution = resolutionLevel*5*2*72;
     NSInteger resolution = speedPriorityMode ? lowResolution : 20016;
 
+    if ([emptyPageFlags[page-1] boolValue]) {
+        pageSkipped = YES;
+        return YES;
+    }
+    
     // PDF→EPS の変換の実行（この時点で強制cropされる）
     if (![self pdf2eps:pdfFileName outputEpsFileName:outputEpsFileName resolution:resolution page:page]
         || ![fileManager fileExistsAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName]]) {
@@ -715,8 +748,12 @@
         }
         [fileManager moveItemAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
     } else { // ビットマップ形式出力の場合，EPSをPDFに戻した上で，それをさらにビットマップ形式に変換する
-        [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:NO]; // アウトラインを取ったEPSをPDFへ戻す（余白はこの時点では付与しない）
-        [self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1 crop:NO]; // PDFを目的の画像ファイルへ変換（ここで余白付与）
+        if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は epstopdf が使えない（エラーになる）ので，そこだけ Quartz で変換する
+            [self pdf2image:[tempdir stringByAppendingPathComponent:pdfFileName] outputFileName:outputFileName page:page crop:YES];
+        } else {
+            [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:NO]; // アウトラインを取ったEPSをPDFへ戻す（余白はこの時点では付与しない）
+            [self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1 crop:NO]; // PDFを目的の画像ファイルへ変換（ここで余白付与）
+        }
     }
     
     return YES;
@@ -841,6 +878,10 @@
     }
     
     pageCount = [PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfFilePath]].pageCount;
+    emptyPageFlags = NSMutableArray.array;
+    for (NSInteger i=1; i<=pageCount; i++) {
+        [emptyPageFlags addObject:@([self willEmptyPageBeCreated:pdfFilePath page:i])];
+    }
 	
     // ありうる経路
     // 【gsを通さない経路]
@@ -914,29 +955,41 @@
 	}
 	
 	// 最終出力ファイルを目的地へコピー
-    [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
-    [self embedSource:texFilePath intoFile:outputFilePath];
+    if (![emptyPageFlags[0] boolValue]) {
+        [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
+        [self embedSource:texFilePath intoFile:outputFilePath];
+    }
 
     for (NSUInteger i=2; i<=pageCount; i++) {
-        NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
-        [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
-                      toPath:destPath];
-        [self embedSource:texFilePath intoFile:destPath];
+        if (![emptyPageFlags[i-1] boolValue]) {
+            NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
+            [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
+                          toPath:destPath];
+            [self embedSource:texFilePath intoFile:destPath];
+        }
     }
     
     // 生成ファイルをクリップボードへコピー
     if (copyToClipboard) {
         NSPasteboard *pboard = NSPasteboard.generalPasteboard;
         [pboard declareTypes:@[NSURLPboardType] owner:nil];
+        NSMutableArray *outputFiles = NSMutableArray.array;
         
-        NSMutableArray *outputFiles = [NSMutableArray arrayWithObject:[NSURL.alloc initFileURLWithPath:outputFilePath]];
-
-        for (NSUInteger i=2; i<=pageCount; i++) {
-            [outputFiles addObject: [NSURL.alloc initFileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
+        if (![emptyPageFlags[0] boolValue]) {
+             [outputFiles addObject:[NSURL.alloc initFileURLWithPath:outputFilePath]];
         }
 
-        [pboard clearContents];
-        [pboard writeObjects:outputFiles];
+        
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            if (![emptyPageFlags[i-1] boolValue]) {
+                [outputFiles addObject:[NSURL.alloc initFileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
+            }
+        }
+        
+        if (outputFiles.count > 0) {
+            [pboard clearContents];
+            [pboard writeObjects:outputFiles];
+        }
     }
 	
 	return YES;
@@ -972,10 +1025,14 @@
     
     // プレビュー処理
     if (status && previewFlag) {
-        [NSWorkspace.sharedWorkspace openFile:outputFilePath withApplication:previewApp];
+        if (![emptyPageFlags[0] boolValue]) {
+            [NSWorkspace.sharedWorkspace openFile:outputFilePath withApplication:previewApp];
+        }
         if (pageCount > 1) {
             for (NSUInteger i=2; i<=pageCount; i++) {
-                [NSWorkspace.sharedWorkspace openFile:[outputFilePath pathStringByAppendingPageNumber:i] withApplication:previewApp];
+                if (![emptyPageFlags[i-1] boolValue]) {
+                    [NSWorkspace.sharedWorkspace openFile:[outputFilePath pathStringByAppendingPageNumber:i] withApplication:previewApp];
+                }
             }
         }
     }
@@ -985,21 +1042,28 @@
         NSMutableString *script = NSMutableString.string;
         [script appendFormat:@"tell application \"Adobe Illustrator\"\n"];
         [script appendFormat:@"activate\n"];
+        NSMutableArray *embededFiles = NSMutableArray.array;
         
-        NSMutableArray *embededFiles = [NSMutableArray arrayWithObject:outputFilePath];
+        if (![emptyPageFlags[0] boolValue]) {
+            [embededFiles addObject:outputFilePath];
+        }
         for (NSUInteger i=2; i<=pageCount; i++) {
-            [embededFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
+            if (![emptyPageFlags[i-1] boolValue]) {
+                [embededFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
+            }
         }
         
-        [embededFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL *stop) {
-            [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
-            if (ungroupFlag) {
-                [script appendFormat:@"move page items of selection of current document to end of current document\n"];
-            }
-        }];
-        
-        [script appendFormat:@"end tell\n"];
-        [[NSAppleScript.alloc initWithSource:script] executeAndReturnError:nil];
+        if (embededFiles.count > 0) {
+            [embededFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL *stop) {
+                [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
+                if (ungroupFlag) {
+                    [script appendFormat:@"move page items of selection of current document to end of current document\n"];
+                }
+            }];
+            
+            [script appendFormat:@"end tell\n"];
+            [[NSAppleScript.alloc initWithSource:script] executeAndReturnError:nil];
+        }
     }
 	
 	// 中間ファイルの削除
