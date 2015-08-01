@@ -39,7 +39,6 @@
 @property NSString* additionalInputPath;
 @property BOOL pdfInputMode;
 @property BOOL errorsIgnored;
-@property BOOL pageSkipped;
 @property NSMutableArray* emptyPageFlags;
 @end
 
@@ -69,7 +68,6 @@
 @synthesize additionalInputPath;
 @synthesize pdfInputMode;
 @synthesize errorsIgnored;
-@synthesize pageSkipped;
 @synthesize emptyPageFlags;
 
 
@@ -113,7 +111,6 @@
     additionalInputPath = nil;
     pdfInputMode = NO;
     errorsIgnored = NO;
-    pageSkipped = NO;
     
 	fileManager = NSFileManager.defaultManager;
 	tempdir = NSTemporaryDirectory();
@@ -581,8 +578,7 @@
 {
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
     
-    if ([emptyPageFlags[page-1] boolValue]) {
-        pageSkipped = YES;
+    if ([self isEmptyPage:pdfFilePath page:page]) {
         return;
     }
 
@@ -686,7 +682,6 @@
     }
     
     if ([emptyPageFlags[page-1] boolValue]) {
-        pageSkipped = YES;
         return YES;
     }
     
@@ -724,7 +719,6 @@
     NSInteger resolution = speedPriorityMode ? lowResolution : 20016;
 
     if ([emptyPageFlags[page-1] boolValue]) {
-        pageSkipped = YES;
         return YES;
     }
     
@@ -736,7 +730,11 @@
     }
     
     if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す（ここでpdfcrop類似処理で余白付与）
-        [self eps2pdf:outputEpsFileName outputFileName:outputFileName addMargin:YES];
+        if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は epstopdf が使えない（エラーになる）ので，そこだけpdfcrop類似処理で変換する
+            [self pdfcrop:pdfFileName outputFileName:outputFileName page:page addMargin:YES];
+        } else {
+            [self eps2pdf:outputEpsFileName outputFileName:outputFileName addMargin:YES];
+        }
     } else if ([@"eps" isEqualToString:extension]) { // 最終出力が EPS の場合
         // 余白を付け加えるようバウンディングボックスを改変
         if (topMargin + bottomMargin + leftMargin + rightMargin > 0) {
@@ -828,7 +826,6 @@
 	NSString* extension = outputFilePath.pathExtension.lowercaseString;
 	
     errorsIgnored = NO;
-    pageSkipped = NO;
     
     [fileManager changeCurrentDirectoryPath:tempdir];
     
@@ -1093,15 +1090,25 @@
         }
 	}
     
+    NSIndexSet *skippedPageIndexes = [emptyPageFlags indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
+    {
+        return ([obj boolValue] == YES);
+    }];
+    
+    if (skippedPageIndexes.count > 0) {
+        NSMutableArray *skippedPageNumbers = NSMutableArray.array;
+        [skippedPageIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop)
+         {
+             [skippedPageNumbers addObject:@(idx+1)];
+         }];
+        [controller showPageSkippedWarning:skippedPageNumbers];
+    }
+	
     // エラーを無視した場合は警告
     if (ignoreErrorsFlag && errorsIgnored) {
         [controller showErrorsIgnoredWarning];
     }
     
-    if (pageSkipped) {
-        [controller showPageSkippedWarning];
-    }
-	
 	return status;
 }
 

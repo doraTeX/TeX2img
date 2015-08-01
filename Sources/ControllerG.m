@@ -344,9 +344,19 @@ typedef enum {
     runWarningPanel(localizedString(@"errorsIgnoredWarning"));
 }
 
-- (void)showPageSkippedWarning
+- (void)showPageSkippedWarning:(NSArray*)pages
 {
-    runWarningPanel(localizedString(@"pageSkippedWarning"));
+    [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: [%@] ", localizedString(@"Warning")] quiet:NO];
+    
+    if (pages.count > 1) {
+        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"pagesSkippedWarning"), [pages componentsJoinedByString:@", "]]
+                              quiet:NO];
+    } else {
+        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"pageSkippedWarning"), [pages[0] stringValue]]
+                              quiet:NO];
+    }
+
+    [self appendOutputAndScroll:@"\n" quiet:NO];
 }
 
 #pragma mark - プロファイルの読み書き関連
