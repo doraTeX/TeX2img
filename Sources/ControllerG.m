@@ -221,7 +221,7 @@ typedef enum {
     [handle readInBackgroundAndNotify];
     
     task.currentDirectoryPath = path;
-    task.launchPath = @"/bin/bash";
+    task.launchPath = BASH_PATH;
     task.standardOutput = outputPipe;
     task.standardError = outputPipe;
     task.arguments = @[@"-c", cmdline];
@@ -229,6 +229,8 @@ typedef enum {
     [task launch];
     [task waitUntilExit];
     
+    [self appendOutputAndScroll:@"\n" quiet:NO];
+
     return (task.terminationStatus == 0) ? YES : NO;
 }
 
@@ -244,7 +246,7 @@ typedef enum {
     }
 	if (str) {
 		[outputTextView.textStorage.mutableString appendString:str];
-		[outputTextView scrollRangeToVisible: NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
+		[outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
         outputTextView.font = sourceTextView.font;
 	}
 }
@@ -254,10 +256,10 @@ typedef enum {
 	outputTextView.textStorage.mutableString.string = @"";
 
     // NSTask からのアウトプットを受ける
-    [NSNotificationCenter.defaultCenter addObserver: self
-                                           selector: @selector(readOutputData:)
-                                               name: NSFileHandleReadCompletionNotification
-                                             object: nil];
+    [NSNotificationCenter.defaultCenter addObserver:self
+                                           selector:@selector(readOutputData:)
+                                               name:NSFileHandleReadCompletionNotification
+                                             object:nil];
 }
 
 - (void)releaseOutputTextView
@@ -423,9 +425,9 @@ typedef enum {
     
     NSInteger tabWidth = [aProfile integerForKey:TabWidthKey];
     if (tabWidth > 0) {
-        [tabWidthTextField setIntValue:tabWidth];
+        tabWidthTextField.intValue = tabWidth;
     } else {
-        [tabWidthTextField setIntValue:4];
+        tabWidthTextField.intValue = 4;
     }
     [tabWidthStepper takeIntValueFrom:tabWidthTextField];
 
@@ -491,7 +493,7 @@ typedef enum {
         sourceTextView.font = aFont;
         preambleTextView.font = aFont;
         outputTextView.font = aFont;
-        [self setupFontTextField: aFont];
+        [self setupFontTextField:aFont];
     } else {
         [self loadDefaultFont];
     }
@@ -709,10 +711,10 @@ typedef enum {
     
     NSString *templateDirectoryPath = self.templateDirectoryPath;
     NSFileManager *fileManager = NSFileManager.defaultManager;
-    NSEnumerator *enumerator = [[fileManager contentsOfDirectoryAtPath:templateDirectoryPath error:nil] reverseObjectEnumerator];
+    NSEnumerator *enumerator = [fileManager contentsOfDirectoryAtPath:templateDirectoryPath error:nil].reverseObjectEnumerator;
     
     NSString *filename;
-    while ((filename = enumerator.nextObject) != nil) {
+    while ((filename = enumerator.nextObject)) {
         NSString *fullPath = [templateDirectoryPath stringByAppendingPathComponent:filename];
         
         if ([filename hasSuffix:@"tex"]) {
@@ -820,77 +822,77 @@ typedef enum {
 	NSNotificationCenter *aCenter = NSNotificationCenter.defaultCenter;
 	
 	// アプリケーションがアクティブになったときにメインウィンドウを表示
-	[aCenter addObserver: self
-				selector: @selector(showMainWindow:)
-					name: NSApplicationDidBecomeActiveNotification
-				  object: NSApp];
+	[aCenter addObserver:self
+				selector:@selector(showMainWindow:)
+					name:NSApplicationDidBecomeActiveNotification
+				  object:NSApp];
 	
 	// プログラム終了時に設定保存実行
-	[aCenter addObserver: self
-				selector: @selector(applicationWillTerminate:)
-					name: NSApplicationWillTerminateNotification
-				  object: NSApp];
+	[aCenter addObserver:self
+				selector:@selector(applicationWillTerminate:)
+					name:NSApplicationWillTerminateNotification
+				  object:NSApp];
 	
 	// プリアンブルウィンドウが閉じられるときにメニューのチェックを外す
-	[aCenter addObserver: self
-				selector: @selector(uncheckPreambleWindowMenuItem:)
-					name: NSWindowWillCloseNotification
-				  object: preambleWindow];
+	[aCenter addObserver:self
+				selector:@selector(uncheckPreambleWindowMenuItem:)
+					name:NSWindowWillCloseNotification
+				  object:preambleWindow];
 
     // 色入力支援パレットが閉じられるときにメニューのチェックを外す
-    [aCenter addObserver: self
-                selector: @selector(uncheckColorWindowMenuItem:)
-                    name: NSWindowWillCloseNotification
-                  object: colorWindow];
+    [aCenter addObserver:self
+                selector:@selector(uncheckColorWindowMenuItem:)
+                    name:NSWindowWillCloseNotification
+                  object:colorWindow];
 	
 	// メインウィンドウが閉じられるときに他のウィンドウも閉じる
-	[aCenter addObserver: self
-				selector: @selector(closeOtherWindows:)
-					name: NSWindowWillCloseNotification
-				  object: mainWindow];
+	[aCenter addObserver:self
+				selector:@selector(closeOtherWindows:)
+					name:NSWindowWillCloseNotification
+				  object:mainWindow];
 	
 	// テキストビューのカーソル移動の通知を受ける
-	[aCenter addObserver: sourceTextView
-				selector: @selector(textViewDidChangeSelection:)
-					name: NSTextViewDidChangeSelectionNotification
-				  object: sourceTextView];
+	[aCenter addObserver:sourceTextView
+				selector:@selector(textViewDidChangeSelection:)
+					name:NSTextViewDidChangeSelectionNotification
+				  object:sourceTextView];
 
-	[aCenter addObserver: preambleTextView
-				selector: @selector(textViewDidChangeSelection:)
-					name: NSTextViewDidChangeSelectionNotification
-				  object: preambleTextView];
+	[aCenter addObserver:preambleTextView
+				selector:@selector(textViewDidChangeSelection:)
+					name:NSTextViewDidChangeSelectionNotification
+				  object:preambleTextView];
     
     // テンプレートボタンのポップアップ寸前
-    [aCenter addObserver: self
-                selector: @selector(constructTemplatePopup:)
-                    name: NSPopUpButtonWillPopUpNotification
-                  object: templatePopupButton];
+    [aCenter addObserver:self
+                selector:@selector(constructTemplatePopup:)
+                    name:NSPopUpButtonWillPopUpNotification
+                  object:templatePopupButton];
 
     // ウィンドウがアクティブになったときにその通知を受け取る
-    [aCenter addObserver: self
-                selector: @selector(lastActiveWindowChenaged:)
-                    name: NSWindowDidBecomeKeyNotification
-                  object: mainWindow];
-    [aCenter addObserver: self
-                selector: @selector(lastActiveWindowChenaged:)
-                    name: NSWindowDidBecomeKeyNotification
-                  object: preambleWindow];
-    [aCenter addObserver: self
-                selector: @selector(colorWindowDidBecomeKey:)
-                    name: NSWindowDidBecomeKeyNotification
-                  object: colorWindow];
+    [aCenter addObserver:self
+                selector:@selector(lastActiveWindowChenaged:)
+                    name:NSWindowDidBecomeKeyNotification
+                  object:mainWindow];
+    [aCenter addObserver:self
+                selector:@selector(lastActiveWindowChenaged:)
+                    name:NSWindowDidBecomeKeyNotification
+                  object:preambleWindow];
+    [aCenter addObserver:self
+                selector:@selector(colorWindowDidBecomeKey:)
+                    name:NSWindowDidBecomeKeyNotification
+                  object:colorWindow];
     
     // コンパイル回数の変更
-    [aCenter addObserver: self
-                selector: @selector(refreshNumberOfCompilation:)
-                    name: NSControlTextDidChangeNotification
-                  object: numberOfCompilationTextField];
+    [aCenter addObserver:self
+                selector:@selector(refreshNumberOfCompilation:)
+                    name:NSControlTextDidChangeNotification
+                  object:numberOfCompilationTextField];
 
     // タブ幅の変更
-    [aCenter addObserver: self
-                selector: @selector(refreshTextView:)
-                    name: NSControlTextDidChangeNotification
-                  object: tabWidthTextField];
+    [aCenter addObserver:self
+                selector:@selector(refreshTextView:)
+                    name:NSControlTextDidChangeNotification
+                  object:tabWidthTextField];
 	
 	// デフォルトのアウトプットファイルのパスをセット
 	outputFileTextField.stringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
@@ -962,7 +964,7 @@ typedef enum {
 
 	// CommandComepletion.txt のロード
 	unichar esc = 0x001B;
-	g_commandCompletionChar = [NSString stringWithCharacters:&esc length: 1];
+	commandCompletionChar = [NSString stringWithCharacters:&esc length:1];
 	NSData 	*myData = nil;
 
 	NSString *completionPath = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt".stringByStandardizingPath;
@@ -971,14 +973,14 @@ typedef enum {
 	
 	if (myData) {
 		NSStringEncoding myEncoding = NSUTF8StringEncoding;
-		g_commandCompletionList = [NSMutableString.alloc initWithData:myData encoding:myEncoding];
-		if (! g_commandCompletionList) {
-			g_commandCompletionList = [NSMutableString.alloc initWithData:myData encoding:myEncoding];
+		commandCompletionList = [NSMutableString.alloc initWithData:myData encoding:myEncoding];
+		if (!commandCompletionList) {
+			commandCompletionList = [NSMutableString.alloc initWithData:myData encoding:myEncoding];
 		}
 		
-		[g_commandCompletionList insertString:@"\n" atIndex:0];
-		if ([g_commandCompletionList characterAtIndex:g_commandCompletionList.length-1] != '\n')
-			[g_commandCompletionList appendString:@"\n"];
+		[commandCompletionList insertString:@"\n" atIndex:0];
+		if ([commandCompletionList characterAtIndex:commandCompletionList.length-1] != '\n')
+			[commandCompletionList appendString:@"\n"];
 	}
 
     // Application Support の準備
@@ -1094,8 +1096,8 @@ typedef enum {
     NSRegularExpression *regex = [NSRegularExpression.alloc initWithPattern:@"^(.*?)(?:\\r|\\n|\\r\\n)*(?:\\\\|¥)begin\\{document\\}(?:\\r|\\n|\\r\\n)*(.*)(?:\\\\|¥)end\\{document\\}" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     NSTextCheckingResult *match = [regex firstMatchInString:contents options:0 range:NSMakeRange(0, contents.length)];
     if (match) {
-        preamble = [[contents substringWithRange: [match rangeAtIndex: 1]] stringByAppendingString:@"\n"];
-        body = [[[contents substringWithRange: [match rangeAtIndex: 2]] stringByDeletingLastReturnCharacters] stringByAppendingString:@"\n"];
+        preamble = [[contents substringWithRange:[match rangeAtIndex:1]] stringByAppendingString:@"\n"];
+        body = [[contents substringWithRange:[match rangeAtIndex:2]].stringByDeletingLastReturnCharacters stringByAppendingString:@"\n"];
     } else {
         body = contents;
     }
@@ -1167,7 +1169,7 @@ typedef enum {
 
 - (IBAction)importSource:(id)sender
 {
-    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+    NSOpenPanel *openPanel = NSOpenPanel.openPanel;
     openPanel.canChooseDirectories = NO;
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
@@ -1182,7 +1184,7 @@ typedef enum {
 
 - (IBAction)exportSource:(id)sender
 {
-    NSSavePanel *savePanel = [NSSavePanel savePanel];
+    NSSavePanel *savePanel = NSSavePanel.savePanel;
     savePanel.allowedFileTypes = @[@"tex"];
     savePanel.extensionHidden = NO;
     savePanel.canSelectHiddenExtension = YES;
@@ -1431,7 +1433,7 @@ typedef enum {
 
 - (IBAction)showInputSourceFilePanel:(id)sender
 {
-    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+    NSOpenPanel *openPanel = NSOpenPanel.openPanel;
     openPanel.canChooseDirectories = NO;
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
@@ -1447,7 +1449,7 @@ typedef enum {
 
 - (IBAction)showSavePanel:(id)sender
 {
-    NSSavePanel *savePanel = [NSSavePanel savePanel];
+    NSSavePanel *savePanel = NSSavePanel.savePanel;
     savePanel.allowedFileTypes = TargetExtensionsArray;
     savePanel.extensionHidden = NO;
     savePanel.canSelectHiddenExtension = NO;

@@ -101,15 +101,15 @@ static NSString* endcommentString = @"›";
 	NSCharacterSet *charSet;
 	unichar c;
 	
-	if ([theEvent.characters isEqualToString:g_commandCompletionChar] && (theEvent.modifierFlags & NSAlternateKeyMask) != 0) {
+	if ([theEvent.characters isEqualToString:commandCompletionChar] && (theEvent.modifierFlags & NSAlternateKeyMask) != 0) {
 		[self doNextBullet:self];
 		return;
-	} else if ([theEvent.characters isEqualToString:g_commandCompletionChar] && (theEvent.modifierFlags & NSControlKeyMask) != 0) {
+	} else if ([theEvent.characters isEqualToString:commandCompletionChar] && (theEvent.modifierFlags & NSControlKeyMask) != 0) {
 		[self doPreviousBullet:self];
 		return;
-	} else if ([theEvent.characters isEqualToString:g_commandCompletionChar] &&
+	} else if ([theEvent.characters isEqualToString:commandCompletionChar] &&
 			 ((theEvent.modifierFlags & NSAlternateKeyMask) == 0) &&
-			 !self.hasMarkedText && g_commandCompletionList) {
+			 !self.hasMarkedText && commandCompletionList) {
 		textString = self.string; // this will change during operations (such as undo)
 		selectedLocation = self.selectedRange.location;
 		// check for LaTeX \begin{...}
@@ -200,10 +200,10 @@ static NSString* endcommentString = @"›";
 				} else {
 					// forward
 					searchRange.location = completionListLocation;
-					searchRange.length = g_commandCompletionList.length - completionListLocation;
+					searchRange.length = commandCompletionList.length - completionListLocation;
 				}
 				// search the string in the completion list
-				foundRange = [g_commandCompletionList rangeOfString: [@"\n" stringByAppendingString: originalString]
+				foundRange = [commandCompletionList rangeOfString: [@"\n" stringByAppendingString: originalString]
 															options: (theEvent.modifierFlags ? NSBackwardsSearch : 0)
 															  range: searchRange];
 				
@@ -215,9 +215,9 @@ static NSString* endcommentString = @"›";
 					// get the whole line
 					foundRange.location++; // eliminate first LF
 					foundRange.length--;
-					foundRange = [g_commandCompletionList lineRangeForRange: foundRange];
+					foundRange = [commandCompletionList lineRangeForRange: foundRange];
 					foundRange.length--; // eliminate last LF
-					foundString = [g_commandCompletionList substringWithRange: foundRange];
+					foundString = [commandCompletionList substringWithRange: foundRange];
 					completionListLocation = foundRange.location; // remember this location
 					// check if there is ":="
 					spaceRange = [foundString rangeOfString: @":="

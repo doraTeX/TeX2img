@@ -4,7 +4,7 @@
 #import "global.h"
 #import "Utility.h"
 
-#define MAX_LEN 1024
+#define RESOLUTION_SCALE 5.0
 #define EMPTY_BBOX @"%%BoundingBox: 0 0 0 0\n"
 
 #import "NSDictionary-Extension.h"
@@ -87,7 +87,7 @@
     preambleStr = [aProfile stringForKey:PreambleKey];
     
     encoding = [aProfile stringForKey:EncodingKey];
-    resolutionLevel = [aProfile floatForKey:ResolutionKey] / 5.0;
+    resolutionLevel = [aProfile floatForKey:ResolutionKey] / RESOLUTION_SCALE;
     leftMargin = [aProfile integerForKey:LeftMarginKey];
     rightMargin = [aProfile integerForKey:RightMarginKey];
     topMargin = [aProfile integerForKey:TopMarginKey];
@@ -219,7 +219,6 @@
                               atDirectory:tempdir
                             withArguments:arguments
                                     quiet:quietFlag];
-    [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
     return status;
 }
 
@@ -284,8 +283,7 @@
 	BOOL status = [controller execCommand:cmdline
                               atDirectory:tempdir
                             withArguments:@[@"-vv", dviFilePath]
-                                    quiet:quietFlag
-                   ];
+                                    quiet:quietFlag];
 	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];	
 	
 	return status;
@@ -294,51 +292,16 @@
 // gsを実行して(非HiRes)BoundingBox情報を取得
 - (NSString*)bboxStringOfPdf:(NSString*)pdfPath page:(NSUInteger)page
 {
-    char str[MAX_LEN];
-    FILE *fp;
-    NSMutableString *bbStr = NSMutableString.new;
-    
     NSString *cmdline = [NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -q -sDEVICE=bbox -dFirstPage=%ld -dLastPage=%ld \"%@\" 2>&1 | /usr/bin/grep %%%%BoundingBox", gsPath.programPath, page, page, pdfPath];
-    
-    if ((fp = popen(cmdline.UTF8String, "r")) == NULL) {
-        return nil;
-    }
-    while (YES) {
-        if (fgets(str, MAX_LEN-1, fp) == NULL) {
-            break;
-        }
-        [bbStr appendString:@(str)];
-    }
-    if (pclose(fp) != 0) {
-        return nil;
-    }
-    
-    return bbStr;
+    return execCommand(cmdline);
+
 }
 
 // gsを実行してHiResBoundingBox情報を取得
 - (NSString*)hiresBBoxStringOfPdf:(NSString*)pdfPath page:(NSUInteger)page
 {
-    char str[MAX_LEN];
-    FILE *fp;
-    NSMutableString *bbStr = NSMutableString.new;
-    
     NSString *cmdline = [NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -q -sDEVICE=bbox -dFirstPage=%ld -dLastPage=%ld \"%@\" 2>&1 | /usr/bin/grep %%%%HiResBoundingBox", gsPath.programPath, page, page, pdfPath];
-    
-    if ((fp = popen(cmdline.UTF8String, "r")) == NULL) {
-        return nil;
-    }
-    while (YES) {
-        if (fgets(str, MAX_LEN-1, fp) == NULL) {
-            break;
-        }
-        [bbStr appendString:@(str)];
-    }
-    if (pclose(fp) != 0) {
-        return nil;
-    }
-    
-    return bbStr;
+    return execCommand(cmdline);
 }
 
 - (BOOL)isEmptyPage:(NSString*)pdfPath page:(NSUInteger)page
@@ -391,8 +354,7 @@
 	BOOL status = [controller execCommand:pdfTeXPath
                               atDirectory:tempdir
                             withArguments:@[@"-no-shell-escape", @"-interaction=batchmode", cropFileBasePath.lastPathComponent]
-                                    quiet:quietFlag
-                   ];
+                                    quiet:quietFlag];
     
     [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
     [fileManager removeItemAtPath:cropLogSourcePath error:nil];
@@ -412,11 +374,12 @@
     BOOL result = YES;
     
     NSTask *task = NSTask.new;
-    NSPipe *pipe = NSPipe.new;
+    NSPipe *pipe = NSPipe.pipe;
     task.launchPath = gsPath.programPath;
     task.arguments = @[@"--version"];
     task.standardOutput = pipe;
     [task launch];
+    [task waitUntilExit];
     
     NSData *data = pipe.fileHandleForReading.readDataToEndOfFile;
     NSString *versionString = [NSString.alloc initWithData:data encoding:NSUTF8StringEncoding];
@@ -539,8 +502,7 @@
                 atDirectory:tempdir
               withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
                               epsName]
-                      quiet:quietFlag
-     ];
+                      quiet:quietFlag];
 	return YES;
 }
 
@@ -690,8 +652,7 @@
     BOOL success = [controller execCommand:mudrawPath
                                atDirectory:tempdir
                              withArguments:arguments
-                                     quiet:quietFlag
-                    ];
+                                     quiet:quietFlag];
     if (!success ) {
         return NO;
     }
@@ -715,7 +676,7 @@
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
     NSString* outlinedPdfFileName = [NSString stringWithFormat:@"%@.outline.pdf", tempFileBaseName];
 
-    NSInteger lowResolution = resolutionLevel*5*2*72;
+    NSInteger lowResolution = resolutionLevel*((NSInteger)RESOLUTION_SCALE)*2*72;
     NSInteger resolution = speedPriorityMode ? lowResolution : 20016;
 
     if ([emptyPageFlags[page-1] boolValue]) {

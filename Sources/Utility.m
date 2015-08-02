@@ -1,6 +1,19 @@
 #import "global.h"
 #import "Utility.h"
 
+NSString* execCommand(NSString *cmdline)
+{
+    NSTask *task = NSTask.new;
+    NSPipe *pipe = NSPipe.pipe;
+    task.launchPath = BASH_PATH;
+    task.arguments = @[@"-c", cmdline];
+    task.standardOutput = pipe;
+    [task launch];
+    [task waitUntilExit];
+    
+    return [NSString.alloc initWithData:pipe.fileHandleForReading.readDataToEndOfFile encoding:NSUTF8StringEncoding];
+}
+
 NSString* getFullPath(NSString *aPath)
 {
     char str[MAX_LEN];
