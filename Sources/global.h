@@ -1,6 +1,8 @@
-NSString *g_commandCompletionChar;
-NSMutableString *g_commandCompletionList;
-#define MAX_LEN 1024
+NSString *commandCompletionChar;
+NSMutableString *commandCompletionList;
+
+#define MAX_LEN 2048
+#define BASH_PATH @"/bin/bash"
 
 #define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg"])
 #define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"tex"])
