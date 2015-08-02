@@ -953,6 +953,16 @@
 	return YES;
 }
 
+- (void)previewOnMainThread:(NSArray*)paramters
+{
+    [NSWorkspace.sharedWorkspace openFile:(NSString*)(paramters[0]) withApplication:(NSString*)(paramters[1])];
+}
+
+- (void)runAppleScriptOnMainThread:(NSString*)script
+{
+    [[NSAppleScript.alloc initWithSource:script] executeAndReturnError:nil];
+}
+
 - (BOOL)compileAndConvertWithCheck
 {
 	// 最初にプログラムの存在確認と出力ファイル形式確認
@@ -984,12 +994,12 @@
     // プレビュー処理
     if (status && previewFlag) {
         if (![emptyPageFlags[0] boolValue]) {
-            [NSWorkspace.sharedWorkspace openFile:outputFilePath withApplication:previewApp];
+            [self performSelectorOnMainThread:@selector(previewOnMainThread:) withObject:@[outputFilePath, previewApp] waitUntilDone:NO];
         }
         if (pageCount > 1) {
             for (NSUInteger i=2; i<=pageCount; i++) {
                 if (![emptyPageFlags[i-1] boolValue]) {
-                    [NSWorkspace.sharedWorkspace openFile:[outputFilePath pathStringByAppendingPageNumber:i] withApplication:previewApp];
+                    [self performSelectorOnMainThread:@selector(previewOnMainThread:) withObject:@[[outputFilePath pathStringByAppendingPageNumber:i], previewApp] waitUntilDone:NO];
                 }
             }
         }
@@ -1020,7 +1030,7 @@
             }];
             
             [script appendFormat:@"end tell\n"];
-            [[NSAppleScript.alloc initWithSource:script] executeAndReturnError:nil];
+            [self performSelectorOnMainThread:@selector(runAppleScriptOnMainThread:) withObject:script waitUntilDone:NO];
         }
     }
 	

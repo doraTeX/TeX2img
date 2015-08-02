@@ -275,26 +275,36 @@ typedef enum {
                                                 object:nil];
 }
 
-- (void)showOutputDrawer
+- (void)showOutputDrawerOnMainThread
 {
-	outputDrawerMenuItem.state = YES;
-	[outputDrawer open];
+    outputDrawerMenuItem.state = YES;
+    [outputDrawer open];
 }
 
-- (void)runErrorPanel:(NSString*)msg
+- (void)showOutputDrawer
 {
-    runErrorPanel(msg);
+    [self performSelectorOnMainThread:@selector(showOutputDrawerOnMainThread) withObject:nil waitUntilDone:YES];
+}
+
+- (void)showExtensionErrorOnMainThread
+{
+    [self performSelectorOnMainThread:@selector(runErrorPanel:) withObject:localizedString(@"extensionErrMsg") waitUntilDone:YES];
 }
 
 - (void)showExtensionError
 {
+    [self performSelectorOnMainThread:@selector(showExtensionErrorOnMainThread) withObject:nil waitUntilDone:YES];
+}
+
+- (void)showNotFoundErrorOnMainThread:(NSString*)aPath
+{
     [self performSelectorOnMainThread:@selector(runErrorPanel:) withObject:localizedString(@"extensionErrMsg") waitUntilDone:YES];
+    runErrorPanel(@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg"));
 }
 
 - (void)showNotFoundError:(NSString*)aPath
 {
-    [self performSelectorOnMainThread:@selector(runErrorPanel:) withObject:localizedString(@"extensionErrMsg") waitUntilDone:YES];
-    runErrorPanel(@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg"));
+    [self performSelectorOnMainThread:@selector(showNotFoundErrorOnMainThread:) withObject:aPath waitUntilDone:YES];
 }
 
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
@@ -327,34 +337,64 @@ typedef enum {
     return YES;
 }
 
-- (void)showFileGenerateError:(NSString*)aPath
+- (void)showFileGenerateErrorOnMainThread:(NSString*)aPath
 {
     runErrorPanel(@"%@%@", aPath, localizedString(@"fileGenerateErrorMsg"));
 }
 
-- (void)showExecError:(NSString*)command
+- (void)showFileGenerateError:(NSString*)aPath
+{
+    [self performSelectorOnMainThread:@selector(showFileGenerateErrorOnMainThread:) withObject:aPath waitUntilDone:YES];
+}
+
+- (void)showExecErrorOnMainThread:(NSString*)command
 {
     runErrorPanel(@"%@%@", command, localizedString(@"execErrorMsg"));
 }
 
-- (void)showCannotOverwriteError:(NSString*)path
+- (void)showExecError:(NSString*)command
+{
+    [self performSelectorOnMainThread:@selector(showExecErrorOnMainThread:) withObject:command waitUntilDone:YES];
+}
+
+- (void)showCannotOverwriteErrorOnMainThread:(NSString*)path
 {
     runErrorPanel(@"%@%@", path, localizedString(@"cannotOverwriteErrorMsg"));
 }
 
-- (void)showCannotCreateDirectoryError:(NSString*)dir
+- (void)showCannotOverwriteError:(NSString*)path
+{
+    [self performSelectorOnMainThread:@selector(showCannotOverwriteErrorOnMainThread:) withObject:path waitUntilDone:YES];
+}
+
+- (void)showCannotCreateDirectoryErrorOnMainThread:(NSString*)dir
 {
     runErrorPanel(@"%@%@", dir, localizedString(@"cannotCreateDirectoryErrorMsg"));
 }
 
-- (void)showCompileError
+- (void)showCannotCreateDirectoryError:(NSString*)dir
+{
+    [self performSelectorOnMainThread:@selector(showCannotCreateDirectoryErrorOnMainThread:) withObject:dir waitUntilDone:YES];
+}
+
+- (void)showCompileErrorOnMainThread
 {
     runErrorPanel(localizedString(@"compileErrorMsg"));
 }
 
-- (void)showErrorsIgnoredWarning
+- (void)showCompileError
+{
+    [self performSelectorOnMainThread:@selector(showCompileErrorOnMainThread) withObject:nil waitUntilDone:YES];
+}
+
+- (void)showErrorsIgnoredWarningOnMainThread
 {
     runWarningPanel(localizedString(@"errorsIgnoredWarning"));
+}
+
+- (void)showErrorsIgnoredWarning
+{
+    [self performSelectorOnMainThread:@selector(showErrorsIgnoredWarningOnMainThread) withObject:nil waitUntilDone:YES];
 }
 
 - (void)showPageSkippedWarning:(NSArray*)pages
@@ -1595,12 +1635,12 @@ typedef enum {
     
     switch ([aProfile integerForKey:InputMethodKey]) {
         case DIRECT:
-            [converter compileAndConvertWithBody:sourceTextView.textStorage.string];
+            [NSThread detachNewThreadSelector:@selector(compileAndConvertWithBody:) toTarget:converter withObject:sourceTextView.textStorage.string];
             break;
         case FROMFILE:
             inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
             if ([NSFileManager.defaultManager fileExistsAtPath:inputSourceFilePath]) {
-                [converter compileAndConvertWithInputPath:inputSourceFilePath];
+                [NSThread detachNewThreadSelector:@selector(compileAndConvertWithInputPath:) toTarget:converter withObject:inputSourceFilePath];
             } else {
                 runErrorPanel(localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath);
             }
