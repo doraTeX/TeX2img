@@ -463,7 +463,7 @@
     fputs(script.UTF8String, fp);
     fclose(fp);
     
-    system([NSString stringWithFormat:@"/usr/bin/ruby %@; rm %@", scriptPath, scriptPath].UTF8String);
+    system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
 
     return YES;
 }
@@ -486,7 +486,7 @@
     fputs(script.UTF8String, fp);
     fclose(fp);
     
-    system([NSString stringWithFormat:@"/usr/bin/ruby %@; rm %@", scriptPath, scriptPath].UTF8String);
+    system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
     
     return YES;
 }
@@ -672,7 +672,7 @@
     fputs(script.UTF8String, fp);
     fclose(fp);
     
-    system([NSString stringWithFormat:@"/usr/bin/ruby %@; rm %@", scriptPath, scriptPath].UTF8String);
+    system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
 }
 
 - (BOOL)pdf2svg:(NSString*)pdfFilePath outputFileName:(NSString*)svgFilePath page:(NSUInteger)page
@@ -1090,15 +1090,14 @@
         }
 	}
     
-    NSIndexSet *skippedPageIndexes = [emptyPageFlags indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
-    {
-        return ([obj boolValue] == YES);
+    // 白紙ページスキップ警告を表示
+    NSIndexSet *skippedPageIndexes = [emptyPageFlags indexesOfObjectsPassingTest:^BOOL(NSNumber *obj, NSUInteger idx, BOOL *stop) {
+        return (obj.boolValue == YES);
     }];
     
     if (skippedPageIndexes.count > 0) {
         NSMutableArray *skippedPageNumbers = NSMutableArray.array;
-        [skippedPageIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop)
-         {
+        [skippedPageIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
              [skippedPageNumbers addObject:@(idx+1)];
          }];
         [controller showPageSkippedWarning:skippedPageNumbers];
