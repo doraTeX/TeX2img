@@ -239,15 +239,20 @@ typedef enum {
 	[mainWindow makeKeyAndOrderFront:nil];
 }
 
+- (void)appendOutputAndScrollOnMainThread:(NSString*)str
+{
+    [outputTextView.textStorage.mutableString appendString:str];
+    [outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
+    outputTextView.font = sourceTextView.font;
+}
+
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet
 {
     if (quiet) {
         return;
     }
 	if (str) {
-		[outputTextView.textStorage.mutableString appendString:str];
-		[outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
-        outputTextView.font = sourceTextView.font;
+        [self performSelectorOnMainThread:@selector(appendOutputAndScrollOnMainThread:) withObject:str waitUntilDone:YES];
 	}
 }
 
@@ -276,13 +281,19 @@ typedef enum {
 	[outputDrawer open];
 }
 
+- (void)runErrorPanel:(NSString*)msg
+{
+    runErrorPanel(msg);
+}
+
 - (void)showExtensionError
 {
-    runErrorPanel(localizedString(@"extensionErrMsg"));
+    [self performSelectorOnMainThread:@selector(runErrorPanel:) withObject:localizedString(@"extensionErrMsg") waitUntilDone:YES];
 }
 
 - (void)showNotFoundError:(NSString*)aPath
 {
+    [self performSelectorOnMainThread:@selector(runErrorPanel:) withObject:localizedString(@"extensionErrMsg") waitUntilDone:YES];
     runErrorPanel(@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg"));
 }
 
@@ -1537,7 +1548,7 @@ typedef enum {
     panel.enabled = YES;
 }
 
-- (void) changeFont:(id)sender
+- (void)changeFont:(id)sender
 {
     NSFont *font = NSFontManager.sharedFontManager.selectedFont;
     [self setupFontTextField:font];
