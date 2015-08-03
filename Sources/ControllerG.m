@@ -288,7 +288,7 @@ typedef enum {
 
 - (void)showExtensionErrorOnMainThread
 {
-    [self performSelectorOnMainThread:@selector(runErrorPanel:) withObject:localizedString(@"extensionErrMsg") waitUntilDone:YES];
+    runErrorPanel(localizedString(@"extensionErrMsg"));
 }
 
 - (void)showExtensionError
@@ -298,7 +298,6 @@ typedef enum {
 
 - (void)showNotFoundErrorOnMainThread:(NSString*)aPath
 {
-    [self performSelectorOnMainThread:@selector(runErrorPanel:) withObject:localizedString(@"extensionErrMsg") waitUntilDone:YES];
     runErrorPanel(@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg"));
 }
 
