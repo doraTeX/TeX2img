@@ -152,6 +152,15 @@ BOOL checkWhich(NSString *cmdName)
     }
 }
 
+- (void)generationDidFinish
+{
+    
+}
+
+- (void)exitCurrentThreadIfTaskKilled
+{
+    
+}
 #pragma mark -
 
 

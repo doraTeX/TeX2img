@@ -114,6 +114,7 @@ typedef enum {
 
 @property NSTask *task;
 @property NSPipe *outputPipe;
+@property BOOL *taskKilled;
 @end
 
 @implementation ControllerG
@@ -200,10 +201,27 @@ typedef enum {
 
 @synthesize task;
 @synthesize outputPipe;
+@synthesize taskKilled;
+
 
 #pragma mark - OutputController プロトコルの実装
+- (void)exitCurrentThreadIfTaskKilled
+{
+    if (taskKilled) {
+        taskKilled = NO;
+        [NSThread.currentThread cancel];
+    }
+    
+    if (NSThread.currentThread.isCancelled) {
+        [self generationDidFinish];
+        [NSThread exit];
+    }
+}
+
 - (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments quiet:(BOOL)quiet
 {
+    [self exitCurrentThreadIfTaskKilled];
+    
     NSMutableString *cmdline = NSMutableString.string;
     [cmdline appendString:command];
     [cmdline appendString:@" "];
@@ -225,12 +243,15 @@ typedef enum {
     task.standardOutput = outputPipe;
     task.standardError = outputPipe;
     task.arguments = @[@"-c", cmdline];
+    taskKilled = NO;
     
     [task launch];
     [task waitUntilExit];
     
     [self appendOutputAndScroll:@"\n" quiet:NO];
 
+    [self exitCurrentThreadIfTaskKilled];
+    
     return (task.terminationStatus == 0) ? YES : NO;
 }
 
@@ -239,15 +260,20 @@ typedef enum {
 	[mainWindow makeKeyAndOrderFront:nil];
 }
 
+- (void)appendOutputAndScrollOnMainThread:(NSString*)str
+{
+    [outputTextView.textStorage.mutableString appendString:str];
+    [outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
+    outputTextView.font = sourceTextView.font;
+}
+
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet
 {
     if (quiet) {
         return;
     }
 	if (str) {
-		[outputTextView.textStorage.mutableString appendString:str];
-		[outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
-        outputTextView.font = sourceTextView.font;
+        [self performSelectorOnMainThread:@selector(appendOutputAndScrollOnMainThread:) withObject:str waitUntilDone:YES];
 	}
 }
 
@@ -270,20 +296,35 @@ typedef enum {
                                                 object:nil];
 }
 
-- (void)showOutputDrawer
+- (void)showOutputDrawerOnMainThread
 {
-	outputDrawerMenuItem.state = YES;
-	[outputDrawer open];
+    outputDrawerMenuItem.state = YES;
+    [outputDrawer open];
 }
 
-- (void)showExtensionError
+- (void)showOutputDrawer
+{
+    [self performSelectorOnMainThread:@selector(showOutputDrawerOnMainThread) withObject:nil waitUntilDone:YES];
+}
+
+- (void)showExtensionErrorOnMainThread
 {
     runErrorPanel(localizedString(@"extensionErrMsg"));
 }
 
-- (void)showNotFoundError:(NSString*)aPath
+- (void)showExtensionError
+{
+    [self performSelectorOnMainThread:@selector(showExtensionErrorOnMainThread) withObject:nil waitUntilDone:YES];
+}
+
+- (void)showNotFoundErrorOnMainThread:(NSString*)aPath
 {
     runErrorPanel(@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg"));
+}
+
+- (void)showNotFoundError:(NSString*)aPath
+{
+    [self performSelectorOnMainThread:@selector(showNotFoundErrorOnMainThread:) withObject:aPath waitUntilDone:YES];
 }
 
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
@@ -316,34 +357,64 @@ typedef enum {
     return YES;
 }
 
-- (void)showFileGenerateError:(NSString*)aPath
+- (void)showFileGenerateErrorOnMainThread:(NSString*)aPath
 {
     runErrorPanel(@"%@%@", aPath, localizedString(@"fileGenerateErrorMsg"));
 }
 
-- (void)showExecError:(NSString*)command
+- (void)showFileGenerateError:(NSString*)aPath
+{
+    [self performSelectorOnMainThread:@selector(showFileGenerateErrorOnMainThread:) withObject:aPath waitUntilDone:YES];
+}
+
+- (void)showExecErrorOnMainThread:(NSString*)command
 {
     runErrorPanel(@"%@%@", command, localizedString(@"execErrorMsg"));
 }
 
-- (void)showCannotOverwriteError:(NSString*)path
+- (void)showExecError:(NSString*)command
+{
+    [self performSelectorOnMainThread:@selector(showExecErrorOnMainThread:) withObject:command waitUntilDone:YES];
+}
+
+- (void)showCannotOverwriteErrorOnMainThread:(NSString*)path
 {
     runErrorPanel(@"%@%@", path, localizedString(@"cannotOverwriteErrorMsg"));
 }
 
-- (void)showCannotCreateDirectoryError:(NSString*)dir
+- (void)showCannotOverwriteError:(NSString*)path
+{
+    [self performSelectorOnMainThread:@selector(showCannotOverwriteErrorOnMainThread:) withObject:path waitUntilDone:YES];
+}
+
+- (void)showCannotCreateDirectoryErrorOnMainThread:(NSString*)dir
 {
     runErrorPanel(@"%@%@", dir, localizedString(@"cannotCreateDirectoryErrorMsg"));
 }
 
-- (void)showCompileError
+- (void)showCannotCreateDirectoryError:(NSString*)dir
+{
+    [self performSelectorOnMainThread:@selector(showCannotCreateDirectoryErrorOnMainThread:) withObject:dir waitUntilDone:YES];
+}
+
+- (void)showCompileErrorOnMainThread
 {
     runErrorPanel(localizedString(@"compileErrorMsg"));
 }
 
-- (void)showErrorsIgnoredWarning
+- (void)showCompileError
+{
+    [self performSelectorOnMainThread:@selector(showCompileErrorOnMainThread) withObject:nil waitUntilDone:YES];
+}
+
+- (void)showErrorsIgnoredWarningOnMainThread
 {
     runWarningPanel(localizedString(@"errorsIgnoredWarning"));
+}
+
+- (void)showErrorsIgnoredWarning
+{
+    [self performSelectorOnMainThread:@selector(showErrorsIgnoredWarningOnMainThread) withObject:nil waitUntilDone:YES];
 }
 
 - (void)showPageSkippedWarning:(NSArray*)pages
@@ -1571,6 +1642,22 @@ typedef enum {
 	gsPathTextField.stringValue = gsPath;
 }
 
+- (void)generationDidFinishOnMainThreadAfterDelay
+{
+    generateButton.enabled = YES;
+    generateMenuItem.enabled = YES;
+}
+
+- (void)generationDidFinishOnMainThread
+{
+    [self performSelector:@selector(generationDidFinishOnMainThreadAfterDelay) withObject:nil afterDelay:0.5];
+}
+
+- (void)generationDidFinish
+{
+    [self performSelectorOnMainThread:@selector(generationDidFinishOnMainThread) withObject:nil waitUntilDone:YES];
+}
+
 - (void)generateImage
 {
     NSString *inputSourceFilePath;
@@ -1584,12 +1671,12 @@ typedef enum {
     
     switch ([aProfile integerForKey:InputMethodKey]) {
         case DIRECT:
-            [converter compileAndConvertWithBody:sourceTextView.textStorage.string];
+            [NSThread detachNewThreadSelector:@selector(compileAndConvertWithBody:) toTarget:converter withObject:sourceTextView.textStorage.string];
             break;
         case FROMFILE:
             inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
             if ([NSFileManager.defaultManager fileExistsAtPath:inputSourceFilePath]) {
-                [converter compileAndConvertWithInputPath:inputSourceFilePath];
+                [NSThread detachNewThreadSelector:@selector(compileAndConvertWithInputPath:) toTarget:converter withObject:inputSourceFilePath];
             } else {
                 runErrorPanel(localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath);
             }
@@ -1598,8 +1685,6 @@ typedef enum {
             break;
     }
     
-    generateButton.enabled = YES;
-    generateMenuItem.enabled = YES;
 }
 
 - (IBAction)generate:(id)sender
@@ -1612,6 +1697,17 @@ typedef enum {
 	generateMenuItem.enabled = NO;
     
     [self generateImage];
+}
+
+- (IBAction)abortCompilation:(id)sender
+{
+    if (task && task.isRunning) {
+        taskKilled = YES;
+        [task terminate];
+        task = nil;
+        [self appendOutputAndScroll:[NSString stringWithFormat:@"\n\nTeX2img: %@\n\n", localizedString(@"processAborted")] quiet:NO];
+        [self generationDidFinish];
+    }
 }
 
 @end
