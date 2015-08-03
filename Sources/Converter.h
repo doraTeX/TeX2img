@@ -19,6 +19,8 @@
 - (void)showErrorsIgnoredWarning;
 - (void)showPageSkippedWarning:(NSArray*)pages;
 - (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments quiet:(BOOL)quiet;
+- (void)generationDidFinish;
+- (void)exitCurrentThreadIfTaskKilled;
 @end
 
 @interface Converter : NSObject

@@ -114,6 +114,7 @@ typedef enum {
 
 @property NSTask *task;
 @property NSPipe *outputPipe;
+@property BOOL *taskKilled;
 @end
 
 @implementation ControllerG
@@ -200,10 +201,27 @@ typedef enum {
 
 @synthesize task;
 @synthesize outputPipe;
+@synthesize taskKilled;
+
 
 #pragma mark - OutputController プロトコルの実装
+- (void)exitCurrentThreadIfTaskKilled
+{
+    if (taskKilled) {
+        taskKilled = NO;
+        [NSThread.currentThread cancel];
+    }
+    
+    if (NSThread.currentThread.isCancelled) {
+        [self generationDidFinish];
+        [NSThread exit];
+    }
+}
+
 - (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments quiet:(BOOL)quiet
 {
+    [self exitCurrentThreadIfTaskKilled];
+    
     NSMutableString *cmdline = NSMutableString.string;
     [cmdline appendString:command];
     [cmdline appendString:@" "];
@@ -225,12 +243,15 @@ typedef enum {
     task.standardOutput = outputPipe;
     task.standardError = outputPipe;
     task.arguments = @[@"-c", cmdline];
+    taskKilled = NO;
     
     [task launch];
     [task waitUntilExit];
     
     [self appendOutputAndScroll:@"\n" quiet:NO];
 
+    [self exitCurrentThreadIfTaskKilled];
+    
     return (task.terminationStatus == 0) ? YES : NO;
 }
 
@@ -1621,6 +1642,22 @@ typedef enum {
 	gsPathTextField.stringValue = gsPath;
 }
 
+- (void)generationDidFinishOnMainThreadAfterDelay
+{
+    generateButton.enabled = YES;
+    generateMenuItem.enabled = YES;
+}
+
+- (void)generationDidFinishOnMainThread
+{
+    [self performSelector:@selector(generationDidFinishOnMainThreadAfterDelay) withObject:nil afterDelay:0.5];
+}
+
+- (void)generationDidFinish
+{
+    [self performSelectorOnMainThread:@selector(generationDidFinishOnMainThread) withObject:nil waitUntilDone:YES];
+}
+
 - (void)generateImage
 {
     NSString *inputSourceFilePath;
@@ -1648,8 +1685,6 @@ typedef enum {
             break;
     }
     
-    generateButton.enabled = YES;
-    generateMenuItem.enabled = YES;
 }
 
 - (IBAction)generate:(id)sender
@@ -1662,6 +1697,17 @@ typedef enum {
 	generateMenuItem.enabled = NO;
     
     [self generateImage];
+}
+
+- (IBAction)abortCompilation:(id)sender
+{
+    if (task && task.isRunning) {
+        taskKilled = YES;
+        [task terminate];
+        task = nil;
+        [self appendOutputAndScroll:[NSString stringWithFormat:@"\n\nTeX2img: %@\n\n", localizedString(@"processAborted")] quiet:NO];
+        [self generationDidFinish];
+    }
 }
 
 @end

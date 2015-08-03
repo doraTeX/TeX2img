@@ -130,6 +130,14 @@
 	return [Converter.alloc initWithProfile:aProfile];
 }
 
+- (void)exitCurrentThread
+{
+    [NSThread.currentThread cancel];
+    if (NSThread.currentThread.isCancelled) {
+        [controller generationDidFinish];
+        [NSThread exit];
+    }
+}
 
 
 // JIS X 0208 外の文字を \UTF に置き換える
@@ -678,6 +686,10 @@
 
     NSInteger lowResolution = resolutionLevel*((NSInteger)RESOLUTION_SCALE)*2*72;
     NSInteger resolution = speedPriorityMode ? lowResolution : 20016;
+    
+    if (!emptyPageFlags || emptyPageFlags.count == 0) {
+        [self exitCurrentThread];
+    }
 
     if ([emptyPageFlags[page-1] boolValue]) {
         return YES;
@@ -801,6 +813,7 @@
                 return NO;
             }
         }
+        [controller exitCurrentThreadIfTaskKilled];
         
         BOOL compilationSuceeded = NO;
         BOOL requireDvipdfmx = NO;
@@ -834,6 +847,8 @@
             return NO;
         }
     }
+
+    [controller exitCurrentThreadIfTaskKilled];
     
     pageCount = [PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfFilePath]].pageCount;
     emptyPageFlags = NSMutableArray.array;
@@ -1079,6 +1094,8 @@
         [controller showErrorsIgnoredWarning];
     }
     
+    [controller generationDidFinish]; // 後処理
+    
 	return status;
 }
 
@@ -1097,32 +1114,36 @@
 
 - (BOOL)compileAndConvertWithBody:(NSString*)texBodyStr
 {
-	// TeX ソースを用意
-	NSString* texSourceStr = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}", preambleStr, texBodyStr];
-	return [self compileAndConvertWithSource:texSourceStr];
+    @autoreleasepool {
+        // TeX ソースを用意
+        NSString* texSourceStr = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}", preambleStr, texBodyStr];
+        return [self compileAndConvertWithSource:texSourceStr];
+    }
 }
 
 - (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath
 {
-    pdfInputMode = [sourcePath.pathExtension.lowercaseString isEqualToString:@"pdf"];
-    
-    if (pdfInputMode) {
-        NSString* tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-        if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
-            [controller showFileGenerateError:tempPdfFilePath];
-            return NO;
+    @autoreleasepool {
+        pdfInputMode = [sourcePath.pathExtension.lowercaseString isEqualToString:@"pdf"];
+        
+        if (pdfInputMode) {
+            NSString* tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
+                [controller showFileGenerateError:tempPdfFilePath];
+                return NO;
+            }
+        } else {
+            NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
+                [controller showFileGenerateError:tempTeXFilePath];
+                return NO;
+            }
         }
-    } else {
-        NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-        if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
-            [controller showFileGenerateError:tempTeXFilePath];
-            return NO;
-        }
+        
+        additionalInputPath = getFullPath(sourcePath.stringByDeletingLastPathComponent);
+        
+        return [self compileAndConvertWithCheck];
     }
-    
-    additionalInputPath = getFullPath(sourcePath.stringByDeletingLastPathComponent);
-	
-	return [self compileAndConvertWithCheck];
 }
 
 
