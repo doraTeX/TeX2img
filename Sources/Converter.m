@@ -540,7 +540,7 @@
 {
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
     
-    if ([self isEmptyPage:pdfFilePath page:page]) {
+    if ([self willEmptyPageBeCreated:pdfFilePath page:page]) {
         return;
     }
 
