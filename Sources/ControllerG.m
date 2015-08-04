@@ -449,6 +449,16 @@ typedef enum {
     [self appendOutputAndScroll:@"\n" quiet:NO];
 }
 
+- (void)previewFileOnMainThread:(NSArray*)parameters
+{
+    [NSWorkspace.sharedWorkspace openFile:(NSString*)(parameters[0]) withApplication:(NSString*)(parameters[1])];
+}
+
+- (void)previewFile:(NSString*)path withApplication:(NSString*)app
+{
+    [self performSelectorOnMainThread:@selector(previewFileOnMainThread:) withObject:@[path, app] waitUntilDone:NO];
+}
+
 #pragma mark - プロファイルの読み書き関連
 - (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
 {

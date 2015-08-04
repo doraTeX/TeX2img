@@ -1405,9 +1405,9 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="877">
-                                            <rect key="frame" x="21" y="180" width="222" height="18"/>
+                                            <rect key="frame" x="21" y="180" width="322" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="生成ファイルを Illustrator に配置" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="878">
+                                            <buttonCell key="cell" type="check" title="生成ファイルを Illustrator に配置（EPS形式推奨）" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="878">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>

@@ -161,6 +161,12 @@ BOOL checkWhich(NSString *cmdName)
     }
 }
 
+- (void)previewFile:(NSString*)path withApplication:(NSString*)app
+{
+    [NSWorkspace.sharedWorkspace openFile:path withApplication:app];
+}
+
+
 - (void)generationDidFinish
 {
     

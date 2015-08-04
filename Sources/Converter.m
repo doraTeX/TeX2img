@@ -979,11 +979,6 @@
 	return YES;
 }
 
-- (void)previewOnMainThread:(NSArray*)paramters
-{
-    [NSWorkspace.sharedWorkspace openFile:(NSString*)(paramters[0]) withApplication:(NSString*)(paramters[1])];
-}
-
 - (void)runAppleScriptOnMainThread:(NSString*)script
 {
     [[NSAppleScript.alloc initWithSource:script] executeAndReturnError:nil];
@@ -1020,12 +1015,13 @@
     // プレビュー処理
     if (status && previewFlag) {
         if (![emptyPageFlags[0] boolValue]) {
-            [self performSelectorOnMainThread:@selector(previewOnMainThread:) withObject:@[outputFilePath, previewApp] waitUntilDone:NO];
+            [controller previewFile:outputFilePath withApplication:previewApp];
         }
         if (pageCount > 1) {
             for (NSUInteger i=2; i<=pageCount; i++) {
                 if (![emptyPageFlags[i-1] boolValue]) {
-                    [self performSelectorOnMainThread:@selector(previewOnMainThread:) withObject:@[[outputFilePath pathStringByAppendingPageNumber:i], previewApp] waitUntilDone:NO];
+                    [controller previewFile:[outputFilePath pathStringByAppendingPageNumber:i]
+                            withApplication:previewApp];
                 }
             }
         }

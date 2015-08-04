@@ -8,7 +8,7 @@
 #import "NSString-Extension.h"
 
 #define OPTION_NUM 26
-#define VERSION "1.9.6b8"
+#define VERSION "1.9.6"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -521,7 +521,7 @@ int main (int argc, char *argv[]) {
         BOOL success = [converter compileAndConvertWithInputPath:inputFilePath];
         
         if (success && !quietFlag) {
-            printf("\n%s is generated.\n", outputFilePath.UTF8String);
+            printf("\ntex2img: %s is generated.\n", outputFilePath.UTF8String);
         }
         
         return success ? 0 : 1;
