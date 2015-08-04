@@ -885,7 +885,7 @@
         for (NSUInteger i=2; i<=pageCount; i++) {
             [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i crop:YES];
         }
-	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPSを経由しなくてよいので，pdfcrop で直接生成する。
+	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPS を経由しなくてよいので，pdfcrop類似処理で直接生成する。
         BOOL success = [self pdfcrop:pdfFilePath outputFileName:outputFileName page:1 addMargin:YES];
         if (!success) {
             return success;
