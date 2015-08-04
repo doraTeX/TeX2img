@@ -1527,6 +1527,7 @@ typedef enum {
             directInputButton.state = NSOnState;
             inputSourceFileButton.state = NSOffState;
             sourceTextView.enabled = YES;
+            [mainWindow endEditingFor:inputSourceFileTextField];  // inputSourceFileTextField の編集内容を強制確定させる
             inputSourceFileTextField.enabled = NO;
             browseSourceFileButton.enabled = NO;
             break;
