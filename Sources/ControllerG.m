@@ -1659,7 +1659,8 @@ typedef enum {
 
 - (void)generationDidFinishOnMainThreadAfterDelay
 {
-    generateButton.enabled = YES;
+    generateButton.title = localizedString(@"Generate");
+    generateButton.action = @selector(generate:);
     generateMenuItem.enabled = YES;
 }
 
@@ -1708,7 +1709,8 @@ typedef enum {
         [self showOutputDrawer];
     }
 	
-    generateButton.enabled = NO;
+    generateButton.title = localizedString(@"Abort");
+    generateButton.action = @selector(abortCompilation:);
 	generateMenuItem.enabled = NO;
     
     [self generateImage];

@@ -37,3 +37,5 @@
 "whitePageWarning" = "Page %@ was empty and a white page was generated.";
 "whitePagesWarning" = "Page %@ were empty and white pages were generated.";
 "processAborted" = "Generation aborted.";
+"Generate" = "Generate";
+"Abort" = "Abort";
