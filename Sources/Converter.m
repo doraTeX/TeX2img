@@ -7,8 +7,10 @@
 #define RESOLUTION_SCALE 5.0
 #define EMPTY_BBOX @"%%BoundingBox: 0 0 0 0\n"
 
-#import "NSDictionary-Extension.h"
+#import "NSArray-Extension.h"
+#import "NSIndexSet-Extension.h"
 #import "NSString-Extension.h"
+#import "NSDictionary-Extension.h"
 #import "NSMutableString-Extension.h"
 #import "NSDate-Extension.h"
 #import "Converter.h"
@@ -40,6 +42,7 @@
 @property BOOL pdfInputMode;
 @property BOOL errorsIgnored;
 @property NSMutableArray* emptyPageFlags;
+@property NSMutableArray* whitePageFlags;
 @end
 
 @implementation Converter
@@ -69,6 +72,7 @@
 @synthesize pdfInputMode;
 @synthesize errorsIgnored;
 @synthesize emptyPageFlags;
+@synthesize whitePageFlags;
 
 
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
@@ -851,11 +855,17 @@
     [controller exitCurrentThreadIfTaskKilled];
     
     pageCount = [PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfFilePath]].pageCount;
+
     emptyPageFlags = NSMutableArray.array;
     for (NSInteger i=1; i<=pageCount; i++) {
         [emptyPageFlags addObject:@([self willEmptyPageBeCreated:pdfFilePath page:i])];
     }
-	
+
+    whitePageFlags = NSMutableArray.array;
+    for (NSInteger i=1; i<=pageCount; i++) {
+        [whitePageFlags addObject:@([self isEmptyPage:pdfFilePath page:i] && !(((NSNumber*)emptyPageFlags[i-1]).boolValue))];
+    }
+
     // ありうる経路
     // 【gsを通さない経路]
     //  1. 速度優先モードでのビットマップ生成 (PDF →[pdfcrop類似処理でクロップ]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JPEG/PNG/GIF/TIFF/BMP)
@@ -1077,18 +1087,19 @@
 	}
     
     // 白紙ページスキップ警告を表示
-    NSIndexSet *skippedPageIndexes = [emptyPageFlags indexesOfObjectsPassingTest:^BOOL(NSNumber *obj, NSUInteger idx, BOOL *stop) {
-        return (obj.boolValue == YES);
-    }];
+    NSIndexSet *skippedPageIndexes = emptyPageFlags.indexesOfTrueValue;
     
     if (skippedPageIndexes.count > 0) {
-        NSMutableArray *skippedPageNumbers = NSMutableArray.array;
-        [skippedPageIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-             [skippedPageNumbers addObject:@(idx+1)];
-         }];
-        [controller showPageSkippedWarning:skippedPageNumbers];
+        [controller showPageSkippedWarning:skippedPageIndexes.arrayOfIndexesPlusOne];
     }
-	
+
+    // 白色ページ生成警告を表示
+    NSIndexSet *whitePageIndexes = whitePageFlags.indexesOfTrueValue;
+    
+    if (whitePageIndexes.count > 0) {
+        [controller showWhitePageWarning:whitePageIndexes.arrayOfIndexesPlusOne];
+    }
+
     // エラーを無視した場合は警告
     if (ignoreErrorsFlag && errorsIgnored) {
         [controller showErrorsIgnoredWarning];

@@ -152,6 +152,15 @@ BOOL checkWhich(NSString *cmdName)
     }
 }
 
+- (void)showWhitePageWarning:(NSArray*)pages
+{
+    if (pages.count > 1) {
+        printStdErr("tex2img: [Warning] Page %s were empty and white pages were generated.\n", [pages componentsJoinedByString:@", "].UTF8String);
+    } else {
+        printStdErr("tex2img: [Warning] Page %d was empty and a white page was generated.\n", [pages[0] integerValue]);
+    }
+}
+
 - (void)generationDidFinish
 {
     

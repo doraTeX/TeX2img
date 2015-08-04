@@ -34,4 +34,6 @@
 "errorsIgnoredWarning" = "Some errors were ignored.\nThe result may be different from what you expected.\nModification of the source is recommended.";
 "pageSkippedWarning" = "Page %@ was empty and it was skipped.";
 "pagesSkippedWarning" = "Page %@ were empty and they were skipped.";
+"whitePageWarning" = "Page %@ was empty and a white page was generated.";
+"whitePagesWarning" = "Page %@ were empty and white pages were generated.";
 "processAborted" = "Generation aborted.";

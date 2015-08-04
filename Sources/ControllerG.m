@@ -432,6 +432,21 @@ typedef enum {
     [self appendOutputAndScroll:@"\n" quiet:NO];
 }
 
+- (void)showWhitePageWarning:(NSArray*)pages
+{
+    [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: [%@] ", localizedString(@"Warning")] quiet:NO];
+    
+    if (pages.count > 1) {
+        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"whitePagesWarning"), [pages componentsJoinedByString:@", "]]
+                              quiet:NO];
+    } else {
+        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"whitePageWarning"), [pages[0] stringValue]]
+                              quiet:NO];
+    }
+    
+    [self appendOutputAndScroll:@"\n" quiet:NO];
+}
+
 #pragma mark - プロファイルの読み書き関連
 - (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
 {
