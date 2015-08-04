@@ -36,6 +36,8 @@
 "pagesSkippedWarning" = "%@ ページ目が空白ページであったためスキップしました。";
 "whitePageWarning" = "%@ ページ目が空白ページであったため白紙画像が生成されました。";
 "whitePagesWarning" = "%@ ページ目が空白ページであったため白紙画像が生成されました。";
+"generatedFileMessage" = "%ld 個のファイルを生成しました。";
+"generatedFilesMessage" = "%ld 個のファイルを生成しました。";
 "processAborted" = "画像生成を中断しました。";
 "Generate" = "画像生成";
 "Abort" = "中断";

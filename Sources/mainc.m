@@ -520,10 +520,6 @@ int main (int argc, char *argv[]) {
         Converter *converter = [Converter converterWithProfile:aProfile];
         BOOL success = [converter compileAndConvertWithInputPath:inputFilePath];
         
-        if (success && !quietFlag) {
-            printf("\ntex2img: %s is generated.\n", outputFilePath.UTF8String);
-        }
-        
         return success ? 0 : 1;
     }
     

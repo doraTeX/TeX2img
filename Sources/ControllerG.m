@@ -459,6 +459,19 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(previewFileOnMainThread:) withObject:@[path, app] waitUntilDone:NO];
 }
 
+- (void)printResult:(NSArray*)generatedFiles quiet:(BOOL)quiet
+{
+    NSUInteger count = generatedFiles.count;
+    
+    if (count > 1) {
+        [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: %@\n", [NSString stringWithFormat:localizedString(@"generatedFilesMessage"), count]]
+                              quiet:NO];
+    } else {
+        [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: %@\n", [NSString stringWithFormat:localizedString(@"generatedFileMessage"), count]]
+                              quiet:NO];
+    }
+}
+
 #pragma mark - プロファイルの読み書き関連
 - (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
 {

@@ -166,6 +166,31 @@ BOOL checkWhich(NSString *cmdName)
     [NSWorkspace.sharedWorkspace openFile:path withApplication:app];
 }
 
+- (void)printResult:(NSArray*)generatedFiles quiet:(BOOL)quiet
+{
+    NSUInteger count = generatedFiles.count;
+    
+    if (quiet) {
+        return;
+    }
+
+    [self appendOutputAndScroll:@"\n" quiet:quiet];
+    
+    if (count > 1) {
+        [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: %ld files were generated.\n", count]
+                              quiet:quiet];
+        [self appendOutputAndScroll:@"Generated files:\n" quiet:quiet];
+    } else {
+        [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: %ld file was generated.\n", count]
+                              quiet:quiet];
+        [self appendOutputAndScroll:@"Generated file:\n" quiet:quiet];
+    }
+    
+    [generatedFiles enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
+        [self appendOutputAndScroll:[NSString stringWithFormat:@"%@\n", path]
+                              quiet:quiet];
+    }];
+}
 
 - (void)generationDidFinish
 {

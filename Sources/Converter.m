@@ -1056,6 +1056,21 @@
         }
     }
 	
+    // 結果表示
+    NSMutableArray *generatedFiles = NSMutableArray.array;
+    if (![emptyPageFlags[0] boolValue]) {
+        [generatedFiles addObject:outputFilePath];
+    }
+    if (pageCount > 1) {
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            if (![emptyPageFlags[i-1] boolValue]) {
+                [generatedFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
+            }
+        }
+    }
+    [controller printResult:generatedFiles quiet:quietFlag];
+    
+    
     // 白紙ページスキップ警告を表示
     NSIndexSet *skippedPageIndexes = emptyPageFlags.indexesOfTrueValue;
     
