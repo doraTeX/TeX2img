@@ -112,6 +112,7 @@ typedef enum {
 @property NSWindow *lastActiveWindow;
 @property NSColor *lastColor;
 
+@property Converter *converter;
 @property NSTask *task;
 @property NSPipe *outputPipe;
 @property BOOL *taskKilled;
@@ -199,6 +200,7 @@ typedef enum {
 @synthesize lastActiveWindow;
 @synthesize lastColor;
 
+@synthesize converter;
 @synthesize task;
 @synthesize outputPipe;
 @synthesize taskKilled;
@@ -1659,6 +1661,7 @@ typedef enum {
 
 - (void)generationDidFinishOnMainThreadAfterDelay
 {
+    [converter deleteTemporaryFiles]; // スレッドが中断されたときにも確実に中間ファイルを削除するように
     generateButton.title = localizedString(@"Generate");
     generateButton.action = @selector(generate:);
     generateMenuItem.enabled = YES;
@@ -1666,7 +1669,7 @@ typedef enum {
 
 - (void)generationDidFinishOnMainThread
 {
-    [self performSelector:@selector(generationDidFinishOnMainThreadAfterDelay) withObject:nil afterDelay:0.5];
+    [self performSelector:@selector(generationDidFinishOnMainThreadAfterDelay) withObject:nil afterDelay:0.3];
 }
 
 - (void)generationDidFinish
@@ -1683,7 +1686,7 @@ typedef enum {
     aProfile[QuietKey] = @(NO);
     aProfile[ControllerKey] = self;
     
-    Converter *converter = [Converter converterWithProfile:aProfile];
+    converter = [Converter converterWithProfile:aProfile];
     
     switch ([aProfile integerForKey:InputMethodKey]) {
         case DIRECT:

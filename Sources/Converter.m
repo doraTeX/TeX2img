@@ -138,6 +138,7 @@
 {
     [NSThread.currentThread cancel];
     if (NSThread.currentThread.isCancelled) {
+        [self deleteTemporaryFiles];
         [controller generationDidFinish];
         [NSThread exit];
     }
@@ -1059,33 +1060,6 @@
         }
     }
 	
-	// 中間ファイルの削除
-	if (deleteTmpFileFlag) {
-		NSString* outputFileName = outputFilePath.lastPathComponent;
-		NSString* basePath = [tempdir stringByAppendingPathComponent:tempFileBaseName];
-		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.tex", basePath] error:nil];
-		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.dvi", basePath] error:nil];
-		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.log", basePath] error:nil];
-		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.aux", basePath] error:nil];
-		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.pdf", basePath] error:nil];
-        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop.pdf", basePath] error:nil];
-		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.outline.pdf", basePath] error:nil];
-		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps", basePath] error:nil];
-		[fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps.trim.pdf", basePath] error:nil];
-        
-        NSString *outputDir = [outputFilePath.stringByDeletingLastPathComponent stringByAppendingString:@"/"];
-        if (![outputDir isEqualToString:tempdir]) {
-            [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:outputFileName] error:nil];
-        }
-        for (NSUInteger i=2; i<=pageCount; i++) {
-            if (![outputDir isEqualToString:tempdir]) {
-                [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
-            }
-            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps", basePath, i] error:nil];
-            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps.trim.pdf", basePath, i] error:nil];
-        }
-	}
-    
     // 白紙ページスキップ警告を表示
     NSIndexSet *skippedPageIndexes = emptyPageFlags.indexesOfTrueValue;
     
@@ -1105,10 +1079,42 @@
         [controller showErrorsIgnoredWarning];
     }
     
-    [controller generationDidFinish]; // 後処理
+    // 後処理
+    [self deleteTemporaryFiles];
+    [controller generationDidFinish]; // GUI版の場合はここでも deleteTemporaryFiles が呼び出されるが，CUI版では呼び出されないので二重呼び出しは仕方ない
     
 	return status;
 }
+
+- (void)deleteTemporaryFiles
+{
+    if (deleteTmpFileFlag) {
+        NSString* outputFileName = outputFilePath.lastPathComponent;
+        NSString* basePath = [tempdir stringByAppendingPathComponent:tempFileBaseName];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.tex", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.dvi", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.log", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.aux", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.pdf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop.pdf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.outline.pdf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps.trim.pdf", basePath] error:nil];
+        
+        NSString *outputDir = [outputFilePath.stringByDeletingLastPathComponent stringByAppendingString:@"/"];
+        if (![outputDir isEqualToString:tempdir]) {
+            [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:outputFileName] error:nil];
+        }
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            if (![outputDir isEqualToString:tempdir]) {
+                [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
+            }
+            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps", basePath, i] error:nil];
+            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps.trim.pdf", basePath, i] error:nil];
+        }
+    }
+}
+
 
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr
 {
