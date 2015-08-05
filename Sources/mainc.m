@@ -39,7 +39,7 @@ static void usage()
     printf("  --transparent           : generate transparent images (for PNG/GIF/TIFF)\n");
     printf("  --delete-display-size   : delete width and height attributes of SVG files\n");
     printf("  --copy-to-clipboard     : copy generated files to the clipboard\n");
-    printf("  --no-embed-source       : do not embed the source in image files\n");
+    printf("  --embed-source          : embed the source into image files\n");
     printf("  --quick                 : convert in a speed priority mode\n");
     printf("  --kanji ENCODING        : set Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --ignore-errors         : force conversion by ignoring nonfatal errors\n");
@@ -119,7 +119,7 @@ int main (int argc, char *argv[]) {
         BOOL guessFlag = NO;
         BOOL previewFlag = NO;
         BOOL copyToClipboardFlag = NO;
-        BOOL embedSourceFlag = YES;
+        BOOL embedSourceFlag = NO;
         NSString *encoding = PTEX_ENCODING_NONE;
         NSString *compiler = @"platex";
         NSString *dvipdfmx = @"dvipdfmx";
@@ -233,7 +233,7 @@ int main (int argc, char *argv[]) {
         options[19].flag = NULL;
         options[19].val = 20;
 
-        options[20].name = "no-embed-source";
+        options[20].name = "embed-source";
         options[20].has_arg = no_argument;
         options[20].flag = NULL;
         options[20].val = 21;
@@ -408,8 +408,8 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 21: // --no-embed-source
-                    embedSourceFlag = NO;
+                case 21: // --embed-source
+                    embedSourceFlag = YES;
                     break;
                 case 22: // --delete-display-size
                     deleteDisplaySizeFlag = YES;
