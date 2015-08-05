@@ -1010,65 +1010,43 @@
 
     [controller releaseOutputTextView];
     
-    NSString *previewApp = [extension isEqualToString:@"svg"] ? @"Safari.app" : @"Preview.app";
+    // 生成ファイルを集める
+    NSMutableArray *generatedFiles = NSMutableArray.array;
     
-    // プレビュー処理
-    if (status && previewFlag) {
-        if (![emptyPageFlags[0] boolValue]) {
-            [controller previewFile:outputFilePath withApplication:previewApp];
-        }
-        if (pageCount > 1) {
-            for (NSUInteger i=2; i<=pageCount; i++) {
-                if (![emptyPageFlags[i-1] boolValue]) {
-                    [controller previewFile:[outputFilePath pathStringByAppendingPageNumber:i]
-                            withApplication:previewApp];
-                }
-            }
+    if (![emptyPageFlags[0] boolValue]) {
+        [generatedFiles addObject:outputFilePath];
+    }
+    for (NSUInteger i=2; i<=pageCount; i++) {
+        if (![emptyPageFlags[i-1] boolValue]) {
+            [generatedFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
         }
     }
     
+    // プレビュー処理
+    if (status && previewFlag) {
+        NSString *previewApp = [extension isEqualToString:@"svg"] ? @"Safari" : @"Preview";
+        [controller previewFiles:generatedFiles withApplication:previewApp];
+    }
+    
     // Illustrator に配置
-    if (status && embedInIllustratorFlag) {
+    if (status && embedInIllustratorFlag && generatedFiles.count > 0) {
         NSMutableString *script = NSMutableString.string;
         [script appendFormat:@"tell application \"Adobe Illustrator\"\n"];
         [script appendFormat:@"activate\n"];
-        NSMutableArray *embededFiles = NSMutableArray.array;
         
-        if (![emptyPageFlags[0] boolValue]) {
-            [embededFiles addObject:outputFilePath];
-        }
-        for (NSUInteger i=2; i<=pageCount; i++) {
-            if (![emptyPageFlags[i-1] boolValue]) {
-                [embededFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
+        [generatedFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL *stop) {
+            [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
+            if (ungroupFlag) {
+                [script appendFormat:@"move page items of selection of current document to end of current document\n"];
             }
-        }
+        }];
         
-        if (embededFiles.count > 0) {
-            [embededFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL *stop) {
-                [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
-                if (ungroupFlag) {
-                    [script appendFormat:@"move page items of selection of current document to end of current document\n"];
-                }
-            }];
-            
-            [script appendFormat:@"end tell\n"];
-            [self performSelectorOnMainThread:@selector(runAppleScriptOnMainThread:) withObject:script waitUntilDone:NO];
-        }
+        [script appendFormat:@"end tell\n"];
+        [self performSelectorOnMainThread:@selector(runAppleScriptOnMainThread:) withObject:script waitUntilDone:NO];
     }
 
     // 結果表示
     if (status) {
-        NSMutableArray *generatedFiles = NSMutableArray.array;
-        if (![emptyPageFlags[0] boolValue]) {
-            [generatedFiles addObject:outputFilePath];
-        }
-        if (pageCount > 1) {
-            for (NSUInteger i=2; i<=pageCount; i++) {
-                if (![emptyPageFlags[i-1] boolValue]) {
-                    [generatedFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
-                }
-            }
-        }
         [controller printResult:generatedFiles quiet:quietFlag];
     }
     

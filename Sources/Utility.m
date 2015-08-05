@@ -1,5 +1,6 @@
 #import "global.h"
 #import "Utility.h"
+#import "NSArray-Extension.h"
 
 NSString* execCommand(NSString *cmdline)
 {
@@ -26,4 +27,24 @@ NSString* getFullPath(NSString *aPath)
     pclose(fp);
     
     return @(str);
+}
+
+void previewFiles(NSArray* files, NSString* app)
+{
+    if (files.count == 0) {
+        return;
+    }
+    
+    NSMutableString *script = NSMutableString.new;
+    [script appendFormat:@"tell application \"%@\"\n", app];
+    [script appendString:@"activate\n"];
+    [script appendString:@"open {"];
+    [script appendString:[[files mapUsingBlock:^NSString*(NSString *path) {
+        return [NSString stringWithFormat:@"POSIX file (\"%@\")", path];
+    }] componentsJoinedByString:@", "]];
+    [script appendString:@"}\n"];
+    [script appendString:@"end tell\n"];
+
+    [[NSAppleScript.alloc initWithSource:script] executeAndReturnError:nil];
+
 }

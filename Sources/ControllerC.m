@@ -161,9 +161,9 @@ BOOL checkWhich(NSString *cmdName)
     }
 }
 
-- (void)previewFile:(NSString*)path withApplication:(NSString*)app
+- (void)previewFiles:(NSArray*)files withApplication:(NSString*)app
 {
-    [NSWorkspace.sharedWorkspace openFile:path withApplication:app];
+    previewFiles(files, app);
 }
 
 - (void)printResult:(NSArray*)generatedFiles quiet:(BOOL)quiet

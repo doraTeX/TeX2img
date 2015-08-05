@@ -7,4 +7,13 @@
         return (obj.boolValue == YES);
     }];
 }
+
+- (NSArray*)mapUsingBlock:(id (^)(id))block
+{
+    NSMutableArray *array = NSMutableArray.array;
+    [self enumerateObjectsUsingBlock:^(id item, NSUInteger idx, BOOL *stop) {
+        [array addObject:block(item)];
+    }];
+    return array;
+}
 @end

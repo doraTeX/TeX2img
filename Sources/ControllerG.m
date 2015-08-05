@@ -449,14 +449,16 @@ typedef enum {
     [self appendOutputAndScroll:@"\n" quiet:NO];
 }
 
-- (void)previewFileOnMainThread:(NSArray*)parameters
+- (void)previewFilesOnMainThread:(NSArray*)parameters
 {
-    [NSWorkspace.sharedWorkspace openFile:(NSString*)(parameters[0]) withApplication:(NSString*)(parameters[1])];
+    NSArray *files = (NSArray*)(parameters[0]);
+    NSString *app = (NSString*)(parameters[1]);
+    previewFiles(files, app);
 }
 
-- (void)previewFile:(NSString*)path withApplication:(NSString*)app
+- (void)previewFiles:(NSArray*)files withApplication:(NSString*)app
 {
-    [self performSelectorOnMainThread:@selector(previewFileOnMainThread:) withObject:@[path, app] waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(previewFilesOnMainThread:) withObject:@[files, app] waitUntilDone:NO];
 }
 
 - (void)printResult:(NSArray*)generatedFiles quiet:(BOOL)quiet
