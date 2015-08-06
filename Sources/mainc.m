@@ -7,7 +7,7 @@
 #import "UtilityC.h"
 #import "NSString-Extension.h"
 
-#define OPTION_NUM 26
+#define OPTION_NUM 38
 #define VERSION "1.9.7"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
@@ -21,34 +21,35 @@ static void usage()
 	version();
     printf("Usage: tex2img [options] InputFile OutputFile\n");
     printf("Arguments:\n");
-    printf("  InputFile               : path of TeX source or PDF file\n");
-    printf("  OutputFile              : path of output file (extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
+    printf("  InputFile                  : path of TeX source or PDF file\n");
+    printf("  OutputFile                 : path of output file (extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
     printf("Options:\n");
-    printf("  --compiler   COMPILER   : set compiler      (default: platex)\n");
-    printf("  --guess-compile         : guess the appropriate number of compilation\n");
-    printf("  --num        NUMBER     : set the (maximal) number of compilation\n");
-    printf("  --dvipdfmx   DVIPDFMX   : set dvipdfmx      (default: dvipdfmx)\n");
-    printf("  --gs         GS         : set ghostscript   (default: gs)\n");
-    printf("  --resolution RESOLUTION : set resolution level (default: 15)\n");
-    printf("  --left-margin    MARGIN : set the left margin   (default: 0)\n");
-    printf("  --right-margin   MARGIN : set the right margin  (default: 0)\n");
-    printf("  --top-margin     MARGIN : set the top margin    (default: 0)\n");
-    printf("  --bottom-margin  MARGIN : set the bottom margin (default: 0)\n");
-    printf("  --unit UNIT             : set the unit of margins to \"px\" or \"bp\" (default: px) (*bp is always used for EPS/PDF/SVG)\n");
-    printf("  --with-text             : generate text-embedded PDF files\n");
-    printf("  --transparent           : generate transparent images (for PNG/GIF/TIFF)\n");
-    printf("  --delete-display-size   : delete width and height attributes of SVG files\n");
-    printf("  --copy-to-clipboard     : copy generated files to the clipboard\n");
-    printf("  --embed-source          : embed the source into image files\n");
-    printf("  --quick                 : convert in a speed priority mode\n");
-    printf("  --kanji ENCODING        : set Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
-    printf("  --ignore-errors         : force conversion by ignoring nonfatal errors\n");
-    printf("  --utf-export            : substitute \\UTF{xxxx} for non-JIS X 0208 characters\n");
-    printf("  --quiet                 : do not output logs or messages\n");
-    printf("  --no-delete             : do not delete temporary files (for debug)\n");
-    printf("  --preview               : open the generated files\n");
-    printf("  --version               : display version info\n");
-    printf("  --help                  : display this message\n");
+    printf("  --compiler   COMPILER      : set compiler      (default: platex)\n");
+    printf("  --kanji ENCODING           : set Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
+    printf("  --[no-]guess-compile       : guess the appropriate number of compilation (default: no)\n");
+    printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
+    printf("  --dvipdfmx   DVIPDFMX      : set dvipdfmx      (default: dvipdfmx)\n");
+    printf("  --gs         GS            : set ghostscript   (default: gs)\n");
+    printf("  --resolution RESOLUTION    : set resolution level (default: 15)\n");
+    printf("  --left-margin    MARGIN    : set the left margin   (default: 0)\n");
+    printf("  --right-margin   MARGIN    : set the right margin  (default: 0)\n");
+    printf("  --top-margin     MARGIN    : set the top margin    (default: 0)\n");
+    printf("  --bottom-margin  MARGIN    : set the bottom margin (default: 0)\n");
+    printf("  --unit UNIT                : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
+    printf("                               (*bp is always used for EPS/PDF/SVG)\n");
+    printf("  --[no-]with-text           : generate text-embedded PDF files (default: no)\n");
+    printf("  --[no-]transparent         : generate transparent images (for PNG/GIF/TIFF) (default: no)\n");
+    printf("  --[no-]delete-display-size : delete width and height attributes of SVG files (default: no)\n");
+    printf("  --[no-]copy-to-clipboard   : copy generated files to the clipboard (default: no)\n");
+    printf("  --[no-]embed-source        : embed the source into image files (default: no)\n");
+    printf("  --[no-]quick               : convert in a speed priority mode (default: no)\n");
+    printf("  --[no-]ignore-errors       : force conversion by ignoring nonfatal errors (default: no)\n");
+    printf("  --[no-]utf-export          : substitute \\UTF{xxxx} for non-JIS X 0208 characters (default: no)\n");
+    printf("  --[no-]quiet               : do not output logs or messages (default: no)\n");
+    printf("  --[no-]debug               : leave temporary files for debug (default: no)\n");
+    printf("  --[no-]preview             : open the generated files (default: no)\n");
+    printf("  --version                  : display version info\n");
+    printf("  --help                     : display this message\n");
     exit(1);
 }
 
@@ -133,120 +134,215 @@ int main (int argc, char *argv[]) {
         
         options = malloc(sizeof(struct option) * OPTION_NUM);
         
-        options[0].name = "resolution";
-        options[0].has_arg = required_argument;
-        options[0].flag = NULL;
-        options[0].val = 1;
+        int i = 0;
+        options[i].name = "resolution";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
         
-        options[1].name = "left-margin";
-        options[1].has_arg = required_argument;
-        options[1].flag = NULL;
-        options[1].val = 2;
+        i++;
+        options[i].name = "left-margin";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
         
-        options[2].name = "right-margin";
-        options[2].has_arg = required_argument;
-        options[2].flag = NULL;
-        options[2].val = 3;
+        i++;
+        options[i].name = "right-margin";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
         
-        options[3].name = "top-margin";
-        options[3].has_arg = required_argument;
-        options[3].flag = NULL;
-        options[3].val = 4;
+        i++;
+        options[i].name = "top-margin";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
         
-        options[4].name = "bottom-margin";
-        options[4].has_arg = required_argument;
-        options[4].flag = NULL;
-        options[4].val = 5;
+        i++;
+        options[i].name = "bottom-margin";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
         
-        options[5].name = "with-text";
-        options[5].has_arg = no_argument;
-        options[5].flag = NULL;
-        options[5].val = 6;
-        
-        options[6].name = "transparent";
-        options[6].has_arg = no_argument;
-        options[6].flag = NULL;
-        options[6].val = 7;
-        
-        options[7].name = "no-delete";
-        options[7].has_arg = no_argument;
-        options[7].flag = NULL;
-        options[7].val = 8;
-        
-        options[8].name = "ignore-errors";
-        options[8].has_arg = no_argument;
-        options[8].flag = NULL;
-        options[8].val = 9;
-        
-        options[9].name = "utf-export";
-        options[9].has_arg = no_argument;
-        options[9].flag = NULL;
-        options[9].val = 10;
-        
-        options[10].name = "kanji";
-        options[10].has_arg = required_argument;
-        options[10].flag = NULL;
-        options[10].val = 11;
-        
-        options[11].name = "quiet";
-        options[11].has_arg = no_argument;
-        options[11].flag = NULL;
-        options[11].val = 12;
-        
-        options[12].name = "compiler";
-        options[12].has_arg = required_argument;
-        options[12].flag = NULL;
-        options[12].val = 13;
+        i++;
+        options[i].name = "with-text";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
 
-        options[13].name = "unit";
-        options[13].has_arg = required_argument;
-        options[13].flag = NULL;
-        options[13].val = 14;
-
-        options[14].name = "quick";
-        options[14].has_arg = no_argument;
-        options[14].flag = NULL;
-        options[14].val = 15;
-
-        options[15].name = "num";
-        options[15].has_arg = required_argument;
-        options[15].flag = NULL;
-        options[15].val = 16;
+        i++;
+        options[i].name = "no-with-text";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
         
-        options[16].name = "guess-compile";
-        options[16].has_arg = no_argument;
-        options[16].flag = NULL;
-        options[16].val = 17;
+        i++;
+        options[i].name = "transparent";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
 
-        options[17].name = "preview";
-        options[17].has_arg = no_argument;
-        options[17].flag = NULL;
-        options[17].val = 18;
+        i++;
+        options[i].name = "no-transparent";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "debug";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "no-debug";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
         
-        options[18].name = "dvipdfmx";
-        options[18].has_arg = required_argument;
-        options[18].flag = NULL;
-        options[18].val = 19;
+        i++;
+        options[i].name = "ignore-errors";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
 
-        options[19].name = "gs";
-        options[19].has_arg = required_argument;
-        options[19].flag = NULL;
-        options[19].val = 20;
+        i++;
+        options[i].name = "no-ignore-errors";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
 
-        options[20].name = "embed-source";
-        options[20].has_arg = no_argument;
-        options[20].flag = NULL;
-        options[20].val = 21;
+        i++;
+        options[i].name = "utf-export";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
 
-        options[21].name = "delete-display-size";
-        options[21].has_arg = no_argument;
-        options[21].flag = NULL;
-        options[21].val = 22;
+        i++;
+        options[i].name = "no-utf-export";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+        
+        i++;
+        options[i].name = "kanji";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+        
+        i++;
+        options[i].name = "quiet";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
 
-        options[22].name = "copy-to-clipboard";
-        options[22].has_arg = no_argument;
-        options[22].flag = NULL;
-        options[22].val = 23;
+        i++;
+        options[i].name = "no-quiet";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "compiler";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "unit";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "quick";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "no-quick";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "num";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+        
+        i++;
+        options[i].name = "guess-compile";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "no-guess-compile";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "preview";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "no-preview";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "dvipdfmx";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "gs";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "embed-source";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "no-embed-source";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+        
+        i++;
+        options[i].name = "delete-display-size";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "no-delete-display-size";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "copy-to-clipboard";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "no-copy-to-clipboard";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
 
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
@@ -319,19 +415,34 @@ int main (int argc, char *argv[]) {
                 case 6: // --with-text
                     textPdfFlag = YES;
                     break;
-                case 7: // --transparent
+                case 7: // --no-with-text
+                    textPdfFlag = NO;
+                    break;
+                case 8: // --transparent
                     transparentFlag = YES;
                     break;
-                case 8: // --no-delete
+                case 9: // --no-transparent
+                    transparentFlag = NO;
+                    break;
+                case 10: // --debug
                     deleteTmpFileFlag = NO;
                     break;
-                case 9: // --ignore-errors
+                case 11: // --no-debug
+                    deleteTmpFileFlag = YES;
+                    break;
+                case 12: // --ignore-errors
                     ignoreErrorFlag = YES;
                     break;
-                case 10: // --utf-export
+                case 13: // --no-ignore-errors
+                    ignoreErrorFlag = NO;
+                    break;
+                case 14: // --utf-export
                     utfExportFlag = YES;
                     break;
-                case 11: // --kanji
+                case 15: // --no-utf-export
+                    utfExportFlag = NO;
+                    break;
+                case 16: // --kanji
                     if (optarg) {
                         encoding = @(optarg);
                         if ([encoding isEqualToString:@"no"]) {
@@ -348,10 +459,13 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 12: // --quiet
+                case 17: // --quiet
                     quietFlag = YES;
                     break;
-                case 13: // --compiler
+                case 18: // --no-quiet
+                    quietFlag = NO;
+                    break;
+                case 19: // --compiler
                     if (optarg) {
                         compiler = @(optarg);
                     } else {
@@ -359,7 +473,7 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 14: // --unit
+                case 20: // --unit
                     if (optarg) {
                         NSString *unitString = @(optarg);
                         if ([unitString isEqualToString:@"px"]) {
@@ -375,10 +489,13 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 15: // --quick
+                case 21: // --quick
                     quickFlag = YES;
                     break;
-                case 16: // --num
+                case 22: // --no-quick
+                    quickFlag = NO;
+                    break;
+                case 23: // --num
                     if (optarg) {
                         numberOfCompilation = strtoi(optarg);
                     } else {
@@ -386,13 +503,19 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 17: // --guess-compile
+                case 24: // --guess-compile
                     guessFlag = YES;
                     break;
-                case 18: // --preview
+                case 25: // --no-guess-compile
+                    guessFlag = NO;
+                    break;
+                case 26: // --preview
                     previewFlag = YES;
                     break;
-                case 19: // --dvipdfmx
+                case 27: // --no-preview
+                    previewFlag = NO;
+                    break;
+                case 28: // --dvipdfmx
                     if (optarg) {
                         dvipdfmx = @(optarg);
                     } else {
@@ -400,7 +523,7 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 20: // --gs
+                case 29: // --gs
                     if (optarg) {
                         gs = @(optarg);
                     } else {
@@ -408,14 +531,23 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 21: // --embed-source
+                case 30: // --embed-source
                     embedSourceFlag = YES;
                     break;
-                case 22: // --delete-display-size
+                case 31: // --no-embed-source
+                    embedSourceFlag = NO;
+                    break;
+                case 32: // --delete-display-size
                     deleteDisplaySizeFlag = YES;
                     break;
-                case 23: // --copy-to-clipboard
+                case 33: // --no-delete-display-size
+                    deleteDisplaySizeFlag = NO;
+                    break;
+                case 34: // --copy-to-clipboard
                     copyToClipboardFlag = YES;
+                    break;
+                case 35: // --no-copy-to-clipboard
+                    copyToClipboardFlag = NO;
                     break;
                 case (OPTION_NUM - 2): // --version
                     version();
