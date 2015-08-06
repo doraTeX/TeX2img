@@ -8,7 +8,7 @@
 #import "NSString-Extension.h"
 
 #define OPTION_NUM 38
-#define VERSION "1.9.7"
+#define VERSION "1.9.8b1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -21,16 +21,17 @@ static void usage()
 	version();
     printf("Usage: tex2img [options] InputFile OutputFile\n");
     printf("Arguments:\n");
-    printf("  InputFile                  : path of TeX source or PDF file\n");
-    printf("  OutputFile                 : path of output file (extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
+    printf("  InputFile                  : path of a TeX source or PDF file\n");
+    printf("  OutputFile                 : path of an output file\n");
+    printf("                               (*extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
     printf("Options:\n");
-    printf("  --compiler   COMPILER      : set compiler      (default: platex)\n");
-    printf("  --kanji ENCODING           : set Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
+    printf("  --compiler   COMPILER      : set the LaTeX compiler (default: platex)\n");
+    printf("  --kanji ENCODING           : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --[no-]guess-compile       : guess the appropriate number of compilation (default: no)\n");
     printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
-    printf("  --dvipdfmx   DVIPDFMX      : set dvipdfmx      (default: dvipdfmx)\n");
-    printf("  --gs         GS            : set ghostscript   (default: gs)\n");
-    printf("  --resolution RESOLUTION    : set resolution level (default: 15)\n");
+    printf("  --dvipdfmx   DVIPDFMX      : set dvipdfmx    (default: dvipdfmx)\n");
+    printf("  --gs         GS            : set ghostscript (default: gs)\n");
+    printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
     printf("  --left-margin    MARGIN    : set the left margin   (default: 0)\n");
     printf("  --right-margin   MARGIN    : set the right margin  (default: 0)\n");
     printf("  --top-margin     MARGIN    : set the top margin    (default: 0)\n");
@@ -40,7 +41,7 @@ static void usage()
     printf("  --[no-]with-text           : generate text-embedded PDF files (default: no)\n");
     printf("  --[no-]transparent         : generate transparent images (for PNG/GIF/TIFF) (default: no)\n");
     printf("  --[no-]delete-display-size : delete width and height attributes of SVG files (default: no)\n");
-    printf("  --[no-]copy-to-clipboard   : copy generated files to the clipboard (default: no)\n");
+    printf("  --[no-]copy-to-clipboard   : copy the generated files to the clipboard (default: no)\n");
     printf("  --[no-]embed-source        : embed the source into image files (default: no)\n");
     printf("  --[no-]quick               : convert in a speed priority mode (default: no)\n");
     printf("  --[no-]ignore-errors       : force conversion by ignoring nonfatal errors (default: no)\n");
