@@ -27,7 +27,7 @@ static void usage()
     printf("Options:\n");
     printf("  --compiler   COMPILER      : set the LaTeX compiler (default: platex)\n");
     printf("  --kanji ENCODING           : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
-    printf("  --[no-]guess-compile       : guess the appropriate number of compilation (default: no)\n");
+    printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: disabled)\n");
     printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
     printf("  --dvipdfmx   DVIPDFMX      : set dvipdfmx    (default: dvipdfmx)\n");
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
@@ -38,17 +38,17 @@ static void usage()
     printf("  --bottom-margin  MARGIN    : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT                : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
     printf("                               (*bp is always used for EPS/PDF/SVG)\n");
-    printf("  --[no-]with-text           : generate text-embedded PDF files (default: no)\n");
-    printf("  --[no-]transparent         : generate transparent images (for PNG/GIF/TIFF) (default: no)\n");
-    printf("  --[no-]delete-display-size : delete width and height attributes of SVG files (default: no)\n");
-    printf("  --[no-]copy-to-clipboard   : copy the generated files to the clipboard (default: no)\n");
-    printf("  --[no-]embed-source        : embed the source into image files (default: no)\n");
-    printf("  --[no-]quick               : convert in a speed priority mode (default: no)\n");
-    printf("  --[no-]ignore-errors       : force conversion by ignoring nonfatal errors (default: no)\n");
-    printf("  --[no-]utf-export          : substitute \\UTF{xxxx} for non-JIS X 0208 characters (default: no)\n");
-    printf("  --[no-]quiet               : do not output logs or messages (default: no)\n");
-    printf("  --[no-]debug               : leave temporary files for debug (default: no)\n");
-    printf("  --[no-]preview             : open the generated files (default: no)\n");
+    printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
+    printf("  --[no-]transparent         : disable/enable transparent PNG/GIF/TIFF (default: disabled)\n");
+    printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
+    printf("  --[no-]copy-to-clipboard   : disable/enable copying products to the clipboard (default: disabled)\n");
+    printf("  --[no-]embed-source        : disable/enable embedding of the source into products (default: enabled)\n");
+    printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
+    printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
+    printf("  --[no-]utf-export          : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
+    printf("  --[no-]quiet               : disable/enable quiet mode (default: disabled)\n");
+    printf("  --[no-]delete              : disable/enable deleting temporary files (default: enabled)\n");
+    printf("  --[no-]preview             : disable/enable opening products (default: disabled)\n");
     printf("  --version                  : display version info\n");
     printf("  --help                     : display this message\n");
     exit(1);
@@ -121,7 +121,7 @@ int main (int argc, char *argv[]) {
         BOOL guessFlag = NO;
         BOOL previewFlag = NO;
         BOOL copyToClipboardFlag = NO;
-        BOOL embedSourceFlag = NO;
+        BOOL embedSourceFlag = YES;
         NSString *encoding = PTEX_ENCODING_NONE;
         NSString *compiler = @"platex";
         NSString *dvipdfmx = @"dvipdfmx";
@@ -190,13 +190,13 @@ int main (int argc, char *argv[]) {
         options[i].val = i+1;
 
         i++;
-        options[i].name = "debug";
+        options[i].name = "delete";
         options[i].has_arg = no_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
 
         i++;
-        options[i].name = "no-debug";
+        options[i].name = "no-delete";
         options[i].has_arg = no_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
@@ -425,11 +425,11 @@ int main (int argc, char *argv[]) {
                 case 9: // --no-transparent
                     transparentFlag = NO;
                     break;
-                case 10: // --debug
-                    deleteTmpFileFlag = NO;
-                    break;
-                case 11: // --no-debug
+                case 10: // --delete
                     deleteTmpFileFlag = YES;
+                    break;
+                case 11: // --no-delete
+                    deleteTmpFileFlag = NO;
                     break;
                 case 12: // --ignore-errors
                     ignoreErrorFlag = YES;
