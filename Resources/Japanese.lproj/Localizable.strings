@@ -41,3 +41,4 @@
 "processAborted" = "画像生成を中断しました。";
 "Generate" = "画像生成";
 "Abort" = "中断";
+"Close Current Environment" = "現在の環境を閉じる";

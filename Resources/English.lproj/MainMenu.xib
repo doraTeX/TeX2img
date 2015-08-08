@@ -293,8 +293,14 @@
                                     <action selector="doCommentOrIndent:" target="-1" id="KVO-Mk-cGg"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Close Current Environment" tag="4" keyEquivalent="c" id="7OJ-Yn-4gx">
+                                <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                <connections>
+                                    <action selector="closeCurrentEnvironment:" target="-1" id="su9-Fw-mo9"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="eP0-4q-wpD"/>
-                            <menuItem title="Replace Inserted ¥ by \" state="on" id="730">
+                            <menuItem title="Replace Inserted ¥ with \" state="on" id="730">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="toggleMenuItem:" target="450" id="732"/>

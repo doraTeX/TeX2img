@@ -41,3 +41,4 @@
 "processAborted" = "Generation aborted.";
 "Generate" = "Generate";
 "Abort" = "Abort";
+"Close Current Environment" = "Close Current Environment";

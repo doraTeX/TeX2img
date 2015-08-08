@@ -460,6 +460,84 @@ static BOOL isValidTeXCommandChar(unichar c)
     [self scrollRangeToVisible: NSMakeRange(0, 0)];
 }
 
+- (IBAction)closeCurrentEnvironment:(id)sender
+{
+    autoCompleting = YES;
+    
+    NSRange oldRange = self.selectedRange;
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\\\(begin|end)\\{(.*?)\\}|(start|stop)([a-zA-Z]+)" options:0 error:nil];
+    NSString *target = [self.textStorage.string substringToIndex:oldRange.location];
+    NSEnumerator* enumerator = [regex matchesInString:target options:0 range:NSMakeRange(0, target.length)].reverseObjectEnumerator;
+    
+    NSRange range1, range2, range3, range4;
+    NSString *newString, *environment, *prefix, *stackKey, *group1, *group2, *group3, *group4;
+    NSInteger increment, count_value;
+    NSNumber *count;
+    NSMutableDictionary *environmentStack = NSMutableDictionary.new;
+    NSTextCheckingResult *match;
+    
+    while ((match = (NSTextCheckingResult*)[enumerator nextObject])) {
+        range1 = [match rangeAtIndex:1];
+        range2 = [match rangeAtIndex:2];
+        range3 = [match rangeAtIndex:3];
+        range4 = [match rangeAtIndex:4];
+        
+        group1 = (range1.location == NSNotFound) ? nil : [target substringWithRange:range1];
+        group2 = (range2.location == NSNotFound) ? nil : [target substringWithRange:range2];
+        group3 = (range3.location == NSNotFound) ? nil : [target substringWithRange:range3];
+        group4 = (range4.location == NSNotFound) ? nil : [target substringWithRange:range4];
+
+        if (!(prefix = group1)) {
+            prefix = group3;
+        }
+        if (!(environment = group2)) {
+            environment = group4;
+        }
+        increment = ([group1 isEqualToString:@"end"] || [group3 isEqualToString:@"stop"]) ? 1 : -1;
+        stackKey = [(([prefix isEqualToString:@"begin"] || [prefix isEqualToString:@"end"]) ? @"A" : @"B") stringByAppendingString:environment];
+        
+        count = environmentStack[stackKey];
+        if (count) {
+            count_value = count.integerValue;
+            if (increment == 1) {
+                environmentStack[stackKey] = @(count_value+1);
+            } else if (count_value > 0) {
+                environmentStack[stackKey] = @(count_value-1);
+            } else {
+                newString = environment;
+                break;
+            }
+        } else {
+            if (increment == 1) {
+                environmentStack[stackKey] = @(1);
+            } else {
+                newString = environment;
+                break;
+            }
+        }
+    }
+    
+    if (newString) {
+        if ([prefix isEqualToString:@"begin"]) {
+            newString = [NSString stringWithFormat:@"\\end{%@}", newString];
+        } else {
+            newString = [NSString stringWithFormat:@"\\stop%@", newString];
+        }
+        
+        if ([self shouldChangeTextInRange:oldRange replacementString:newString]) {
+            [self replaceCharactersInRange:oldRange withString:newString];
+            [self didChangeText];
+            self.undoManager.actionName = localizedString(@"Close Current Environment");
+        }
+    } else {
+        NSBeep();
+    }
+    
+    autoCompleting = NO;
+}
+
+
 #pragma mark - ダブルクリック時の挙動
 - (NSRange)selectionRangeForProposedRange:(NSRange)proposedSelRange granularity:(NSSelectionGranularity)granularity
 {
