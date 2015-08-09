@@ -21,36 +21,36 @@ static void usage()
 	version();
     printf("Usage: tex2img [options] InputFile OutputFile\n");
     printf("Arguments:\n");
-    printf("  InputFile                  : path of a TeX source or PDF file\n");
-    printf("  OutputFile                 : path of an output file\n");
-    printf("                               (*extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
+    printf("  InputFile  : path of a TeX source or PDF file\n");
+    printf("  OutputFile : path of an output file\n");
+    printf("               (*extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
     printf("Options:\n");
-    printf("  --compiler   COMPILER      : set the LaTeX compiler (default: platex)\n");
-    printf("  --kanji ENCODING           : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
-    printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: disabled)\n");
-    printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
-    printf("  --dvipdfmx   DVIPDFMX      : set dvipdfmx    (default: dvipdfmx)\n");
-    printf("  --gs         GS            : set ghostscript (default: gs)\n");
-    printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
-    printf("  --left-margin    MARGIN    : set the left margin   (default: 0)\n");
-    printf("  --right-margin   MARGIN    : set the right margin  (default: 0)\n");
-    printf("  --top-margin     MARGIN    : set the top margin    (default: 0)\n");
-    printf("  --bottom-margin  MARGIN    : set the bottom margin (default: 0)\n");
-    printf("  --unit UNIT                : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
-    printf("                               (*bp is always used for EPS/PDF/SVG)\n");
-    printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
-    printf("  --[no-]transparent         : disable/enable transparent PNG/GIF/TIFF (default: disabled)\n");
-    printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
-    printf("  --[no-]copy-to-clipboard   : disable/enable copying products to the clipboard (default: disabled)\n");
-    printf("  --[no-]embed-source        : disable/enable embedding of the source into products (default: enabled)\n");
-    printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
-    printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
-    printf("  --[no-]utf-export          : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
-    printf("  --[no-]quiet               : disable/enable quiet mode (default: disabled)\n");
-    printf("  --[no-]delete              : disable/enable deleting temporary files (default: enabled)\n");
-    printf("  --[no-]preview             : disable/enable opening products (default: disabled)\n");
-    printf("  --version                  : display version info\n");
-    printf("  --help                     : display this message\n");
+    printf("  --compiler   COMPILER         : set the LaTeX compiler (default: platex)\n");
+    printf("  --kanji ENCODING              : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
+    printf("  --[no-]guess-compile          : disable/enable guessing the appropriate number of compilation (default: disabled)\n");
+    printf("  --num        NUMBER           : set the (maximal) number of compilation\n");
+    printf("  --dvipdfmx   DVIPDFMX         : set dvipdfmx    (default: dvipdfmx)\n");
+    printf("  --gs         GS               : set ghostscript (default: gs)\n");
+    printf("  --resolution RESOLUTION       : set the resolution level (default: 15)\n");
+    printf("  --left-margin    MARGIN       : set the left margin   (default: 0)\n");
+    printf("  --right-margin   MARGIN       : set the right margin  (default: 0)\n");
+    printf("  --top-margin     MARGIN       : set the top margin    (default: 0)\n");
+    printf("  --bottom-margin  MARGIN       : set the bottom margin (default: 0)\n");
+    printf("  --unit UNIT                   : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
+    printf("                                  (*bp is always used for EPS/PDF/SVG)\n");
+    printf("  --[no-]with-text              : disable/enable text-embedded PDF (default: disabled)\n");
+    printf("  --[no-]transparent            : disable/enable transparent PNG/GIF/TIFF (default: disabled)\n");
+    printf("  --[no-]delete-display-size    : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
+    printf("  --[no-]copy-to-clipboard      : disable/enable copying products to the clipboard (default: disabled)\n");
+    printf("  --[no-]embed-source           : disable/enable embedding of the source into products (default: enabled)\n");
+    printf("  --[no-]quick                  : disable/enable speed priority mode (default: disabled)\n");
+    printf("  --[no-]ignore-errors          : disable/enable ignoring nonfatal errors (default: disabled)\n");
+    printf("  --[no-]utf-export             : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
+    printf("  --[no-]delete-temporary-files : disable/enable deleting temporary files (default: enabled)\n");
+    printf("  --[no-]preview                : disable/enable opening products (default: disabled)\n");
+    printf("  --[no-]quiet                  : disable/enable quiet mode (default: disabled)\n");
+    printf("  --version                     : display version info\n");
+    printf("  --help                        : display this message\n");
     exit(1);
 }
 
@@ -190,13 +190,13 @@ int main (int argc, char *argv[]) {
         options[i].val = i+1;
 
         i++;
-        options[i].name = "delete";
+        options[i].name = "delete-temporary-files";
         options[i].has_arg = no_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
 
         i++;
-        options[i].name = "no-delete";
+        options[i].name = "no-delete-temporary-files";
         options[i].has_arg = no_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
@@ -425,10 +425,10 @@ int main (int argc, char *argv[]) {
                 case 9: // --no-transparent
                     transparentFlag = NO;
                     break;
-                case 10: // --delete
+                case 10: // --delete-temporary-files
                     deleteTmpFileFlag = YES;
                     break;
-                case 11: // --no-delete
+                case 11: // --no-delete-temporary-files
                     deleteTmpFileFlag = NO;
                     break;
                 case 12: // --ignore-errors
