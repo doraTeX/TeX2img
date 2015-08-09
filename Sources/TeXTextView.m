@@ -104,7 +104,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (void)colorizeAfterUndoAndRedo
 {
-    [self colorizeText:YES];
+    [self colorizeText];
 }
 
 - (void)registerUndoWithString:(NSString*)oldString location:(unsigned)oldLocation
@@ -183,7 +183,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 	
 	from = oldRange.location;
 	to = from + newString.length;
-	[self colorizeText:YES];
+	[self colorizeText];
 	
 	// Place insertion mark
 	if (searchRange.location != NSNotFound) {
@@ -225,7 +225,7 @@ static BOOL isValidTeXCommandChar(unichar c)
         
 		[super insertText:aString];
 	}
-	[self colorizeText:YES];
+	[self colorizeText];
 }
 
 - (void)insertTextWithIndicator:(id)aString {
@@ -258,7 +258,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 				[self didChangeText];
 			}
 			// by returning YES, "Undo Paste" menu item will be set up by system
-			[self colorizeText:YES];
+			[self colorizeText];
 			return YES;
 		} else {
 			return NO;
@@ -448,14 +448,14 @@ static BOOL isValidTeXCommandChar(unichar c)
     modifyRange.length = blockEnd - blockStart;
     self.selectedRange = modifyRange;
 
-    [self colorizeText:YES];
+    [self colorizeText];
 }
 
 
-- (void)replaceEntireContentsWithString:(NSString*)contents colorize:(BOOL)colorize
+- (void)replaceEntireContentsWithString:(NSString*)contents
 {
     [self insertText:contents replacementRange:NSMakeRange(0, self.textStorage.mutableString.length)];
-    [self colorizeText:colorize];
+    [self colorizeText];
     [self setSelectedRange:NSMakeRange(0, 0)];
     [self scrollRangeToVisible: NSMakeRange(0, 0)];
 }

@@ -1,6 +1,6 @@
 #import <stdio.h>
 #import <Quartz/Quartz.h>
-#include <sys/xattr.h>
+#import <sys/xattr.h>
 #import "global.h"
 #import "Utility.h"
 

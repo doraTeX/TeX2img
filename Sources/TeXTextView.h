@@ -20,14 +20,14 @@
 - (void)registerUndoWithString:(NSString*)oldString location:(unsigned)oldLocation
                         length: (unsigned)newLength key:(NSString*)key;
 - (void)setEnabled:(BOOL)enabled;
-- (void)replaceEntireContentsWithString:(NSString*)contents colorize:(BOOL)colorize;
+- (void)replaceEntireContentsWithString:(NSString*)contents;
 - (void)insertTextWithIndicator:(id)aString;
 - (void)fixupTabs;
 @property(nonatomic, assign) id<DnDDelegate> dropDelegate;
 @end
 
 @interface TeXTextView (Colorize)
-- (void)colorizeText:(BOOL)colorize;
+- (void)colorizeText;
 - (void)resetBackgroundColor:(id)sender;
 @end
 

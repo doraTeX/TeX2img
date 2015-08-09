@@ -15,20 +15,20 @@ static BOOL isValidTeXCommandChar(unichar c)
 }
 
 @implementation TeXTextView (Colorize)
-- (void)colorizeText:(BOOL)colorize
+- (void)colorizeText
 {
 	NSLayoutManager *layoutManager;
 	NSString		*textString;
 	NSUInteger		length;
 	NSRange			colorRange;
 	NSUInteger		location;
-	int				theChar;
+	unichar         theChar;
 	NSUInteger		aLineStart;
 	NSUInteger		aLineEnd;
 	NSUInteger		end;
 	
 	float r,g,b;
-	NSColor* color;
+	NSColor         *color;
 	NSDictionary	*commandColorAttribute;
 	NSDictionary	*commentColorAttribute;
 	NSDictionary	*markerColorAttribute;
@@ -38,25 +38,19 @@ static BOOL isValidTeXCommandChar(unichar c)
 	r = 0.0;
 	g = 0.0;
 	b = 1.0;
-    if (colorize) {
-        color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
-    }
+    color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
     commandColorAttribute = @{NSForegroundColorAttributeName: color};
 	
 	r = 1.0;
 	g = 0.0;
 	b = 0.0;
-    if (colorize) {
-        color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
-    }
+    color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
     commentColorAttribute = @{NSForegroundColorAttributeName: color};
 	
 	r = 0.02;
 	g = 0.51;
 	b = 0.13;
-    if (colorize) {
-        color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
-    }
+    color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
     markerColorAttribute = @{NSForegroundColorAttributeName: color};
 	
 	
@@ -99,7 +93,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 			colorRange.location = location;
 			colorRange.length = 1;
 			[textString getLineStart:nil end:nil contentsEnd:&end forRange:colorRange];
-			colorRange.length = (end - location);
+			colorRange.length = end - location;
 			[layoutManager addTemporaryAttributes:commentColorAttribute forCharacterRange:colorRange];
 			location = end;
 		} else if (theChar == '\\' || theChar == 0x00a5) {
@@ -128,7 +122,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (void)resetHighlight:(id)sender
 {
-	[self colorizeText:YES];
+	[self colorizeText];
 	braceHighlighting = NO;
 }
 
@@ -162,8 +156,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 	// Notification の処理で色づけの変更を行うと，delete を押したときにバグるので，performSelector で別途呼び出して処理する
 	if (contentHighlighting) {
-		[self performSelector:@selector(resetBackgroundColor:) 
-				   withObject:nil afterDelay:0]; // 既存の背景色の消去
+		[self performSelector:@selector(resetBackgroundColor:) withObject:nil afterDelay:0]; // 既存の背景色の消去
 	}
 	
 	HighlightPattern highlightPattern = SOLID;
@@ -298,9 +291,9 @@ static BOOL isValidTeXCommandChar(unichar c)
 {
     [super shouldChangeTextInRange:affectedCharRange replacementString:replacementString];
     
-    NSRange			matchRange;
-    NSString		*textString;
-    NSInteger       i, j, count, uchar, leftpar, rightpar;
+    NSRange	  matchRange;
+    NSString  *textString;
+    NSInteger i, j, count, uchar, leftpar, rightpar;
     
     if (replacementString.length != 1)
         return YES;

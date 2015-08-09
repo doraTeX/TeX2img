@@ -1,4 +1,4 @@
-#include <sys/xattr.h>
+#import <sys/xattr.h>
 #import "ProfileController.h"
 #import "global.h"
 #import "ControllerG.h"
@@ -612,7 +612,7 @@ typedef enum {
     }
     [sourceTextView fixupTabs];
     
-    [preambleTextView colorizeText:YES];
+    [preambleTextView colorizeText];
     [preambleTextView fixupTabs];
     
     NSString *inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
@@ -811,7 +811,7 @@ typedef enum {
 
 - (void)restoreDefaultPreambleLogic
 {
-    [preambleTextView replaceEntireContentsWithString:self.defaultPreamble colorize:YES];
+    [preambleTextView replaceEntireContentsWithString:self.defaultPreamble];
 }
 
 - (void)constructTemplatePopup:(id)sender
@@ -889,7 +889,7 @@ typedef enum {
         NSString *message = [NSString stringWithFormat:@"%@\n\n%@", localizedString(@"resotrePreambleMsg"), [contents stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]];
         
         if (runConfirmPanel(message)) {
-            [preambleTextView replaceEntireContentsWithString:contents colorize:YES];
+            [preambleTextView replaceEntireContentsWithString:contents];
         }
     } else {
         runErrorPanel(localizedString(@"cannotReadErrorMsg"), templatePath);
@@ -1065,8 +1065,7 @@ typedef enum {
         [self performSelectorOnMainThread:@selector(showInitMessage:)
                                withObject:@{LatexPathKey: latexPath,
                                             DvipdfmxPathKey: dvipdfmxPath,
-                                            GsPathKey: gsPath
-                                            }
+                                            GsPathKey: gsPath}
                             waitUntilDone:NO];
 
         [self loadDefaultFont];
@@ -1206,8 +1205,13 @@ typedef enum {
     NSString *preamble = @"";
     NSString *body = @"";
     
-    NSRegularExpression *regex = [NSRegularExpression.alloc initWithPattern:@"^(.*?)(?:\\r|\\n|\\r\\n)*(?:\\\\|¥)begin\\{document\\}(?:\\r|\\n|\\r\\n)*(.*)(?:\\\\|¥)end\\{document\\}" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    NSTextCheckingResult *match = [regex firstMatchInString:contents options:0 range:NSMakeRange(0, contents.length)];
+    NSRegularExpression *regex = [NSRegularExpression.alloc initWithPattern:@"^(.*?)(?:\\r|\\n|\\r\\n)*(?:\\\\|¥)begin\\{document\\}(?:\\r|\\n|\\r\\n)*(.*)(?:\\\\|¥)end\\{document\\}"
+                                                                    options:NSRegularExpressionDotMatchesLineSeparators
+                                                                      error:nil];
+    NSTextCheckingResult *match = [regex firstMatchInString:contents
+                                                    options:0
+                                                      range:NSMakeRange(0, contents.length)];
+
     if (match) {
         preamble = [[contents substringWithRange:[match rangeAtIndex:1]] stringByAppendingString:@"\n"];
         body = [[contents substringWithRange:[match rangeAtIndex:2]].stringByDeletingLastReturnCharacters stringByAppendingString:@"\n"];
@@ -1225,10 +1229,10 @@ typedef enum {
     NSString *body = (NSString*)(parts[1]);
     
     if (![preamble isEqualToString:@""]) {
-        [preambleTextView replaceEntireContentsWithString:preamble colorize:YES];
+        [preambleTextView replaceEntireContentsWithString:preamble];
     }
     if (![body isEqualToString:@""]) {
-        [sourceTextView replaceEntireContentsWithString:body colorize:YES];
+        [sourceTextView replaceEntireContentsWithString:body];
     }
     [self sourceSettingChanged:directInputButton];
 }
@@ -1261,7 +1265,7 @@ typedef enum {
             contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
         } else { // 画像ファイルのインプット
             int bufferLength = getxattr(inputPath.UTF8String, EAKey, NULL, 0, 0, 0); // EAを取得
-            if (bufferLength < 0){ // ソース情報が含まれない画像ファイルの場合はエラー
+            if (bufferLength < 0) { // ソース情報が含まれない画像ファイルの場合はエラー
                 runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
                 return;
             } else { // ソース情報が含まれる画像ファイルの場合はそれをEAから取得して contents にセット（EAに保存されたソースは常にUTF8）
@@ -1588,9 +1592,9 @@ typedef enum {
 - (IBAction)refreshTextView:(id)sender
 {
     [tabWidthStepper takeIntValueFrom:tabWidthTextField];
-    [sourceTextView colorizeText:YES];
+    [sourceTextView colorizeText];
     [sourceTextView fixupTabs];
-    [preambleTextView colorizeText:YES];
+    [preambleTextView colorizeText];
     [preambleTextView fixupTabs];
 }
 
@@ -1629,7 +1633,7 @@ typedef enum {
 											NSWidth(preambleWindowRect), NSHeight(preambleWindowRect))
 						 display:NO];
 		[preambleWindow makeKeyAndOrderFront:nil];
-        [preambleTextView colorizeText:YES];
+        [preambleTextView colorizeText];
 	}
     
 }
