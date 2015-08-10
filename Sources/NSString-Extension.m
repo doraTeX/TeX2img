@@ -43,6 +43,58 @@
     }
 }
 
+- (NSUInteger)numberOfComposedCharacters
+{
+    // normalize using NFC
+    NSString *string = self.precomposedStringWithCanonicalMapping;
+    
+    // count composed chars
+    __block NSUInteger count = 0;
+    __block BOOL isRegionalIndicator = NO;
+    NSRange regionalIndicatorRange = NSMakeRange(0xDDE6, 0xDDFF - 0xDDE6 + 1);
+    [string enumerateSubstringsInRange:NSMakeRange(0, string.length)
+                               options:NSStringEnumerationByComposedCharacterSequences | NSStringEnumerationSubstringNotRequired
+                            usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+         // skip if the last composed character was a regional indicator surrogate-pair
+         // 'Cause the so-called national flag emojis consist of two such surrogate pairs
+         // and the first one is already counted in the last loop.
+         // (To simplify the process, we don't check whether this character is also a regional indicator.)
+         if (isRegionalIndicator) {
+             isRegionalIndicator = NO;
+             return;
+         }
+         
+         // detect regional surrogate pair.
+         if ((substringRange.length == 2) &&
+             (NSLocationInRange([string characterAtIndex:substringRange.location + 1], regionalIndicatorRange))) {
+             isRegionalIndicator = YES;
+         }
+         
+         count++;
+     }];
+    
+    return count;
+}
+
+- (NSString*)unicodeName
+{
+    NSMutableString *mutableUnicodeName = self.mutableCopy;
+    CFStringTransform((__bridge CFMutableStringRef)mutableUnicodeName, NULL, CFSTR("Any-Name"), NO);
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\{(.+?)\\}" options:0 error:nil];
+    NSTextCheckingResult *firstMatch = [regex firstMatchInString:mutableUnicodeName
+                                                         options:0
+                                                           range:NSMakeRange(0, mutableUnicodeName.length)];
+    return [mutableUnicodeName substringWithRange:[firstMatch rangeAtIndex:1]];
+}
+
++ (NSString*)stringWithUTF32Char:(UTF32Char)character
+{
+    character = NSSwapHostIntToLittle(character);
+    return [NSString.alloc initWithBytes:&character length:4 encoding:NSUTF32LittleEndianStringEncoding];
+}
+
+
 // データから指定エンコードで文字列を得る
 // CotEditor の CEDocument.m より借用
 + (NSString*)stringWithAutoEncodingDetectionOfData:(NSData*)data detectedEncoding:(NSStringEncoding*)encoding

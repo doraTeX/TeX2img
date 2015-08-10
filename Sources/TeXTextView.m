@@ -2,6 +2,7 @@
 #import "NSDictionary-Extension.h"
 #import "NSMutableString-Extension.h"
 #import "MyLayoutManager.h"
+#import "MyGlyphPopoverController.h"
 #import "UtilityG.h"
 
 #define CommentOutTag 1
@@ -67,6 +68,12 @@ static BOOL isValidTeXCommandChar(unichar c)
                       selector:@selector(colorizeAfterUndoAndRedo)
                           name:NSUndoManagerDidRedoChangeNotification
                         object:undoManager];
+
+    NSMenu* aMenu = self.menu;
+    if ([aMenu indexOfItemWithTitle:localizedString(@"Character Info")] == -1) {
+        [aMenu addItemWithTitle:localizedString(@"Character Info") action:@selector(showCharacterInfo:) keyEquivalent:@""];
+    }
+
 }
 
 - (void)changeFont:(id)sender
@@ -535,6 +542,27 @@ static BOOL isValidTeXCommandChar(unichar c)
     }
     
     autoCompleting = NO;
+}
+
+- (IBAction)showCharacterInfo:(id)sender
+{
+    NSRange selectedRange = self.selectedRange;
+    NSString *selectedString = [self.string substringWithRange:selectedRange];
+    MyGlyphPopoverController *popoverController = [MyGlyphPopoverController.alloc initWithCharacter:selectedString];
+    
+    if (!popoverController) {
+        return;
+    }
+    
+    NSRange glyphRange = [self.layoutManager glyphRangeForCharacterRange:selectedRange actualCharacterRange:NULL];
+    NSRect selectedRect = [self.layoutManager boundingRectForGlyphRange:glyphRange inTextContainer:self.textContainer];
+    NSPoint containerOrigin = self.textContainerOrigin;
+    selectedRect.origin.x += containerOrigin.x;
+    selectedRect.origin.y += containerOrigin.y - 6.0;
+    selectedRect = [self convertRectToLayer:selectedRect];
+    
+    [popoverController showPopoverRelativeToRect:selectedRect ofView:self];
+    [self showFindIndicatorForRange:selectedRange];
 }
 
 

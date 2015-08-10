@@ -42,3 +42,14 @@
 "Generate" = "Generate";
 "Abort" = "Abort";
 "Close Current Environment" = "Close Current Environment";
+"Base: %@ (%@: %@) <combining character sequence consisting of %d characters>" = "Base: %@ (%@: %@) <combining character sequence consisting of %d characters>";
+"%d letters, %d words, %d lines" = "%d letters, %d words, %d lines";
+"Emoji Style" = "Emoji Style";
+"Text Style" = "Text Style";
+"Character Info" = "Character Info";
+"Variant" = "Variant";
+"Skin Tone I-II" = "Light";
+"Skin Tone III" = "Medium Light";
+"Skin Tone IV" = "Medium";
+"Skin Tone V" = "Medium Dark";
+"Skin Tone VI" = "Dark";

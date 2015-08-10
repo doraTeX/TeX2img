@@ -28,6 +28,9 @@
 		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
 		349564B81ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
 		349564B91ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
+		349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349927381B786546009BD5F1 /* MyGlyphPopoverController.m */; };
+		3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */; };
+		3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
 		34CCBB071A964E8A0061842E /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 34CCBB061A964E8A0061842E /* Templates */; };
 		34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CEA1931AB970CE00F98258 /* UtilityG.m */; };
@@ -97,6 +100,10 @@
 		348D72A1125A57B8003AF902 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
 		349564B71ABFF3D1004B9C1D /* Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utility.m; sourceTree = "<group>"; };
 		349564BA1ABFF3E5004B9C1D /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
+		349927371B786546009BD5F1 /* MyGlyphPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyGlyphPopoverController.h; sourceTree = "<group>"; };
+		349927381B786546009BD5F1 /* MyGlyphPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyGlyphPopoverController.m; sourceTree = "<group>"; };
+		3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverMulti.xib; sourceTree = "<group>"; };
+		3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverSingle.xib; sourceTree = "<group>"; };
 		34BF870A12AC10D20099654C /* MyLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyLayoutManager.h; sourceTree = "<group>"; };
 		34BF870B12AC10D20099654C /* MyLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyLayoutManager.m; sourceTree = "<group>"; };
 		34CCBB061A964E8A0061842E /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
@@ -153,6 +160,8 @@
 			children = (
 				34BF870A12AC10D20099654C /* MyLayoutManager.h */,
 				34BF870B12AC10D20099654C /* MyLayoutManager.m */,
+				349927371B786546009BD5F1 /* MyGlyphPopoverController.h */,
+				349927381B786546009BD5F1 /* MyGlyphPopoverController.m */,
 				34821EC610282CF9008DEB1F /* ProfileController.h */,
 				34821EC710282CF9008DEB1F /* ProfileController.m */,
 				348BB5170F08C3850063003D /* Converter.h */,
@@ -254,6 +263,8 @@
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
+				3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */,
+				3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */,
 				CE4A31F00E5036500095D4FC /* Localizable.strings */,
 			);
 			path = Resources;
@@ -346,8 +357,10 @@
 				CE4A31F10E5036500095D4FC /* Localizable.strings in Resources */,
 				7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */,
 				342C6196101E637F00E29FEB /* epstopdf in Resources */,
+				3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */,
 				346225661AB558AB00F632AD /* mupdf in Resources */,
 				34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */,
+				3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,6 +413,7 @@
 				34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */,
 				34821EC810282CF9008DEB1F /* ProfileController.m in Sources */,
 				349564B81ABFF3D1004B9C1D /* Utility.m in Sources */,
+				349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */,
 				346DA57B1B705F6800B51BD7 /* NSArray-Extension.m in Sources */,
 				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,
 				7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */,

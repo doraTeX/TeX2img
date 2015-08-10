@@ -8,7 +8,7 @@
 #import "NSString-Extension.h"
 
 #define OPTION_NUM 38
-#define VERSION "1.9.8b1"
+#define VERSION "1.9.8"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -38,16 +38,16 @@ static void usage()
     printf("  --bottom-margin  MARGIN    : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT                : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
     printf("                               (*bp is always used for EPS/PDF/SVG)\n");
-    printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
     printf("  --[no-]transparent         : disable/enable transparent PNG/GIF/TIFF (default: disabled)\n");
+    printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
     printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
-    printf("  --[no-]copy-to-clipboard   : disable/enable copying products to the clipboard (default: disabled)\n");
-    printf("  --[no-]embed-source        : disable/enable embedding of the source into products (default: enabled)\n");
-    printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
     printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
     printf("  --[no-]utf-export          : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
-    printf("  --[no-]delete-tmpfiles     : disable/enable deleting temporary files (default: enabled)\n");
+    printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
     printf("  --[no-]preview             : disable/enable opening products (default: disabled)\n");
+    printf("  --[no-]delete-tmpfiles     : disable/enable deleting temporary files (default: enabled)\n");
+    printf("  --[no-]embed-source        : disable/enable embedding of the source into products (default: enabled)\n");
+    printf("  --[no-]copy-to-clipboard   : disable/enable copying products to the clipboard (default: disabled)\n");
     printf("  --[no-]quiet               : disable/enable quiet mode (default: disabled)\n");
     printf("  --version                  : display version info\n");
     printf("  --help                     : display this message\n");
