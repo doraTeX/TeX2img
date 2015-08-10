@@ -23,6 +23,7 @@
 - (void)replaceEntireContentsWithString:(NSString*)contents;
 - (void)insertTextWithIndicator:(id)aString;
 - (void)fixupTabs;
+- (void)refreshWordWrap;
 @property(nonatomic, assign) id<DnDDelegate> dropDelegate;
 @end
 

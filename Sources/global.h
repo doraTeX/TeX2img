@@ -47,6 +47,7 @@ NSMutableString *commandCompletionList;
 #define EmbedSourceKey @"embedSource"
 #define TabWidthKey @"tabWidth"
 #define TabIndentKey @"tabIndent"
+#define WrapLineKey @"warpLines"
 
 #define ConvertYenMarkKey @"convertYenMark"
 #define FlashInMovingKey @"flashInMoving"

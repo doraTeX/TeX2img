@@ -109,6 +109,29 @@ static BOOL isValidTeXCommandChar(unichar c)
     [self didChangeText];
 }
 
+- (void)refreshWordWrap
+{
+    NSDictionary *currentProfile = controller.currentProfile;
+    BOOL wrap = [currentProfile boolForKey:WrapLineKey];
+    
+    if (wrap) {
+        self.enclosingScrollView.hasHorizontalScroller = NO;
+        self.horizontallyResizable = NO;
+        self.autoresizingMask = NSViewWidthSizable;
+        self.textContainer.widthTracksTextView = YES;
+        self.frameSize = self.enclosingScrollView.contentSize;
+    } else {
+        NSSize maximumSize = NSMakeSize(FLT_MAX, FLT_MAX);
+        self.enclosingScrollView.contentView.autoresizesSubviews = YES;
+        self.enclosingScrollView.hasHorizontalScroller = YES;
+        self.textContainer.containerSize = maximumSize;
+        self.textContainer.widthTracksTextView = NO;
+        self.maxSize = maximumSize;
+        self.horizontallyResizable = YES;
+    }
+    
+}
+
 - (void)colorizeAfterUndoAndRedo
 {
     [self colorizeText];

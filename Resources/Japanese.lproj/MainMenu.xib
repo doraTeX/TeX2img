@@ -1291,6 +1291,17 @@ DQ
                                                             <action selector="tabWidthStepperPressed:" target="450" id="U3o-x5-nCQ"/>
                                                         </connections>
                                                     </stepper>
+                                                    <button id="SOn-w4-4gh">
+                                                        <rect key="frame" x="10" y="12" width="100" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="行を折り返す" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="wpq-Ss-Bjt">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="refreshTextView:" target="450" id="cBr-Ue-z2n"/>
+                                                        </connections>
+                                                    </button>
                                                 </subviews>
                                             </view>
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
@@ -1686,6 +1697,7 @@ DQ
                 <outlet property="ungroupCheckBox" destination="879" id="882"/>
                 <outlet property="unitMatrix" destination="KJF-Fz-y67" id="m6x-pc-5vF"/>
                 <outlet property="utfExportCheckBox" destination="659" id="661"/>
+                <outlet property="wrapLineCheckBox" destination="SOn-w4-4gh" id="9ie-N8-Yrz"/>
             </connections>
         </customObject>
         <drawer trailingOffset="15" id="776">

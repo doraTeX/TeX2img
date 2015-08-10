@@ -57,6 +57,7 @@ typedef enum {
 @property IBOutlet NSTextField *tabWidthTextField;
 @property IBOutlet NSStepper *tabWidthStepper;
 @property IBOutlet NSButton *tabIndentCheckBox;
+@property IBOutlet NSButton *wrapLineCheckBox;
 
 @property IBOutlet NSButton *showTabCharacterCheckBox;
 @property IBOutlet NSButton *showSpaceCharacterCheckBox;
@@ -148,6 +149,7 @@ typedef enum {
 @synthesize tabWidthStepper;
 @synthesize tabWidthTextField;
 @synthesize tabIndentCheckBox;
+@synthesize wrapLineCheckBox;
 
 @synthesize templatePopupButton;
 
@@ -550,6 +552,12 @@ typedef enum {
         tabIndentCheckBox.state = NSOnState;
     }
     
+    if ([aProfile.allKeys containsObject:WrapLineKey]) {
+        wrapLineCheckBox.state = [aProfile integerForKey:WrapLineKey];
+    } else {
+        wrapLineCheckBox.state = NSOnState;
+    }
+    
 	autoCompleteMenuItem.state = [aProfile boolForKey:AutoCompleteKey];
 	showTabCharacterCheckBox.state = [aProfile boolForKey:ShowTabCharacterKey];
 	showSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowSpaceCharacterKey];
@@ -611,9 +619,11 @@ typedef enum {
         [self loadDefaultFont];
     }
     [sourceTextView fixupTabs];
+    [sourceTextView refreshWordWrap];
     
     [preambleTextView colorizeText];
     [preambleTextView fixupTabs];
+    [preambleTextView refreshWordWrap];
     
     NSString *inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
     if (inputSourceFilePath) {
@@ -704,6 +714,8 @@ typedef enum {
         currentProfile[TabWidthKey] = @((tabWidth > 0) ? tabWidth : 4);
         
         currentProfile[TabIndentKey] = @(tabIndentCheckBox.state);
+        
+        currentProfile[WrapLineKey] = @(wrapLineCheckBox.state);
         
         currentProfile[UnitKey] = @(unitMatrix.selectedTag);
         currentProfile[PriorityKey] = @(priorityMatrix.selectedTag);
@@ -1592,8 +1604,10 @@ typedef enum {
 - (IBAction)refreshTextView:(id)sender
 {
     [tabWidthStepper takeIntValueFrom:tabWidthTextField];
+    [sourceTextView refreshWordWrap];
     [sourceTextView colorizeText];
     [sourceTextView fixupTabs];
+    [preambleTextView refreshWordWrap];
     [preambleTextView colorizeText];
     [preambleTextView fixupTabs];
 }
