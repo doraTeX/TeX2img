@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14F25a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1050" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
@@ -333,7 +333,7 @@
                             <menuItem title="Color Picker" keyEquivalent="C" id="Y4d-p8-ynZ">
                                 <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                 <connections>
-                                    <action selector="toggleColorWindow:" target="450" id="tl9-8n-wfq"/>
+                                    <action selector="toggleColorPalleteWindow:" target="450" id="fbn-tR-uat"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Character Info" keyEquivalent="I" id="878-Yl-f7A">
@@ -532,38 +532,47 @@ DQ
         <customObject id="450" customClass="ControllerG">
             <connections>
                 <outlet property="autoCompleteMenuItem" destination="821" id="823"/>
+                <outlet property="backgroundColorWell" destination="9ev-FH-pU2" id="g9U-5N-q9k"/>
                 <outlet property="beepCheckBox" destination="S8e-Q4-bYm" id="7DT-5Z-H81"/>
                 <outlet property="bottomMarginLabel" destination="566" id="620"/>
                 <outlet property="bottomMarginSlider" destination="565" id="625"/>
+                <outlet property="braceColorWell" destination="nrL-tK-5h1" id="0tq-Nx-CXW"/>
                 <outlet property="browseSourceFileButton" destination="rDs-Du-gHM" id="rUD-Um-NP3"/>
                 <outlet property="checkBraceCheckBox" destination="iIL-tw-OME" id="RcC-3J-yvm"/>
                 <outlet property="checkBracketCheckBox" destination="WUZ-m6-b4G" id="t85-Tl-B3e"/>
                 <outlet property="checkParenCheckBox" destination="C1n-Uc-w6m" id="MBF-ng-lde"/>
                 <outlet property="checkSquareCheckBox" destination="VuB-s7-60B" id="8go-P6-s41"/>
+                <outlet property="colorPalleteColorWell" destination="5Hf-8k-PN5" id="8dy-UB-2ar"/>
+                <outlet property="colorPalleteWindow" destination="r0I-g2-mDW" id="O4w-Yw-u5i"/>
+                <outlet property="colorPalleteWindowMenuItem" destination="Y4d-p8-ynZ" id="jX2-Pc-lyJ"/>
                 <outlet property="colorStyleMatrix" destination="ZdF-pn-USE" id="sul-BX-2Ez"/>
                 <outlet property="colorTextField" destination="FSu-oQ-wrx" id="2Pb-rY-fhi"/>
-                <outlet property="colorWell" destination="5Hf-8k-PN5" id="PAk-d3-V84"/>
-                <outlet property="colorWindow" destination="r0I-g2-mDW" id="JFs-tb-tQc"/>
-                <outlet property="colorWindowMenuItem" destination="Y4d-p8-ynZ" id="6JN-TZ-Zc1"/>
+                <outlet property="commandColorWell" destination="W2S-6n-OLu" id="bbG-b6-1bw"/>
+                <outlet property="commentColorWell" destination="G6m-jH-sBa" id="Dc8-A1-LoF"/>
                 <outlet property="convertYenMarkMenuItem" destination="730" id="731"/>
+                <outlet property="cursorColorWell" destination="G2n-jL-xHL" id="dpt-vu-mh6"/>
                 <outlet property="deleteDisplaySizeCheckBox" destination="H7g-7q-uFe" id="3bf-7G-Nrb"/>
                 <outlet property="deleteTmpFileCheckBox" destination="591" id="594"/>
                 <outlet property="directInputButton" destination="Jlp-tG-8jx" id="nfr-l4-glA"/>
                 <outlet property="dvipdfmxPathTextField" destination="600" id="608"/>
                 <outlet property="embedInIllustratorCheckBox" destination="857" id="861"/>
                 <outlet property="embedSourceCheckBox" destination="On1-La-dwy" id="VMh-uZ-oVY"/>
+                <outlet property="enclosedContentBackgroundColorWell" destination="mfZ-Hg-uIe" id="i7E-Dl-ef9"/>
                 <outlet property="encodingPopUpButton" destination="Gzh-vl-KcH" id="XMi-XA-snF"/>
                 <outlet property="flashBackgroundCheckBox" destination="cqv-iM-ddW" id="6rE-vK-8l3"/>
                 <outlet property="flashInMovingCheckBox" destination="Bh6-7t-qwa" id="ZIU-pC-csp"/>
                 <outlet property="fontTextField" destination="H1k-tV-Nig" id="3V3-sr-eOc"/>
+                <outlet property="foregroundColorWell" destination="G9w-Ow-LRW" id="QEj-ON-8Gw"/>
                 <outlet property="generateButton" destination="453" id="754"/>
                 <outlet property="generateMenuItem" destination="468" id="755"/>
                 <outlet property="gsPathTextField" destination="604" id="609"/>
                 <outlet property="guessCompilationButton" destination="nMD-49-FUm" id="Ybd-B7-grM"/>
                 <outlet property="highlightContentCheckBox" destination="5Rq-aL-FFQ" id="l6e-Ek-LFX"/>
+                <outlet property="highlightedBraceColorWell" destination="CFF-Av-i7F" id="0rz-su-Cpn"/>
                 <outlet property="ignoreErrorCheckBox" destination="653" id="655"/>
                 <outlet property="inputSourceFileButton" destination="fNB-7d-xgA" id="8gZ-Pk-OFj"/>
                 <outlet property="inputSourceFileTextField" destination="cz9-Hs-JtF" id="2fT-96-ciu"/>
+                <outlet property="invisibleColorWell" destination="NvZ-em-Cp7" id="7XC-mV-eKv"/>
                 <outlet property="latexPathTextField" destination="597" id="4Yg-1y-ORR"/>
                 <outlet property="leftMarginLabel" destination="546" id="617"/>
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
@@ -696,7 +705,7 @@ DQ
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
-                            <tabViewItem label="Output" identifier="2" id="582">
+                            <tabViewItem label="Output" identifier="1" id="582">
                                 <view key="view" id="583">
                                     <rect key="frame" x="10" y="33" width="387" height="351"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -983,7 +992,7 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="Engines" identifier="1" id="581">
+                            <tabViewItem label="Engines" identifier="2" id="581">
                                 <view key="view" id="584">
                                     <rect key="frame" x="10" y="33" width="387" height="351"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1187,7 +1196,7 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="View" identifier="Item 2" id="sci-do-lkd">
+                            <tabViewItem label="View" identifier="3" id="sci-do-lkd">
                                 <view key="view" id="RZt-Sg-m5Y">
                                     <rect key="frame" x="10" y="33" width="387" height="351"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1447,7 +1456,179 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="After Compiling" identifier="Item 2" id="587">
+                            <tabViewItem label="Color" identifier="4" id="FfZ-rW-Hp3">
+                                <view key="view" id="Ubb-r3-NuU">
+                                    <rect key="frame" x="10" y="33" width="387" height="351"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="xeR-4s-N6c">
+                                            <rect key="frame" x="84" y="328" width="75" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Foreground" id="j0d-2E-qYr">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="vYj-Ht-29Y">
+                                            <rect key="frame" x="80" y="297" width="79" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Background" id="dh2-9T-Z9D">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="954-uP-6Up">
+                                            <rect key="frame" x="113" y="266" width="46" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Cursor" id="fCc-3u-JHW">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Rbh-h2-Osi">
+                                            <rect key="frame" x="103" y="235" width="56" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="{ } and $" id="rEm-v2-YyM">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="l3v-UJ-SIp">
+                                            <rect key="frame" x="77" y="204" width="82" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="% Comment" id="gCB-vJ-k2U">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="BDd-GH-TpP">
+                                            <rect key="frame" x="85" y="173" width="74" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="\command" id="4nd-J6-nFR">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="6Uv-WX-eFB">
+                                            <rect key="frame" x="28" y="111" width="131" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="{Highlighted Braces}" id="3Gm-o9-tRI">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Ttn-bo-2A9">
+                                            <rect key="frame" x="15" y="80" width="144" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="{Highlighted Contents}" id="Czc-oi-g24">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="g5W-2r-gTx">
+                                            <rect key="frame" x="26" y="142" width="133" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Invisibles ␣ □ ↵ ‣" id="PNW-on-vJc">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <colorWell id="G9w-Ow-LRW">
+                                            <rect key="frame" x="164" y="325" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="Z1x-X4-hcE"/>
+                                            </connections>
+                                        </colorWell>
+                                        <colorWell id="9ev-FH-pU2">
+                                            <rect key="frame" x="164" y="294" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="Q3N-bd-BUH"/>
+                                            </connections>
+                                        </colorWell>
+                                        <colorWell id="G2n-jL-xHL">
+                                            <rect key="frame" x="164" y="263" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="U9t-tw-d5T"/>
+                                            </connections>
+                                        </colorWell>
+                                        <colorWell id="nrL-tK-5h1">
+                                            <rect key="frame" x="164" y="232" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="1da-wJ-IQo"/>
+                                            </connections>
+                                        </colorWell>
+                                        <colorWell id="G6m-jH-sBa">
+                                            <rect key="frame" x="164" y="201" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="pZI-no-Xbl"/>
+                                            </connections>
+                                        </colorWell>
+                                        <colorWell id="W2S-6n-OLu">
+                                            <rect key="frame" x="164" y="170" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="kAg-6l-5vo"/>
+                                            </connections>
+                                        </colorWell>
+                                        <colorWell id="NvZ-em-Cp7">
+                                            <rect key="frame" x="164" y="139" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="DSf-YT-HfH"/>
+                                            </connections>
+                                        </colorWell>
+                                        <colorWell id="CFF-Av-i7F">
+                                            <rect key="frame" x="164" y="108" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="9ja-ze-w2s"/>
+                                            </connections>
+                                        </colorWell>
+                                        <colorWell id="mfZ-Hg-uIe">
+                                            <rect key="frame" x="164" y="77" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="aeZ-fn-nqc"/>
+                                            </connections>
+                                        </colorWell>
+                                        <button verticalHuggingPriority="750" id="W2H-Ha-grG">
+                                            <rect key="frame" x="76" y="29" width="143" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Restore Defaults" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="l99-jO-IGI">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="loadDefaultColors:" target="450" id="CEc-cX-yoE"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="After Compiling" identifier="5" id="587">
                                 <view key="view" id="588">
                                     <rect key="frame" x="10" y="33" width="387" height="351"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1736,7 +1917,7 @@ DQ
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <connections>
-                            <action selector="setColor:" target="450" id="mbV-nv-Lf4"/>
+                            <action selector="colorPalleteColorSet:" target="450" id="bGW-PH-Qi3"/>
                         </connections>
                     </colorWell>
                     <button verticalHuggingPriority="750" id="BSN-in-joM">
@@ -1799,7 +1980,7 @@ DQ
                             </column>
                         </cells>
                         <connections>
-                            <action selector="setColor:" target="450" id="Q3B-Im-3V1"/>
+                            <action selector="colorPalleteColorSet:" target="450" id="weG-NX-mag"/>
                         </connections>
                     </matrix>
                 </subviews>

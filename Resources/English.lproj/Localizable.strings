@@ -25,11 +25,12 @@
 "extensionErrMsg" = "The extention must be eps/pdf/jpg/png/gif/tiff/bmp/svg.";
 "emptyProfileNameErrMsg" = "Enter the name of the new profile.";
 "profileOverwriteMsg" = "A profile of the same name already exists. Do you want to replace it?";
-"overwriteContentsWarningMsg" = "Current contents including preamble will be replaced.\nDo you want to continue?";
+"overwriteContentsWarningMsg" = "Current contents including preamble will be replaced.\nDo you really want to continue?";
 "cannotReadErrorMsg" = "Failed to read the file.\n%@";
 "cannotWriteErrorMsg" = "Failed to write the file.\n%@";
 "saveCurrentPreambleAsTemplate" = "Save current preamble as a template";
-"restoreTemplatesConfirmationMsg" = "Default templates will be retored.\nThe existing ones will be overwritten.\nDo you want to continue?";
+"restoreTemplatesConfirmationMsg" = "Default templates will be retored.\nThe existing ones will be overwritten.\nDo you really want to continue?";
+"restoreColorsConfirmationMsg" = "All color settings will revert to default state.\nDo you really want to continue?";
 "doesNotContainSource" = "This image does not contain any source information.";
 "errorsIgnoredWarning" = "Some errors were ignored.\nThe result may be different from what you expected.\nModification of the source is recommended.";
 "pageSkippedWarning" = "Page %@ was empty and it was skipped.";

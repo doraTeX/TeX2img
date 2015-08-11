@@ -49,6 +49,18 @@ NSMutableString *commandCompletionList;
 #define TabIndentKey @"tabIndent"
 #define WrapLineKey @"warpLines"
 
+#define ForegroundColorKey @"foregroundColor"
+#define BackgroundColorKey @"backgroundColor"
+#define CursorColorKey @"cursorColor"
+#define BraceColorKey @"braceColor"
+#define CommentColorKey @"commentColor"
+#define CommandColorKey @"commandColor"
+#define InvisibleColorKey @"invisibleColor"
+#define HighlightedBraceColorKey @"highlightedBraceColor"
+#define EnclosedContentBackgroundColorKey @"enclosedContentBackgroundColor"
+
+#define ColorPalleteColorKey @"colorPalleteColor"
+
 #define ConvertYenMarkKey @"convertYenMark"
 #define FlashInMovingKey @"flashInMoving"
 #define HighlightContentKey @"highlightContent"

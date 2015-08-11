@@ -36,5 +36,9 @@
 	return (NSDictionary*)self[aKey];
 }
 
+- (NSColor*)colorForKey:(NSString*)aKey
+{
+    return [NSColor colorWithSerializedString:[self stringForKey:aKey]];
+}
 
 @end

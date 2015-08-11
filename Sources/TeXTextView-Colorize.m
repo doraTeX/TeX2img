@@ -1,5 +1,6 @@
 #import "TeXTextView.h"
 #import "NSDictionary-Extension.h"
+#import "NSColor-Extension.h"
 
 static BOOL isValidTeXCommandChar(unichar c)
 {
@@ -27,32 +28,45 @@ static BOOL isValidTeXCommandChar(unichar c)
 	NSUInteger		aLineEnd;
 	NSUInteger		end;
 	
-	float r,g,b;
-	NSColor         *color;
-	NSDictionary	*commandColorAttribute;
-	NSDictionary	*commentColorAttribute;
-	NSDictionary	*markerColorAttribute;
-	
-	color = NSColor.textColor;
-	
-	r = 0.0;
-	g = 0.0;
-	b = 1.0;
-    color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
-    commandColorAttribute = @{NSForegroundColorAttributeName: color};
-	
-	r = 1.0;
-	g = 0.0;
-	b = 0.0;
-    color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
-    commentColorAttribute = @{NSForegroundColorAttributeName: color};
-	
-	r = 0.02;
-	g = 0.51;
-	b = 0.13;
-    color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
-    markerColorAttribute = @{NSForegroundColorAttributeName: color};
-	
+    NSDictionary *profile = controller.currentProfile;
+    
+    NSColor *color;
+    
+    color = [profile colorForKey:ForegroundColorKey];
+    if (color) {
+        self.textColor = color;
+    }
+    
+    color = [profile colorForKey:BackgroundColorKey];
+    if (color) {
+        self.backgroundColor = color;
+    }
+    
+    color = [profile colorForKey:CursorColorKey];
+    if (color) {
+        self.insertionPointColor = color;
+    }
+    
+    color = [profile colorForKey:CommandColorKey];
+    if (!color) {
+        color = NSColor.commandColor;
+    }
+
+    NSDictionary *commandColorAttribute = @{NSForegroundColorAttributeName: color};
+    
+    color = [profile colorForKey:CommentColorKey];
+    if (!color) {
+        color = NSColor.commentColor;
+    }
+    
+    NSDictionary *commentColorAttribute = @{NSForegroundColorAttributeName: color};
+
+    color = [profile colorForKey:BraceColorKey];
+    if (!color) {
+        color = NSColor.braceColor;
+    }
+    
+    NSDictionary *markerColorAttribute = @{NSForegroundColorAttributeName: color};
 	
 	// Fetch the underlying layout manager and string.
 	layoutManager = self.layoutManager;
@@ -145,14 +159,19 @@ static BOOL isValidTeXCommandChar(unichar c)
 - (void)highlightContent:(NSString*)range
 {
 	contentHighlighting = YES;
-	[self.layoutManager addTemporaryAttributes: @{NSBackgroundColorAttributeName: [NSColor colorWithDeviceRed:1 green:1 blue:0.5 alpha:1]}
-							   forCharacterRange:NSRangeFromString(range)];
+    NSColor *color = [controller.currentProfile colorForKey:EnclosedContentBackgroundColorKey];
+    if (!color) {
+        color = NSColor.enclosedContentBackgroundColor;
+    }
+	[self.layoutManager addTemporaryAttributes: @{NSBackgroundColorAttributeName: color}
+                             forCharacterRange: NSRangeFromString(range)];
 }
 
 - (void)textViewDidChangeSelection:(NSNotification*)inNotification
 {
 	NSLayoutManager* layoutManager = self.layoutManager;
 	NSDictionary* profile = controller.currentProfile;
+    NSColor *color;
 
 	// Notification の処理で色づけの変更を行うと，delete を押したときにバグるので，performSelector で別途呼び出して処理する
 	if (contentHighlighting) {
@@ -164,8 +183,13 @@ static BOOL isValidTeXCommandChar(unichar c)
 	if (highlightPattern == SOLID || braceHighlighting) {
 		[self resetHighlight:nil];
 	}
+    
+    color = [profile colorForKey:HighlightedBraceColorKey];
+    if (!color) {
+        color = NSColor.highlightedBraceColor;
+    }
 
-	highlightBracesColorDict = @{NSForegroundColorAttributeName: NSColor.magentaColor};
+	highlightBracesColorDict = @{NSForegroundColorAttributeName: color};
 	unichar k_braceCharList[] = {0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E}; // == ()[]{}<>
     
 	NSString *theString = self.textStorage.string;

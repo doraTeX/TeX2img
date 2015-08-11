@@ -48,13 +48,15 @@
 	float theInsetWidth = 0.0;
 	float theInsetHeight = 4.0;
 	NSSize theSize = NSMakeSize(theInsetWidth, theInsetHeight);
+    NSDictionary* currentProfile = _controller.currentProfile;
 	
     NSFont *theFont = self.textStorage.font;
-    NSColor *theColor = NSColor.orangeColor;
+    NSColor *theColor = [currentProfile colorForKey:InvisibleColorKey];
+    if (!theColor) {
+        theColor = NSColor.invisibleColor;
+    }
     NSDictionary* _attributes = @{NSFontAttributeName: theFont, 
 								 NSForegroundColorAttributeName: theColor};
-	
-	NSDictionary* currentProfile = _controller.currentProfile;
 	
 	for (theGlyphIndex = inGlyphRange.location; theGlyphIndex < theLengthToRedraw; theGlyphIndex++) {
 		theCharIndex = [self characterIndexForGlyphAtIndex:theGlyphIndex];

@@ -6,6 +6,7 @@
 #import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
 #import "NSFileManager-Extension.h"
+#import "NSColor-Extension.h"
 #import "TeXTextView.h"
 #import "UtilityG.h"
 
@@ -64,9 +65,9 @@ typedef enum {
 @property IBOutlet NSButton *showNewLineCharacterCheckBox;
 @property IBOutlet NSButton *showFullwidthSpaceCharacterCheckBox;
 
-@property IBOutlet NSWindow *colorWindow;
-@property IBOutlet NSMenuItem *colorWindowMenuItem;
-@property IBOutlet NSColorWell *colorWell;
+@property IBOutlet NSWindow *colorPalleteWindow;
+@property IBOutlet NSMenuItem *colorPalleteWindowMenuItem;
+@property IBOutlet NSColorWell *colorPalleteColorWell;
 @property IBOutlet NSMatrix *colorStyleMatrix;
 @property IBOutlet NSTextField *colorTextField;
 
@@ -111,7 +112,17 @@ typedef enum {
 @property NSString *lastSavedPath;
 
 @property NSWindow *lastActiveWindow;
-@property NSColor *lastColor;
+@property NSMutableDictionary *lastColorDict;
+
+@property IBOutlet NSColorWell *foregroundColorWell;
+@property IBOutlet NSColorWell *backgroundColorWell;
+@property IBOutlet NSColorWell *cursorColorWell;
+@property IBOutlet NSColorWell *braceColorWell;
+@property IBOutlet NSColorWell *commentColorWell;
+@property IBOutlet NSColorWell *commandColorWell;
+@property IBOutlet NSColorWell *invisibleColorWell;
+@property IBOutlet NSColorWell *highlightedBraceColorWell;
+@property IBOutlet NSColorWell *enclosedContentBackgroundColorWell;
 
 @property Converter *converter;
 @property NSTask *task;
@@ -153,9 +164,9 @@ typedef enum {
 
 @synthesize templatePopupButton;
 
-@synthesize colorWindow;
-@synthesize colorWindowMenuItem;
-@synthesize colorWell;
+@synthesize colorPalleteWindow;
+@synthesize colorPalleteWindowMenuItem;
+@synthesize colorPalleteColorWell;
 @synthesize colorStyleMatrix;
 @synthesize colorTextField;
 
@@ -200,7 +211,17 @@ typedef enum {
 @synthesize lastSavedPath;
 
 @synthesize lastActiveWindow;
-@synthesize lastColor;
+@synthesize lastColorDict;
+
+@synthesize foregroundColorWell;
+@synthesize backgroundColorWell;
+@synthesize cursorColorWell;
+@synthesize braceColorWell;
+@synthesize commentColorWell;
+@synthesize commandColorWell;
+@synthesize invisibleColorWell;
+@synthesize highlightedBraceColorWell;
+@synthesize enclosedContentBackgroundColorWell;
 
 @synthesize converter;
 @synthesize task;
@@ -500,6 +521,8 @@ typedef enum {
     if (!aProfile) {
         return;
     }
+    
+    NSArray *keys = aProfile.allKeys;
 	
 	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
 	
@@ -507,7 +530,7 @@ typedef enum {
 	previewCheckBox.state = [aProfile integerForKey:PreviewKey];
 	deleteTmpFileCheckBox.state = [aProfile integerForKey:DeleteTmpFileKey];
 
-    if ([aProfile.allKeys containsObject:EmbedSourceKey]) {
+    if ([keys containsObject:EmbedSourceKey]) {
         embedSourceCheckBox.state = [aProfile integerForKey:EmbedSourceKey];
     } else {
         embedSourceCheckBox.state = NSOnState;
@@ -546,18 +569,79 @@ typedef enum {
     }
     [tabWidthStepper takeIntValueFrom:tabWidthTextField];
 
-    if ([aProfile.allKeys containsObject:TabIndentKey]) {
+    if ([keys containsObject:TabIndentKey]) {
         tabIndentCheckBox.state = [aProfile integerForKey:TabIndentKey];
     } else {
         tabIndentCheckBox.state = NSOnState;
     }
     
-    if ([aProfile.allKeys containsObject:WrapLineKey]) {
+    if ([keys containsObject:WrapLineKey]) {
         wrapLineCheckBox.state = [aProfile integerForKey:WrapLineKey];
     } else {
         wrapLineCheckBox.state = NSOnState;
     }
+
+    //// 色設定の読み取り
+    if ([keys containsObject:ForegroundColorKey]) {
+        foregroundColorWell.color = [aProfile colorForKey:ForegroundColorKey];
+    } else {
+        foregroundColorWell.color = NSColor.textColor;
+    }
+
+    if ([keys containsObject:BackgroundColorKey]) {
+        backgroundColorWell.color = [aProfile colorForKey:BackgroundColorKey];
+    } else {
+        backgroundColorWell.color = NSColor.controlBackgroundColor;
+    }
     
+    if ([keys containsObject:CursorColorKey]) {
+        cursorColorWell.color = [aProfile colorForKey:CursorColorKey];
+    } else {
+        cursorColorWell.color = NSColor.blackColor;
+    }
+    
+    if ([keys containsObject:BraceColorKey]) {
+        braceColorWell.color = [aProfile colorForKey:BraceColorKey];
+    } else {
+        braceColorWell.color = NSColor.braceColor;
+    }
+    
+    if ([keys containsObject:CommentColorKey]) {
+        commentColorWell.color = [aProfile colorForKey:CommentColorKey];
+    } else {
+        commentColorWell.color = NSColor.commentColor;
+    }
+    
+    if ([keys containsObject:CommandColorKey]) {
+        commandColorWell.color = [aProfile colorForKey:CommandColorKey];
+    } else {
+        commandColorWell.color = NSColor.commandColor;
+    }
+    
+    if ([keys containsObject:InvisibleColorKey]) {
+        invisibleColorWell.color = [aProfile colorForKey:InvisibleColorKey];
+    } else {
+        invisibleColorWell.color = NSColor.invisibleColor;
+    }
+    
+    if ([keys containsObject:HighlightedBraceColorKey]) {
+        highlightedBraceColorWell.color = [aProfile colorForKey:HighlightedBraceColorKey];
+    } else {
+        highlightedBraceColorWell.color = NSColor.highlightedBraceColor;
+    }
+    
+    if ([keys containsObject:EnclosedContentBackgroundColorKey]) {
+        enclosedContentBackgroundColorWell.color = [aProfile colorForKey:EnclosedContentBackgroundColorKey];
+    } else {
+        enclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
+    }
+
+    if ([keys containsObject:ColorPalleteColorKey]) {
+        colorPalleteColorWell.color = [aProfile colorForKey:ColorPalleteColorKey];
+    } else {
+        colorPalleteColorWell.color = NSColor.redColor;
+    }
+
 	autoCompleteMenuItem.state = [aProfile boolForKey:AutoCompleteKey];
 	showTabCharacterCheckBox.state = [aProfile boolForKey:ShowTabCharacterKey];
 	showSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowSpaceCharacterKey];
@@ -741,6 +825,18 @@ typedef enum {
         
         currentProfile[InputMethodKey] = (directInputButton.state == NSOnState) ? @(DIRECT) : @(FROMFILE);
         currentProfile[InputSourceFilePathKey] = inputSourceFileTextField.stringValue;
+        
+        currentProfile[ForegroundColorKey] = foregroundColorWell.color.serializedString;
+        currentProfile[BackgroundColorKey] = backgroundColorWell.color.serializedString;
+        currentProfile[CursorColorKey] = cursorColorWell.color.serializedString;
+        currentProfile[BraceColorKey] = braceColorWell.color.serializedString;
+        currentProfile[CommentColorKey] = commentColorWell.color.serializedString;
+        currentProfile[CommandColorKey] = commandColorWell.color.serializedString;
+        currentProfile[InvisibleColorKey] = invisibleColorWell.color.serializedString;
+        currentProfile[HighlightedBraceColorKey] = highlightedBraceColorWell.color.serializedString;
+        currentProfile[EnclosedContentBackgroundColorKey] = enclosedContentBackgroundColorWell.color.serializedString;
+        
+        currentProfile[ColorPalleteColorKey] = colorPalleteColorWell.color.serializedString;
     }
     @catch (NSException *e) {
     }
@@ -942,7 +1038,9 @@ typedef enum {
 	//	以下は Interface Builder 上で設定できる
 	//	[mainWindow setReleasedWhenClosed:NO];
 	//	[preambleWindow setReleasedWhenClosed:NO];
-	
+
+    lastColorDict = NSMutableDictionary.new;
+
 	// ノティフィケーションの設定
 	NSNotificationCenter *aCenter = NSNotificationCenter.defaultCenter;
 	
@@ -966,9 +1064,9 @@ typedef enum {
 
     // 色入力支援パレットが閉じられるときにメニューのチェックを外す
     [aCenter addObserver:self
-                selector:@selector(uncheckColorWindowMenuItem:)
+                selector:@selector(uncheckColorPalleteWindowMenuItem:)
                     name:NSWindowWillCloseNotification
-                  object:colorWindow];
+                  object:colorPalleteWindow];
 	
 	// メインウィンドウが閉じられるときに他のウィンドウも閉じる
 	[aCenter addObserver:self
@@ -1003,9 +1101,13 @@ typedef enum {
                     name:NSWindowDidBecomeKeyNotification
                   object:preambleWindow];
     [aCenter addObserver:self
-                selector:@selector(colorWindowDidBecomeKey:)
+                selector:@selector(preferenceWindowDidBecomeKey:)
                     name:NSWindowDidBecomeKeyNotification
-                  object:colorWindow];
+                  object:preferenceWindow];
+    [aCenter addObserver:self
+                selector:@selector(colorPalleteWindowDidBecomeKey:)
+                    name:NSWindowDidBecomeKeyNotification
+                  object:colorPalleteWindow];
     
     // コンパイル回数の変更
     [aCenter addObserver:self
@@ -1032,8 +1134,8 @@ typedef enum {
     lastActiveWindow = mainWindow;
     
     // 色入力支援パレットにデフォルトの文字を入れる
-    colorWell.color = NSColor.redColor;
-    [self setColor:nil];
+    colorPalleteColorWell.color = NSColor.redColor;
+    [self colorPalleteColorSet:colorPalleteColorWell];
 
 	
 	// 保存された設定を読み込む
@@ -1081,6 +1183,7 @@ typedef enum {
                             waitUntilDone:NO];
 
         [self loadDefaultFont];
+        [self loadDefaultColors:nil];
 		
 		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"SUEnableAutomaticChecks"];
 		
@@ -1124,6 +1227,36 @@ typedef enum {
         preambleTextView.font = defaultFont;
         [self setupFontTextField: defaultFont];
     }
+}
+
+- (IBAction)loadDefaultColors:(id)sender
+{
+    if (sender && !runConfirmPanel(localizedString(@"restoreColorsConfirmationMsg"))) {
+        return;
+    }
+    
+    foregroundColorWell.color = NSColor.textColor;
+    backgroundColorWell.color = NSColor.controlBackgroundColor;
+    cursorColorWell.color = NSColor.blackColor;
+    braceColorWell.color = NSColor.braceColor;
+    commentColorWell.color = NSColor.commentColor;
+    commandColorWell.color = NSColor.commandColor;
+    invisibleColorWell.color = NSColor.invisibleColor;
+    highlightedBraceColorWell.color = NSColor.highlightedBraceColor;
+    enclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
+    
+    lastColorDict[foregroundColorWell.description] = foregroundColorWell.color;
+    lastColorDict[backgroundColorWell.description] = backgroundColorWell.color;
+    lastColorDict[cursorColorWell.description] = cursorColorWell.color;
+    lastColorDict[braceColorWell.description] = braceColorWell.color;
+    lastColorDict[commentColorWell.description] = commentColorWell.color;
+    lastColorDict[commandColorWell.description] = commandColorWell.color;
+    lastColorDict[invisibleColorWell.description] = invisibleColorWell.color;
+    lastColorDict[highlightedBraceColorWell.description] = highlightedBraceColorWell.color;
+    lastColorDict[enclosedContentBackgroundColorWell.description] = enclosedContentBackgroundColorWell.color;
+
+    [sourceTextView colorizeText];
+    [preambleTextView colorizeText];
 }
 
 - (void)setupFontTextField:(NSFont*)font
@@ -1347,24 +1480,27 @@ typedef enum {
 }
 
 #pragma mark - 色選択パネル
-- (IBAction)toggleColorWindow:(id)sender {
-    if (colorWindow.isVisible) {
-        [colorWindow close];
+- (IBAction)toggleColorPalleteWindow:(id)sender {
+    if (colorPalleteWindow.isVisible) {
+        [colorPalleteWindow close];
     } else {
-        colorWindowMenuItem.state = YES;
-        [colorWindow makeKeyAndOrderFront:nil];
+        colorPalleteWindowMenuItem.state = YES;
+        [colorPalleteWindow makeKeyAndOrderFront:nil];
         [colorStyleMatrix sendAction];
     }
 }
 
 
-- (IBAction)setColor:(id)sender {
-    NSColor *color = colorWell.color;
-    if (!colorWindow.isKeyWindow) {
+- (IBAction)colorPalleteColorSet:(id)sender {
+    if (!colorPalleteWindow.isKeyWindow) {
         return;
     }
+
+    NSString *key = colorPalleteColorWell.description;
+    NSColor *color = colorPalleteColorWell.color;
+
+    lastColorDict[key] = color;
     
-    lastColor = color;
     NSString *formatString;
     CGFloat r, g, b;
     @try {
@@ -1405,27 +1541,104 @@ typedef enum {
     }
 }
 
-- (void)uncheckColorWindowMenuItem:(NSNotification*)aNotification
+- (void)uncheckColorPalleteWindowMenuItem:(NSNotification*)aNotification
 {
-    colorWindowMenuItem.state = NO;
+    colorPalleteWindowMenuItem.state = NO;
     if (NSColorPanel.sharedColorPanelExists) {
         [NSColorPanel.sharedColorPanel orderOut:self];
     }
 }
 
-- (void)colorWindowDidBecomeKey:(NSNotification*)aNotification
+- (void)preferenceWindowDidBecomeKey:(NSNotification*)aNotification
 {
-    if (lastColor) {
-        colorWell.color = lastColor;
+    lastActiveWindow = aNotification.object;
+    
+    NSArray *keys = lastColorDict.allKeys;
+    
+    if ([keys containsObject:foregroundColorWell.description]) {
+        foregroundColorWell.color = (NSColor*)(lastColorDict[foregroundColorWell.description]);
+    }
+    if ([keys containsObject:backgroundColorWell.description]) {
+        backgroundColorWell.color = (NSColor*)(lastColorDict[backgroundColorWell.description]);
+    }
+    if ([keys containsObject:cursorColorWell.description]) {
+        cursorColorWell.color = (NSColor*)(lastColorDict[cursorColorWell.description]);
+    }
+    if ([keys containsObject:braceColorWell.description]) {
+        braceColorWell.color = (NSColor*)(lastColorDict[braceColorWell.description]);
+    }
+    if ([keys containsObject:commentColorWell.description]) {
+        commentColorWell.color = (NSColor*)(lastColorDict[commentColorWell.description]);
+    }
+    if ([keys containsObject:commandColorWell.description]) {
+        commandColorWell.color = (NSColor*)(lastColorDict[commandColorWell.description]);
+    }
+    if ([keys containsObject:invisibleColorWell.description]) {
+        invisibleColorWell.color = (NSColor*)(lastColorDict[invisibleColorWell.description]);
+    }
+    if ([keys containsObject:highlightedBraceColorWell.description]) {
+        highlightedBraceColorWell.color = (NSColor*)(lastColorDict[highlightedBraceColorWell.description]);
+    }
+    if ([keys containsObject:enclosedContentBackgroundColorWell.description]) {
+        enclosedContentBackgroundColorWell.color = (NSColor*)(lastColorDict[enclosedContentBackgroundColorWell.description]);
+    }
+}
+
+- (void)colorPalleteWindowDidBecomeKey:(NSNotification*)aNotification
+{
+    if ([lastColorDict.allKeys containsObject:colorPalleteColorWell.description]) {
+        colorPalleteColorWell.color = (NSColor*)(lastColorDict[colorPalleteColorWell.description]);
     }
 }
 
 - (void)closeColorPanel
 {
-    [colorWell deactivate];
+    [foregroundColorWell deactivate];
+    [backgroundColorWell deactivate];
+    [cursorColorWell deactivate];
+    [braceColorWell deactivate];
+    [commentColorWell deactivate];
+    [commandColorWell deactivate];
+    [invisibleColorWell deactivate];
+    [highlightedBraceColorWell deactivate];
+    [enclosedContentBackgroundColorWell deactivate];
+    
+    [colorPalleteColorWell deactivate];
+    
     [NSColorPanel.sharedColorPanel performSelector:@selector(orderOut:) withObject:self afterDelay:0];
-    if (lastColor) {
-        colorWell.color = lastColor;
+    
+    NSArray *keys = lastColorDict.allKeys;
+
+    if ([keys containsObject:foregroundColorWell.description]) {
+        foregroundColorWell.color = (NSColor*)(lastColorDict[foregroundColorWell.description]);
+    }
+    if ([keys containsObject:backgroundColorWell.description]) {
+        backgroundColorWell.color = (NSColor*)(lastColorDict[backgroundColorWell.description]);
+    }
+    if ([keys containsObject:cursorColorWell.description]) {
+        cursorColorWell.color = (NSColor*)(lastColorDict[cursorColorWell.description]);
+    }
+    if ([keys containsObject:braceColorWell.description]) {
+        braceColorWell.color = (NSColor*)(lastColorDict[braceColorWell.description]);
+    }
+    if ([keys containsObject:commentColorWell.description]) {
+        commentColorWell.color = (NSColor*)(lastColorDict[commentColorWell.description]);
+    }
+    if ([keys containsObject:commandColorWell.description]) {
+        commandColorWell.color = (NSColor*)(lastColorDict[commandColorWell.description]);
+    }
+    if ([keys containsObject:invisibleColorWell.description]) {
+        invisibleColorWell.color = (NSColor*)(lastColorDict[invisibleColorWell.description]);
+    }
+    if ([keys containsObject:highlightedBraceColorWell.description]) {
+        highlightedBraceColorWell.color = (NSColor*)(lastColorDict[highlightedBraceColorWell.description]);
+    }
+    if ([keys containsObject:enclosedContentBackgroundColorWell.description]) {
+        enclosedContentBackgroundColorWell.color = (NSColor*)(lastColorDict[enclosedContentBackgroundColorWell.description]);
+    }
+
+    if ([keys containsObject:colorPalleteColorWell.description]) {
+        colorPalleteColorWell.color = (NSColor*)(lastColorDict[colorPalleteColorWell.description]);
     }
 }
 
@@ -1677,6 +1890,21 @@ typedef enum {
     preambleTextView.font = font;
     outputTextView.font = font;
     
+}
+
+- (IBAction)colorSettingChanged:(id)sender
+{
+    if (!preferenceWindow.isKeyWindow) {
+        return;
+    }
+    
+    NSString *key = ((NSColorWell*)sender).description;
+    NSColor *color = ((NSColorWell*)sender).color;
+
+    lastColorDict[key] = color;
+
+    [sourceTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
+    [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
 }
 
 - (IBAction)searchPrograms:(id)sender
