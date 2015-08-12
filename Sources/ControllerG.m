@@ -126,7 +126,7 @@ typedef enum {
 @property IBOutlet NSColorWell *enclosedContentBackgroundColorWell;
 
 @property Converter *converter;
-@property NSTask *task;
+@property NSTask *runningTask;
 @property NSPipe *outputPipe;
 @property BOOL *taskKilled;
 @end
@@ -225,7 +225,7 @@ typedef enum {
 @synthesize enclosedContentBackgroundColorWell;
 
 @synthesize converter;
-@synthesize task;
+@synthesize runningTask;
 @synthesize outputPipe;
 @synthesize taskKilled;
 
@@ -259,26 +259,26 @@ typedef enum {
     [cmdline appendString:@" 2>&1"];
     [self appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:NO];
     
-    task = NSTask.new;
+    runningTask = NSTask.new;
     outputPipe = NSPipe.pipe;
     NSFileHandle *handle = outputPipe.fileHandleForReading;
     [handle readInBackgroundAndNotify];
     
-    task.currentDirectoryPath = path;
-    task.launchPath = BASH_PATH;
-    task.standardOutput = outputPipe;
-    task.standardError = outputPipe;
-    task.arguments = @[@"-c", cmdline];
+    runningTask.currentDirectoryPath = path;
+    runningTask.launchPath = BASH_PATH;
+    runningTask.standardOutput = outputPipe;
+    runningTask.standardError = outputPipe;
+    runningTask.arguments = @[@"-c", cmdline];
     taskKilled = NO;
     
-    [task launch];
-    [task waitUntilExit];
+    [runningTask launch];
+    [runningTask waitUntilExit];
     
     [self appendOutputAndScroll:@"\n" quiet:NO];
 
     [self exitCurrentThreadIfTaskKilled];
     
-    return (task.terminationStatus == 0) ? YES : NO;
+    return (runningTask.terminationStatus == 0) ? YES : NO;
 }
 
 - (void)showMainWindow
@@ -864,14 +864,17 @@ typedef enum {
 #pragma mark - 他のメソッドから呼び出されるユーティリティメソッド
 - (NSString*)searchProgram:(NSString*)programName
 {
-    NSDictionary *errorInfo = NSDictionary.new;
-    NSString *script = [NSString stringWithFormat:@"do shell script \"%@\"", @"eval `/usr/libexec/path_helper -s`; echo $PATH"];
+    NSTask *task = NSTask.new;
+    NSPipe *pipe = NSPipe.pipe;
+    task.launchPath = BASH_PATH;
+    task.arguments = @[@"-c", @"eval `/usr/libexec/path_helper -s`; echo $PATH"];
+    task.standardOutput = pipe;
+    [task launch];
+    [task waitUntilExit];
     
-    NSAppleScript *appleScript = [NSAppleScript.alloc initWithSource:script];
-    NSAppleEventDescriptor *eventResult = [appleScript executeAndReturnError:&errorInfo];
-    
-    NSString *userPath = eventResult.stringValue;
-    NSMutableArray *searchPaths = [NSMutableArray arrayWithArray:[userPath componentsSeparatedByString:@":"]];
+    NSMutableArray *searchPaths = [NSMutableArray arrayWithArray:[[NSString.alloc initWithData:pipe.fileHandleForReading.readDataToEndOfFile
+                                                                                      encoding:NSUTF8StringEncoding]
+                                                                  componentsSeparatedByString:@":"]];
 
     [searchPaths addObjectsFromArray: @[@"/Applications/TeXLive/texlive/2015/bin/x86_64-darwin",
                                         @"/Applications/TeXLive/texlive/2014/bin/x86_64-darwin",
@@ -2023,10 +2026,10 @@ typedef enum {
 
 - (IBAction)abortCompilation:(id)sender
 {
-    if (task && task.isRunning) {
+    if (runningTask && runningTask.isRunning) {
         taskKilled = YES;
-        [task terminate];
-        task = nil;
+        [runningTask terminate];
+        runningTask = nil;
         [self appendOutputAndScroll:[NSString stringWithFormat:@"\n\nTeX2img: %@\n\n", localizedString(@"processAborted")] quiet:NO];
         [self generationDidFinish];
     }
