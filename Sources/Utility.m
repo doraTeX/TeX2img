@@ -44,7 +44,13 @@ void previewFiles(NSArray* files, NSString* app)
     }] componentsJoinedByString:@", "]];
     [script appendString:@"}\n"];
     [script appendString:@"end tell\n"];
-
-    [[NSAppleScript.alloc initWithSource:script] executeAndReturnError:nil];
+    
+    NSTask *task = NSTask.new;
+    task.launchPath = @"/usr/bin/osascript";
+    task.arguments = @[@"-e", script];
+    task.standardOutput = nil;
+    task.standardError = nil;
+    
+    [task launch];
 
 }
