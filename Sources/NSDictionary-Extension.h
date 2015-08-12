@@ -3,7 +3,7 @@
 
 @interface NSDictionary (Extension)
 - (float)floatForKey:(NSString*)aKey;
-- (int)integerForKey:(NSString*)aKey;
+- (NSInteger)integerForKey:(NSString*)aKey;
 - (BOOL)boolForKey:(NSString*)aKey;
 - (NSString*)stringForKey:(NSString*)aKey;
 - (NSMutableArray*)mutableArrayForKey:(NSString*)aKey;

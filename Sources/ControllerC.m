@@ -4,12 +4,6 @@
 #import "global.h"
 #import "UtilityC.h"
 
-BOOL checkWhich(NSString *cmdName)
-{
-	int status = system([NSString stringWithFormat:@"PATH=$PATH:%@; /usr/bin/which %@ > /dev/null", ADDITIONAL_PATH, cmdName].UTF8String);
-	return (status == 0) ? YES : NO;
-}
-
 @implementation ControllerC
 #pragma mark OutputController プロトコルの実装
 - (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments quiet:(BOOL)quiet

@@ -6,6 +6,7 @@
 #import "global.h"
 #import "UtilityC.h"
 #import "NSString-Extension.h"
+#import "NSDictionary-Extension.h"
 
 #define OPTION_NUM 38
 #define VERSION "1.9.8b2"
@@ -38,7 +39,7 @@ static void usage()
     printf("  --bottom-margin  MARGIN    : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT                : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
     printf("                               (*bp is always used for EPS/PDF/SVG)\n");
-    printf("  --[no-]transparent         : disable/enable transparent PNG/GIF/TIFF (default: disabled)\n");
+    printf("  --[no-]transparent         : disable/enable transparent PNG/GIF/TIFF (default: enabled)\n");
     printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
     printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
     printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
@@ -52,30 +53,6 @@ static void usage()
     printf("  --version                  : display version info\n");
     printf("  --help                     : display this message\n");
     exit(1);
-}
-
-NSString* getPath(NSString *cmdName)
-{
-	char str[MAX_LEN];
-	FILE *fp;
-	char *pStr;
-    
-	if ((fp = popen([NSString stringWithFormat:@"PATH=$PATH:%@; /usr/bin/which %@", ADDITIONAL_PATH, cmdName].UTF8String, "r")) == NULL) {
-		return nil;
-	}
-	fgets(str, MAX_LEN-1, fp);
-	
-	pStr = str;
-    while ((*pStr != '\r') && (*pStr != '\n') && (*pStr != EOF)) {
-        pStr++;
-    }
-	*pStr = '\0';
-	
-    if (pclose(fp) == 0) {
-        return @(str);
-    } else {
-        return nil;
-    }
 }
 
 int strtoi(char *str)
@@ -98,6 +75,81 @@ int strtoi(char *str)
 	}
 	
 	return (int)val;
+}
+
+void printCurrentStatus(NSString *inputFilePath, NSDictionary *aProfile)
+{
+    printf("************************************\n");
+    printf("  TeX2img settings\n");
+    printf("************************************\n");
+    printf("Input  File: %s\n", inputFilePath.UTF8String);
+
+    NSString *outputFilePath = [aProfile stringForKey:OutputFileKey];
+    printf("Output File: %s\n", outputFilePath.UTF8String);
+    
+    NSString *latex = [aProfile stringForKey:LatexPathKey];
+    NSString *encoding = [aProfile stringForKey:EncodingKey];
+    NSString *kanji;
+    
+    if ([encoding isEqualToString:PTEX_ENCODING_NONE]) {
+        kanji = @"";
+    } else {
+        kanji = [@" -kanji=" stringByAppendingString:encoding];
+    }
+    
+    printf("LaTeX compiler: %s%s %s\n", getPath(latex.programName).UTF8String, kanji.UTF8String, latex.argumentsString.UTF8String);
+
+    printf("Auto detection of the number of compilation: ");
+    if ([aProfile boolForKey:GuessCompilationKey]) {
+        printf("enabled\n");
+        printf("The maximal number of compilation: %ld\n", [aProfile integerForKey:NumberOfCompilationKey]);
+    } else {
+        printf("disabled\n");
+        printf("The number of compilation: %ld\n", [aProfile integerForKey:NumberOfCompilationKey]);
+    }
+
+    NSString *dvipdfmx = [aProfile stringForKey:DvipdfmxPathKey];
+    printf("dvipdfmx: %s %s\n", getPath(dvipdfmx.programName).UTF8String, dvipdfmx.argumentsString.UTF8String);
+
+    NSString *gs = [aProfile stringForKey:GsPathKey];
+    printf("Ghostscript: %s %s\n", getPath(gs.programName).UTF8String, gs.argumentsString.UTF8String);
+
+    printf("epstopdf: %s\n", getPath([aProfile stringForKey:EpstopdfPathKey]).UTF8String);
+    
+    NSString *mudrawPath = getPath([aProfile stringForKey:MudrawPathKey]);
+    
+    printf("mudraw: %s\n", mudrawPath ? mudrawPath.UTF8String : "NOT FOUND");
+    
+    printf("Resolution level: %f\n", [aProfile floatForKey:ResolutionKey]);
+    
+    NSString *ext = outputFilePath.pathExtension;
+    NSString *unit = (([aProfile integerForKey:UnitKey] == PXUNITTAG) &&
+                      ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"])) ?
+                        @"px" : @"bp";
+
+    printf("Left   margin: %ld%s\n", [aProfile integerForKey:LeftMarginKey], unit.UTF8String);
+    printf("Right  margin: %ld%s\n", [aProfile integerForKey:RightMarginKey], unit.UTF8String);
+    printf("Top    margin: %ld%s\n", [aProfile integerForKey:TopMarginKey], unit.UTF8String);
+    printf("Bottom margin: %ld%s\n", [aProfile integerForKey:BottomMarginKey], unit.UTF8String);
+
+    if ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"]) {
+        printf("Transparent PNG/GIF/TIFF: %s\n", [aProfile boolForKey:TransparentKey] ? "enabled" : "disabled");
+    }
+    if ([ext isEqualToString:@"pdf"]) {
+        printf("Text embedded PDF: %s\n", [aProfile boolForKey:GetOutlineKey] ? "disabled" : "enabled");
+    }
+    if ([ext isEqualToString:@"svg"]) {
+        printf("Delete width and height attributes of SVG: %s\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? "enabled" : "disabled");
+    }
+    printf("Ignore nonfatal errors: %s\n", [aProfile boolForKey:IgnoreErrorKey] ? "enabled" : "disabled");
+    printf("Substitute \\UTF{xxxx} for non-JIS X 0208 characters: %s\n", [aProfile boolForKey:UtfExportKey] ? "enabled" : "disabled");
+    printf("Conversion mode: %s priority mode\n", ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG) ? "speed" : "quality" );
+    printf("Preview generated files: %s\n", [aProfile boolForKey:PreviewKey] ? "enabled" : "disabled");
+    printf("Delete temporary files: %s\n", [aProfile boolForKey:DeleteTmpFileKey] ? "enabled" : "disabled");
+    printf("Embed the source into generated files: %s\n", [aProfile boolForKey:EmbedSourceKey] ? "enabled" : "disabled");
+    printf("Copy generated files to the clipboard: %s\n", [aProfile boolForKey:CopyToClipboardKey] ? "enabled" : "disabled");
+
+    printf("************************************\n\n");
 }
 
 int main (int argc, char *argv[]) {
@@ -649,6 +701,10 @@ int main (int argc, char *argv[]) {
         aProfile[PriorityKey] = quickFlag ? @(SPEED_PRIORITY_TAG) : @(QUALITY_PRIORITY_TAG);
         aProfile[CopyToClipboardKey] = @(copyToClipboardFlag);
         aProfile[EmbedSourceKey] = @(embedSourceFlag);
+        
+        if (!quietFlag) {
+            printCurrentStatus(inputFilePath, aProfile);
+        }
         
         Converter *converter = [Converter converterWithProfile:aProfile];
         BOOL success = [converter compileAndConvertWithInputPath:inputFilePath];

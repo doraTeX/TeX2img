@@ -304,8 +304,6 @@ typedef enum {
 
 - (void)prepareOutputTextView
 {
-	outputTextView.textStorage.mutableString.string = @"";
-
     // NSTask からのアウトプットを受ける
     [NSNotificationCenter.defaultCenter addObserver:self
                                            selector:@selector(readOutputData:)
@@ -1039,7 +1037,7 @@ typedef enum {
 	//	[mainWindow setReleasedWhenClosed:NO];
 	//	[preambleWindow setReleasedWhenClosed:NO];
 
-    lastColorDict = NSMutableDictionary.new;
+    lastColorDict = NSMutableDictionary.dictionary;
 
 	// ノティフィケーションの設定
 	NSNotificationCenter *aCenter = NSNotificationCenter.defaultCenter;
@@ -1949,6 +1947,72 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(generationDidFinishOnMainThread) withObject:nil waitUntilDone:YES];
 }
 
+- (void)printCurrentStatus:(NSDictionary*)aProfile
+{
+    NSMutableString *output = NSMutableString.string;
+    [output appendString:@"************************************\n"];
+    [output appendString:@"  TeX2img settings\n"];
+    [output appendString:@"************************************\n"];
+    
+    NSString *outputFilePath = [aProfile stringForKey:OutputFileKey];
+    [output appendFormat:@"Output File: %@\n", outputFilePath];
+    
+    NSString *encoding = [aProfile stringForKey:EncodingKey];
+    NSString *kanji;
+    
+    if ([encoding isEqualToString:PTEX_ENCODING_NONE]) {
+        kanji = @"";
+    } else {
+        kanji = [@" -kanji=" stringByAppendingString:encoding];
+    }
+    
+    [output appendFormat:@"LaTeX compiler: %@ %@\n", [aProfile stringForKey:LatexPathKey], kanji];
+    
+    [output appendString:@"Auto detection of the number of compilation: "];
+    if ([aProfile boolForKey:GuessCompilationKey]) {
+        [output appendString:@"enabled\n"];
+        [output appendFormat:@"The maximal number of compilation: %ld\n", [aProfile integerForKey:NumberOfCompilationKey]];
+    } else {
+        [output appendString:@"disabled\n"];
+        [output appendFormat:@"The number of compilation: %ld\n", [aProfile integerForKey:NumberOfCompilationKey]];
+    }
+    
+    [output appendFormat:@"dvipdfmx: %@\n", [aProfile stringForKey:DvipdfmxPathKey]];
+    [output appendFormat:@"Ghostscript: %@\n", [aProfile stringForKey:GsPathKey]];
+    
+    [output appendFormat:@"Resolution level: %.1f\n", [aProfile floatForKey:ResolutionKey]];
+    
+    NSString *ext = outputFilePath.pathExtension;
+    NSString *unit = (([aProfile integerForKey:UnitKey] == PXUNITTAG) &&
+                      ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"])) ?
+    @"px" : @"bp";
+    
+    [output appendFormat:@"Left   margin: %ld%@\n", [aProfile integerForKey:LeftMarginKey], unit];
+    [output appendFormat:@"Right  margin: %ld%@\n", [aProfile integerForKey:RightMarginKey], unit];
+    [output appendFormat:@"Top    margin: %ld%@\n", [aProfile integerForKey:TopMarginKey], unit];
+    [output appendFormat:@"Bottom margin: %ld%@\n", [aProfile integerForKey:BottomMarginKey], unit];
+    
+    if ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"]) {
+        [output appendFormat:@"Transparent PNG/GIF/TIFF: %@\n", [aProfile boolForKey:TransparentKey] ? @"enabled" : @"disabled"];
+    }
+    if ([ext isEqualToString:@"pdf"]) {
+        [output appendFormat:@"Text embedded PDF: %@\n", [aProfile boolForKey:GetOutlineKey] ? @"disabled" : @"enabled"];
+    }
+    if ([ext isEqualToString:@"svg"]) {
+        [output appendFormat:@"Delete width and height attributes of SVG: %@\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? @"enabled" : @"disabled"];
+    }
+    [output appendFormat:@"Ignore nonfatal errors: %@\n", [aProfile boolForKey:IgnoreErrorKey] ? @"enabled" : @"disabled"];
+    [output appendFormat:@"Substitute \\UTF{xxxx} for non-JIS X 0208 characters: %@\n", [aProfile boolForKey:UtfExportKey] ? @"enabled" : @"disabled"];
+    [output appendFormat:@"Conversion mode: %@ priority mode\n", ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG) ? @"speed" : @"quality"];
+    [output appendFormat:@"Preview generated files: %@\n", [aProfile boolForKey:PreviewKey] ? @"enabled" : @"disabled"];
+    [output appendFormat:@"Delete temporary files: %@\n", [aProfile boolForKey:DeleteTmpFileKey] ? @"enabled" : @"disabled"];
+    [output appendFormat:@"Embed the source into generated files: %@\n", [aProfile boolForKey:EmbedSourceKey] ? @"enabled" : @"disabled"];
+    [output appendFormat:@"Copy generated files to the clipboard: %@\n", [aProfile boolForKey:CopyToClipboardKey] ? @"enabled" : @"disabled"];
+    
+    [output appendString:@"************************************\n\n"];
+    [self appendOutputAndScroll:output quiet:NO];
+}
+
 - (void)generateImage
 {
     NSString *inputSourceFilePath;
@@ -1959,6 +2023,10 @@ typedef enum {
     aProfile[ControllerKey] = self;
     
     converter = [Converter converterWithProfile:aProfile];
+
+    // 出力ビューをクリアし，現在の設定を表示
+    outputTextView.textStorage.mutableString.string = @"";
+    [self printCurrentStatus:aProfile];
     
     switch ([aProfile integerForKey:InputMethodKey]) {
         case DIRECT:

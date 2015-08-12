@@ -35,7 +35,7 @@ void previewFiles(NSArray* files, NSString* app)
         return;
     }
     
-    NSMutableString *script = NSMutableString.new;
+    NSMutableString *script = NSMutableString.string;
     [script appendFormat:@"tell application \"%@\"\n", app];
     [script appendString:@"activate\n"];
     [script appendString:@"open {"];

@@ -504,7 +504,7 @@ static BOOL isValidTeXCommandChar(unichar c)
     NSString *newString, *environment, *prefix, *stackKey, *group1, *group2, *group3, *group4;
     NSInteger increment, count_value;
     NSNumber *count;
-    NSMutableDictionary *environmentStack = NSMutableDictionary.new;
+    NSMutableDictionary *environmentStack = NSMutableDictionary.dictionary;
     NSTextCheckingResult *match;
     
     while ((match = (NSTextCheckingResult*)[enumerator nextObject])) {

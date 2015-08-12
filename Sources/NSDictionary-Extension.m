@@ -6,9 +6,9 @@
 	return ((NSNumber*)self[aKey]).floatValue;
 }
 
-- (int)integerForKey:(NSString*)aKey
+- (NSInteger)integerForKey:(NSString*)aKey
 {
-	return ((NSNumber*)self[aKey]).intValue;
+	return ((NSNumber*)self[aKey]).integerValue;
 }
 
 - (BOOL)boolForKey:(NSString*)aKey
