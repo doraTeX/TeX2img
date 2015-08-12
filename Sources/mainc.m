@@ -9,7 +9,7 @@
 #import "NSDictionary-Extension.h"
 
 #define OPTION_NUM 38
-#define VERSION "1.9.8b3"
+#define VERSION "1.9.8b4"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -28,7 +28,7 @@ static void usage()
     printf("Options:\n");
     printf("  --compiler   COMPILER      : set the LaTeX compiler (default: platex)\n");
     printf("  --kanji ENCODING           : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
-    printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: disabled)\n");
+    printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: enabled)\n");
     printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
     printf("  --dvipdfmx   DVIPDFMX      : set dvipdfmx    (default: dvipdfmx)\n");
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
@@ -170,7 +170,7 @@ int main (int argc, char *argv[]) {
         BOOL utfExportFlag = NO;
         BOOL quietFlag = NO;
         BOOL quickFlag = NO;
-        BOOL guessFlag = NO;
+        BOOL guessFlag = YES;
         BOOL previewFlag = NO;
         BOOL copyToClipboardFlag = NO;
         BOOL embedSourceFlag = YES;
