@@ -1544,7 +1544,7 @@ DQ
                                         </textField>
                                         <colorWell id="G9w-Ow-LRW">
                                             <rect key="frame" x="164" y="325" width="48" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
                                                 <action selector="colorSettingChanged:" target="450" id="Z1x-X4-hcE"/>
@@ -1552,7 +1552,7 @@ DQ
                                         </colorWell>
                                         <colorWell id="9ev-FH-pU2">
                                             <rect key="frame" x="164" y="294" width="48" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
                                                 <action selector="colorSettingChanged:" target="450" id="Q3N-bd-BUH"/>
@@ -1560,7 +1560,7 @@ DQ
                                         </colorWell>
                                         <colorWell id="G2n-jL-xHL">
                                             <rect key="frame" x="164" y="263" width="48" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
                                                 <action selector="colorSettingChanged:" target="450" id="U9t-tw-d5T"/>
@@ -1568,7 +1568,7 @@ DQ
                                         </colorWell>
                                         <colorWell id="nrL-tK-5h1">
                                             <rect key="frame" x="164" y="232" width="48" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
                                                 <action selector="colorSettingChanged:" target="450" id="1da-wJ-IQo"/>
@@ -1576,7 +1576,7 @@ DQ
                                         </colorWell>
                                         <colorWell id="G6m-jH-sBa">
                                             <rect key="frame" x="164" y="201" width="48" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
                                                 <action selector="colorSettingChanged:" target="450" id="pZI-no-Xbl"/>
@@ -1584,7 +1584,7 @@ DQ
                                         </colorWell>
                                         <colorWell id="W2S-6n-OLu">
                                             <rect key="frame" x="164" y="170" width="48" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
                                                 <action selector="colorSettingChanged:" target="450" id="kAg-6l-5vo"/>
@@ -1592,7 +1592,7 @@ DQ
                                         </colorWell>
                                         <colorWell id="NvZ-em-Cp7">
                                             <rect key="frame" x="164" y="139" width="48" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
                                                 <action selector="colorSettingChanged:" target="450" id="DSf-YT-HfH"/>
@@ -1600,7 +1600,7 @@ DQ
                                         </colorWell>
                                         <colorWell id="CFF-Av-i7F">
                                             <rect key="frame" x="164" y="108" width="48" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
                                                 <action selector="colorSettingChanged:" target="450" id="9ja-ze-w2s"/>
@@ -1608,7 +1608,7 @@ DQ
                                         </colorWell>
                                         <colorWell id="mfZ-Hg-uIe">
                                             <rect key="frame" x="164" y="77" width="48" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
                                                 <action selector="colorSettingChanged:" target="450" id="aeZ-fn-nqc"/>

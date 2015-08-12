@@ -7,6 +7,7 @@
 #import "NSMutableString-Extension.h"
 #import "NSFileManager-Extension.h"
 #import "NSColor-Extension.h"
+#import "NSColorWell-Extension.h"
 #import "TeXTextView.h"
 #import "UtilityG.h"
 
@@ -1243,15 +1244,15 @@ typedef enum {
     highlightedBraceColorWell.color = NSColor.highlightedBraceColor;
     enclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
     
-    lastColorDict[foregroundColorWell.description] = foregroundColorWell.color;
-    lastColorDict[backgroundColorWell.description] = backgroundColorWell.color;
-    lastColorDict[cursorColorWell.description] = cursorColorWell.color;
-    lastColorDict[braceColorWell.description] = braceColorWell.color;
-    lastColorDict[commentColorWell.description] = commentColorWell.color;
-    lastColorDict[commandColorWell.description] = commandColorWell.color;
-    lastColorDict[invisibleColorWell.description] = invisibleColorWell.color;
-    lastColorDict[highlightedBraceColorWell.description] = highlightedBraceColorWell.color;
-    lastColorDict[enclosedContentBackgroundColorWell.description] = enclosedContentBackgroundColorWell.color;
+    [foregroundColorWell saveColorToMutableDictionary:lastColorDict];
+    [backgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    [cursorColorWell saveColorToMutableDictionary:lastColorDict];
+    [braceColorWell saveColorToMutableDictionary:lastColorDict];
+    [commentColorWell saveColorToMutableDictionary:lastColorDict];
+    [commandColorWell saveColorToMutableDictionary:lastColorDict];
+    [invisibleColorWell saveColorToMutableDictionary:lastColorDict];
+    [highlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
+    [enclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
 
     [sourceTextView colorizeText];
     [preambleTextView colorizeText];
@@ -1494,10 +1495,9 @@ typedef enum {
         return;
     }
 
-    NSString *key = colorPalleteColorWell.description;
-    NSColor *color = colorPalleteColorWell.color;
+    [colorPalleteColorWell saveColorToMutableDictionary:lastColorDict];
 
-    lastColorDict[key] = color;
+    NSColor *color = colorPalleteColorWell.color;
     
     NSString *formatString;
     CGFloat r, g, b;
@@ -1551,42 +1551,20 @@ typedef enum {
 {
     lastActiveWindow = aNotification.object;
     
-    NSArray *keys = lastColorDict.allKeys;
-    
-    if ([keys containsObject:foregroundColorWell.description]) {
-        foregroundColorWell.color = (NSColor*)(lastColorDict[foregroundColorWell.description]);
-    }
-    if ([keys containsObject:backgroundColorWell.description]) {
-        backgroundColorWell.color = (NSColor*)(lastColorDict[backgroundColorWell.description]);
-    }
-    if ([keys containsObject:cursorColorWell.description]) {
-        cursorColorWell.color = (NSColor*)(lastColorDict[cursorColorWell.description]);
-    }
-    if ([keys containsObject:braceColorWell.description]) {
-        braceColorWell.color = (NSColor*)(lastColorDict[braceColorWell.description]);
-    }
-    if ([keys containsObject:commentColorWell.description]) {
-        commentColorWell.color = (NSColor*)(lastColorDict[commentColorWell.description]);
-    }
-    if ([keys containsObject:commandColorWell.description]) {
-        commandColorWell.color = (NSColor*)(lastColorDict[commandColorWell.description]);
-    }
-    if ([keys containsObject:invisibleColorWell.description]) {
-        invisibleColorWell.color = (NSColor*)(lastColorDict[invisibleColorWell.description]);
-    }
-    if ([keys containsObject:highlightedBraceColorWell.description]) {
-        highlightedBraceColorWell.color = (NSColor*)(lastColorDict[highlightedBraceColorWell.description]);
-    }
-    if ([keys containsObject:enclosedContentBackgroundColorWell.description]) {
-        enclosedContentBackgroundColorWell.color = (NSColor*)(lastColorDict[enclosedContentBackgroundColorWell.description]);
-    }
+    [foregroundColorWell restoreColorFromDictionary:lastColorDict];
+    [backgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [cursorColorWell restoreColorFromDictionary:lastColorDict];
+    [braceColorWell restoreColorFromDictionary:lastColorDict];
+    [commentColorWell restoreColorFromDictionary:lastColorDict];
+    [commandColorWell restoreColorFromDictionary:lastColorDict];
+    [invisibleColorWell restoreColorFromDictionary:lastColorDict];
+    [highlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
+    [enclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
 }
 
 - (void)colorPalleteWindowDidBecomeKey:(NSNotification*)aNotification
 {
-    if ([lastColorDict.allKeys containsObject:colorPalleteColorWell.description]) {
-        colorPalleteColorWell.color = (NSColor*)(lastColorDict[colorPalleteColorWell.description]);
-    }
+    [colorPalleteColorWell restoreColorFromDictionary:lastColorDict];
 }
 
 - (void)closeColorPanel
@@ -1604,40 +1582,18 @@ typedef enum {
     [colorPalleteColorWell deactivate];
     
     [NSColorPanel.sharedColorPanel performSelector:@selector(orderOut:) withObject:self afterDelay:0];
-    
-    NSArray *keys = lastColorDict.allKeys;
 
-    if ([keys containsObject:foregroundColorWell.description]) {
-        foregroundColorWell.color = (NSColor*)(lastColorDict[foregroundColorWell.description]);
-    }
-    if ([keys containsObject:backgroundColorWell.description]) {
-        backgroundColorWell.color = (NSColor*)(lastColorDict[backgroundColorWell.description]);
-    }
-    if ([keys containsObject:cursorColorWell.description]) {
-        cursorColorWell.color = (NSColor*)(lastColorDict[cursorColorWell.description]);
-    }
-    if ([keys containsObject:braceColorWell.description]) {
-        braceColorWell.color = (NSColor*)(lastColorDict[braceColorWell.description]);
-    }
-    if ([keys containsObject:commentColorWell.description]) {
-        commentColorWell.color = (NSColor*)(lastColorDict[commentColorWell.description]);
-    }
-    if ([keys containsObject:commandColorWell.description]) {
-        commandColorWell.color = (NSColor*)(lastColorDict[commandColorWell.description]);
-    }
-    if ([keys containsObject:invisibleColorWell.description]) {
-        invisibleColorWell.color = (NSColor*)(lastColorDict[invisibleColorWell.description]);
-    }
-    if ([keys containsObject:highlightedBraceColorWell.description]) {
-        highlightedBraceColorWell.color = (NSColor*)(lastColorDict[highlightedBraceColorWell.description]);
-    }
-    if ([keys containsObject:enclosedContentBackgroundColorWell.description]) {
-        enclosedContentBackgroundColorWell.color = (NSColor*)(lastColorDict[enclosedContentBackgroundColorWell.description]);
-    }
+    [foregroundColorWell restoreColorFromDictionary:lastColorDict];
+    [backgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [cursorColorWell restoreColorFromDictionary:lastColorDict];
+    [braceColorWell restoreColorFromDictionary:lastColorDict];
+    [commentColorWell restoreColorFromDictionary:lastColorDict];
+    [commandColorWell restoreColorFromDictionary:lastColorDict];
+    [invisibleColorWell restoreColorFromDictionary:lastColorDict];
+    [highlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
+    [enclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
 
-    if ([keys containsObject:colorPalleteColorWell.description]) {
-        colorPalleteColorWell.color = (NSColor*)(lastColorDict[colorPalleteColorWell.description]);
-    }
+    [colorPalleteColorWell restoreColorFromDictionary:lastColorDict];
 }
 
 - (void)closeFontPanel
@@ -1887,19 +1843,15 @@ typedef enum {
     sourceTextView.font = font;
     preambleTextView.font = font;
     outputTextView.font = font;
-    
 }
 
 - (IBAction)colorSettingChanged:(id)sender
 {
-    if (!preferenceWindow.isKeyWindow) {
+    if (!preferenceWindow.isKeyWindow || ![sender isKindOfClass:NSColorWell.class]) {
         return;
     }
     
-    NSString *key = ((NSColorWell*)sender).description;
-    NSColor *color = ((NSColorWell*)sender).color;
-
-    lastColorDict[key] = color;
+    [(NSColorWell*)sender saveColorToMutableDictionary:lastColorDict];
 
     [sourceTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
     [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
