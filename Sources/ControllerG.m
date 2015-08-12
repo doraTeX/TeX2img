@@ -2006,8 +2006,18 @@ typedef enum {
     [output appendFormat:@"Conversion mode: %@ priority mode\n", ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG) ? @"speed" : @"quality"];
     [output appendFormat:@"Preview generated files: %@\n", [aProfile boolForKey:PreviewKey] ? @"enabled" : @"disabled"];
     [output appendFormat:@"Delete temporary files: %@\n", [aProfile boolForKey:DeleteTmpFileKey] ? @"enabled" : @"disabled"];
-    [output appendFormat:@"Embed the source into generated files: %@\n", [aProfile boolForKey:EmbedSourceKey] ? @"enabled" : @"disabled"];
+    [output appendFormat:@"Embed the source in generated files: %@\n", [aProfile boolForKey:EmbedSourceKey] ? @"enabled" : @"disabled"];
     [output appendFormat:@"Copy generated files to the clipboard: %@\n", [aProfile boolForKey:CopyToClipboardKey] ? @"enabled" : @"disabled"];
+    
+    BOOL embedInIllustrator = [aProfile boolForKey:EmbedInIllustratorKey];
+    
+    [output appendFormat:@"Embed generated files in Illustrator: "];
+    if (embedInIllustrator) {
+        [output appendString:@"enabled\n"];
+        [output appendFormat:@"Ungroup after embedding: %@\n", [aProfile boolForKey:UngroupKey] ? @"enabled" : @"disabled"];
+    } else {
+        [output appendString:@"disabled\n"];
+    }
     
     [output appendString:@"************************************\n\n"];
     [self appendOutputAndScroll:output quiet:NO];

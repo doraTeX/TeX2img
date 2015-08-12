@@ -9,7 +9,7 @@
 #import "NSDictionary-Extension.h"
 
 #define OPTION_NUM 38
-#define VERSION "1.9.8b2"
+#define VERSION "1.9.8b3"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 static void version()
@@ -47,7 +47,7 @@ static void usage()
     printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
     printf("  --[no-]preview             : disable/enable opening products (default: disabled)\n");
     printf("  --[no-]delete-tmpfiles     : disable/enable deleting temporary files (default: enabled)\n");
-    printf("  --[no-]embed-source        : disable/enable embedding of the source into products (default: enabled)\n");
+    printf("  --[no-]embed-source        : disable/enable embedding of the source in products (default: enabled)\n");
     printf("  --[no-]copy-to-clipboard   : disable/enable copying products to the clipboard (default: disabled)\n");
     printf("  --[no-]quiet               : disable/enable quiet mode (default: disabled)\n");
     printf("  --version                  : display version info\n");
@@ -146,7 +146,7 @@ void printCurrentStatus(NSString *inputFilePath, NSDictionary *aProfile)
     printf("Conversion mode: %s priority mode\n", ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG) ? "speed" : "quality" );
     printf("Preview generated files: %s\n", [aProfile boolForKey:PreviewKey] ? "enabled" : "disabled");
     printf("Delete temporary files: %s\n", [aProfile boolForKey:DeleteTmpFileKey] ? "enabled" : "disabled");
-    printf("Embed the source into generated files: %s\n", [aProfile boolForKey:EmbedSourceKey] ? "enabled" : "disabled");
+    printf("Embed the source in generated files: %s\n", [aProfile boolForKey:EmbedSourceKey] ? "enabled" : "disabled");
     printf("Copy generated files to the clipboard: %s\n", [aProfile boolForKey:CopyToClipboardKey] ? "enabled" : "disabled");
 
     printf("************************************\n\n");
@@ -163,7 +163,7 @@ int main (int argc, char *argv[]) {
         int topMargin = 0;
         int bottomMargin = 0;
         BOOL textPdfFlag = NO;
-        BOOL transparentFlag = NO;
+        BOOL transparentFlag = YES;
         BOOL deleteDisplaySizeFlag = NO;
         BOOL deleteTmpFileFlag = YES;
         BOOL ignoreErrorFlag = NO;
