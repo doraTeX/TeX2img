@@ -723,11 +723,13 @@ typedef enum {
     
     InputMethod inputMethod = [aProfile integerForKey:InputMethodKey];
     switch (inputMethod) {
+        case DIRECT:
+            [self sourceSettingChanged:directInputButton];
+            break;
         case FROMFILE:
             [self sourceSettingChanged:inputSourceFileButton];
             break;
         default:
-            [self sourceSettingChanged:directInputButton];
             break;
     }
 }
@@ -881,9 +883,9 @@ typedef enum {
     [task launch];
     [task waitUntilExit];
     
-    NSMutableArray *searchPaths = [NSMutableArray arrayWithArray:[[NSString.alloc initWithData:pipe.fileHandleForReading.readDataToEndOfFile
-                                                                                      encoding:NSUTF8StringEncoding]
-                                                                  componentsSeparatedByString:@":"]];
+    NSString *stdOutStr = [NSString.alloc initWithData:pipe.fileHandleForReading.readDataToEndOfFile
+                                              encoding:NSUTF8StringEncoding];
+    NSMutableArray *searchPaths = [NSMutableArray arrayWithArray:[stdOutStr componentsSeparatedByString:@":"]];
 
     [searchPaths addObjectsFromArray: @[@"/Applications/TeXLive/texlive/2015/bin/x86_64-darwin",
                                         @"/Applications/TeXLive/texlive/2014/bin/x86_64-darwin",
@@ -1104,11 +1106,11 @@ typedef enum {
 
     // ウィンドウがアクティブになったときにその通知を受け取る
     [aCenter addObserver:self
-                selector:@selector(lastActiveWindowChenaged:)
+                selector:@selector(otherWindowsDidBecomeKey:)
                     name:NSWindowDidBecomeKeyNotification
                   object:mainWindow];
     [aCenter addObserver:self
-                selector:@selector(lastActiveWindowChenaged:)
+                selector:@selector(otherWindowsDidBecomeKey:)
                     name:NSWindowDidBecomeKeyNotification
                   object:preambleWindow];
     [aCenter addObserver:self
@@ -1217,8 +1219,9 @@ typedef enum {
 		}
 		
 		[commandCompletionList insertString:@"\n" atIndex:0];
-		if ([commandCompletionList characterAtIndex:commandCompletionList.length-1] != '\n')
+        if ([commandCompletionList characterAtIndex:commandCompletionList.length-1] != '\n') {
 			[commandCompletionList appendString:@"\n"];
+        }
 	}
 
     // Application Support の準備
@@ -1327,7 +1330,7 @@ typedef enum {
 }
 
 
-- (void)lastActiveWindowChenaged:(NSNotification*)aNotification
+- (void)otherWindowsDidBecomeKey:(NSNotification*)aNotification
 {
     lastActiveWindow = aNotification.object;
 
@@ -1919,6 +1922,7 @@ typedef enum {
 - (void)printCurrentStatus:(NSDictionary*)aProfile
 {
     NSMutableString *output = NSMutableString.string;
+    
     [output appendString:@"************************************\n"];
     [output appendString:@"  TeX2img settings\n"];
     [output appendString:@"************************************\n"];
@@ -1954,7 +1958,7 @@ typedef enum {
     NSString *ext = outputFilePath.pathExtension;
     NSString *unit = (([aProfile integerForKey:UnitKey] == PXUNITTAG) &&
                       ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"])) ?
-    @"px" : @"bp";
+                        @"px" : @"bp";
     
     [output appendFormat:@"Left   margin: %ld%@\n", [aProfile integerForKey:LeftMarginKey], unit];
     [output appendFormat:@"Right  margin: %ld%@\n", [aProfile integerForKey:RightMarginKey], unit];
@@ -1970,6 +1974,7 @@ typedef enum {
     if ([ext isEqualToString:@"svg"]) {
         [output appendFormat:@"Delete width and height attributes of SVG: %@\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? @"enabled" : @"disabled"];
     }
+    
     [output appendFormat:@"Ignore nonfatal errors: %@\n", [aProfile boolForKey:IgnoreErrorKey] ? @"enabled" : @"disabled"];
     [output appendFormat:@"Substitute \\UTF{xxxx} for non-JIS X 0208 characters: %@\n", [aProfile boolForKey:UtfExportKey] ? @"enabled" : @"disabled"];
     [output appendFormat:@"Conversion mode: %@ priority mode\n", ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG) ? @"speed" : @"quality"];
