@@ -36,13 +36,12 @@ void previewFiles(NSArray* files, NSString* app)
     }
     
     NSMutableString *script = NSMutableString.string;
-    [script appendFormat:@"tell application \"%@\"\n", app];
-    [script appendString:@"activate\n"];
+    [script appendString:@"tell application \"Finder\"\n"];
     [script appendString:@"open {"];
     [script appendString:[[files mapUsingBlock:^NSString*(NSString *path) {
         return [NSString stringWithFormat:@"POSIX file (\"%@\")", path];
     }] componentsJoinedByString:@", "]];
-    [script appendString:@"}\n"];
+    [script appendFormat:@"} using POSIX file \"/Applications/%@.app\"\n", app];
     [script appendString:@"end tell\n"];
     
     NSTask *task = NSTask.new;
