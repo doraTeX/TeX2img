@@ -561,6 +561,7 @@ DQ
                 <outlet property="encodingPopUpButton" destination="Gzh-vl-KcH" id="XMi-XA-snF"/>
                 <outlet property="flashBackgroundCheckBox" destination="cqv-iM-ddW" id="6rE-vK-8l3"/>
                 <outlet property="flashInMovingCheckBox" destination="Bh6-7t-qwa" id="ZIU-pC-csp"/>
+                <outlet property="flashingBackgroundColorWell" destination="4xw-56-f2y" id="E1T-Hw-uar"/>
                 <outlet property="fontTextField" destination="H1k-tV-Nig" id="3V3-sr-eOc"/>
                 <outlet property="foregroundColorWell" destination="G9w-Ow-LRW" id="QEj-ON-8Gw"/>
                 <outlet property="generateButton" destination="453" id="754"/>
@@ -1615,7 +1616,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <button verticalHuggingPriority="750" id="W2H-Ha-grG">
-                                            <rect key="frame" x="76" y="29" width="143" height="32"/>
+                                            <rect key="frame" x="76" y="3" width="143" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="Restore Defaults" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="l99-jO-IGI">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1625,6 +1626,23 @@ DQ
                                                 <action selector="loadDefaultColors:" target="450" id="CEc-cX-yoE"/>
                                             </connections>
                                         </button>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="pKr-gl-4kw">
+                                            <rect key="frame" x="24" y="49" width="135" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Flashing Background" id="t8T-hj-AKy">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <colorWell id="4xw-56-f2y">
+                                            <rect key="frame" x="164" y="46" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="sbS-Np-g3C"/>
+                                            </connections>
+                                        </colorWell>
                                     </subviews>
                                 </view>
                             </tabViewItem>

@@ -1526,8 +1526,25 @@ DQ
                                                 <action selector="colorSettingChanged:" target="450" id="Qt7-cS-0qH"/>
                                             </connections>
                                         </colorWell>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="zc7-Fv-zRy">
+                                            <rect key="frame" x="12" y="44" width="186" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="括弧不一致で点滅している背景" id="myR-76-IeO">
+                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <colorWell id="t6G-be-r7D">
+                                            <rect key="frame" x="204" y="41" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="xAf-Hd-6EX"/>
+                                            </connections>
+                                        </colorWell>
                                         <button verticalHuggingPriority="750" id="Wt2-ec-htK">
-                                            <rect key="frame" x="114" y="31" width="144" height="32"/>
+                                            <rect key="frame" x="114" y="2" width="144" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="デフォルトに戻す" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="uWc-c0-f6S">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1827,6 +1844,7 @@ DQ
                 <outlet property="encodingPopUpButton" destination="SEX-u4-2gO" id="9ZB-Jt-h0v"/>
                 <outlet property="flashBackgroundCheckBox" destination="KWP-Tu-qp2" id="QJB-80-Aeu"/>
                 <outlet property="flashInMovingCheckBox" destination="pL6-0n-Zv5" id="VGF-Ti-v8p"/>
+                <outlet property="flashingBackgroundColorWell" destination="t6G-be-r7D" id="uw4-fp-ZG8"/>
                 <outlet property="fontTextField" destination="UfO-wD-pSG" id="Ob5-EN-TVm"/>
                 <outlet property="foregroundColorWell" destination="LKd-6x-bcL" id="qE0-xO-h8v"/>
                 <outlet property="generateButton" destination="453" id="786"/>

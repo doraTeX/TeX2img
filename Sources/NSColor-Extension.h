@@ -9,4 +9,5 @@
 + (NSColor*)invisibleColor;
 + (NSColor*)highlightedBraceColor;
 + (NSColor*)enclosedContentBackgroundColor;
++ (NSColor*)flashingBackgroundColor;
 @end

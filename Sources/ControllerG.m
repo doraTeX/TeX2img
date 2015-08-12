@@ -124,6 +124,7 @@ typedef enum {
 @property IBOutlet NSColorWell *invisibleColorWell;
 @property IBOutlet NSColorWell *highlightedBraceColorWell;
 @property IBOutlet NSColorWell *enclosedContentBackgroundColorWell;
+@property IBOutlet NSColorWell *flashingBackgroundColorWell;
 
 @property Converter *converter;
 @property NSTask *runningTask;
@@ -223,6 +224,7 @@ typedef enum {
 @synthesize invisibleColorWell;
 @synthesize highlightedBraceColorWell;
 @synthesize enclosedContentBackgroundColorWell;
+@synthesize flashingBackgroundColorWell;
 
 @synthesize converter;
 @synthesize runningTask;
@@ -635,6 +637,12 @@ typedef enum {
         enclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
     }
 
+    if ([keys containsObject:FlashingBackgroundColorKey]) {
+        flashingBackgroundColorWell.color = [aProfile colorForKey:FlashingBackgroundColorKey];
+    } else {
+        flashingBackgroundColorWell.color = NSColor.flashingBackgroundColor;
+    }
+
     if ([keys containsObject:ColorPalleteColorKey]) {
         colorPalleteColorWell.color = [aProfile colorForKey:ColorPalleteColorKey];
     } else {
@@ -834,6 +842,7 @@ typedef enum {
         currentProfile[InvisibleColorKey] = invisibleColorWell.color.serializedString;
         currentProfile[HighlightedBraceColorKey] = highlightedBraceColorWell.color.serializedString;
         currentProfile[EnclosedContentBackgroundColorKey] = enclosedContentBackgroundColorWell.color.serializedString;
+        currentProfile[FlashingBackgroundColorKey] = flashingBackgroundColorWell.color.serializedString;
         
         currentProfile[ColorPalleteColorKey] = colorPalleteColorWell.color.serializedString;
     }
@@ -1246,6 +1255,7 @@ typedef enum {
     invisibleColorWell.color = NSColor.invisibleColor;
     highlightedBraceColorWell.color = NSColor.highlightedBraceColor;
     enclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
+    flashingBackgroundColorWell.color = NSColor.flashingBackgroundColor;
     
     [foregroundColorWell saveColorToMutableDictionary:lastColorDict];
     [backgroundColorWell saveColorToMutableDictionary:lastColorDict];
@@ -1256,6 +1266,7 @@ typedef enum {
     [invisibleColorWell saveColorToMutableDictionary:lastColorDict];
     [highlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
     [enclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    [flashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
 
     [sourceTextView colorizeText];
     [preambleTextView colorizeText];
@@ -1563,6 +1574,7 @@ typedef enum {
     [invisibleColorWell restoreColorFromDictionary:lastColorDict];
     [highlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
     [enclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [flashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
 }
 
 - (void)colorPalleteWindowDidBecomeKey:(NSNotification*)aNotification
@@ -1581,6 +1593,7 @@ typedef enum {
     [invisibleColorWell deactivate];
     [highlightedBraceColorWell deactivate];
     [enclosedContentBackgroundColorWell deactivate];
+    [flashingBackgroundColorWell deactivate];
     
     [colorPalleteColorWell deactivate];
     
@@ -1595,6 +1608,7 @@ typedef enum {
     [invisibleColorWell restoreColorFromDictionary:lastColorDict];
     [highlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
     [enclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [flashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
 
     [colorPalleteColorWell restoreColorFromDictionary:lastColorDict];
 }
