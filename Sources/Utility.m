@@ -45,10 +45,11 @@ void previewFiles(NSArray *files, NSString *app)
     [script appendString:@"end tell\n"];
     
     NSTask *task = NSTask.new;
+    NSPipe *pipe = NSPipe.pipe;
     task.launchPath = @"/usr/bin/osascript";
     task.arguments = @[@"-e", script];
-    task.standardOutput = nil;
-    task.standardError = nil;
+    task.standardOutput = pipe;
+    task.standardError = pipe;
     
     [task launch];
 
