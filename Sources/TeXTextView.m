@@ -1,5 +1,6 @@
 #import "TeXTextView.h"
 #import "NSDictionary-Extension.h"
+#import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
 #import "MyLayoutManager.h"
 #import "MyGlyphPopoverController.h"
@@ -9,6 +10,13 @@
 #define UncommentTag 2
 #define ShiftRightTag 3
 #define ShiftLeftTag 4
+
+#define NFCTag 1
+#define ModifiedNFCTag 2
+#define NFDTag 3
+#define ModifiedNFDTag 4
+#define NFKCTag 5
+#define NFKDTag 6
 
 static BOOL isValidTeXCommandChar(unichar c);
 
@@ -137,17 +145,19 @@ static BOOL isValidTeXCommandChar(unichar c)
     [self colorizeText];
 }
 
-- (void)registerUndoWithString:(NSString*)oldString location:(unsigned)oldLocation
-                        length: (unsigned)newLength key:(NSString*)key
+- (void)registerUndoWithString:(NSString*)oldString
+                      location:(unsigned)oldLocation
+                        length:(unsigned)newLength
+                           key:(NSString*)key
 {
     NSUndoManager *myManager = self.undoManager;
-    [myManager registerUndoWithTarget:self selector:@selector(undoSpecial:) object: @{
-                                                                                      @"oldString": oldString,
-                                                                                      @"oldLocation": @(oldLocation),
-                                                                                      @"oldLength" : @(newLength),
-                                                                                      @"undoKey" : key
-                                                                                      }];
-    [myManager setActionName:key];
+    [myManager registerUndoWithTarget:self
+                             selector:@selector(undoSpecial:)
+                               object:@{@"oldString": oldString,
+                                        @"oldLocation": @(oldLocation),
+                                        @"oldLength": @(newLength),
+                                        @"undoKey": key}];
+    myManager.actionName = key;
 }
 
 - (void)undoSpecial:(id)theDictionary
@@ -164,7 +174,7 @@ static BOOL isValidTeXCommandChar(unichar c)
     if (undoRange.location + undoRange.length > self.string.length)
         return; // something wrong happened
     
-    oldString = [self.string substringWithRange: undoRange];
+    oldString = [self.string substringWithRange:undoRange];
     
     // Replace the text
     [self replaceCharactersInRange:undoRange withString:newString];
@@ -179,7 +189,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 // to be used in AutoCompletion
 - (void)insertSpecialNonStandard:(NSString*)theString undoKey:(NSString*)key
 {
-	NSRange		oldRange, searchRange;
+	NSRange	oldRange, searchRange;
 	NSMutableString	*stringBuf;
 	NSString *oldString, *newString;
 	unsigned from, to;
@@ -192,8 +202,10 @@ static BOOL isValidTeXCommandChar(unichar c)
 	oldString = [self.string substringWithRange:oldRange];
 	
 	// Substitute all occurances of #SEL# with the original text
-	[stringBuf replaceOccurrencesOfString: @"#SEL#" withString: oldString
-								  options: 0 range: NSMakeRange(0, stringBuf.length)];
+	[stringBuf replaceOccurrencesOfString:@"#SEL#"
+                               withString:oldString
+								  options:0
+                                    range:NSMakeRange(0, stringBuf.length)];
 	
 	// Now search for #INS#, remember its position, and remove it. We will
 	// Later position the insertion mark there. Defaults to end of string.
@@ -208,8 +220,10 @@ static BOOL isValidTeXCommandChar(unichar c)
 	[self replaceCharactersInRange:oldRange withString:newString];
 	
 	// register undo
-	[self registerUndoWithString:oldString location:oldRange.location
-						  length:newString.length key:key];
+	[self registerUndoWithString:oldString
+                        location:oldRange.location
+						  length:newString.length
+                             key:key];
 	
 	from = oldRange.location;
 	to = from + newString.length;
@@ -312,13 +326,13 @@ static BOOL isValidTeXCommandChar(unichar c)
 // コメントアウト・アンコメント・左右シフト
 - (IBAction)doCommentOrIndent:(id)sender
 {
-    NSString    *text, *oldString;
-    NSRange     modifyRange;
-    NSUInteger  blockStart, blockEnd, lineStart, lineContentsEnd, lineEnd;
-    NSInteger   theChar = 0, increment = 0, rangeIncrement;
-    NSString    *theCommand = nil;
-    NSUInteger  tabWidth, i;
-    NSString    *indentString;
+    NSString *text, *oldString;
+    NSRange modifyRange;
+    NSUInteger blockStart, blockEnd, lineStart, lineContentsEnd, lineEnd;
+    NSInteger theChar = 0, increment = 0, rangeIncrement;
+    NSString *theCommand = nil;
+    NSUInteger tabWidth, i;
+    NSString *indentString;
     NSDictionary *aProfile = controller.currentProfile;
     BOOL useTabForIndent = [aProfile boolForKey:TabIndentKey];
     tabWidth = [aProfile integerForKey:TabWidthKey];
@@ -378,7 +392,7 @@ static BOOL isValidTeXCommandChar(unichar c)
                 indentString = @"";
                 if (tabWidth > 0) {
                     for (i = 1; i <= tabWidth; i++) {
-                        indentString = [indentString stringByAppendingString: @" "];
+                        indentString = [indentString stringByAppendingString:@" "];
                     }
                 }
                 if (useTabForIndent) {
@@ -456,8 +470,10 @@ static BOOL isValidTeXCommandChar(unichar c)
     modifyRange.length = blockEnd - blockStart;
     self.selectedRange = modifyRange;
     
-    [self registerUndoWithString:oldString location:modifyRange.location
-                          length:modifyRange.length key: theCommand];
+    [self registerUndoWithString:oldString
+                        location:modifyRange.location
+                          length:modifyRange.length
+                             key:theCommand];
     
     rangeIncrement = increment + ((increment > 0) ? (-1) : 1);
     if (fixRangeStart) {
@@ -486,7 +502,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 {
     [self insertText:contents replacementRange:NSMakeRange(0, self.textStorage.mutableString.length)];
     [self colorizeText];
-    [self setSelectedRange:NSMakeRange(0, 0)];
+    self.selectedRange = NSMakeRange(0, 0);
     [self scrollRangeToVisible: NSMakeRange(0, 0)];
 }
 
@@ -555,6 +571,12 @@ static BOOL isValidTeXCommandChar(unichar c)
 - (IBAction)showCharacterInfo:(id)sender
 {
     NSRange selectedRange = self.selectedRange;
+    
+    if (selectedRange.length <= 0) {
+        NSBeep();
+        return;
+    }
+    
     NSString *selectedString = [self.string substringWithRange:selectedRange];
     MyGlyphPopoverController *popoverController = [MyGlyphPopoverController.alloc initWithCharacter:selectedString];
     
@@ -573,6 +595,63 @@ static BOOL isValidTeXCommandChar(unichar c)
     [self showFindIndicatorForRange:selectedRange];
 }
 
+- (IBAction)normalizeSelectedString:(id)sender
+{
+    NSRange selectedRange = self.selectedRange;
+    
+    if (selectedRange.length <= 0) {
+        NSBeep();
+        return;
+    }
+
+    NSString *selectedString = [self.string substringWithRange:selectedRange];
+    
+    NSString *newString;
+    NSString *undoKey;
+    
+    switch ([sender tag]) {
+        case NFCTag:
+            newString = selectedString.precomposedStringWithCanonicalMapping;
+            undoKey = @"NFC";
+            break;
+        case ModifiedNFCTag:
+            newString = selectedString.normalizedStringWithModifiedNFC;
+            undoKey = @"Modified NFC";
+            break;
+        case NFDTag:
+            newString = selectedString.decomposedStringWithCanonicalMapping;
+            undoKey = @"NFD";
+            break;
+        case ModifiedNFDTag:
+            newString = selectedString.normalizedStringWithModifiedNFD;
+            undoKey = @"Modified NFD";
+            break;
+        case NFKCTag:
+            newString = selectedString.precomposedStringWithCompatibilityMapping;
+            undoKey = @"NFKC";
+            break;
+        case NFKDTag:
+            newString = selectedString.decomposedStringWithCompatibilityMapping;
+            undoKey = @"NFKD";
+            break;
+        default:
+            newString = selectedString;
+            break;
+    }
+    
+    if (undoKey) {
+        [self replaceCharactersInRange:selectedRange withString:newString];
+        [self registerUndoWithString:selectedString
+                            location:selectedRange.location
+                              length:newString.length
+                                 key:undoKey];
+        self.undoManager.actionName = undoKey;
+        self.selectedRange = NSMakeRange(selectedRange.location, newString.length);
+        [self showCharacterInfo:nil];
+    } else {
+        NSBeep();
+    }
+}
 
 #pragma mark - ダブルクリック時の挙動
 - (NSRange)selectionRangeForProposedRange:(NSRange)proposedSelRange granularity:(NSSelectionGranularity)granularity
@@ -640,16 +719,12 @@ static BOOL isValidTeXCommandChar(unichar c)
         return replacementRange;
     }
     
-/*    if (_alternateDown)
-        return replacementRange;*/
-    
     length = textString.length;
     i = proposedSelRange.location;
     if (i >= length) {
         return replacementRange;
     }
-    uchar = [textString characterAtIndex: i];
-    
+    uchar = [textString characterAtIndex:i];
     
     if ((uchar == '}') || (uchar == ')') || (uchar == ']') || (uchar == '>')) {
         j = i;
@@ -668,7 +743,7 @@ static BOOL isValidTeXCommandChar(unichar c)
         // Try searching to the left to find a match...
         while ((i > 0) && !done) {
             i--;
-            uchar = [textString characterAtIndex: i];
+            uchar = [textString characterAtIndex:i];
             if (uchar == rightpar) {
                 nestingLevel++;
             } else if (uchar == leftpar) {
@@ -769,14 +844,14 @@ static BOOL isValidTeXCommandChar(unichar c)
         return NSDragOperationNone;
     }
 
-    [self setDraggingState:YES];
+    self.draggingState = YES;
     
     return currentDragOperation;
 }
 
 - (void)draggingExited:(id <NSDraggingInfo>)info
 {
-    [self setDraggingState:NO];
+    self.draggingState = NO;
     return;
 }
 
@@ -793,7 +868,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (void)concludeDragOperation:(id<NSDraggingInfo>)info
 {
-    [self setDraggingState:NO];
+    self.draggingState = NO;
 }
 
 - (void)setDraggingState:(BOOL)draggingState

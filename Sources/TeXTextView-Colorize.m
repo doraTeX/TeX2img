@@ -126,7 +126,6 @@ static BOOL isValidTeXCommandChar(unichar c)
 					colorRange.length = location - colorRange.location;
 				}
 			}
-			
 			[layoutManager addTemporaryAttributes:commandColorAttribute forCharacterRange:colorRange];
         } else {
 			location++;
@@ -152,7 +151,8 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (void)resetBackgroundColor:(id)sender
 {
-	[self.layoutManager removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:NSMakeRange(0, self.textStorage.length)];
+	[self.layoutManager removeTemporaryAttribute:NSBackgroundColorAttributeName
+                               forCharacterRange:NSMakeRange(0, self.textStorage.length)];
 	contentHighlighting = NO;
 }
 
@@ -163,8 +163,8 @@ static BOOL isValidTeXCommandChar(unichar c)
     if (!color) {
         color = NSColor.enclosedContentBackgroundColor;
     }
-	[self.layoutManager addTemporaryAttributes: @{NSBackgroundColorAttributeName: color}
-                             forCharacterRange: NSRangeFromString(range)];
+	[self.layoutManager addTemporaryAttributes:@{NSBackgroundColorAttributeName: color}
+                             forCharacterRange:NSRangeFromString(range)];
 }
 
 - (void)textViewDidChangeSelection:(NSNotification*)inNotification

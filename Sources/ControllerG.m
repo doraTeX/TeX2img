@@ -1239,7 +1239,7 @@ typedef enum {
     if (defaultFont) {
         sourceTextView.font = defaultFont;
         preambleTextView.font = defaultFont;
-        [self setupFontTextField: defaultFont];
+        [self setupFontTextField:defaultFont];
     }
 }
 

@@ -276,7 +276,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
 
 // ------------------------------------------------------
 /// display popover
-- (void)showPopoverRelativeToRect:(NSRect)positioningRect ofView:(NSView *)parentView
+- (void)showPopoverRelativeToRect:(NSRect)positioningRect ofView:(NSView*)parentView
 // ------------------------------------------------------
 {
     NSPopover *popover = NSPopover.new;

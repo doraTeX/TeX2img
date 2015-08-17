@@ -6,7 +6,7 @@ static NSString* startcommentString = @"•‹";
 static NSString* endcommentString = @"›";
 
 @implementation TeXTextView (CommandCompletion)
-- (IBAction) doNextBullet: (id)sender // modified by (HS)
+- (IBAction)doNextBullet:(id)sender // modified by (HS)
 {
     NSRange tempRange, forwardRange, markerRange, commentRange;
     NSString *text;
@@ -32,13 +32,13 @@ static NSString* endcommentString = @"›";
 				markerRange.length = commentRange.location - markerRange.location + commentRange.length;
 			}
 		}
-		[self setSelectedRange:markerRange];
+		self.selectedRange = markerRange;
 		[self scrollRangeToVisible:markerRange];
     }
     else NSBeep();
 }
 
-- (IBAction) doPreviousBullet: (id)sender // modified by (HS)
+- (IBAction)doPreviousBullet:(id)sender // modified by (HS)
 {
     NSRange tempRange, backwardRange, markerRange, commentRange;
     NSString *text;
@@ -63,7 +63,7 @@ static NSString* endcommentString = @"›";
 				markerRange.length = commentRange.location - markerRange.location + commentRange.length;
 			}
 		}
-		[self setSelectedRange:markerRange];
+		self.selectedRange = markerRange;
 		[self scrollRangeToVisible:markerRange];
     }
     else NSBeep();
@@ -72,7 +72,7 @@ static NSString* endcommentString = @"›";
 - (void)keyDown:(NSEvent*)theEvent
 {
 	if (self.hasMarkedText) {
-		[super keyDown: theEvent]; // 日本語入力中ではそのままイベントを通す
+		[super keyDown:theEvent]; // 日本語入力中ではそのままイベントを通す
 		return;
 	}
 	
@@ -114,13 +114,13 @@ static NSString* endcommentString = @"›";
 		selectedLocation = self.selectedRange.location;
 		// check for LaTeX \begin{...}
 		if (selectedLocation > 0 && [textString characterAtIndex:selectedLocation-1] == '}'	&& !latexSpecial) {
-			charSet = [NSCharacterSet characterSetWithCharactersInString: [NSString stringWithFormat: @"\n \t.,;;{}()%C", texChar]]; //should be global?
+			charSet = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@"\n \t.,;;{}()%C", texChar]];
 			foundRange = [textString rangeOfCharacterFromSet:charSet
 													 options:NSBackwardsSearch
                                                        range:NSMakeRange(0, selectedLocation - 1)];
 			if (foundRange.location != NSNotFound && foundRange.location >= 6  &&
-				[textString characterAtIndex: foundRange.location - 6] == texChar  &&
-				[[textString substringWithRange: NSMakeRange(foundRange.location - 5, 6)] isEqualToString: @"begin{"]) {
+				[textString characterAtIndex:foundRange.location-6] == texChar  &&
+				[[textString substringWithRange:NSMakeRange(foundRange.location-5, 6)] isEqualToString:@"begin{"]) {
 				latexSpecial = YES;
 				latexString = [textString substringWithRange:
 							   NSMakeRange(foundRange.location, selectedLocation-foundRange.location)];
@@ -137,7 +137,7 @@ static NSString* endcommentString = @"›";
 			// check: insertion point, string before insertion point, undo title
 			if (selectedLocation == textLocation &&
 				textString.length >= replaceLocation + currentLength && // this shouldn't be necessary
-				[[textString substringWithRange: NSMakeRange(replaceLocation, currentLength)] isEqualToString: currentString] &&
+				[[textString substringWithRange:NSMakeRange(replaceLocation, currentLength)] isEqualToString: currentString] &&
 				[self.undoManager.undoActionName isEqualToString: localizedString(@"Completion")]) {
 				// revert the completion:
 				// by doing this, even after showing several completion candidates
@@ -145,11 +145,11 @@ static NSString* endcommentString = @"›";
 				[self.undoManager undo];
 				selectedLocation = self.selectedRange.location;
 				if (selectedLocation >= replaceLocation &&
-					[[textString substringWithRange: NSMakeRange(replaceLocation, selectedLocation - replaceLocation)] isEqualToString: originalString]) { // still checking
+					[[textString substringWithRange:NSMakeRange(replaceLocation, selectedLocation - replaceLocation)] isEqualToString:originalString]) { // still checking
 					// this is supposed to happen
 					if (completionListLocation == NSNotFound) {	// this happens if last one was LaTeX Special without previous completion
 						wasCompleted = NO;
-						[super keyDown: theEvent];
+						[super keyDown:theEvent];
 						return; // no other completion is possible
 					}
 				} else { // this shouldn't happen
@@ -164,13 +164,13 @@ static NSString* endcommentString = @"›";
 		
 		if (!wasCompleted && !latexSpecial) {
 			// determine the word to complete--search for word boundary
-			charSet = [NSCharacterSet characterSetWithCharactersInString: [NSString stringWithFormat: @"\n \t.,;;{}()%C", texChar]];
+			charSet = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@"\n \t.,;;{}()%C", texChar]];
 			foundRange = [textString rangeOfCharacterFromSet:charSet
 													 options:NSBackwardsSearch
                                                        range:NSMakeRange(0, selectedLocation)];
 			if (foundRange.location != NSNotFound) {
 				if (foundRange.location + 1 == selectedLocation) {
-                    [super keyDown: theEvent];
+                    [super keyDown:theEvent];
 					return;
                 } // no string to match
 				c = [textString characterAtIndex:foundRange.location];
@@ -181,12 +181,12 @@ static NSString* endcommentString = @"›";
                 }
 			} else {
 				if (selectedLocation == 0) {
-					[super keyDown: theEvent];
+					[super keyDown:theEvent];
 					return; // no string to match
 				}
 				replaceLocation = 0; // start from the beginning
 			}
-			originalString = [textString substringWithRange: NSMakeRange(replaceLocation, selectedLocation-replaceLocation)];
+			originalString = [textString substringWithRange:NSMakeRange(replaceLocation, selectedLocation-replaceLocation)];
 			completionListLocation = 0;
 		}
 		
@@ -196,16 +196,16 @@ static NSString* endcommentString = @"›";
 				if (theEvent.modifierFlags && wasCompleted) {
 					// backward
 					searchRange.location = 0;
-					searchRange.length = completionListLocation-1;
+					searchRange.length = completionListLocation - 1;
 				} else {
 					// forward
 					searchRange.location = completionListLocation;
 					searchRange.length = commandCompletionList.length - completionListLocation;
 				}
 				// search the string in the completion list
-				foundRange = [commandCompletionList rangeOfString: [@"\n" stringByAppendingString: originalString]
-															options: (theEvent.modifierFlags ? NSBackwardsSearch : 0)
-															  range: searchRange];
+				foundRange = [commandCompletionList rangeOfString:[@"\n" stringByAppendingString:originalString]
+                                                          options:(theEvent.modifierFlags ? NSBackwardsSearch : 0)
+                                                            range:searchRange];
 				
 				if (foundRange.location == NSNotFound) { // a completion candidate was not found
 					foundCandidate = NO;
@@ -215,25 +215,25 @@ static NSString* endcommentString = @"›";
 					// get the whole line
 					foundRange.location++; // eliminate first LF
 					foundRange.length--;
-					foundRange = [commandCompletionList lineRangeForRange: foundRange];
+					foundRange = [commandCompletionList lineRangeForRange:foundRange];
 					foundRange.length--; // eliminate last LF
-					foundString = [commandCompletionList substringWithRange: foundRange];
+					foundString = [commandCompletionList substringWithRange:foundRange];
 					completionListLocation = foundRange.location; // remember this location
 					// check if there is ":="
-					spaceRange = [foundString rangeOfString: @":="
-													options: 0
-                                                      range: NSMakeRange(0, foundString.length)];
+					spaceRange = [foundString rangeOfString:@":="
+													options:0
+                                                      range:NSMakeRange(0, foundString.length)];
 					if (spaceRange.location != NSNotFound) {
 						spaceRange.location += 2;
 						spaceRange.length = foundString.length - spaceRange.location;
-						foundString = [foundString substringWithRange: spaceRange]; //string after first space
+						foundString = [foundString substringWithRange:spaceRange]; //string after first space
 					}
-					newString = [NSMutableString stringWithString: foundString];
+					newString = [NSMutableString stringWithString:foundString];
 					// replace #RET# by linefeed -- this could be tab -> \n
-					[newString replaceOccurrencesOfString: @"#RET#"
-                                               withString: @"\n"
-												  options: 0
-                                                    range: NSMakeRange(0, newString.length)];
+					[newString replaceOccurrencesOfString:@"#RET#"
+                                               withString:@"\n"
+												  options:0
+                                                    range:NSMakeRange(0, newString.length)];
 					// search for #INS#
 					insRange = [newString rangeOfString:@"#INS#" options:0];
 					// Start Changed by (HS) - find second #INS#, remove if it's there and 
@@ -261,12 +261,12 @@ static NSString* endcommentString = @"›";
 			if (!wasCompleted) {
 				originalString = @"";
 				replaceLocation = selectedLocation;
-				newString = [NSMutableString stringWithFormat: @"\n%Cend%@\n", texChar, latexString];
+				newString = [NSMutableString stringWithFormat:@"\n%Cend%@\n", texChar, latexString];
 				insRange.location = 0;
 				completionListLocation = NSNotFound; // just to remember that it wasn't completed
 			} else {
 				// reuse the current string
-				newString = [NSMutableString stringWithFormat: @"%@\n%Cend%@\n", currentString, texChar, latexString];
+				newString = [NSMutableString stringWithFormat:@"%@\n%Cend%@\n", currentString, texChar, latexString];
 				insRange.location = currentString.length;
 			}
 		}
@@ -287,7 +287,7 @@ static NSString* endcommentString = @"›";
 			currentString = newString;
 			wasCompleted = YES;
 			// flash the new string
-			[self setSelectedRange: NSMakeRange(replaceLocation, newString.length)];
+			self.selectedRange = NSMakeRange(replaceLocation, newString.length);
 			[self display];
 			NSDate *myDate = NSDate.date;
 			while (myDate.timeIntervalSinceNow > - 0.050) ;
@@ -300,7 +300,7 @@ static NSString* endcommentString = @"›";
 			// Start changed by (HS) - set selection length as well as insertion point
 			// NOTE: selectlength inited to 0 so it's already correct if we get here
 			//[self setSelectedRange: NSMakeRange(textLocation,0)];
-			[self setSelectedRange: NSMakeRange(textLocation, selectlength)];
+			self.selectedRange = NSMakeRange(textLocation, selectlength);
 			[self scrollRangeToVisible: NSMakeRange(textLocation, selectlength)]; // Force into view (7/25/06) (HS)
 			// End changed by (HS) - set selection length as well as insertion point
 		} else { // candidate was not found
