@@ -125,6 +125,7 @@ typedef enum {
 @property IBOutlet NSColorWell *highlightedBraceColorWell;
 @property IBOutlet NSColorWell *enclosedContentBackgroundColorWell;
 @property IBOutlet NSColorWell *flashingBackgroundColorWell;
+@property IBOutlet NSButton *makeatletterEnabledCheckBox;
 
 @property Converter *converter;
 @property NSTask *runningTask;
@@ -225,6 +226,7 @@ typedef enum {
 @synthesize highlightedBraceColorWell;
 @synthesize enclosedContentBackgroundColorWell;
 @synthesize flashingBackgroundColorWell;
+@synthesize makeatletterEnabledCheckBox;
 
 @synthesize converter;
 @synthesize runningTask;
@@ -648,6 +650,12 @@ typedef enum {
     } else {
         colorPalleteColorWell.color = NSColor.redColor;
     }
+    
+    if ([keys containsObject:MakeatletterEnabledKey]) {
+        makeatletterEnabledCheckBox.state = [aProfile boolForKey:MakeatletterEnabledKey];
+    } else {
+        makeatletterEnabledCheckBox.state = NSOnState;
+    }
 
 	autoCompleteMenuItem.state = [aProfile boolForKey:AutoCompleteKey];
 	showTabCharacterCheckBox.state = [aProfile boolForKey:ShowTabCharacterKey];
@@ -845,6 +853,7 @@ typedef enum {
         currentProfile[HighlightedBraceColorKey] = highlightedBraceColorWell.color.serializedString;
         currentProfile[EnclosedContentBackgroundColorKey] = enclosedContentBackgroundColorWell.color.serializedString;
         currentProfile[FlashingBackgroundColorKey] = flashingBackgroundColorWell.color.serializedString;
+        currentProfile[MakeatletterEnabledKey] = @(makeatletterEnabledCheckBox.state);
         
         currentProfile[ColorPalleteColorKey] = colorPalleteColorWell.color.serializedString;
     }
@@ -1270,6 +1279,8 @@ typedef enum {
     [highlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
     [enclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
     [flashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    
+    makeatletterEnabledCheckBox.state = NSOnState;
 
     [sourceTextView colorizeText];
     [preambleTextView colorizeText];

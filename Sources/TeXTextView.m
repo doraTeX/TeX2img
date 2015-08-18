@@ -18,20 +18,6 @@
 #define NFKCTag 5
 #define NFKDTag 6
 
-BOOL isValidTeXCommandChar(unichar c)
-{
-    if ((c >= 'A') && (c <= 'Z')) {
-        return YES;
-    } else if ((c >= 'a') && (c <= 'z')) {
-        return YES;
-    } else if (c == '@') {
-        return YES;
-    } else {
-        return NO;
-    }
-}
-
-
 @implementation TeXTextView
 - (void)awakeFromNib
 {
@@ -81,6 +67,19 @@ BOOL isValidTeXCommandChar(unichar c)
         [aMenu addItemWithTitle:localizedString(@"Character Info") action:@selector(showCharacterInfo:) keyEquivalent:@""];
     }
     
+}
+
+- (BOOL)isValidTeXCommandChar:(unichar)c
+{
+    if ((c >= 'A') && (c <= 'Z')) {
+        return YES;
+    } else if ((c >= 'a') && (c <= 'z')) {
+        return YES;
+    } else if (c == '@' && controller && [controller.currentProfile boolForKey:MakeatletterEnabledKey]) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 - (void)changeFont:(id)sender
@@ -648,6 +647,7 @@ BOOL isValidTeXCommandChar(unichar c)
     NSInteger length, i, j, leftpar, rightpar, nestingLevel, uchar;
     BOOL done;
     unichar BACKSLASH = 0x5c;
+    BOOL makeatletterEnabled = controller ? [controller.currentProfile boolForKey:MakeatletterEnabledKey] : YES;
     
     textString = self.string;
     if (textString == nil) {
@@ -667,7 +667,7 @@ BOOL isValidTeXCommandChar(unichar c)
                 do {
                     if (replacementRange.location >= 1) {
                         c = [textString characterAtIndex: replacementRange.location - 1];
-                        if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == '@')) {
+                        if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || ((c == '@') && makeatletterEnabled)) {
                             replacementRange.location--;
                             replacementRange.length++;
                             flag = YES;
@@ -682,7 +682,7 @@ BOOL isValidTeXCommandChar(unichar c)
                 do {
                     if (replacementRange.location + replacementRange.length  < textString.length) {
                         c = [textString characterAtIndex: replacementRange.location + replacementRange.length];
-                        if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == '@')) {
+                        if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || ((c == '@') && makeatletterEnabled)) {
                             replacementRange.length++;
                             flag = YES;
                         } else {

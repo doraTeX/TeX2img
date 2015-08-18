@@ -88,11 +88,11 @@
 			colorRange.location = location;
 			colorRange.length = 1;
 			location++;
-			if ((location < aLineEnd) && (!isValidTeXCommandChar([textString characterAtIndex:location]))) {
+            if ((location < aLineEnd) && ![self isValidTeXCommandChar:[textString characterAtIndex:location]]) {
 				location++;
 				colorRange.length = location - colorRange.location;
 			} else {
-				while ((location < aLineEnd) && (isValidTeXCommandChar([textString characterAtIndex:location]))) {
+                while ((location < aLineEnd) && [self isValidTeXCommandChar:[textString characterAtIndex:location]]) {
 					location++;
 					colorRange.length = location - colorRange.location;
 				}

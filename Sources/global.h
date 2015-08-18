@@ -59,6 +59,7 @@ NSMutableString *commandCompletionList;
 #define HighlightedBraceColorKey @"highlightedBraceColor"
 #define EnclosedContentBackgroundColorKey @"enclosedContentBackgroundColor"
 #define FlashingBackgroundColorKey @"flashingBackgroundColor"
+#define MakeatletterEnabledKey @"makeatletterEnabled"
 
 #define ColorPalleteColorKey @"colorPalleteColor"
 

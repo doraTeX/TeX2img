@@ -622,6 +622,7 @@ DQ
                 <outlet property="leftMarginLabel" destination="546" id="617"/>
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
+                <outlet property="makeatletterEnabledCheckBox" destination="e5G-Bl-d2N" id="5NG-sb-Ufr"/>
                 <outlet property="numberOfCompilationStepper" destination="X9l-Yh-wIQ" id="Qvp-0d-gZn"/>
                 <outlet property="numberOfCompilationTextField" destination="dpd-O4-qxE" id="KWX-AS-ogm"/>
                 <outlet property="outputDrawer" destination="748" id="753"/>
@@ -1687,6 +1688,17 @@ DQ
                                                 <action selector="colorSettingChanged:" target="450" id="sbS-Np-g3C"/>
                                             </connections>
                                         </colorWell>
+                                        <button id="e5G-Bl-d2N">
+                                            <rect key="frame" x="218" y="172" width="150" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Enable \makeatletter" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="l1X-wb-Mcw">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="refreshTextView:" target="450" id="elS-me-4Qn"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
