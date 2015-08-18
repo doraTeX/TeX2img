@@ -18,43 +18,42 @@
 #define NFKCTag 5
 #define NFKDTag 6
 
-static BOOL isValidTeXCommandChar(unichar c);
-
-static BOOL isValidTeXCommandChar(unichar c)
+BOOL isValidTeXCommandChar(unichar c)
 {
-	if ((c >= 'A') && (c <= 'Z'))
-		return YES;
-	else if ((c >= 'a') && (c <= 'z'))
-		return YES;
-	else if (c == '@')
-		return YES;
-	else
-		return NO;
+    if ((c >= 'A') && (c <= 'Z')) {
+        return YES;
+    } else if ((c >= 'a') && (c <= 'z')) {
+        return YES;
+    } else if (c == '@') {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 
 @implementation TeXTextView
 - (void)awakeFromNib
 {
-	NSString* autoCompletionPath = @"~/Library/TeXShop/Keyboard/autocompletion.plist".stringByStandardizingPath;
-	if ([NSFileManager.defaultManager fileExistsAtPath: autoCompletionPath]) {
-		autocompletionDictionary = [NSDictionary dictionaryWithContentsOfFile:autoCompletionPath];
-	} else {
-		autocompletionDictionary = nil;
-	}
-	lastCursorLocation = 0;
-	lastStringLength = 0;
-	autoCompleting = NO;
-	contentHighlighting = NO;
-	braceHighlighting = NO;
-	MyLayoutManager *layoutManager = MyLayoutManager.new;
-	layoutManager.controller = controller;
+    NSString* autoCompletionPath = @"~/Library/TeXShop/Keyboard/autocompletion.plist".stringByStandardizingPath;
+    if ([NSFileManager.defaultManager fileExistsAtPath:autoCompletionPath]) {
+        autocompletionDictionary = [NSDictionary dictionaryWithContentsOfFile:autoCompletionPath];
+    } else {
+        autocompletionDictionary = nil;
+    }
+    lastCursorLocation = 0;
+    lastStringLength = 0;
+    autoCompleting = NO;
+    contentHighlighting = NO;
+    braceHighlighting = NO;
+    MyLayoutManager *layoutManager = MyLayoutManager.new;
+    layoutManager.controller = controller;
     self.dropDelegate = controller;
     dragging = NO;
     currentDragOperation = NSDragOperationNone;
     
-	[self.textContainer replaceLayoutManager:layoutManager];
-
+    [self.textContainer replaceLayoutManager:layoutManager];
+    
     self.continuousSpellCheckingEnabled = NO;
     self.smartInsertDeleteEnabled = NO;
     self.automaticDashSubstitutionEnabled = NO;
@@ -76,12 +75,12 @@ static BOOL isValidTeXCommandChar(unichar c)
                       selector:@selector(colorizeAfterUndoAndRedo)
                           name:NSUndoManagerDidRedoChangeNotification
                         object:undoManager];
-
+    
     NSMenu* aMenu = self.menu;
     if ([aMenu indexOfItemWithTitle:localizedString(@"Character Info")] == -1) {
         [aMenu addItemWithTitle:localizedString(@"Character Info") action:@selector(showCharacterInfo:) keyEquivalent:@""];
     }
-
+    
 }
 
 - (void)changeFont:(id)sender
@@ -93,7 +92,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 - (void)fixupTabs
 {
     NSDictionary *currentProfile = controller.currentProfile;
-
+    
     NSMutableParagraphStyle* paragraphStyle = self.defaultParagraphStyle.mutableCopy;
     
     if (!paragraphStyle) {
@@ -137,7 +136,6 @@ static BOOL isValidTeXCommandChar(unichar c)
         self.maxSize = maximumSize;
         self.horizontallyResizable = YES;
     }
-    
 }
 
 - (void)colorizeAfterUndoAndRedo
@@ -162,21 +160,20 @@ static BOOL isValidTeXCommandChar(unichar c)
 
 - (void)undoSpecial:(id)theDictionary
 {
-    NSRange		undoRange;
-    NSString	*oldString, *newString, *undoKey;
+    NSRange undoRange;
+    NSString *oldString, *newString, *undoKey;
     
-    // Retrieve undo info
     undoRange.location = [theDictionary[@"oldLocation"] unsignedIntValue];
     undoRange.length = [theDictionary[@"oldLength"] unsignedIntValue];
     newString = theDictionary[@"oldString"];
     undoKey = theDictionary[@"undoKey"];
     
-    if (undoRange.location + undoRange.length > self.string.length)
-        return; // something wrong happened
+    if (undoRange.location + undoRange.length > self.string.length) {
+        return;
+    }
     
     oldString = [self.string substringWithRange:undoRange];
     
-    // Replace the text
     [self replaceCharactersInRange:undoRange withString:newString];
     [self registerUndoWithString:oldString
                         location:undoRange.location
@@ -186,55 +183,45 @@ static BOOL isValidTeXCommandChar(unichar c)
     [self resetBackgroundColor:nil];
 }
 
-// to be used in AutoCompletion
 - (void)insertSpecialNonStandard:(NSString*)theString undoKey:(NSString*)key
 {
-	NSRange	oldRange, searchRange;
-	NSMutableString	*stringBuf;
-	NSString *oldString, *newString;
-	unsigned from, to;
-	
-	// mutably copy the replacement text
-	stringBuf = [NSMutableString stringWithString:theString];
-	
-	// Determine the curent selection range and text
-	oldRange = self.selectedRange;
-	oldString = [self.string substringWithRange:oldRange];
-	
-	// Substitute all occurances of #SEL# with the original text
-	[stringBuf replaceOccurrencesOfString:@"#SEL#"
+    NSRange oldRange, searchRange;
+    NSMutableString *stringBuf;
+    NSString *oldString, *newString;
+    unsigned from, to;
+    
+    stringBuf = [NSMutableString stringWithString:theString];
+    
+    oldRange = self.selectedRange;
+    oldString = [self.string substringWithRange:oldRange];
+    
+    [stringBuf replaceOccurrencesOfString:@"#SEL#"
                                withString:oldString
-								  options:0
+                                  options:0
                                     range:NSMakeRange(0, stringBuf.length)];
-	
-	// Now search for #INS#, remember its position, and remove it. We will
-	// Later position the insertion mark there. Defaults to end of string.
-	searchRange = [stringBuf rangeOfString:@"#INS#" options:NSLiteralSearch];
-	if (searchRange.location != NSNotFound)
-		[stringBuf replaceCharactersInRange:searchRange withString:@""];
-	
-	// Filtering for Japanese
-	newString = stringBuf;
-	
-	// Insert the new text
-	[self replaceCharactersInRange:oldRange withString:newString];
-	
-	// register undo
-	[self registerUndoWithString:oldString
+    
+    searchRange = [stringBuf rangeOfString:@"#INS#" options:NSLiteralSearch];
+    if (searchRange.location != NSNotFound)
+        [stringBuf replaceCharactersInRange:searchRange withString:@""];
+    
+    newString = stringBuf;
+
+    [self replaceCharactersInRange:oldRange withString:newString];
+    
+    [self registerUndoWithString:oldString
                         location:oldRange.location
-						  length:newString.length
+                          length:newString.length
                              key:key];
-	
-	from = oldRange.location;
-	to = from + newString.length;
-	[self colorizeText];
-	
-	// Place insertion mark
-	if (searchRange.location != NSNotFound) {
-		searchRange.location += oldRange.location;
-		searchRange.length = 0;
-		self.selectedRange = searchRange;
-	}
+    
+    from = oldRange.location;
+    to = from + newString.length;
+    [self colorizeText];
+    
+    if (searchRange.location != NSNotFound) {
+        searchRange.location += oldRange.location;
+        searchRange.length = 0;
+        self.selectedRange = searchRange;
+    }
 }
 
 - (void)insertText:(id)aString
@@ -244,14 +231,14 @@ static BOOL isValidTeXCommandChar(unichar c)
         return;
     }
     NSString *theString = (NSString*)aString;
-
-	NSDictionary *currentProfile = controller.currentProfile;
-
-	unichar texChar = 0x5c;
-	
-	if ([theString isEqualToString:@"¥"] && [currentProfile boolForKey:ConvertYenMarkKey]) {
-		[super insertText:@"\\"];
-	} else {
+    
+    NSDictionary *currentProfile = controller.currentProfile;
+    
+    unichar texChar = 0x5c;
+    
+    if ([theString isEqualToString:@"¥"] && [currentProfile boolForKey:ConvertYenMarkKey]) {
+        [super insertText:@"\\"];
+    } else {
         if (theString.length == 1 && [currentProfile boolForKey:AutoCompleteKey] && autocompletionDictionary) {
             if ([theString characterAtIndex:0] >= 128 ||
                 self.selectedRange.location == 0 ||
@@ -265,50 +252,49 @@ static BOOL isValidTeXCommandChar(unichar c)
                     return;
                 }
             }
-        }	
+        }
         
-		[super insertText:aString];
-	}
-	[self colorizeText];
+        [super insertText:aString];
+    }
+    [self colorizeText];
 }
 
 - (void)insertTextWithIndicator:(id)aString {
     [self insertText:aString];
-
+    
     if (![aString isKindOfClass:NSString.class]) {
         return;
     }
     
     NSUInteger length = ((NSString*)aString).length;
     [self showFindIndicatorForRange:NSMakeRange(self.selectedRange.location - length, length)];
-
+    
 }
 
 
 // クリップボードから貼り付けられる円マークをバックスラッシュに置き換えて貼り付ける
 - (BOOL)readSelectionFromPasteboard:(NSPasteboard*)pboard type:(NSString*)type
 {
-	NSDictionary *currentProfile = controller.currentProfile;
-
-	if ([type isEqualToString:NSStringPboardType] && [currentProfile boolForKey:ConvertYenMarkKey]) {
-		NSMutableString *string = [NSMutableString stringWithString:[pboard stringForType:NSStringPboardType]];
-		if (string)	{
-			[string replaceYenWithBackSlash];
-			
-			// Replace the text--imitate what happens in ordinary editing
-			NSRange	selectedRange = self.selectedRange;
-			if ([self shouldChangeTextInRange:selectedRange replacementString:string]) {
-				[self replaceCharactersInRange:selectedRange withString:string];
-				[self didChangeText];
-			}
-			// by returning YES, "Undo Paste" menu item will be set up by system
-			[self colorizeText];
-			return YES;
-		} else {
-			return NO;
-		}
-	}
-	return [super readSelectionFromPasteboard:pboard type:type];
+    NSDictionary *currentProfile = controller.currentProfile;
+    
+    if ([type isEqualToString:NSStringPboardType] && [currentProfile boolForKey:ConvertYenMarkKey]) {
+        NSMutableString *string = [NSMutableString stringWithString:[pboard stringForType:NSStringPboardType]];
+        if (string) {
+            [string replaceYenWithBackSlash];
+            
+            NSRange selectedRange = self.selectedRange;
+            if ([self shouldChangeTextInRange:selectedRange replacementString:string]) {
+                [self replaceCharactersInRange:selectedRange withString:string];
+                [self didChangeText];
+            }
+            // by returning YES, "Undo Paste" menu item will be set up by system
+            [self colorizeText];
+            return YES;
+        } else {
+            return NO;
+        }
+    }
+    return [super readSelectionFromPasteboard:pboard type:type];
 }
 
 - (void)setEnabled:(BOOL)enabled
@@ -349,12 +335,12 @@ static BOOL isValidTeXCommandChar(unichar c)
     lineStart = blockStart;
     BOOL firstLine = YES;
     BOOL fixRangeStart = NO;
-
+    
     do {
         modifyRange.location = lineStart;
         modifyRange.length = 0;
         [text getLineStart:NULL end:&lineEnd contentsEnd:&lineContentsEnd forRange:modifyRange];
-
+        
         switch ([sender tag]) {
             case CommentOutTag:
                 [self replaceCharactersInRange:modifyRange withString:@"%"];
@@ -365,7 +351,7 @@ static BOOL isValidTeXCommandChar(unichar c)
                 break;
                 
             case UncommentTag:
-                if (lineStart<lineContentsEnd) {
+                if (lineStart < lineContentsEnd) {
                     theChar = [text characterAtIndex:lineStart];
                 } else if (firstLine) {
                     fixRangeStart = YES;
@@ -487,13 +473,12 @@ static BOOL isValidTeXCommandChar(unichar c)
     
     self.selectedRange = oldRange;
     
-    // we now fix the selected range, which was sometimes one or two of
     text = self.string;
     [text getLineStart:&blockStart end:&blockEnd contentsEnd:NULL forRange:self.selectedRange];
     modifyRange.location = blockStart;
     modifyRange.length = blockEnd - blockStart;
     self.selectedRange = modifyRange;
-
+    
     [self colorizeText];
 }
 
@@ -512,7 +497,9 @@ static BOOL isValidTeXCommandChar(unichar c)
     
     NSRange oldRange = self.selectedRange;
     
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\\\(begin|end)\\{(.*?)\\}" options:0 error:nil];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\\\(begin|end)\\{(.*?)\\}"
+                                                                           options:0
+                                                                             error:nil];
     NSString *target = [self.textStorage.string substringToIndex:oldRange.location];
     NSEnumerator* enumerator = [regex matchesInString:target options:0 range:NSMakeRange(0, target.length)].reverseObjectEnumerator;
     
@@ -529,7 +516,7 @@ static BOOL isValidTeXCommandChar(unichar c)
         
         prefix = (range1.location == NSNotFound) ? nil : [target substringWithRange:range1];
         environment = (range2.location == NSNotFound) ? nil : [target substringWithRange:range2];
-
+        
         increment = [prefix isEqualToString:@"end"] ? 1 : -1;
         
         count = environmentStack[environment];
@@ -603,7 +590,7 @@ static BOOL isValidTeXCommandChar(unichar c)
         NSBeep();
         return;
     }
-
+    
     NSString *selectedString = [self.string substringWithRange:selectedRange];
     
     NSString *newString;
@@ -656,7 +643,7 @@ static BOOL isValidTeXCommandChar(unichar c)
 #pragma mark - ダブルクリック時の挙動
 - (NSRange)selectionRangeForProposedRange:(NSRange)proposedSelRange granularity:(NSSelectionGranularity)granularity
 {
-    NSRange	replacementRange = { 0, 0 };
+    NSRange replacementRange = NSMakeRange(0, 0);
     NSString *textString;
     NSInteger length, i, j, leftpar, rightpar, nestingLevel, uchar;
     BOOL done;
@@ -843,7 +830,7 @@ static BOOL isValidTeXCommandChar(unichar c)
     if (![ImportExtensionsArray containsObject:ext]) {
         return NSDragOperationNone;
     }
-
+    
     self.draggingState = YES;
     
     return currentDragOperation;

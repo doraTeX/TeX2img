@@ -92,8 +92,7 @@
 
 - (NSString*)normalizedStringWithModifiedNFC
 {
-    NSString *pattern = COMPOSITION_EXCLUSION_REGEX;
-    NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:pattern
+    NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:COMPOSITION_EXCLUSION_REGEX
                                                                             options:0
                                                                               error:nil];
     NSMutableString *result = NSMutableString.string;
@@ -112,8 +111,7 @@
 
 - (NSString*)normalizedStringWithModifiedNFD
 {
-    NSString *pattern = COMPOSITION_EXCLUSION_REGEX;
-    NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:pattern
+    NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:COMPOSITION_EXCLUSION_REGEX
                                                                             options:0
                                                                               error:nil];
     NSMutableString *result = NSMutableString.string;

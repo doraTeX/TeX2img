@@ -6,7 +6,7 @@ static NSString* startcommentString = @"•‹";
 static NSString* endcommentString = @"›";
 
 @implementation TeXTextView (CommandCompletion)
-- (IBAction)doNextBullet:(id)sender // modified by (HS)
+- (IBAction)doNextBullet:(id)sender
 {
     NSRange tempRange, forwardRange, markerRange, commentRange;
     NSString *text;
@@ -34,8 +34,9 @@ static NSString* endcommentString = @"›";
 		}
 		self.selectedRange = markerRange;
 		[self scrollRangeToVisible:markerRange];
+    } else {
+        NSBeep();
     }
-    else NSBeep();
 }
 
 - (IBAction)doPreviousBullet:(id)sender // modified by (HS)
@@ -65,8 +66,9 @@ static NSString* endcommentString = @"›";
 		}
 		self.selectedRange = markerRange;
 		[self scrollRangeToVisible:markerRange];
+    } else {
+        NSBeep();
     }
-    else NSBeep();
 }
 
 - (void)keyDown:(NSEvent*)theEvent
@@ -236,10 +238,6 @@ static NSString* endcommentString = @"›";
                                                     range:NSMakeRange(0, newString.length)];
 					// search for #INS#
 					insRange = [newString rangeOfString:@"#INS#" options:0];
-					// Start Changed by (HS) - find second #INS#, remove if it's there and 
-					// set selection length. NOTE: selectlength inited to 0 so ok if not found.
-					//if (insRange.location != NSNotFound)
-					//	[newString replaceCharactersInRange:insRange withString:@""];
 					if (insRange.location != NSNotFound) {
 						[newString replaceCharactersInRange:insRange withString:@""];
 						ins2Range = [newString rangeOfString:@"#INS#" options:0];
@@ -248,12 +246,9 @@ static NSString* endcommentString = @"›";
 						    selectlength = ins2Range.location - insRange.location;
 						}
 					}
-					// End Changed by (HS) - find second #INS# if it's there and set selection length
-					// Filtering for Japanese
-					//if (shouldFilter == filterMacJ)//we use current encoding, so this isn't necessary
-					//	newString = filterBackslashToYen(newString);
-					if (![newString isEqualToString:originalString])
+                    if (![newString isEqualToString:originalString]) {
 						break;		// continue search if newString is equal to originalString
+                    }
 				}
 			}
 		} else { // LaTeX Special -- just add \end and copy of {...}

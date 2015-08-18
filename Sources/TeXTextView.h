@@ -4,6 +4,8 @@
 
 @class ControllerG;
 
+BOOL isValidTeXCommandChar(unichar c);
+
 @interface TeXTextView : NSTextView
 {
     IBOutlet ControllerG *controller;
@@ -17,8 +19,10 @@
     BOOL dragging;
     NSDragOperation currentDragOperation;
 }
-- (void)registerUndoWithString:(NSString*)oldString location:(unsigned)oldLocation
-                        length: (unsigned)newLength key:(NSString*)key;
+- (void)registerUndoWithString:(NSString*)oldString
+                      location:(unsigned)oldLocation
+                        length:(unsigned)newLength
+                           key:(NSString*)key;
 - (void)setEnabled:(BOOL)enabled;
 - (void)replaceEntireContentsWithString:(NSString*)contents;
 - (void)insertTextWithIndicator:(id)aString;

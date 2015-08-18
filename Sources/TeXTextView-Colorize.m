@@ -2,19 +2,6 @@
 #import "NSDictionary-Extension.h"
 #import "NSColor-Extension.h"
 
-static BOOL isValidTeXCommandChar(unichar c)
-{
-    if ((c >= 'A') && (c <= 'Z')) {
-		return YES;
-    } else if ((c >= 'a') && (c <= 'z')) {
-		return YES;
-    } else if (c == '@') {
-		return YES;
-    } else {
-		return NO;
-    }
-}
-
 @implementation TeXTextView (Colorize)
 - (void)colorizeText
 {
@@ -68,42 +55,29 @@ static BOOL isValidTeXCommandChar(unichar c)
     
     NSDictionary *markerColorAttribute = @{NSForegroundColorAttributeName: color};
 	
-	// Fetch the underlying layout manager and string.
 	layoutManager = self.layoutManager;
 	textString = self.string;
 	length = textString.length;
 	
 	NSRange range = NSMakeRange(0, length);
-	
-	
-	// We only perform coloring for full lines here, so extend the given range to full lines.
-	// Note that aLineStart is the start of *a* line, but not necessarily the same line
-	// for which aLineEnd marks the end! We may span many lines.
-	[textString getLineStart:&aLineStart end:&aLineEnd contentsEnd:nil forRange:range];
-	
-	
-	
-	// We reset the color of all chars in the given range to the regular color; later, we'll
-	// then only recolor anything which is supposed to have another color.
-	colorRange.location = aLineStart;
+
+    [textString getLineStart:&aLineStart end:&aLineEnd contentsEnd:nil forRange:range];
+
+    colorRange.location = aLineStart;
 	colorRange.length = aLineEnd - aLineStart;
-	// WARNING!! The following line has been commented out to restore changing the text color
-	// June 27, 2008; Koch; I don't understand the previous warning; the line below fixes cases when removing a comment leaves text red
-	[layoutManager removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:colorRange];
+
+    [layoutManager removeTemporaryAttribute:NSForegroundColorAttributeName forCharacterRange:colorRange];
 	
-	// Now we iterate over the whole text and perform the actual recoloring.
 	location = aLineStart;
 	while (location < aLineEnd) {
 		theChar = [textString characterAtIndex:location];
 		
 		if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
-			// The three special characters { } $ get an extra color.
 			colorRange.location = location;
 			colorRange.length = 1;
 			[layoutManager addTemporaryAttributes:markerColorAttribute forCharacterRange:colorRange];
 			location++;
 		} else if (theChar == '%') {
-			// Comments are started by %. Everything after that on the same line is a comment.
 			colorRange.location = location;
 			colorRange.length = 1;
 			[textString getLineStart:nil end:nil contentsEnd:&end forRange:colorRange];
@@ -111,9 +85,6 @@ static BOOL isValidTeXCommandChar(unichar c)
 			[layoutManager addTemporaryAttributes:commentColorAttribute forCharacterRange:colorRange];
 			location = end;
 		} else if (theChar == '\\' || theChar == 0x00a5) {
-			// A backslash (or a yen): a new TeX command starts here.
-			// There are two cases: Either a sequence of letters A-Za-z follow, and we color all of them.
-			// Or a single non-alpha character follows. Then we color that, too, but nothing else.
 			colorRange.location = location;
 			colorRange.length = 1;
 			location++;
@@ -279,7 +250,8 @@ static BOOL isValidTeXCommandChar(unichar c)
 
                 if ([profile boolForKey:HighlightContentKey]) {
 					[self performSelector:@selector(highlightContent:) 
-							   withObject:NSStringFromRange(NSMakeRange(MIN(originalLocation, theLocation), ABS(originalLocation - theLocation)+1)) afterDelay:0];
+							   withObject:NSStringFromRange(NSMakeRange(MIN(originalLocation, theLocation), ABS(originalLocation - theLocation)+1))
+                               afterDelay:0];
 				}
 				
 				if (!autoCompleting && [profile boolForKey:FlashInMovingKey]) {
@@ -290,7 +262,8 @@ static BOOL isValidTeXCommandChar(unichar c)
 				
 				if (highlightPattern == FLASH) {
 					[self performSelector:@selector(resetHighlight:) 
-							   withObject:NSStringFromRange(NSMakeRange(theLocation, 1)) afterDelay:0.30];
+							   withObject:NSStringFromRange(NSMakeRange(theLocation, 1))
+                               afterDelay:0.30];
 				}
                 return;
             } else {
@@ -307,7 +280,8 @@ static BOOL isValidTeXCommandChar(unichar c)
 	if ([profile boolForKey:FlashBackgroundKey]) {
 		self.backgroundColor = [profile colorForKey:FlashingBackgroundColorKey];
 		[self performSelector:@selector(resetBackgroundColorOfTextView:) 
-				   withObject:nil afterDelay:0.20];
+				   withObject:nil
+                   afterDelay:0.20];
 	}
 }
 
@@ -315,12 +289,13 @@ static BOOL isValidTeXCommandChar(unichar c)
 {
     [super shouldChangeTextInRange:affectedCharRange replacementString:replacementString];
     
-    NSRange	  matchRange;
-    NSString  *textString;
+    NSRange	matchRange;
+    NSString *textString;
     NSInteger i, j, count, uchar, leftpar, rightpar;
     
-    if (replacementString.length != 1)
+    if (replacementString.length != 1) {
         return YES;
+    }
     
     rightpar = [replacementString characterAtIndex:0];
     
