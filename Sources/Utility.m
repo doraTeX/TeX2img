@@ -1,6 +1,7 @@
 #import "global.h"
 #import "Utility.h"
 #import "NSArray-Extension.h"
+#import "NSPipe-Extension.h"
 
 NSString* execCommand(NSString *cmdline)
 {
@@ -12,7 +13,7 @@ NSString* execCommand(NSString *cmdline)
     [task launch];
     [task waitUntilExit];
     
-    return [NSString.alloc initWithData:pipe.fileHandleForReading.readDataToEndOfFile encoding:NSUTF8StringEncoding];
+    return pipe.stringValue;
 }
 
 NSString* getFullPath(NSString *aPath)

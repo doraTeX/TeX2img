@@ -12,6 +12,9 @@
 #define VERSION "1.9.8"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
+#define ENABLED "enabled"
+#define DISABLED "disabled"
+
 static void version()
 {
     printf("tex2img Ver.%s\n", VERSION);
@@ -133,21 +136,21 @@ void printCurrentStatus(NSString *inputFilePath, NSDictionary *aProfile)
     printf("Bottom margin: %ld%s\n", [aProfile integerForKey:BottomMarginKey], unit.UTF8String);
 
     if ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"]) {
-        printf("Transparent PNG/GIF/TIFF: %s\n", [aProfile boolForKey:TransparentKey] ? "enabled" : "disabled");
+        printf("Transparent PNG/GIF/TIFF: %s\n", [aProfile boolForKey:TransparentKey] ? ENABLED : DISABLED);
     }
     if ([ext isEqualToString:@"pdf"]) {
-        printf("Text embedded PDF: %s\n", [aProfile boolForKey:GetOutlineKey] ? "disabled" : "enabled");
+        printf("Text embedded PDF: %s\n", [aProfile boolForKey:GetOutlineKey] ? DISABLED : ENABLED);
     }
     if ([ext isEqualToString:@"svg"]) {
-        printf("Delete width and height attributes of SVG: %s\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? "enabled" : "disabled");
+        printf("Delete width and height attributes of SVG: %s\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? ENABLED : DISABLED);
     }
-    printf("Ignore nonfatal errors: %s\n", [aProfile boolForKey:IgnoreErrorKey] ? "enabled" : "disabled");
-    printf("Substitute \\UTF{xxxx} for non-JIS X 0208 characters: %s\n", [aProfile boolForKey:UtfExportKey] ? "enabled" : "disabled");
+    printf("Ignore nonfatal errors: %s\n", [aProfile boolForKey:IgnoreErrorKey] ? ENABLED : DISABLED);
+    printf("Substitute \\UTF{xxxx} for non-JIS X 0208 characters: %s\n", [aProfile boolForKey:UtfExportKey] ? ENABLED : DISABLED);
     printf("Conversion mode: %s priority mode\n", ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG) ? "speed" : "quality" );
-    printf("Preview generated files: %s\n", [aProfile boolForKey:PreviewKey] ? "enabled" : "disabled");
-    printf("Delete temporary files: %s\n", [aProfile boolForKey:DeleteTmpFileKey] ? "enabled" : "disabled");
-    printf("Embed the source in generated files: %s\n", [aProfile boolForKey:EmbedSourceKey] ? "enabled" : "disabled");
-    printf("Copy generated files to the clipboard: %s\n", [aProfile boolForKey:CopyToClipboardKey] ? "enabled" : "disabled");
+    printf("Preview generated files: %s\n", [aProfile boolForKey:PreviewKey] ? ENABLED : DISABLED);
+    printf("Delete temporary files: %s\n", [aProfile boolForKey:DeleteTmpFileKey] ? ENABLED : DISABLED);
+    printf("Embed the source in generated files: %s\n", [aProfile boolForKey:EmbedSourceKey] ? ENABLED : DISABLED);
+    printf("Copy generated files to the clipboard: %s\n", [aProfile boolForKey:CopyToClipboardKey] ? ENABLED : DISABLED);
 
     printf("************************************\n\n");
 }

@@ -59,7 +59,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
 @implementation MyGlyphPopoverUnicodesTextStorage
 - (id)initWithAttributedString:(NSAttributedString*)attrStr
 {
-    if (self = [super init]) {
+    if ((self = super.init)) {
         contents = attrStr ? attrStr.mutableCopy : NSMutableAttributedString.new;
     }
     return self;
@@ -148,7 +148,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
         
         for (NSUInteger i = 0; i < length; i++) {
             unichar theChar = [character characterAtIndex:i];
-            unichar nextChar = (length > i + 1) ? [character characterAtIndex:i + 1] : 0;
+            unichar nextChar = (length > i+1) ? [character characterAtIndex:i+1] : 0;
             
             if (CFStringIsSurrogateHighCharacter(theChar) && CFStringIsSurrogateLowCharacter(nextChar)) {
                 UTF32Char pair = CFStringGetLongCharacterForSurrogatePair(theChar, nextChar);
@@ -177,7 +177,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
         
         NSString *variationSelectorAdditional;
         if (unicodes.count == 2) {
-            unichar lastChar = [character characterAtIndex:(length - 1)];
+            unichar lastChar = [character characterAtIndex:length-1];
             if (lastChar == kEmojiSequenceChar) {
                 variationSelectorAdditional = @"Emoji Style";
                 multiCodePoints = NO;
@@ -188,8 +188,8 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
                 variationSelectorAdditional = @"Variant";
                 multiCodePoints = NO;
             } else {
-                unichar highSurrogate = [character characterAtIndex:(length - 2)];
-                unichar lowSurrogate = [character characterAtIndex:(length - 1)];
+                unichar highSurrogate = [character characterAtIndex:length-2];
+                unichar lowSurrogate = [character characterAtIndex:length-1];
                 if (CFStringIsSurrogateHighCharacter(highSurrogate) && CFStringIsSurrogateLowCharacter(lowSurrogate)) {
                     UTF32Char pair = CFStringGetLongCharacterForSurrogatePair(highSurrogate, lowSurrogate);
                     

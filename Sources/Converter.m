@@ -13,6 +13,7 @@
 #import "NSDictionary-Extension.h"
 #import "NSMutableString-Extension.h"
 #import "NSDate-Extension.h"
+#import "NSPipe-Extension.h"
 #import "Converter.h"
 
 @interface Converter()
@@ -394,8 +395,7 @@
     [task launch];
     [task waitUntilExit];
     
-    NSData *data = pipe.fileHandleForReading.readDataToEndOfFile;
-    NSString *versionString = [NSString.alloc initWithData:data encoding:NSUTF8StringEncoding];
+    NSString *versionString = pipe.stringValue;
     
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\d+(?:\\.\\d+)?" options:0 error:nil];
     NSTextCheckingResult *match = [regex firstMatchInString:versionString options:0 range:NSMakeRange(0, versionString.length)];

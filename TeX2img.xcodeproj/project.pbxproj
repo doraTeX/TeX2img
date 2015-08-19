@@ -28,6 +28,8 @@
 		348CA6DD1A957BC90070B079 /* NSDate-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CA6DB1A957BC90070B079 /* NSDate-Extension.m */; };
 		348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */; };
 		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
+		348F29601B848C11009AA3CF /* NSPipe-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348F295F1B848C11009AA3CF /* NSPipe-Extension.m */; };
+		348F29611B848C68009AA3CF /* NSPipe-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348F295F1B848C11009AA3CF /* NSPipe-Extension.m */; };
 		349564B81ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
 		349564B91ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
 		349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349927381B786546009BD5F1 /* MyGlyphPopoverController.m */; };
@@ -104,6 +106,8 @@
 		348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-CommandCompletion.m"; sourceTree = "<group>"; };
 		348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-Colorize.m"; sourceTree = "<group>"; };
 		348D72A1125A57B8003AF902 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
+		348F295E1B848C11009AA3CF /* NSPipe-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPipe-Extension.h"; sourceTree = "<group>"; };
+		348F295F1B848C11009AA3CF /* NSPipe-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPipe-Extension.m"; sourceTree = "<group>"; };
 		349564B71ABFF3D1004B9C1D /* Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utility.m; sourceTree = "<group>"; };
 		349564BA1ABFF3E5004B9C1D /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
 		349927371B786546009BD5F1 /* MyGlyphPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyGlyphPopoverController.h; sourceTree = "<group>"; };
@@ -180,24 +184,6 @@
 				70254EEF10353485000D6D05 /* TeXTextView.m */,
 				348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */,
 				348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */,
-				346DA5791B705F6800B51BD7 /* NSArray-Extension.h */,
-				346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */,
-				346DA57D1B70605100B51BD7 /* NSIndexSet-Extension.h */,
-				346DA57E1B70605100B51BD7 /* NSIndexSet-Extension.m */,
-				34CF33A210260315009A8CA6 /* NSDictionary-Extension.h */,
-				34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */,
-				34D41D1C17A6BE2C00997795 /* NSString-Extension.h */,
-				34D41D1D17A6BE2C00997795 /* NSString-Extension.m */,
-				7025539710353D33000D6D05 /* NSMutableString-Extension.h */,
-				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
-				3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */,
-				3408053C1A96E6B50067AA56 /* NSFileManager-Extension.m */,
-				348CA6DA1A957BC90070B079 /* NSDate-Extension.h */,
-				348CA6DB1A957BC90070B079 /* NSDate-Extension.m */,
-				348BBF941B795AB900EDE00C /* NSColor-Extension.h */,
-				348BBF951B795AB900EDE00C /* NSColor-Extension.m */,
-				34867AC71B7B4804002AD2CF /* NSColorWell-Extension.h */,
-				34867AC81B7B4804002AD2CF /* NSColorWell-Extension.m */,
 			);
 			name = Classes;
 			path = Sources;
@@ -236,6 +222,7 @@
 			isa = PBXGroup;
 			children = (
 				080E96DDFE201D6D7F000001 /* Classes */,
+				348F295D1B848951009AA3CF /* Extensions */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -287,6 +274,34 @@
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		348F295D1B848951009AA3CF /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				346DA5791B705F6800B51BD7 /* NSArray-Extension.h */,
+				346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */,
+				346DA57D1B70605100B51BD7 /* NSIndexSet-Extension.h */,
+				346DA57E1B70605100B51BD7 /* NSIndexSet-Extension.m */,
+				34CF33A210260315009A8CA6 /* NSDictionary-Extension.h */,
+				34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */,
+				34D41D1C17A6BE2C00997795 /* NSString-Extension.h */,
+				34D41D1D17A6BE2C00997795 /* NSString-Extension.m */,
+				7025539710353D33000D6D05 /* NSMutableString-Extension.h */,
+				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
+				3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */,
+				3408053C1A96E6B50067AA56 /* NSFileManager-Extension.m */,
+				348CA6DA1A957BC90070B079 /* NSDate-Extension.h */,
+				348CA6DB1A957BC90070B079 /* NSDate-Extension.m */,
+				348BBF941B795AB900EDE00C /* NSColor-Extension.h */,
+				348BBF951B795AB900EDE00C /* NSColor-Extension.m */,
+				34867AC71B7B4804002AD2CF /* NSColorWell-Extension.h */,
+				34867AC81B7B4804002AD2CF /* NSColorWell-Extension.m */,
+				348F295E1B848C11009AA3CF /* NSPipe-Extension.h */,
+				348F295F1B848C11009AA3CF /* NSPipe-Extension.m */,
+			);
+			name = Extensions;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -397,6 +412,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				348F29611B848C68009AA3CF /* NSPipe-Extension.m in Sources */,
 				349564B91ABFF3D1004B9C1D /* Utility.m in Sources */,
 				3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */,
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
@@ -421,6 +437,7 @@
 				34867AC91B7B4804002AD2CF /* NSColorWell-Extension.m in Sources */,
 				346DA57F1B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
+				348F29601B848C11009AA3CF /* NSPipe-Extension.m in Sources */,
 				34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */,
 				34821EC810282CF9008DEB1F /* ProfileController.m in Sources */,
 				349564B81ABFF3D1004B9C1D /* Utility.m in Sources */,

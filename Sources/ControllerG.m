@@ -8,8 +8,12 @@
 #import "NSFileManager-Extension.h"
 #import "NSColor-Extension.h"
 #import "NSColorWell-Extension.h"
+#import "NSPipe-Extension.h"
 #import "TeXTextView.h"
 #import "UtilityG.h"
+
+#define ENABLED @"enabled"
+#define DISABLED @"disabled"
 
 typedef enum {
     DIRECT = 0,
@@ -668,7 +672,7 @@ typedef enum {
     if (encoding) {
         EncodingTag tag = NONE;
         
-        if ([encoding isEqualToString:PTEX_ENCODING_UTF8] || [encoding isEqualToString:@"uptex"]) {
+        if ([encoding isEqualToString:PTEX_ENCODING_UTF8] || [encoding isEqualToString:@"uptex"]) { // "uptex" は旧バージョンからの設定引き継ぎ用
             tag = UTF8;
         } else if ([encoding isEqualToString:PTEX_ENCODING_SJIS]) {
             tag = SJIS;
@@ -892,19 +896,22 @@ typedef enum {
     [task launch];
     [task waitUntilExit];
     
-    NSString *stdOutStr = [NSString.alloc initWithData:pipe.fileHandleForReading.readDataToEndOfFile
-                                              encoding:NSUTF8StringEncoding];
-    NSMutableArray *searchPaths = [NSMutableArray arrayWithArray:[stdOutStr componentsSeparatedByString:@":"]];
+    NSMutableArray *searchPaths = [NSMutableArray arrayWithArray:[pipe.stringValue componentsSeparatedByString:@":"]];
 
-    [searchPaths addObjectsFromArray: @[@"/Applications/TeXLive/texlive/2015/bin/x86_64-darwin",
+    [searchPaths addObjectsFromArray: @[
+                                        @"/Applications/TeXLive/texlive/2016/bin/x86_64-darwin",
+                                        @"/Applications/TeXLive/texlive/2015/bin/x86_64-darwin",
                                         @"/Applications/TeXLive/texlive/2014/bin/x86_64-darwin",
                                         @"/Applications/TeXLive/texlive/2013/bin/x86_64-darwin",
+                                        @"/usr/local/texlive/2016/bin/x86_64-darwin",
                                         @"/usr/local/texlive/2015/bin/x86_64-darwin",
                                         @"/usr/local/texlive/2014/bin/x86_64-darwin",
                                         @"/usr/local/texlive/2013/bin/x86_64-darwin",
+                                        @"/opt/local/texlive/2016/bin/x86_64-darwin",
                                         @"/opt/local/texlive/2015/bin/x86_64-darwin",
                                         @"/opt/local/texlive/2014/bin/x86_64-darwin",
                                         @"/opt/local/texlive/2013/bin/x86_64-darwin",
+                                        @"/opt/texlive/2016/bin/x86_64-darwin",
                                         @"/opt/texlive/2015/bin/x86_64-darwin",
                                         @"/opt/texlive/2014/bin/x86_64-darwin",
                                         @"/opt/texlive/2013/bin/x86_64-darwin",
@@ -1199,9 +1206,11 @@ typedef enum {
 		gsPathTextField.stringValue = gsPath;
 		
         [self performSelectorOnMainThread:@selector(showInitMessage:)
-                               withObject:@{LatexPathKey: latexPath,
+                               withObject:@{
+                                            LatexPathKey: latexPath,
                                             DvipdfmxPathKey: dvipdfmxPath,
-                                            GsPathKey: gsPath}
+                                            GsPathKey: gsPath
+                                            }
                             waitUntilDone:NO];
 
         [self loadDefaultFont];
@@ -1977,29 +1986,29 @@ typedef enum {
     [output appendFormat:@"Bottom margin: %ld%@\n", [aProfile integerForKey:BottomMarginKey], unit];
     
     if ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"]) {
-        [output appendFormat:@"Transparent PNG/GIF/TIFF: %@\n", [aProfile boolForKey:TransparentKey] ? @"enabled" : @"disabled"];
+        [output appendFormat:@"Transparent PNG/GIF/TIFF: %@\n", [aProfile boolForKey:TransparentKey] ? ENABLED : DISABLED];
     }
     if ([ext isEqualToString:@"pdf"]) {
-        [output appendFormat:@"Text embedded PDF: %@\n", [aProfile boolForKey:GetOutlineKey] ? @"disabled" : @"enabled"];
+        [output appendFormat:@"Text embedded PDF: %@\n", [aProfile boolForKey:GetOutlineKey] ? DISABLED : ENABLED];
     }
     if ([ext isEqualToString:@"svg"]) {
-        [output appendFormat:@"Delete width and height attributes of SVG: %@\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? @"enabled" : @"disabled"];
+        [output appendFormat:@"Delete width and height attributes of SVG: %@\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? ENABLED : DISABLED];
     }
     
-    [output appendFormat:@"Ignore nonfatal errors: %@\n", [aProfile boolForKey:IgnoreErrorKey] ? @"enabled" : @"disabled"];
-    [output appendFormat:@"Substitute \\UTF{xxxx} for non-JIS X 0208 characters: %@\n", [aProfile boolForKey:UtfExportKey] ? @"enabled" : @"disabled"];
+    [output appendFormat:@"Ignore nonfatal errors: %@\n", [aProfile boolForKey:IgnoreErrorKey] ? ENABLED : DISABLED];
+    [output appendFormat:@"Substitute \\UTF{xxxx} for non-JIS X 0208 characters: %@\n", [aProfile boolForKey:UtfExportKey] ? ENABLED : DISABLED];
     [output appendFormat:@"Conversion mode: %@ priority mode\n", ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG) ? @"speed" : @"quality"];
-    [output appendFormat:@"Preview generated files: %@\n", [aProfile boolForKey:PreviewKey] ? @"enabled" : @"disabled"];
-    [output appendFormat:@"Delete temporary files: %@\n", [aProfile boolForKey:DeleteTmpFileKey] ? @"enabled" : @"disabled"];
-    [output appendFormat:@"Embed the source in generated files: %@\n", [aProfile boolForKey:EmbedSourceKey] ? @"enabled" : @"disabled"];
-    [output appendFormat:@"Copy generated files to the clipboard: %@\n", [aProfile boolForKey:CopyToClipboardKey] ? @"enabled" : @"disabled"];
+    [output appendFormat:@"Preview generated files: %@\n", [aProfile boolForKey:PreviewKey] ? ENABLED : DISABLED];
+    [output appendFormat:@"Delete temporary files: %@\n", [aProfile boolForKey:DeleteTmpFileKey] ? ENABLED : DISABLED];
+    [output appendFormat:@"Embed the source in generated files: %@\n", [aProfile boolForKey:EmbedSourceKey] ? ENABLED : DISABLED];
+    [output appendFormat:@"Copy generated files to the clipboard: %@\n", [aProfile boolForKey:CopyToClipboardKey] ? ENABLED : DISABLED];
     
     BOOL embedInIllustrator = [aProfile boolForKey:EmbedInIllustratorKey];
     
     [output appendFormat:@"Embed generated files in Illustrator: "];
     if (embedInIllustrator) {
         [output appendString:@"enabled\n"];
-        [output appendFormat:@"Ungroup after embedding: %@\n", [aProfile boolForKey:UngroupKey] ? @"enabled" : @"disabled"];
+        [output appendFormat:@"Ungroup after embedding: %@\n", [aProfile boolForKey:UngroupKey] ? ENABLED : DISABLED];
     } else {
         [output appendString:@"disabled\n"];
     }

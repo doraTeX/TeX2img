@@ -150,10 +150,12 @@
     NSUndoManager *myManager = self.undoManager;
     [myManager registerUndoWithTarget:self
                              selector:@selector(undoSpecial:)
-                               object:@{@"oldString": oldString,
+                               object:@{
+                                        @"oldString": oldString,
                                         @"oldLocation": @(oldLocation),
                                         @"oldLength": @(newLength),
-                                        @"undoKey": key}];
+                                        @"undoKey": key
+                                        }];
     myManager.actionName = key;
 }
 
