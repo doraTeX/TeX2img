@@ -1598,7 +1598,7 @@ DQ
                                                 <action selector="colorSettingChanged:" target="450" id="xAf-Hd-6EX"/>
                                             </connections>
                                         </colorWell>
-                                        <button id="v1y-4P-OKt">
+                                        <button toolTip="\foo@bar のような並びを1つの制御綴として着色します。" id="v1y-4P-OKt">
                                             <rect key="frame" x="250" y="167" width="134" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="\makeatletter 有効" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Pqe-N5-87f">

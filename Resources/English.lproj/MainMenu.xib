@@ -1688,7 +1688,7 @@ DQ
                                                 <action selector="colorSettingChanged:" target="450" id="sbS-Np-g3C"/>
                                             </connections>
                                         </colorWell>
-                                        <button id="e5G-Bl-d2N">
+                                        <button toolTip="Colorize \foo@bar as one control sequence." id="e5G-Bl-d2N">
                                             <rect key="frame" x="218" y="172" width="150" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Enable \makeatletter" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="l1X-wb-Mcw">
