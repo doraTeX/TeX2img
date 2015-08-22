@@ -988,6 +988,7 @@
 {
 	// 最初にプログラムの存在確認と出力ファイル形式確認
 	if (![controller latexExistsAtPath:latexPath.programPath dvipdfmxPath:dvipdfmxPath.programPath gsPath:gsPath.programPath]) {
+        [controller generationDidFinish];
 		return NO;
 	}
 	
@@ -995,6 +996,7 @@
 
     if (![TargetExtensionsArray containsObject:extension]) {
 		[controller showExtensionError];
+        [controller generationDidFinish];
 		return NO;
 	}
     
