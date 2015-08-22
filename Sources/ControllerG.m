@@ -269,8 +269,7 @@ typedef enum {
     
     runningTask = NSTask.new;
     outputPipe = NSPipe.pipe;
-    NSFileHandle *handle = outputPipe.fileHandleForReading;
-    [handle readInBackgroundAndNotify];
+    [outputPipe.fileHandleForReading readInBackgroundAndNotify];
     
     runningTask.currentDirectoryPath = path;
     runningTask.launchPath = BASH_PATH;
@@ -1365,10 +1364,17 @@ typedef enum {
 
 - (void)readOutputData:(NSNotification*)aNotification
 {
-    NSData *data = [aNotification.userInfo valueForKey:NSFileHandleNotificationDataItem];
-    NSString *string = [NSString.alloc initWithData:data encoding:NSUTF8StringEncoding];
-    
-    [self appendOutputAndScroll:string quiet:NO];
+    NSData *data;
+    @try {
+        while ((data = outputPipe.fileHandleForReading.availableData) && (data.length > 0)) {
+            [self appendOutputAndScroll:[NSString.alloc initWithData:data encoding:NSUTF8StringEncoding] quiet:NO];
+        }
+    }
+    @catch (NSException *exception) {
+    }
+    @finally {
+    }
+
     
     [outputPipe.fileHandleForReading readInBackgroundAndNotify];
 }
