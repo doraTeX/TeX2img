@@ -27,7 +27,7 @@
 @property BOOL guessCompilation;
 @property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
 @property BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
-@property id<OutputController> controller;
+@property NSObject<OutputController> *controller;
 @property NSFileManager* fileManager;
 @property NSString* tempdir;
 @property pid_t pid;
