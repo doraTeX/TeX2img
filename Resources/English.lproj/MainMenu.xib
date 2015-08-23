@@ -334,10 +334,16 @@
                                                 <action selector="normalizeSelectedString:" target="-1" id="NdJ-dO-6u6"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="NFKD" tag="5" id="5fJ-IW-IYs">
+                                        <menuItem title="NFKD" tag="6" id="5fJ-IW-IYs">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="normalizeSelectedString:" target="-1" id="x1x-9b-kyA"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="NFKC_Casefold" tag="7" id="su5-TV-TCh">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="normalizeSelectedString:" target="-1" id="Bxs-VH-g0o"/>
                                             </connections>
                                         </menuItem>
                                     </items>

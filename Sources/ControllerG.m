@@ -1373,10 +1373,8 @@ typedef enum {
     @catch (NSException *exception) {
     }
     @finally {
+        [outputPipe.fileHandleForReading readInBackgroundAndNotify];
     }
-
-    
-    [outputPipe.fileHandleForReading readInBackgroundAndNotify];
 }
 
 

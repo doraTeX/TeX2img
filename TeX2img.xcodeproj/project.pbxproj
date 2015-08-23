@@ -18,6 +18,8 @@
 		346DA57C1B705F6800B51BD7 /* NSArray-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */; };
 		346DA57F1B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57E1B70605100B51BD7 /* NSIndexSet-Extension.m */; };
 		346DA5801B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57E1B70605100B51BD7 /* NSIndexSet-Extension.m */; };
+		347314FB1B89CFDC00F285A3 /* NSString-Normalization.m in Sources */ = {isa = PBXBuildFile; fileRef = 347314FA1B89CFDC00F285A3 /* NSString-Normalization.m */; };
+		347315A81B89D2E000F285A3 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 347315A71B89D2E000F285A3 /* libicucore.dylib */; };
 		34821EC810282CF9008DEB1F /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34821EC710282CF9008DEB1F /* ProfileController.m */; };
 		348507F8125AC21E0058A26B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; };
 		34850828125AC9E30058A26B /* Sparkle.framework in フレームワークをコピー */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -92,6 +94,9 @@
 		346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Extension.m"; sourceTree = "<group>"; };
 		346DA57D1B70605100B51BD7 /* NSIndexSet-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet-Extension.h"; sourceTree = "<group>"; };
 		346DA57E1B70605100B51BD7 /* NSIndexSet-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet-Extension.m"; sourceTree = "<group>"; };
+		347314F91B89CFDC00F285A3 /* NSString-Normalization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Normalization.h"; sourceTree = "<group>"; };
+		347314FA1B89CFDC00F285A3 /* NSString-Normalization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Normalization.m"; sourceTree = "<group>"; };
+		347315A71B89D2E000F285A3 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		34821EC610282CF9008DEB1F /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
 		34821EC710282CF9008DEB1F /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
 		348507F7125AC21E0058A26B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
@@ -125,6 +130,25 @@
 		34D2A63F1AB9BC260040B4A5 /* UtilityC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityC.h; sourceTree = "<group>"; };
 		34D41D1C17A6BE2C00997795 /* NSString-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Extension.h"; sourceTree = "<group>"; };
 		34D41D1D17A6BE2C00997795 /* NSString-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Extension.m"; sourceTree = "<group>"; };
+		34ECE4921B8AA50F00936B9C /* unorm2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = unorm2.h; path = icu/unorm2.h; sourceTree = "<group>"; };
+		34ECE4931B8AA50F00936B9C /* ustring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ustring.h; path = icu/ustring.h; sourceTree = "<group>"; };
+		34ECE4941B8AA52B00936B9C /* utypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utypes.h; path = icu/utypes.h; sourceTree = "<group>"; };
+		34ECE4951B8AA54500936B9C /* umachine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = umachine.h; path = icu/umachine.h; sourceTree = "<group>"; };
+		34ECE4981B8AA57300936B9C /* uconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uconfig.h; path = icu/uconfig.h; sourceTree = "<group>"; };
+		34ECE4991B8AA58800936B9C /* uvernum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uvernum.h; path = icu/uvernum.h; sourceTree = "<group>"; };
+		34ECE49A1B8AA5A600936B9C /* urename.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = urename.h; path = icu/urename.h; sourceTree = "<group>"; };
+		34ECE49B1B8AA5B700936B9C /* uversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uversion.h; path = icu/uversion.h; sourceTree = "<group>"; };
+		34ECE49C1B8AA5CF00936B9C /* utf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utf.h; path = icu/utf.h; sourceTree = "<group>"; };
+		34ECE49D1B8AA5E000936B9C /* utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utf8.h; path = icu/utf8.h; sourceTree = "<group>"; };
+		34ECE49E1B8AA5F300936B9C /* utf16.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utf16.h; path = icu/utf16.h; sourceTree = "<group>"; };
+		34ECE49F1B8AA60600936B9C /* utf_old.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utf_old.h; path = icu/utf_old.h; sourceTree = "<group>"; };
+		34ECE4A01B8AA61800936B9C /* localpointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = localpointer.h; path = icu/localpointer.h; sourceTree = "<group>"; };
+		34ECE4A11B8AA62B00936B9C /* uset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uset.h; path = icu/uset.h; sourceTree = "<group>"; };
+		34ECE4A21B8AA63E00936B9C /* uchar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uchar.h; path = icu/uchar.h; sourceTree = "<group>"; };
+		34ECE4A31B8AA64C00936B9C /* putil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = putil.h; path = icu/putil.h; sourceTree = "<group>"; };
+		34ECE4A41B8AA65F00936B9C /* uiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uiter.h; path = icu/uiter.h; sourceTree = "<group>"; };
+		34ECE4A51B8AA70300936B9C /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = platform.h; path = icu/platform.h; sourceTree = "<group>"; };
+		34ECE4A61B8AA70300936B9C /* ptypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ptypes.h; path = icu/ptypes.h; sourceTree = "<group>"; };
 		70254EEE10353485000D6D05 /* TeXTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeXTextView.h; sourceTree = "<group>"; };
 		70254EEF10353485000D6D05 /* TeXTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeXTextView.m; sourceTree = "<group>"; };
 		7025539710353D33000D6D05 /* NSMutableString-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableString-Extension.h"; sourceTree = "<group>"; };
@@ -156,6 +180,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				347315A81B89D2E000F285A3 /* libicucore.dylib in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				7087BD5E0F0E3CD600A06CF5 /* Quartz.framework in Frameworks */,
 				348507F8125AC21E0058A26B /* Sparkle.framework in Frameworks */,
@@ -224,6 +249,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				348F295D1B848951009AA3CF /* Extensions */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				347314F41B89CD9500F285A3 /* ICU Headers */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
@@ -270,10 +296,37 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				347315A71B89D2E000F285A3 /* libicucore.dylib */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		347314F41B89CD9500F285A3 /* ICU Headers */ = {
+			isa = PBXGroup;
+			children = (
+				34ECE4A01B8AA61800936B9C /* localpointer.h */,
+				34ECE4A51B8AA70300936B9C /* platform.h */,
+				34ECE4A61B8AA70300936B9C /* ptypes.h */,
+				34ECE4A31B8AA64C00936B9C /* putil.h */,
+				34ECE4A21B8AA63E00936B9C /* uchar.h */,
+				34ECE4981B8AA57300936B9C /* uconfig.h */,
+				34ECE4A41B8AA65F00936B9C /* uiter.h */,
+				34ECE4951B8AA54500936B9C /* umachine.h */,
+				34ECE4921B8AA50F00936B9C /* unorm2.h */,
+				34ECE49A1B8AA5A600936B9C /* urename.h */,
+				34ECE4A11B8AA62B00936B9C /* uset.h */,
+				34ECE4931B8AA50F00936B9C /* ustring.h */,
+				34ECE49F1B8AA60600936B9C /* utf_old.h */,
+				34ECE49C1B8AA5CF00936B9C /* utf.h */,
+				34ECE49D1B8AA5E000936B9C /* utf8.h */,
+				34ECE49E1B8AA5F300936B9C /* utf16.h */,
+				34ECE4941B8AA52B00936B9C /* utypes.h */,
+				34ECE4991B8AA58800936B9C /* uvernum.h */,
+				34ECE49B1B8AA5B700936B9C /* uversion.h */,
+			);
+			name = "ICU Headers";
 			sourceTree = "<group>";
 		};
 		348F295D1B848951009AA3CF /* Extensions */ = {
@@ -287,6 +340,8 @@
 				34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */,
 				34D41D1C17A6BE2C00997795 /* NSString-Extension.h */,
 				34D41D1D17A6BE2C00997795 /* NSString-Extension.m */,
+				347314F91B89CFDC00F285A3 /* NSString-Normalization.h */,
+				347314FA1B89CFDC00F285A3 /* NSString-Normalization.m */,
 				7025539710353D33000D6D05 /* NSMutableString-Extension.h */,
 				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
 				3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */,
@@ -436,6 +491,7 @@
 				348CA6DC1A957BC90070B079 /* NSDate-Extension.m in Sources */,
 				34867AC91B7B4804002AD2CF /* NSColorWell-Extension.m in Sources */,
 				346DA57F1B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */,
+				347314FB1B89CFDC00F285A3 /* NSString-Normalization.m in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
 				348F29601B848C11009AA3CF /* NSPipe-Extension.m in Sources */,
 				34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */,
@@ -552,6 +608,8 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CFLAGS = "-DU_DISABLE_RENAMING=1";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = TeX2img;
 			};
 			name = Debug;
@@ -575,6 +633,8 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CFLAGS = "-DU_DISABLE_RENAMING=1";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = TeX2img;
 			};
 			name = Release;

@@ -1,6 +1,7 @@
 #import "TeXTextView.h"
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
+#import "NSString-Normalization.h"
 #import "NSMutableString-Extension.h"
 #import "MyLayoutManager.h"
 #import "MyGlyphPopoverController.h"
@@ -17,6 +18,7 @@
 #define ModifiedNFDTag 4
 #define NFKCTag 5
 #define NFKDTag 6
+#define NFKC_CFTag 7
 
 @implementation TeXTextView
 - (void)awakeFromNib
@@ -621,6 +623,10 @@
         case NFKDTag:
             newString = selectedString.decomposedStringWithCompatibilityMapping;
             undoKey = @"NFKD";
+            break;
+        case NFKC_CFTag:
+            newString = selectedString.normalizedStringWithNFKC_CF;
+            undoKey = @"NFKC_Casefold";
             break;
         default:
             newString = selectedString;
