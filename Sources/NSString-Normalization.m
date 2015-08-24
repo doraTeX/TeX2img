@@ -44,10 +44,10 @@
 {
     UErrorCode e = U_ZERO_ERROR;
 
-    const UNormalizer2 *normalizer = unorm2_getNFKCCasefoldInstance(&e);
+    const UNormalizer2 *normalizer = unorm2_getInstance(NULL, "nfkc_cf", UNORM2_COMPOSE, &e);
     
     if (U_FAILURE(e)) {
-        NSLog(@"unorm2_getNFKCCasefoldInstance failed - %s", u_errorName(e));
+        NSLog(@"unorm2_getInstance failed - %s", u_errorName(e));
         return self;
     }
     
