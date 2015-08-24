@@ -89,8 +89,8 @@ NSMutableString *commandCompletionList;
 #define ControllerKey @"controller"
 #define TeX2imgVersionKey @"TeX2imgVersion"
 
-#define PXUNITTAG 1
-#define BPUNITTAG 2
+#define PX_UNIT_TAG 1
+#define BP_UNIT_TAG 2
 #define QUALITY_PRIORITY_TAG 1
 #define SPEED_PRIORITY_TAG 2
 #define DIRECT_INPUT_TAG 0
@@ -111,7 +111,7 @@ NSMutableString *commandCompletionList;
 #define PTEX_ENCODING_JIS @"jis"
 #define PTEX_ENCODING_EUC @"euc"
 
-#define EAKey "com.loveinequality.TeX2img"
+#define EA_Key "com.loveinequality.TeX2img"
 
 #define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf"
 

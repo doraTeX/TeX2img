@@ -15,7 +15,7 @@
 
 
 @implementation NSString (Normalization)
-- (NSString*)normalizedStringWithModifiedNFC
+- (NSString*)normalizedStringConsideringCompositionExclusionsWithBaseNormalizationSelector:(SEL)aSelector
 {
     NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:COMPOSITION_EXCLUSION_REGEX
                                                                             options:0
@@ -27,30 +27,24 @@
                           usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
                               [result appendFormat:@"%@%@%@",
                                [self substringWithRange:[match rangeAtIndex:1]],
-                               [self substringWithRange:[match rangeAtIndex:2]].precomposedStringWithCanonicalMapping,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                               (NSString*)[[self substringWithRange:[match rangeAtIndex:2]] performSelector:aSelector],
+#pragma clang diagnostic pop
                                [self substringWithRange:[match rangeAtIndex:3]]
                                ];
                           }];
     return result;
 }
 
+- (NSString*)normalizedStringWithModifiedNFC
+{
+    return [self normalizedStringConsideringCompositionExclusionsWithBaseNormalizationSelector:@selector(precomposedStringWithCanonicalMapping)];
+}
+
 - (NSString*)normalizedStringWithModifiedNFD
 {
-    NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:COMPOSITION_EXCLUSION_REGEX
-                                                                            options:0
-                                                                              error:nil];
-    NSMutableString *result = NSMutableString.string;
-    [regexp enumerateMatchesInString:self
-                             options:0
-                               range:NSMakeRange(0, self.length)
-                          usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
-                              [result appendFormat:@"%@%@%@",
-                               [self substringWithRange:[match rangeAtIndex:1]],
-                               [self substringWithRange:[match rangeAtIndex:2]].decomposedStringWithCanonicalMapping,
-                               [self substringWithRange:[match rangeAtIndex:3]]
-                               ];
-                          }];
-    return result;
+    return [self normalizedStringConsideringCompositionExclusionsWithBaseNormalizationSelector:@selector(decomposedStringWithCanonicalMapping)];
 }
 
 

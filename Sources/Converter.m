@@ -110,7 +110,7 @@
     utfExportFlag = [aProfile boolForKey:UtfExportKey];
     quietFlag = [aProfile boolForKey:QuietKey];
     controller = aProfile[ControllerKey];
-    useBP = ([aProfile integerForKey:UnitKey] == BPUNITTAG);
+    useBP = ([aProfile integerForKey:UnitKey] == BP_UNIT_TAG);
     speedPriorityMode = ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG);
     embedSource = [aProfile boolForKey:EmbedSourceKey];
     additionalInputPath = nil;
@@ -776,19 +776,17 @@
     
     const char *val = contents.UTF8String;
     
-    setxattr(target, EAKey, val, strlen(val), 0, 0);
+    setxattr(target, EA_Key, val, strlen(val), 0, 0);
 }
 
 - (NSDate*)fileModificationDateAtPath:(NSString*)filePath
 {
-    NSError *error = nil;
+    NSDictionary *attributes = [fileManager attributesOfItemAtPath:filePath error:nil];
     
-    NSDictionary *attributes = [fileManager attributesOfItemAtPath:filePath error:&error];
-    
-    if (error != nil) {
-        return nil;
-    } else {
+    if (attributes) {
         return (NSDate*)[attributes objectForKey:NSFileModificationDate];
+    } else {
+        return nil;
     }
 }
 

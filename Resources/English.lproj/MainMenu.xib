@@ -927,10 +927,10 @@ DQ
                                                         </textFieldCell>
                                                     </textField>
                                                     <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="GVy-l5-MNs">
-                                                        <rect key="frame" x="83" y="14" width="106" height="18"/>
+                                                        <rect key="frame" x="83" y="14" width="100" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="51" height="18"/>
+                                                        <size key="cellSize" width="48" height="18"/>
                                                         <size key="intercellSpacing" width="4" height="2"/>
                                                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="Ldy-wX-e62">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>

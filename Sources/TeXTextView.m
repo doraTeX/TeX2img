@@ -12,13 +12,13 @@
 #define ShiftRightTag 3
 #define ShiftLeftTag 4
 
-#define NFCTag 1
-#define ModifiedNFCTag 2
-#define NFDTag 3
-#define ModifiedNFDTag 4
-#define NFKCTag 5
-#define NFKDTag 6
-#define NFKC_CFTag 7
+#define NFC_Tag 1
+#define Modified_NFC_Tag 2
+#define NFD_Tag 3
+#define Modified_NFD_Tag 4
+#define NFKC_Tag 5
+#define NFKD_Tag 6
+#define NFKC_CF_Tag 7
 
 @implementation TeXTextView
 - (void)awakeFromNib
@@ -600,31 +600,31 @@
     NSString *undoKey;
     
     switch ([sender tag]) {
-        case NFCTag:
+        case NFC_Tag:
             newString = selectedString.precomposedStringWithCanonicalMapping;
             undoKey = @"NFC";
             break;
-        case ModifiedNFCTag:
+        case Modified_NFC_Tag:
             newString = selectedString.normalizedStringWithModifiedNFC;
             undoKey = @"Modified NFC";
             break;
-        case NFDTag:
+        case NFD_Tag:
             newString = selectedString.decomposedStringWithCanonicalMapping;
             undoKey = @"NFD";
             break;
-        case ModifiedNFDTag:
+        case Modified_NFD_Tag:
             newString = selectedString.normalizedStringWithModifiedNFD;
             undoKey = @"Modified NFD";
             break;
-        case NFKCTag:
+        case NFKC_Tag:
             newString = selectedString.precomposedStringWithCompatibilityMapping;
             undoKey = @"NFKC";
             break;
-        case NFKDTag:
+        case NFKD_Tag:
             newString = selectedString.decomposedStringWithCompatibilityMapping;
             undoKey = @"NFKD";
             break;
-        case NFKC_CFTag:
+        case NFKC_CF_Tag:
             newString = selectedString.normalizedStringWithNFKC_CF;
             undoKey = @"NFKC_Casefold";
             break;
