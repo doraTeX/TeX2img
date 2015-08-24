@@ -340,7 +340,7 @@
                                                 <action selector="normalizeSelectedString:" target="-1" id="x1x-9b-kyA"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="NFKC_Casefold" tag="7" id="su5-TV-TCh">
+                                        <menuItem title="NFKC Casefold" tag="7" id="su5-TV-TCh">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="normalizeSelectedString:" target="-1" id="Bxs-VH-g0o"/>

@@ -42,12 +42,12 @@
 
 - (NSString*)normalizedStringWithNFKC_CF
 {
-    UErrorCode e = U_ZERO_ERROR;
+    UErrorCode error = U_ZERO_ERROR;
 
-    const UNormalizer2 *normalizer = unorm2_getInstance(NULL, "nfkc_cf", UNORM2_COMPOSE, &e);
+    const UNormalizer2 *normalizer = unorm2_getInstance(NULL, "nfkc_cf", UNORM2_COMPOSE, &error);
     
-    if (U_FAILURE(e)) {
-        NSLog(@"unorm2_getInstance failed - %s", u_errorName(e));
+    if (U_FAILURE(error)) {
+        NSLog(@"unorm2_getInstance failed - %s", u_errorName(error));
         return self;
     }
     
@@ -55,30 +55,30 @@
     unsigned long length = strlen(utf8_src) * FACTOR;
     
     UChar *utf16_src = (UChar*)malloc(sizeof(UChar) * length);
-    u_strFromUTF8(utf16_src, length, NULL, utf8_src, -1, &e);
+    u_strFromUTF8(utf16_src, length, NULL, utf8_src, -1, &error);
 
-    if (U_FAILURE(e)) {
-        NSLog(@"u_strFromUTF8 failed - %s", u_errorName(e));
+    if (U_FAILURE(error)) {
+        NSLog(@"u_strFromUTF8 failed - %s", u_errorName(error));
         free(utf16_src);
         return self;
     }
     
     UChar *utf16_dest = (UChar*)malloc(sizeof(UChar) * length);
-    unorm2_normalize(normalizer, utf16_src, -1, utf16_dest, length, &e);
+    unorm2_normalize(normalizer, utf16_src, -1, utf16_dest, length, &error);
     free(utf16_src);
 
-    if (U_FAILURE(e)) {
-        NSLog(@"unorm2_normalize failed - %s", u_errorName(e));
+    if (U_FAILURE(error)) {
+        NSLog(@"unorm2_normalize failed - %s", u_errorName(error));
         free(utf16_dest);
         return self;
     }
 
     char *utf8_dest = (char*)malloc(sizeof(char) * length);
-    u_strToUTF8(utf8_dest, length, NULL, utf16_dest, -1, &e);
+    u_strToUTF8(utf8_dest, length, NULL, utf16_dest, -1, &error);
     free(utf16_dest);
 
-    if (U_FAILURE(e)) {
-        NSLog(@"u_strToUTF8 failed - %s", u_errorName(e));
+    if (U_FAILURE(error)) {
+        NSLog(@"u_strToUTF8 failed - %s", u_errorName(error));
         free(utf8_dest);
         return self;
     }

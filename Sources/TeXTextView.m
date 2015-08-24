@@ -636,7 +636,7 @@
             break;
         case NFKC_CF_Tag:
             newString = selectedString.normalizedStringWithNFKC_CF;
-            undoKey = @"NFKC_Casefold";
+            undoKey = @"NFKC Casefold";
             break;
         default:
             newString = selectedString;
