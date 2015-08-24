@@ -71,6 +71,16 @@
     
 }
 
+- (BOOL)validateMenuItem:(NSMenuItem*)menuItem
+{
+    if ((menuItem.action == @selector(normalizeSelectedString:)) ||
+        (menuItem.action == @selector(showCharacterInfo:))){
+        return (self.selectedRange.length > 0);
+    }
+    
+    return [super validateMenuItem:menuItem];
+}
+
 - (BOOL)isValidTeXCommandChar:(unichar)c
 {
     if ((c >= 'A') && (c <= 'Z')) {

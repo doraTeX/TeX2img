@@ -90,7 +90,7 @@
                                     <action selector="generate:" target="450" id="469"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Abort Generation" keyEquivalent="." id="Qig-9P-21A">
+                            <menuItem title="Abort Generation" enabled="NO" keyEquivalent="." id="Qig-9P-21A">
                                 <connections>
                                     <action selector="abortCompilation:" target="450" id="TC9-Qz-FU5"/>
                                 </connections>
@@ -581,6 +581,7 @@ DQ
         <customObject id="420" customClass="NSFontManager"/>
         <customObject id="450" customClass="ControllerG">
             <connections>
+                <outlet property="abortMenuItem" destination="Qig-9P-21A" id="rd7-S5-Bep"/>
                 <outlet property="autoCompleteMenuItem" destination="821" id="823"/>
                 <outlet property="backgroundColorWell" destination="9ev-FH-pU2" id="g9U-5N-q9k"/>
                 <outlet property="beepCheckBox" destination="S8e-Q4-bYm" id="7DT-5Z-H81"/>

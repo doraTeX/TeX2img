@@ -90,7 +90,7 @@
                                     <action selector="generate:" target="450" id="469"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="画像生成を中断" keyEquivalent="." id="tC1-Xo-mzW">
+                            <menuItem title="画像生成を中断" enabled="NO" keyEquivalent="." id="tC1-Xo-mzW">
                                 <connections>
                                     <action selector="abortCompilation:" target="450" id="br6-1k-cVX"/>
                                 </connections>
@@ -1875,6 +1875,7 @@ DQ
         </customView>
         <customObject id="450" customClass="ControllerG">
             <connections>
+                <outlet property="abortMenuItem" destination="tC1-Xo-mzW" id="xdP-eh-ocO"/>
                 <outlet property="autoCompleteMenuItem" destination="844" id="846"/>
                 <outlet property="backgroundColorWell" destination="eYk-0N-5fl" id="glu-Np-Ift"/>
                 <outlet property="beepCheckBox" destination="yFC-gL-sJa" id="qVA-sL-RUz"/>

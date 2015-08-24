@@ -48,6 +48,7 @@ typedef enum {
 @property IBOutlet NSMenuItem *outputDrawerMenuItem;
 @property IBOutlet NSMenuItem *preambleWindowMenuItem;
 @property IBOutlet NSMenuItem *generateMenuItem;
+@property IBOutlet NSMenuItem *abortMenuItem;
 @property IBOutlet NSMenuItem *autoCompleteMenuItem;
 
 @property IBOutlet NSButton *flashInMovingCheckBox;
@@ -149,6 +150,7 @@ typedef enum {
 @synthesize outputDrawerMenuItem;
 @synthesize preambleWindowMenuItem;
 @synthesize generateMenuItem;
+@synthesize abortMenuItem;
 @synthesize flashInMovingCheckBox;
 @synthesize highlightContentCheckBox;
 @synthesize beepCheckBox;
@@ -1931,6 +1933,7 @@ typedef enum {
     generateButton.title = localizedString(@"Generate");
     generateButton.action = @selector(generate:);
     generateMenuItem.enabled = YES;
+    abortMenuItem.enabled = NO;
 }
 
 - (void)generationDidFinishOnMainThread
@@ -2063,6 +2066,7 @@ typedef enum {
     generateButton.title = localizedString(@"Abort");
     generateButton.action = @selector(abortCompilation:);
 	generateMenuItem.enabled = NO;
+    abortMenuItem.enabled = YES;
     
     [self generateImage];
 }
