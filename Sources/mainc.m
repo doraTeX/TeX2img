@@ -9,7 +9,7 @@
 #import "NSDictionary-Extension.h"
 
 #define OPTION_NUM 38
-#define VERSION "1.9.9b2"
+#define VERSION "1.9.9b3"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -126,7 +126,7 @@ void printCurrentStatus(NSString *inputFilePath, NSDictionary *aProfile)
     printf("Resolution level: %f\n", [aProfile floatForKey:ResolutionKey]);
     
     NSString *ext = outputFilePath.pathExtension;
-    NSString *unit = (([aProfile integerForKey:UnitKey] == PXUNITTAG) &&
+    NSString *unit = (([aProfile integerForKey:UnitKey] == PX_UNIT_TAG) &&
                       ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"])) ?
                         @"px" : @"bp";
 
@@ -181,7 +181,7 @@ int main (int argc, char *argv[]) {
         NSString *compiler = @"platex";
         NSString *dvipdfmx = @"dvipdfmx";
         NSString *gs       = @"gs";
-        NSNumber *unitTag = @(PXUNITTAG);
+        NSNumber *unitTag = @(PX_UNIT_TAG);
         
         // getopt_long を使った，長いオプション対応のオプション解析
         struct option *options;
@@ -533,9 +533,9 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         NSString *unitString = @(optarg);
                         if ([unitString isEqualToString:@"px"]) {
-                            unitTag = @(PXUNITTAG);
+                            unitTag = @(PX_UNIT_TAG);
                         } else if ([unitString isEqualToString:@"bp"]) {
-                            unitTag = @(BPUNITTAG);
+                            unitTag = @(BP_UNIT_TAG);
                         } else {
                             printf("--unit is wrong.\n");
                             usage();
