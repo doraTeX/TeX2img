@@ -369,6 +369,7 @@
 			buildPhases = (
 				705DC79E0F1197DC0052AFA5 /* Sources */,
 				705DC79F0F1197DC0052AFA5 /* Frameworks */,
+				34A517301B8CBB790028FA5F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -459,7 +460,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/ruby;
-			shellScript = "require 'pathname'\nVER = `cat Resources/Info.plist |tr -d '\\012'| perl -e \"while(<>){if (\\\\$_ =~ /CFBundleVersion\\\\<\\\\/key\\\\>\\\\t\\\\<string\\\\>(.+?)\\<\\\\/string\\\\>/) {print \\\\$1;}}\"`\nBUILD_DIR = ENV['BUILD_DIR']\nCONFIGURATION = ENV['CONFIGURATION']\nPRODUCT_NAME = ENV['PRODUCT_NAME']\nDMG = \"#{BUILD_DIR}/#{CONFIGURATION}/#{PRODUCT_NAME}_#{VER}.dmg\"\nAPPCAST = Pathname.pwd.parent.join(\"#{PRODUCT_NAME}_Appcast\").to_s\nOUTPUT = \"#{BUILD_DIR}/#{CONFIGURATION}/deploy.sh\"\n\nscript = <<EOS\nAPPCAST=#{APPCAST}\nif [ -e \"#{DMG}\" ]; then rm \"#{DMG}\"; fi\nif [ -e ${APPCAST}2.xml ]; then rm ${APPCAST}2.xml; fi\nif [ -e ${APPCAST}3.xml ]; then rm ${APPCAST}3.xml; fi\nif [ -e ${APPCAST}4.xml ]; then rm ${APPCAST}4.xml; fi\n\nhdiutil create -ov -srcfolder \"#{BUILD_DIR}/#{CONFIGURATION}/#{PRODUCT_NAME}.app\" -fs HFS+ -format UDZO -imagekey zlib-level=9 -volname \"#{PRODUCT_NAME}\" \"#{DMG}\"\n\nSIGNATURE=$(openssl dgst -sha1 -binary < \"#{DMG}\" | openssl dgst -dss1 -sign #{Pathname.pwd.parent.parent.join(\"設定/証明書/dsa_priv.pem\").to_s} | openssl enc -base64)\nsed -e \"s|dsaSignature=\\\\\".*\\\\\"|dsaSignature=\\\\\"$SIGNATURE\\\\\"|\" ${APPCAST}.xml > ${APPCAST}2.xml\n\n\nLENGTH=$(ls -l \"#{DMG}\" | sed -e 's/  */ /g' | cut -d ' ' -f5  | tr -d '\\012')\nsed -e \"s/length=\\\\\".*\\\\\"/length=\\\\\"$LENGTH\\\\\"/\"  ${APPCAST}2.xml > ${APPCAST}3.xml\n\nsed -e \"s/#{PRODUCT_NAME}_.*\\\\.dmg/#{PRODUCT_NAME}_#{VER}.dmg/\"  ${APPCAST}3.xml > ${APPCAST}4.xml\n\nmv ${APPCAST}4.xml ${APPCAST}.xml\nrm ${APPCAST}2.xml ${APPCAST}3.xml\nEOS\n\nopen(OUTPUT, \"w\"){|f| f.write script}\nsystem(\"chmod +x #{OUTPUT}\")";
+			shellScript = "require 'pathname'\nVER = `cat Resources/Info.plist |tr -d '\\012'| perl -e \"while(<>){if (\\\\$_ =~ /CFBundleVersion\\\\<\\\\/key\\\\>\\\\t\\\\<string\\\\>(.+?)\\<\\\\/string\\\\>/) {print \\\\$1;}}\"`\nBUILT_PRODUCTS_DIR = ENV['BUILT_PRODUCTS_DIR']\nPRODUCT_NAME = ENV['PRODUCT_NAME']\nDMG = \"#{BUILT_PRODUCTS_DIR}/#{PRODUCT_NAME}_#{VER}.dmg\"\nAPPCAST = Pathname.pwd.parent.join(\"#{PRODUCT_NAME}_Appcast\").to_s\nOUTPUT = \"#{BUILT_PRODUCTS_DIR}/deploy.sh\"\n\nscript = <<EOS\nAPPCAST=#{APPCAST}\nif [ -e \"#{DMG}\" ]; then rm \"#{DMG}\"; fi\nif [ -e ${APPCAST}2.xml ]; then rm ${APPCAST}2.xml; fi\nif [ -e ${APPCAST}3.xml ]; then rm ${APPCAST}3.xml; fi\nif [ -e ${APPCAST}4.xml ]; then rm ${APPCAST}4.xml; fi\nif [ -e ${APPCAST}5.xml ]; then rm ${APPCAST}5.xml; fi\n\nhdiutil create -ov -srcfolder \"#{BUILT_PRODUCTS_DIR}/#{PRODUCT_NAME}.app\" -fs HFS+ -format UDZO -imagekey zlib-level=9 -volname \"#{PRODUCT_NAME}\" \"#{DMG}\"\n\nSIGNATURE=$(openssl dgst -sha1 -binary < \"#{DMG}\" | openssl dgst -dss1 -sign #{Pathname.pwd.parent.parent.join(\"設定/証明書/dsa_priv.pem\").to_s} | openssl enc -base64)\nsed -e \"s|dsaSignature=\\\\\".*\\\\\"|dsaSignature=\\\\\"$SIGNATURE\\\\\"|\" ${APPCAST}.xml > ${APPCAST}2.xml\n\n\nLENGTH=$(ls -l \"#{DMG}\" | sed -e 's/  */ /g' | cut -d ' ' -f5  | tr -d '\\012')\nsed -e \"s/length=\\\\\".*\\\\\"/length=\\\\\"$LENGTH\\\\\"/\"  ${APPCAST}2.xml > ${APPCAST}3.xml\nsed -e \"s/#{PRODUCT_NAME}_.*\\\\.dmg/#{PRODUCT_NAME}_#{VER}.dmg/\"  ${APPCAST}3.xml > ${APPCAST}4.xml\nsed -e 's/sparkle:version=\".*\"/sparkle:version=\"#{VER}\"/' ${APPCAST}4.xml > ${APPCAST}5.xml\n\nmv ${APPCAST}5.xml ${APPCAST}.xml\nrm ${APPCAST}2.xml ${APPCAST}3.xml ${APPCAST}4.xml\nEOS\n\nopen(OUTPUT, \"w\"){|f| f.write script}\nsystem(\"chmod +x #{OUTPUT}\")";
+		};
+		34A517301B8CBB790028FA5F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "VER=`cat Sources/mainc.m | grep \"#define VERSION\" | cut -d' ' -f 3 | sed 's/\"//g'`\ncd $BUILT_PRODUCTS_DIR\nzip tex2imgcMac$VER.zip tex2img";
 		};
 /* End PBXShellScriptBuildPhase section */
 
