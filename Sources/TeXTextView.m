@@ -316,7 +316,7 @@
     self.editable = enabled;
     
     if (enabled) {
-        self.textColor = NSColor.controlTextColor;
+        [self colorizeText];
     } else {
         self.textColor = NSColor.disabledControlTextColor;
     }
