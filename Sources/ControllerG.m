@@ -1733,12 +1733,12 @@ typedef enum {
 
 - (IBAction)openTemplateDirectory:(id)sender
 {
-    [NSWorkspace.sharedWorkspace openFile:self.templateDirectoryPath withApplication:@"Finder.app"];
+    [NSWorkspace.sharedWorkspace openFile:self.templateDirectoryPath withApplication:@"Finder"];
 }
 
 - (IBAction)openTempDir:(id)sender
 {
-	[NSWorkspace.sharedWorkspace openFile:NSTemporaryDirectory() withApplication:@"Finder.app"];
+	[NSWorkspace.sharedWorkspace openFile:NSTemporaryDirectory() withApplication:@"Finder"];
 }
 
 - (IBAction)showPreferenceWindow:(id)sender
