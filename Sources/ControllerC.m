@@ -13,7 +13,7 @@
     
     chdir(path.UTF8String);
     
-    NSMutableString *cmdline = NSMutableString.string;
+    NSMutableString *cmdline = [NSMutableString string];
     [cmdline appendString:command];
     [cmdline appendString:@" "];
     

@@ -12,7 +12,7 @@
     NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:COMPOSITION_EXCLUSION_REGEX
                                                                             options:0
                                                                               error:nil];
-    NSMutableString *result = NSMutableString.string;
+    NSMutableString *result = [NSMutableString string];
     [regexp enumerateMatchesInString:self
                              options:0
                                range:NSMakeRange(0, self.length)

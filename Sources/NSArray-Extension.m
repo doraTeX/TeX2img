@@ -10,7 +10,7 @@
 
 - (NSArray*)mapUsingBlock:(id (^)(id))block
 {
-    NSMutableArray *array = NSMutableArray.array;
+    NSMutableArray *array = [NSMutableArray array];
     [self enumerateObjectsUsingBlock:^(id item, NSUInteger idx, BOOL *stop) {
         [array addObject:block(item)];
     }];

@@ -34,7 +34,7 @@
 
 - (NSString*)stringByDeletingLastReturnCharacters
 {
-    NSRegularExpression *regex = [NSRegularExpression.alloc initWithPattern:@"^(.*?)(?:\\r|\\n|\\r\\n)*$" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"^(.*?)(?:\\r|\\n|\\r\\n)*$" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     NSTextCheckingResult *match = [regex firstMatchInString:self options:0 range:NSMakeRange(0, self.length)];
     if (match) {
         return [self substringWithRange:[match rangeAtIndex:1]];
@@ -78,7 +78,7 @@
 
 - (NSString*)unicodeName
 {
-    NSMutableString *mutableUnicodeName = self.mutableCopy;
+    NSMutableString *mutableUnicodeName = [self mutableCopy];
     CFStringTransform((__bridge CFMutableStringRef)mutableUnicodeName, NULL, CFSTR("Any-Name"), NO);
     
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\{(.+?)\\}" options:0 error:nil];
@@ -92,7 +92,7 @@
 + (NSString*)stringWithUTF32Char:(UTF32Char)character
 {
     character = NSSwapHostIntToLittle(character);
-    return [NSString.alloc initWithBytes:&character length:4 encoding:NSUTF32LittleEndianStringEncoding];
+    return [[NSString alloc] initWithBytes:&character length:4 encoding:NSUTF32LittleEndianStringEncoding];
 }
 
 
@@ -179,21 +179,21 @@
         // BOM付きUTF-8判定
         if (memchr(data.bytes, *utf8Bom, 3) != NULL) {
             shouldSkipUTF8 = YES;
-            string = [NSString.alloc initWithData:data encoding:NSUTF8StringEncoding];
+            string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             if (string) {
                 *encoding = NSUTF8StringEncoding;
             }
             // UTF-16判定
         } else if ((memchr(data.bytes, 0xfffe, 2) != NULL) || (memchr(data.bytes, 0xfeff, 2) != NULL)) {
             shouldSkipUTF16 = YES;
-            string = [NSString.alloc initWithData:data encoding:NSUnicodeStringEncoding];
+            string = [[NSString alloc] initWithData:data encoding:NSUnicodeStringEncoding];
             if (string) {
                 *encoding = NSUnicodeStringEncoding;
             }
             // ISO 2022-JP判定
         } else if (memchr(data.bytes, 0x1b, data.length) != NULL) {
             shouldSkipISO2022JP = YES;
-            string = [NSString.alloc initWithData:data encoding:NSISO2022JPStringEncoding];
+            string = [[NSString alloc] initWithData:data encoding:NSISO2022JPStringEncoding];
             if (string) {
                 *encoding = NSISO2022JPStringEncoding;
             }
@@ -212,7 +212,7 @@
             } else if (*encoding == NSProprietaryStringEncoding) {
                 break;
             }
-            string = [NSString.alloc initWithData:data encoding:*encoding];
+            string = [[NSString alloc] initWithData:data encoding:*encoding];
             if (string) {
                 break;
             }

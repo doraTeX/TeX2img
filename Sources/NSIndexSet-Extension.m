@@ -3,7 +3,7 @@
 @implementation NSIndexSet (Extension)
 - (NSArray*)arrayOfIndexesPlusOne
 {
-    NSMutableArray *array = NSMutableArray.array;
+    NSMutableArray *array = [NSMutableArray array];
     [self enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         [array addObject:@(idx+1)];
     }];

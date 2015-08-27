@@ -59,8 +59,8 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
 @implementation MyGlyphPopoverUnicodesTextStorage
 - (id)initWithAttributedString:(NSAttributedString*)attrStr
 {
-    if ((self = super.init)) {
-        contents = attrStr ? attrStr.mutableCopy : NSMutableAttributedString.new;
+    if ((self = [super init])) {
+        contents = attrStr ? [attrStr mutableCopy] : [NSMutableAttributedString new];
     }
     return self;
 }
@@ -144,7 +144,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
         
         // unicode hex
         NSString *unicode;
-        NSMutableArray *unicodes = NSMutableArray.array;
+        NSMutableArray *unicodes = [NSMutableArray array];
         
         for (NSUInteger i = 0; i < length; i++) {
             unichar theChar = [character characterAtIndex:i];
@@ -248,7 +248,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
                 unicodesTextView.horizontallyResizable = YES;
                 unicodesTextView.verticallyResizable = YES;
                 NSAttributedString *aStr = [unicodesTextView.textStorage attributedSubstringFromRange:NSMakeRange(0, unicodesTextView.textStorage.length)];
-                MyGlyphPopoverUnicodesTextStorage *newStorage = [MyGlyphPopoverUnicodesTextStorage.alloc initWithAttributedString:aStr];
+                MyGlyphPopoverUnicodesTextStorage *newStorage = [[MyGlyphPopoverUnicodesTextStorage alloc] initWithAttributedString:aStr];
                 [unicodesTextView.layoutManager replaceTextStorage:newStorage];
                 
                 // extend popover height (if necessary)
@@ -279,7 +279,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
 - (void)showPopoverRelativeToRect:(NSRect)positioningRect ofView:(NSView*)parentView
 // ------------------------------------------------------
 {
-    NSPopover *popover = NSPopover.new;
+    NSPopover *popover = [NSPopover new];
     popover.contentViewController = self;
     popover.behavior = NSPopoverBehaviorSemitransient;
     [popover showRelativeToRect:positioningRect ofView:parentView preferredEdge:NSMinYEdge];

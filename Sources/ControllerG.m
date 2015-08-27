@@ -258,7 +258,7 @@ typedef enum {
 {
     [self exitCurrentThreadIfTaskKilled];
     
-    NSMutableString *cmdline = NSMutableString.string;
+    NSMutableString *cmdline = [NSMutableString string];
     [cmdline appendString:command];
     [cmdline appendString:@" "];
     
@@ -269,8 +269,8 @@ typedef enum {
     [cmdline appendString:@" 2>&1"];
     [self appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:NO];
     
-    runningTask = NSTask.new;
-    outputPipe = NSPipe.pipe;
+    runningTask = [NSTask new];
+    outputPipe = [NSPipe pipe];
     [outputPipe.fileHandleForReading readInBackgroundAndNotify];
     
     runningTask.currentDirectoryPath = path;
@@ -773,7 +773,7 @@ typedef enum {
 
 - (NSMutableDictionary*)currentProfile
 {
-	NSMutableDictionary *currentProfile = NSMutableDictionary.dictionary;
+	NSMutableDictionary *currentProfile = [NSMutableDictionary dictionary];
 	@try {
         currentProfile[TeX2imgVersionKey] = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"];
         
@@ -889,8 +889,8 @@ typedef enum {
 #pragma mark - 他のメソッドから呼び出されるユーティリティメソッド
 - (NSString*)searchProgram:(NSString*)programName
 {
-    NSTask *task = NSTask.new;
-    NSPipe *pipe = NSPipe.pipe;
+    NSTask *task = [NSTask new];
+    NSPipe *pipe = [NSPipe pipe];
     task.launchPath = BASH_PATH;
     task.arguments = @[@"-c", @"eval `/usr/libexec/path_helper -s`; echo $PATH"];
     task.standardOutput = pipe;
@@ -965,12 +965,12 @@ typedef enum {
     NSEnumerator *enumerator = [fileManager contentsOfDirectoryAtPath:templateDirectoryPath error:nil].reverseObjectEnumerator;
     
     NSString *filename;
-    while ((filename = enumerator.nextObject)) {
+    while ((filename = [enumerator nextObject])) {
         NSString *fullPath = [templateDirectoryPath stringByAppendingPathComponent:filename];
         
         if ([filename hasSuffix:@"tex"]) {
             NSString *title = filename.stringByDeletingPathExtension;
-            NSMenuItem *menuItem = [NSMenuItem.alloc initWithTitle:title action:@selector(templateSelected:) keyEquivalent:@""];
+            NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(templateSelected:) keyEquivalent:@""];
             menuItem.target = self;
             menuItem.toolTip = fullPath; // tooltip文字列の部分にフルパスを保持
             [menu insertItem:menuItem atIndex:1];
@@ -978,8 +978,8 @@ typedef enum {
         
         BOOL isDirectory;
         if ([fileManager fileExistsAtPath:fullPath isDirectory:&isDirectory] && isDirectory) {
-            NSMenuItem *itemWithSubmenu = [NSMenuItem.alloc initWithTitle:filename action:nil keyEquivalent:@""];
-            NSMenu *submenu = NSMenu.new;
+            NSMenuItem *itemWithSubmenu = [[NSMenuItem alloc] initWithTitle:filename action:nil keyEquivalent:@""];
+            NSMenu *submenu = [NSMenu new];
             submenu.autoenablesItems = NO;
             [self constructTemplatePopupRecursivelyAtDirectory:[templateDirectoryPath stringByAppendingPathComponent:filename] parentMenu:submenu];
             itemWithSubmenu.submenu = submenu;
@@ -998,7 +998,7 @@ typedef enum {
         
         if ([filename hasSuffix:@"tex"]) {
             NSString *title = filename.stringByDeletingPathExtension;
-            NSMenuItem *menuItem = [NSMenuItem.alloc initWithTitle:title action:@selector(templateSelected:) keyEquivalent:@""];
+            NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(templateSelected:) keyEquivalent:@""];
             menuItem.target = self;
             menuItem.toolTip = fullPath; // tooltip文字列の部分にフルパスを保持
             [menu addItem:menuItem];
@@ -1006,8 +1006,8 @@ typedef enum {
         
         BOOL isDirectory;
         if ([fileManager fileExistsAtPath:fullPath isDirectory:&isDirectory] && isDirectory) {
-            NSMenuItem *itemWithSubmenu = [NSMenuItem.alloc initWithTitle:filename action:nil keyEquivalent:@""];
-            NSMenu *submenu = NSMenu.new;
+            NSMenuItem *itemWithSubmenu = [[NSMenuItem alloc] initWithTitle:filename action:nil keyEquivalent:@""];
+            NSMenu *submenu = [NSMenu new];
             submenu.autoenablesItems = NO;
             [self constructTemplatePopupRecursivelyAtDirectory:[directory stringByAppendingPathComponent:filename] parentMenu:submenu];
             itemWithSubmenu.submenu = submenu;
@@ -1069,7 +1069,7 @@ typedef enum {
 	//	[mainWindow setReleasedWhenClosed:NO];
 	//	[preambleWindow setReleasedWhenClosed:NO];
 
-    lastColorDict = NSMutableDictionary.dictionary;
+    lastColorDict = [NSMutableDictionary dictionary];
 
 	// ノティフィケーションの設定
 	NSNotificationCenter *aCenter = NSNotificationCenter.defaultCenter;
@@ -1232,9 +1232,9 @@ typedef enum {
 	
 	if (myData) {
 		NSStringEncoding myEncoding = NSUTF8StringEncoding;
-		commandCompletionList = [NSMutableString.alloc initWithData:myData encoding:myEncoding];
+		commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding:myEncoding];
 		if (!commandCompletionList) {
-			commandCompletionList = [NSMutableString.alloc initWithData:myData encoding:myEncoding];
+			commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding:myEncoding];
 		}
 		
 		[commandCompletionList insertString:@"\n" atIndex:0];
@@ -1369,7 +1369,7 @@ typedef enum {
     NSData *data;
     @try {
         while ((data = outputPipe.fileHandleForReading.availableData) && (data.length > 0)) {
-            [self appendOutputAndScroll:[NSString.alloc initWithData:data encoding:NSUTF8StringEncoding] quiet:NO];
+            [self appendOutputAndScroll:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] quiet:NO];
         }
     }
     @catch (NSException *exception) {
@@ -1392,9 +1392,9 @@ typedef enum {
     NSString *preamble = @"";
     NSString *body = @"";
     
-    NSRegularExpression *regex = [NSRegularExpression.alloc initWithPattern:@"^(.*?)(?:\\r|\\n|\\r\\n)*(?:\\\\|¥)begin\\{document\\}(?:\\r|\\n|\\r\\n)*(.*)(?:\\\\|¥)end\\{document\\}"
-                                                                    options:NSRegularExpressionDotMatchesLineSeparators
-                                                                      error:nil];
+    NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"^(.*?)(?:\\r|\\n|\\r\\n)*(?:\\\\|¥)begin\\{document\\}(?:\\r|\\n|\\r\\n)*(.*)(?:\\\\|¥)end\\{document\\}"
+                                                                      options:NSRegularExpressionDotMatchesLineSeparators
+                                                                        error:nil];
     NSTextCheckingResult *match = [regex firstMatchInString:contents
                                                     options:0
                                                       range:NSMakeRange(0, contents.length)];
@@ -1458,7 +1458,7 @@ typedef enum {
             } else { // ソース情報が含まれる画像ファイルの場合はそれをEAから取得して contents にセット（EAに保存されたソースは常にUTF8）
                 char *buffer = malloc(bufferLength);
                 getxattr(inputPath.UTF8String, EA_Key, buffer, bufferLength, 0, 0);
-                contents = [NSString.alloc initWithBytes:buffer length:bufferLength encoding:NSUTF8StringEncoding];
+                contents = [[NSString alloc] initWithBytes:buffer length:bufferLength encoding:NSUTF8StringEncoding];
                 free(buffer);
             }
         }
@@ -1473,7 +1473,7 @@ typedef enum {
 
 - (IBAction)importSource:(id)sender
 {
-    NSOpenPanel *openPanel = NSOpenPanel.openPanel;
+    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
     openPanel.canChooseDirectories = NO;
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
@@ -1488,7 +1488,7 @@ typedef enum {
 
 - (IBAction)exportSource:(id)sender
 {
-    NSSavePanel *savePanel = NSSavePanel.savePanel;
+    NSSavePanel *savePanel = [NSSavePanel savePanel];
     savePanel.allowedFileTypes = @[@"tex"];
     savePanel.extensionHidden = NO;
     savePanel.canSelectHiddenExtension = YES;
@@ -1666,16 +1666,16 @@ typedef enum {
     NSSize dialogSize = NSMakeSize(340, 120);
     NSRect dialogRect = NSMakeRect(0, 0, dialogSize.width, dialogSize.height);
     
-    NSWindow *dialog = [NSWindow.alloc initWithContentRect:dialogRect
-                                                 styleMask:(NSTitledWindowMask|NSResizableWindowMask)
-                                                   backing:NSBackingStoreBuffered
-                                                     defer:NO];
+    NSWindow *dialog = [[NSWindow alloc] initWithContentRect:dialogRect
+                                                   styleMask:(NSTitledWindowMask|NSResizableWindowMask)
+                                                     backing:NSBackingStoreBuffered
+                                                       defer:NO];
     [dialog setFrame:dialogRect display:NO];
     dialog.minSize = NSMakeSize(250, dialogSize.height);
     dialog.maxSize = NSMakeSize(10000, dialogSize.height);
     dialog.title = localizedString(@"saveCurrentPreambleAsTemplate");
     
-    NSTextField *input = NSTextField.new;
+    NSTextField *input = [NSTextField new];
     input.frame = NSMakeRect(17, 54, dialogSize.width - 40, 25);
     input.autoresizingMask = NSViewWidthSizable;
     [dialog.contentView addSubview:input];
@@ -1684,7 +1684,7 @@ typedef enum {
         input.stringValue = (NSString*)sender;
     }
     
-    NSButton* cancelButton = NSButton.new;
+    NSButton* cancelButton = [NSButton new];
     cancelButton.title = localizedString(@"Cancel");
     cancelButton.frame = NSMakeRect(dialogSize.width - 206, 12, 96, 32);
     cancelButton.bezelStyle = NSRoundedBezelStyle;
@@ -1694,7 +1694,7 @@ typedef enum {
     cancelButton.action = @selector(dialogCancel:);
     [dialog.contentView addSubview:cancelButton];
     
-    NSButton* okButton = NSButton.new;
+    NSButton* okButton = [NSButton new];
     okButton.title = @"OK";
     okButton.frame = NSMakeRect(dialogSize.width - 110, 12, 96, 32);
     okButton.bezelStyle = NSRoundedBezelStyle;
@@ -1776,7 +1776,7 @@ typedef enum {
 
 - (IBAction)showInputSourceFilePanel:(id)sender
 {
-    NSOpenPanel *openPanel = NSOpenPanel.openPanel;
+    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
     openPanel.canChooseDirectories = NO;
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
@@ -1792,7 +1792,7 @@ typedef enum {
 
 - (IBAction)showSavePanel:(id)sender
 {
-    NSSavePanel *savePanel = NSSavePanel.savePanel;
+    NSSavePanel *savePanel = [NSSavePanel savePanel];
     savePanel.allowedFileTypes = TargetExtensionsArray;
     savePanel.extensionHidden = NO;
     savePanel.canSelectHiddenExtension = NO;
@@ -1948,7 +1948,7 @@ typedef enum {
 
 - (void)printCurrentStatus:(NSDictionary*)aProfile
 {
-    NSMutableString *output = NSMutableString.string;
+    NSMutableString *output = [NSMutableString string];
     
     [output appendString:@"************************************\n"];
     [output appendString:@"  TeX2img settings\n"];

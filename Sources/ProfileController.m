@@ -40,8 +40,8 @@
 
 - (void)initProfiles
 {
-	profileNames = NSMutableArray.array;
-	profiles = NSMutableArray.array;
+	profileNames = [NSMutableArray array];
+	profiles = [NSMutableArray array];
 }
 
 - (void)removeProfileForName:(NSString*)profileName

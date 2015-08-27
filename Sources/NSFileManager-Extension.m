@@ -56,7 +56,7 @@ NSString * const DirectoryLocationDomain = @"DirectoryLocationDomain";
 	//
 	// Search for the path
 	//
-	NSArray* paths = NSSearchPathForDirectoriesInDomains(searchPathDirectory, domainMask, YES);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(searchPathDirectory, domainMask, YES);
 	if (paths.count == 0) {
 		if (errorOut) {
             NSDictionary *userInfo = @{
@@ -113,7 +113,7 @@ NSString * const DirectoryLocationDomain = @"DirectoryLocationDomain";
 // Returns the path to the applicationSupportDirectory (creating it if it doesn't
 // exist).
 //
-- (NSString *)applicationSupportDirectory
+- (NSString*)applicationSupportDirectory
 {
 	NSString *executableName = NSBundle.mainBundle.infoDictionary[@"CFBundleExecutable"];
 	NSError *error;

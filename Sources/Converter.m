@@ -132,7 +132,7 @@
 
 + (Converter*)converterWithProfile:(NSDictionary*)aProfile
 {
-	return [Converter.alloc initWithProfile:aProfile];
+	return [[Converter alloc] initWithProfile:aProfile];
 }
 
 - (void)exitCurrentThread
@@ -149,7 +149,7 @@
 // JIS X 0208 外の文字を \UTF に置き換える
 - (NSMutableString*)substituteUTF:(NSString*)dataString
 {
-	NSMutableString *utfString, *newString = NSMutableString.string;
+	NSMutableString *utfString, *newString = [NSMutableString string];
 	unichar texChar = 0x5c;
 	NSRange charRange;
 	NSString *subString;
@@ -189,7 +189,7 @@
 // 返り値：書き込みの正否(BOOL)
 - (BOOL)writeStringWithYenBackslashConverting:(NSString*)targetString toFile:(NSString*)path
 {
-    NSMutableString* mstr = NSMutableString.string;
+    NSMutableString* mstr = [NSMutableString string];
 	[mstr appendString:targetString];
 	
 	[mstr replaceYenWithBackSlash];
@@ -344,7 +344,7 @@
 // page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
 - (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin
 {
-    NSUInteger totalPages = [PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfPath]].pageCount;
+    NSUInteger totalPages = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfPath]].pageCount;
     NSMutableString *cropTeX = [NSMutableString stringWithString:@"\\pdfoutput=1"];
     if (page > 0) {
         [cropTeX appendString:[self buildCropTeXSource:pdfPath page:page addMargin:addMargin]];
@@ -387,8 +387,8 @@
 {
     BOOL result = YES;
     
-    NSTask *task = NSTask.new;
-    NSPipe *pipe = NSPipe.pipe;
+    NSTask *task = [NSTask new];
+    NSPipe *pipe = [NSPipe pipe];
     task.launchPath = gsPath.programPath;
     task.arguments = @[@"--version"];
     task.standardOutput = pipe;
@@ -477,7 +477,7 @@
                                                                  [NSString stringWithFormat:@"-dLastPage=%lu", page],
                                                                  ]];
     
-    BOOL shouldUseEps2WriteDevice = self.shouldUseEps2WriteDevice;
+    BOOL shouldUseEps2WriteDevice = [self shouldUseEps2WriteDevice];
     
     if (shouldUseEps2WriteDevice) {
         [arguments addObject:@"-sDEVICE=eps2write"];
@@ -507,7 +507,7 @@
 
 - (BOOL)epstopdf:(NSString*)epsName outputPdfFileName:(NSString*)outputPdfFileName
 {
-    if (!controller.epstopdfExists) {
+    if (![controller epstopdfExists]) {
 		return NO;
 	}
 	
@@ -536,17 +536,17 @@
 // NSBitmapImageRep の背景を白く塗りつぶす
 - (NSBitmapImageRep*)fillBackground:(NSBitmapImageRep*)bitmapRep
 {
-	NSImage *srcImage = NSImage.new;
+	NSImage *srcImage = [NSImage new];
 	[srcImage addRepresentation:bitmapRep];
 	NSSize size = srcImage.size;
 	
-	NSImage *backgroundImage = [NSImage.alloc initWithSize:size];
+	NSImage *backgroundImage = [[NSImage alloc] initWithSize:size];
 	[backgroundImage lockFocus];
 	[NSColor.whiteColor set];
 	[NSBezierPath fillRect:NSMakeRect(0, 0, size.width, size.height)];
     [srcImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
 	[backgroundImage unlockFocus];
-	return [NSBitmapImageRep.alloc initWithData:backgroundImage.TIFFRepresentation];
+	return [[NSBitmapImageRep alloc] initWithData:backgroundImage.TIFFRepresentation];
 }
 
 - (void)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page crop:(BOOL)crop
@@ -563,8 +563,8 @@
     }
 	
 	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
-	NSData* pageData = [[PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfFilePath]] pageAtIndex:(page-1)].dataRepresentation;
-	NSPDFImageRep *pdfImageRep = [NSPDFImageRep.alloc initWithData:pageData];
+	NSData* pageData = [[[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]] pageAtIndex:(page-1)].dataRepresentation;
+	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
 
 	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
     NSRect rect = pdfImageRep.bounds;
@@ -594,13 +594,13 @@
 	size.width  = (NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin;
 	size.height = (NSInteger)(height * resolutionLevel) + thisTopMargin + thisBottomMargin;
 	
-	NSImage* image = [NSImage.alloc initWithSize:size];
+	NSImage* image = [[NSImage alloc] initWithSize:size];
 	[image lockFocus];
 	[pdfImageRep drawInRect:NSMakeRect(thisLeftMargin, thisBottomMargin, width * resolutionLevel, height * resolutionLevel)];
 	[image unlockFocus];
 	
 	// NSImage を TIFF 形式の NSBitmapImageRep に変換する
-	NSBitmapImageRep *imageRep = [NSBitmapImageRep.alloc initWithData:image.TIFFRepresentation];
+	NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithData:image.TIFFRepresentation];
     
 	// 指定のビットマップ形式に変換
     NSData *outputData;
@@ -652,7 +652,7 @@
 
 - (BOOL)pdf2svg:(NSString*)pdfFilePath outputFileName:(NSString*)svgFilePath page:(NSUInteger)page
 {
-    if (!controller.mudrawExists) {
+    if (![controller mudrawExists]) {
         return NO;
     }
     
@@ -853,14 +853,14 @@
 
     [controller exitCurrentThreadIfTaskKilled];
     
-    pageCount = [PDFDocument.alloc initWithURL:[NSURL fileURLWithPath:pdfFilePath]].pageCount;
+    pageCount = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]].pageCount;
 
-    emptyPageFlags = NSMutableArray.array;
+    emptyPageFlags = [NSMutableArray array];
     for (NSInteger i=1; i<=pageCount; i++) {
         [emptyPageFlags addObject:@([self willEmptyPageBeCreated:pdfFilePath page:i])];
     }
 
-    whitePageFlags = NSMutableArray.array;
+    whitePageFlags = [NSMutableArray array];
     for (NSInteger i=1; i<=pageCount; i++) {
         [whitePageFlags addObject:@([self isEmptyPage:pdfFilePath page:i] && !(((NSNumber*)emptyPageFlags[i-1]).boolValue))];
     }
@@ -955,16 +955,16 @@
     if (copyToClipboard) {
         NSPasteboard *pboard = NSPasteboard.generalPasteboard;
         [pboard declareTypes:@[NSURLPboardType] owner:nil];
-        NSMutableArray *outputFiles = NSMutableArray.array;
+        NSMutableArray *outputFiles = [NSMutableArray array];
         
         if (![emptyPageFlags[0] boolValue]) {
-             [outputFiles addObject:[NSURL.alloc initFileURLWithPath:outputFilePath]];
+             [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:outputFilePath]];
         }
 
         
         for (NSUInteger i=2; i<=pageCount; i++) {
             if (![emptyPageFlags[i-1] boolValue]) {
-                [outputFiles addObject:[NSURL.alloc initFileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
+                [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
             }
         }
         
@@ -979,7 +979,7 @@
 
 - (void)runAppleScriptOnMainThread:(NSString*)script
 {
-    [[NSAppleScript.alloc initWithSource:script] executeAndReturnError:nil];
+    [[[NSAppleScript alloc] initWithSource:script] executeAndReturnError:nil];
 }
 
 - (BOOL)compileAndConvertWithCheck
@@ -1011,7 +1011,7 @@
     [controller releaseOutputTextView];
     
     // 生成ファイルを集める
-    NSMutableArray *generatedFiles = NSMutableArray.array;
+    NSMutableArray *generatedFiles = [NSMutableArray array];
     
     if (![emptyPageFlags[0] boolValue]) {
         [generatedFiles addObject:outputFilePath];
@@ -1030,7 +1030,7 @@
     
     // Illustrator に配置
     if (status && embedInIllustratorFlag && generatedFiles.count > 0) {
-        NSMutableString *script = NSMutableString.string;
+        NSMutableString *script = [NSMutableString string];
         [script appendFormat:@"tell application \"Adobe Illustrator\"\n"];
         [script appendFormat:@"activate\n"];
         

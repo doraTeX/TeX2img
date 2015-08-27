@@ -3,7 +3,7 @@
 @implementation NSPipe (Extension)
 - (NSString*)stringValue
 {
-    return [NSString.alloc initWithData:self.fileHandleForReading.readDataToEndOfFile
-                               encoding:NSUTF8StringEncoding];
+    return [[NSString alloc] initWithData:self.fileHandleForReading.readDataToEndOfFile
+                                 encoding:NSUTF8StringEncoding];
 }
 @end

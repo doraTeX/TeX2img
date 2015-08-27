@@ -34,7 +34,7 @@
     autoCompleting = NO;
     contentHighlighting = NO;
     braceHighlighting = NO;
-    MyLayoutManager *layoutManager = MyLayoutManager.new;
+    MyLayoutManager *layoutManager = [MyLayoutManager new];
     layoutManager.controller = controller;
     self.dropDelegate = controller;
     dragging = NO;
@@ -104,10 +104,10 @@
 {
     NSDictionary *currentProfile = controller.currentProfile;
     
-    NSMutableParagraphStyle* paragraphStyle = self.defaultParagraphStyle.mutableCopy;
+    NSMutableParagraphStyle* paragraphStyle = [self.defaultParagraphStyle mutableCopy];
     
     if (!paragraphStyle) {
-        paragraphStyle = NSParagraphStyle.defaultParagraphStyle.mutableCopy;
+        paragraphStyle = [NSParagraphStyle.defaultParagraphStyle mutableCopy];
     }
     
     CGFloat charWidth = [self.font advancementForGlyph:(NSGlyph)' '].width;
@@ -116,7 +116,7 @@
     
     self.defaultParagraphStyle = paragraphStyle;
     
-    NSMutableDictionary* typingAttributes = self.typingAttributes.mutableCopy;
+    NSMutableDictionary* typingAttributes = [self.typingAttributes mutableCopy];
     typingAttributes[NSParagraphStyleAttributeName] = paragraphStyle;
     typingAttributes[NSFontAttributeName] = self.font;
     self.typingAttributes = typingAttributes;
@@ -255,7 +255,7 @@
         if (theString.length == 1 && [currentProfile boolForKey:AutoCompleteKey] && autocompletionDictionary) {
             if ([theString characterAtIndex:0] >= 128 ||
                 self.selectedRange.location == 0 ||
-                [self.string characterAtIndex:self.selectedRange.location - 1 ] != texChar ) {
+                [self.string characterAtIndex:self.selectedRange.location-1] != texChar ) {
                 NSString *completionString = autocompletionDictionary[theString];
                 if (completionString) {
                     autoCompleting = YES;
@@ -520,7 +520,7 @@
     NSString *newString, *environment, *prefix;
     NSInteger increment, count_value;
     NSNumber *count;
-    NSMutableDictionary *environmentStack = NSMutableDictionary.dictionary;
+    NSMutableDictionary *environmentStack = [NSMutableDictionary dictionary];
     NSTextCheckingResult *match;
     
     while ((match = (NSTextCheckingResult*)[enumerator nextObject])) {
@@ -578,7 +578,7 @@
     }
     
     NSString *selectedString = [self.string substringWithRange:selectedRange];
-    MyGlyphPopoverController *popoverController = [MyGlyphPopoverController.alloc initWithCharacter:selectedString];
+    MyGlyphPopoverController *popoverController = [[MyGlyphPopoverController alloc] initWithCharacter:selectedString];
     
     if (!popoverController) {
         return;

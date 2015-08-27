@@ -5,8 +5,8 @@
 
 NSString* execCommand(NSString *cmdline)
 {
-    NSTask *task = NSTask.new;
-    NSPipe *pipe = NSPipe.pipe;
+    NSTask *task = [NSTask new];
+    NSPipe *pipe = [NSPipe pipe];
     task.launchPath = BASH_PATH;
     task.arguments = @[@"-c", cmdline];
     task.standardOutput = pipe;
@@ -36,7 +36,7 @@ void previewFiles(NSArray *files, NSString *app)
         return;
     }
     
-    NSMutableString *script = NSMutableString.string;
+    NSMutableString *script = [NSMutableString string];
     [script appendString:@"tell application \"Finder\"\n"];
     [script appendString:@"open {"];
     [script appendString:[[files mapUsingBlock:^NSString*(NSString *path) {
@@ -45,8 +45,8 @@ void previewFiles(NSArray *files, NSString *app)
     [script appendFormat:@"} using POSIX file \"/Applications/%@.app\"\n", app];
     [script appendString:@"end tell\n"];
     
-    NSTask *task = NSTask.new;
-    NSPipe *pipe = NSPipe.pipe;
+    NSTask *task = [NSTask new];
+    NSPipe *pipe = [NSPipe pipe];
     task.launchPath = @"/usr/bin/osascript";
     task.arguments = @[@"-e", script];
     task.standardOutput = pipe;

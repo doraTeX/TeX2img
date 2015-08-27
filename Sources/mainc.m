@@ -642,7 +642,7 @@ int main (int argc, char *argv[]) {
             numberOfCompilation = guessFlag ? DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION : 1;
         }
         
-        ControllerC *controller = ControllerC.new;
+        ControllerC *controller = [ControllerC new];
         
         // 実行プログラムのパスチェック
         NSString *latexPath = getPath(compiler.programPath);
@@ -671,7 +671,7 @@ int main (int argc, char *argv[]) {
             mudrawPath = @"mudraw";
         }
         
-        NSMutableDictionary *aProfile = NSMutableDictionary.dictionary;
+        NSMutableDictionary *aProfile = [NSMutableDictionary dictionary];
         aProfile[LatexPathKey] = [latexPath stringByAppendingStringSeparetedBySpace:compiler.argumentsString];
         aProfile[DvipdfmxPathKey] = [dvipdfmxPath stringByAppendingStringSeparetedBySpace:dvipdfmx.argumentsString];
         aProfile[GsPathKey] = [gsPath stringByAppendingStringSeparetedBySpace:gs.argumentsString];
