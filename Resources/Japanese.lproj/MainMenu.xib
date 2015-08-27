@@ -837,7 +837,7 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="KJF-Fz-y67">
+                                                    <matrix autoresizesSubviews="NO" verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="KJF-Fz-y67">
                                                         <rect key="frame" x="67" y="12" width="102" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1101,17 +1101,6 @@ DQ
                                                 </menu>
                                             </popUpButtonCell>
                                         </popUpButton>
-                                        <button verticalHuggingPriority="750" id="714">
-                                            <rect key="frame" x="281" y="225" width="96" height="32"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="push" title="自動判定" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="715">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="searchPrograms:" target="450" id="716"/>
-                                            </connections>
-                                        </button>
                                         <box autoresizesSubviews="NO" title="変換処理" borderType="line" id="rl0-1h-G1Q">
                                             <rect key="frame" x="13" y="36" width="361" height="57"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
@@ -1150,6 +1139,28 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
                                         </box>
+                                        <button verticalHuggingPriority="750" id="714">
+                                            <rect key="frame" x="220" y="225" width="96" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="push" title="自動判定" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="715">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="searchPrograms:" target="450" id="716"/>
+                                            </connections>
+                                        </button>
+                                        <button verticalHuggingPriority="750" id="RkS-Yo-COm">
+                                            <rect key="frame" x="318" y="233" width="53" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="inline" title="対象..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="024-oF-i0v">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" size="11" name="HiraKakuProN-W6"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="showAutoDetectionTargetSettingPopover:" target="450" id="e09-Mr-LdI"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -1876,6 +1887,8 @@ DQ
             <connections>
                 <outlet property="abortMenuItem" destination="tC1-Xo-mzW" id="xdP-eh-ocO"/>
                 <outlet property="autoCompleteMenuItem" destination="844" id="846"/>
+                <outlet property="autoDetectionTargetMatrix" destination="KXu-Vc-HGZ" id="AjK-HW-L8g"/>
+                <outlet property="autoDetectionTargetSettingViewController" destination="br2-Wx-T7e" id="gcD-s8-yoH"/>
                 <outlet property="backgroundColorWell" destination="eYk-0N-5fl" id="glu-Np-Ift"/>
                 <outlet property="beepCheckBox" destination="yFC-gL-sJa" id="qVA-sL-RUz"/>
                 <outlet property="bottomMarginLabel" destination="566" id="620"/>
@@ -2065,5 +2078,66 @@ DQ
             </view>
             <point key="canvasLocation" x="109.5" y="922.5"/>
         </window>
+        <viewController id="br2-Wx-T7e" userLabel="Auto Detection Target Setting View Controller">
+            <connections>
+                <outlet property="view" destination="E8G-oK-SUW" id="jvU-vb-Ai1"/>
+            </connections>
+        </viewController>
+        <popover id="NDM-CT-QO4" userLabel="Auto Detection Target Setting Popover">
+            <connections>
+                <outlet property="contentViewController" destination="br2-Wx-T7e" id="TxN-RB-Y1y"/>
+            </connections>
+        </popover>
+        <customView autoresizesSubviews="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E8G-oK-SUW" userLabel="Auto Detection Target Setting View">
+            <rect key="frame" x="0.0" y="5" width="207" height="163"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="KNP-Hq-CXj">
+                    <rect key="frame" x="14" y="126" width="95" height="17"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="自動判定対象：" id="Uyt-Bu-b55">
+                        <font key="font" size="13" name="HiraKakuProN-W3"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <matrix autoresizesSubviews="NO" verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="KXu-Vc-HGZ">
+                    <rect key="frame" x="20" y="20" width="153" height="98"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    <size key="cellSize" width="153" height="18"/>
+                    <size key="intercellSpacing" width="4" height="2"/>
+                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="7de-O7-c6c">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <cells>
+                        <column>
+                            <buttonCell type="radio" title="pdfLaTeX" imagePosition="left" alignment="left" tag="1" inset="2" id="Koa-Hn-KJP">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="pLaTeX" imagePosition="left" alignment="left" state="on" tag="2" inset="2" id="Zqc-g8-j6e">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="upLaTeX" imagePosition="left" alignment="left" tag="3" inset="2" id="SDF-ad-sd6">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="XeLaTeX (Japanese)" imagePosition="left" alignment="left" tag="4" inset="2" id="zlZ-SD-ekb">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="LuaLaTeX (Japanese)" imagePosition="left" alignment="left" tag="5" inset="2" id="yQg-7C-HbT">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </column>
+                    </cells>
+                </matrix>
+            </subviews>
+            <point key="canvasLocation" x="-291.5" y="974.5"/>
+        </customView>
     </objects>
 </document>

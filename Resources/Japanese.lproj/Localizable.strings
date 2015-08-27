@@ -10,7 +10,7 @@
 "Indent" = "行を右へシフト";
 "Unindent" = "行を左へシフト";
 "Completion" = "コマンド補完";
-"resotrePreambleMsg" = "プリアンブル部が次の内容にリセットされます。よろしいですか？";
+"resotrePreambleMsg" = "次のプリアンブルをロードしてよろしいですか？";
 "Cancel" = "キャンセル";
 "programNotFoundErrorMsg" = " が見つかりません。\nLaTeX / Ghostscript 一式がインストールされているか，「環境設定」で設定されたパスが実際にインストールされているパスと合致してているか確認してください。";
 "inputFileNotFoundErrorMsg" = "入力ファイルが見つかりません。\n%@";
@@ -22,6 +22,8 @@
 "initSettingsMsg" = "初期設定";
 "setPathMsg1" = "TeX 関連プログラムのパスを";
 "setPathMsg2" = "に設定しました（環境設定パネルから変更できます）。";
+"autoDetectionResult" = "自動判定結果";
+"setPathMsg3" = "に設定しました。";
 "extensionErrMsg" = "出力ファイルの拡張子は .eps / .pdf / .jpg / .png / .gif / .tiff / .bmp / .svg のいずれかにしてください。";
 "emptyProfileNameErrMsg" = "保存する設定に名前を付けてください。";
 "profileOverwriteMsg" = "既に同名の設定が存在します。\n既存の同名の設定を置き換えてよろしいですか？";

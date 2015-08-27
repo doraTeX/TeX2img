@@ -132,10 +132,14 @@ typedef enum {
 @property IBOutlet NSColorWell *flashingBackgroundColorWell;
 @property IBOutlet NSButton *makeatletterEnabledCheckBox;
 
+@property IBOutlet NSViewController *autoDetectionTargetSettingViewController;
+@property IBOutlet NSMatrix *autoDetectionTargetMatrix;
+
 @property Converter *converter;
 @property NSTask *runningTask;
 @property NSPipe *outputPipe;
 @property BOOL *taskKilled;
+
 @end
 
 @implementation ControllerG
@@ -233,6 +237,9 @@ typedef enum {
 @synthesize enclosedContentBackgroundColorWell;
 @synthesize flashingBackgroundColorWell;
 @synthesize makeatletterEnabledCheckBox;
+
+@synthesize autoDetectionTargetSettingViewController;
+@synthesize autoDetectionTargetMatrix;
 
 @synthesize converter;
 @synthesize runningTask;
@@ -710,7 +717,12 @@ typedef enum {
     
     NSInteger priorityTag = [aProfile integerForKey:PriorityKey];
     [priorityMatrix selectCellWithTag:priorityTag];
-    
+
+    if ([keys containsObject:AutoDetectionTargetKey]) {
+        NSInteger autoDetectionTargetTag = [aProfile integerForKey:AutoDetectionTargetKey];
+        [autoDetectionTargetMatrix selectCellWithTag:autoDetectionTargetTag];
+    }
+
     [self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:PreambleKey];
     
     NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
@@ -826,6 +838,8 @@ typedef enum {
         currentProfile[UnitKey] = @(unitMatrix.selectedTag);
         currentProfile[PriorityKey] = @(priorityMatrix.selectedTag);
         
+        currentProfile[AutoDetectionTargetKey] = @(autoDetectionTargetMatrix.selectedTag);
+        
         currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
         currentProfile[FlashInMovingKey] = @(flashInMovingCheckBox.state);
         currentProfile[HighlightContentKey] = @(highlightContentCheckBox.state);
@@ -939,19 +953,6 @@ typedef enum {
 }
 
 #pragma mark - プリアンブルの管理
-- (NSString*)defaultPreamble
-{
-   return @"\\documentclass[fleqn,papersize]{jsarticle}\n"
-          @"\\usepackage{amsmath,amssymb}\n"
-          @"\\usepackage[dvipdfmx]{graphicx,xcolor}\n"
-          @"\\pagestyle{empty}\n";
-}
-
-- (void)restoreDefaultPreambleLogic
-{
-    [preambleTextView replaceEntireContentsWithString:self.defaultPreamble];
-}
-
 - (void)constructTemplatePopup:(id)sender
 {
     NSMenu *menu = templatePopupButton.menu;
@@ -970,7 +971,7 @@ typedef enum {
         
         if ([filename hasSuffix:@"tex"]) {
             NSString *title = filename.stringByDeletingPathExtension;
-            NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(templateSelected:) keyEquivalent:@""];
+            NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(adoptPreambleTemplate:) keyEquivalent:@""];
             menuItem.target = self;
             menuItem.toolTip = fullPath; // tooltip文字列の部分にフルパスを保持
             [menu insertItem:menuItem atIndex:1];
@@ -998,7 +999,7 @@ typedef enum {
         
         if ([filename hasSuffix:@"tex"]) {
             NSString *title = filename.stringByDeletingPathExtension;
-            NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(templateSelected:) keyEquivalent:@""];
+            NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(adoptPreambleTemplate:) keyEquivalent:@""];
             menuItem.target = self;
             menuItem.toolTip = fullPath; // tooltip文字列の部分にフルパスを保持
             [menu addItem:menuItem];
@@ -1016,9 +1017,18 @@ typedef enum {
     }
 }
 
-- (void)templateSelected:(id)sender
+- (void)adoptPreambleTemplate:(id)sender
 {
-    NSString *templatePath = ((NSMenuItem*)sender).toolTip;
+    NSString *templatePath;
+    
+    if ([sender isKindOfClass:NSMenuItem.class]) { // プリアンブル選択ポップアップがクリックされた場合
+        templatePath = ((NSMenuItem*)sender).toolTip; // toolTip 文字列に保管されているフルパスを取得
+    } else if ([sender isKindOfClass:NSString.class]) { // フルパスが直接引数に指定された場合
+        templatePath = sender;
+    } else {
+        return;
+    }
+    
     NSData *data = [NSData dataWithContentsOfFile:templatePath];
     NSStringEncoding detectedEncoding;
     NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
@@ -1166,7 +1176,18 @@ typedef enum {
     // 色入力支援パレットにデフォルトの文字を入れる
     colorPalleteColorWell.color = NSColor.redColor;
     [self colorPalleteColorSet:colorPalleteColorWell];
-
+    
+    // 自動判定エンジン選択ポップアップの色設定
+    [autoDetectionTargetMatrix.cells enumerateObjectsUsingBlock:^(NSButtonCell *cell, NSUInteger idx, BOOL *stop){
+        NSMutableAttributedString *colorTitle =
+        [[NSMutableAttributedString alloc] initWithAttributedString:cell.attributedTitle];
+        
+        [colorTitle addAttribute:NSForegroundColorAttributeName
+                           value:NSColor.textColor
+                           range:NSMakeRange(0, colorTitle.length)];
+        
+        cell.attributedTitle = colorTitle;
+    }];
 	
 	// 保存された設定を読み込む
 	NSFileManager *fileManager = NSFileManager.defaultManager;
@@ -1183,36 +1204,25 @@ typedef enum {
     
 	if (!loadLastProfileSuccess) { // 初回起動時の各種プログラムのパスの自動設定
 		[profileController initProfiles];
-		[self restoreDefaultPreambleLogic];
-		
-		NSString *latexPath;
-		NSString *dvipdfmxPath;
-		NSString *gsPath;
-		
-		if (!(latexPath = [self searchProgram:@"platex"])) {
-			latexPath = @"/usr/local/bin/platex";
-			[self showNotFoundError:@"platex"];
-		}
-		if (!(dvipdfmxPath = [self searchProgram:@"dvipdfmx"])) {
-			dvipdfmxPath = @"/usr/local/bin/dvipdfmx";
-			[self showNotFoundError:@"dvipdfmx"];
-		}
-		if (!(gsPath = [self searchProgram:@"gs"])) {
-			gsPath = @"/usr/local/bin/gs";
-			[self showNotFoundError:@"ghostscript"];
-		}
-		
-		latexPathTextField.stringValue = latexPath;
-		dvipdfmxPathTextField.stringValue = dvipdfmxPath;
-		gsPathTextField.stringValue = gsPath;
-		
-        [self performSelectorOnMainThread:@selector(showInitMessage:)
-                               withObject:@{
-                                            LatexPathKey: latexPath,
-                                            DvipdfmxPathKey: dvipdfmxPath,
-                                            GsPathKey: gsPath
-                                            }
-                            waitUntilDone:NO];
+        
+        [self searchProgramsLogic:@{
+                                    @"Title": localizedString(@"initSettingsMsg"),
+                                    @"Msg1": localizedString(@"setPathMsg1"),
+                                    @"Msg2": localizedString(@"setPathMsg2"),
+                                    @"waitUntilDone": @(NO)
+                                    }];
+
+        // デフォルトプリアンブルのロード
+        NSString *templateName = [autoDetectionTargetMatrix.selectedCell title];
+        NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
+        NSString *templatePath = [[originalTemplateDirectory stringByAppendingPathComponent:templateName] stringByAppendingPathExtension:@"tex"];
+        NSData *data = [NSData dataWithContentsOfFile:templatePath];
+        NSStringEncoding detectedEncoding;
+        NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
+        
+        if (contents) {
+            [preambleTextView replaceEntireContentsWithString:contents];
+        }
 
         [self loadDefaultFont];
         [self loadDefaultColors:nil];
@@ -1301,15 +1311,15 @@ typedef enum {
     fontTextField.stringValue = [NSString stringWithFormat:@"%@ - %.1fpt", font.displayName, font.pointSize];
 }
 
-- (void)showInitMessage:(NSDictionary*)paths
+- (void)showAutoDetectionResult:(NSDictionary*)parameters
 {
-    runOkPanel(localizedString(@"initSettingsMsg"),
+    runOkPanel(parameters[@"Title"],
                @"%@\n%@\n%@\n%@\n%@",
-               localizedString(@"setPathMsg1"),
-               paths[LatexPathKey],
-               paths[DvipdfmxPathKey],
-               paths[GsPathKey],
-               localizedString(@"setPathMsg2")
+               parameters[@"Msg1"],
+               parameters[LatexPathKey],
+               parameters[DvipdfmxPathKey],
+               parameters[GsPathKey],
+               parameters[@"Msg2"]
                );
 }
 
@@ -1903,28 +1913,58 @@ typedef enum {
     [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
 }
 
+- (void)searchProgramsLogic:(NSDictionary*)parameters
+{
+    NSString *latexPath;
+    NSString *dvipdfmxPath;
+    NSString *gsPath;
+    
+    NSString *templateName = [autoDetectionTargetMatrix.selectedCell title];
+    NSString *engineName = [templateName.lowercaseString componentsSeparatedByString:@" "][0];
+    
+    if (!(latexPath = [self searchProgram:engineName])) {
+        latexPath = @"";
+        [self showNotFoundError:@"LaTeX"];
+    }
+    if (!(dvipdfmxPath = [self searchProgram:@"dvipdfmx"])) {
+        dvipdfmxPath = @"";
+        [self showNotFoundError:@"dvipdfmx"];
+    }
+    if (!(gsPath = [self searchProgram:@"gs"])) {
+        gsPath = @"";
+        [self showNotFoundError:@"ghostscript"];
+    }
+    
+    latexPathTextField.stringValue = latexPath;
+    dvipdfmxPathTextField.stringValue = dvipdfmxPath;
+    gsPathTextField.stringValue = gsPath;
+    
+    [self performSelectorOnMainThread:@selector(showAutoDetectionResult:)
+                           withObject:@{
+                                        @"Title": parameters[@"Title"],
+                                        @"Msg1": parameters[@"Msg1"],
+                                        @"Msg2": parameters[@"Msg2"],
+                                        LatexPathKey: latexPath,
+                                        DvipdfmxPathKey: dvipdfmxPath,
+                                        GsPathKey: gsPath
+                                        }
+                        waitUntilDone:[parameters[@"waitUntilDone"] boolValue]];
+}
+
 - (IBAction)searchPrograms:(id)sender
 {
-	NSString *latexPath;
-	NSString *dvipdfmxPath;
-	NSString *gsPath;
-	
-	if (!(latexPath = [self searchProgram:@"platex"])) {
-		latexPath = @"";
-		[self showNotFoundError:@"LaTeX"];
-	}
-    if (!(dvipdfmxPath = [self searchProgram:@"dvipdfmx"])) {
-		dvipdfmxPath = @"";
-		[self showNotFoundError:@"dvipdfmx"];
-	}
-	if (!(gsPath = [self searchProgram:@"gs"])) {
-		gsPath = @"";
-		[self showNotFoundError:@"ghostscript"];
-	}
-	
-	latexPathTextField.stringValue = latexPath;
-	dvipdfmxPathTextField.stringValue = dvipdfmxPath;
-	gsPathTextField.stringValue = gsPath;
+    [self searchProgramsLogic:@{
+                                @"Title": localizedString(@"autoDetectionResult"),
+                                @"Msg1": localizedString(@"setPathMsg1"),
+                                @"Msg2": localizedString(@"setPathMsg3"),
+                                @"waitUntilDone": @(YES)
+                                }];
+    
+    // デフォルトテンプレートのロード
+    NSString *templateName = [autoDetectionTargetMatrix.selectedCell title];
+    NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
+    NSString *templatePath = [[originalTemplateDirectory stringByAppendingPathComponent:templateName] stringByAppendingPathExtension:@"tex"];
+    [self adoptPreambleTemplate:templatePath];
 }
 
 - (void)generationDidFinishOnMainThreadAfterDelay
@@ -2080,6 +2120,17 @@ typedef enum {
         [self appendOutputAndScroll:[NSString stringWithFormat:@"\n\nTeX2img: %@\n\n", localizedString(@"processAborted")] quiet:NO];
         [self generationDidFinish];
     }
+}
+
+- (IBAction)showAutoDetectionTargetSettingPopover:(id)sender
+{
+    NSPopover *popover = [NSPopover new];
+    popover.contentViewController = autoDetectionTargetSettingViewController;
+    popover.behavior = NSPopoverBehaviorTransient;
+    NSRect rect = ((NSButton*)sender).frame;
+    rect = NSMakeRect(rect.origin.x + 25, rect.origin.y + 24, rect.size.width, rect.size.height);
+
+    [popover showRelativeToRect:rect ofView:preferenceWindow.contentView preferredEdge:NSMaxXEdge];
 }
 
 @end

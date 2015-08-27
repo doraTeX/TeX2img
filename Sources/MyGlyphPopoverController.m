@@ -70,13 +70,13 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
     return [self initWithAttributedString:nil];
 }
 
-- (NSString *)string
+- (NSString*)string
 {
     return contents.string;
 }
 
-- (NSDictionary *)attributesAtIndex:(NSUInteger)location
-                     effectiveRange:(NSRange*)range
+- (NSDictionary*)attributesAtIndex:(NSUInteger)location
+                    effectiveRange:(NSRange*)range
 {
     return [contents attributesAtIndex:location effectiveRange:range];
 }

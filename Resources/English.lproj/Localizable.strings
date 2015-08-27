@@ -10,7 +10,7 @@
 "Indent" = "Shift Right";
 "Unindent" = "Shift Left";
 "Completion" = "Command Completion";
-"resotrePreambleMsg" = "The preamble will be restored as follows.\nDo you want to continue?";
+"resotrePreambleMsg" = "Do you want to set the preamble as follows?";
 "Cancel" = "Cancel";
 "programNotFoundErrorMsg" = " cannot be found.\nMake sure that LaTeX/Ghostscript are installed and configured in Preferences.";
 "inputFileNotFoundErrorMsg" = "Input file does not exist.\n%@";
@@ -22,6 +22,8 @@
 "initSettingsMsg" = "Initial Settings";
 "setPathMsg1" = "Automatic engine settings: ";
 "setPathMsg2" = "(editable in Preferences)";
+"autoDetectionResult" = "Auto Detection Result";
+"setPathMsg3" = "";
 "extensionErrMsg" = "The extention must be eps/pdf/jpg/png/gif/tiff/bmp/svg.";
 "emptyProfileNameErrMsg" = "Enter the name of the new profile.";
 "profileOverwriteMsg" = "A profile of the same name already exists. Do you want to replace it?";

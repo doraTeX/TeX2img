@@ -86,6 +86,8 @@ NSMutableString *commandCompletionList;
 #define EpstopdfPathKey @"epstopdfPath"
 #define MudrawPathKey @"mudrawPath"
 #define QuietKey @"quiet"
+#define AutoDetectionTargetKey @"autoDetectionTarget"
+
 #define ControllerKey @"controller"
 #define TeX2imgVersionKey @"TeX2imgVersion"
 

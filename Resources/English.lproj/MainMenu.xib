@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
     <objects>
@@ -582,6 +581,8 @@ DQ
             <connections>
                 <outlet property="abortMenuItem" destination="Qig-9P-21A" id="rd7-S5-Bep"/>
                 <outlet property="autoCompleteMenuItem" destination="821" id="823"/>
+                <outlet property="autoDetectionTargetMatrix" destination="Mq1-2m-JBY" id="6lj-zC-ODM"/>
+                <outlet property="autoDetectionTargetSettingViewController" destination="1pU-9A-d56" id="ZcJ-rM-Jj0"/>
                 <outlet property="backgroundColorWell" destination="9ev-FH-pU2" id="g9U-5N-q9k"/>
                 <outlet property="beepCheckBox" destination="S8e-Q4-bYm" id="7DT-5Z-H81"/>
                 <outlet property="bottomMarginLabel" destination="566" id="620"/>
@@ -926,7 +927,7 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="GVy-l5-MNs">
+                                                    <matrix autoresizesSubviews="NO" verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="GVy-l5-MNs">
                                                         <rect key="frame" x="83" y="14" width="100" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1152,17 +1153,6 @@ DQ
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
-                                        <button verticalHuggingPriority="750" id="718">
-                                            <rect key="frame" x="262" y="220" width="115" height="32"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="push" title="Auto Detect" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="719">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="searchPrograms:" target="450" id="720"/>
-                                            </connections>
-                                        </button>
                                         <box autoresizesSubviews="NO" title="Priority in Conversion" borderType="line" id="OkG-sC-Zd3">
                                             <rect key="frame" x="13" y="18" width="361" height="58"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
@@ -1245,6 +1235,28 @@ DQ
                                                 </menu>
                                             </popUpButtonCell>
                                         </popUpButton>
+                                        <button verticalHuggingPriority="750" id="FwS-Cq-GFW">
+                                            <rect key="frame" x="308" y="228" width="58" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="inline" title="Target..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VAb-nX-PNb">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="smallSystemBold"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="showAutoDetectionTargetSettingPopover:" target="450" id="b19-4f-h6D"/>
+                                            </connections>
+                                        </button>
+                                        <button verticalHuggingPriority="750" id="718">
+                                            <rect key="frame" x="191" y="220" width="115" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Auto Detect" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="719">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="searchPrograms:" target="450" id="720"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -2067,5 +2079,66 @@ DQ
             </view>
             <point key="canvasLocation" x="352.5" y="341.5"/>
         </window>
+        <viewController id="1pU-9A-d56" userLabel="Auto Detection Target Setting View Controller">
+            <connections>
+                <outlet property="view" destination="i4C-I5-ANg" id="3ma-I1-chE"/>
+            </connections>
+        </viewController>
+        <popover id="8BY-rB-NgS" userLabel="Auto Detection Target Setting Popover">
+            <connections>
+                <outlet property="contentViewController" destination="1pU-9A-d56" id="Vyu-f2-QbR"/>
+            </connections>
+        </popover>
+        <customView autoresizesSubviews="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i4C-I5-ANg" userLabel="Auto Detection Target Setting View">
+            <rect key="frame" x="0.0" y="0.0" width="207" height="163"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="SFW-Op-Tb6">
+                    <rect key="frame" x="14" y="126" width="169" height="17"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Target of Auto Detection:" id="W2Y-Q9-T8b">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <matrix autoresizesSubviews="NO" verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="Mq1-2m-JBY">
+                    <rect key="frame" x="20" y="20" width="153" height="98"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    <size key="cellSize" width="153" height="18"/>
+                    <size key="intercellSpacing" width="4" height="2"/>
+                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="An0-2Z-GgA">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <cells>
+                        <column>
+                            <buttonCell type="radio" title="pdfLaTeX" imagePosition="left" alignment="left" tag="1" inset="2" id="Rv3-SD-Rwa">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="pLaTeX" imagePosition="left" alignment="left" state="on" tag="2" inset="2" id="8ad-OZ-KIY">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="upLaTeX" imagePosition="left" alignment="left" tag="3" inset="2" id="ARL-ua-pHV">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="XeLaTeX (Japanese)" imagePosition="left" alignment="left" tag="4" inset="2" id="odJ-St-Rwh">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <buttonCell type="radio" title="LuaLaTeX (Japanese)" imagePosition="left" alignment="left" tag="5" inset="2" id="dRv-9q-n9o">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </column>
+                    </cells>
+                </matrix>
+            </subviews>
+            <point key="canvasLocation" x="-291.5" y="974.5"/>
+        </customView>
     </objects>
 </document>
