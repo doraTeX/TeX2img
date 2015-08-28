@@ -64,11 +64,45 @@
                           name:NSUndoManagerDidRedoChangeNotification
                         object:undoManager];
     
+    // 右クリックメニューの追加
     NSMenu* aMenu = self.menu;
-    if ([aMenu indexOfItemWithTitle:localizedString(@"Character Info")] == -1) {
-        [aMenu addItemWithTitle:localizedString(@"Character Info") action:@selector(showCharacterInfo:) keyEquivalent:@""];
-    }
     
+    // 最初のセパレータ位置を取得
+    NSUInteger index = [aMenu.itemArray indexOfObjectPassingTest:^BOOL(NSMenuItem *menuItem, NSUInteger idx, BOOL *stop) {
+        return [menuItem.title isEqualToString:@""];
+    }];
+    
+    // 「Unicode 正規化」メニュー
+    if ([aMenu indexOfItemWithTitle:localizedString(@"Unicode Normalization")] == -1) {
+        NSMenu *submenu = [NSMenu new];
+        submenu.autoenablesItems = YES;
+
+        [@[
+          @[@(NFC_Tag), @"NFC"],
+          @[@(Modified_NFC_Tag), @"Modified NFC"],
+          @[@(NFD_Tag), @"NFD"],
+          @[@(Modified_NFD_Tag), @"Modified NFD"],
+          @[@(NFKC_Tag), @"NFKC"],
+          @[@(NFKD_Tag), @"NFKD"],
+          @[@(NFKC_CF_Tag), @"NFKC Casefold"],
+          ] enumerateObjectsUsingBlock:^(NSArray *pair, NSUInteger idx, BOOL *stop) {
+              NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:(NSString*)(pair[1]) action:@selector(normalizeSelectedString:) keyEquivalent:@""];
+              menuItem.tag = [pair[0] integerValue];
+              [submenu addItem:menuItem];
+          }];
+
+        NSMenuItem *itemWithSubmenu = [[NSMenuItem alloc] initWithTitle:localizedString(@"Unicode Normalization") action:nil keyEquivalent:@""];
+        itemWithSubmenu.submenu = submenu;
+        [aMenu insertItem:itemWithSubmenu atIndex:index];
+    }
+
+    // 「文字情報」メニュー
+    if ([aMenu indexOfItemWithTitle:localizedString(@"Character Info")] == -1) {
+        [aMenu insertItemWithTitle:localizedString(@"Character Info") action:@selector(showCharacterInfo:) keyEquivalent:@"" atIndex:index];
+    }
+
+    // セパレータを追加
+    [aMenu insertItem:NSMenuItem.separatorItem atIndex:index];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem*)menuItem
