@@ -1937,8 +1937,6 @@ typedef enum {
         [self showNotFoundError:@"ghostscript"];
     }
     
-    dviwarePath = [dviwarePath stringByAppendingString:([dviwareName isEqualToString:@"dvipdfmx"] ? @" -vv" : @" -Ppdf")];
-    
     latexPathTextField.stringValue = latexPath;
     dviwarePathTextField.stringValue = dviwarePath;
     gsPathTextField.stringValue = gsPath;
