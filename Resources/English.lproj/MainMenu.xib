@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
     <objects>
@@ -539,7 +540,7 @@ DQ
                                 <button tag="1" id="fNB-7d-xgA">
                                     <rect key="frame" x="11" y="38" width="438" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <buttonCell key="cell" type="radio" title="Input TeX source or PDF file" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="rID-WH-UXf">
+                                    <buttonCell key="cell" type="radio" title="Input TeX source or PDF / PS file" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="rID-WH-UXf">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>

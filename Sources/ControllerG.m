@@ -1791,7 +1791,7 @@ typedef enum {
     openPanel.canChooseDirectories = NO;
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
-    openPanel.allowedFileTypes = @[@"tex", @"pdf"];
+    openPanel.allowedFileTypes = @[@"tex", @"pdf", @"ps"];
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {

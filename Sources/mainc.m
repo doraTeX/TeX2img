@@ -25,7 +25,7 @@ static void usage()
 	version();
     printf("Usage: tex2img [options] InputFile OutputFile\n");
     printf("Arguments:\n");
-    printf("  InputFile  : path of a TeX source or PDF file\n");
+    printf("  InputFile  : path of a TeX source or PDF/PS file\n");
     printf("  OutputFile : path of an output file\n");
     printf("               (*extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
     printf("Options:\n");
