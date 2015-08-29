@@ -41,6 +41,7 @@
 @property BOOL copyToClipboard;
 @property NSString* additionalInputPath;
 @property BOOL pdfInputMode;
+@property BOOL psInputMode;
 @property BOOL errorsIgnored;
 @property NSMutableArray* emptyPageFlags;
 @property NSMutableArray* whitePageFlags;
@@ -71,6 +72,7 @@
 @synthesize copyToClipboard;
 @synthesize additionalInputPath;
 @synthesize pdfInputMode;
+@synthesize psInputMode;
 @synthesize errorsIgnored;
 @synthesize emptyPageFlags;
 @synthesize whitePageFlags;
@@ -115,6 +117,7 @@
     embedSource = [aProfile boolForKey:EmbedSourceKey];
     additionalInputPath = nil;
     pdfInputMode = NO;
+    psInputMode = NO;
     errorsIgnored = NO;
     
 	fileManager = NSFileManager.defaultManager;
@@ -833,14 +836,15 @@
 	NSString* outputFileName = outputFilePath.lastPathComponent;
 	NSString* extension = outputFilePath.pathExtension.lowercaseString;
     NSDate *texDate, *dviDate, *psDate, *pdfDate;
+    BOOL success = NO, compilationSuceeded = NO, requireDviware = NO, requireGS = NO;
 
     errorsIgnored = NO;
     
     [fileManager changeCurrentDirectoryPath:tempdir];
     
-    if (!pdfInputMode) {
+    if (!pdfInputMode && !psInputMode) {
         // TeX コンパイル
-        BOOL success = [self tex2dvi:texFilePath];
+        success = [self tex2dvi:texFilePath];
         if (!success) {
             if (ignoreErrorsFlag) {
                 errorsIgnored = YES;
@@ -851,8 +855,8 @@
         }
         [controller exitCurrentThreadIfTaskKilled];
         
-        BOOL compilationSuceeded = NO;
-        BOOL requireDviware = NO;
+        compilationSuceeded = NO;
+        requireDviware = NO;
         
         texDate = [self fileModificationDateAtPath:texFilePath];
         
@@ -891,7 +895,7 @@
             [controller exitCurrentThreadIfTaskKilled];
 
             compilationSuceeded = NO;
-            BOOL requireGS = NO;
+            requireGS = NO;
             
             if ([fileManager fileExistsAtPath:pdfFilePath]) { // PDF が存在する場合
                 pdfDate = [self fileModificationDateAtPath:pdfFilePath];
@@ -913,34 +917,34 @@
                 [controller showExecError:@"DVIware"];
                 return NO;
             }
-            
-            // PS→PDF
-            if (requireGS) {
-                success = [self ps2pdf:psFilePath outputFile:pdfFilePath];
-                if (!success) {
-                    if (ignoreErrorsFlag) {
-                        errorsIgnored = YES;
-                    } else {
-                        [controller showExecError:@"Ghostscript"];
-                        return NO;
-                    }
-                }
-                [controller exitCurrentThreadIfTaskKilled];
-                
-                compilationSuceeded = NO;
-                
-                if ([fileManager fileExistsAtPath:pdfFilePath]) { // PDF が存在する場合
-                    NSDate *pdfDate = [self fileModificationDateAtPath:pdfFilePath];
-                    if (pdfDate && [pdfDate isNewerThan:psDate]) {
-                        compilationSuceeded = YES;
-                    }
-                }
+        }
+    }
 
-                if (!compilationSuceeded) {
-                    [controller showExecError:@"Ghostscript"];
-                    return NO;
-                }
+    // PS→PDF
+    if (psInputMode || requireGS) {
+        success = [self ps2pdf:psFilePath outputFile:pdfFilePath];
+        if (!success) {
+            if (ignoreErrorsFlag) {
+                errorsIgnored = YES;
+            } else {
+                [controller showExecError:@"Ghostscript"];
+                return NO;
             }
+        }
+        [controller exitCurrentThreadIfTaskKilled];
+        
+        compilationSuceeded = NO;
+        
+        if ([fileManager fileExistsAtPath:pdfFilePath]) { // PDF が存在する場合
+            pdfDate = [self fileModificationDateAtPath:pdfFilePath];
+            if (pdfDate && [pdfDate isNewerThan:psDate]) {
+                compilationSuceeded = YES;
+            }
+        }
+        
+        if (!compilationSuceeded) {
+            [controller showExecError:@"Ghostscript"];
+            return NO;
         }
     }
 
@@ -1226,11 +1230,18 @@
 {
     @autoreleasepool {
         pdfInputMode = [sourcePath.pathExtension.lowercaseString isEqualToString:@"pdf"];
+        psInputMode = [sourcePath.pathExtension.lowercaseString isEqualToString:@"ps"];
         
         if (pdfInputMode) {
             NSString* tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
                 [controller showFileGenerateError:tempPdfFilePath];
+                return NO;
+            }
+        } else if (psInputMode) {
+            NSString* tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
+                [controller showFileGenerateError:tempPsFilePath];
                 return NO;
             }
         } else {
