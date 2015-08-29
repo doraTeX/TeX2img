@@ -633,7 +633,11 @@ int main (int argc, char *argv[]) {
             version();
         }
         if (![NSFileManager.defaultManager fileExistsAtPath:inputFilePath]) {
-            printStdErr("tex2img : %s : No such file or directory\n", inputFilePath.UTF8String);
+            printStdErr("tex2img : No such file or directory - %s\n", inputFilePath.UTF8String);
+            exit(1);
+        }
+        if (![InputExtensionsArray containsObject:inputFilePath.pathExtension]) {
+            printStdErr("tex2img : Input file type is invalid. - %s\n", inputFilePath.UTF8String);
             exit(1);
         }
         

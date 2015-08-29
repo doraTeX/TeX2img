@@ -14,6 +14,7 @@
 "Cancel" = "キャンセル";
 "programNotFoundErrorMsg" = " が見つかりません。\nLaTeX / Ghostscript 一式がインストールされているか，「環境設定」で設定されたパスが実際にインストールされているパスと合致してているか確認してください。";
 "inputFileNotFoundErrorMsg" = "入力ファイルが見つかりません。\n%@";
+"inputFileTypeErrorMsg" = "入力ファイルの形式が不正です。\n入力ファイルの拡張子は .tex / .pdf / .ps のいずれかにしてください。\n%@";
 "fileGenerateErrorMsg" = " を生成できなかったため，処理を中止します。\nアクセス権を確認してください。";
 "execErrorMsg" = " の実行に失敗したので処理を中止します。\nソースコードにエラーがないか，確認してください。";
 "cannotOverwriteErrorMsg" = " を上書きできませんでした。";

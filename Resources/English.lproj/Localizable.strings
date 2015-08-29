@@ -14,6 +14,7 @@
 "Cancel" = "Cancel";
 "programNotFoundErrorMsg" = " cannot be found.\nMake sure that LaTeX/Ghostscript are installed and configured in Preferences.";
 "inputFileNotFoundErrorMsg" = "Input file does not exist.\n%@";
+"inputFileTypeErrorMsg" = "Input file type is invalid.\nThe extension must be tex/pdf/ps.\n%@";
 "fileGenerateErrorMsg" = " cannot be created so generation has been aborted.\nCheck permission.";
 "execErrorMsg" = " cannot be executed.\nCheck errors in the source code.";
 "cannotOverwriteErrorMsg" = " cannot be overwritten.";

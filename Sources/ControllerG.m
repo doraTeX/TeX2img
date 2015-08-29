@@ -1791,7 +1791,7 @@ typedef enum {
     openPanel.canChooseDirectories = NO;
     openPanel.canChooseFiles = YES;
     openPanel.allowsMultipleSelection = NO;
-    openPanel.allowedFileTypes = @[@"tex", @"pdf", @"ps"];
+    openPanel.allowedFileTypes = InputExtensionsArray;
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
@@ -2090,9 +2090,15 @@ typedef enum {
         case FROMFILE:
             inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
             if ([NSFileManager.defaultManager fileExistsAtPath:inputSourceFilePath]) {
-                [NSThread detachNewThreadSelector:@selector(compileAndConvertWithInputPath:) toTarget:converter withObject:inputSourceFilePath];
+                if ([InputExtensionsArray containsObject:inputSourceFilePath.pathExtension]) {
+                    [NSThread detachNewThreadSelector:@selector(compileAndConvertWithInputPath:) toTarget:converter withObject:inputSourceFilePath];
+                } else {
+                    runErrorPanel(localizedString(@"inputFileTypeErrorMsg"), inputSourceFilePath);
+                    [self generationDidFinish];
+                }
             } else {
                 runErrorPanel(localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath);
+                [self generationDidFinish];
             }
             break;
         default:

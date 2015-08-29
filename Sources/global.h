@@ -6,6 +6,7 @@ NSMutableString *commandCompletionList;
 
 #define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg"])
 #define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"tex"])
+#define InputExtensionsArray (@[@"tex", @"pdf", @"ps"])
 
 #define ProfileNamesKey @"profileNames"
 #define ProfilesKey @"profiles"
@@ -117,4 +118,3 @@ NSMutableString *commandCompletionList;
 #define EA_Key "com.loveinequality.TeX2img"
 
 #define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf"
-
