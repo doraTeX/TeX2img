@@ -1229,23 +1229,24 @@
 - (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath
 {
     @autoreleasepool {
-        pdfInputMode = [sourcePath.pathExtension.lowercaseString isEqualToString:@"pdf"];
-        psInputMode = [sourcePath.pathExtension.lowercaseString isEqualToString:@"ps"];
+        NSString *ext = sourcePath.pathExtension.lowercaseString;
+        pdfInputMode = [ext isEqualToString:@"pdf"];
+        psInputMode = [ext isEqualToString:@"ps"] || [ext isEqualToString:@"eps"];
         
         if (pdfInputMode) {
-            NSString* tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
                 [controller showFileGenerateError:tempPdfFilePath];
                 return NO;
             }
         } else if (psInputMode) {
-            NSString* tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            NSString *tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
                 [controller showFileGenerateError:tempPsFilePath];
                 return NO;
             }
         } else {
-            NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
                 [controller showFileGenerateError:tempTeXFilePath];
                 return NO;

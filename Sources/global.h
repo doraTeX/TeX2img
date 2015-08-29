@@ -6,7 +6,7 @@ NSMutableString *commandCompletionList;
 
 #define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg"])
 #define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"tex"])
-#define InputExtensionsArray (@[@"tex", @"pdf", @"ps"])
+#define InputExtensionsArray (@[@"tex", @"pdf", @"ps", @"eps"])
 
 #define ProfileNamesKey @"profileNames"
 #define ProfilesKey @"profiles"
