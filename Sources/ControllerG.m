@@ -1461,6 +1461,7 @@ typedef enum {
             NSData *data = [NSData dataWithContentsOfFile:inputPath];
             NSStringEncoding detectedEncoding;
             contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
+            lastSavedPath = inputPath;
         } else { // 画像ファイルのインプット
             int bufferLength = getxattr(inputPath.UTF8String, EA_Key, NULL, 0, 0, 0); // EAを取得
             if (bufferLength < 0) { // ソース情報が含まれない画像ファイルの場合はエラー
