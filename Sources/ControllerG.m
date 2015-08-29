@@ -1922,19 +1922,22 @@ typedef enum {
     
     NSString *templateName = [autoDetectionTargetMatrix.selectedCell title];
     NSString *engineName = [templateName.lowercaseString componentsSeparatedByString:@" "][0];
+    NSString *dviwareName = ([templateName rangeOfString:@"dvips"].location == NSNotFound) ? @"dvipdfmx" : @"dvips";
     
     if (!(latexPath = [self searchProgram:engineName])) {
         latexPath = @"";
         [self showNotFoundError:@"LaTeX"];
     }
-    if (!(dviwarePath = [self searchProgram:@"dvipdfmx"])) {
+    if (!(dviwarePath = [self searchProgram:dviwareName])) {
         dviwarePath = @"";
-        [self showNotFoundError:@"dvipdfmx"];
+        [self showNotFoundError:@"DVIware"];
     }
     if (!(gsPath = [self searchProgram:@"gs"])) {
         gsPath = @"";
         [self showNotFoundError:@"ghostscript"];
     }
+    
+    dviwarePath = [dviwarePath stringByAppendingString:([dviwareName isEqualToString:@"dvipdfmx"] ? @" -vv" : @" -Ppdf")];
     
     latexPathTextField.stringValue = latexPath;
     dviwarePathTextField.stringValue = dviwarePath;
