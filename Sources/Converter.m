@@ -18,7 +18,7 @@
 
 @interface Converter()
 @property NSString* latexPath;
-@property NSString* dvipdfmxPath;
+@property NSString* dviwarePath;
 @property NSString* gsPath;
 @property NSString* encoding;
 @property NSString* outputFilePath;
@@ -48,7 +48,7 @@
 
 @implementation Converter
 @synthesize latexPath;
-@synthesize dvipdfmxPath;
+@synthesize dviwarePath;
 @synthesize gsPath;
 @synthesize encoding;
 @synthesize outputFilePath;
@@ -81,7 +81,7 @@
     pageCount = 1;
     
     latexPath = [aProfile stringForKey:LatexPathKey];
-    dvipdfmxPath = [aProfile stringForKey:DvipdfmxPathKey];
+    dviwarePath = [aProfile stringForKey:DviwarePathKey];
     gsPath = [aProfile stringForKey:GsPathKey];
     epstopdfPath = [aProfile stringForKey:EpstopdfPathKey];
     mudrawPath = [aProfile stringForKey:MudrawPathKey];
@@ -293,7 +293,7 @@
 - (BOOL)dvi2pdf:(NSString*)dviFilePath
 {
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
-    [cmdline appendString:dvipdfmxPath];
+    [cmdline appendString:dviwarePath];
 	BOOL status = [controller execCommand:cmdline
                               atDirectory:tempdir
                             withArguments:@[@"-vv", dviFilePath]
@@ -819,14 +819,14 @@
         [controller exitCurrentThreadIfTaskKilled];
         
         BOOL compilationSuceeded = NO;
-        BOOL requireDvipdfmx = NO;
+        BOOL requireDviware = NO;
         
         NSDate *texDate = [self fileModificationDateAtPath:texFilePath];
         
         if ([fileManager fileExistsAtPath:pdfFilePath]) { // PDF が存在する場合
             NSDate *pdfDate = [self fileModificationDateAtPath:pdfFilePath];
             if (pdfDate && [pdfDate isNewerThan:texDate]) {
-                requireDvipdfmx = NO; // 新しい PDF が生成されていれば dvipdfmx の必要なしと見なす
+                requireDviware = NO; // 新しい PDF が生成されていれば DVIware にかける必要なしと見なす
                 compilationSuceeded = YES;
             }
         }
@@ -834,7 +834,7 @@
         if (!compilationSuceeded && [fileManager fileExistsAtPath:dviFilePath]) { // 新しい PDF が存在せず，DVI が存在する場合
             NSDate *dviDate = [self fileModificationDateAtPath:dviFilePath];
             if (dviDate && [dviDate isNewerThan:texDate]) {
-                requireDvipdfmx = YES; // 新しい PDF が存在せず，新しい DVI が生成されていれば dvipdfmx の必要ありと見なす
+                requireDviware = YES; // 新しい PDF が存在せず，新しい DVI が生成されていれば DVIware にかける必要ありと見なす
                 compilationSuceeded = YES;
             }
         }
@@ -845,8 +845,8 @@
         }
         
         // DVI→PDF
-        if (requireDvipdfmx && (![self dvi2pdf:dviFilePath] || ![fileManager fileExistsAtPath:pdfFilePath])) {
-            [controller showExecError:@"dvipdfmx"];
+        if (requireDviware && (![self dvi2pdf:dviFilePath] || ![fileManager fileExistsAtPath:pdfFilePath])) {
+            [controller showExecError:@"DVIware"];
             return NO;
         }
     }
@@ -985,7 +985,7 @@
 - (BOOL)compileAndConvertWithCheck
 {
 	// 最初にプログラムの存在確認と出力ファイル形式確認
-	if (![controller latexExistsAtPath:latexPath.programPath dvipdfmxPath:dvipdfmxPath.programPath gsPath:gsPath.programPath]) {
+	if (![controller latexExistsAtPath:latexPath.programPath dviwarePath:dviwarePath.programPath gsPath:gsPath.programPath]) {
         [controller generationDidFinish];
 		return NO;
 	}

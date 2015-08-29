@@ -33,7 +33,7 @@ static void usage()
     printf("  --kanji ENCODING           : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: enabled)\n");
     printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
-    printf("  --dvipdfmx   DVIPDFMX      : set dvipdfmx    (default: dvipdfmx)\n");
+    printf("  --dviware    DVIWARE       : set dviware     (default: dvipdfmx)\n");
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
     printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
     printf("  --left-margin    MARGIN    : set the left margin   (default: 0)\n");
@@ -111,8 +111,8 @@ void printCurrentStatus(NSString *inputFilePath, NSDictionary *aProfile)
         printf("The number of compilation: %ld\n", [aProfile integerForKey:NumberOfCompilationKey]);
     }
 
-    NSString *dvipdfmx = [aProfile stringForKey:DvipdfmxPathKey];
-    printf("dvipdfmx: %s %s\n", getPath(dvipdfmx.programName).UTF8String, dvipdfmx.argumentsString.UTF8String);
+    NSString *dviware = [aProfile stringForKey:DviwarePathKey];
+    printf("DVIware: %s %s\n", getPath(dviware.programName).UTF8String, dviware.argumentsString.UTF8String);
 
     NSString *gs = [aProfile stringForKey:GsPathKey];
     printf("Ghostscript: %s %s\n", getPath(gs.programName).UTF8String, gs.argumentsString.UTF8String);
@@ -179,7 +179,7 @@ int main (int argc, char *argv[]) {
         BOOL embedSourceFlag = YES;
         NSString *encoding = PTEX_ENCODING_NONE;
         NSString *compiler = @"platex";
-        NSString *dvipdfmx = @"dvipdfmx";
+        NSString *dviware  = @"dvipdfmx";
         NSString *gs       = @"gs";
         NSNumber *unitTag = @(PX_UNIT_TAG);
         
@@ -353,7 +353,7 @@ int main (int argc, char *argv[]) {
         options[i].val = i+1;
 
         i++;
-        options[i].name = "dvipdfmx";
+        options[i].name = "dviware";
         options[i].has_arg = required_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
@@ -432,7 +432,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         resolutoinLevel = strtof(optarg, NULL);
                     } else {
-                        printf("--resolution is wrong.\n");
+                        printf("--resolution is invalid.\n");
                         usage();
                     }
                     break;
@@ -440,7 +440,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         leftMargin = strtoi(optarg);
                     } else {
-                        printf("--left-margin is wrong.\n");
+                        printf("--left-margin is invalid.\n");
                         usage();
                     }
                     break;
@@ -448,7 +448,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         rightMargin = strtoi(optarg);
                     } else {
-                        printf("--right-margin is wrong.\n");
+                        printf("--right-margin is invalid.\n");
                         usage();
                     }
                     break;
@@ -456,7 +456,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         topMargin = strtoi(optarg);
                     } else {
-                        printf("--top-margin is wrong.\n");
+                        printf("--top-margin is invalid.\n");
                         usage();
                     }
                     break;
@@ -464,7 +464,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         bottomMargin = strtoi(optarg);
                     } else {
-                        printf("--bottom-margin is wrong.\n");
+                        printf("--bottom-margin is invalid.\n");
                         usage();
                     }
                     break;
@@ -507,11 +507,11 @@ int main (int argc, char *argv[]) {
                                    && ![encoding isEqualToString:PTEX_ENCODING_SJIS]
                                    && ![encoding isEqualToString:PTEX_ENCODING_JIS]
                                    && ![encoding isEqualToString:PTEX_ENCODING_EUC]) {
-                            printf("--kanji is wrong.\n");
+                            printf("--kanji is invalid.\n");
                             usage();
                         }
                     } else {
-                        printf("--kanji is wrong.\n");
+                        printf("--kanji is invalid.\n");
                         usage();
                     }
                     break;
@@ -525,7 +525,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         compiler = @(optarg);
                     } else {
-                        printf("--compiler is wrong.\n");
+                        printf("--compiler is invalid.\n");
                         usage();
                     }
                     break;
@@ -537,11 +537,11 @@ int main (int argc, char *argv[]) {
                         } else if ([unitString isEqualToString:@"bp"]) {
                             unitTag = @(BP_UNIT_TAG);
                         } else {
-                            printf("--unit is wrong.\n");
+                            printf("--unit is invalid.\n");
                             usage();
                         }
                     } else {
-                        printf("--unit is wrong.\n");
+                        printf("--unit is invalid.\n");
                         usage();
                     }
                     break;
@@ -555,7 +555,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         numberOfCompilation = strtoi(optarg);
                     } else {
-                        printf("--num is wrong.\n");
+                        printf("--num is invalid.\n");
                         usage();
                     }
                     break;
@@ -571,11 +571,11 @@ int main (int argc, char *argv[]) {
                 case 27: // --no-preview
                     previewFlag = NO;
                     break;
-                case 28: // --dvipdfmx
+                case 28: // --dviware
                     if (optarg) {
-                        dvipdfmx = @(optarg);
+                        dviware = @(optarg);
                     } else {
-                        printf("--dvipdfmx is wrong.\n");
+                        printf("--dviware is invalid.\n");
                         usage();
                     }
                     break;
@@ -583,7 +583,7 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         gs = @(optarg);
                     } else {
-                        printf("--gs is wrong.\n");
+                        printf("--gs is invalid.\n");
                         usage();
                     }
                     break;
@@ -646,7 +646,7 @@ int main (int argc, char *argv[]) {
         
         // 実行プログラムのパスチェック
         NSString *latexPath = getPath(compiler.programPath);
-        NSString *dvipdfmxPath = getPath(dvipdfmx.programPath);
+        NSString *dviwarePath = getPath(dviware.programPath);
         NSString *gsPath = getPath(gs.programPath);
         NSString *epstopdfPath = getPath(@"epstopdf");
         NSString *mudrawPath = getPath(@"mudraw");
@@ -655,12 +655,12 @@ int main (int argc, char *argv[]) {
             [controller showNotFoundError:@"LaTeX"];
             return 1;
         }
-        if (!dvipdfmxPath) {
-            [controller showNotFoundError:@"dvipdfmx"];
+        if (!dviwarePath) {
+            [controller showNotFoundError:@"DVIware"];
             return 1;
         }
         if (!gsPath) {
-            [controller showNotFoundError:@"gs"];
+            [controller showNotFoundError:@"Ghostscript"];
             return 1;
         }
         if (!epstopdfPath) {
@@ -673,7 +673,7 @@ int main (int argc, char *argv[]) {
         
         NSMutableDictionary *aProfile = [NSMutableDictionary dictionary];
         aProfile[LatexPathKey] = [latexPath stringByAppendingStringSeparetedBySpace:compiler.argumentsString];
-        aProfile[DvipdfmxPathKey] = [dvipdfmxPath stringByAppendingStringSeparetedBySpace:dvipdfmx.argumentsString];
+        aProfile[DviwarePathKey] = [dviwarePath stringByAppendingStringSeparetedBySpace:dviware.argumentsString];
         aProfile[GsPathKey] = [gsPath stringByAppendingStringSeparetedBySpace:gs.argumentsString];
         aProfile[EpstopdfPathKey] = epstopdfPath;
         aProfile[MudrawPathKey] = mudrawPath;

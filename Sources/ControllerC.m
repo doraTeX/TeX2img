@@ -53,18 +53,18 @@
 {	
 }
 
-- (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
+- (BOOL)latexExistsAtPath:(NSString*)latexPath dviwarePath:(NSString*)dviwarePath gsPath:(NSString*)gsPath
 {
 	if (!checkWhich(latexPath)) {
 		[self showNotFoundError:@"LaTeX"];
 		return NO;
 	}
-	if (!checkWhich(dvipdfmxPath)) {
-		[self showNotFoundError:@"dvipdfmx"];
+	if (!checkWhich(dviwarePath)) {
+		[self showNotFoundError:@"DVIware"];
 		return NO;
 	}
 	if (!checkWhich(gsPath)) {
-		[self showNotFoundError:@"gs"];
+		[self showNotFoundError:@"Ghostscript"];
 		return NO;
 	}
 	return YES;

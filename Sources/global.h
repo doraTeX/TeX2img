@@ -28,7 +28,8 @@ NSMutableString *commandCompletionList;
 #define IgnoreErrorKey @"ignoreError"
 #define UtfExportKey @"utfExport"
 #define LatexPathKey @"platexPath"
-#define DvipdfmxPathKey @"dvipdfmxPath"
+// DviwarePathKey の内容は，互換性を考えて "dvipdfmxPath" のままで維持
+#define DviwarePathKey @"dvipdfmxPath"
 #define GsPathKey @"gsPath"
 #define GuessCompilationKey @"guessCompilation"
 #define NumberOfCompilationKey @"numberOfCompilation"

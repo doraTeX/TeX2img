@@ -104,7 +104,7 @@ typedef enum {
 @property IBOutlet NSSlider *topMarginSlider;
 @property IBOutlet NSSlider *bottomMarginSlider;
 @property IBOutlet NSTextField *latexPathTextField;
-@property IBOutlet NSTextField *dvipdfmxPathTextField;
+@property IBOutlet NSTextField *dviwarePathTextField;
 @property IBOutlet NSTextField *gsPathTextField;
 @property IBOutlet NSButton *guessCompilationButton;
 @property IBOutlet NSTextField *numberOfCompilationTextField;
@@ -210,7 +210,7 @@ typedef enum {
 @synthesize topMarginSlider;
 @synthesize bottomMarginSlider;
 @synthesize latexPathTextField;
-@synthesize dvipdfmxPathTextField;
+@synthesize dviwarePathTextField;
 @synthesize gsPathTextField;
 @synthesize guessCompilationButton;
 @synthesize numberOfCompilationTextField;
@@ -367,7 +367,7 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(showNotFoundErrorOnMainThread:) withObject:aPath waitUntilDone:YES];
 }
 
-- (BOOL)latexExistsAtPath:(NSString*)latexPath dvipdfmxPath:(NSString*)dvipdfmxPath gsPath:(NSString*)gsPath
+- (BOOL)latexExistsAtPath:(NSString*)latexPath dviwarePath:(NSString*)dviwarePath gsPath:(NSString*)gsPath
 {
 	NSFileManager *fileManager = NSFileManager.defaultManager;
 	
@@ -375,8 +375,8 @@ typedef enum {
 		[self showNotFoundError:latexPath];
 		return NO;
 	}
-	if (![fileManager fileExistsAtPath:dvipdfmxPath.programPath]) {
-		[self showNotFoundError:dvipdfmxPath];
+	if (![fileManager fileExistsAtPath:dviwarePath.programPath]) {
+		[self showNotFoundError:dviwarePath];
 		return NO;
 	}
 	if (![fileManager fileExistsAtPath:gsPath.programPath]) {
@@ -694,7 +694,7 @@ typedef enum {
     }
 	
 	[self loadSettingForTextField:latexPathTextField fromProfile:aProfile forKey:LatexPathKey];
-	[self loadSettingForTextField:dvipdfmxPathTextField fromProfile:aProfile forKey:DvipdfmxPathKey];
+	[self loadSettingForTextField:dviwarePathTextField fromProfile:aProfile forKey:DviwarePathKey];
 	[self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
 	
 	[self loadSettingForTextField:resolutionLabel fromProfile:aProfile forKey:ResolutionLabelKey];
@@ -811,7 +811,7 @@ typedef enum {
         currentProfile[UtfExportKey] = @(utfExportCheckBox.state);
         
         currentProfile[LatexPathKey] = latexPathTextField.stringValue;
-        currentProfile[DvipdfmxPathKey] = dvipdfmxPathTextField.stringValue;
+        currentProfile[DviwarePathKey] = dviwarePathTextField.stringValue;
         currentProfile[GsPathKey] = gsPathTextField.stringValue;
         currentProfile[GuessCompilationKey] = @(guessCompilationButton.state);
         currentProfile[NumberOfCompilationKey] = @(numberOfCompilationTextField.integerValue);
@@ -1318,7 +1318,7 @@ typedef enum {
                @"%@\n%@\n%@\n%@\n%@",
                parameters[@"Msg1"],
                parameters[LatexPathKey],
-               parameters[DvipdfmxPathKey],
+               parameters[DviwarePathKey],
                parameters[GsPathKey],
                parameters[@"Msg2"]
                );
@@ -1917,7 +1917,7 @@ typedef enum {
 - (void)searchProgramsLogic:(NSDictionary*)parameters
 {
     NSString *latexPath;
-    NSString *dvipdfmxPath;
+    NSString *dviwarePath;
     NSString *gsPath;
     
     NSString *templateName = [autoDetectionTargetMatrix.selectedCell title];
@@ -1927,8 +1927,8 @@ typedef enum {
         latexPath = @"";
         [self showNotFoundError:@"LaTeX"];
     }
-    if (!(dvipdfmxPath = [self searchProgram:@"dvipdfmx"])) {
-        dvipdfmxPath = @"";
+    if (!(dviwarePath = [self searchProgram:@"dvipdfmx"])) {
+        dviwarePath = @"";
         [self showNotFoundError:@"dvipdfmx"];
     }
     if (!(gsPath = [self searchProgram:@"gs"])) {
@@ -1937,7 +1937,7 @@ typedef enum {
     }
     
     latexPathTextField.stringValue = latexPath;
-    dvipdfmxPathTextField.stringValue = dvipdfmxPath;
+    dviwarePathTextField.stringValue = dviwarePath;
     gsPathTextField.stringValue = gsPath;
     
     [self performSelectorOnMainThread:@selector(showAutoDetectionResult:)
@@ -1946,7 +1946,7 @@ typedef enum {
                                         @"Msg1": parameters[@"Msg1"],
                                         @"Msg2": parameters[@"Msg2"],
                                         LatexPathKey: latexPath,
-                                        DvipdfmxPathKey: dvipdfmxPath,
+                                        DviwarePathKey: dviwarePath,
                                         GsPathKey: gsPath
                                         }
                         waitUntilDone:[parameters[@"waitUntilDone"] boolValue]];
@@ -2018,7 +2018,7 @@ typedef enum {
         [output appendFormat:@"The number of compilation: %ld\n", [aProfile integerForKey:NumberOfCompilationKey]];
     }
     
-    [output appendFormat:@"dvipdfmx: %@\n", [aProfile stringForKey:DvipdfmxPathKey]];
+    [output appendFormat:@"DVIware: %@\n", [aProfile stringForKey:DviwarePathKey]];
     [output appendFormat:@"Ghostscript: %@\n", [aProfile stringForKey:GsPathKey]];
     
     [output appendFormat:@"Resolution level: %.1f\n", [aProfile floatForKey:ResolutionKey]];
