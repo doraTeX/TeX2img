@@ -290,17 +290,38 @@
     return success;
 }
 
-- (BOOL)dvi2pdf:(NSString*)dviFilePath
+- (BOOL)execDVIware:(NSString*)dviFilePath
 {
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
     [cmdline appendString:dviwarePath];
 	BOOL status = [controller execCommand:cmdline
                               atDirectory:tempdir
-                            withArguments:@[@"-vv", dviFilePath]
+                            withArguments:@[dviFilePath]
                                     quiet:quietFlag];
 	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];	
 	
 	return status;
+}
+
+- (BOOL)ps2pdf:(NSString*)psFilePath outputFile:(NSString*)pdfFilePath
+{
+    NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
+    [cmdline appendString:gsPath];
+    BOOL status = [controller execCommand:cmdline
+                              atDirectory:tempdir
+                            withArguments:@[@"-dSAFER",
+                                            @"-dNOPAUSE",
+                                            @"-dBATCH",
+                                            [@"-sOutputFile=" stringByAppendingString:pdfFilePath],
+                                            @"-sDEVICE=pdfwrite",
+                                            @"-c",
+                                            @".setpdfwrite",
+                                            @"-f",
+                                            psFilePath]
+                                    quiet:quietFlag];
+    [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
+    
+    return status;
 }
 
 // gsを実行して(非HiRes)BoundingBox情報を取得
@@ -794,13 +815,15 @@
 {
 	NSString* texFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	NSString* dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+    NSString* psFilePath  = [NSString stringWithFormat:@"%@.ps",  [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	NSString* pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
     NSString* croppedPdfFilePath = [NSString stringWithFormat:@"%@-crop.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
     NSString* pdfFileName = [NSString stringWithFormat:@"%@.pdf", tempFileBaseName];
 	NSString* outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
 	NSString* outputFileName = outputFilePath.lastPathComponent;
 	NSString* extension = outputFilePath.pathExtension.lowercaseString;
-	
+    NSDate *texDate, *dviDate, *psDate, *pdfDate;
+
     errorsIgnored = NO;
     
     [fileManager changeCurrentDirectoryPath:tempdir];
@@ -821,10 +844,10 @@
         BOOL compilationSuceeded = NO;
         BOOL requireDviware = NO;
         
-        NSDate *texDate = [self fileModificationDateAtPath:texFilePath];
+        texDate = [self fileModificationDateAtPath:texFilePath];
         
         if ([fileManager fileExistsAtPath:pdfFilePath]) { // PDF が存在する場合
-            NSDate *pdfDate = [self fileModificationDateAtPath:pdfFilePath];
+            pdfDate = [self fileModificationDateAtPath:pdfFilePath];
             if (pdfDate && [pdfDate isNewerThan:texDate]) {
                 requireDviware = NO; // 新しい PDF が生成されていれば DVIware にかける必要なしと見なす
                 compilationSuceeded = YES;
@@ -832,7 +855,7 @@
         }
         
         if (!compilationSuceeded && [fileManager fileExistsAtPath:dviFilePath]) { // 新しい PDF が存在せず，DVI が存在する場合
-            NSDate *dviDate = [self fileModificationDateAtPath:dviFilePath];
+            dviDate = [self fileModificationDateAtPath:dviFilePath];
             if (dviDate && [dviDate isNewerThan:texDate]) {
                 requireDviware = YES; // 新しい PDF が存在せず，新しい DVI が生成されていれば DVIware にかける必要ありと見なす
                 compilationSuceeded = YES;
@@ -845,9 +868,69 @@
         }
         
         // DVI→PDF
-        if (requireDviware && (![self dvi2pdf:dviFilePath] || ![fileManager fileExistsAtPath:pdfFilePath])) {
-            [controller showExecError:@"DVIware"];
-            return NO;
+        if (requireDviware) {
+            success = [self execDVIware:dviFilePath];
+            if (!success) {
+                if (ignoreErrorsFlag) {
+                    errorsIgnored = YES;
+                } else {
+                    [controller showExecError:@"DVIware"];
+                    return NO;
+                }
+            }
+            [controller exitCurrentThreadIfTaskKilled];
+
+            compilationSuceeded = NO;
+            BOOL requireGS = NO;
+            
+            if ([fileManager fileExistsAtPath:pdfFilePath]) { // PDF が存在する場合
+                pdfDate = [self fileModificationDateAtPath:pdfFilePath];
+                if (pdfDate && [pdfDate isNewerThan:texDate]) {
+                    requireGS = NO;
+                    compilationSuceeded = YES;
+                }
+            }
+            
+            if (!compilationSuceeded && [fileManager fileExistsAtPath:psFilePath]) { // 新しい PDF が存在せず，PS が存在する場合
+                psDate = [self fileModificationDateAtPath:psFilePath];
+                if (psDate && [psDate isNewerThan:dviDate]) {
+                    requireGS = YES; // 新しい PDF が存在せず，新しい PS が生成されていれば GS にかける必要ありと見なす
+                    compilationSuceeded = YES;
+                }
+            }
+            
+            if (!compilationSuceeded) {
+                [controller showExecError:@"DVIware"];
+                return NO;
+            }
+            
+            // PS→PDF
+            if (requireGS) {
+                success = [self ps2pdf:psFilePath outputFile:pdfFilePath];
+                if (!success) {
+                    if (ignoreErrorsFlag) {
+                        errorsIgnored = YES;
+                    } else {
+                        [controller showExecError:@"Ghostscript"];
+                        return NO;
+                    }
+                }
+                [controller exitCurrentThreadIfTaskKilled];
+                
+                compilationSuceeded = NO;
+                
+                if ([fileManager fileExistsAtPath:pdfFilePath]) { // PDF が存在する場合
+                    NSDate *pdfDate = [self fileModificationDateAtPath:pdfFilePath];
+                    if (pdfDate && [pdfDate isNewerThan:psDate]) {
+                        compilationSuceeded = YES;
+                    }
+                }
+
+                if (!compilationSuceeded) {
+                    [controller showExecError:@"Ghostscript"];
+                    return NO;
+                }
+            }
         }
     }
 
@@ -1085,6 +1168,7 @@
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.dvi", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.log", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.aux", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.ps", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.outline.pdf", basePath] error:nil];
