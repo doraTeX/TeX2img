@@ -29,8 +29,8 @@ static void usage()
     printf("  OutputFile : path of an output file\n");
     printf("               (*extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
     printf("Options:\n");
-    printf("  --compiler   COMPILER      : set the LaTeX compiler (default: platex)\n");
-    printf("  --kanji ENCODING           : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
+    printf("  --latex      COMPILER      : set the LaTeX compiler (default: platex)\n");
+    printf("  --kanji      ENCODING      : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: enabled)\n");
     printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
     printf("  --dviware    DVIWARE       : set dviware     (default: dvipdfmx)\n");
@@ -178,7 +178,7 @@ int main (int argc, char *argv[]) {
         BOOL copyToClipboardFlag = NO;
         BOOL embedSourceFlag = YES;
         NSString *encoding = PTEX_ENCODING_NONE;
-        NSString *compiler = @"platex";
+        NSString *latex    = @"platex";
         NSString *dviware  = @"dvipdfmx";
         NSString *gs       = @"gs";
         NSNumber *unitTag = @(PX_UNIT_TAG);
@@ -299,7 +299,7 @@ int main (int argc, char *argv[]) {
         options[i].val = i+1;
 
         i++;
-        options[i].name = "compiler";
+        options[i].name = "latex";
         options[i].has_arg = required_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
@@ -521,11 +521,11 @@ int main (int argc, char *argv[]) {
                 case 18: // --no-quiet
                     quietFlag = NO;
                     break;
-                case 19: // --compiler
+                case 19: // --latex
                     if (optarg) {
-                        compiler = @(optarg);
+                        latex = @(optarg);
                     } else {
-                        printf("--compiler is invalid.\n");
+                        printf("--latex is invalid.\n");
                         usage();
                     }
                     break;
@@ -649,7 +649,7 @@ int main (int argc, char *argv[]) {
         ControllerC *controller = [ControllerC new];
         
         // 実行プログラムのパスチェック
-        NSString *latexPath = getPath(compiler.programPath);
+        NSString *latexPath = getPath(latex.programPath);
         NSString *dviwarePath = getPath(dviware.programPath);
         NSString *gsPath = getPath(gs.programPath);
         NSString *epstopdfPath = getPath(@"epstopdf");
@@ -676,7 +676,7 @@ int main (int argc, char *argv[]) {
         }
         
         NSMutableDictionary *aProfile = [NSMutableDictionary dictionary];
-        aProfile[LatexPathKey] = [latexPath stringByAppendingStringSeparetedBySpace:compiler.argumentsString];
+        aProfile[LatexPathKey] = [latexPath stringByAppendingStringSeparetedBySpace:latex.argumentsString];
         aProfile[DviwarePathKey] = [dviwarePath stringByAppendingStringSeparetedBySpace:dviware.argumentsString];
         aProfile[GsPathKey] = [gsPath stringByAppendingStringSeparetedBySpace:gs.argumentsString];
         aProfile[EpstopdfPathKey] = epstopdfPath;
