@@ -297,18 +297,9 @@
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
     [cmdline appendString:dviwarePath];
     
-    NSString *dviwareName = dviwarePath.programName;
-    NSString *additionalOption = @"";
-    
-    if ([dviwareName isEqualToString:@"dvipdfmx"]) {
-        additionalOption = @"-vv";
-    } else if ([dviwareName isEqualToString:@"dvips"]) {
-        additionalOption = @"-Ppdf";
-    }
-    
 	BOOL status = [controller execCommand:cmdline
                               atDirectory:tempdir
-                            withArguments:@[additionalOption, dviFilePath]
+                            withArguments:@[dviFilePath]
                                     quiet:quietFlag];
 	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];	
 	
