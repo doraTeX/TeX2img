@@ -9,18 +9,18 @@
 #import "NSDictionary-Extension.h"
 
 #define OPTION_NUM 40
-#define VERSION "2.0.0b2"
+#define VERSION "2.0.0b3"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
 #define DISABLED "disabled"
 
-static void version()
+void version()
 {
     printf("tex2img Ver.%s\n", VERSION);
 }
 
-static void usage()
+void usage()
 {
 	version();
     printf("Usage: tex2img [options] InputFile OutputFile\n");
@@ -609,7 +609,7 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 35: // --compiler (hidden option, synonym for --latex)
+                case 35: // --compiler (hidden option for compatibility, synonym for --latex)
                     if (optarg) {
                         latex = @(optarg);
                     } else {
@@ -625,7 +625,7 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 37: // --dvipdfmx (hidden option, synonym for --dviware)
+                case 37: // --dvipdfmx (hidden option for compatibility, synonym for --dviware)
                     if (optarg) {
                         dviware = @(optarg);
                     } else {
