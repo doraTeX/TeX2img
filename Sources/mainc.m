@@ -8,7 +8,7 @@
 #import "NSString-Extension.h"
 #import "NSDictionary-Extension.h"
 
-#define OPTION_NUM 38
+#define OPTION_NUM 40
 #define VERSION "2.0.0b2"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
@@ -299,12 +299,6 @@ int main (int argc, char *argv[]) {
         options[i].val = i+1;
 
         i++;
-        options[i].name = "latex";
-        options[i].has_arg = required_argument;
-        options[i].flag = NULL;
-        options[i].val = i+1;
-
-        i++;
         options[i].name = "unit";
         options[i].has_arg = required_argument;
         options[i].flag = NULL;
@@ -353,12 +347,6 @@ int main (int argc, char *argv[]) {
         options[i].val = i+1;
 
         i++;
-        options[i].name = "dviware";
-        options[i].has_arg = required_argument;
-        options[i].flag = NULL;
-        options[i].val = i+1;
-
-        i++;
         options[i].name = "gs";
         options[i].has_arg = required_argument;
         options[i].flag = NULL;
@@ -397,6 +385,30 @@ int main (int argc, char *argv[]) {
         i++;
         options[i].name = "no-copy-to-clipboard";
         options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "latex";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "compiler";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+        
+        i++;
+        options[i].name = "dviware";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+        
+        i++;
+        options[i].name = "dvipdfmx";
+        options[i].has_arg = required_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
 
@@ -521,15 +533,7 @@ int main (int argc, char *argv[]) {
                 case 18: // --no-quiet
                     quietFlag = NO;
                     break;
-                case 19: // --latex
-                    if (optarg) {
-                        latex = @(optarg);
-                    } else {
-                        printf("--latex is invalid.\n");
-                        usage();
-                    }
-                    break;
-                case 20: // --unit
+                case 19: // --unit
                     if (optarg) {
                         NSString *unitString = @(optarg);
                         if ([unitString isEqualToString:@"px"]) {
@@ -545,13 +549,13 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 21: // --quick
+                case 20: // --quick
                     quickFlag = YES;
                     break;
-                case 22: // --no-quick
+                case 21: // --no-quick
                     quickFlag = NO;
                     break;
-                case 23: // --num
+                case 22: // --num
                     if (optarg) {
                         numberOfCompilation = strtoi(optarg);
                     } else {
@@ -559,27 +563,19 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 24: // --guess-compile
+                case 23: // --guess-compile
                     guessFlag = YES;
                     break;
-                case 25: // --no-guess-compile
+                case 24: // --no-guess-compile
                     guessFlag = NO;
                     break;
-                case 26: // --preview
+                case 25: // --preview
                     previewFlag = YES;
                     break;
-                case 27: // --no-preview
+                case 26: // --no-preview
                     previewFlag = NO;
                     break;
-                case 28: // --dviware
-                    if (optarg) {
-                        dviware = @(optarg);
-                    } else {
-                        printf("--dviware is invalid.\n");
-                        usage();
-                    }
-                    break;
-                case 29: // --gs
+                case 27: // --gs
                     if (optarg) {
                         gs = @(optarg);
                     } else {
@@ -587,23 +583,41 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 30: // --embed-source
+                case 28: // --embed-source
                     embedSourceFlag = YES;
                     break;
-                case 31: // --no-embed-source
+                case 29: // --no-embed-source
                     embedSourceFlag = NO;
                     break;
-                case 32: // --delete-display-size
+                case 30: // --delete-display-size
                     deleteDisplaySizeFlag = YES;
                     break;
-                case 33: // --no-delete-display-size
+                case 31: // --no-delete-display-size
                     deleteDisplaySizeFlag = NO;
                     break;
-                case 34: // --copy-to-clipboard
+                case 32: // --copy-to-clipboard
                     copyToClipboardFlag = YES;
                     break;
-                case 35: // --no-copy-to-clipboard
+                case 33: // --no-copy-to-clipboard
                     copyToClipboardFlag = NO;
+                    break;
+                case 34: // --latex
+                case 35: // --compiler
+                    if (optarg) {
+                        latex = @(optarg);
+                    } else {
+                        printf("--latex is invalid.\n");
+                        usage();
+                    }
+                    break;
+                case 36: // --dviware
+                case 37: // --dvipdfmx
+                    if (optarg) {
+                        dviware = @(optarg);
+                    } else {
+                        printf("--dviware is invalid.\n");
+                        usage();
+                    }
                     break;
                 case (OPTION_NUM - 2): // --version
                     version();
@@ -615,7 +629,6 @@ int main (int argc, char *argv[]) {
                 default:
                     usage();
                     break;
-                    
             }
         }
         
