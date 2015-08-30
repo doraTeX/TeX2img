@@ -609,7 +609,7 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 35: // --compiler
+                case 35: // --compiler (hidden option, synonym for --latex)
                     if (optarg) {
                         latex = @(optarg);
                     } else {
@@ -625,7 +625,7 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 37: // --dvipdfmx
+                case 37: // --dvipdfmx (hidden option, synonym for --dviware)
                     if (optarg) {
                         dviware = @(optarg);
                     } else {
