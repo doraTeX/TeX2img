@@ -363,7 +363,7 @@
     NSRange modifyRange;
     NSUInteger blockStart, blockEnd, lineStart, lineContentsEnd, lineEnd;
     NSInteger theChar = 0, increment = 0, rangeIncrement;
-    NSString *theCommand = nil;
+    NSString *theCommand;
     NSUInteger tabWidth, i;
     NSString *indentString;
     NSDictionary *aProfile = controller.currentProfile;
@@ -535,7 +535,7 @@
     [self insertText:contents replacementRange:NSMakeRange(0, self.textStorage.mutableString.length)];
     [self colorizeText];
     self.selectedRange = NSMakeRange(0, 0);
-    [self scrollRangeToVisible: NSMakeRange(0, 0)];
+    [self scrollRangeToVisible:NSMakeRange(0, 0)];
 }
 
 - (IBAction)closeCurrentEnvironment:(id)sender
@@ -561,8 +561,8 @@
         range1 = [match rangeAtIndex:1];
         range2 = [match rangeAtIndex:2];
         
-        prefix = (range1.location == NSNotFound) ? nil : [target substringWithRange:range1];
-        environment = (range2.location == NSNotFound) ? nil : [target substringWithRange:range2];
+        prefix = (range1.location == NSNotFound) ? @"" : [target substringWithRange:range1];
+        environment = (range2.location == NSNotFound) ? @"" : [target substringWithRange:range2];
         
         increment = [prefix isEqualToString:@"end"] ? 1 : -1;
         
@@ -702,11 +702,11 @@
     BOOL makeatletterEnabled = controller ? [controller.currentProfile boolForKey:MakeatletterEnabledKey] : YES;
     
     textString = self.string;
-    if (textString == nil) {
+    if (!textString) {
         return replacementRange;
     }
     
-    replacementRange = [super selectionRangeForProposedRange: proposedSelRange granularity: granularity];
+    replacementRange = [super selectionRangeForProposedRange:proposedSelRange granularity:granularity];
     
     // Extend word selection to cover an initial backslash (TeX command)
     if (granularity == NSSelectByWord) {
@@ -888,7 +888,7 @@
     return currentDragOperation;
 }
 
-- (void)draggingExited:(id <NSDraggingInfo>)info
+- (void)draggingExited:(id<NSDraggingInfo>)info
 {
     self.draggingState = NO;
     return;

@@ -1,4 +1,3 @@
-#import <stdio.h>
 #import <Quartz/Quartz.h>
 #import <sys/xattr.h>
 #import "global.h"

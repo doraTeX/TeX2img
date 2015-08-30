@@ -181,7 +181,7 @@
 
 
 - (NSDragOperation)tableView:(NSTableView*)aTableView 
-				validateDrop:(id <NSDraggingInfo>)info 
+				validateDrop:(id<NSDraggingInfo>)info
 				 proposedRow:(NSInteger)row 
 	   proposedDropOperation:(NSTableViewDropOperation)op
 {
@@ -213,7 +213,7 @@
 }
 
 - (BOOL)tableView:(NSTableView*)aTableView
-	   acceptDrop:(id <NSDraggingInfo>)info
+	   acceptDrop:(id<NSDraggingInfo>)info
 			  row:(NSInteger)insertionRow
 	dropOperation:(NSTableViewDropOperation)op
 {
