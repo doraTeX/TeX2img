@@ -602,7 +602,6 @@ int main (int argc, char *argv[]) {
                     copyToClipboardFlag = NO;
                     break;
                 case 34: // --latex
-                case 35: // --compiler
                     if (optarg) {
                         latex = @(optarg);
                     } else {
@@ -610,12 +609,27 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
+                case 35: // --compiler
+                    if (optarg) {
+                        latex = @(optarg);
+                    } else {
+                        printf("--compiler is invalid.\n");
+                        usage();
+                    }
+                    break;
                 case 36: // --dviware
-                case 37: // --dvipdfmx
                     if (optarg) {
                         dviware = @(optarg);
                     } else {
                         printf("--dviware is invalid.\n");
+                        usage();
+                    }
+                    break;
+                case 37: // --dvipdfmx
+                    if (optarg) {
+                        dviware = @(optarg);
+                    } else {
+                        printf("--dvipdfmx is invalid.\n");
                         usage();
                     }
                     break;
