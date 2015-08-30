@@ -1135,7 +1135,7 @@ DQ
                                         <button verticalHuggingPriority="750" id="RkS-Yo-COm">
                                             <rect key="frame" x="318" y="233" width="53" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="inline" title="対象..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="024-oF-i0v">
+                                            <buttonCell key="cell" type="inline" title="詳細..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="024-oF-i0v">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" size="11" name="HiraKakuProN-W6"/>
                                             </buttonCell>

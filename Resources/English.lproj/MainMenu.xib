@@ -1228,25 +1228,14 @@ DQ
                                             </popUpButtonCell>
                                         </popUpButton>
                                         <button verticalHuggingPriority="750" id="FwS-Cq-GFW">
-                                            <rect key="frame" x="308" y="228" width="58" height="17"/>
+                                            <rect key="frame" x="292" y="228" width="78" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="inline" title="Target..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VAb-nX-PNb">
+                                            <buttonCell key="cell" type="inline" title="Advanced..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VAb-nX-PNb">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="smallSystemBold"/>
                                             </buttonCell>
                                             <connections>
                                                 <action selector="showAutoDetectionTargetSettingPopover:" target="450" id="b19-4f-h6D"/>
-                                            </connections>
-                                        </button>
-                                        <button verticalHuggingPriority="750" id="718">
-                                            <rect key="frame" x="191" y="220" width="115" height="32"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="push" title="Auto Detect" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="719">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="searchPrograms:" target="450" id="720"/>
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" id="595">
@@ -1258,6 +1247,17 @@ DQ
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
+                                        <button verticalHuggingPriority="750" id="718">
+                                            <rect key="frame" x="175" y="220" width="115" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Auto Detect" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="719">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="searchPrograms:" target="450" id="720"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
