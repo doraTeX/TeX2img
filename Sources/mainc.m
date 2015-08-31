@@ -519,11 +519,11 @@ int main (int argc, char *argv[]) {
                                    && ![encoding isEqualToString:PTEX_ENCODING_SJIS]
                                    && ![encoding isEqualToString:PTEX_ENCODING_JIS]
                                    && ![encoding isEqualToString:PTEX_ENCODING_EUC]) {
-                            printf("--kanji is invalid.\n");
+                            printf("--kanji is invalid. It must be no/utf8/sjis/jis/euc.\n");
                             usage();
                         }
                     } else {
-                        printf("--kanji is invalid.\n");
+                        printf("--kanji is invalid. It must be no/utf8/sjis/jis/euc.\n");
                         usage();
                     }
                     break;
@@ -541,11 +541,11 @@ int main (int argc, char *argv[]) {
                         } else if ([unitString isEqualToString:@"bp"]) {
                             unitTag = @(BP_UNIT_TAG);
                         } else {
-                            printf("--unit is invalid.\n");
+                            printf("--unit is invalid. It must be \"px\" or \"bp\".\n");
                             usage();
                         }
                     } else {
-                        printf("--unit is invalid.\n");
+                        printf("--unit is invalid. It must be \"px\" or \"bp\".\n");
                         usage();
                     }
                     break;
@@ -664,7 +664,7 @@ int main (int argc, char *argv[]) {
             exit(1);
         }
         if (![InputExtensionsArray containsObject:inputFilePath.pathExtension]) {
-            printStdErr("tex2img : Input file type is invalid. - %s\n", inputFilePath.UTF8String);
+            printStdErr("tex2img : Invalid input file type - %s\n", inputFilePath.UTF8String);
             exit(1);
         }
         
@@ -703,14 +703,13 @@ int main (int argc, char *argv[]) {
         }
         
         NSMutableDictionary *aProfile = [NSMutableDictionary dictionary];
+        
         aProfile[LatexPathKey] = [latexPath stringByAppendingStringSeparetedBySpace:latex.argumentsString];
         aProfile[DviwarePathKey] = [dviwarePath stringByAppendingStringSeparetedBySpace:dviware.argumentsString];
         aProfile[GsPathKey] = [gsPath stringByAppendingStringSeparetedBySpace:gs.argumentsString];
         aProfile[EpstopdfPathKey] = epstopdfPath;
         aProfile[MudrawPathKey] = mudrawPath;
-        
         aProfile[OutputFileKey] = outputFilePath;
-        
         aProfile[EncodingKey] = encoding;
         aProfile[NumberOfCompilationKey] = @(numberOfCompilation);
         aProfile[ResolutionKey] = @(resolutoinLevel);
