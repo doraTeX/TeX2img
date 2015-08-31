@@ -294,7 +294,7 @@
                 if (completionString) {
                     autoCompleting = YES;
                     [self insertSpecialNonStandard:completionString
-                                           undoKey:@"Autocompletion"];
+                                           undoKey:localizedString(@"Auto Completion")];
                     autoCompleting = NO;
                     return;
                 }
