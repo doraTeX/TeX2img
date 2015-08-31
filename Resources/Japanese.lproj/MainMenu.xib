@@ -837,10 +837,10 @@ DQ
                                                         </textFieldCell>
                                                     </textField>
                                                     <matrix autoresizesSubviews="NO" verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="KJF-Fz-y67">
-                                                        <rect key="frame" x="67" y="12" width="102" height="18"/>
+                                                        <rect key="frame" x="67" y="12" width="116" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="49" height="18"/>
+                                                        <size key="cellSize" width="56" height="18"/>
                                                         <size key="intercellSpacing" width="4" height="2"/>
                                                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="sA5-W9-6ZR">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -862,7 +862,7 @@ DQ
                                                         </cells>
                                                     </matrix>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="A8Q-v6-iNx">
-                                                        <rect key="frame" x="153" y="10" width="216" height="17"/>
+                                                        <rect key="frame" x="175" y="10" width="216" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="（EPS/PDF/SVG は bp (big point) 固定）" id="9sU-Pg-yh4">
                                                             <font key="font" metaFont="smallSystem"/>
@@ -1101,7 +1101,7 @@ DQ
                                                         </buttonCell>
                                                         <cells>
                                                             <column>
-                                                                <buttonCell type="radio" title="画質優先" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="AUh-C0-uz0">
+                                                                <buttonCell type="radio" title="画質優先（推奨）" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="AUh-C0-uz0">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
@@ -1648,17 +1648,6 @@ DQ
                                                 <action selector="colorSettingChanged:" target="450" id="xAf-Hd-6EX"/>
                                             </connections>
                                         </colorWell>
-                                        <button toolTip="\foo@bar のような並びを1つの制御綴として着色します。" id="v1y-4P-OKt">
-                                            <rect key="frame" x="250" y="167" width="176" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="\makeatletter 有効扱い" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Pqe-N5-87f">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="refreshTextView:" target="450" id="9It-Pt-h4q"/>
-                                            </connections>
-                                        </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="5Nr-cj-FO2">
                                             <rect key="frame" x="104" y="199" width="86" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -1668,6 +1657,17 @@ DQ
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
+                                        <button toolTip="\foo@bar のような並びを1つの制御綴として着色します。" id="v1y-4P-OKt">
+                                            <rect key="frame" x="250" y="165" width="176" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="\makeatletter 有効扱い" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Pqe-N5-87f">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="smallSystem"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="refreshTextView:" target="450" id="9It-Pt-h4q"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -1761,7 +1761,7 @@ DQ
                     </tabView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-110.5" y="667"/>
+            <point key="canvasLocation" x="-517.5" y="640"/>
         </window>
         <window title="設定の保存・読み込み" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="672" userLabel="Window (設定の保存・読み込み)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
