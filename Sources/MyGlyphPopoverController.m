@@ -52,12 +52,12 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
 {
     NSMutableAttributedString *contents;
 }
-- (id)init;
-- (id)initWithAttributedString:(NSAttributedString*)attrStr;
+- (instancetype)init;
+- (instancetype)initWithAttributedString:(NSAttributedString*)attrStr;
 @end
 
 @implementation MyGlyphPopoverUnicodesTextStorage
-- (id)initWithAttributedString:(NSAttributedString*)attrStr
+- (instancetype)initWithAttributedString:(NSAttributedString*)attrStr
 {
     if ((self = [super init])) {
         contents = attrStr ? [attrStr mutableCopy] : [NSMutableAttributedString new];
@@ -65,7 +65,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithAttributedString:nil];
 }

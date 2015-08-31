@@ -19,8 +19,8 @@
 }
 - (BOOL)isValidTeXCommandChar:(unichar)c;
 - (void)registerUndoWithString:(NSString*)oldString
-                      location:(unsigned)oldLocation
-                        length:(unsigned)newLength
+                      location:(NSUInteger)oldLocation
+                        length:(NSUInteger)newLength
                            key:(NSString*)key;
 - (void)setEnabled:(BOOL)enabled;
 - (void)replaceEntireContentsWithString:(NSString*)contents;

@@ -1463,12 +1463,12 @@ typedef enum {
             contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
             lastSavedPath = inputPath;
         } else { // 画像ファイルのインプット
-            int bufferLength = getxattr(inputPath.UTF8String, EA_Key, NULL, 0, 0, 0); // EAを取得
+            ssize_t bufferLength = getxattr(inputPath.UTF8String, EA_Key, NULL, 0, 0, 0); // EAを取得
             if (bufferLength < 0) { // ソース情報が含まれない画像ファイルの場合はエラー
                 runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
                 return;
             } else { // ソース情報が含まれる画像ファイルの場合はそれをEAから取得して contents にセット（EAに保存されたソースは常にUTF8）
-                char *buffer = malloc(bufferLength);
+                char *buffer = (char*)malloc(bufferLength);
                 getxattr(inputPath.UTF8String, EA_Key, buffer, bufferLength, 0, 0);
                 contents = [[NSString alloc] initWithBytes:buffer length:bufferLength encoding:NSUTF8StringEncoding];
                 free(buffer);

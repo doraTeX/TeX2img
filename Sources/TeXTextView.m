@@ -189,8 +189,8 @@
 }
 
 - (void)registerUndoWithString:(NSString*)oldString
-                      location:(unsigned)oldLocation
-                        length:(unsigned)newLength
+                      location:(NSUInteger)oldLocation
+                        length:(NSUInteger)newLength
                            key:(NSString*)key
 {
     NSUndoManager *myManager = self.undoManager;
@@ -235,7 +235,7 @@
     NSRange oldRange, searchRange;
     NSMutableString *stringBuf;
     NSString *oldString, *newString;
-    unsigned from, to;
+    NSUInteger from, to;
     
     stringBuf = [NSMutableString stringWithString:theString];
     

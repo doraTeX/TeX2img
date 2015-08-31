@@ -58,7 +58,7 @@ void usage()
     exit(1);
 }
 
-int strtoi(char *str)
+NSInteger strtoi(char *str)
 {
 	char *endptr;
 	long val;
@@ -77,7 +77,7 @@ int strtoi(char *str)
 		exit(1);
 	}
 	
-	return (int)val;
+	return (NSInteger)val;
 }
 
 void printCurrentStatus(NSString *inputFilePath, NSDictionary *aProfile)
@@ -160,11 +160,11 @@ int main (int argc, char *argv[]) {
         NSApplicationLoad(); // PDFKit を使ったときに _NXCreateWindow: error setting window property のエラーを防ぐため
         
         float resolutoinLevel = 15;
-        int numberOfCompilation = -1;
-        int leftMargin = 0;
-        int rightMargin = 0;
-        int topMargin = 0;
-        int bottomMargin = 0;
+        NSInteger numberOfCompilation = -1;
+        NSInteger leftMargin = 0;
+        NSInteger rightMargin = 0;
+        NSInteger topMargin = 0;
+        NSInteger bottomMargin = 0;
         BOOL textPdfFlag = NO;
         BOOL transparentFlag = YES;
         BOOL deleteDisplaySizeFlag = NO;
@@ -188,9 +188,9 @@ int main (int argc, char *argv[]) {
         int option_index;
         int opt;
         
-        options = malloc(sizeof(struct option) * OPTION_NUM);
+        options = (struct option*)malloc(sizeof(struct option) * OPTION_NUM);
         
-        int i = 0;
+        NSUInteger i = 0;
         options[i].name = "resolution";
         options[i].has_arg = required_argument;
         options[i].flag = NULL;

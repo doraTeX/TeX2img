@@ -196,7 +196,7 @@
 
 - (NSIndexSet*)moveObjectsOf:(NSMutableArray*)anArray
 				 fromIndexes:(NSIndexSet*)fromIndexSet 
-					 toIndex:(unsigned int)insertIndex
+					 toIndex:(NSInteger)insertIndex
 {	
 	// If any of the removed objects come before the insertion index,
 	// we need to decrement the index appropriately

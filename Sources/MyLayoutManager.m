@@ -16,7 +16,7 @@
 @synthesize fullwidthSpaceCharacter;
 @synthesize spaceCharacter;
 
-- (id)init
+- (instancetype)init
 {
     if (!(self = [super init])) {
         return nil;
@@ -32,7 +32,7 @@
 	return self;
 }
 
-- (NSPoint)pointToDrawGlyphAtIndex:(unsigned int)inGlyphIndex adjust:(NSSize)inSize
+- (NSPoint)pointToDrawGlyphAtIndex:(NSUInteger)inGlyphIndex adjust:(NSSize)inSize
 {
     NSPoint outPoint = [self locationForGlyphAtIndex:inGlyphIndex];
     NSRect theGlyphRect = [self lineFragmentRectForGlyphAtIndex:inGlyphIndex effectiveRange:NULL];
@@ -61,10 +61,10 @@
     if (!theColor) {
         theColor = NSColor.invisibleColor;
     }
-    NSDictionary* _attributes = @{
-                                  NSFontAttributeName: theFont,
-                                  NSForegroundColorAttributeName: theColor
-                                  };
+    NSDictionary* attributes = @{
+                                 NSFontAttributeName: theFont,
+                                 NSForegroundColorAttributeName: theColor
+                                 };
 	
 	for (theGlyphIndex = inGlyphRange.location; theGlyphIndex < theLengthToRedraw; theGlyphIndex++) {
 		theCharIndex = [self characterIndexForGlyphAtIndex:theGlyphIndex];
@@ -72,16 +72,16 @@
 		
 		if (theCharacter == '\t' && [currentProfile boolForKey:ShowTabCharacterKey]) {
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
-			[tabCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
+			[tabCharacter drawAtPoint:thePointToDraw withAttributes:attributes];
 		} else if (theCharacter == '\n' && [currentProfile boolForKey:ShowNewLineCharacterKey]) {
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
-			[returnCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
+			[returnCharacter drawAtPoint:thePointToDraw withAttributes:attributes];
 		} else if (theCharacter == 0x3000 && [currentProfile boolForKey:ShowFullwidthSpaceCharacterKey]) { // Fullwidth-space (JP)
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
-			[fullwidthSpaceCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
+			[fullwidthSpaceCharacter drawAtPoint:thePointToDraw withAttributes:attributes];
 		} else if (theCharacter == ' ' && [currentProfile boolForKey:ShowSpaceCharacterKey]) {
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
-			[spaceCharacter drawAtPoint:thePointToDraw withAttributes:_attributes];
+			[spaceCharacter drawAtPoint:thePointToDraw withAttributes:attributes];
 		}
 	}
 	[super drawGlyphsForGlyphRange:inGlyphRange atPoint:inContainerOrigin];

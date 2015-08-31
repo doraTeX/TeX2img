@@ -94,11 +94,11 @@ static NSString* endcommentString = @"›";
 	BOOL foundCandidate;
 	NSString *textString, *foundString, *latexString = 0;
 	NSMutableString *newString;
-	unsigned selectedLocation, currentLength;
+	NSUInteger selectedLocation, currentLength;
 	NSRange foundRange, searchRange, spaceRange, insRange, replaceRange;
 	// Start Changed by (HS) - define ins2Range, selectlength
 	NSRange ins2Range;
-	unsigned selectlength = 0;
+	NSInteger selectlength = 0;
 	// End Changed by (HS) - define ins2Range, selectlength
 	NSCharacterSet *charSet;
 	unichar c;
