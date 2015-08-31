@@ -16,5 +16,9 @@ typedef enum  {
 @interface ControllerG : NSObject<OutputController, DnDDelegate>
 - (void)adoptProfile:(NSDictionary*)aProfile;
 - (NSMutableDictionary*)currentProfile;
+- (NSString*)spaceCharacter;
+- (NSString*)fullwidthSpaceCharacter;
+- (NSString*)returnCharacter;
+- (NSString*)tabCharacter;
 @property IBOutlet TeXTextView *sourceTextView;
 @end

@@ -9,6 +9,8 @@
 #import "NSColor-Extension.h"
 #import "NSColorWell-Extension.h"
 #import "NSPipe-Extension.h"
+#import "NSPopover-Extension.h"
+#import "NSMatrix-Extension.h"
 #import "TeXTextView.h"
 #import "UtilityG.h"
 
@@ -135,6 +137,25 @@ typedef enum {
 @property IBOutlet NSViewController *autoDetectionTargetSettingViewController;
 @property IBOutlet NSMatrix *autoDetectionTargetMatrix;
 
+@property IBOutlet NSBox *invisibleCharacterBox;
+
+@property IBOutlet NSButton *spaceCharacterKindButton;
+@property IBOutlet NSButton *fullwidthSpaceCharacterKindButton;
+@property IBOutlet NSButton *returnCharacterKindButton;
+@property IBOutlet NSButton *tabCharacterKindButton;
+
+@property IBOutlet NSViewController *spaceCharacterKindSettingViewController;
+@property IBOutlet NSMatrix *spaceCharacterKindMatrix;
+
+@property IBOutlet NSViewController *fullwidthSpaceCharacterKindSettingViewController;
+@property IBOutlet NSMatrix *fullwidthSpaceCharacterKindMatrix;
+
+@property IBOutlet NSViewController *returnCharacterKindSettingViewController;
+@property IBOutlet NSMatrix *returnCharacterKindMatrix;
+
+@property IBOutlet NSViewController *tabCharacterKindSettingViewController;
+@property IBOutlet NSMatrix *tabCharacterKindMatrix;
+
 @property Converter *converter;
 @property NSTask *runningTask;
 @property NSPipe *outputPipe;
@@ -240,6 +261,25 @@ typedef enum {
 
 @synthesize autoDetectionTargetSettingViewController;
 @synthesize autoDetectionTargetMatrix;
+
+@synthesize invisibleCharacterBox;
+
+@synthesize spaceCharacterKindButton;
+@synthesize fullwidthSpaceCharacterKindButton;
+@synthesize returnCharacterKindButton;
+@synthesize tabCharacterKindButton;
+
+@synthesize spaceCharacterKindSettingViewController;
+@synthesize spaceCharacterKindMatrix;
+
+@synthesize fullwidthSpaceCharacterKindSettingViewController;
+@synthesize fullwidthSpaceCharacterKindMatrix;
+
+@synthesize returnCharacterKindSettingViewController;
+@synthesize returnCharacterKindMatrix;
+
+@synthesize tabCharacterKindSettingViewController;
+@synthesize tabCharacterKindMatrix;
 
 @synthesize converter;
 @synthesize runningTask;
@@ -719,9 +759,26 @@ typedef enum {
     [priorityMatrix selectCellWithTag:priorityTag];
 
     if ([keys containsObject:AutoDetectionTargetKey]) {
-        NSInteger autoDetectionTargetTag = [aProfile integerForKey:AutoDetectionTargetKey];
-        [autoDetectionTargetMatrix selectCellWithTag:autoDetectionTargetTag];
+        [autoDetectionTargetMatrix selectCellWithTag:[aProfile integerForKey:AutoDetectionTargetKey]];
     }
+
+    if ([keys containsObject:SpaceCharacterKindKey]) {
+        [spaceCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:SpaceCharacterKindKey]];
+    }
+
+    if ([keys containsObject:FullwidthSpaceCharacterKindKey]) {
+        [fullwidthSpaceCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:FullwidthSpaceCharacterKindKey]];
+    }
+
+    if ([keys containsObject:ReturnCharacterKindKey]) {
+        [returnCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:ReturnCharacterKindKey]];
+    }
+
+    if ([keys containsObject:TabCharacterKindKey]) {
+        [tabCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:TabCharacterKindKey]];
+    }
+
+    [self invisibleCharacterKindChanged:nil];
 
     [self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:PreambleKey];
     
@@ -741,6 +798,9 @@ typedef enum {
     [preambleTextView fixupTabs];
     [preambleTextView refreshWordWrap];
     
+    NSFont *displayFont = [NSFont fontWithName:sourceTextView.font.fontName size:spaceCharacterKindButton.font.pointSize];
+    [self setInvisibleCharacterFont:displayFont];
+    
     NSString *inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
     if (inputSourceFilePath) {
         inputSourceFileTextField.stringValue = inputSourceFilePath;
@@ -757,6 +817,19 @@ typedef enum {
         default:
             break;
     }
+}
+
+- (void)setInvisibleCharacterFont:(NSFont*)font
+{
+    [spaceCharacterKindMatrix setCellFont:font];
+    [fullwidthSpaceCharacterKindMatrix setCellFont:font];
+    [returnCharacterKindMatrix setCellFont:font];
+    [tabCharacterKindMatrix setCellFont:font];
+    
+    spaceCharacterKindButton.font = font;
+    fullwidthSpaceCharacterKindButton.font = font;
+    returnCharacterKindButton.font = font;
+    tabCharacterKindButton.font = font;
 }
 
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
@@ -839,6 +912,11 @@ typedef enum {
         currentProfile[PriorityKey] = @(priorityMatrix.selectedTag);
         
         currentProfile[AutoDetectionTargetKey] = @(autoDetectionTargetMatrix.selectedTag);
+
+        currentProfile[SpaceCharacterKindKey] = @(spaceCharacterKindMatrix.selectedTag);
+        currentProfile[FullwidthSpaceCharacterKindKey] = @(fullwidthSpaceCharacterKindMatrix.selectedTag);
+        currentProfile[ReturnCharacterKindKey] = @(returnCharacterKindMatrix.selectedTag);
+        currentProfile[TabCharacterKindKey] = @(tabCharacterKindMatrix.selectedTag);
         
         currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
         currentProfile[FlashInMovingKey] = @(flashInMovingCheckBox.state);
@@ -1178,17 +1256,12 @@ typedef enum {
     colorPalleteColorWell.color = NSColor.redColor;
     [self colorPalleteColorSet:colorPalleteColorWell];
     
-    // 自動判定エンジン選択ポップアップの色設定
-    [autoDetectionTargetMatrix.cells enumerateObjectsUsingBlock:^(NSButtonCell *cell, NSUInteger idx, BOOL *stop){
-        NSMutableAttributedString *colorTitle =
-        [[NSMutableAttributedString alloc] initWithAttributedString:cell.attributedTitle];
-        
-        [colorTitle addAttribute:NSForegroundColorAttributeName
-                           value:NSColor.textColor
-                           range:NSMakeRange(0, colorTitle.length)];
-        
-        cell.attributedTitle = colorTitle;
-    }];
+    // ポップアップ内の NSMatrix の色設定
+    [autoDetectionTargetMatrix setCellColor:NSColor.textColor];
+    [spaceCharacterKindMatrix setCellColor:NSColor.textColor];
+    [fullwidthSpaceCharacterKindMatrix setCellColor:NSColor.textColor];
+    [returnCharacterKindMatrix setCellColor:NSColor.textColor];
+    [tabCharacterKindMatrix setCellColor:NSColor.textColor];
 	
 	// 保存された設定を読み込む
 	NSFileManager *fileManager = NSFileManager.defaultManager;
@@ -1901,6 +1974,9 @@ typedef enum {
     sourceTextView.font = font;
     preambleTextView.font = font;
     outputTextView.font = font;
+    
+    NSFont *displayFont = [NSFont fontWithName:font.fontName size:spaceCharacterKindButton.font.pointSize];
+    [self setInvisibleCharacterFont:displayFont];
 }
 
 - (IBAction)colorSettingChanged:(id)sender
@@ -2140,13 +2216,80 @@ typedef enum {
 
 - (IBAction)showAutoDetectionTargetSettingPopover:(id)sender
 {
-    NSPopover *popover = [NSPopover new];
-    popover.contentViewController = autoDetectionTargetSettingViewController;
-    popover.behavior = NSPopoverBehaviorTransient;
-    NSRect rect = ((NSButton*)sender).frame;
-    rect = NSMakeRect(rect.origin.x + 25, rect.origin.y + 24, rect.size.width, rect.size.height);
+    [NSPopover showPopoverWithViewController:autoDetectionTargetSettingViewController
+                             atRightOfButton:(NSButton*)sender
+                                      ofView:preferenceWindow.contentView
+                                     offsetX:25
+                                           Y:24];
+}
 
-    [popover showRelativeToRect:rect ofView:preferenceWindow.contentView preferredEdge:NSMaxXEdge];
+#pragma mark - 不可視文字表示の種別設定
+
+- (IBAction)showSpaceCharacterKindSettingPopover:(id)sender
+{
+    [NSPopover showPopoverWithViewController:spaceCharacterKindSettingViewController
+                             atRightOfButton:(NSButton*)sender
+                                      ofView:invisibleCharacterBox
+                                     offsetX:2
+                                           Y:1];
+}
+
+- (IBAction)showFullwidthSpaceCharacterKindSettingPopover:(id)sender
+{
+    [NSPopover showPopoverWithViewController:fullwidthSpaceCharacterKindSettingViewController
+                             atRightOfButton:(NSButton*)sender
+                                      ofView:invisibleCharacterBox
+                                     offsetX:2
+                                           Y:1];
+}
+
+- (IBAction)showReturnCharacterKindSettingPopover:(id)sender
+{
+    [NSPopover showPopoverWithViewController:returnCharacterKindSettingViewController
+                             atRightOfButton:(NSButton*)sender
+                                      ofView:invisibleCharacterBox
+                                     offsetX:2
+                                           Y:1];
+}
+
+- (IBAction)showTabCharacterKindSettingPopover:(id)sender
+{
+    [NSPopover showPopoverWithViewController:tabCharacterKindSettingViewController
+                             atRightOfButton:(NSButton*)sender
+                                      ofView:invisibleCharacterBox
+                                     offsetX:2
+                                           Y:1];
+}
+
+- (IBAction)invisibleCharacterKindChanged:(id)sender
+{
+    spaceCharacterKindButton.title = self.spaceCharacter;
+    fullwidthSpaceCharacterKindButton.title = self.fullwidthSpaceCharacter;
+    returnCharacterKindButton.title = self.returnCharacter;
+    tabCharacterKindButton.title = self.tabCharacter;
+
+    [sourceTextView colorizeText];
+    [preambleTextView colorizeText];
+}
+
+- (NSString*)spaceCharacter
+{
+    return ((NSButton*)(spaceCharacterKindMatrix.selectedCell)).title;
+}
+
+- (NSString*)fullwidthSpaceCharacter
+{
+    return ((NSButton*)(fullwidthSpaceCharacterKindMatrix.selectedCell)).title;
+}
+
+- (NSString*)returnCharacter
+{
+    return ((NSButton*)(returnCharacterKindMatrix.selectedCell)).title;
+}
+
+- (NSString*)tabCharacter
+{
+    return ((NSButton*)(tabCharacterKindMatrix.selectedCell)).title;
 }
 
 @end
