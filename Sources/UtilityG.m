@@ -1,4 +1,5 @@
 #import "UtilityG.h"
+#import "NSDictionary-Extension.h"
 
 void runOkPanel(NSString *title, NSString *message, ...)
 {
@@ -38,4 +39,18 @@ BOOL runConfirmPanel(NSString *message, ...)
     return (result == NSOKButton);
 }
 
+NSString* systemVersion()
+{
+    return [[NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"] stringForKey:@"ProductVersion"];
+}
+
+NSInteger systemMajorVersion()
+{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\.(\\d+)\\.?"
+                                                                           options:0
+                                                                             error:nil];
+    NSString *version = systemVersion();
+    NSTextCheckingResult *match = [regex firstMatchInString:version options:0 range:NSMakeRange(0, version.length)];
+    return [version substringWithRange:[match rangeAtIndex:1]].integerValue;
+}
 

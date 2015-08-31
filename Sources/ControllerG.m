@@ -798,6 +798,7 @@ typedef enum {
     [preambleTextView fixupTabs];
     [preambleTextView refreshWordWrap];
     
+    // 不可視文字表示の選択肢のフォントを更新
     NSFont *displayFont = [NSFont fontWithName:sourceTextView.font.fontName size:spaceCharacterKindButton.font.pointSize];
     [self setInvisibleCharacterFont:displayFont];
     
@@ -1302,24 +1303,20 @@ typedef enum {
         [self loadDefaultColors:nil];
 		
 		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"SUEnableAutomaticChecks"];
-		
 	}
-
+    
 	// CommandComepletion.txt のロード
 	unichar esc = 0x001B;
 	commandCompletionChar = [NSString stringWithCharacters:&esc length:1];
-	NSData 	*myData = nil;
+	NSData *completionData;
 
 	NSString *completionPath = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt".stringByStandardizingPath;
-	if ([fileManager fileExistsAtPath:completionPath])
-		myData = [NSData dataWithContentsOfFile:completionPath];
+    if ([fileManager fileExistsAtPath:completionPath]) {
+		completionData = [NSData dataWithContentsOfFile:completionPath];
+    }
 	
-	if (myData) {
-		NSStringEncoding myEncoding = NSUTF8StringEncoding;
-		commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding:myEncoding];
-		if (!commandCompletionList) {
-			commandCompletionList = [[NSMutableString alloc] initWithData:myData encoding:myEncoding];
-		}
+	if (completionData) {
+		commandCompletionList = [[NSMutableString alloc] initWithData:completionData encoding:NSUTF8StringEncoding];
 		
 		[commandCompletionList insertString:@"\n" atIndex:0];
         if ([commandCompletionList characterAtIndex:commandCompletionList.length-1] != '\n') {
@@ -2008,18 +2005,19 @@ typedef enum {
     if (!(dviwarePath = [self searchProgram:dviwareName])) {
         dviwarePath = @"";
         [self showNotFoundError:@"DVIware"];
+    } else {
+        if ([dviwareName isEqualToString:@"dvipdfmx"]) {
+            dviwarePath = [dviwarePath stringByAppendingString:@" -vv"];
+        }
+        if ([dviwareName isEqualToString:@"dvips"]) {
+            dviwarePath = [dviwarePath stringByAppendingString:@" -Ppdf"];
+        }
     }
     if (!(gsPath = [self searchProgram:@"gs"])) {
         gsPath = @"";
-        [self showNotFoundError:@"ghostscript"];
+        [self showNotFoundError:@"Ghostscript"];
     }
     
-    if ([dviwareName isEqualToString:@"dvipdfmx"]) {
-        dviwarePath = [dviwarePath stringByAppendingString:@" -vv"];
-    }
-    if ([dviwareName isEqualToString:@"dvips"]) {
-        dviwarePath = [dviwarePath stringByAppendingString:@" -Ppdf"];
-    }
 
     latexPathTextField.stringValue = latexPath;
     dviwarePathTextField.stringValue = dviwarePath;
@@ -2030,9 +2028,9 @@ typedef enum {
                                         @"Title": parameters[@"Title"],
                                         @"Msg1": parameters[@"Msg1"],
                                         @"Msg2": parameters[@"Msg2"],
-                                        LatexPathKey: latexPath,
-                                        DviwarePathKey: dviwarePath,
-                                        GsPathKey: gsPath
+                                        LatexPathKey: [latexPath isEqualToString:@""] ? @"LaTeX: Not Found" : latexPath,
+                                        DviwarePathKey: [dviwarePath isEqualToString:@""] ? @"DVIware: Not Found" : dviwarePath,
+                                        GsPathKey: [gsPath isEqualToString:@""] ? @"Ghostscript: Not Found" : gsPath
                                         }
                         waitUntilDone:[parameters[@"waitUntilDone"] boolValue]];
 }
