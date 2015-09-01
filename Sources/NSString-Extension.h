@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (Extension)
++ (NSString*)UUIDString;
 - (NSString*)pathStringByAppendingPageNumber:(NSUInteger)page;
 - (NSString*)stringByDeletingLastReturnCharacters;
 - (NSString*)programPath;

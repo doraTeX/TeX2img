@@ -122,12 +122,7 @@
 	fileManager = NSFileManager.defaultManager;
 	tempdir = NSTemporaryDirectory();
     
-    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
-    NSString *uuidStr = (__bridge_transfer NSString*)CFUUIDCreateString(kCFAllocatorDefault, uuid);
-    CFRelease(uuid);
-    
-    pid = getpid();
-	tempFileBaseName = [NSString stringWithFormat:@"temp%d-%@", pid, uuidStr];
+	tempFileBaseName = [NSString stringWithFormat:@"temp%d-%@", getpid(), NSString.UUIDString];
 	
 	return self;
 }

@@ -1,6 +1,15 @@
 #import "NSString-Extension.h"
 
 @implementation NSString (Extension)
++ (NSString*)UUIDString
+{
+    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
+    NSString *uuidStr = (__bridge_transfer NSString*)CFUUIDCreateString(kCFAllocatorDefault, uuid);
+    CFRelease(uuid);
+
+    return uuidStr;
+}
+
 - (NSString*)programPath
 {
     return [self componentsSeparatedByString:@" "][0];
