@@ -16,34 +16,34 @@
 #import "Converter.h"
 
 @interface Converter()
-@property NSString* latexPath;
-@property NSString* dviwarePath;
-@property NSString* gsPath;
-@property NSString* encoding;
-@property NSString* outputFilePath;
-@property NSString* preambleStr;
+@property NSString *latexPath;
+@property NSString *dviwarePath;
+@property NSString *gsPath;
+@property NSString *encoding;
+@property NSString *outputFilePath;
+@property NSString *preambleStr;
 @property float resolutionLevel;
 @property BOOL guessCompilation;
 @property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
 @property BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property NSObject<OutputController> *controller;
-@property NSFileManager* fileManager;
-@property NSString* tempdir;
+@property NSFileManager *fileManager;
+@property NSString *tempdir;
 @property pid_t pid;
-@property NSString* tempFileBaseName;
-@property NSString* epstopdfPath;
-@property NSString* mudrawPath;
+@property NSString *tempFileBaseName;
+@property NSString *epstopdfPath;
+@property NSString *mudrawPath;
 @property NSUInteger pageCount;
 @property BOOL useBP;
 @property BOOL speedPriorityMode;
 @property BOOL embedSource;
 @property BOOL copyToClipboard;
-@property NSString* additionalInputPath;
+@property NSString *additionalInputPath;
 @property BOOL pdfInputMode;
 @property BOOL psInputMode;
 @property BOOL errorsIgnored;
-@property NSMutableArray* emptyPageFlags;
-@property NSMutableArray* whitePageFlags;
+@property NSMutableArray *emptyPageFlags;
+@property NSMutableArray *whitePageFlags;
 @end
 
 @implementation Converter

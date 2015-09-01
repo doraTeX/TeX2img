@@ -110,6 +110,18 @@ NSMutableString *commandCompletionList;
 #define COLORBOX_TAG 3
 #define DEFINECOLOR_TAG 4
 
+#define CommentOutTag 1
+#define UncommentTag 2
+#define ShiftRightTag 3
+#define ShiftLeftTag 4
+
+#define NFC_Tag 1
+#define Modified_NFC_Tag 2
+#define NFD_Tag 3
+#define Modified_NFD_Tag 4
+#define NFKC_Tag 5
+#define NFKD_Tag 6
+#define NFKC_CF_Tag 7
 
 #define TeXtoDVItoPDF 1
 #define TeXtoPDF 2

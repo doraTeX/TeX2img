@@ -6,19 +6,7 @@
 #import "MyLayoutManager.h"
 #import "MyGlyphPopoverController.h"
 #import "UtilityG.h"
-
-#define CommentOutTag 1
-#define UncommentTag 2
-#define ShiftRightTag 3
-#define ShiftLeftTag 4
-
-#define NFC_Tag 1
-#define Modified_NFC_Tag 2
-#define NFD_Tag 3
-#define Modified_NFD_Tag 4
-#define NFKC_Tag 5
-#define NFKD_Tag 6
-#define NFKC_CF_Tag 7
+#import "global.h"
 
 @implementation TeXTextView
 - (void)awakeFromNib
@@ -277,10 +265,9 @@
         [super insertText:aString];
         return;
     }
+
     NSString *theString = (NSString*)aString;
-    
     NSDictionary *currentProfile = controller.currentProfile;
-    
     unichar texChar = 0x5c;
     
     if ([theString isEqualToString:@"¥"] && [currentProfile boolForKey:ConvertYenMarkKey]) {
@@ -315,7 +302,6 @@
     
     NSUInteger length = ((NSString*)aString).length;
     [self showFindIndicatorForRange:NSMakeRange(self.selectedRange.location - length, length)];
-    
 }
 
 
@@ -341,6 +327,7 @@
             return NO;
         }
     }
+    
     return [super readSelectionFromPasteboard:pboard type:type];
 }
 
@@ -509,11 +496,13 @@
                              key:theCommand];
     
     rangeIncrement = increment + ((increment > 0) ? (-1) : 1);
+
     if (fixRangeStart) {
         rangeIncrement--;
     } else {
         oldRange.location += (increment > 0) ? 1 : -1;
     }
+    
     if (!(oldRange.length == 0 && rangeIncrement < 0)) {
         oldRange.length += rangeIncrement;
     }

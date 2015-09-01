@@ -21,18 +21,21 @@
         [cmdline appendString:argument];
         [cmdline appendString:@" "];
     }
+
     [cmdline appendString:@" 2>&1"];
     [self appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:quiet];
     
     if ((fp = popen(cmdline.UTF8String, "r")) == NULL) {
         return NO;
     }
+
     while (YES) {
         if (fgets(str, MAX_LEN-1, fp) == NULL) {
             break;
         }
         [self appendOutputAndScroll:[NSMutableString stringWithUTF8String:str] quiet:quiet];
     }
+
     NSInteger status = pclose(fp);
     return (status == 0) ? YES : NO;
 }

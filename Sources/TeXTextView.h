@@ -10,10 +10,10 @@
     BOOL autoCompleting;
     BOOL contentHighlighting;
     BOOL braceHighlighting;
-    NSDictionary* highlightBracesColorDict;
+    NSDictionary *highlightBracesColorDict;
     NSUInteger lastCursorLocation;
     NSUInteger lastStringLength;
-    NSDictionary* autocompletionDictionary;
+    NSDictionary *autocompletionDictionary;
     BOOL dragging;
     NSDragOperation currentDragOperation;
 }
@@ -36,6 +36,6 @@
 @end
 
 @interface TeXTextView (CommandCompletion)
-- (IBAction) doNextBullet: (id)sender;
-- (IBAction) doPreviousBullet: (id)sender;
+- (IBAction)doNextBullet:(id)sender;
+- (IBAction)doPreviousBullet:(id)sender;
 @end
