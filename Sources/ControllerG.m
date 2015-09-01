@@ -618,11 +618,11 @@ typedef enum {
     
     NSInteger tabWidth = [aProfile integerForKey:TabWidthKey];
     if (tabWidth > 0) {
-        tabWidthTextField.intValue = tabWidth;
+        tabWidthTextField.integerValue = tabWidth;
     } else {
-        tabWidthTextField.intValue = 4;
+        tabWidthTextField.integerValue = 4;
     }
-    [tabWidthStepper takeIntValueFrom:tabWidthTextField];
+    [tabWidthStepper takeIntegerValueFrom:tabWidthTextField];
 
     if ([keys containsObject:TabIndentKey]) {
         tabIndentCheckBox.state = [aProfile integerForKey:TabIndentKey];
@@ -743,14 +743,14 @@ typedef enum {
     [self loadSettingForTextField:topMarginLabel fromProfile:aProfile forKey:TopMarginLabelKey];
     [self loadSettingForTextField:bottomMarginLabel fromProfile:aProfile forKey:BottomMarginLabelKey];
     
-    numberOfCompilationTextField.intValue = MAX(1, [aProfile integerForKey:NumberOfCompilationKey]);
-    [numberOfCompilationStepper takeIntValueFrom:numberOfCompilationTextField];
+    numberOfCompilationTextField.integerValue = MAX(1, [aProfile integerForKey:NumberOfCompilationKey]);
+    [numberOfCompilationStepper takeIntegerValueFrom:numberOfCompilationTextField];
     
     resolutionSlider.floatValue = [aProfile integerForKey:ResolutionKey];
-    leftMarginSlider.intValue = [aProfile integerForKey:LeftMarginKey];
-    rightMarginSlider.intValue = [aProfile integerForKey:RightMarginKey];
-    topMarginSlider.intValue = [aProfile integerForKey:TopMarginKey];
-    bottomMarginSlider.intValue = [aProfile integerForKey:BottomMarginKey];
+    leftMarginSlider.integerValue = [aProfile integerForKey:LeftMarginKey];
+    rightMarginSlider.integerValue = [aProfile integerForKey:RightMarginKey];
+    topMarginSlider.integerValue = [aProfile integerForKey:TopMarginKey];
+    bottomMarginSlider.integerValue = [aProfile integerForKey:BottomMarginKey];
     
     NSInteger unitTag = [aProfile integerForKey:UnitKey];
     [unitMatrix selectCellWithTag:unitTag];
@@ -897,10 +897,10 @@ typedef enum {
         currentProfile[BottomMarginLabelKey] = bottomMarginLabel.stringValue;
         
         currentProfile[ResolutionKey] = @(resolutionLabel.floatValue);
-        currentProfile[LeftMarginKey] = @(leftMarginLabel.intValue);
-        currentProfile[RightMarginKey] = @(rightMarginLabel.intValue);
-        currentProfile[TopMarginKey] = @(topMarginLabel.intValue);
-        currentProfile[BottomMarginKey] = @(bottomMarginLabel.intValue);
+        currentProfile[LeftMarginKey] = @(leftMarginLabel.integerValue);
+        currentProfile[RightMarginKey] = @(rightMarginLabel.integerValue);
+        currentProfile[TopMarginKey] = @(topMarginLabel.integerValue);
+        currentProfile[BottomMarginKey] = @(bottomMarginLabel.integerValue);
         
         NSInteger tabWidth = tabWidthTextField.integerValue;
         currentProfile[TabWidthKey] = @((tabWidth > 0) ? tabWidth : 4);
@@ -1898,7 +1898,7 @@ typedef enum {
 
 - (IBAction)refreshTextView:(id)sender
 {
-    [tabWidthStepper takeIntValueFrom:tabWidthTextField];
+    [tabWidthStepper takeIntegerValueFrom:tabWidthTextField];
     [sourceTextView refreshWordWrap];
     [sourceTextView colorizeText];
     [sourceTextView fixupTabs];
@@ -1909,13 +1909,13 @@ typedef enum {
 
 - (IBAction)tabWidthStepperPressed:(id)sender
 {
-    [tabWidthTextField takeIntValueFrom:tabWidthStepper];
+    [tabWidthTextField takeIntegerValueFrom:tabWidthStepper];
     [self refreshTextView:sender];
 }
 
 - (void)refreshNumberOfCompilation:(id)sender
 {
-    [numberOfCompilationStepper takeIntValueFrom:numberOfCompilationTextField];
+    [numberOfCompilationStepper takeIntegerValueFrom:numberOfCompilationTextField];
 }
 
 - (IBAction)toggleOutputDrawer:(id)sender

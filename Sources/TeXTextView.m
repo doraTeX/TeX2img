@@ -210,8 +210,8 @@
     NSRange undoRange;
     NSString *oldString, *newString, *undoKey;
     
-    undoRange.location = [theDictionary[@"oldLocation"] unsignedIntValue];
-    undoRange.length = [theDictionary[@"oldLength"] unsignedIntValue];
+    undoRange.location = [theDictionary[@"oldLocation"] unsignedIntegerValue];
+    undoRange.length = [theDictionary[@"oldLength"] unsignedIntegerValue];
     newString = theDictionary[@"oldString"];
     undoKey = theDictionary[@"undoKey"];
     
