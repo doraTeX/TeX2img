@@ -2189,6 +2189,32 @@ typedef enum {
 
 - (IBAction)generate:(id)sender
 {
+    // 余白設定・解像度設定などの数値の妥当性チェック
+    __block BOOL valid = YES;
+
+    [@[leftMarginLabel, rightMarginLabel, topMarginLabel, bottomMarginLabel, resolutionLabel, numberOfCompilationTextField, tabWidthTextField] enumerateObjectsUsingBlock:^(NSTextField *label, NSUInteger idx, BOOL *stop) {
+        NSNumber *value = [(NSNumberFormatter*)(label.formatter) numberFromString:label.stringValue];
+        if (value) {
+            // 中途半端に入力されている数値を確定させる
+            NSString *actionName = NSStringFromSelector(label.action);
+            if ([actionName isEqualToString:@"takeIntValueFrom:"]) {
+                label.integerValue = value.integerValue;
+            } else if ([actionName isEqualToString:@"takeFloatValueFrom:"]) {
+                label.floatValue = value.floatValue;
+            }
+            [label sendAction:label.action to:label.target]; // アクションを実行してスライダーやステッパーに反映
+        } else { // 入力値が数値に解釈されなかった場合
+            valid = NO;
+        }
+    }];
+    
+    if (!valid) {
+        runErrorPanel(localizedString(@"formatErrorMsg"));
+        return;
+    }
+    
+    [mainWindow makeKeyWindow]; // これをしておかないと，スレッド発動後に NSNumberFormatter によるフォーマットがコンパイル用スレッドから発動してエラーを引き起こすことがある
+    
     if (showOutputDrawerCheckBox.state) {
         [self showOutputDrawer];
     }

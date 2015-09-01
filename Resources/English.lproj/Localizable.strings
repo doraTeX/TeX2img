@@ -17,6 +17,7 @@
 "inputFileTypeErrorMsg" = "Input file type is invalid.\nThe extension must be tex/pdf/ps.\n%@";
 "fileGenerateErrorMsg" = " cannot be created so generation has been aborted.\nCheck permission.";
 "execErrorMsg" = " cannot be executed.\nCheck errors in the source code.";
+"formatErrorMsg" = "Some settings in the Preferences pane are invalid.";
 "cannotOverwriteErrorMsg" = " cannot be overwritten.";
 "cannotCreateDirectoryErrorMsg" = " cannnot be created as a folder.";
 "compileErrorMsg" = "TeX Compile error.\nCheck errors in the source code.\nIf there are no errors in the source, check encodings in Preferences.";
