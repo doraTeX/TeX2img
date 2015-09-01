@@ -794,7 +794,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="546" id="550"/>
                                                         </connections>
                                                     </slider>
-                                                    <textField verticalHuggingPriority="750" id="546">
+                                                    <textField toolTip="Left Margin" verticalHuggingPriority="750" id="546">
                                                         <rect key="frame" x="356" y="113" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="547">
@@ -831,7 +831,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="552" id="557"/>
                                                         </connections>
                                                     </slider>
-                                                    <textField verticalHuggingPriority="750" id="552">
+                                                    <textField toolTip="Right Margin" verticalHuggingPriority="750" id="552">
                                                         <rect key="frame" x="356" y="89" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="555">
@@ -868,7 +868,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="559" id="564"/>
                                                         </connections>
                                                     </slider>
-                                                    <textField verticalHuggingPriority="750" id="559">
+                                                    <textField toolTip="Top Margin" verticalHuggingPriority="750" id="559">
                                                         <rect key="frame" x="356" y="65" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="562">
@@ -905,7 +905,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="566" id="571"/>
                                                         </connections>
                                                     </slider>
-                                                    <textField verticalHuggingPriority="750" id="566">
+                                                    <textField toolTip="Bottom Margin" verticalHuggingPriority="750" id="566">
                                                         <rect key="frame" x="356" y="41" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="569">
@@ -1134,7 +1134,7 @@ DQ
                                                 <action selector="takeIntValueFrom:" target="dpd-O4-qxE" id="OId-ct-Yrx"/>
                                             </connections>
                                         </stepper>
-                                        <textField verticalHuggingPriority="750" id="dpd-O4-qxE">
+                                        <textField toolTip="Number of Compilation" verticalHuggingPriority="750" id="dpd-O4-qxE">
                                             <rect key="frame" x="233" y="198" width="47" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="3" drawsBackground="YES" id="ZoJ-Y8-MRN">
@@ -1407,7 +1407,7 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="GqY-X3-Qub">
+                                                    <textField toolTip="Tab Width" verticalHuggingPriority="750" id="GqY-X3-Qub">
                                                         <rect key="frame" x="43" y="66" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="4" drawsBackground="YES" id="1Ov-gw-QBC">

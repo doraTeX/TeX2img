@@ -2204,12 +2204,12 @@ typedef enum {
             }
             [label sendAction:label.action to:label.target]; // アクションを実行してスライダーやステッパーに反映
         } else { // 入力値が数値に解釈されなかった場合
+            runErrorPanel(localizedString(@"formatErrorMsg"), label.toolTip);
             valid = NO;
         }
     }];
     
     if (!valid) {
-        runErrorPanel(localizedString(@"formatErrorMsg"));
         return;
     }
     
