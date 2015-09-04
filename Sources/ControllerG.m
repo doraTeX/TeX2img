@@ -313,7 +313,7 @@ typedef enum {
         [cmdline appendString:argument];
         [cmdline appendString:@" "];
     }
-    [cmdline appendString:@" 2>&1"];
+    [cmdline appendString:@"2>&1"];
     [self appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:NO];
     
     runningTask = [NSTask new];
@@ -399,7 +399,7 @@ typedef enum {
 
 - (void)showNotFoundErrorOnMainThread:(NSString*)aPath
 {
-    runErrorPanel(@"%@%@", aPath, localizedString(@"programNotFoundErrorMsg"));
+    runErrorPanel(localizedString(@"programNotFoundErrorMsg"), aPath);
 }
 
 - (void)showNotFoundError:(NSString*)aPath
@@ -439,7 +439,7 @@ typedef enum {
 
 - (void)showFileGenerateErrorOnMainThread:(NSString*)aPath
 {
-    runErrorPanel(@"%@%@", aPath, localizedString(@"fileGenerateErrorMsg"));
+    runErrorPanel(localizedString(@"fileGenerateErrorMsg"), aPath);
 }
 
 - (void)showFileGenerateError:(NSString*)aPath
@@ -449,7 +449,7 @@ typedef enum {
 
 - (void)showExecErrorOnMainThread:(NSString*)command
 {
-    runErrorPanel(@"%@%@", command, localizedString(@"execErrorMsg"));
+    runErrorPanel(localizedString(@"execErrorMsg"), command);
 }
 
 - (void)showExecError:(NSString*)command
@@ -459,7 +459,7 @@ typedef enum {
 
 - (void)showCannotOverwriteErrorOnMainThread:(NSString*)path
 {
-    runErrorPanel(@"%@%@", path, localizedString(@"cannotOverwriteErrorMsg"));
+    runErrorPanel(localizedString(@"cannotOverwriteErrorMsg"), path);
 }
 
 - (void)showCannotOverwriteError:(NSString*)path
@@ -469,7 +469,7 @@ typedef enum {
 
 - (void)showCannotCreateDirectoryErrorOnMainThread:(NSString*)dir
 {
-    runErrorPanel(@"%@%@", dir, localizedString(@"cannotCreateDirectoryErrorMsg"));
+    runErrorPanel(localizedString(@"cannotCreateDirectoryErrorMsg"), dir);
 }
 
 - (void)showCannotCreateDirectoryError:(NSString*)dir
@@ -1033,6 +1033,38 @@ typedef enum {
 }
 
 #pragma mark - プリアンブルの管理
+- (void)addTemplateMenuItem:(NSString*)filename atDirectory:(NSString*)directory toMenu:(NSMenu*)menu atIndex:(NSNumber*)index
+{
+    NSFileManager *fileManager = NSFileManager.defaultManager;
+    NSString *fullPath = [directory stringByAppendingPathComponent:filename];
+    
+    if ([filename.pathExtension isEqualToString:@"tex"]) {
+        NSString *title = filename.stringByDeletingPathExtension;
+        NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(adoptPreambleTemplate:) keyEquivalent:@""];
+        menuItem.target = self;
+        menuItem.toolTip = fullPath; // tooltip文字列の部分にフルパスを保持
+        if (index) {
+            [menu insertItem:menuItem atIndex:index.integerValue];
+        } else {
+            [menu addItem:menuItem];
+        }
+    }
+    
+    BOOL isDirectory;
+    if ([fileManager fileExistsAtPath:fullPath isDirectory:&isDirectory] && isDirectory) {
+        NSMenuItem *itemWithSubmenu = [[NSMenuItem alloc] initWithTitle:filename action:nil keyEquivalent:@""];
+        NSMenu *submenu = [NSMenu new];
+        submenu.autoenablesItems = NO;
+        [self constructTemplatePopupRecursivelyAtDirectory:[directory stringByAppendingPathComponent:filename] parentMenu:submenu];
+        itemWithSubmenu.submenu = submenu;
+        if (index) {
+            [menu insertItem:itemWithSubmenu atIndex:index.integerValue];
+        } else {
+            [menu addItem:itemWithSubmenu];
+        }
+    }
+}
+
 - (void)constructTemplatePopup:(id)sender
 {
     NSMenu *menu = templatePopupButton.menu;
@@ -1042,59 +1074,20 @@ typedef enum {
     }
     
     NSString *templateDirectoryPath = self.templateDirectoryPath;
-    NSFileManager *fileManager = NSFileManager.defaultManager;
-    NSEnumerator *enumerator = [fileManager contentsOfDirectoryAtPath:templateDirectoryPath error:nil].reverseObjectEnumerator;
+    NSEnumerator *enumerator = [NSFileManager.defaultManager contentsOfDirectoryAtPath:templateDirectoryPath error:nil].reverseObjectEnumerator;
     
     NSString *filename;
     while ((filename = [enumerator nextObject])) {
-        NSString *fullPath = [templateDirectoryPath stringByAppendingPathComponent:filename];
-        
-        if ([filename hasSuffix:@"tex"]) {
-            NSString *title = filename.stringByDeletingPathExtension;
-            NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(adoptPreambleTemplate:) keyEquivalent:@""];
-            menuItem.target = self;
-            menuItem.toolTip = fullPath; // tooltip文字列の部分にフルパスを保持
-            [menu insertItem:menuItem atIndex:1];
-        }
-        
-        BOOL isDirectory;
-        if ([fileManager fileExistsAtPath:fullPath isDirectory:&isDirectory] && isDirectory) {
-            NSMenuItem *itemWithSubmenu = [[NSMenuItem alloc] initWithTitle:filename action:nil keyEquivalent:@""];
-            NSMenu *submenu = [NSMenu new];
-            submenu.autoenablesItems = NO;
-            [self constructTemplatePopupRecursivelyAtDirectory:[templateDirectoryPath stringByAppendingPathComponent:filename] parentMenu:submenu];
-            itemWithSubmenu.submenu = submenu;
-            [menu insertItem:itemWithSubmenu atIndex:1];
-        }
+        [self addTemplateMenuItem:filename atDirectory:templateDirectoryPath toMenu:menu atIndex:@(1)];
     }
 }
 
 - (void)constructTemplatePopupRecursivelyAtDirectory:(NSString*)directory parentMenu:(NSMenu*)menu
 {
-    NSFileManager *fileManager = NSFileManager.defaultManager;
-    NSArray *files = [fileManager contentsOfDirectoryAtPath:directory error:nil];
-    
-    for (NSString *filename in files) {
-        NSString *fullPath = [directory stringByAppendingPathComponent:filename];
-        
-        if ([filename hasSuffix:@"tex"]) {
-            NSString *title = filename.stringByDeletingPathExtension;
-            NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(adoptPreambleTemplate:) keyEquivalent:@""];
-            menuItem.target = self;
-            menuItem.toolTip = fullPath; // tooltip文字列の部分にフルパスを保持
-            [menu addItem:menuItem];
-        }
-        
-        BOOL isDirectory;
-        if ([fileManager fileExistsAtPath:fullPath isDirectory:&isDirectory] && isDirectory) {
-            NSMenuItem *itemWithSubmenu = [[NSMenuItem alloc] initWithTitle:filename action:nil keyEquivalent:@""];
-            NSMenu *submenu = [NSMenu new];
-            submenu.autoenablesItems = NO;
-            [self constructTemplatePopupRecursivelyAtDirectory:[directory stringByAppendingPathComponent:filename] parentMenu:submenu];
-            itemWithSubmenu.submenu = submenu;
-            [menu addItem:itemWithSubmenu];
-        }
-    }
+    NSArray *files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:directory error:nil];
+    [files enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger idx, BOOL *stop) {
+        [self addTemplateMenuItem:filename atDirectory:directory toMenu:menu atIndex:nil];
+    }];
 }
 
 - (void)adoptPreambleTemplate:(id)sender
@@ -2079,7 +2072,7 @@ typedef enum {
     [output appendString:@"************************************\n"];
     
     NSString *outputFilePath = [aProfile stringForKey:OutputFileKey];
-    [output appendFormat:@"Output File: %@\n", outputFilePath];
+    [output appendFormat:@"Output file: %@\n", outputFilePath];
     
     NSString *encoding = [aProfile stringForKey:EncodingKey];
     NSString *kanji;

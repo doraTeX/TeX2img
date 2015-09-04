@@ -85,10 +85,10 @@ void printCurrentStatus(NSString *inputFilePath, NSDictionary *aProfile)
     printf("************************************\n");
     printf("  TeX2img settings\n");
     printf("************************************\n");
-    printf("Input  File: %s\n", inputFilePath.UTF8String);
+    printf("Input  file: %s\n", inputFilePath.UTF8String);
 
     NSString *outputFilePath = [aProfile stringForKey:OutputFileKey];
-    printf("Output File: %s\n", outputFilePath.UTF8String);
+    printf("Output file: %s\n", outputFilePath.UTF8String);
     
     NSString *latex = [aProfile stringForKey:LatexPathKey];
     NSString *encoding = [aProfile stringForKey:EncodingKey];

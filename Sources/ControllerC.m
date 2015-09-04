@@ -22,7 +22,7 @@
         [cmdline appendString:@" "];
     }
 
-    [cmdline appendString:@" 2>&1"];
+    [cmdline appendString:@"2>&1"];
     [self appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:quiet];
     
     if ((fp = popen(cmdline.UTF8String, "r")) == NULL) {
