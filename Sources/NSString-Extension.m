@@ -43,13 +43,7 @@
 
 - (NSString*)stringByDeletingLastReturnCharacters
 {
-    NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"^(.*?)(?:\\r|\\n|\\r\\n)*$" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    NSTextCheckingResult *match = [regex firstMatchInString:self options:0 range:NSMakeRange(0, self.length)];
-    if (match) {
-        return [self substringWithRange:[match rangeAtIndex:1]];
-    } else {
-        return self;
-    }
+    return [self stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 }
 
 - (NSUInteger)numberOfComposedCharacters
@@ -83,18 +77,6 @@
      }];
     
     return count;
-}
-
-- (NSString*)unicodeName
-{
-    NSMutableString *mutableUnicodeName = [self mutableCopy];
-    CFStringTransform((__bridge CFMutableStringRef)mutableUnicodeName, NULL, CFSTR("Any-Name"), NO);
-    
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\{(.+?)\\}" options:0 error:nil];
-    NSTextCheckingResult *firstMatch = [regex firstMatchInString:mutableUnicodeName
-                                                         options:0
-                                                           range:NSMakeRange(0, mutableUnicodeName.length)];
-    return [mutableUnicodeName substringWithRange:[firstMatch rangeAtIndex:1]];
 }
 
 

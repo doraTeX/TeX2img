@@ -9,13 +9,13 @@
 #import "NSColor-Extension.h"
 #import "NSColorWell-Extension.h"
 #import "NSPipe-Extension.h"
-#import "NSPopover-Extension.h"
 #import "NSMatrix-Extension.h"
 #import "TeXTextView.h"
 #import "UtilityG.h"
 
 #define ENABLED @"enabled"
 #define DISABLED @"disabled"
+#define DEFAULT_PREAMBLE @"pLaTeX + dvipdfmx"
 
 typedef enum {
     DIRECT = 0,
@@ -122,39 +122,7 @@ typedef enum {
 @property NSWindow *lastActiveWindow;
 @property NSMutableDictionary *lastColorDict;
 
-@property IBOutlet NSColorWell *foregroundColorWell;
-@property IBOutlet NSColorWell *backgroundColorWell;
-@property IBOutlet NSColorWell *cursorColorWell;
-@property IBOutlet NSColorWell *braceColorWell;
-@property IBOutlet NSColorWell *commentColorWell;
-@property IBOutlet NSColorWell *commandColorWell;
-@property IBOutlet NSColorWell *invisibleColorWell;
-@property IBOutlet NSColorWell *highlightedBraceColorWell;
-@property IBOutlet NSColorWell *enclosedContentBackgroundColorWell;
-@property IBOutlet NSColorWell *flashingBackgroundColorWell;
-@property IBOutlet NSButton *makeatletterEnabledCheckBox;
-
-@property IBOutlet NSViewController *autoDetectionTargetSettingViewController;
-@property IBOutlet NSMatrix *autoDetectionTargetMatrix;
-
 @property IBOutlet NSBox *invisibleCharacterBox;
-
-@property IBOutlet NSButton *spaceCharacterKindButton;
-@property IBOutlet NSButton *fullwidthSpaceCharacterKindButton;
-@property IBOutlet NSButton *returnCharacterKindButton;
-@property IBOutlet NSButton *tabCharacterKindButton;
-
-@property IBOutlet NSViewController *spaceCharacterKindSettingViewController;
-@property IBOutlet NSMatrix *spaceCharacterKindMatrix;
-
-@property IBOutlet NSViewController *fullwidthSpaceCharacterKindSettingViewController;
-@property IBOutlet NSMatrix *fullwidthSpaceCharacterKindMatrix;
-
-@property IBOutlet NSViewController *returnCharacterKindSettingViewController;
-@property IBOutlet NSMatrix *returnCharacterKindMatrix;
-
-@property IBOutlet NSViewController *tabCharacterKindSettingViewController;
-@property IBOutlet NSMatrix *tabCharacterKindMatrix;
 
 @property Converter *converter;
 @property NSTask *runningTask;
@@ -247,39 +215,7 @@ typedef enum {
 @synthesize lastActiveWindow;
 @synthesize lastColorDict;
 
-@synthesize foregroundColorWell;
-@synthesize backgroundColorWell;
-@synthesize cursorColorWell;
-@synthesize braceColorWell;
-@synthesize commentColorWell;
-@synthesize commandColorWell;
-@synthesize invisibleColorWell;
-@synthesize highlightedBraceColorWell;
-@synthesize enclosedContentBackgroundColorWell;
-@synthesize flashingBackgroundColorWell;
-@synthesize makeatletterEnabledCheckBox;
-
-@synthesize autoDetectionTargetSettingViewController;
-@synthesize autoDetectionTargetMatrix;
-
 @synthesize invisibleCharacterBox;
-
-@synthesize spaceCharacterKindButton;
-@synthesize fullwidthSpaceCharacterKindButton;
-@synthesize returnCharacterKindButton;
-@synthesize tabCharacterKindButton;
-
-@synthesize spaceCharacterKindSettingViewController;
-@synthesize spaceCharacterKindMatrix;
-
-@synthesize fullwidthSpaceCharacterKindSettingViewController;
-@synthesize fullwidthSpaceCharacterKindMatrix;
-
-@synthesize returnCharacterKindSettingViewController;
-@synthesize returnCharacterKindMatrix;
-
-@synthesize tabCharacterKindSettingViewController;
-@synthesize tabCharacterKindMatrix;
 
 @synthesize converter;
 @synthesize runningTask;
@@ -636,79 +572,6 @@ typedef enum {
         wrapLineCheckBox.state = NSOnState;
     }
 
-    //// 色設定の読み取り
-    if ([keys containsObject:ForegroundColorKey]) {
-        foregroundColorWell.color = [aProfile colorForKey:ForegroundColorKey];
-    } else {
-        foregroundColorWell.color = NSColor.textColor;
-    }
-
-    if ([keys containsObject:BackgroundColorKey]) {
-        backgroundColorWell.color = [aProfile colorForKey:BackgroundColorKey];
-    } else {
-        backgroundColorWell.color = NSColor.controlBackgroundColor;
-    }
-    
-    if ([keys containsObject:CursorColorKey]) {
-        cursorColorWell.color = [aProfile colorForKey:CursorColorKey];
-    } else {
-        cursorColorWell.color = NSColor.blackColor;
-    }
-    
-    if ([keys containsObject:BraceColorKey]) {
-        braceColorWell.color = [aProfile colorForKey:BraceColorKey];
-    } else {
-        braceColorWell.color = NSColor.braceColor;
-    }
-    
-    if ([keys containsObject:CommentColorKey]) {
-        commentColorWell.color = [aProfile colorForKey:CommentColorKey];
-    } else {
-        commentColorWell.color = NSColor.commentColor;
-    }
-    
-    if ([keys containsObject:CommandColorKey]) {
-        commandColorWell.color = [aProfile colorForKey:CommandColorKey];
-    } else {
-        commandColorWell.color = NSColor.commandColor;
-    }
-    
-    if ([keys containsObject:InvisibleColorKey]) {
-        invisibleColorWell.color = [aProfile colorForKey:InvisibleColorKey];
-    } else {
-        invisibleColorWell.color = NSColor.invisibleColor;
-    }
-    
-    if ([keys containsObject:HighlightedBraceColorKey]) {
-        highlightedBraceColorWell.color = [aProfile colorForKey:HighlightedBraceColorKey];
-    } else {
-        highlightedBraceColorWell.color = NSColor.highlightedBraceColor;
-    }
-    
-    if ([keys containsObject:EnclosedContentBackgroundColorKey]) {
-        enclosedContentBackgroundColorWell.color = [aProfile colorForKey:EnclosedContentBackgroundColorKey];
-    } else {
-        enclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
-    }
-
-    if ([keys containsObject:FlashingBackgroundColorKey]) {
-        flashingBackgroundColorWell.color = [aProfile colorForKey:FlashingBackgroundColorKey];
-    } else {
-        flashingBackgroundColorWell.color = NSColor.flashingBackgroundColor;
-    }
-
-    if ([keys containsObject:ColorPalleteColorKey]) {
-        colorPalleteColorWell.color = [aProfile colorForKey:ColorPalleteColorKey];
-    } else {
-        colorPalleteColorWell.color = NSColor.redColor;
-    }
-    
-    if ([keys containsObject:MakeatletterEnabledKey]) {
-        makeatletterEnabledCheckBox.state = [aProfile boolForKey:MakeatletterEnabledKey];
-    } else {
-        makeatletterEnabledCheckBox.state = NSOnState;
-    }
-
 	autoCompleteMenuItem.state = [aProfile boolForKey:AutoCompleteKey];
 	showTabCharacterCheckBox.state = [aProfile boolForKey:ShowTabCharacterKey];
 	showSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowSpaceCharacterKey];
@@ -758,28 +621,6 @@ typedef enum {
     NSInteger priorityTag = [aProfile integerForKey:PriorityKey];
     [priorityMatrix selectCellWithTag:priorityTag];
 
-    if ([keys containsObject:AutoDetectionTargetKey]) {
-        [autoDetectionTargetMatrix selectCellWithTag:[aProfile integerForKey:AutoDetectionTargetKey]];
-    }
-
-    if ([keys containsObject:SpaceCharacterKindKey]) {
-        [spaceCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:SpaceCharacterKindKey]];
-    }
-
-    if ([keys containsObject:FullwidthSpaceCharacterKindKey]) {
-        [fullwidthSpaceCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:FullwidthSpaceCharacterKindKey]];
-    }
-
-    if ([keys containsObject:ReturnCharacterKindKey]) {
-        [returnCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:ReturnCharacterKindKey]];
-    }
-
-    if ([keys containsObject:TabCharacterKindKey]) {
-        [tabCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:TabCharacterKindKey]];
-    }
-
-    [self invisibleCharacterKindChanged:nil];
-
     [self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:PreambleKey];
     
     NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
@@ -798,9 +639,6 @@ typedef enum {
     [preambleTextView fixupTabs];
     [preambleTextView refreshWordWrap];
     
-    // 不可視文字表示の選択肢のフォントを更新
-    NSFont *displayFont = [NSFont fontWithName:sourceTextView.font.fontName size:spaceCharacterKindButton.font.pointSize];
-    [self setInvisibleCharacterFont:displayFont];
     
     NSString *inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
     if (inputSourceFilePath) {
@@ -820,18 +658,6 @@ typedef enum {
     }
 }
 
-- (void)setInvisibleCharacterFont:(NSFont*)font
-{
-    [spaceCharacterKindMatrix setCellFont:font];
-    [fullwidthSpaceCharacterKindMatrix setCellFont:font];
-    [returnCharacterKindMatrix setCellFont:font];
-    [tabCharacterKindMatrix setCellFont:font];
-    
-    spaceCharacterKindButton.font = font;
-    fullwidthSpaceCharacterKindButton.font = font;
-    returnCharacterKindButton.font = font;
-    tabCharacterKindButton.font = font;
-}
 
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
 {
@@ -912,13 +738,6 @@ typedef enum {
         currentProfile[UnitKey] = @(unitMatrix.selectedTag);
         currentProfile[PriorityKey] = @(priorityMatrix.selectedTag);
         
-        currentProfile[AutoDetectionTargetKey] = @(autoDetectionTargetMatrix.selectedTag);
-
-        currentProfile[SpaceCharacterKindKey] = @(spaceCharacterKindMatrix.selectedTag);
-        currentProfile[FullwidthSpaceCharacterKindKey] = @(fullwidthSpaceCharacterKindMatrix.selectedTag);
-        currentProfile[ReturnCharacterKindKey] = @(returnCharacterKindMatrix.selectedTag);
-        currentProfile[TabCharacterKindKey] = @(tabCharacterKindMatrix.selectedTag);
-        
         currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
         currentProfile[FlashInMovingKey] = @(flashInMovingCheckBox.state);
         currentProfile[HighlightContentKey] = @(highlightContentCheckBox.state);
@@ -940,18 +759,6 @@ typedef enum {
         
         currentProfile[InputMethodKey] = (directInputButton.state == NSOnState) ? @(DIRECT) : @(FROMFILE);
         currentProfile[InputSourceFilePathKey] = inputSourceFileTextField.stringValue;
-        
-        currentProfile[ForegroundColorKey] = foregroundColorWell.color.serializedString;
-        currentProfile[BackgroundColorKey] = backgroundColorWell.color.serializedString;
-        currentProfile[CursorColorKey] = cursorColorWell.color.serializedString;
-        currentProfile[BraceColorKey] = braceColorWell.color.serializedString;
-        currentProfile[CommentColorKey] = commentColorWell.color.serializedString;
-        currentProfile[CommandColorKey] = commandColorWell.color.serializedString;
-        currentProfile[InvisibleColorKey] = invisibleColorWell.color.serializedString;
-        currentProfile[HighlightedBraceColorKey] = highlightedBraceColorWell.color.serializedString;
-        currentProfile[EnclosedContentBackgroundColorKey] = enclosedContentBackgroundColorWell.color.serializedString;
-        currentProfile[FlashingBackgroundColorKey] = flashingBackgroundColorWell.color.serializedString;
-        currentProfile[MakeatletterEnabledKey] = @(makeatletterEnabledCheckBox.state);
         
         currentProfile[ColorPalleteColorKey] = colorPalleteColorWell.color.serializedString;
     }
@@ -1250,13 +1057,6 @@ typedef enum {
     colorPalleteColorWell.color = NSColor.redColor;
     [self colorPalleteColorSet:colorPalleteColorWell];
     
-    // ポップアップ内の NSMatrix の色設定
-    [autoDetectionTargetMatrix setCellColor:NSColor.textColor];
-    [spaceCharacterKindMatrix setCellColor:NSColor.textColor];
-    [fullwidthSpaceCharacterKindMatrix setCellColor:NSColor.textColor];
-    [returnCharacterKindMatrix setCellColor:NSColor.textColor];
-    [tabCharacterKindMatrix setCellColor:NSColor.textColor];
-	
 	// 保存された設定を読み込む
 	NSFileManager *fileManager = NSFileManager.defaultManager;
 	NSString *plistFile = [NSString stringWithFormat:@"%@/Library/Preferences/%@.plist", NSHomeDirectory(), [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
@@ -1281,7 +1081,7 @@ typedef enum {
                                     }];
 
         // デフォルトプリアンブルのロード
-        NSString *templateName = [autoDetectionTargetMatrix.selectedCell title];
+        NSString *templateName = DEFAULT_PREAMBLE;
         NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
         NSString *templatePath = [[originalTemplateDirectory stringByAppendingPathComponent:templateName] stringByAppendingPathExtension:@"tex"];
         NSData *data = [NSData dataWithContentsOfFile:templatePath];
@@ -1293,7 +1093,6 @@ typedef enum {
         }
 
         [self loadDefaultFont];
-        [self loadDefaultColors:nil];
 		
 		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"SUEnableAutomaticChecks"];
 	}
@@ -1334,40 +1133,6 @@ typedef enum {
         preambleTextView.font = defaultFont;
         [self setupFontTextField:defaultFont];
     }
-}
-
-- (IBAction)loadDefaultColors:(id)sender
-{
-    if (sender && !runConfirmPanel(localizedString(@"restoreColorsConfirmationMsg"))) {
-        return;
-    }
-    
-    foregroundColorWell.color = NSColor.textColor;
-    backgroundColorWell.color = NSColor.controlBackgroundColor;
-    cursorColorWell.color = NSColor.blackColor;
-    braceColorWell.color = NSColor.braceColor;
-    commentColorWell.color = NSColor.commentColor;
-    commandColorWell.color = NSColor.commandColor;
-    invisibleColorWell.color = NSColor.invisibleColor;
-    highlightedBraceColorWell.color = NSColor.highlightedBraceColor;
-    enclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
-    flashingBackgroundColorWell.color = NSColor.flashingBackgroundColor;
-    
-    [foregroundColorWell saveColorToMutableDictionary:lastColorDict];
-    [backgroundColorWell saveColorToMutableDictionary:lastColorDict];
-    [cursorColorWell saveColorToMutableDictionary:lastColorDict];
-    [braceColorWell saveColorToMutableDictionary:lastColorDict];
-    [commentColorWell saveColorToMutableDictionary:lastColorDict];
-    [commandColorWell saveColorToMutableDictionary:lastColorDict];
-    [invisibleColorWell saveColorToMutableDictionary:lastColorDict];
-    [highlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
-    [enclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
-    [flashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
-    
-    makeatletterEnabledCheckBox.state = NSOnState;
-
-    [sourceTextView colorizeText];
-    [preambleTextView colorizeText];
 }
 
 - (void)setupFontTextField:(NSFont*)font
@@ -1466,18 +1231,17 @@ typedef enum {
     NSString *preamble = @"";
     NSString *body = @"";
     
-    NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"^(.*?)(?:\\r|\\n|\\r\\n)*(?:\\\\|¥)begin\\{document\\}(?:\\r|\\n|\\r\\n)*(.*)(?:\\\\|¥)end\\{document\\}"
-                                                                      options:NSRegularExpressionDotMatchesLineSeparators
-                                                                        error:nil];
-    NSTextCheckingResult *match = [regex firstMatchInString:contents
-                                                    options:0
-                                                      range:NSMakeRange(0, contents.length)];
-
-    if (match) {
-        preamble = [[contents substringWithRange:[match rangeAtIndex:1]] stringByAppendingString:@"\n"];
-        body = [[contents substringWithRange:[match rangeAtIndex:2]].stringByDeletingLastReturnCharacters stringByAppendingString:@"\n"];
-    } else {
+    NSRange range = [contents rangeOfString:@"\\begin{document}"];
+    
+    if (range.location == NSNotFound) {
         body = contents;
+    } else {
+        preamble = [contents substringWithRange:NSMakeRange(0, range.location)];
+        body = [contents substringWithRange:NSMakeRange(range.location + range.length, contents.length - range.location - range.length)];
+        range = [body rangeOfString:@"\\end{document}"];
+        if (range.location != NSNotFound) {
+            body = [body substringWithRange:NSMakeRange(0, range.location)];
+        }
     }
     
     return @[preamble, body];
@@ -1668,17 +1432,6 @@ typedef enum {
 - (void)preferenceWindowDidBecomeKey:(NSNotification*)aNotification
 {
     lastActiveWindow = aNotification.object;
-    
-    [foregroundColorWell restoreColorFromDictionary:lastColorDict];
-    [backgroundColorWell restoreColorFromDictionary:lastColorDict];
-    [cursorColorWell restoreColorFromDictionary:lastColorDict];
-    [braceColorWell restoreColorFromDictionary:lastColorDict];
-    [commentColorWell restoreColorFromDictionary:lastColorDict];
-    [commandColorWell restoreColorFromDictionary:lastColorDict];
-    [invisibleColorWell restoreColorFromDictionary:lastColorDict];
-    [highlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
-    [enclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
-    [flashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
 }
 
 - (void)colorPalleteWindowDidBecomeKey:(NSNotification*)aNotification
@@ -1688,31 +1441,9 @@ typedef enum {
 
 - (void)closeColorPanel
 {
-    [foregroundColorWell deactivate];
-    [backgroundColorWell deactivate];
-    [cursorColorWell deactivate];
-    [braceColorWell deactivate];
-    [commentColorWell deactivate];
-    [commandColorWell deactivate];
-    [invisibleColorWell deactivate];
-    [highlightedBraceColorWell deactivate];
-    [enclosedContentBackgroundColorWell deactivate];
-    [flashingBackgroundColorWell deactivate];
-    
     [colorPalleteColorWell deactivate];
     
     [NSColorPanel.sharedColorPanel performSelector:@selector(orderOut:) withObject:self afterDelay:0];
-
-    [foregroundColorWell restoreColorFromDictionary:lastColorDict];
-    [backgroundColorWell restoreColorFromDictionary:lastColorDict];
-    [cursorColorWell restoreColorFromDictionary:lastColorDict];
-    [braceColorWell restoreColorFromDictionary:lastColorDict];
-    [commentColorWell restoreColorFromDictionary:lastColorDict];
-    [commandColorWell restoreColorFromDictionary:lastColorDict];
-    [invisibleColorWell restoreColorFromDictionary:lastColorDict];
-    [highlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
-    [enclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
-    [flashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
 
     [colorPalleteColorWell restoreColorFromDictionary:lastColorDict];
 }
@@ -1964,9 +1695,6 @@ typedef enum {
     sourceTextView.font = font;
     preambleTextView.font = font;
     outputTextView.font = font;
-    
-    NSFont *displayFont = [NSFont fontWithName:font.fontName size:spaceCharacterKindButton.font.pointSize];
-    [self setInvisibleCharacterFont:displayFont];
 }
 
 - (IBAction)colorSettingChanged:(id)sender
@@ -1987,7 +1715,7 @@ typedef enum {
     NSString *dviwarePath;
     NSString *gsPath;
     
-    NSString *templateName = [autoDetectionTargetMatrix.selectedCell title];
+    NSString *templateName = DEFAULT_PREAMBLE;
     NSString *engineName = [templateName.lowercaseString componentsSeparatedByString:@" "][0];
     NSString *dviwareName = ([templateName rangeOfString:@"dvips"].location == NSNotFound) ? @"dvipdfmx" : @"dvips";
     
@@ -2038,7 +1766,7 @@ typedef enum {
                                 }];
     
     // デフォルトテンプレートのロード
-    NSString *templateName = [autoDetectionTargetMatrix.selectedCell title];
+    NSString *templateName = DEFAULT_PREAMBLE;
     NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
     NSString *templatePath = [[originalTemplateDirectory stringByAppendingPathComponent:templateName] stringByAppendingPathExtension:@"tex"];
     [self adoptPreambleTemplate:templatePath];
@@ -2231,82 +1959,24 @@ typedef enum {
     }
 }
 
-- (IBAction)showAutoDetectionTargetSettingPopover:(id)sender
-{
-    [NSPopover showPopoverWithViewController:autoDetectionTargetSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:preferenceWindow.contentView
-                                     offsetX:25
-                                           Y:24];
-}
-
-#pragma mark - 不可視文字表示の種別設定
-
-- (IBAction)showSpaceCharacterKindSettingPopover:(id)sender
-{
-    [NSPopover showPopoverWithViewController:spaceCharacterKindSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:invisibleCharacterBox
-                                     offsetX:2
-                                           Y:1];
-}
-
-- (IBAction)showFullwidthSpaceCharacterKindSettingPopover:(id)sender
-{
-    [NSPopover showPopoverWithViewController:fullwidthSpaceCharacterKindSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:invisibleCharacterBox
-                                     offsetX:2
-                                           Y:1];
-}
-
-- (IBAction)showReturnCharacterKindSettingPopover:(id)sender
-{
-    [NSPopover showPopoverWithViewController:returnCharacterKindSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:invisibleCharacterBox
-                                     offsetX:2
-                                           Y:1];
-}
-
-- (IBAction)showTabCharacterKindSettingPopover:(id)sender
-{
-    [NSPopover showPopoverWithViewController:tabCharacterKindSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:invisibleCharacterBox
-                                     offsetX:2
-                                           Y:1];
-}
-
-- (IBAction)invisibleCharacterKindChanged:(id)sender
-{
-    spaceCharacterKindButton.title = self.spaceCharacter;
-    fullwidthSpaceCharacterKindButton.title = self.fullwidthSpaceCharacter;
-    returnCharacterKindButton.title = self.returnCharacter;
-    tabCharacterKindButton.title = self.tabCharacter;
-
-    [sourceTextView colorizeText];
-    [preambleTextView colorizeText];
-}
-
 - (NSString*)spaceCharacter
 {
-    return ((NSButton*)(spaceCharacterKindMatrix.selectedCell)).title;
+    return @"␣";
 }
 
 - (NSString*)fullwidthSpaceCharacter
 {
-    return ((NSButton*)(fullwidthSpaceCharacterKindMatrix.selectedCell)).title;
+    return @"□";
 }
 
 - (NSString*)returnCharacter
 {
-    return ((NSButton*)(returnCharacterKindMatrix.selectedCell)).title;
+    return @"↵";
 }
 
 - (NSString*)tabCharacter
 {
-    return ((NSButton*)(tabCharacterKindMatrix.selectedCell)).title;
+    return @"‣";
 }
 
 @end

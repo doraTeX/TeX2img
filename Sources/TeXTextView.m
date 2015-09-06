@@ -1,10 +1,8 @@
 #import "TeXTextView.h"
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
-#import "NSString-Normalization.h"
 #import "NSMutableString-Extension.h"
 #import "MyLayoutManager.h"
-#import "MyGlyphPopoverController.h"
 #import "UtilityG.h"
 #import "global.h"
 
@@ -67,12 +65,9 @@
 
         [@[
           @[@(NFC_Tag), @"NFC"],
-          @[@(Modified_NFC_Tag), @"Modified NFC"],
           @[@(NFD_Tag), @"NFD"],
-          @[@(Modified_NFD_Tag), @"Modified NFD"],
           @[@(NFKC_Tag), @"NFKC"],
           @[@(NFKD_Tag), @"NFKD"],
-          @[@(NFKC_CF_Tag), @"NFKC Casefold"],
           ] enumerateObjectsUsingBlock:^(NSArray *pair, NSUInteger idx, BOOL *stop) {
               NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:(NSString*)(pair[1]) action:@selector(normalizeSelectedString:) keyEquivalent:@""];
               menuItem.tag = [pair[0] integerValue];
@@ -84,13 +79,8 @@
         [aMenu insertItem:itemWithSubmenu atIndex:index];
     }
 
-    // 「文字情報」メニュー
-    if ([aMenu indexOfItemWithTitle:localizedString(@"Character Info")] == -1) {
-        [aMenu insertItemWithTitle:localizedString(@"Character Info") action:@selector(showCharacterInfo:) keyEquivalent:@"" atIndex:index];
-    }
-
     // セパレータを追加
-    [aMenu insertItem:NSMenuItem.separatorItem atIndex:index];
+//    [aMenu insertItem:NSMenuItem.separatorItem atIndex:index];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem*)menuItem
@@ -109,7 +99,7 @@
         return YES;
     } else if ((c >= 'a') && (c <= 'z')) {
         return YES;
-    } else if (c == '@' && controller && [controller.currentProfile boolForKey:MakeatletterEnabledKey]) {
+    } else if (c == '@' && controller) {
         return YES;
     } else {
         return NO;
@@ -527,97 +517,6 @@
     [self scrollRangeToVisible:NSMakeRange(0, 0)];
 }
 
-- (IBAction)closeCurrentEnvironment:(id)sender
-{
-    autoCompleting = YES;
-    
-    NSRange oldRange = self.selectedRange;
-    
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\\\(begin|end)\\{(.*?)\\}"
-                                                                           options:0
-                                                                             error:nil];
-    NSString *target = [self.textStorage.string substringToIndex:oldRange.location];
-    NSEnumerator* enumerator = [regex matchesInString:target options:0 range:NSMakeRange(0, target.length)].reverseObjectEnumerator;
-    
-    NSRange range1, range2;
-    NSString *newString, *environment, *prefix;
-    NSInteger increment, count_value;
-    NSNumber *count;
-    NSMutableDictionary *environmentStack = [NSMutableDictionary dictionary];
-    NSTextCheckingResult *match;
-    
-    while ((match = (NSTextCheckingResult*)[enumerator nextObject])) {
-        range1 = [match rangeAtIndex:1];
-        range2 = [match rangeAtIndex:2];
-        
-        prefix = (range1.location == NSNotFound) ? @"" : [target substringWithRange:range1];
-        environment = (range2.location == NSNotFound) ? @"" : [target substringWithRange:range2];
-        
-        increment = [prefix isEqualToString:@"end"] ? 1 : -1;
-        
-        count = environmentStack[environment];
-        if (count) {
-            count_value = count.integerValue;
-            if (increment == 1) {
-                environmentStack[environment] = @(count_value+1);
-            } else if (count_value > 0) {
-                environmentStack[environment] = @(count_value-1);
-            } else {
-                newString = environment;
-                break;
-            }
-        } else {
-            if (increment == 1) {
-                environmentStack[environment] = @(1);
-            } else {
-                newString = environment;
-                break;
-            }
-        }
-    }
-    
-    if (newString) {
-        newString = [NSString stringWithFormat:@"\\end{%@}", newString];
-        
-        if ([self shouldChangeTextInRange:oldRange replacementString:newString]) {
-            [self replaceCharactersInRange:oldRange withString:newString];
-            [self didChangeText];
-            self.undoManager.actionName = localizedString(@"Close Current Environment");
-        }
-    } else {
-        NSBeep();
-    }
-    
-    autoCompleting = NO;
-}
-
-- (IBAction)showCharacterInfo:(id)sender
-{
-    NSRange selectedRange = self.selectedRange;
-    
-    if (selectedRange.length <= 0) {
-        NSBeep();
-        return;
-    }
-    
-    NSString *selectedString = [self.string substringWithRange:selectedRange];
-    MyGlyphPopoverController *popoverController = [[MyGlyphPopoverController alloc] initWithCharacter:selectedString];
-    
-    if (!popoverController) {
-        return;
-    }
-    
-    NSRange glyphRange = [self.layoutManager glyphRangeForCharacterRange:selectedRange actualCharacterRange:NULL];
-    NSRect selectedRect = [self.layoutManager boundingRectForGlyphRange:glyphRange inTextContainer:self.textContainer];
-    NSPoint containerOrigin = self.textContainerOrigin;
-    selectedRect.origin.x += containerOrigin.x;
-    selectedRect.origin.y += containerOrigin.y - 6.0;
-    selectedRect = [self convertRectToLayer:selectedRect];
-    
-    [popoverController showPopoverRelativeToRect:selectedRect ofView:self];
-    [self showFindIndicatorForRange:selectedRange];
-}
-
 - (IBAction)normalizeSelectedString:(id)sender
 {
     NSRange selectedRange = self.selectedRange;
@@ -637,17 +536,9 @@
             newString = selectedString.precomposedStringWithCanonicalMapping;
             undoKey = @"NFC";
             break;
-        case Modified_NFC_Tag:
-            newString = selectedString.normalizedStringWithModifiedNFC;
-            undoKey = @"Modified NFC";
-            break;
         case NFD_Tag:
             newString = selectedString.decomposedStringWithCanonicalMapping;
             undoKey = @"NFD";
-            break;
-        case Modified_NFD_Tag:
-            newString = selectedString.normalizedStringWithModifiedNFD;
-            undoKey = @"Modified NFD";
             break;
         case NFKC_Tag:
             newString = selectedString.precomposedStringWithCompatibilityMapping;
@@ -656,10 +547,6 @@
         case NFKD_Tag:
             newString = selectedString.decomposedStringWithCompatibilityMapping;
             undoKey = @"NFKD";
-            break;
-        case NFKC_CF_Tag:
-            newString = selectedString.normalizedStringWithNFKC_CF;
-            undoKey = @"NFKC Casefold";
             break;
         default:
             newString = selectedString;
@@ -674,7 +561,6 @@
                                  key:undoKey];
         self.undoManager.actionName = undoKey;
         self.selectedRange = NSMakeRange(selectedRange.location, newString.length);
-        [self showCharacterInfo:nil];
     } else {
         NSBeep();
     }
@@ -688,7 +574,7 @@
     NSInteger length, i, j, leftpar, rightpar, nestingLevel, uchar;
     BOOL done;
     unichar BACKSLASH = 0x5c;
-    BOOL makeatletterEnabled = controller ? [controller.currentProfile boolForKey:MakeatletterEnabledKey] : YES;
+    BOOL makeatletterEnabled = YES;
     
     textString = self.string;
     if (!textString) {

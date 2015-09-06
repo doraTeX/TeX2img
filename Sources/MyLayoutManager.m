@@ -30,7 +30,7 @@
     NSDictionary* currentProfile = controller.currentProfile;
 	
     NSFont *theFont = self.textStorage.font;
-    NSColor *theColor = [currentProfile colorForKey:InvisibleColorKey];
+    NSColor *theColor = NSColor.invisibleColor;
     if (!theColor) {
         theColor = NSColor.invisibleColor;
     }

@@ -15,43 +15,32 @@
 	NSUInteger		aLineEnd;
 	NSUInteger		end;
 	
-    NSDictionary *profile = controller.currentProfile;
-    
     NSColor *color;
     
-    color = [profile colorForKey:ForegroundColorKey];
+    color = NSColor.textColor;
     if (color) {
         self.textColor = color;
     }
     
-    color = [profile colorForKey:BackgroundColorKey];
+    color = NSColor.textBackgroundColor;
     if (color) {
         self.backgroundColor = color;
     }
     
-    color = [profile colorForKey:CursorColorKey];
+    color = NSColor.blackColor;
     if (color) {
         self.insertionPointColor = color;
     }
     
-    color = [profile colorForKey:CommandColorKey];
-    if (!color) {
-        color = NSColor.commandColor;
-    }
+    color = NSColor.commandColor;
 
     NSDictionary *commandColorAttribute = @{NSForegroundColorAttributeName: color};
     
-    color = [profile colorForKey:CommentColorKey];
-    if (!color) {
-        color = NSColor.commentColor;
-    }
+    color = NSColor.commentColor;
     
     NSDictionary *commentColorAttribute = @{NSForegroundColorAttributeName: color};
 
-    color = [profile colorForKey:BraceColorKey];
-    if (!color) {
-        color = NSColor.braceColor;
-    }
+    color = NSColor.braceColor;
     
     NSDictionary *markerColorAttribute = @{NSForegroundColorAttributeName: color};
 	
@@ -117,7 +106,7 @@
 
 - (void)resetBackgroundColorOfTextView:(id)sender
 {
-	self.backgroundColor = [controller.currentProfile colorForKey:BackgroundColorKey];
+	self.backgroundColor = NSColor.textBackgroundColor;
 }
 
 - (void)resetBackgroundColor:(id)sender
@@ -130,11 +119,9 @@
 - (void)highlightContent:(NSString*)range
 {
 	contentHighlighting = YES;
-    NSColor *color = [controller.currentProfile colorForKey:EnclosedContentBackgroundColorKey];
-    if (!color) {
-        color = NSColor.enclosedContentBackgroundColor;
-    }
-	[self.layoutManager addTemporaryAttributes:@{NSBackgroundColorAttributeName: color}
+    NSColor *color = NSColor.enclosedContentBackgroundColor;
+
+    [self.layoutManager addTemporaryAttributes:@{NSBackgroundColorAttributeName: color}
                              forCharacterRange:NSRangeFromString(range)];
 }
 
@@ -155,10 +142,7 @@
 		[self resetHighlight:nil];
 	}
     
-    color = [profile colorForKey:HighlightedBraceColorKey];
-    if (!color) {
-        color = NSColor.highlightedBraceColor;
-    }
+    color = NSColor.highlightedBraceColor;
 
 	highlightBracesColorDict = @{NSForegroundColorAttributeName: color};
 	unichar k_braceCharList[] = {0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E}; // == ()[]{}<>
@@ -278,7 +262,7 @@
         NSBeep();
     }
 	if ([profile boolForKey:FlashBackgroundKey]) {
-		self.backgroundColor = [profile colorForKey:FlashingBackgroundColorKey];
+		self.backgroundColor = NSColor.flashingBackgroundColor;
 		[self performSelector:@selector(resetBackgroundColorOfTextView:) 
 				   withObject:nil
                    afterDelay:0.20];

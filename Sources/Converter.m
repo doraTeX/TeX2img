@@ -414,16 +414,11 @@
     [task launch];
     [task waitUntilExit];
     
-    NSString *versionString = pipe.stringValue;
+    NSString *versionString = [pipe.stringValue stringByDeletingLastReturnCharacters];
     
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\d+(?:\\.\\d+)?" options:0 error:nil];
-    NSTextCheckingResult *match = [regex firstMatchInString:versionString options:0 range:NSMakeRange(0, versionString.length)];
-    
-    if (match) {
-        double version = [versionString substringWithRange:[match rangeAtIndex:0]].doubleValue;
-        if (version < 9.15) {
-            result = NO;
-        }
+    double version = versionString.doubleValue;
+    if (version < 9.15) {
+        result = NO;
     }
     
     return result;
@@ -600,14 +595,7 @@
         thisRightMargin *= resolutionLevel;
         thisTopMargin *= resolutionLevel;
         thisBottomMargin *= resolutionLevel;
-    } else {
-        CGFloat factor = NSScreen.mainScreen.backingScaleFactor; // for Retina Display
-        thisLeftMargin /= factor;
-        thisRightMargin /= factor;
-        thisTopMargin /= factor;
-        thisBottomMargin /= factor;
     }
-
     
 	NSSize size;
 	size.width  = (NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin;
@@ -691,13 +679,17 @@
     
     // SVG の width, height 属性を削除する
     if (deleteDisplaySizeFlag) {
-        NSMutableString *mstr = [NSMutableString stringWithString:[NSString stringWithContentsOfFile:svgFilePath encoding:NSUTF8StringEncoding error:nil]];
-        NSString *pattern = @"width=\".+?\" height=\".+?\" ";
-        NSRange match = [mstr rangeOfString:pattern options:NSRegularExpressionSearch];
-        if (match.location != NSNotFound) {
-            [mstr replaceCharactersInRange:match withString:@""];
-        }
-        [mstr writeToFile:svgFilePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
+        NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/width=\".+?\" height=\".+?\" /, '');File.open('%@', 'wb') {|f| f.write s}",
+                            svgFilePath,
+                            svgFilePath
+                            ];
+        NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-replaceSVG"];
+        
+        FILE *fp = fopen(scriptPath.UTF8String, "w");
+        fputs(script.UTF8String, fp);
+        fclose(fp);
+        
+        system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
     }
     
     return YES;

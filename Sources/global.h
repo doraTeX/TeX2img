@@ -51,18 +51,6 @@ NSMutableString *commandCompletionList;
 #define TabIndentKey @"tabIndent"
 #define WrapLineKey @"warpLines"
 
-#define ForegroundColorKey @"foregroundColor"
-#define BackgroundColorKey @"backgroundColor"
-#define CursorColorKey @"cursorColor"
-#define BraceColorKey @"braceColor"
-#define CommentColorKey @"commentColor"
-#define CommandColorKey @"commandColor"
-#define InvisibleColorKey @"invisibleColor"
-#define HighlightedBraceColorKey @"highlightedBraceColor"
-#define EnclosedContentBackgroundColorKey @"enclosedContentBackgroundColor"
-#define FlashingBackgroundColorKey @"flashingBackgroundColor"
-#define MakeatletterEnabledKey @"makeatletterEnabled"
-
 #define ColorPalleteColorKey @"colorPalleteColor"
 
 #define ConvertYenMarkKey @"convertYenMark"
@@ -116,12 +104,9 @@ NSMutableString *commandCompletionList;
 #define ShiftLeftTag 4
 
 #define NFC_Tag 1
-#define Modified_NFC_Tag 2
 #define NFD_Tag 3
-#define Modified_NFD_Tag 4
 #define NFKC_Tag 5
 #define NFKD_Tag 6
-#define NFKC_CF_Tag 7
 
 #define TeXtoDVItoPDF 1
 #define TeXtoPDF 2
