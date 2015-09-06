@@ -214,7 +214,7 @@
     NSMutableString *cmdline = [NSMutableString stringWithFormat:@"export PATH=$PATH:\"%@\":\"%@\";", latexPath.programPath.stringByDeletingLastPathComponent, gsPath.programPath.stringByDeletingLastPathComponent];
     
     if (additionalInputPath) {
-        [cmdline appendFormat:@"export TEXINPUTS=%@:`kpsewhich -progname=%@ -expand-var=\\\\$TEXINPUTS`;", additionalInputPath, latexPath.programName];
+        [cmdline appendFormat:@"export TEXINPUTS=\"%@:`kpsewhich -progname=%@ -expand-var=\\\\$TEXINPUTS`\";", additionalInputPath, latexPath.programName];
     }
     
     return cmdline;
