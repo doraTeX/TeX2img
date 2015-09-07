@@ -33,7 +33,7 @@ void usage()
     printf("  --kanji      ENCODING      : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: enabled)\n");
     printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
-    printf("  --dviware    DVIWARE       : set dviware     (default: dvipdfmx)\n");
+    printf("  --dviware    DVIWARE       : set the DVI driver    (default: dvipdfmx)\n");
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
     printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
     printf("  --left-margin    MARGIN    : set the left margin   (default: 0)\n");
@@ -683,15 +683,16 @@ int main (int argc, char *argv[]) {
         NSString *mudrawPath = getPath(@"mudraw");
         
         if (!latexPath) {
-            [controller showNotFoundError:@"LaTeX"];
+            [controller showNotFoundError:latex.programName];
+            suggestLatexOption();
             return 1;
         }
         if (!dviwarePath) {
-            [controller showNotFoundError:@"DVIware"];
+            [controller showNotFoundError:dviware.programName];
             return 1;
         }
         if (!gsPath) {
-            [controller showNotFoundError:@"Ghostscript"];
+            [controller showNotFoundError:gs.programName];
             return 1;
         }
         if (!epstopdfPath) {

@@ -11,6 +11,12 @@ void printStdErr(const char *format, ...)
     va_end(list);
 }
 
+void suggestLatexOption()
+{
+    printStdErr("If you want to use another LaTeX compiler, specify it by using --latex option.\n");
+}
+
+
 BOOL checkWhich(NSString *cmdName)
 {
     int status = system([NSString stringWithFormat:@"PATH=$PATH:%@; /usr/bin/which %@ > /dev/null", ADDITIONAL_PATH, cmdName].UTF8String);

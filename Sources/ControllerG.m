@@ -1993,11 +1993,11 @@ typedef enum {
     
     if (!(latexPath = [self searchProgram:engineName])) {
         latexPath = @"";
-        [self showNotFoundError:@"LaTeX"];
+        [self showNotFoundError:engineName];
     }
     if (!(dviwarePath = [self searchProgram:dviwareName])) {
         dviwarePath = @"";
-        [self showNotFoundError:@"DVIware"];
+        [self showNotFoundError:dviwareName];
     } else {
         if ([dviwareName isEqualToString:@"dvipdfmx"]) {
             dviwarePath = [dviwarePath stringByAppendingString:@" -vv"];
