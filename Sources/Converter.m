@@ -312,6 +312,7 @@
                                             @"-dBATCH",
                                             [@"-sOutputFile=" stringByAppendingString:pdfFilePath],
                                             @"-sDEVICE=pdfwrite",
+                                            @"-dAutoRotatePages=/None",
                                             @"-c",
                                             @".setpdfwrite",
                                             @"-f",
