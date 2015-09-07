@@ -14,7 +14,6 @@
 		3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
 		345339911B93DDD10027CBE7 /* NSMatrix-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 345339901B93DDD10027CBE7 /* NSMatrix-Extension.m */; };
 		346225661AB558AB00F632AD /* mupdf in Resources */ = {isa = PBXBuildFile; fileRef = 346225651AB558AB00F632AD /* mupdf */; };
-		34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 34670DD5125B7AC3002308EF /* dsa_pub.pem */; };
 		346DA57B1B705F6800B51BD7 /* NSArray-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */; };
 		346DA57C1B705F6800B51BD7 /* NSArray-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */; };
 		346DA57F1B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57E1B70605100B51BD7 /* NSIndexSet-Extension.m */; };
@@ -84,7 +83,6 @@
 		3453398F1B93DDD10027CBE7 /* NSMatrix-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMatrix-Extension.h"; sourceTree = "<group>"; };
 		345339901B93DDD10027CBE7 /* NSMatrix-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMatrix-Extension.m"; sourceTree = "<group>"; };
 		346225651AB558AB00F632AD /* mupdf */ = {isa = PBXFileReference; lastKnownFileType = folder; path = mupdf; sourceTree = "<group>"; };
-		34670DD5125B7AC3002308EF /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		346DA5791B705F6800B51BD7 /* NSArray-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray-Extension.h"; sourceTree = "<group>"; };
 		346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Extension.m"; sourceTree = "<group>"; };
 		346DA57D1B70605100B51BD7 /* NSIndexSet-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet-Extension.h"; sourceTree = "<group>"; };
@@ -242,7 +240,6 @@
 			children = (
 				346225651AB558AB00F632AD /* mupdf */,
 				34CCBB061A964E8A0061842E /* Templates */,
-				34670DD5125B7AC3002308EF /* dsa_pub.pem */,
 				342C6194101E637F00E29FEB /* epstopdf */,
 				7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -372,7 +369,6 @@
 				7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */,
 				342C6196101E637F00E29FEB /* epstopdf in Resources */,
 				346225661AB558AB00F632AD /* mupdf in Resources */,
-				34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
