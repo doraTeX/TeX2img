@@ -517,7 +517,9 @@
     
     if ([self isEmptyPage:pdfName page:page]) {
         return [self replaceEpsBBoxWithEmptyBBox:outputEpsFileName];
-    } if (!shouldUseEps2WriteDevice) {
+    }
+    
+    if (!shouldUseEps2WriteDevice) {
         // epswrite デバイスを使っているときには，生成したEPSのBBox情報を，オリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する ( https://github.com/doraTeX/TeX2img/issues/18 )
         return [self replaceEpsBBox:outputEpsFileName withBBoxOfPdf:pdfName page:page];
     }
@@ -608,11 +610,9 @@
         thisTopMargin /= factor;
         thisBottomMargin /= factor;
     }
-
     
-	NSSize size;
-	size.width  = (NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin;
-	size.height = (NSInteger)(height * resolutionLevel) + thisTopMargin + thisBottomMargin;
+	NSSize size = NSMakeSize((NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin,
+                             (NSInteger)(height * resolutionLevel) + thisTopMargin + thisBottomMargin);
 	
 	NSImage* image = [[NSImage alloc] initWithSize:size];
 	[image lockFocus];
