@@ -519,12 +519,11 @@
         return [self replaceEpsBBoxWithEmptyBBox:outputEpsFileName];
     }
     
-    if (!shouldUseEps2WriteDevice) {
-        // epswrite デバイスを使っているときには，生成したEPSのBBox情報を，オリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する ( https://github.com/doraTeX/TeX2img/issues/18 )
-        return [self replaceEpsBBox:outputEpsFileName withBBoxOfPdf:pdfName page:page];
-    }
+    // 生成したEPSのBBox情報をオリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する
+    // https://github.com/doraTeX/TeX2img/issues/18
+    // https://github.com/doraTeX/TeX2img/issues/37
     
-	return status;
+    return [self replaceEpsBBox:outputEpsFileName withBBoxOfPdf:pdfName page:page];
 }
 
 - (BOOL)epstopdf:(NSString*)epsName outputPdfFileName:(NSString*)outputPdfFileName
