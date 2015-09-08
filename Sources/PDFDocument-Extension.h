@@ -3,5 +3,6 @@
 
 @interface PDFDocument (Extension)
 + (instancetype)documentWithFilePath:(NSString*)path;
++ (instancetype)documentWithMergingPDFFiles:(NSArray*)paths;
 - (PDFPageBox*)pageBoxAtIndex:(NSUInteger)index;
 @end

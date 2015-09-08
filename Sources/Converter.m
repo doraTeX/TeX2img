@@ -26,7 +26,7 @@
 @property float resolutionLevel;
 @property BOOL guessCompilation;
 @property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property NSObject<OutputController> *controller;
 @property NSFileManager *fileManager;
 @property NSString *tempdir;
@@ -57,7 +57,7 @@
 @synthesize resolutionLevel;
 @synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@synthesize leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
 @synthesize fileManager;
 @synthesize tempdir;
@@ -102,6 +102,8 @@
     leaveTextFlag = ![aProfile boolForKey:GetOutlineKey];
     transparentFlag = [aProfile boolForKey:TransparentKey];
     deleteDisplaySizeFlag = [aProfile boolForKey:DeleteDisplaySizeKey];
+    mergeOutputsFlag = [aProfile boolForKey:MergeOutputsKey];
+    keepPageSizeFlag = [aProfile boolForKey:KeepPageSizeKey];
     showOutputDrawerFlag = [aProfile boolForKey:ShowOutputDrawerKey];
     previewFlag = [aProfile boolForKey:PreviewKey];
     deleteTmpFileFlag = [aProfile boolForKey:DeleteTmpFileKey];
@@ -1018,42 +1020,72 @@
             }
         }
 	}
-	
-	// 最終出力ファイルを目的地へコピー
-    if (![emptyPageFlags[0] boolValue]) {
-        [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
-        [self embedSource:texFilePath intoFile:outputFilePath];
-    }
-
-    for (NSUInteger i=2; i<=pageCount; i++) {
-        if (![emptyPageFlags[i-1] boolValue]) {
-            NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
-            [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
-                          toPath:destPath];
-            [self embedSource:texFilePath intoFile:destPath];
-        }
-    }
     
-    // 生成ファイルをクリップボードへコピー
-    if (copyToClipboard) {
-        NSPasteboard *pboard = NSPasteboard.generalPasteboard;
-        [pboard declareTypes:@[NSURLPboardType] owner:nil];
+    // 単一PDF出力の場合
+    if ([@"pdf" isEqualToString:extension] && mergeOutputsFlag) {
+        // 実際に生成したファイルのパスを集める
         NSMutableArray *outputFiles = [NSMutableArray array];
         
         if (![emptyPageFlags[0] boolValue]) {
-             [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:outputFilePath]];
+            [outputFiles addObject:[tempdir stringByAppendingPathComponent:outputFileName]];
         }
-
         
         for (NSUInteger i=2; i<=pageCount; i++) {
             if (![emptyPageFlags[i-1] boolValue]) {
-                [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
+                [outputFiles addObject:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]];
             }
         }
         
+        // マージして出力
         if (outputFiles.count > 0) {
-            [pboard clearContents];
-            [pboard writeObjects:outputFiles];
+            [[PDFDocument documentWithMergingPDFFiles:outputFiles] writeToFile:outputFilePath];
+            [self embedSource:texFilePath intoFile:outputFilePath];
+            
+            // 生成ファイルをクリップボードへコピー
+            if (copyToClipboard) {
+                NSPasteboard *pboard = NSPasteboard.generalPasteboard;
+                [pboard declareTypes:@[NSURLPboardType] owner:nil];
+                [pboard clearContents];
+                [pboard writeObjects:@[[[NSURL alloc] initFileURLWithPath:outputFilePath]]];
+            }
+        }
+
+    } else { // バラバラ出力の場合
+        // 最終出力ファイルを目的地へコピー
+        if (![emptyPageFlags[0] boolValue]) {
+            [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
+            [self embedSource:texFilePath intoFile:outputFilePath];
+        }
+        
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            if (![emptyPageFlags[i-1] boolValue]) {
+                NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
+                [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
+                              toPath:destPath];
+                [self embedSource:texFilePath intoFile:destPath];
+            }
+        }
+        
+        // 生成ファイルをクリップボードへコピー
+        if (copyToClipboard) {
+            NSPasteboard *pboard = NSPasteboard.generalPasteboard;
+            [pboard declareTypes:@[NSURLPboardType] owner:nil];
+            NSMutableArray *outputFiles = [NSMutableArray array];
+            
+            if (![emptyPageFlags[0] boolValue]) {
+                [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:outputFilePath]];
+            }
+            
+            for (NSUInteger i=2; i<=pageCount; i++) {
+                if (![emptyPageFlags[i-1] boolValue]) {
+                    [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
+                }
+            }
+            
+            if (outputFiles.count > 0) {
+                [pboard clearContents];
+                [pboard writeObjects:outputFiles];
+            }
         }
     }
 	
@@ -1096,12 +1128,16 @@
     // 生成ファイルを集める
     NSMutableArray *generatedFiles = [NSMutableArray array];
     
-    if (![emptyPageFlags[0] boolValue]) {
+    if ([extension isEqualToString:@"pdf"] && mergeOutputsFlag && (emptyPageFlags.indexesOfTrueValue.count < pageCount)) {
         [generatedFiles addObject:outputFilePath];
-    }
-    for (NSUInteger i=2; i<=pageCount; i++) {
-        if (![emptyPageFlags[i-1] boolValue]) {
-            [generatedFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
+    } else {
+        if (![emptyPageFlags[0] boolValue]) {
+            [generatedFiles addObject:outputFilePath];
+        }
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            if (![emptyPageFlags[i-1] boolValue]) {
+                [generatedFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
+            }
         }
     }
     
