@@ -158,6 +158,9 @@ typedef enum {
 @property IBOutlet NSViewController *tabCharacterKindSettingViewController;
 @property IBOutlet NSMatrix *tabCharacterKindMatrix;
 
+@property IBOutlet NSViewController *pageBoxSettingViewController;
+@property IBOutlet NSMatrix *pageBoxMatrix;
+
 @property Converter *converter;
 @property NSTask *runningTask;
 @property NSPipe *outputPipe;
@@ -284,6 +287,9 @@ typedef enum {
 
 @synthesize tabCharacterKindSettingViewController;
 @synthesize tabCharacterKindMatrix;
+
+@synthesize pageBoxSettingViewController;
+@synthesize pageBoxMatrix;
 
 @synthesize converter;
 @synthesize runningTask;
@@ -784,6 +790,10 @@ typedef enum {
         [tabCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:TabCharacterKindKey]];
     }
 
+    if ([keys containsObject:PageBoxKey]) {
+        [pageBoxMatrix selectCellWithTag:[aProfile integerForKey:PageBoxKey]];
+    }
+
     [self invisibleCharacterKindChanged:nil];
 
     [self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:PreambleKey];
@@ -926,7 +936,9 @@ typedef enum {
         currentProfile[FullwidthSpaceCharacterKindKey] = @(fullwidthSpaceCharacterKindMatrix.selectedTag);
         currentProfile[ReturnCharacterKindKey] = @(returnCharacterKindMatrix.selectedTag);
         currentProfile[TabCharacterKindKey] = @(tabCharacterKindMatrix.selectedTag);
-        
+
+        currentProfile[PageBoxKey] = @(pageBoxMatrix.selectedTag);
+
         currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
         currentProfile[FlashInMovingKey] = @(flashInMovingCheckBox.state);
         currentProfile[HighlightContentKey] = @(highlightContentCheckBox.state);
@@ -1264,6 +1276,7 @@ typedef enum {
     [fullwidthSpaceCharacterKindMatrix setCellColor:NSColor.textColor];
     [returnCharacterKindMatrix setCellColor:NSColor.textColor];
     [tabCharacterKindMatrix setCellColor:NSColor.textColor];
+    [pageBoxMatrix setCellColor:NSColor.textColor];
 	
 	// 保存された設定を読み込む
 	NSFileManager *fileManager = NSFileManager.defaultManager;
@@ -2246,6 +2259,15 @@ typedef enum {
                                       ofView:preferenceWindow.contentView
                                      offsetX:25
                                            Y:24];
+}
+
+- (IBAction)showPageBoxSettingPopover:(id)sender
+{
+    [NSPopover showPopoverWithViewController:pageBoxSettingViewController
+                             atRightOfButton:(NSButton*)sender
+                                      ofView:preferenceWindow.contentView
+                                     offsetX:31
+                                           Y:35];
 }
 
 #pragma mark - 不可視文字表示の種別設定

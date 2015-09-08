@@ -96,6 +96,7 @@ NSMutableString *commandCompletionList;
 #define FullwidthSpaceCharacterKindKey @"fullwidthSpaceCharacterKind"
 #define ReturnCharacterKindKey @"returnCharacterKind"
 #define TabCharacterKindKey @"tabCharacterKind"
+#define PageBoxKey @"pageBox"
 
 #define ControllerKey @"controller"
 #define TeX2imgVersionKey @"TeX2imgVersion"
