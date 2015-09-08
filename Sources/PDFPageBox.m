@@ -39,22 +39,20 @@
     NSString *result;
     
     if (hires) {
-       result = [NSString stringWithFormat:@"%@%f %f %f %f%@",
+       result = [NSString stringWithFormat:@"%@%f %f %f %f\n",
                  (addHeader ? @"%%HiResBoundingBox: " : @""),
                  rect.origin.x,
                  rect.origin.y,
                  rect.origin.x + rect.size.width,
-                 rect.origin.y + rect.size.height,
-                 (addHeader ? @"\n" : @"")
+                 rect.origin.y + rect.size.height
                  ];
     } else {
-        result = [NSString stringWithFormat:@"%@%ld %ld %ld %ld%@",
+        result = [NSString stringWithFormat:@"%@%ld %ld %ld %ld\n",
                   (addHeader ? @"%%BoundingBox: " : @""),
                   (NSInteger)floor(rect.origin.x),
                   (NSInteger)floor(rect.origin.y),
                   (NSInteger)floor(rect.origin.x) + (NSInteger)ceil(rect.size.width),
-                  (NSInteger)floor(rect.origin.y) + (NSInteger)ceil(rect.size.height),
-                  (addHeader ? @"\n" : @"")
+                  (NSInteger)floor(rect.origin.y) + (NSInteger)ceil(rect.size.height)
                   ];
     }
     

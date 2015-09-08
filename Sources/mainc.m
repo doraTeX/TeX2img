@@ -10,7 +10,7 @@
 #import "NSDictionary-Extension.h"
 
 #define OPTION_NUM 46
-#define VERSION "2.0.1"
+#define VERSION "2.0.2b1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -31,12 +31,12 @@ void usage()
     printf("               (*extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
     printf("Options:\n");
     printf("  --latex      COMPILER      : set the LaTeX compiler (default: platex)\n");
-    printf("  (synonym: --compiler\n");
+    printf("  *synonym: --compiler\n");
     printf("  --kanji      ENCODING      : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: enabled)\n");
     printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
     printf("  --dvidriver    DVIWARE     : set the DVI driver    (default: dvipdfmx)\n");
-    printf("  (synonym: --dviware, --dvipdfmx\n");
+    printf("  *synonym: --dviware, --dvipdfmx\n");
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
     printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
     printf("  --left-margin    MARGIN    : set the left margin   (default: 0)\n");
@@ -490,7 +490,7 @@ int main (int argc, char *argv[]) {
                         resolutoinLevel = strtof(optarg, NULL);
                     } else {
                         printf("--resolution is invalid.\n");
-                        usage();
+                        exit(1);
                     }
                     break;
                 case 2: // --left-margin
@@ -498,7 +498,7 @@ int main (int argc, char *argv[]) {
                         leftMargin = strtoi(optarg);
                     } else {
                         printf("--left-margin is invalid.\n");
-                        usage();
+                        exit(1);
                     }
                     break;
                 case 3: // --right-margin
@@ -506,7 +506,7 @@ int main (int argc, char *argv[]) {
                         rightMargin = strtoi(optarg);
                     } else {
                         printf("--right-margin is invalid.\n");
-                        usage();
+                        exit(1);
                     }
                     break;
                 case 4: // --top-margin
@@ -514,7 +514,7 @@ int main (int argc, char *argv[]) {
                         topMargin = strtoi(optarg);
                     } else {
                         printf("--top-margin is invalid.\n");
-                        usage();
+                        exit(1);
                     }
                     break;
                 case 5: // --bottom-margin
@@ -522,7 +522,7 @@ int main (int argc, char *argv[]) {
                         bottomMargin = strtoi(optarg);
                     } else {
                         printf("--bottom-margin is invalid.\n");
-                        usage();
+                        exit(1);
                     }
                     break;
                 case 6: // --with-text
@@ -564,12 +564,12 @@ int main (int argc, char *argv[]) {
                                    && ![encoding isEqualToString:PTEX_ENCODING_SJIS]
                                    && ![encoding isEqualToString:PTEX_ENCODING_JIS]
                                    && ![encoding isEqualToString:PTEX_ENCODING_EUC]) {
-                            printf("--kanji is invalid. It must be no/utf8/sjis/jis/euc.\n");
-                            usage();
+                            printf("error: --kanji is invalid. It must be no/utf8/sjis/jis/euc.\n");
+                            exit(1);
                         }
                     } else {
-                        printf("--kanji is invalid. It must be no/utf8/sjis/jis/euc.\n");
-                        usage();
+                        printf("error: --kanji is invalid. It must be no/utf8/sjis/jis/euc.\n");
+                        exit(1);
                     }
                     break;
                 case 17: // --quiet
@@ -586,12 +586,12 @@ int main (int argc, char *argv[]) {
                         } else if ([unitString isEqualToString:@"bp"]) {
                             unitTag = @(BP_UNIT_TAG);
                         } else {
-                            printf("--unit is invalid. It must be \"px\" or \"bp\".\n");
-                            usage();
+                            printf("error: --unit is invalid. It must be \"px\" or \"bp\".\n");
+                            exit(1);
                         }
                     } else {
-                        printf("--unit is invalid. It must be \"px\" or \"bp\".\n");
-                        usage();
+                        printf("error: --unit is invalid. It must be \"px\" or \"bp\".\n");
+                        exit(1);
                     }
                     break;
                 case 20: // --quick
@@ -604,8 +604,8 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         numberOfCompilation = strtoi(optarg);
                     } else {
-                        printf("--num is invalid.\n");
-                        usage();
+                        printf("error: --num is invalid.\n");
+                        exit(1);
                     }
                     break;
                 case 23: // --guess-compile
@@ -624,8 +624,8 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         gs = @(optarg);
                     } else {
-                        printf("--gs is invalid.\n");
-                        usage();
+                        printf("error: --gs is invalid.\n");
+                        exit(1);
                     }
                     break;
                 case 28: // --embed-source
@@ -650,40 +650,40 @@ int main (int argc, char *argv[]) {
                     if (optarg) {
                         latex = @(optarg);
                     } else {
-                        printf("--latex is invalid.\n");
-                        usage();
+                        printf("error: --latex is invalid.\n");
+                        exit(1);
                     }
                     break;
                 case 35: // --compiler (synonym for --latex)
                     if (optarg) {
                         latex = @(optarg);
                     } else {
-                        printf("--compiler is invalid.\n");
-                        usage();
+                        printf("error: --compiler is invalid.\n");
+                        exit(1);
                     }
                     break;
                 case 36: // --dvidriver
                     if (optarg) {
                         dviware = @(optarg);
                     } else {
-                        printf("--dvidriver is invalid.\n");
-                        usage();
+                        printf("error: --dvidriver is invalid.\n");
+                        exit(1);
                     }
                     break;
                 case 37: // --dviware (synonym for --dvidriver)
                     if (optarg) {
                         dviware = @(optarg);
                     } else {
-                        printf("--dviware is invalid.\n");
-                        usage();
+                        printf("error: --dviware is invalid.\n");
+                        exit(1);
                     }
                     break;
                 case 38: // --dvipdfmx (synonym for --dvidriver)
                     if (optarg) {
                         dviware = @(optarg);
                     } else {
-                        printf("--dvipdfmx is invalid.\n");
-                        usage();
+                        printf("error: --dvipdfmx is invalid.\n");
+                        exit(1);
                     }
                     break;
                 case 39: // --merge-output-files
@@ -712,12 +712,12 @@ int main (int argc, char *argv[]) {
                         } else if ([pageboxString isEqualToString:@"art"]) {
                             pageBoxType = kCGPDFArtBox;
                         } else {
-                            printf("--pagebox is invalid. It must be media/crop/bleed/trim/art.\n");
-                            usage();
+                            printf("error: --pagebox is invalid. It must be media/crop/bleed/trim/art.\n");
+                            exit(1);
                         }
                     } else {
-                        printf("--pagebox is invalid. It must be media/crop/bleed/trim/art.\n");
-                        usage();
+                        printf("error: --pagebox is invalid. It must be media/crop/bleed/trim/art.\n");
+                        exit(1);
                     }
                     break;
                 case (OPTION_NUM - 2): // --version

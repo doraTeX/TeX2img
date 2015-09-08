@@ -937,7 +937,7 @@ DQ
                                                     <button id="1Md-AO-KUe">
                                                         <rect key="frame" x="16" y="12" width="191" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="元のページサイズを保持する" bezelStyle="regularSquare" imagePosition="left" inset="2" id="m3X-wv-OUP">
+                                                        <buttonCell key="cell" type="check" title="元のページサイズを維持する" bezelStyle="regularSquare" imagePosition="left" inset="2" id="m3X-wv-OUP">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" size="13" name="HiraKakuProN-W3"/>
                                                         </buttonCell>
