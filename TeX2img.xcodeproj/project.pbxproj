@@ -40,6 +40,8 @@
 		3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */; };
 		3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
+		34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */; };
+		34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */; };
 		34CCBB071A964E8A0061842E /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 34CCBB061A964E8A0061842E /* Templates */; };
 		34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CEA1931AB970CE00F98258 /* UtilityG.m */; };
 		34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
@@ -127,6 +129,8 @@
 		3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverSingle.xib; sourceTree = "<group>"; };
 		34BF870A12AC10D20099654C /* MyLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyLayoutManager.h; sourceTree = "<group>"; };
 		34BF870B12AC10D20099654C /* MyLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyLayoutManager.m; sourceTree = "<group>"; };
+		34BFF6D11B9F1A9F00E8DE77 /* PDFDocument-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PDFDocument-Extension.h"; sourceTree = "<group>"; };
+		34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PDFDocument-Extension.m"; sourceTree = "<group>"; };
 		34CCBB061A964E8A0061842E /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
 		34CEA1931AB970CE00F98258 /* UtilityG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilityG.m; sourceTree = "<group>"; };
 		34CEA1951AB970F600F98258 /* UtilityG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityG.h; sourceTree = "<group>"; };
@@ -365,6 +369,8 @@
 				3453398D1B93D5830027CBE7 /* NSPopover-Extension.m */,
 				3453398F1B93DDD10027CBE7 /* NSMatrix-Extension.h */,
 				345339901B93DDD10027CBE7 /* NSMatrix-Extension.m */,
+				34BFF6D11B9F1A9F00E8DE77 /* PDFDocument-Extension.h */,
+				34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */,
 			);
 			name = Extensions;
 			path = Sources;
@@ -493,6 +499,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				348F29611B848C68009AA3CF /* NSPipe-Extension.m in Sources */,
+				34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */,
 				349564B91ABFF3D1004B9C1D /* Utility.m in Sources */,
 				3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */,
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
@@ -516,6 +523,7 @@
 				348CA6DC1A957BC90070B079 /* NSDate-Extension.m in Sources */,
 				34867AC91B7B4804002AD2CF /* NSColorWell-Extension.m in Sources */,
 				345339911B93DDD10027CBE7 /* NSMatrix-Extension.m in Sources */,
+				34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */,
 				346DA57F1B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */,
 				347314FB1B89CFDC00F285A3 /* NSString-Normalization.m in Sources */,
 				3453398E1B93D5830027CBE7 /* NSPopover-Extension.m in Sources */,

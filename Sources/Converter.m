@@ -13,6 +13,7 @@
 #import "NSMutableString-Extension.h"
 #import "NSDate-Extension.h"
 #import "NSPipe-Extension.h"
+#import "PDFDocument-Extension.h"
 #import "Converter.h"
 
 @interface Converter()
@@ -364,7 +365,7 @@
 // page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
 - (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin
 {
-    NSUInteger totalPages = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfPath]].pageCount;
+    NSUInteger totalPages = [PDFDocument documentWithFilePath:pdfPath].pageCount;
     NSMutableString *cropTeX = [NSMutableString stringWithString:@"\\pdfoutput=1"];
     if (page > 0) {
         [cropTeX appendString:[self buildCropTeXSource:pdfPath page:page addMargin:addMargin]];
@@ -584,7 +585,7 @@
     }
 	
 	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
-	NSData* pageData = [[[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]] pageAtIndex:(page-1)].dataRepresentation;
+	NSData* pageData = [[PDFDocument documentWithFilePath:pdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
 	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
 
 	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
@@ -935,7 +936,7 @@
 
     [controller exitCurrentThreadIfTaskKilled];
     
-    pageCount = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]].pageCount;
+    pageCount = [PDFDocument documentWithFilePath:pdfFilePath].pageCount;
 
     emptyPageFlags = [NSMutableArray array];
     for (NSInteger i=1; i<=pageCount; i++) {
