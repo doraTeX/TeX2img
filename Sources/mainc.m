@@ -8,7 +8,7 @@
 #import "NSString-Extension.h"
 #import "NSDictionary-Extension.h"
 
-#define OPTION_NUM 40
+#define OPTION_NUM 45
 #define VERSION "2.0.1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
@@ -30,10 +30,12 @@ void usage()
     printf("               (*extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
     printf("Options:\n");
     printf("  --latex      COMPILER      : set the LaTeX compiler (default: platex)\n");
+    printf("  (synonym: --compiler\n");
     printf("  --kanji      ENCODING      : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: enabled)\n");
     printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
-    printf("  --dviware    DVIWARE       : set the DVI driver    (default: dvipdfmx)\n");
+    printf("  --dvidriver    DVIWARE     : set the DVI driver    (default: dvipdfmx)\n");
+    printf("  (synonym: --dviware, --dvipdfmx\n");
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
     printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
     printf("  --left-margin    MARGIN    : set the left margin   (default: 0)\n");
@@ -44,7 +46,9 @@ void usage()
     printf("                               (*bp is always used for EPS/PDF/SVG)\n");
     printf("  --[no-]transparent         : disable/enable transparent PNG/GIF/TIFF (default: enabled)\n");
     printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
+    printf("  --[no-]merge-output-files  : disable/enable merging products as a single PDF file (default: disabled)\n");
     printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
+    printf("  --[no-]keep-page-size      : disable/enable keeping the original page size (default: disabled)\n");
     printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
     printf("  --[no-]utf-export          : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
     printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
@@ -177,6 +181,8 @@ int main (int argc, char *argv[]) {
         BOOL previewFlag = NO;
         BOOL copyToClipboardFlag = NO;
         BOOL embedSourceFlag = YES;
+        BOOL mergeFlag = NO;
+        BOOL keepPageSizeFlag = NO;
         NSString *encoding = PTEX_ENCODING_NONE;
         NSString *latex    = @"platex";
         NSString *dviware  = @"dvipdfmx";
@@ -401,6 +407,12 @@ int main (int argc, char *argv[]) {
         options[i].val = i+1;
         
         i++;
+        options[i].name = "dvidriver";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
         options[i].name = "dviware";
         options[i].has_arg = required_argument;
         options[i].flag = NULL;
@@ -409,6 +421,30 @@ int main (int argc, char *argv[]) {
         i++;
         options[i].name = "dvipdfmx";
         options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "merge-output-files";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "no-merge-output-files";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "keep-page-size";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "no-keep-page-size";
+        options[i].has_arg = no_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
 
@@ -609,7 +645,7 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 35: // --compiler (hidden option for compatibility, synonym for --latex)
+                case 35: // --compiler (synonym for --latex)
                     if (optarg) {
                         latex = @(optarg);
                     } else {
@@ -617,7 +653,15 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 36: // --dviware
+                case 36: // --dvidriver
+                    if (optarg) {
+                        dviware = @(optarg);
+                    } else {
+                        printf("--dvidriver is invalid.\n");
+                        usage();
+                    }
+                    break;
+                case 37: // --dviware (synonym for --dvidriver)
                     if (optarg) {
                         dviware = @(optarg);
                     } else {
@@ -625,13 +669,25 @@ int main (int argc, char *argv[]) {
                         usage();
                     }
                     break;
-                case 37: // --dvipdfmx (hidden option for compatibility, synonym for --dviware)
+                case 38: // --dvipdfmx (synonym for --dvidriver)
                     if (optarg) {
                         dviware = @(optarg);
                     } else {
                         printf("--dvipdfmx is invalid.\n");
                         usage();
                     }
+                    break;
+                case 39: // --merge-output-files
+                    mergeFlag = YES;
+                    break;
+                case 40: // --no-merge-output-files
+                    mergeFlag = NO;
+                    break;
+                case 41: // --keep-page-size
+                    keepPageSizeFlag = YES;
+                    break;
+                case 42: // --no-keep-page-size
+                    keepPageSizeFlag = NO;
                     break;
                 case (OPTION_NUM - 2): // --version
                     version();
@@ -735,6 +791,8 @@ int main (int argc, char *argv[]) {
         aProfile[PriorityKey] = quickFlag ? @(SPEED_PRIORITY_TAG) : @(QUALITY_PRIORITY_TAG);
         aProfile[CopyToClipboardKey] = @(copyToClipboardFlag);
         aProfile[EmbedSourceKey] = @(embedSourceFlag);
+        aProfile[MergeOutputsKey] = @(mergeFlag);
+        aProfile[KeepPageSizeKey] = @(keepPageSizeFlag);
         
         if (!quietFlag) {
             printCurrentStatus(inputFilePath, aProfile);
