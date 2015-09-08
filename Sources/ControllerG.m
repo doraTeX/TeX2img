@@ -87,6 +87,8 @@ typedef enum {
 @property IBOutlet NSButton *generateButton;
 @property IBOutlet NSButton *transparentCheckBox;
 @property IBOutlet NSButton *deleteDisplaySizeCheckBox;
+@property IBOutlet NSButton *mergeOutputsCheckBox;
+@property IBOutlet NSButton *keepPageSizeCheckBox;
 @property IBOutlet NSButton *showOutputDrawerCheckBox;
 @property IBOutlet NSButton *previewCheckBox;
 @property IBOutlet NSButton *deleteTmpFileCheckBox;
@@ -212,6 +214,8 @@ typedef enum {
 @synthesize generateButton;
 @synthesize transparentCheckBox;
 @synthesize deleteDisplaySizeCheckBox;
+@synthesize mergeOutputsCheckBox;
+@synthesize keepPageSizeCheckBox;
 @synthesize showOutputDrawerCheckBox;
 @synthesize previewCheckBox;
 @synthesize deleteTmpFileCheckBox;
@@ -599,6 +603,8 @@ typedef enum {
 	transparentCheckBox.state = [aProfile boolForKey:TransparentKey];
 	textPdfCheckBox.state = ![aProfile boolForKey:GetOutlineKey];
     deleteDisplaySizeCheckBox.state = [aProfile boolForKey:DeleteDisplaySizeKey];
+    mergeOutputsCheckBox.state = [aProfile boolForKey:MergeOutputsKey];
+    keepPageSizeCheckBox.state = [aProfile boolForKey:KeepPageSizeKey];
 
 	ignoreErrorCheckBox.state = [aProfile boolForKey:IgnoreErrorKey];
 	utfExportCheckBox.state = [aProfile boolForKey:UtfExportKey];
@@ -881,6 +887,8 @@ typedef enum {
         currentProfile[TransparentKey] = @(transparentCheckBox.state);
         currentProfile[GetOutlineKey] = @(!textPdfCheckBox.state);
         currentProfile[DeleteDisplaySizeKey] = @(deleteDisplaySizeCheckBox.state);
+        currentProfile[MergeOutputsKey] = @(mergeOutputsCheckBox.state);
+        currentProfile[KeepPageSizeKey] = @(keepPageSizeCheckBox.state);
         currentProfile[IgnoreErrorKey] = @(ignoreErrorCheckBox.state);
         currentProfile[UtfExportKey] = @(utfExportCheckBox.state);
         
