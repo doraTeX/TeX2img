@@ -43,7 +43,7 @@
 @property BOOL pdfInputMode;
 @property BOOL psInputMode;
 @property BOOL errorsIgnored;
-@property CGPDFBox pageBox;
+@property CGPDFBox pageBoxType;
 @property NSMutableArray *emptyPageFlags;
 @property NSMutableArray *whitePageFlags;
 @end
@@ -75,7 +75,7 @@
 @synthesize pdfInputMode;
 @synthesize psInputMode;
 @synthesize errorsIgnored;
-@synthesize pageBox;
+@synthesize pageBoxType;
 @synthesize emptyPageFlags;
 @synthesize whitePageFlags;
 
@@ -119,7 +119,7 @@
     useBP = ([aProfile integerForKey:UnitKey] == BP_UNIT_TAG);
     speedPriorityMode = ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG);
     embedSource = [aProfile boolForKey:EmbedSourceKey];
-    pageBox = [aProfile integerForKey:PageBoxKey];
+    pageBoxType = [aProfile integerForKey:PageBoxKey];
     additionalInputPath = nil;
     pdfInputMode = NO;
     psInputMode = NO;
@@ -351,18 +351,20 @@
 
 - (BOOL)willEmptyPageBeCreated:(NSString*)pdfPath page:(NSUInteger)page
 {
-    return [self isEmptyPage:pdfPath page:page] && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0));
+    return (!keepPageSizeFlag && [self isEmptyPage:pdfPath page:page] && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0)));
 }
 
 - (NSString*)buildCropTeXSource:(NSString*)pdfPath page:(NSUInteger)page addMargin:(BOOL)addMargin
 {
-    
     NSInteger leftmargin = addMargin ? leftMargin : 0;
     NSInteger rightmargin = addMargin ? rightMargin : 0;
     NSInteger topmargin = addMargin ? topMargin : 0;
     NSInteger bottommargin = addMargin ? bottomMargin : 0;
     
-    NSString *bbStr = [self bboxStringOfPdf:pdfPath page:page]; // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiReSのBBoxを使うのが得策。
+    NSString *bbStr = keepPageSizeFlag ?
+    [[PDFPageBox pageBoxWithFilePath:pdfPath page:page] bboxStringOfBox:pageBoxType hires:NO clipWithMediaBox:YES addHeader:YES] :
+    [self bboxStringOfPdf:pdfPath page:page];
+    // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiReSのBBoxを使うのが得策。
     
     return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin=-#1bp\\relax\\pdfvorigin=#2bp\\relax\\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight=\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight\\relax\\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
 }
@@ -436,6 +438,23 @@
     return result;
 }
 
+- (void)replaceBBoxOfEps:(NSString*)epsPath bb:(NSString*)bbStr hiresBb:(NSString*)hiresBbStr
+{
+    NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: .+?\\n/){ \"%%%%BoundingBox: %@\"}.sub(/%%%%HiResBoundingBox\\: .+?\\n/){ \"%%%%HiResBoundingBox: %@\"};File.open('%@', 'wb') {|f| f.write s}",
+                        epsPath,
+                        bbStr,
+                        hiresBbStr,
+                        epsPath
+                        ];
+    NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-replaceBB"];
+    
+    FILE *fp = fopen(scriptPath.UTF8String, "w");
+    fputs(script.UTF8String, fp);
+    fclose(fp);
+    
+    system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
+}
+
 - (BOOL)replaceEpsBBox:(NSString*)epsName withBBoxOfPdf:(NSString*)pdfName page:(NSUInteger)page
 {
     NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
@@ -453,20 +472,7 @@
     bbStr = [bbStr stringByReplacingOccurrencesOfString:@"%%BoundingBox: " withString:@""];
     hiresBbStr = hiresBbStr ? [hiresBbStr stringByReplacingOccurrencesOfString:@"%%HiResBoundingBox: " withString:@""] : bbStr;
     
-    NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: .+?\\n/){ \"%%%%BoundingBox: %@\"}.sub(/%%%%HiResBoundingBox\\: .+?\\n/){ \"%%%%HiResBoundingBox: %@\"};File.open('%@', 'wb') {|f| f.write s}",
-                        epsPath,
-                        bbStr,
-                        hiresBbStr,
-                        epsPath
-                        ];
-    NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-replaceBB"];
-    
-    FILE *fp = fopen(scriptPath.UTF8String, "w");
-    fputs(script.UTF8String, fp);
-    fclose(fp);
-    
-    system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
-
+    [self replaceBBoxOfEps:epsPath bb:bbStr hiresBb:hiresBbStr];
     return YES;
 }
 
@@ -476,22 +482,21 @@
     NSString *bbStr = @"0 0 0 0\n";
     NSString *hiresBbStr = @"0.000000 0.000000 0.000000 0.000000\n";
     
-    NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: .+?\\n/){ \"%%%%BoundingBox: %@\"}.sub(/%%%%HiResBoundingBox\\: .+?\\n/){ \"%%%%HiResBoundingBox: %@\"};File.open('%@', 'wb') {|f| f.write s}",
-                        epsPath,
-                        bbStr,
-                        hiresBbStr,
-                        epsPath
-                        ];
-    NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-replaceBB"];
-    
-    FILE *fp = fopen(scriptPath.UTF8String, "w");
-    fputs(script.UTF8String, fp);
-    fclose(fp);
-    
-    system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
-    
+    [self replaceBBoxOfEps:epsPath bb:bbStr hiresBb:hiresBbStr];
     return YES;
 }
+
+- (BOOL)replaceEpsBBox:(NSString*)epsName withPageBoxOfPdf:(NSString*)pdfName page:(NSUInteger)page
+{
+    PDFPageBox *pageBox = [PDFPageBox pageBoxWithFilePath:[tempdir stringByAppendingPathComponent:pdfName] page:page];
+    NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
+    NSString *bbStr = [pageBox bboxStringOfBox:pageBoxType hires:NO clipWithMediaBox:YES addHeader:NO];
+    NSString *hiresBbStr = [pageBox bboxStringOfBox:pageBoxType hires:YES clipWithMediaBox:YES addHeader:NO];
+    
+    [self replaceBBoxOfEps:epsPath bb:bbStr hiresBb:hiresBbStr];
+    return YES;
+}
+
 
 - (BOOL)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(NSInteger)resolution page:(NSUInteger)page;
 {
@@ -525,11 +530,15 @@
         return [self replaceEpsBBoxWithEmptyBBox:outputEpsFileName];
     }
     
-    // 生成したEPSのBBox情報をオリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する
-    // https://github.com/doraTeX/TeX2img/issues/18
-    // https://github.com/doraTeX/TeX2img/issues/37
+    if (keepPageSizeFlag) {
+        return [self replaceEpsBBox:outputEpsFileName withPageBoxOfPdf:pdfName page:page];
+    } else {
+        // 生成したEPSのBBox情報をオリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する
+        // https://github.com/doraTeX/TeX2img/issues/18
+        // https://github.com/doraTeX/TeX2img/issues/37
     
-    return [self replaceEpsBBox:outputEpsFileName withBBoxOfPdf:pdfName page:page];
+        return [self replaceEpsBBox:outputEpsFileName withBBoxOfPdf:pdfName page:page];
+    }
 }
 
 - (BOOL)epstopdf:(NSString*)epsName outputPdfFileName:(NSString*)outputPdfFileName

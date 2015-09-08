@@ -3,5 +3,6 @@
 @interface PDFPageBox : NSObject
 - (instancetype)initWithPage:(PDFPage*)page;
 + (instancetype)pageBoxWithPage:(PDFPage*)page;
-- (NSString*)bboxStringOfBox:(CGPDFBox)boxType hires:(BOOL)hires clipWithMediaBox:(BOOL)clip;
++ (instancetype)pageBoxWithFilePath:(NSString*)path page:(NSUInteger)page;
+- (NSString*)bboxStringOfBox:(CGPDFBox)boxType hires:(BOOL)hires clipWithMediaBox:(BOOL)clip addHeader:(BOOL)addHeader;
 @end

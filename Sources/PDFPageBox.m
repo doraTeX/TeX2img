@@ -1,4 +1,5 @@
 #import "PDFPageBox.h"
+#import "PDFDocument-Extension.h"
 
 @interface PDFPageBox ()
 {
@@ -22,22 +23,41 @@
     return [[PDFPageBox alloc] initWithPage:page];
 }
 
-- (NSString*)bboxStringOfBox:(CGPDFBox)boxType hires:(BOOL)hires clipWithMediaBox:(BOOL)clip
++ (instancetype)pageBoxWithFilePath:(NSString*)path page:(NSUInteger)page
+{
+    return [[PDFDocument documentWithFilePath:path] pageAtIndex:page-1].pageBox;
+}
+
+
+- (NSString*)bboxStringOfBox:(CGPDFBox)boxType hires:(BOOL)hires clipWithMediaBox:(BOOL)clip addHeader:(BOOL)addHeader
 {
     CGPDFPageRef pageRef = pdfPage.pageRef;
     CGRect mediaBoxRect = CGPDFPageGetBoxRect(pageRef, kCGPDFMediaBox);
     CGRect rect = CGPDFPageGetBoxRect(pageRef, boxType);
     rect = clip ? CGRectIntersection(rect, mediaBoxRect) : rect;
+   
+    NSString *result;
     
-    return hires ? [NSString stringWithFormat:@"%f %f %f %f",
-                    rect.origin.x,
-                    rect.origin.y,
-                    rect.origin.x + rect.size.width,
-                    rect.origin.y + rect.size.height] :
-    [NSString stringWithFormat:@"%ld %ld %ld %ld",
-     (NSInteger)floor(rect.origin.x),
-     (NSInteger)floor(rect.origin.y),
-     (NSInteger)floor(rect.origin.x) + (NSInteger)ceil(rect.size.width),
-     (NSInteger)floor(rect.origin.y) + (NSInteger)ceil(rect.size.height)];
+    if (hires) {
+       result = [NSString stringWithFormat:@"%@%f %f %f %f%@",
+                 (addHeader ? @"%%HiResBoundingBox: " : @""),
+                 rect.origin.x,
+                 rect.origin.y,
+                 rect.origin.x + rect.size.width,
+                 rect.origin.y + rect.size.height,
+                 (addHeader ? @"\n" : @"")
+                 ];
+    } else {
+        result = [NSString stringWithFormat:@"%@%ld %ld %ld %ld%@",
+                  (addHeader ? @"%%BoundingBox: " : @""),
+                  (NSInteger)floor(rect.origin.x),
+                  (NSInteger)floor(rect.origin.y),
+                  (NSInteger)floor(rect.origin.x) + (NSInteger)ceil(rect.size.width),
+                  (NSInteger)floor(rect.origin.y) + (NSInteger)ceil(rect.size.height),
+                  (addHeader ? @"\n" : @"")
+                  ];
+    }
+    
+    return result;
 }
 @end
