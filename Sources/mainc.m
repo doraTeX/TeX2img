@@ -1,6 +1,7 @@
 #import <stdio.h>
 #import <stdarg.h>
 #import <getopt.h>
+#import <Quartz/Quartz.h>
 #import "Converter.h"
 #import "ControllerC.h"
 #import "global.h"
@@ -8,7 +9,7 @@
 #import "NSString-Extension.h"
 #import "NSDictionary-Extension.h"
 
-#define OPTION_NUM 45
+#define OPTION_NUM 46
 #define VERSION "2.0.1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
@@ -49,6 +50,7 @@ void usage()
     printf("  --[no-]merge-output-files  : disable/enable merging products as a single PDF file (default: disabled)\n");
     printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
     printf("  --[no-]keep-page-size      : disable/enable keeping the original page size (default: disabled)\n");
+    printf("  --pagebox BOX              : set the page box type used as the page size (media|crop|bleed|trim|art) (default: crop)\n");
     printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
     printf("  --[no-]utf-export          : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
     printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
@@ -188,6 +190,7 @@ int main (int argc, char *argv[]) {
         NSString *dviware  = @"dvipdfmx";
         NSString *gs       = @"gs";
         NSNumber *unitTag = @(PX_UNIT_TAG);
+        CGPDFBox pageBoxType = kCGPDFCropBox;
         
         // getopt_long を使った，長いオプション対応のオプション解析
         struct option *options;
@@ -448,6 +451,12 @@ int main (int argc, char *argv[]) {
         options[i].flag = NULL;
         options[i].val = i+1;
 
+        i++;
+        options[i].name = "pagebox";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
         options[OPTION_NUM - 3].flag = NULL;
@@ -689,6 +698,28 @@ int main (int argc, char *argv[]) {
                 case 42: // --no-keep-page-size
                     keepPageSizeFlag = NO;
                     break;
+                case 43: // --pagebox
+                    if (optarg) {
+                        NSString *pageboxString = @(optarg);
+                        if ([pageboxString isEqualToString:@"media"]) {
+                            pageBoxType = kCGPDFMediaBox;
+                        } else if ([pageboxString isEqualToString:@"crop"]) {
+                            pageBoxType = kCGPDFCropBox;
+                        } else if ([pageboxString isEqualToString:@"bleed"]) {
+                            pageBoxType = kCGPDFBleedBox;
+                        } else if ([pageboxString isEqualToString:@"trim"]) {
+                            pageBoxType = kCGPDFTrimBox;
+                        } else if ([pageboxString isEqualToString:@"art"]) {
+                            pageBoxType = kCGPDFArtBox;
+                        } else {
+                            printf("--pagebox is invalid. It must be media/crop/bleed/trim/art.\n");
+                            usage();
+                        }
+                    } else {
+                        printf("--pagebox is invalid. It must be media/crop/bleed/trim/art.\n");
+                        usage();
+                    }
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -793,6 +824,7 @@ int main (int argc, char *argv[]) {
         aProfile[EmbedSourceKey] = @(embedSourceFlag);
         aProfile[MergeOutputsKey] = @(mergeFlag);
         aProfile[KeepPageSizeKey] = @(keepPageSizeFlag);
+        aProfile[PageBoxKey] = @(pageBoxType);
         
         if (!quietFlag) {
             printCurrentStatus(inputFilePath, aProfile);

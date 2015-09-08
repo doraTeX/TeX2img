@@ -43,6 +43,7 @@
 @property BOOL pdfInputMode;
 @property BOOL psInputMode;
 @property BOOL errorsIgnored;
+@property CGPDFBox pageBox;
 @property NSMutableArray *emptyPageFlags;
 @property NSMutableArray *whitePageFlags;
 @end
@@ -74,6 +75,7 @@
 @synthesize pdfInputMode;
 @synthesize psInputMode;
 @synthesize errorsIgnored;
+@synthesize pageBox;
 @synthesize emptyPageFlags;
 @synthesize whitePageFlags;
 
@@ -117,6 +119,7 @@
     useBP = ([aProfile integerForKey:UnitKey] == BP_UNIT_TAG);
     speedPriorityMode = ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG);
     embedSource = [aProfile boolForKey:EmbedSourceKey];
+    pageBox = [aProfile integerForKey:PageBoxKey];
     additionalInputPath = nil;
     pdfInputMode = NO;
     psInputMode = NO;
