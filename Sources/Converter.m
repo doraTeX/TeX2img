@@ -888,7 +888,7 @@
                 if (ignoreErrorsFlag) {
                     errorsIgnored = YES;
                 } else {
-                    [controller showExecError:@"DVIware"];
+                    [controller showExecError:@"DVI driver"];
                     return NO;
                 }
             }
@@ -914,7 +914,7 @@
             }
             
             if (!compilationSuceeded) {
-                [controller showExecError:@"DVIware"];
+                [controller showExecError:@"DVI driver"];
                 return NO;
             }
         }
