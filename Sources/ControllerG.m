@@ -1013,7 +1013,6 @@ typedef enum {
     NSMutableArray *searchPaths = [NSMutableArray arrayWithArray:[pipe.stringValue componentsSeparatedByString:@":"]];
 
     [searchPaths addObjectsFromArray: @[
-                                        @"/Applications/Ghostscript.app/bin",
                                         @"/Applications/TeXLive/texlive/2016/bin/x86_64-darwin",
                                         @"/Applications/TeXLive/texlive/2015/bin/x86_64-darwin",
                                         @"/Applications/TeXLive/texlive/2014/bin/x86_64-darwin",
