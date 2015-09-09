@@ -29,12 +29,17 @@
 }
 
 
-- (NSString*)bboxStringOfBox:(CGPDFBox)boxType hires:(BOOL)hires clipWithMediaBox:(BOOL)clip addHeader:(BOOL)addHeader
+- (NSString*)bboxStringOfBox:(CGPDFBox)boxType hires:(BOOL)hires clipWithMediaBox:(BOOL)clip relativeToMediaBox:(BOOL)relativeToMediaBox addHeader:(BOOL)addHeader
 {
     CGPDFPageRef pageRef = pdfPage.pageRef;
     CGRect mediaBoxRect = CGPDFPageGetBoxRect(pageRef, kCGPDFMediaBox);
     CGRect rect = CGPDFPageGetBoxRect(pageRef, boxType);
     rect = clip ? CGRectIntersection(rect, mediaBoxRect) : rect;
+
+    if (relativeToMediaBox) {
+        rect.origin.x -= mediaBoxRect.origin.x;
+        rect.origin.y -= mediaBoxRect.origin.y;
+    }
    
     NSString *result;
     
