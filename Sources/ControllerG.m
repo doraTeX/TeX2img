@@ -324,7 +324,7 @@ typedef enum {
         [cmdline appendString:@" "];
     }
     [cmdline appendString:@"2>&1"];
-    [self appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:NO];
+    [self appendOutputAndScroll:[NSString stringWithFormat:@"$ %@\n", cmdline] quiet:quiet];
     
     runningTask = [NSTask new];
     outputPipe = [NSPipe pipe];
@@ -340,7 +340,7 @@ typedef enum {
     [runningTask launch];
     [runningTask waitUntilExit];
     
-    [self appendOutputAndScroll:@"\n" quiet:NO];
+    [self appendOutputAndScroll:@"\n" quiet:quiet];
 
     [self exitCurrentThreadIfTaskKilled];
     
@@ -555,10 +555,10 @@ typedef enum {
     
     if (count > 1) {
         [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: %@\n", [NSString stringWithFormat:localizedString(@"generatedFilesMessage"), count]]
-                              quiet:NO];
+                              quiet:quiet];
     } else {
         [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: %@\n", [NSString stringWithFormat:localizedString(@"generatedFileMessage"), count]]
-                              quiet:NO];
+                              quiet:quiet];
     }
 }
 

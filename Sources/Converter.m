@@ -415,15 +415,20 @@
 {
     BOOL result = YES;
     
-    NSTask *task = [NSTask new];
-    NSPipe *pipe = [NSPipe pipe];
-    task.launchPath = gsPath.programPath;
-    task.arguments = @[@"--version"];
-    task.standardOutput = pipe;
-    [task launch];
-    [task waitUntilExit];
+    NSString *gsVerFileName = @"tex2img-gsver";
+    NSString *gsVerFilePath = [tempdir stringByAppendingPathComponent:gsVerFileName];
     
-    NSString *versionString = pipe.stringValue;
+    // 中断ボタンによる中断を可能とするため，あえて controller を通して実行する。
+    // この出力は出力ビューの方に流れてしまうので，リダイレクトによってテキストファイル経由で gs のバージョンを受け取ることにする。
+    // https://github.com/doraTeX/TeX2img/issues/40
+    BOOL success = [controller execCommand:gsPath.programPath atDirectory:tempdir withArguments:@[@"--version", [@"> " stringByAppendingString:gsVerFileName]] quiet:YES];
+    
+    if (!success) {
+        return YES;
+    }
+    
+    NSString *versionString = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:gsVerFilePath] encoding:NSUTF8StringEncoding error:NULL];
+    [NSFileManager.defaultManager removeItemAtPath:gsVerFilePath error:nil];
     
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\d+(?:\\.\\d+)?" options:0 error:nil];
     NSTextCheckingResult *match = [regex firstMatchInString:versionString options:0 range:NSMakeRange(0, versionString.length)];
