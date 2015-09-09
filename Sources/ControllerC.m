@@ -3,6 +3,7 @@
 #import "ControllerC.h"
 #import "global.h"
 #import "UtilityC.h"
+#import "NSString-Extension.h"
 
 @implementation ControllerC
 #pragma mark OutputController プロトコルの実装
@@ -59,15 +60,16 @@
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dviwarePath:(NSString*)dviwarePath gsPath:(NSString*)gsPath
 {
 	if (!checkWhich(latexPath)) {
-		[self showNotFoundError:@"LaTeX"];
+		[self showNotFoundError:latexPath.programName];
+        suggestLatexOption();
 		return NO;
 	}
 	if (!checkWhich(dviwarePath)) {
-		[self showNotFoundError:@"DVIware"];
+		[self showNotFoundError:dviwarePath.programName];
 		return NO;
 	}
 	if (!checkWhich(gsPath)) {
-		[self showNotFoundError:@"Ghostscript"];
+		[self showNotFoundError:gsPath.programName];
 		return NO;
 	}
 	return YES;
@@ -95,7 +97,7 @@
 
 - (void)showNotFoundError:(NSString*)aPath
 {
-    printStdErr("tex2img: [Error] %s cannot be found.\nCheck the environment variable $PATH.\n", aPath.UTF8String);
+    printStdErr("tex2img: [Error] Command \"%s\" cannot be found.\nCheck the environment variable $PATH.\n", aPath.UTF8String);
 }
 
 - (void)showExtensionError

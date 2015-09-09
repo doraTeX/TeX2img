@@ -15,7 +15,6 @@
 
 #define ENABLED @"enabled"
 #define DISABLED @"disabled"
-#define DEFAULT_PREAMBLE @"pLaTeX + dvipdfmx"
 
 typedef enum {
     DIRECT = 0,
@@ -87,6 +86,8 @@ typedef enum {
 @property IBOutlet NSButton *generateButton;
 @property IBOutlet NSButton *transparentCheckBox;
 @property IBOutlet NSButton *deleteDisplaySizeCheckBox;
+@property IBOutlet NSButton *mergeOutputsCheckBox;
+@property IBOutlet NSButton *keepPageSizeCheckBox;
 @property IBOutlet NSButton *showOutputDrawerCheckBox;
 @property IBOutlet NSButton *previewCheckBox;
 @property IBOutlet NSButton *deleteTmpFileCheckBox;
@@ -119,10 +120,14 @@ typedef enum {
 @property IBOutlet NSMatrix *priorityMatrix;
 @property NSString *lastSavedPath;
 
+
 @property NSWindow *lastActiveWindow;
 @property NSMutableDictionary *lastColorDict;
 
 @property IBOutlet NSBox *invisibleCharacterBox;
+
+@property IBOutlet NSPopUpButton *autoDetectionTargetPopupButton;
+@property IBOutlet NSPopUpButton *pageBoxPopupButton;
 
 @property Converter *converter;
 @property NSTask *runningTask;
@@ -180,6 +185,8 @@ typedef enum {
 @synthesize generateButton;
 @synthesize transparentCheckBox;
 @synthesize deleteDisplaySizeCheckBox;
+@synthesize mergeOutputsCheckBox;
+@synthesize keepPageSizeCheckBox;
 @synthesize showOutputDrawerCheckBox;
 @synthesize previewCheckBox;
 @synthesize deleteTmpFileCheckBox;
@@ -216,6 +223,9 @@ typedef enum {
 @synthesize lastColorDict;
 
 @synthesize invisibleCharacterBox;
+
+@synthesize autoDetectionTargetPopupButton;
+@synthesize pageBoxPopupButton;
 
 @synthesize converter;
 @synthesize runningTask;
@@ -535,6 +545,8 @@ typedef enum {
 	transparentCheckBox.state = [aProfile boolForKey:TransparentKey];
 	textPdfCheckBox.state = ![aProfile boolForKey:GetOutlineKey];
     deleteDisplaySizeCheckBox.state = [aProfile boolForKey:DeleteDisplaySizeKey];
+    mergeOutputsCheckBox.state = [aProfile boolForKey:MergeOutputsKey];
+    keepPageSizeCheckBox.state = [aProfile boolForKey:KeepPageSizeKey];
 
 	ignoreErrorCheckBox.state = [aProfile boolForKey:IgnoreErrorKey];
 	utfExportCheckBox.state = [aProfile boolForKey:UtfExportKey];
@@ -622,6 +634,14 @@ typedef enum {
     [priorityMatrix selectCellWithTag:priorityTag];
 
     [self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:PreambleKey];
+
+    if ([keys containsObject:AutoDetectionTargetKey]) {
+        [autoDetectionTargetPopupButton selectItemWithTag:[aProfile integerForKey:AutoDetectionTargetKey]];
+    }
+    
+    if ([keys containsObject:PageBoxKey]) {
+        [pageBoxPopupButton selectItemWithTag:[aProfile integerForKey:PageBoxKey]];
+    }
     
     NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
     if (aFont) {
@@ -707,6 +727,8 @@ typedef enum {
         currentProfile[TransparentKey] = @(transparentCheckBox.state);
         currentProfile[GetOutlineKey] = @(!textPdfCheckBox.state);
         currentProfile[DeleteDisplaySizeKey] = @(deleteDisplaySizeCheckBox.state);
+        currentProfile[MergeOutputsKey] = @(mergeOutputsCheckBox.state);
+        currentProfile[KeepPageSizeKey] = @(keepPageSizeCheckBox.state);
         currentProfile[IgnoreErrorKey] = @(ignoreErrorCheckBox.state);
         currentProfile[UtfExportKey] = @(utfExportCheckBox.state);
         
@@ -737,6 +759,9 @@ typedef enum {
         
         currentProfile[UnitKey] = @(unitMatrix.selectedTag);
         currentProfile[PriorityKey] = @(priorityMatrix.selectedTag);
+        
+        currentProfile[AutoDetectionTargetKey] = @(autoDetectionTargetPopupButton.selectedTag);
+        currentProfile[PageBoxKey] = @(pageBoxPopupButton.selectedTag);
         
         currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
         currentProfile[FlashInMovingKey] = @(flashInMovingCheckBox.state);
@@ -1081,7 +1106,7 @@ typedef enum {
                                     }];
 
         // デフォルトプリアンブルのロード
-        NSString *templateName = DEFAULT_PREAMBLE;
+        NSString *templateName = autoDetectionTargetPopupButton.selectedItem.title;
         NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
         NSString *templatePath = [[originalTemplateDirectory stringByAppendingPathComponent:templateName] stringByAppendingPathExtension:@"tex"];
         NSData *data = [NSData dataWithContentsOfFile:templatePath];
@@ -1715,7 +1740,7 @@ typedef enum {
     NSString *dviwarePath;
     NSString *gsPath;
     
-    NSString *templateName = DEFAULT_PREAMBLE;
+    NSString *templateName = autoDetectionTargetPopupButton.selectedItem.title;
     NSString *engineName = [templateName.lowercaseString componentsSeparatedByString:@" "][0];
     NSString *dviwareName = ([templateName rangeOfString:@"dvips"].location == NSNotFound) ? @"dvipdfmx" : @"dvips";
     
@@ -1766,7 +1791,7 @@ typedef enum {
                                 }];
     
     // デフォルトテンプレートのロード
-    NSString *templateName = DEFAULT_PREAMBLE;
+    NSString *templateName = autoDetectionTargetPopupButton.selectedItem.title;
     NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
     NSString *templatePath = [[originalTemplateDirectory stringByAppendingPathComponent:templateName] stringByAppendingPathExtension:@"tex"];
     [self adoptPreambleTemplate:templatePath];

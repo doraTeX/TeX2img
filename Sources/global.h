@@ -26,6 +26,8 @@ NSMutableString *commandCompletionList;
 #define TransparentKey @"transparent"
 #define GetOutlineKey @"getOutline"
 #define DeleteDisplaySizeKey @"deleteDisplaySize"
+#define MergeOutputsKey @"mergeOutputs"
+#define KeepPageSizeKey @"keepPageSize"
 #define IgnoreErrorKey @"ignoreError"
 #define UtfExportKey @"utfExport"
 #define LatexPathKey @"platexPath"
@@ -82,6 +84,7 @@ NSMutableString *commandCompletionList;
 #define FullwidthSpaceCharacterKindKey @"fullwidthSpaceCharacterKind"
 #define ReturnCharacterKindKey @"returnCharacterKind"
 #define TabCharacterKindKey @"tabCharacterKind"
+#define PageBoxKey @"pageBox"
 
 #define ControllerKey @"controller"
 #define TeX2imgVersionKey @"TeX2imgVersion"

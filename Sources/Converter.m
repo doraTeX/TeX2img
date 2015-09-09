@@ -13,6 +13,7 @@
 #import "NSMutableString-Extension.h"
 #import "NSDate-Extension.h"
 #import "NSPipe-Extension.h"
+#import "PDFDocument-Extension.h"
 #import "Converter.h"
 
 @interface Converter()
@@ -25,7 +26,7 @@
 @property float resolutionLevel;
 @property BOOL guessCompilation;
 @property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property NSObject<OutputController> *controller;
 @property NSFileManager *fileManager;
 @property NSString *tempdir;
@@ -42,6 +43,7 @@
 @property BOOL pdfInputMode;
 @property BOOL psInputMode;
 @property BOOL errorsIgnored;
+@property CGPDFBox pageBoxType;
 @property NSMutableArray *emptyPageFlags;
 @property NSMutableArray *whitePageFlags;
 @end
@@ -56,7 +58,7 @@
 @synthesize resolutionLevel;
 @synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@synthesize leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
 @synthesize fileManager;
 @synthesize tempdir;
@@ -73,6 +75,7 @@
 @synthesize pdfInputMode;
 @synthesize psInputMode;
 @synthesize errorsIgnored;
+@synthesize pageBoxType;
 @synthesize emptyPageFlags;
 @synthesize whitePageFlags;
 
@@ -101,6 +104,8 @@
     leaveTextFlag = ![aProfile boolForKey:GetOutlineKey];
     transparentFlag = [aProfile boolForKey:TransparentKey];
     deleteDisplaySizeFlag = [aProfile boolForKey:DeleteDisplaySizeKey];
+    mergeOutputsFlag = [aProfile boolForKey:MergeOutputsKey];
+    keepPageSizeFlag = [aProfile boolForKey:KeepPageSizeKey];
     showOutputDrawerFlag = [aProfile boolForKey:ShowOutputDrawerKey];
     previewFlag = [aProfile boolForKey:PreviewKey];
     deleteTmpFileFlag = [aProfile boolForKey:DeleteTmpFileKey];
@@ -114,6 +119,7 @@
     useBP = ([aProfile integerForKey:UnitKey] == BP_UNIT_TAG);
     speedPriorityMode = ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG);
     embedSource = [aProfile boolForKey:EmbedSourceKey];
+    pageBoxType = [aProfile integerForKey:PageBoxKey];
     additionalInputPath = nil;
     pdfInputMode = NO;
     psInputMode = NO;
@@ -345,18 +351,20 @@
 
 - (BOOL)willEmptyPageBeCreated:(NSString*)pdfPath page:(NSUInteger)page
 {
-    return [self isEmptyPage:pdfPath page:page] && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0));
+    return (!keepPageSizeFlag && [self isEmptyPage:pdfPath page:page] && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0)));
 }
 
 - (NSString*)buildCropTeXSource:(NSString*)pdfPath page:(NSUInteger)page addMargin:(BOOL)addMargin
 {
-    
     NSInteger leftmargin = addMargin ? leftMargin : 0;
     NSInteger rightmargin = addMargin ? rightMargin : 0;
     NSInteger topmargin = addMargin ? topMargin : 0;
     NSInteger bottommargin = addMargin ? bottomMargin : 0;
     
-    NSString *bbStr = [self bboxStringOfPdf:pdfPath page:page]; // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiReSのBBoxを使うのが得策。
+    NSString *bbStr = keepPageSizeFlag ?
+    [[PDFPageBox pageBoxWithFilePath:pdfPath page:page] bboxStringOfBox:pageBoxType hires:NO clipWithMediaBox:YES addHeader:YES] :
+    [self bboxStringOfPdf:pdfPath page:page];
+    // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiReSのBBoxを使うのが得策。
     
     return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin=-#1bp\\relax\\pdfvorigin=#2bp\\relax\\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight=\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight\\relax\\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
 }
@@ -364,7 +372,7 @@
 // page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
 - (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin
 {
-    NSUInteger totalPages = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfPath]].pageCount;
+    NSUInteger totalPages = [PDFDocument documentWithFilePath:pdfPath].pageCount;
     NSMutableString *cropTeX = [NSMutableString stringWithString:@"\\pdfoutput=1"];
     if (page > 0) {
         [cropTeX appendString:[self buildCropTeXSource:pdfPath page:page addMargin:addMargin]];
@@ -425,6 +433,23 @@
     return result;
 }
 
+- (void)replaceBBoxOfEps:(NSString*)epsPath bb:(NSString*)bbStr hiresBb:(NSString*)hiresBbStr
+{
+    NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: .+?\\n/){ \"%%%%BoundingBox: %@\"}.sub(/%%%%HiResBoundingBox\\: .+?\\n/){ \"%%%%HiResBoundingBox: %@\"};File.open('%@', 'wb') {|f| f.write s}",
+                        epsPath,
+                        bbStr,
+                        hiresBbStr,
+                        epsPath
+                        ];
+    NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-replaceBB"];
+    
+    FILE *fp = fopen(scriptPath.UTF8String, "w");
+    fputs(script.UTF8String, fp);
+    fclose(fp);
+    
+    system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
+}
+
 - (BOOL)replaceEpsBBox:(NSString*)epsName withBBoxOfPdf:(NSString*)pdfName page:(NSUInteger)page
 {
     NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
@@ -442,20 +467,7 @@
     bbStr = [bbStr stringByReplacingOccurrencesOfString:@"%%BoundingBox: " withString:@""];
     hiresBbStr = hiresBbStr ? [hiresBbStr stringByReplacingOccurrencesOfString:@"%%HiResBoundingBox: " withString:@""] : bbStr;
     
-    NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: .+?\\n/){ \"%%%%BoundingBox: %@\"}.sub(/%%%%HiResBoundingBox\\: .+?\\n/){ \"%%%%HiResBoundingBox: %@\"};File.open('%@', 'wb') {|f| f.write s}",
-                        epsPath,
-                        bbStr,
-                        hiresBbStr,
-                        epsPath
-                        ];
-    NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-replaceBB"];
-    
-    FILE *fp = fopen(scriptPath.UTF8String, "w");
-    fputs(script.UTF8String, fp);
-    fclose(fp);
-    
-    system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
-
+    [self replaceBBoxOfEps:epsPath bb:bbStr hiresBb:hiresBbStr];
     return YES;
 }
 
@@ -465,22 +477,21 @@
     NSString *bbStr = @"0 0 0 0\n";
     NSString *hiresBbStr = @"0.000000 0.000000 0.000000 0.000000\n";
     
-    NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: .+?\\n/){ \"%%%%BoundingBox: %@\"}.sub(/%%%%HiResBoundingBox\\: .+?\\n/){ \"%%%%HiResBoundingBox: %@\"};File.open('%@', 'wb') {|f| f.write s}",
-                        epsPath,
-                        bbStr,
-                        hiresBbStr,
-                        epsPath
-                        ];
-    NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-replaceBB"];
-    
-    FILE *fp = fopen(scriptPath.UTF8String, "w");
-    fputs(script.UTF8String, fp);
-    fclose(fp);
-    
-    system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
-    
+    [self replaceBBoxOfEps:epsPath bb:bbStr hiresBb:hiresBbStr];
     return YES;
 }
+
+- (BOOL)replaceEpsBBox:(NSString*)epsName withPageBoxOfPdf:(NSString*)pdfName page:(NSUInteger)page
+{
+    PDFPageBox *pageBox = [PDFPageBox pageBoxWithFilePath:[tempdir stringByAppendingPathComponent:pdfName] page:page];
+    NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
+    NSString *bbStr = [pageBox bboxStringOfBox:pageBoxType hires:NO clipWithMediaBox:YES addHeader:NO];
+    NSString *hiresBbStr = [pageBox bboxStringOfBox:pageBoxType hires:YES clipWithMediaBox:YES addHeader:NO];
+    
+    [self replaceBBoxOfEps:epsPath bb:bbStr hiresBb:hiresBbStr];
+    return YES;
+}
+
 
 - (BOOL)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(NSInteger)resolution page:(NSUInteger)page;
 {
@@ -514,11 +525,15 @@
         return [self replaceEpsBBoxWithEmptyBBox:outputEpsFileName];
     }
     
-    // 生成したEPSのBBox情報をオリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する
-    // https://github.com/doraTeX/TeX2img/issues/18
-    // https://github.com/doraTeX/TeX2img/issues/37
+    if (keepPageSizeFlag) {
+        return [self replaceEpsBBox:outputEpsFileName withPageBoxOfPdf:pdfName page:page];
+    } else {
+        // 生成したEPSのBBox情報をオリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する
+        // https://github.com/doraTeX/TeX2img/issues/18
+        // https://github.com/doraTeX/TeX2img/issues/37
     
-    return [self replaceEpsBBox:outputEpsFileName withBBoxOfPdf:pdfName page:page];
+        return [self replaceEpsBBox:outputEpsFileName withBBoxOfPdf:pdfName page:page];
+    }
 }
 
 - (BOOL)epstopdf:(NSString*)epsName outputPdfFileName:(NSString*)outputPdfFileName
@@ -579,7 +594,7 @@
     }
 	
 	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
-	NSData* pageData = [[[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]] pageAtIndex:(page-1)].dataRepresentation;
+	NSData* pageData = [[PDFDocument documentWithFilePath:pdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
 	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
 
 	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
@@ -599,10 +614,10 @@
         thisBottomMargin *= resolutionLevel;
     }
     
-    NSSize size = NSMakeSize((NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin,
+	NSSize size = NSMakeSize((NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin,
                              (NSInteger)(height * resolutionLevel) + thisTopMargin + thisBottomMargin);
-
-    NSImage* image = [[NSImage alloc] initWithSize:size];
+	
+	NSImage* image = [[NSImage alloc] initWithSize:size];
 	[image lockFocus];
 	[pdfImageRep drawInRect:NSMakeRect(thisLeftMargin, thisBottomMargin, width * resolutionLevel, height * resolutionLevel)];
 	[image unlockFocus];
@@ -928,7 +943,7 @@
 
     [controller exitCurrentThreadIfTaskKilled];
     
-    pageCount = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:pdfFilePath]].pageCount;
+    pageCount = [PDFDocument documentWithFilePath:pdfFilePath].pageCount;
 
     emptyPageFlags = [NSMutableArray array];
     for (NSInteger i=1; i<=pageCount; i++) {
@@ -1010,42 +1025,72 @@
             }
         }
 	}
-	
-	// 最終出力ファイルを目的地へコピー
-    if (![emptyPageFlags[0] boolValue]) {
-        [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
-        [self embedSource:texFilePath intoFile:outputFilePath];
-    }
-
-    for (NSUInteger i=2; i<=pageCount; i++) {
-        if (![emptyPageFlags[i-1] boolValue]) {
-            NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
-            [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
-                          toPath:destPath];
-            [self embedSource:texFilePath intoFile:destPath];
-        }
-    }
     
-    // 生成ファイルをクリップボードへコピー
-    if (copyToClipboard) {
-        NSPasteboard *pboard = NSPasteboard.generalPasteboard;
-        [pboard declareTypes:@[NSURLPboardType] owner:nil];
+    // 単一PDF出力の場合
+    if ([@"pdf" isEqualToString:extension] && mergeOutputsFlag) {
+        // 実際に生成したファイルのパスを集める
         NSMutableArray *outputFiles = [NSMutableArray array];
         
         if (![emptyPageFlags[0] boolValue]) {
-             [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:outputFilePath]];
+            [outputFiles addObject:[tempdir stringByAppendingPathComponent:outputFileName]];
         }
-
         
         for (NSUInteger i=2; i<=pageCount; i++) {
             if (![emptyPageFlags[i-1] boolValue]) {
-                [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
+                [outputFiles addObject:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]];
             }
         }
         
+        // マージして出力
         if (outputFiles.count > 0) {
-            [pboard clearContents];
-            [pboard writeObjects:outputFiles];
+            [[PDFDocument documentWithMergingPDFFiles:outputFiles] writeToFile:outputFilePath];
+            [self embedSource:texFilePath intoFile:outputFilePath];
+            
+            // 生成ファイルをクリップボードへコピー
+            if (copyToClipboard) {
+                NSPasteboard *pboard = NSPasteboard.generalPasteboard;
+                [pboard declareTypes:@[NSURLPboardType] owner:nil];
+                [pboard clearContents];
+                [pboard writeObjects:@[[[NSURL alloc] initFileURLWithPath:outputFilePath]]];
+            }
+        }
+
+    } else { // バラバラ出力の場合
+        // 最終出力ファイルを目的地へコピー
+        if (![emptyPageFlags[0] boolValue]) {
+            [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
+            [self embedSource:texFilePath intoFile:outputFilePath];
+        }
+        
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            if (![emptyPageFlags[i-1] boolValue]) {
+                NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
+                [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
+                              toPath:destPath];
+                [self embedSource:texFilePath intoFile:destPath];
+            }
+        }
+        
+        // 生成ファイルをクリップボードへコピー
+        if (copyToClipboard) {
+            NSPasteboard *pboard = NSPasteboard.generalPasteboard;
+            [pboard declareTypes:@[NSURLPboardType] owner:nil];
+            NSMutableArray *outputFiles = [NSMutableArray array];
+            
+            if (![emptyPageFlags[0] boolValue]) {
+                [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:outputFilePath]];
+            }
+            
+            for (NSUInteger i=2; i<=pageCount; i++) {
+                if (![emptyPageFlags[i-1] boolValue]) {
+                    [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
+                }
+            }
+            
+            if (outputFiles.count > 0) {
+                [pboard clearContents];
+                [pboard writeObjects:outputFiles];
+            }
         }
     }
 	
@@ -1088,12 +1133,16 @@
     // 生成ファイルを集める
     NSMutableArray *generatedFiles = [NSMutableArray array];
     
-    if (![emptyPageFlags[0] boolValue]) {
+    if ([extension isEqualToString:@"pdf"] && mergeOutputsFlag && (emptyPageFlags.indexesOfTrueValue.count < pageCount)) {
         [generatedFiles addObject:outputFilePath];
-    }
-    for (NSUInteger i=2; i<=pageCount; i++) {
-        if (![emptyPageFlags[i-1] boolValue]) {
-            [generatedFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
+    } else {
+        if (![emptyPageFlags[0] boolValue]) {
+            [generatedFiles addObject:outputFilePath];
+        }
+        for (NSUInteger i=2; i<=pageCount; i++) {
+            if (![emptyPageFlags[i-1] boolValue]) {
+                [generatedFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
+            }
         }
     }
     

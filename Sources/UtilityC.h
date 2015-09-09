@@ -4,6 +4,7 @@
 #define TeX2img_UtilityC_h
 
 void printStdErr(const char *format, ...);
+void suggestLatexOption();
 BOOL checkWhich(NSString *cmdName);
 NSString* getPath(NSString *cmdName);
 
