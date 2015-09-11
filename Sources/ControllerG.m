@@ -447,6 +447,16 @@ typedef enum {
     return YES;
 }
 
+- (void)showFileFormatErrorOnMainThread:(NSString*)aPath
+{
+    runErrorPanel(localizedString(@"fileFormatErrorMsg"), aPath);
+}
+
+- (void)showFileFormatError:(NSString*)aPath
+{
+    [self performSelectorOnMainThread:@selector(showFileFormatErrorOnMainThread:) withObject:aPath waitUntilDone:YES];
+}
+
 - (void)showFileGenerateErrorOnMainThread:(NSString*)aPath
 {
     runErrorPanel(localizedString(@"fileGenerateErrorMsg"), aPath);

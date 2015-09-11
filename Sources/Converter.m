@@ -1276,6 +1276,7 @@
 	
 	if (![self writeStringWithYenBackslashConverting:texSourceStr toFile:tempTeXFilePath]) {
 		[controller showFileGenerateError:tempTeXFilePath];
+        [controller generationDidFinish];
 		return NO;
 	}
 	
@@ -1294,6 +1295,13 @@
 - (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath
 {
     @autoreleasepool {
+        BOOL isDir;
+        if ([fileManager fileExistsAtPath:sourcePath isDirectory:&isDir] && isDir) {
+            [controller showFileFormatError:sourcePath];
+            [controller generationDidFinish];
+            return NO;
+        }
+        
         NSString *ext = sourcePath.pathExtension.lowercaseString;
         pdfInputMode = [ext isEqualToString:@"pdf"];
         psInputMode = [ext isEqualToString:@"ps"] || [ext isEqualToString:@"eps"];
@@ -1302,18 +1310,21 @@
             NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
                 [controller showFileGenerateError:tempPdfFilePath];
+                [controller generationDidFinish];
                 return NO;
             }
         } else if (psInputMode) {
             NSString *tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
                 [controller showFileGenerateError:tempPsFilePath];
+                [controller generationDidFinish];
                 return NO;
             }
         } else {
             NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
                 [controller showFileGenerateError:tempTeXFilePath];
+                [controller generationDidFinish];
                 return NO;
             }
         }

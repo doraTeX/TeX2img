@@ -15,6 +15,7 @@
 "programNotFoundErrorMsg" = "%@ cannot be found.\nMake sure that LaTeX / Ghostscript are installed and configured in Preferences.";
 "inputFileNotFoundErrorMsg" = "Input file does not exist.\n%@";
 "inputFileTypeErrorMsg" = "Input file type is invalid.\nThe extension must be tex/pdf/ps.\n%@";
+"fileFormatErrorMsg" = "Invalid file format.\n%@";
 "fileGenerateErrorMsg" = "%@ cannot be created so generation has been aborted.\nCheck permission.";
 "execErrorMsg" = "%@ cannot be executed.\nCheck errors in the source code.";
 "formatErrorMsg" = "The value of \"%@\" in the Preferences pane is invalid.";
