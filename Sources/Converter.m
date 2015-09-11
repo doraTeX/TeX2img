@@ -958,7 +958,14 @@
 
     [controller exitCurrentThreadIfTaskKilled];
     
-    pageCount = [PDFDocument documentWithFilePath:pdfFilePath].pageCount;
+    PDFDocument *pdfDocument = [PDFDocument documentWithFilePath:pdfFilePath];
+    
+    if (!pdfDocument) {
+        [controller showFileFormatError:pdfFilePath];
+        return NO;
+    }
+    
+    pageCount = pdfDocument.pageCount;
 
     emptyPageFlags = [NSMutableArray array];
     for (NSInteger i=1; i<=pageCount; i++) {
@@ -1307,6 +1314,13 @@
         psInputMode = [ext isEqualToString:@"ps"] || [ext isEqualToString:@"eps"];
         
         if (pdfInputMode) {
+            // PDFの書式チェック
+            if (![PDFDocument documentWithFilePath:sourcePath]) {
+                [controller showFileFormatError:sourcePath];
+                [controller generationDidFinish];
+                return NO;
+            }
+
             NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
                 [controller showFileGenerateError:tempPdfFilePath];
