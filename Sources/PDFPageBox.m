@@ -8,7 +8,7 @@
 @end
 
 @implementation PDFPageBox
-- (instancetype)initWithPage:(PDFPage*)page
+- (instancetype)initWithPDFPage:(PDFPage*)page
 {
     if (!(self = [super init])) {
         return nil;
@@ -18,14 +18,18 @@
     return self;
 }
 
-+ (instancetype)pageBoxWithPage:(PDFPage*)page
++ (instancetype)pageBoxWithPDFPage:(PDFPage*)page
 {
-    return [[PDFPageBox alloc] initWithPage:page];
+    return [[PDFPageBox alloc] initWithPDFPage:page];
 }
 
 + (instancetype)pageBoxWithFilePath:(NSString*)path page:(NSUInteger)page
 {
-    return [[PDFDocument documentWithFilePath:path] pageAtIndex:page-1].pageBox;
+    PDFDocument *doc = [PDFDocument documentWithFilePath:path];
+    if (!doc) {
+        return nil;
+    }
+    return [doc pageAtIndex:page-1].pageBox;
 }
 
 

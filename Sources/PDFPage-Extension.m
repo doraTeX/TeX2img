@@ -3,6 +3,6 @@
 @implementation PDFPage (Extension)
 - (PDFPageBox*)pageBox
 {
-    return [PDFPageBox pageBoxWithPage:self];
+    return [PDFPageBox pageBoxWithPDFPage:self];
 }
 @end

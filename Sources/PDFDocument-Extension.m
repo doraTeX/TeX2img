@@ -13,10 +13,16 @@
     }
     
     PDFDocument *doc = [PDFDocument documentWithFilePath:(NSString*)(paths[0])];
+    if (!doc) {
+        return nil;
+    }
     
     NSUInteger pageCount = doc.pageCount;
     for (NSUInteger i=1; i<paths.count; i++) {
         PDFDocument *insertedDoc = [PDFDocument documentWithFilePath:(NSString*)(paths[i])];
+        if (!insertedDoc) {
+            return nil;
+        }
         for (NSUInteger j=0; j<insertedDoc.pageCount; j++) {
             [doc insertPage:[insertedDoc pageAtIndex:j] atIndex:pageCount];
             pageCount++;
