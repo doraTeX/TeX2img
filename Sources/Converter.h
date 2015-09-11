@@ -7,7 +7,7 @@
 - (BOOL)epstopdfExists;
 - (BOOL)mudrawExists;
 - (void)showFileFormatError:(NSString*)aPath;
-- (void)showFileGenerateError:(NSString*)aPath;
+- (void)showFileGenerationError:(NSString*)aPath;
 - (void)showExecError:(NSString*)command;
 - (void)showCannotOverwriteError:(NSString*)path;
 - (void)showCannotCreateDirectoryError:(NSString*)dir;

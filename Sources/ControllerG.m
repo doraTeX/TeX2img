@@ -393,14 +393,14 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(showFileFormatErrorOnMainThread:) withObject:aPath waitUntilDone:YES];
 }
 
-- (void)showFileGenerateErrorOnMainThread:(NSString*)aPath
+- (void)showFileGenerationErrorOnMainThread:(NSString*)aPath
 {
-    runErrorPanel(localizedString(@"fileGenerateErrorMsg"), aPath);
+    runErrorPanel(localizedString(@"fileGenerationErrorMsg"), aPath);
 }
 
-- (void)showFileGenerateError:(NSString*)aPath
+- (void)showFileGenerationError:(NSString*)aPath
 {
-    [self performSelectorOnMainThread:@selector(showFileGenerateErrorOnMainThread:) withObject:aPath waitUntilDone:YES];
+    [self performSelectorOnMainThread:@selector(showFileGenerationErrorOnMainThread:) withObject:aPath waitUntilDone:YES];
 }
 
 - (void)showExecErrorOnMainThread:(NSString*)command
