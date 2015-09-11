@@ -15,6 +15,7 @@
 "programNotFoundErrorMsg" = "%@ が見つかりません。\nLaTeX / Ghostscript 一式がインストールされているか，「環境設定」で設定されたパスが実際にインストールされているパスと合致しているか確認してください。";
 "inputFileNotFoundErrorMsg" = "入力ファイルが見つかりません。\n%@";
 "inputFileTypeErrorMsg" = "入力ファイルの形式が不正です。\n入力ファイルの拡張子は .tex / .pdf / .ps のいずれかにしてください。\n%@";
+"fileFormatErrorMsg" = "入力ファイルの形式が不正です。\n%@";
 "fileGenerateErrorMsg" = "%@ を生成できなかったため，処理を中止します。\nアクセス権を確認してください。";
 "execErrorMsg" = "%@ の実行に失敗したので処理を中止します。\nソースコードにエラーがないか，確認してください。";
 "formatErrorMsg" = "環境設定画面における%@の設定値が不正です。";

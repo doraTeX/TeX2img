@@ -798,7 +798,9 @@
 
 - (void)embedSource:(NSString*)texFilePath intoFile:(NSString*)filePath
 {
-    if (!embedSource) return;
+    if (!embedSource) {
+        return;
+    }
     
     const char *target = filePath.fileSystemRepresentation;
    
@@ -949,7 +951,14 @@
 
     [controller exitCurrentThreadIfTaskKilled];
     
-    pageCount = [PDFDocument documentWithFilePath:pdfFilePath].pageCount;
+    PDFDocument *pdfDocument = [PDFDocument documentWithFilePath:pdfFilePath];
+    
+    if (!pdfDocument) {
+        [controller showFileFormatError:pdfFilePath];
+        return NO;
+    }
+    
+    pageCount = pdfDocument.pageCount;
 
     emptyPageFlags = [NSMutableArray array];
     for (NSInteger i=1; i<=pageCount; i++) {
@@ -1031,6 +1040,8 @@
             }
         }
 	}
+
+    BOOL copySucceeded = YES;
     
     // 単一PDF出力の場合
     if ([@"pdf" isEqualToString:extension] && mergeOutputsFlag) {
@@ -1049,8 +1060,19 @@
         
         // マージして出力
         if (outputFiles.count > 0) {
-            [[PDFDocument documentWithMergingPDFFiles:outputFiles] writeToFile:outputFilePath];
-            [self embedSource:texFilePath intoFile:outputFilePath];
+            // 出力先パスがディレクトリであった場合はエラー
+            BOOL isDir;
+            if ([fileManager fileExistsAtPath:outputFilePath isDirectory:&isDir] && isDir) {
+                [controller showCannotOverwriteError:outputFilePath];
+                return NO;
+            }
+            
+            copySucceeded = [[PDFDocument documentWithMergingPDFFiles:outputFiles] writeToFile:outputFilePath];
+            if (copySucceeded) {
+                [self embedSource:texFilePath intoFile:outputFilePath];
+            } else {
+                return NO;
+            }
             
             // 生成ファイルをクリップボードへコピー
             if (copyToClipboard) {
@@ -1064,16 +1086,26 @@
     } else { // バラバラ出力の場合
         // 最終出力ファイルを目的地へコピー
         if (![emptyPageFlags[0] boolValue]) {
-            [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
-            [self embedSource:texFilePath intoFile:outputFilePath];
+            copySucceeded = [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
+            if (copySucceeded) {
+                [self embedSource:texFilePath intoFile:outputFilePath];
+            } else {
+                return NO;
+            }
         }
         
-        for (NSUInteger i=2; i<=pageCount; i++) {
-            if (![emptyPageFlags[i-1] boolValue]) {
-                NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
-                [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
-                              toPath:destPath];
-                [self embedSource:texFilePath intoFile:destPath];
+        if (copySucceeded) {
+            for (NSUInteger i=2; i<=pageCount; i++) {
+                if (![emptyPageFlags[i-1] boolValue]) {
+                    NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
+                    copySucceeded = [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
+                                                  toPath:destPath];
+                    if (copySucceeded) {
+                        [self embedSource:texFilePath intoFile:destPath];
+                    } else {
+                        return NO;
+                    }
+                }
             }
         }
         
@@ -1244,6 +1276,7 @@
 	
 	if (![self writeStringWithYenBackslashConverting:texSourceStr toFile:tempTeXFilePath]) {
 		[controller showFileGenerateError:tempTeXFilePath];
+        [controller generationDidFinish];
 		return NO;
 	}
 	
@@ -1262,26 +1295,43 @@
 - (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath
 {
     @autoreleasepool {
+        BOOL isDir;
+        if ([fileManager fileExistsAtPath:sourcePath isDirectory:&isDir] && isDir) {
+            [controller showFileFormatError:sourcePath];
+            [controller generationDidFinish];
+            return NO;
+        }
+        
         NSString *ext = sourcePath.pathExtension.lowercaseString;
         pdfInputMode = [ext isEqualToString:@"pdf"];
         psInputMode = [ext isEqualToString:@"ps"] || [ext isEqualToString:@"eps"];
         
         if (pdfInputMode) {
+            // PDFの書式チェック
+            if (![PDFDocument documentWithFilePath:sourcePath]) {
+                [controller showFileFormatError:sourcePath];
+                [controller generationDidFinish];
+                return NO;
+            }
+
             NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
                 [controller showFileGenerateError:tempPdfFilePath];
+                [controller generationDidFinish];
                 return NO;
             }
         } else if (psInputMode) {
             NSString *tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
                 [controller showFileGenerateError:tempPsFilePath];
+                [controller generationDidFinish];
                 return NO;
             }
         } else {
             NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
                 [controller showFileGenerateError:tempTeXFilePath];
+                [controller generationDidFinish];
                 return NO;
             }
         }
