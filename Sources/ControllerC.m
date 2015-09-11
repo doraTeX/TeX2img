@@ -110,7 +110,7 @@
     printStdErr("tex2img: [Error] Invalid file format: %s\n", aPath.UTF8String);
 }
 
-- (void)showFileGenerateError:(NSString*)aPath
+- (void)showFileGenerationError:(NSString*)aPath
 {
 	printStdErr("tex2img: [Error] %s cannot be created, and so generation has been aborted.\nCheck permission.\n", aPath.UTF8String);
 }

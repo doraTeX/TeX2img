@@ -1282,7 +1282,7 @@
 	NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	
 	if (![self writeStringWithYenBackslashConverting:texSourceStr toFile:tempTeXFilePath]) {
-		[controller showFileGenerateError:tempTeXFilePath];
+		[controller showFileGenerationError:tempTeXFilePath];
         [controller generationDidFinish];
 		return NO;
 	}
@@ -1323,21 +1323,21 @@
 
             NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
-                [controller showFileGenerateError:tempPdfFilePath];
+                [controller showFileGenerationError:tempPdfFilePath];
                 [controller generationDidFinish];
                 return NO;
             }
         } else if (psInputMode) {
             NSString *tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
-                [controller showFileGenerateError:tempPsFilePath];
+                [controller showFileGenerationError:tempPsFilePath];
                 [controller generationDidFinish];
                 return NO;
             }
         } else {
             NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
-                [controller showFileGenerateError:tempTeXFilePath];
+                [controller showFileGenerationError:tempTeXFilePath];
                 [controller generationDidFinish];
                 return NO;
             }
