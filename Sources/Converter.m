@@ -373,8 +373,14 @@
 // page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
 - (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin
 {
-    NSUInteger totalPages = [PDFDocument documentWithFilePath:pdfPath].pageCount;
+    PDFDocument *doc = [PDFDocument documentWithFilePath:pdfPath];
+    if (!doc){
+        return NO;
+    }
+    
+    NSUInteger totalPages = doc.pageCount;
     NSMutableString *cropTeX = [NSMutableString stringWithString:@"\\pdfoutput=1"];
+
     if (page > 0) {
         [cropTeX appendString:[self buildCropTeXSource:pdfPath page:page addMargin:addMargin]];
     } else {
@@ -1086,7 +1092,7 @@
                 NSPasteboard *pboard = NSPasteboard.generalPasteboard;
                 [pboard declareTypes:@[NSURLPboardType] owner:nil];
                 [pboard clearContents];
-                [pboard writeObjects:@[[[NSURL alloc] initFileURLWithPath:outputFilePath]]];
+                [pboard writeObjects:@[[NSURL fileURLWithPath:outputFilePath]]];
             }
         }
 
@@ -1123,12 +1129,12 @@
             NSMutableArray *outputFiles = [NSMutableArray array];
             
             if (![emptyPageFlags[0] boolValue]) {
-                [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:outputFilePath]];
+                [outputFiles addObject:[NSURL fileURLWithPath:outputFilePath]];
             }
             
             for (NSUInteger i=2; i<=pageCount; i++) {
                 if (![emptyPageFlags[i-1] boolValue]) {
-                    [outputFiles addObject:[[NSURL alloc] initFileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
+                    [outputFiles addObject:[NSURL fileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
                 }
             }
             
