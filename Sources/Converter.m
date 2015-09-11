@@ -805,7 +805,9 @@
 
 - (void)embedSource:(NSString*)texFilePath intoFile:(NSString*)filePath
 {
-    if (!embedSource) return;
+    if (!embedSource) {
+        return;
+    }
     
     const char *target = filePath.fileSystemRepresentation;
    
@@ -1038,6 +1040,8 @@
             }
         }
 	}
+
+    BOOL copySucceeded = YES;
     
     // 単一PDF出力の場合
     if ([@"pdf" isEqualToString:extension] && mergeOutputsFlag) {
@@ -1056,8 +1060,19 @@
         
         // マージして出力
         if (outputFiles.count > 0) {
-            [[PDFDocument documentWithMergingPDFFiles:outputFiles] writeToFile:outputFilePath];
-            [self embedSource:texFilePath intoFile:outputFilePath];
+            // 出力先パスがディレクトリであった場合はエラー
+            BOOL isDir;
+            if ([fileManager fileExistsAtPath:outputFilePath isDirectory:&isDir] && isDir) {
+                [controller showCannotOverwriteError:outputFilePath];
+                return NO;
+            }
+            
+            copySucceeded = [[PDFDocument documentWithMergingPDFFiles:outputFiles] writeToFile:outputFilePath];
+            if (copySucceeded) {
+                [self embedSource:texFilePath intoFile:outputFilePath];
+            } else {
+                return NO;
+            }
             
             // 生成ファイルをクリップボードへコピー
             if (copyToClipboard) {
@@ -1071,16 +1086,26 @@
     } else { // バラバラ出力の場合
         // 最終出力ファイルを目的地へコピー
         if (![emptyPageFlags[0] boolValue]) {
-            [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
-            [self embedSource:texFilePath intoFile:outputFilePath];
+            copySucceeded = [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
+            if (copySucceeded) {
+                [self embedSource:texFilePath intoFile:outputFilePath];
+            } else {
+                return NO;
+            }
         }
         
-        for (NSUInteger i=2; i<=pageCount; i++) {
-            if (![emptyPageFlags[i-1] boolValue]) {
-                NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
-                [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
-                              toPath:destPath];
-                [self embedSource:texFilePath intoFile:destPath];
+        if (copySucceeded) {
+            for (NSUInteger i=2; i<=pageCount; i++) {
+                if (![emptyPageFlags[i-1] boolValue]) {
+                    NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
+                    copySucceeded = [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
+                                                  toPath:destPath];
+                    if (copySucceeded) {
+                        [self embedSource:texFilePath intoFile:destPath];
+                    } else {
+                        return NO;
+                    }
+                }
             }
         }
         
