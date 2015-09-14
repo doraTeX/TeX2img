@@ -98,6 +98,9 @@ NSMutableString *commandCompletionList;
 #define TabCharacterKindKey @"tabCharacterKind"
 #define PageBoxKey @"pageBox"
 
+#define LoopCountKey @"loopCount"
+#define DelayKey @"delay"
+
 #define ControllerKey @"controller"
 #define TeX2imgVersionKey @"TeX2imgVersion"
 

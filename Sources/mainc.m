@@ -9,7 +9,7 @@
 #import "NSString-Extension.h"
 #import "NSDictionary-Extension.h"
 
-#define OPTION_NUM 46
+#define OPTION_NUM 48
 #define VERSION "2.0.2"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
@@ -35,7 +35,7 @@ void usage()
     printf("  --kanji      ENCODING      : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: enabled)\n");
     printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
-    printf("  --dvidriver    DVIWARE     : set the DVI driver    (default: dvipdfmx)\n");
+    printf("  --dvidriver  DVIDRIVER     : set the DVI driver    (default: dvipdfmx)\n");
     printf("  *synonym: --dviware, --dvipdfmx\n");
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
     printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
@@ -45,9 +45,11 @@ void usage()
     printf("  --bottom-margin  MARGIN    : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT                : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
     printf("                               (*bp is always used for EPS/PDF/SVG)\n");
-    printf("  --[no-]transparent         : disable/enable transparent PNG/GIF/TIFF (default: enabled)\n");
+    printf("  --[no-]transparent         : disable/enable transparent PNG/TIFF/GIF (default: enabled)\n");
     printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
-    printf("  --[no-]merge-output-files  : disable/enable merging products as a single PDF file (default: disabled)\n");
+    printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or animated GIF (default: disabled)\n");
+    printf("  --delay TIME               : set the delay time (sec) of an animated GIF (default: 1)\n");
+    printf("  --loop  NUMBER             : set the number of times to repeat an animated GIF (default: 0 (infinity))\n");
     printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
     printf("  --[no-]keep-page-size      : disable/enable keeping the original page size (default: disabled)\n");
     printf("  --pagebox BOX              : set the page box type used as the page size (media|crop|bleed|trim|art) (default: crop)\n");
@@ -190,6 +192,8 @@ int main (int argc, char *argv[]) {
         NSString *gs       = @"gs";
         NSNumber *unitTag = @(PX_UNIT_TAG);
         CGPDFBox pageBoxType = kCGPDFCropBox;
+        float delay = 1;
+        NSInteger loopCount = 0;
         
         // getopt_long を使った，長いオプション対応のオプション解析
         struct option *options;
@@ -452,6 +456,18 @@ int main (int argc, char *argv[]) {
 
         i++;
         options[i].name = "pagebox";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+        
+        i++;
+        options[i].name = "delay";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+        
+        i++;
+        options[i].name = "loop";
         options[i].has_arg = required_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
@@ -719,6 +735,30 @@ int main (int argc, char *argv[]) {
                         exit(1);
                     }
                     break;
+                case 44: // --delay
+                    if (optarg) {
+                        delay = strtof(optarg, NULL);
+                    } else {
+                        printf("--delay is invalid.\n");
+                        exit(1);
+                    }
+                    if (delay < 0) {
+                        printf("--delay is invalid.\n");
+                        exit(1);
+                    }
+                    break;
+                case 45: // --loop
+                    if (optarg) {
+                        loopCount = strtoi(optarg);
+                    } else {
+                        printf("--loop is invalid.\n");
+                        exit(1);
+                    }
+                    if (loopCount < 0) {
+                        printf("--loop is invalid.\n");
+                        exit(1);
+                    }
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -824,6 +864,8 @@ int main (int argc, char *argv[]) {
         aProfile[MergeOutputsKey] = @(mergeFlag);
         aProfile[KeepPageSizeKey] = @(keepPageSizeFlag);
         aProfile[PageBoxKey] = @(pageBoxType);
+        aProfile[LoopCountKey] = @(loopCount);
+        aProfile[DelayKey] = @(delay);
         
         if (!quietFlag) {
             printCurrentStatus(inputFilePath, aProfile);

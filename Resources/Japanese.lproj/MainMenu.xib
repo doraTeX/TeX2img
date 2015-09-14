@@ -655,32 +655,32 @@ DQ
         </window>
         <window title="環境設定" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="517">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <rect key="contentRect" x="196" y="119" width="467" height="455"/>
+            <rect key="contentRect" x="196" y="119" width="472" height="455"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
-            <value key="minSize" type="size" width="467" height="455"/>
+            <value key="minSize" type="size" width="472" height="455"/>
             <view key="contentView" id="518">
-                <rect key="frame" x="0.0" y="-5" width="467" height="455"/>
+                <rect key="frame" x="0.0" y="0.0" width="472" height="455"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <tabView id="580">
-                        <rect key="frame" x="13" y="10" width="441" height="439"/>
+                        <rect key="frame" x="13" y="10" width="446" height="439"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
                             <tabViewItem label="出力画像" identifier="1" id="582">
                                 <view key="view" id="583">
-                                    <rect key="frame" x="10" y="33" width="421" height="393"/>
+                                    <rect key="frame" x="10" y="33" width="426" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <box autoresizesSubviews="NO" title="余白設定" borderType="line" id="519">
-                                            <rect key="frame" x="6" y="229" width="409" height="164"/>
+                                            <rect key="frame" x="6" y="229" width="414" height="164"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <view key="contentView">
-                                                <rect key="frame" x="1" y="1" width="407" height="148"/>
+                                                <rect key="frame" x="1" y="1" width="412" height="148"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <slider verticalHuggingPriority="750" id="545">
-                                                        <rect key="frame" x="48" y="112" width="308" height="21"/>
+                                                        <rect key="frame" x="48" y="112" width="313" height="21"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" tickMarkPosition="above" sliderType="linear" id="548">
                                                             <font key="font" size="12" name="Helvetica"/>
@@ -690,7 +690,7 @@ DQ
                                                         </connections>
                                                     </slider>
                                                     <textField toolTip="左余白" verticalHuggingPriority="750" id="546">
-                                                        <rect key="frame" x="361" y="112" width="34" height="22"/>
+                                                        <rect key="frame" x="366" y="112" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="547">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="667">
@@ -718,7 +718,7 @@ DQ
                                                         </textFieldCell>
                                                     </textField>
                                                     <slider verticalHuggingPriority="750" id="551">
-                                                        <rect key="frame" x="48" y="88" width="308" height="21"/>
+                                                        <rect key="frame" x="48" y="88" width="313" height="21"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" tickMarkPosition="above" sliderType="linear" id="556">
                                                             <font key="font" size="12" name="Helvetica"/>
@@ -728,7 +728,7 @@ DQ
                                                         </connections>
                                                     </slider>
                                                     <textField toolTip="右余白" verticalHuggingPriority="750" id="552">
-                                                        <rect key="frame" x="361" y="88" width="34" height="22"/>
+                                                        <rect key="frame" x="366" y="88" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="555">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="668">
@@ -753,7 +753,7 @@ DQ
                                                         </textFieldCell>
                                                     </textField>
                                                     <slider verticalHuggingPriority="750" id="558">
-                                                        <rect key="frame" x="48" y="64" width="308" height="21"/>
+                                                        <rect key="frame" x="48" y="64" width="313" height="21"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" tickMarkPosition="above" sliderType="linear" id="563">
                                                             <font key="font" size="12" name="Helvetica"/>
@@ -763,7 +763,7 @@ DQ
                                                         </connections>
                                                     </slider>
                                                     <textField toolTip="上余白" verticalHuggingPriority="750" id="559">
-                                                        <rect key="frame" x="361" y="64" width="34" height="22"/>
+                                                        <rect key="frame" x="366" y="64" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="562">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="669">
@@ -788,7 +788,7 @@ DQ
                                                         </textFieldCell>
                                                     </textField>
                                                     <slider verticalHuggingPriority="750" id="565">
-                                                        <rect key="frame" x="48" y="40" width="308" height="21"/>
+                                                        <rect key="frame" x="48" y="40" width="313" height="21"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" tickMarkPosition="above" sliderType="linear" id="570">
                                                             <font key="font" size="12" name="Helvetica"/>
@@ -798,7 +798,7 @@ DQ
                                                         </connections>
                                                     </slider>
                                                     <textField toolTip="下余白" verticalHuggingPriority="750" id="566">
-                                                        <rect key="frame" x="361" y="40" width="34" height="22"/>
+                                                        <rect key="frame" x="366" y="40" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="569">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="670">
@@ -872,14 +872,14 @@ DQ
                                             <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="解像度レベル（1〜100）" borderType="line" id="637">
-                                            <rect key="frame" x="6" y="168" width="409" height="57"/>
+                                            <rect key="frame" x="6" y="168" width="414" height="57"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <view key="contentView">
-                                                <rect key="frame" x="1" y="1" width="407" height="41"/>
+                                                <rect key="frame" x="1" y="1" width="412" height="41"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <slider verticalHuggingPriority="750" id="640">
-                                                        <rect key="frame" x="16" y="11" width="332" height="21"/>
+                                                        <rect key="frame" x="16" y="11" width="337" height="21"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="100" doubleValue="15" tickMarkPosition="above" sliderType="linear" id="643">
                                                             <font key="font" size="12" name="Helvetica"/>
@@ -889,7 +889,7 @@ DQ
                                                         </connections>
                                                     </slider>
                                                     <textField verticalHuggingPriority="750" id="641">
-                                                        <rect key="frame" x="354" y="9" width="41" height="22"/>
+                                                        <rect key="frame" x="359" y="9" width="41" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="right" title="15.0" drawsBackground="YES" id="642">
                                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="0.0" negativeFormat="#0.0" alwaysShowsDecimalSeparator="YES" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="1" maximumFractionDigits="1" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="671">
@@ -912,22 +912,22 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="出力画像の設定" borderType="line" id="cDD-5y-A58">
-                                            <rect key="frame" x="6" y="10" width="409" height="154"/>
+                                            <rect key="frame" x="6" y="10" width="414" height="154"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <view key="contentView">
-                                                <rect key="frame" x="1" y="1" width="407" height="138"/>
+                                                <rect key="frame" x="1" y="1" width="412" height="138"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button id="521">
                                                         <rect key="frame" x="16" y="112" width="293" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="背景色を透過させる (PNG / GIF / TIFF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
+                                                        <buttonCell key="cell" type="check" title="背景色を透過させる (PNG / TIFF / GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                     </button>
                                                     <button id="afr-f7-ZEX">
-                                                        <rect key="frame" x="16" y="37" width="220" height="18"/>
+                                                        <rect key="frame" x="16" y="37" width="225" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                         <buttonCell key="cell" type="check" title="寸法情報を削除する (SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="z5p-3V-PLU">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -943,9 +943,9 @@ DQ
                                                         </buttonCell>
                                                     </button>
                                                     <button id="Iua-jO-eyo">
-                                                        <rect key="frame" x="16" y="62" width="243" height="18"/>
+                                                        <rect key="frame" x="16" y="62" width="340" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="単一ファイルにまとめる (PDF / TIFF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="sGk-4l-7mX">
+                                                        <buttonCell key="cell" type="check" title="単一ファイルまたはアニメを生成 (PDF / TIFF / GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="sGk-4l-7mX">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -962,12 +962,23 @@ DQ
                                                         </connections>
                                                     </button>
                                                     <button id="646">
-                                                        <rect key="frame" x="16" y="87" width="220" height="18"/>
+                                                        <rect key="frame" x="16" y="87" width="225" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                         <buttonCell key="cell" type="check" title="テキストを保持する (PDF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="647">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
+                                                    </button>
+                                                    <button verticalHuggingPriority="750" id="ypa-x6-QvN">
+                                                        <rect key="frame" x="348" y="62" width="53" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="inline" title="詳細..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="7Lh-eu-voy">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" size="11" name="HiraKakuProN-W6"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="showAnimationParameterSettingPopover:" target="450" id="oMx-pi-2aq"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                             </view>
@@ -1783,7 +1794,7 @@ DQ
                     </tabView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-558.5" y="336.5"/>
+            <point key="canvasLocation" x="-556" y="336.5"/>
         </window>
         <window title="設定の保存・読み込み" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="672" userLabel="Window (設定の保存・読み込み)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -1951,6 +1962,7 @@ DQ
         <customObject id="450" customClass="ControllerG">
             <connections>
                 <outlet property="abortMenuItem" destination="tC1-Xo-mzW" id="xdP-eh-ocO"/>
+                <outlet property="animationParameterSettingViewController" destination="bRQ-po-MXp" id="W3J-0Q-Be8"/>
                 <outlet property="autoCompleteMenuItem" destination="844" id="846"/>
                 <outlet property="autoDetectionTargetMatrix" destination="KXu-Vc-HGZ" id="AjK-HW-L8g"/>
                 <outlet property="autoDetectionTargetSettingViewController" destination="br2-Wx-T7e" id="gcD-s8-yoH"/>
@@ -1973,6 +1985,8 @@ DQ
                 <outlet property="commentColorWell" destination="5fH-Qw-pGy" id="2pA-3P-jk1"/>
                 <outlet property="convertYenMarkMenuItem" destination="760" id="762"/>
                 <outlet property="cursorColorWell" destination="Yy9-T4-uMu" id="K7f-eV-fZS"/>
+                <outlet property="delayStepper" destination="Q2q-zf-nqJ" id="WqV-qa-hbT"/>
+                <outlet property="delayTextField" destination="z7U-r1-96O" id="tzH-6t-AJb"/>
                 <outlet property="deleteDisplaySizeCheckBox" destination="afr-f7-ZEX" id="oSG-fY-bJT"/>
                 <outlet property="deleteTmpFileCheckBox" destination="591" id="594"/>
                 <outlet property="directInputButton" destination="TFq-OD-TeI" id="hA5-5h-RAw"/>
@@ -2004,6 +2018,8 @@ DQ
                 <outlet property="latexPathTextField" destination="597" id="M67-Rd-WNW"/>
                 <outlet property="leftMarginLabel" destination="546" id="617"/>
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
+                <outlet property="loopCountStepper" destination="YDl-Kh-2kO" id="acE-Px-A8A"/>
+                <outlet property="loopCountTextField" destination="V9C-Oh-Xce" id="JQ3-0d-BaZ"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
                 <outlet property="makeatletterEnabledCheckBox" destination="v1y-4P-OKt" id="DmV-0p-uIk"/>
                 <outlet property="mergeOutputsCheckBox" destination="Iua-jO-eyo" id="R4E-uV-fAB"/>
@@ -2442,7 +2458,7 @@ DQ
                 <outlet property="view" destination="4u3-I9-xa9" id="LP3-A7-WaC"/>
             </connections>
         </viewController>
-        <popover id="TVn-Bw-9kF" userLabel="PageBox Kind Popover">
+        <popover id="TVn-Bw-9kF" userLabel="PageBox Popover">
             <connections>
                 <outlet property="contentViewController" destination="sJU-n1-a72" id="Re1-CF-sca"/>
             </connections>
@@ -2496,7 +2512,100 @@ DQ
                     </textFieldCell>
                 </textField>
             </subviews>
-            <point key="canvasLocation" x="-727.5" y="1422"/>
+            <point key="canvasLocation" x="-511.5" y="1331"/>
+        </customView>
+        <viewController id="bRQ-po-MXp" userLabel="Animation Parameter View Controller">
+            <connections>
+                <outlet property="view" destination="LeD-dE-xMA" id="eHH-6n-AKy"/>
+            </connections>
+        </viewController>
+        <popover id="67q-OP-Eik" userLabel="Animation Parameter Kind Popover">
+            <connections>
+                <outlet property="contentViewController" destination="bRQ-po-MXp" id="f6Z-ky-P1y"/>
+            </connections>
+        </popover>
+        <customView id="LeD-dE-xMA" userLabel="Animation Parameter View">
+            <rect key="frame" x="0.0" y="0.0" width="283" height="112"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="ola-ET-Lo1">
+                    <rect key="frame" x="31" y="48" width="168" height="17"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="フレーム間のディレイ(秒)：" id="dgh-c6-tTk">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="P3X-h8-LuO">
+                    <rect key="frame" x="18" y="75" width="168" height="17"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="アニメーションGIFの設定：" id="2TL-GA-dTV">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="Q2q-zf-nqJ">
+                    <rect key="frame" x="247" y="42" width="19" height="27"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="9999" doubleValue="1" id="vcE-lK-2ae">
+                        <connections>
+                            <action selector="takeFloatValueFrom:" target="z7U-r1-96O" id="A6e-OF-ozU"/>
+                        </connections>
+                    </stepperCell>
+                </stepper>
+                <textField toolTip="コンパイル回数" verticalHuggingPriority="750" id="z7U-r1-96O">
+                    <rect key="frame" x="200" y="45" width="47" height="22"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" drawsBackground="YES" id="R5b-05-3uh">
+                        <numberFormatter key="formatter" formatterBehavior="default10_4" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="Pox-Iq-TTX">
+                            <real key="minimum" value="0.0"/>
+                            <real key="maximum" value="9999"/>
+                        </numberFormatter>
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <action selector="takeFloatValueFrom:" target="Q2q-zf-nqJ" id="qis-XN-Km2"/>
+                    </connections>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="fZi-fF-QKr">
+                    <rect key="frame" x="62" y="18" width="137" height="17"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="ループ回数 (0=無限)：" id="C7M-m9-4Ur">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="YDl-Kh-2kO">
+                    <rect key="frame" x="247" y="12" width="19" height="27"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <stepperCell key="cell" continuous="YES" alignment="left" maxValue="9999" id="ALb-cn-VZH"/>
+                    <connections>
+                        <action selector="takeIntValueFrom:" target="V9C-Oh-Xce" id="jEt-b3-Hec"/>
+                    </connections>
+                </stepper>
+                <textField toolTip="コンパイル回数" verticalHuggingPriority="750" id="V9C-Oh-Xce">
+                    <rect key="frame" x="200" y="15" width="47" height="22"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="O15-X7-nMh">
+                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="2Et-h0-iHY">
+                            <real key="minimum" value="0.0"/>
+                            <real key="maximum" value="9999"/>
+                        </numberFormatter>
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <action selector="takeIntValueFrom:" target="YDl-Kh-2kO" id="pCX-J5-D9u"/>
+                    </connections>
+                </textField>
+            </subviews>
+            <point key="canvasLocation" x="-787.5" y="1569"/>
         </customView>
     </objects>
 </document>

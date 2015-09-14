@@ -44,6 +44,8 @@
 @property BOOL psInputMode;
 @property BOOL errorsIgnored;
 @property CGPDFBox pageBoxType;
+@property float delay;
+@property NSInteger loopCount;
 @property NSMutableArray *emptyPageFlags;
 @property NSMutableArray *whitePageFlags;
 @end
@@ -76,6 +78,8 @@
 @synthesize psInputMode;
 @synthesize errorsIgnored;
 @synthesize pageBoxType;
+@synthesize delay;
+@synthesize loopCount;
 @synthesize emptyPageFlags;
 @synthesize whitePageFlags;
 
@@ -120,6 +124,8 @@
     speedPriorityMode = ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG);
     embedSource = [aProfile boolForKey:EmbedSourceKey];
     pageBoxType = [aProfile integerForKey:PageBoxKey];
+    delay = [aProfile floatForKey:DelayKey];
+    loopCount = [aProfile integerForKey:LoopCountKey];
     additionalInputPath = nil;
     pdfInputMode = NO;
     psInputMode = NO;
@@ -714,6 +720,43 @@
     return success;
 }
 
+- (BOOL)generateAnimatedGIFFrom:(NSArray*)sourcePaths toPath:(NSString*)destPath
+{
+    NSDictionary *frameProperties = @{(NSString*)kCGImagePropertyGIFDictionary: @{(NSString*)kCGImagePropertyGIFDelayTime: @(delay)}};
+    NSDictionary *gifProperties = @{(NSString*)kCGImagePropertyGIFDictionary: @{(NSString*)kCGImagePropertyGIFLoopCount: @(loopCount)}};
+    
+    __block CFMutableDataRef gifData = CFDataCreateMutable(kCFAllocatorDefault, 0);
+    CGImageDestinationRef destination = CGImageDestinationCreateWithData(gifData, kUTTypeGIF, sourcePaths.count, NULL);
+
+    __block BOOL success = YES;
+    
+    [sourcePaths enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
+        NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithContentsOfFile:path];
+        if (rep) {
+            CGImageDestinationAddImage(destination, rep.CGImage, (__bridge CFDictionaryRef)frameProperties);
+        } else {
+            success = NO;
+            stop = YES;
+        }
+    }];
+    
+    if (success) {
+        CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)gifProperties);
+        CGImageDestinationFinalize(destination);
+    
+        NSData *animatedData = [NSData dataWithData:(NSData*)CFBridgingRelease(gifData)];
+        if (animatedData) {
+            success = [animatedData writeToFile:destPath atomically:YES];
+        } else {
+            success = NO;
+        }
+    }
+    
+    CFRelease(destination);
+        
+    return success;
+}
+
 - (BOOL)pdf2svg:(NSString*)pdfFilePath outputFileName:(NSString*)svgFilePath page:(NSUInteger)page
 {
     if (![controller mudrawExists]) {
@@ -1080,8 +1123,8 @@
         }
 	}
 
-    // 単一PDF出力/マルチページTIFF出力の場合
-    if ([@[@"pdf", @"tiff"] containsObject:extension] && mergeOutputsFlag) {
+    // 単一PDF出力/マルチページTIFF/アニメーションGIF出力の場合
+    if ([@[@"pdf", @"tiff", @"gif"] containsObject:extension] && mergeOutputsFlag) {
         // 実際に生成したファイルのパスを集める
         NSMutableArray *outputFiles = [NSMutableArray array];
         
@@ -1120,6 +1163,14 @@
                 }
             }
             
+            if ([@"gif" isEqualToString:extension]) {
+                // アニメーションGIFの生成
+                success = [self generateAnimatedGIFFrom:outputFiles toPath:outputFilePath];
+                if (!success) {
+                    return NO;
+                }
+            }
+
             if (success) {
                 [self embedSource:texFilePath intoFile:outputFilePath];
             }
@@ -1219,7 +1270,7 @@
     // 生成ファイルを集める
     NSMutableArray *generatedFiles = [NSMutableArray array];
     
-    if ([@[@"pdf", @"tiff"] containsObject:extension] && mergeOutputsFlag && (emptyPageFlags.indexesOfTrueValue.count < pageCount)) {
+    if ([@[@"pdf", @"tiff", @"gif"] containsObject:extension] && mergeOutputsFlag && (emptyPageFlags.indexesOfTrueValue.count < pageCount)) {
         [generatedFiles addObject:outputFilePath];
     } else {
         if (![emptyPageFlags[0] boolValue]) {
@@ -1234,7 +1285,13 @@
     
     // プレビュー処理
     if (status && previewFlag) {
-        NSString *previewApp = [extension isEqualToString:@"svg"] ? @"Safari" : @"Preview";
+        NSString *previewApp;
+        if ([@"svg" isEqualToString:extension] || ([@"gif" isEqualToString:extension] && mergeOutputsFlag)) {
+            previewApp = @"Safari";
+        } else {
+            previewApp = @"Preview";
+        }
+            
         [controller previewFiles:generatedFiles withApplication:previewApp];
     }
     

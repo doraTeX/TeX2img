@@ -161,6 +161,13 @@ typedef enum {
 @property IBOutlet NSViewController *pageBoxSettingViewController;
 @property IBOutlet NSMatrix *pageBoxMatrix;
 
+@property IBOutlet NSViewController *animationParameterSettingViewController;
+@property IBOutlet NSTextField *delayTextField;;
+@property IBOutlet NSStepper *delayStepper;
+@property IBOutlet NSTextField *loopCountTextField;
+@property IBOutlet NSStepper *loopCountStepper;
+
+
 @property Converter *converter;
 @property NSTask *runningTask;
 @property NSPipe *outputPipe;
@@ -290,6 +297,12 @@ typedef enum {
 
 @synthesize pageBoxSettingViewController;
 @synthesize pageBoxMatrix;
+
+@synthesize animationParameterSettingViewController;
+@synthesize delayTextField;
+@synthesize delayStepper;
+@synthesize loopCountTextField;
+@synthesize loopCountStepper;
 
 @synthesize converter;
 @synthesize runningTask;
@@ -804,6 +817,16 @@ typedef enum {
         [pageBoxMatrix selectCellWithTag:[aProfile integerForKey:PageBoxKey]];
     }
 
+    if ([keys containsObject:DelayKey]) {
+        delayTextField.floatValue = MAX(0, [aProfile integerForKey:DelayKey]);
+        [delayStepper takeFloatValueFrom:delayTextField];
+    }
+    
+    if ([keys containsObject:LoopCountKey]) {
+        loopCountTextField.integerValue = MAX(0, [aProfile integerForKey:LoopCountKey]);
+        [loopCountStepper takeIntValueFrom:loopCountTextField];
+    }
+
     [self invisibleCharacterKindChanged:nil];
 
     [self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:PreambleKey];
@@ -948,6 +971,9 @@ typedef enum {
         currentProfile[TabCharacterKindKey] = @(tabCharacterKindMatrix.selectedTag);
 
         currentProfile[PageBoxKey] = @(pageBoxMatrix.selectedTag);
+        
+        currentProfile[DelayKey] = @(delayTextField.floatValue);
+        currentProfile[LoopCountKey] = @(loopCountTextField.integerValue);
 
         currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
         currentProfile[FlashInMovingKey] = @(flashInMovingCheckBox.state);
@@ -2299,6 +2325,15 @@ typedef enum {
 - (IBAction)showPageBoxSettingPopover:(id)sender
 {
     [NSPopover showPopoverWithViewController:pageBoxSettingViewController
+                             atRightOfButton:(NSButton*)sender
+                                      ofView:preferenceWindow.contentView
+                                     offsetX:31
+                                           Y:35];
+}
+
+- (IBAction)showAnimationParameterSettingPopover:(id)sender
+{
+    [NSPopover showPopoverWithViewController:animationParameterSettingViewController
                              atRightOfButton:(NSButton*)sender
                                       ofView:preferenceWindow.contentView
                                      offsetX:31
