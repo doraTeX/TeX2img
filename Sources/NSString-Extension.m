@@ -52,6 +52,11 @@
     }
 }
 
+- (NSString*)stringByQuotingWithDoubleQuotations
+{
+    return [NSString stringWithFormat:@"\"%@\"", self];
+}
+
 - (NSUInteger)numberOfComposedCharacters
 {
     // normalize using NFC
@@ -96,12 +101,6 @@
                                                            range:NSMakeRange(0, mutableUnicodeName.length)];
     return [mutableUnicodeName substringWithRange:[firstMatch rangeAtIndex:1]];
 }
-
-- (NSString*)stringByQuotingWithDoubleQuotations
-{
-    return [NSString stringWithFormat:@"\"%@\"", self];
-}
-
 
 + (NSString*)stringWithUTF32Char:(UTF32Char)character
 {

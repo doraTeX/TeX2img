@@ -140,4 +140,4 @@ NSMutableString *commandCompletionList;
 
 #define EA_Key "com.loveinequality.TeX2img"
 
-#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf:/Applications/TeX2img.app/Contents/Resources/libtiff:/Applications/TeXLive/TeX2img.app/Contents/Resources/libtiff"
+#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf"

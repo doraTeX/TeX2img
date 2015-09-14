@@ -35,7 +35,7 @@ void usage()
     printf("  --kanji      ENCODING      : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: enabled)\n");
     printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
-    printf("  --dvidriver  DVIDRIVER     : set the DVI driver    (default: dvipdfmx)\n");
+    printf("  --dvidriver  DRIVER        : set the DVI driver    (default: dvipdfmx)\n");
     printf("  *synonym: --dviware, --dvipdfmx\n");
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
     printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
