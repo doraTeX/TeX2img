@@ -132,7 +132,12 @@
 
 - (void)showCompileError
 {
-	printStdErr("tex2img: [Error] TeX Compile error.\nCheck errors in the source code.\n");
+	printStdErr("tex2img: [Error] A TeX compile error occurred.\nCheck errors in the source code.\n");
+}
+
+- (void)showImageSizeError
+{
+    printStdErr("tex2img: [Error] An image format error occurred.\nThe image size may be too large.\nTry lower the resolution level.\n");
 }
 
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet

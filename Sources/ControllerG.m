@@ -520,6 +520,16 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(showCompileErrorOnMainThread) withObject:nil waitUntilDone:YES];
 }
 
+- (void)showImageSizeErrorOnMainThread
+{
+    runErrorPanel(localizedString(@"imageSizeErrorMsg"));
+}
+
+- (void)showImageSizeError
+{
+    [self performSelectorOnMainThread:@selector(showImageSizeErrorOnMainThread) withObject:nil waitUntilDone:YES];
+}
+
 - (void)showErrorsIgnoredWarningOnMainThread
 {
     runWarningPanel(localizedString(@"errorsIgnoredWarning"));

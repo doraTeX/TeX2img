@@ -21,7 +21,8 @@
 "formatErrorMsg" = "The value of \"%@\" in the Preferences pane is invalid.";
 "cannotOverwriteErrorMsg" = "%@ cannot be overwritten.";
 "cannotCreateDirectoryErrorMsg" = "%@ cannnot be created as a folder.";
-"compileErrorMsg" = "TeX Compile error.\nCheck errors in the source code.\nIf there are no errors in the source, check encodings in Preferences.";
+"compileErrorMsg" = "A TeX compile error occurred.\nCheck errors in the source code.\nIf there are no errors in the source, check encodings in Preferences.";
+"imageSizeErrorMsg" = "An image format error occurred.\nThe image size may be too large.\nTry lower the resolution level.";
 "initSettingsMsg" = "Initial Settings";
 "setPathMsg1" = "Automatic engine settings: ";
 "setPathMsg2" = "(editable in Preferences)";

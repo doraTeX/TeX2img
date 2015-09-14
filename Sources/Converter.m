@@ -603,12 +603,12 @@
 	return [[NSBitmapImageRep alloc] initWithData:backgroundImage.TIFFRepresentation];
 }
 
-- (void)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page crop:(BOOL)crop
+- (BOOL)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page crop:(BOOL)crop
 {
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
     
     if ([self willEmptyPageBeCreated:pdfFilePath page:page]) {
-        return;
+        return YES;
     }
 
 	// PDFのバウンディングボックスで切り取る
@@ -680,8 +680,17 @@
         imageRep = [self fillBackground:imageRep];
         outputData = [imageRep representationUsingType:NSBMPFileType properties:nil];
     }
-	[outputData writeToFile:[tempdir stringByAppendingPathComponent:outputFileName] atomically: YES];
+    NSString *outputPath = [tempdir stringByAppendingPathComponent:outputFileName];
+	[outputData writeToFile:outputPath atomically:YES];
+    
+    // 生成物のチェック
+    NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithContentsOfFile:outputPath];
+    if (!rep) {
+        [controller showImageSizeError];
+        return NO;
+    }
 
+    return YES;
 }
 
 - (void)enlargeBB:(NSString*)epsName
@@ -832,10 +841,16 @@
         [fileManager moveItemAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
     } else { // ビットマップ形式出力の場合，EPSをPDFに戻した上で，それをさらにビットマップ形式に変換する
         if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は epstopdf が使えない（エラーになる）ので，そこだけ Quartz で変換する
-            [self pdf2image:[tempdir stringByAppendingPathComponent:pdfFileName] outputFileName:outputFileName page:page crop:YES];
+            if (![self pdf2image:[tempdir stringByAppendingPathComponent:pdfFileName] outputFileName:outputFileName page:page crop:YES]) {
+                return NO;
+            }
         } else {
-            [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:NO]; // アウトラインを取ったEPSをPDFへ戻す（余白はこの時点では付与しない）
-            [self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1 crop:NO]; // PDFを目的の画像ファイルへ変換（ここで余白付与）
+             // アウトラインを取ったEPSをPDFへ戻す（余白はこの時点では付与しない）
+            [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:NO];
+            // PDFを目的の画像ファイルへ変換（ここで余白付与）
+            if (![self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1 crop:NO]) {
+                return NO;
+            }
         }
     }
     
@@ -1066,9 +1081,16 @@
     
     // 最終出力がビットマップ形式で「速度優先」の場合は，PDFからQuartzで直接変換
     if ([@[@"jpg", @"png", @"gif", @"tiff", @"bmp"] containsObject:extension] && speedPriorityMode) {
-        [self pdf2image:pdfFilePath outputFileName:outputFileName page:1 crop:YES];
+        success = [self pdf2image:pdfFilePath outputFileName:outputFileName page:1 crop:YES];
+        if (!success) {
+            return success;
+        }
+        
         for (NSUInteger i=2; i<=pageCount; i++) {
-            [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i crop:YES];
+            success = [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i crop:YES];
+            if (!success) {
+                return success;
+            }
         }
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPS を経由しなくてよいので，pdfcrop類似処理で直接生成する。
         success = [self pdfcrop:pdfFilePath outputFileName:outputFileName page:1 addMargin:YES];

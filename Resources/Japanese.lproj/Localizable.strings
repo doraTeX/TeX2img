@@ -22,6 +22,7 @@
 "cannotOverwriteErrorMsg" = "%@ を上書きできませんでした。";
 "cannotCreateDirectoryErrorMsg" = "%@ をフォルダとして作成できませんでした。";
 "compileErrorMsg" = "TeX のコンパイルエラーが生じています。\nソースコードにエラーがないか，確認してください。\nソースにエラーがない場合は，環境設定で，文字コード設定も確認してください。";
+"imageSizeErrorMsg" = "画像生成に失敗しました。\n画像サイズが大きすぎる可能性があります。\n解像度レベルを下げてみてください。";
 "initSettingsMsg" = "初期設定";
 "setPathMsg1" = "TeX 関連プログラムのパスを";
 "setPathMsg2" = "に設定しました（環境設定パネルから変更できます）。";
