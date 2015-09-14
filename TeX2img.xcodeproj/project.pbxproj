@@ -46,7 +46,6 @@
 		34BFF6D81B9F1FF900E8DE77 /* PDFPageBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D61B9F1FF900E8DE77 /* PDFPageBox.m */; };
 		34BFF6DB1B9F240A00E8DE77 /* PDFPage-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6DA1B9F240A00E8DE77 /* PDFPage-Extension.m */; };
 		34BFF6DC1B9F240A00E8DE77 /* PDFPage-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6DA1B9F240A00E8DE77 /* PDFPage-Extension.m */; };
-		34CC1CB41BA6E35C00D562C1 /* libtiff in Resources */ = {isa = PBXBuildFile; fileRef = 34CC1CB31BA6E35C00D562C1 /* libtiff */; };
 		34CCBB071A964E8A0061842E /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 34CCBB061A964E8A0061842E /* Templates */; };
 		34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CEA1931AB970CE00F98258 /* UtilityG.m */; };
 		34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
@@ -140,7 +139,6 @@
 		34BFF6D61B9F1FF900E8DE77 /* PDFPageBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFPageBox.m; sourceTree = "<group>"; };
 		34BFF6D91B9F240A00E8DE77 /* PDFPage-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PDFPage-Extension.h"; sourceTree = "<group>"; };
 		34BFF6DA1B9F240A00E8DE77 /* PDFPage-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PDFPage-Extension.m"; sourceTree = "<group>"; };
-		34CC1CB31BA6E35C00D562C1 /* libtiff */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libtiff; sourceTree = "<group>"; };
 		34CCBB061A964E8A0061842E /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
 		34CEA1931AB970CE00F98258 /* UtilityG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilityG.m; sourceTree = "<group>"; };
 		34CEA1951AB970F600F98258 /* UtilityG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityG.h; sourceTree = "<group>"; };
@@ -301,7 +299,6 @@
 			isa = PBXGroup;
 			children = (
 				346225651AB558AB00F632AD /* mupdf */,
-				34CC1CB31BA6E35C00D562C1 /* libtiff */,
 				34CCBB061A964E8A0061842E /* Templates */,
 				34670DD5125B7AC3002308EF /* dsa_pub.pem */,
 				342C6194101E637F00E29FEB /* epstopdf */,
@@ -470,7 +467,6 @@
 				CE4A31F10E5036500095D4FC /* Localizable.strings in Resources */,
 				7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */,
 				342C6196101E637F00E29FEB /* epstopdf in Resources */,
-				34CC1CB41BA6E35C00D562C1 /* libtiff in Resources */,
 				3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */,
 				346225661AB558AB00F632AD /* mupdf in Resources */,
 				34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */,

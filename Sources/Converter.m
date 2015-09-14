@@ -34,7 +34,6 @@
 @property NSString *tempFileBaseName;
 @property NSString *epstopdfPath;
 @property NSString *mudrawPath;
-@property NSString *tiffcpPath;
 @property NSUInteger pageCount;
 @property BOOL useBP;
 @property BOOL speedPriorityMode;
@@ -67,7 +66,6 @@
 @synthesize tempFileBaseName;
 @synthesize epstopdfPath;
 @synthesize mudrawPath;
-@synthesize tiffcpPath;
 @synthesize pageCount;
 @synthesize useBP;
 @synthesize speedPriorityMode;
@@ -91,7 +89,6 @@
     gsPath = [aProfile stringForKey:GsPathKey];
     epstopdfPath = [aProfile stringForKey:EpstopdfPathKey];
     mudrawPath = [aProfile stringForKey:MudrawPathKey];
-    tiffcpPath = [aProfile stringForKey:TiffcpPathKey];
     guessCompilation = [aProfile boolForKey:GuessCompilationKey];
     numberOfCompilation = [aProfile integerForKey:NumberOfCompilationKey];
     
@@ -699,19 +696,18 @@
     system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
 }
 
-- (BOOL)tiffcpFromPaths:(NSArray*)sourcePaths toPath:(NSString*)destPath
+- (BOOL)mergeTIFFFiles:(NSArray*)sourcePaths toPath:(NSString*)destPath
 {
-    if (![controller tiffcpExists]) {
-        return NO;
-    }
+    NSMutableArray *arguments = [NSMutableArray arrayWithObject:@"-cat"];
     
-    NSMutableArray *mutableArguments = [NSMutableArray arrayWithArray:sourcePaths];
-    [mutableArguments addObject:destPath];
-    NSArray *arguments = [mutableArguments mapUsingBlock:^NSString*(NSString *path) {
+    [arguments addObjectsFromArray:[sourcePaths mapUsingBlock:^NSString*(NSString *path) {
         return path.stringByQuotingWithDoubleQuotations;
-    }];
+    }]];
     
-    BOOL success = [controller execCommand:tiffcpPath
+    [arguments addObject:@"-out"];
+    [arguments addObject:destPath.stringByQuotingWithDoubleQuotations];
+    
+    BOOL success = [controller execCommand:@"/usr/bin/tiffutil"
                                atDirectory:tempdir
                              withArguments:arguments
                                      quiet:quietFlag];
@@ -1118,7 +1114,7 @@
             
             if ([@"tiff" isEqualToString:extension]) {
                 // マルチページTIFFへのマージ
-                success = [self tiffcpFromPaths:outputFiles toPath:outputFilePath];
+                success = [self mergeTIFFFiles:outputFiles toPath:outputFilePath];
                 if (!success) {
                     return NO;
                 }

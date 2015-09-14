@@ -89,7 +89,6 @@ NSMutableString *commandCompletionList;
 #define EncodingKey @"encoding"
 #define EpstopdfPathKey @"epstopdfPath"
 #define MudrawPathKey @"mudrawPath"
-#define TiffcpPathKey @"tiffcpPath"
 #define QuietKey @"quiet"
 
 #define AutoDetectionTargetKey @"autoDetectionTarget"
