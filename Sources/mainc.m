@@ -126,8 +126,10 @@ void printCurrentStatus(NSString *inputFilePath, NSDictionary *aProfile)
     printf("epstopdf: %s\n", getPath([aProfile stringForKey:EpstopdfPathKey]).UTF8String);
     
     NSString *mudrawPath = getPath([aProfile stringForKey:MudrawPathKey]);
+    NSString *tiffcpPath = getPath([aProfile stringForKey:TiffcpPathKey]);
     
     printf("mudraw: %s\n", mudrawPath ? mudrawPath.UTF8String : "NOT FOUND");
+    printf("tiffcp: %s\n", tiffcpPath ? tiffcpPath.UTF8String : "NOT FOUND");
     
     printf("Resolution level: %f\n", [aProfile floatForKey:ResolutionKey]);
     
@@ -768,6 +770,7 @@ int main (int argc, char *argv[]) {
         NSString *gsPath = getPath(gs.programPath);
         NSString *epstopdfPath = getPath(@"epstopdf");
         NSString *mudrawPath = getPath(@"mudraw");
+        NSString *tiffcpPath = getPath(@"tiffcp");
         
         if (!latexPath) {
             [controller showNotFoundError:latex.programName];
@@ -789,6 +792,9 @@ int main (int argc, char *argv[]) {
         if (!mudrawPath) {
             mudrawPath = @"mudraw";
         }
+        if (!tiffcpPath) {
+            tiffcpPath = @"tiffcp";
+        }
         
         NSMutableDictionary *aProfile = [NSMutableDictionary dictionary];
         
@@ -797,6 +803,7 @@ int main (int argc, char *argv[]) {
         aProfile[GsPathKey] = [gsPath stringByAppendingStringSeparetedBySpace:gs.argumentsString];
         aProfile[EpstopdfPathKey] = epstopdfPath;
         aProfile[MudrawPathKey] = mudrawPath;
+        aProfile[TiffcpPathKey] = tiffcpPath;
         aProfile[OutputFileKey] = outputFilePath;
         aProfile[EncodingKey] = encoding;
         aProfile[NumberOfCompilationKey] = @(numberOfCompilation);

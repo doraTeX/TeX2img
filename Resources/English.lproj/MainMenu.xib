@@ -1050,7 +1050,7 @@ DQ
                                                     <button id="iH4-6u-aJA">
                                                         <rect key="frame" x="16" y="63" width="336" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Output as a single file (PDF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="prq-A2-uxS">
+                                                        <buttonCell key="cell" type="check" title="Output as a single file (PDF / TIFF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="prq-A2-uxS">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>

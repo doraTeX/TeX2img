@@ -6,6 +6,7 @@
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dviwarePath:(NSString*)dviwarePath gsPath:(NSString*)gsPath;
 - (BOOL)epstopdfExists;
 - (BOOL)mudrawExists;
+- (BOOL)tiffcpExists;
 - (void)showFileFormatError:(NSString*)aPath;
 - (void)showFileGenerationError:(NSString*)aPath;
 - (void)showExecError:(NSString*)command;

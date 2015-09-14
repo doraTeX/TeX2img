@@ -943,9 +943,9 @@ DQ
                                                         </buttonCell>
                                                     </button>
                                                     <button id="Iua-jO-eyo">
-                                                        <rect key="frame" x="16" y="62" width="220" height="18"/>
+                                                        <rect key="frame" x="16" y="62" width="243" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="単一ファイルにまとめる (PDF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="sGk-4l-7mX">
+                                                        <buttonCell key="cell" type="check" title="単一ファイルにまとめる (PDF / TIFF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="sGk-4l-7mX">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>

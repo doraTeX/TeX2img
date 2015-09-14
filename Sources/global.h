@@ -89,6 +89,7 @@ NSMutableString *commandCompletionList;
 #define EncodingKey @"encoding"
 #define EpstopdfPathKey @"epstopdfPath"
 #define MudrawPathKey @"mudrawPath"
+#define TiffcpPathKey @"tiffcpPath"
 #define QuietKey @"quiet"
 
 #define AutoDetectionTargetKey @"autoDetectionTarget"
@@ -137,4 +138,4 @@ NSMutableString *commandCompletionList;
 
 #define EA_Key "com.loveinequality.TeX2img"
 
-#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf"
+#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf:/Applications/TeX2img.app/Contents/Resources/libtiff:/Applications/TeXLive/TeX2img.app/Contents/Resources/libtiff"

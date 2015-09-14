@@ -447,6 +447,11 @@ typedef enum {
     return YES;
 }
 
+- (BOOL)tiffcpExists;
+{
+    return YES;
+}
+
 - (void)showFileFormatErrorOnMainThread:(NSString*)aPath
 {
     runErrorPanel(localizedString(@"fileFormatErrorMsg"), aPath);
@@ -2203,6 +2208,7 @@ typedef enum {
     NSMutableDictionary *aProfile = self.currentProfile;
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
     aProfile[MudrawPathKey] = [[NSBundle.mainBundle pathForResource:@"mupdf" ofType:nil] stringByAppendingPathComponent:@"mudraw"];
+    aProfile[TiffcpPathKey] = [[NSBundle.mainBundle pathForResource:@"libtiff" ofType:nil] stringByAppendingPathComponent:@"tiffcp"];
     aProfile[QuietKey] = @(NO);
     aProfile[ControllerKey] = self;
     
