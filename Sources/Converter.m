@@ -706,7 +706,7 @@
         return YES;
     }
     
-    NSArray *arguments = @[@"-o", svgFilePath, pdfFilePath, [NSString stringWithFormat:@"%ld", page]];
+    NSArray *arguments = @[@"-o", svgFilePath.stringByQuotingWithDoubleQuotations, pdfFilePath.stringByQuotingWithDoubleQuotations, [NSString stringWithFormat:@"%ld", page]];
     
     BOOL success = [controller execCommand:mudrawPath
                                atDirectory:tempdir
