@@ -48,8 +48,8 @@ void usage()
     printf("  --[no-]transparent         : disable/enable transparent PNG/TIFF/GIF (default: enabled)\n");
     printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
     printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or animated GIF (default: disabled)\n");
-    printf("  --delay TIME               : set the delay time (sec) of an animated GIF (default: 1)\n");
-    printf("  --loop  NUMBER             : set the number of times to repeat an animated GIF (default: 0 (infinity))\n");
+    printf("  --animation-delay TIME     : set the delay time (sec) of an animated GIF (default: 1)\n");
+    printf("  --animation-loop  NUMBER   : set the number of times to repeat an animated GIF (default: 0 (infinity))\n");
     printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
     printf("  --[no-]keep-page-size      : disable/enable keeping the original page size (default: disabled)\n");
     printf("  --pagebox BOX              : set the page box type used as the page size (media|crop|bleed|trim|art) (default: crop)\n");
@@ -461,13 +461,13 @@ int main (int argc, char *argv[]) {
         options[i].val = i+1;
         
         i++;
-        options[i].name = "delay";
+        options[i].name = "animation-delay";
         options[i].has_arg = required_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
         
         i++;
-        options[i].name = "loop";
+        options[i].name = "animation-loop";
         options[i].has_arg = required_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
@@ -735,27 +735,27 @@ int main (int argc, char *argv[]) {
                         exit(1);
                     }
                     break;
-                case 44: // --delay
+                case 44: // --animation-delay
                     if (optarg) {
                         delay = strtof(optarg, NULL);
                     } else {
-                        printf("--delay is invalid.\n");
+                        printf("--animation-delay is invalid.\n");
                         exit(1);
                     }
                     if (delay < 0) {
-                        printf("--delay is invalid.\n");
+                        printf("--animation-delay is invalid.\n");
                         exit(1);
                     }
                     break;
-                case 45: // --loop
+                case 45: // --animation-loop
                     if (optarg) {
                         loopCount = strtoi(optarg);
                     } else {
-                        printf("--loop is invalid.\n");
+                        printf("--animation-loop is invalid.\n");
                         exit(1);
                     }
                     if (loopCount < 0) {
-                        printf("--loop is invalid.\n");
+                        printf("--animation-loop is invalid.\n");
                         exit(1);
                     }
                     break;
