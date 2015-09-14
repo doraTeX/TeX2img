@@ -4,6 +4,7 @@
 + (NSString*)UUIDString;
 - (NSString*)pathStringByAppendingPageNumber:(NSUInteger)page;
 - (NSString*)stringByDeletingLastReturnCharacters;
+- (NSString*)stringByQuotingWithDoubleQuotations;
 - (NSString*)programPath;
 - (NSString*)programName;
 - (NSString*)argumentsString;

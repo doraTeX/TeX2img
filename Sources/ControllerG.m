@@ -129,6 +129,11 @@ typedef enum {
 @property IBOutlet NSPopUpButton *autoDetectionTargetPopupButton;
 @property IBOutlet NSPopUpButton *pageBoxPopupButton;
 
+@property IBOutlet NSTextField *delayTextField;;
+@property IBOutlet NSStepper *delayStepper;
+@property IBOutlet NSTextField *loopCountTextField;
+@property IBOutlet NSStepper *loopCountStepper;
+
 @property Converter *converter;
 @property NSTask *runningTask;
 @property NSPipe *outputPipe;
@@ -226,6 +231,11 @@ typedef enum {
 
 @synthesize autoDetectionTargetPopupButton;
 @synthesize pageBoxPopupButton;
+
+@synthesize delayTextField;
+@synthesize delayStepper;
+@synthesize loopCountTextField;
+@synthesize loopCountStepper;
 
 @synthesize converter;
 @synthesize runningTask;
@@ -652,6 +662,16 @@ typedef enum {
     if ([keys containsObject:PageBoxKey]) {
         [pageBoxPopupButton selectItemWithTag:[aProfile integerForKey:PageBoxKey]];
     }
+
+    if ([keys containsObject:DelayKey]) {
+        delayTextField.floatValue = MAX(0, [aProfile integerForKey:DelayKey]);
+        [delayStepper takeFloatValueFrom:delayTextField];
+    }
+    
+    if ([keys containsObject:LoopCountKey]) {
+        loopCountTextField.integerValue = MAX(0, [aProfile integerForKey:LoopCountKey]);
+        [loopCountStepper takeIntValueFrom:loopCountTextField];
+    }
     
     NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
     if (aFont) {
@@ -772,7 +792,10 @@ typedef enum {
         
         currentProfile[AutoDetectionTargetKey] = @(autoDetectionTargetPopupButton.selectedTag);
         currentProfile[PageBoxKey] = @(pageBoxPopupButton.selectedTag);
-        
+
+        currentProfile[DelayKey] = @(delayTextField.floatValue);
+        currentProfile[LoopCountKey] = @(loopCountTextField.integerValue);
+
         currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
         currentProfile[FlashInMovingKey] = @(flashInMovingCheckBox.state);
         currentProfile[HighlightContentKey] = @(highlightContentCheckBox.state);

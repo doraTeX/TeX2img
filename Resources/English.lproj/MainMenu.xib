@@ -561,6 +561,8 @@ DQ
                 <outlet property="colorStyleMatrix" destination="ZdF-pn-USE" id="sul-BX-2Ez"/>
                 <outlet property="colorTextField" destination="FSu-oQ-wrx" id="2Pb-rY-fhi"/>
                 <outlet property="convertYenMarkMenuItem" destination="730" id="731"/>
+                <outlet property="delayStepper" destination="cUV-bF-rgN" id="osN-sE-LXV"/>
+                <outlet property="delayTextField" destination="5yK-6e-Vi9" id="mGw-jW-Xz7"/>
                 <outlet property="deleteDisplaySizeCheckBox" destination="H7g-7q-uFe" id="3bf-7G-Nrb"/>
                 <outlet property="deleteTmpFileCheckBox" destination="591" id="594"/>
                 <outlet property="directInputButton" destination="Jlp-tG-8jx" id="nfr-l4-glA"/>
@@ -584,6 +586,8 @@ DQ
                 <outlet property="latexPathTextField" destination="597" id="4Yg-1y-ORR"/>
                 <outlet property="leftMarginLabel" destination="546" id="617"/>
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
+                <outlet property="loopCountStepper" destination="frg-9P-elO" id="8g8-Xf-BWJ"/>
+                <outlet property="loopCountTextField" destination="TtG-Rf-jFl" id="Qj2-Ra-zy2"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
                 <outlet property="mergeOutputsCheckBox" destination="DdC-a2-cPr" id="maN-57-Mnj"/>
                 <outlet property="numberOfCompilationStepper" destination="X9l-Yh-wIQ" id="Qvp-0d-gZn"/>
@@ -627,7 +631,6 @@ DQ
         </customObject>
         <window title="Preamble" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="480">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="138" width="327" height="372"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
             <value key="minSize" type="size" width="327" height="100"/>
@@ -702,7 +705,6 @@ DQ
         </window>
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="517">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="208" y="461" width="472" height="462"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
             <value key="minSize" type="size" width="472" height="408"/>
@@ -925,7 +927,7 @@ DQ
                                                     <button id="521">
                                                         <rect key="frame" x="16" y="120" width="287" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Transparent background (PNG / GIF / TIFF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
+                                                        <buttonCell key="cell" type="check" title="Transparent background (PNG / TIFF / GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -947,9 +949,9 @@ DQ
                                                         </buttonCell>
                                                     </button>
                                                     <button id="DdC-a2-cPr">
-                                                        <rect key="frame" x="16" y="66" width="336" height="18"/>
+                                                        <rect key="frame" x="16" y="66" width="348" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Output as a single file (PDF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="bvP-V3-8he">
+                                                        <buttonCell key="cell" type="check" title="Output as a single file or animation (PDF / TIFF / GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="bvP-V3-8he">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -1018,6 +1020,93 @@ DQ
                                                         <connections>
                                                             <action selector="takeFloatValueFrom:" target="640" id="744"/>
                                                         </connections>
+                                                    </textField>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Animation" identifier="1" id="GvH-Mj-CFZ">
+                                <view key="view" id="T8b-lR-pxM">
+                                    <rect key="frame" x="10" y="33" width="426" height="405"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <box autoresizesSubviews="NO" title="GIF Animation Settings" borderType="line" id="hAm-4h-T6Q">
+                                            <rect key="frame" x="6" y="313" width="409" height="92"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <view key="contentView">
+                                                <rect key="frame" x="1" y="1" width="407" height="76"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="IVJ-ea-5Xw">
+                                                        <rect key="frame" x="1" y="17" width="176" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Loop Count (0 = Infinity) :" id="HH6-t8-qjV">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="frg-9P-elO">
+                                                        <rect key="frame" x="225" y="11" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" maxValue="9999" id="gRK-oM-rls"/>
+                                                        <connections>
+                                                            <action selector="takeIntValueFrom:" target="TtG-Rf-jFl" id="59b-pF-q1O"/>
+                                                        </connections>
+                                                    </stepper>
+                                                    <textField toolTip="コンパイル回数" verticalHuggingPriority="750" id="TtG-Rf-jFl">
+                                                        <rect key="frame" x="178" y="14" width="47" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="5Ll-Ud-oc9">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="RDF-TM-7wI">
+                                                                <real key="minimum" value="0.0"/>
+                                                                <real key="maximum" value="9999"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="takeIntValueFrom:" target="frg-9P-elO" id="u46-zf-Gd3"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="cUV-bF-rgN">
+                                                        <rect key="frame" x="225" y="41" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="9999" doubleValue="1" id="8MA-Xc-Ov4">
+                                                            <connections>
+                                                                <action selector="takeFloatValueFrom:" target="5yK-6e-Vi9" id="CT8-RU-kF7"/>
+                                                            </connections>
+                                                        </stepperCell>
+                                                    </stepper>
+                                                    <textField toolTip="コンパイル回数" verticalHuggingPriority="750" id="5yK-6e-Vi9">
+                                                        <rect key="frame" x="178" y="44" width="47" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" drawsBackground="YES" id="FBt-8h-MZA">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="N7S-xu-dtn">
+                                                                <real key="minimum" value="0.0"/>
+                                                                <real key="maximum" value="9999"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="takeFloatValueFrom:" target="cUV-bF-rgN" id="JVJ-gB-erk"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="ce4-sG-ZML">
+                                                        <rect key="frame" x="94" y="47" width="83" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Delay (sec) :" id="1Wn-16-7U5">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
                                                     </textField>
                                                 </subviews>
                                             </view>
@@ -1253,11 +1342,11 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="View" identifier="3" id="sci-do-lkd">
                                 <view key="view" id="RZt-Sg-m5Y">
-                                    <rect key="frame" x="10" y="33" width="426" height="351"/>
+                                    <rect key="frame" x="10" y="33" width="426" height="405"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <box autoresizesSubviews="NO" title="Highlight Matching Brackets" borderType="line" id="IW1-X2-Kne">
-                                            <rect key="frame" x="6" y="51" width="414" height="177"/>
+                                            <rect key="frame" x="6" y="105" width="414" height="177"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView">
                                                 <rect key="frame" x="1" y="1" width="412" height="161"/>
@@ -1369,7 +1458,7 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="Source Style" borderType="line" id="Zts-dg-dde">
-                                            <rect key="frame" x="6" y="237" width="212" height="114"/>
+                                            <rect key="frame" x="6" y="291" width="212" height="114"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView">
                                                 <rect key="frame" x="1" y="1" width="210" height="98"/>
@@ -1453,7 +1542,7 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="Show Invisible Characters" borderType="line" id="Ch8-g0-Xrf">
-                                            <rect key="frame" x="220" y="237" width="200" height="114"/>
+                                            <rect key="frame" x="220" y="291" width="200" height="114"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <view key="contentView">
                                                 <rect key="frame" x="1" y="1" width="198" height="98"/>
@@ -1513,11 +1602,11 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="After Compiling" identifier="5" id="587">
                                 <view key="view" id="588">
-                                    <rect key="frame" x="10" y="33" width="426" height="351"/>
+                                    <rect key="frame" x="10" y="33" width="426" height="405"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button id="650">
-                                            <rect key="frame" x="12" y="330" width="351" height="18"/>
+                                            <rect key="frame" x="12" y="384" width="351" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Show output view automatically after compiling" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="651">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1525,7 +1614,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="589">
-                                            <rect key="frame" x="12" y="310" width="204" height="18"/>
+                                            <rect key="frame" x="12" y="364" width="204" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Preview after compiling" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="590">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1533,7 +1622,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="591">
-                                            <rect key="frame" x="12" y="290" width="377" height="18"/>
+                                            <rect key="frame" x="12" y="344" width="377" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Delete temporary files after compiling (Recommended)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="592">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1541,7 +1630,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button verticalHuggingPriority="750" id="633">
-                                            <rect key="frame" x="26" y="251" width="271" height="32"/>
+                                            <rect key="frame" x="26" y="305" width="271" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="Reveal Temporary Folder in Finder..." bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="634">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1552,7 +1641,7 @@ DQ
                                             </connections>
                                         </button>
                                         <button id="On1-La-dwy">
-                                            <rect key="frame" x="12" y="225" width="371" height="18"/>
+                                            <rect key="frame" x="12" y="279" width="371" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Embed the source in output image files" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="qnN-hG-T62">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1560,7 +1649,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="6An-yj-dxn">
-                                            <rect key="frame" x="12" y="205" width="371" height="18"/>
+                                            <rect key="frame" x="12" y="259" width="371" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Copy generated files to the clipboard" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="SeJ-kw-hSM">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1568,7 +1657,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <button id="857">
-                                            <rect key="frame" x="12" y="183" width="371" height="18"/>
+                                            <rect key="frame" x="12" y="237" width="371" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Embed generated files in a Adobe Illustrator document" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="858">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1576,7 +1665,7 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="THC-Jn-kRE">
-                                            <rect key="frame" x="46" y="165" width="182" height="17"/>
+                                            <rect key="frame" x="46" y="219" width="182" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="(EPS files are recommended)" id="cEM-7Z-hSh">
                                                 <font key="font" metaFont="system"/>
@@ -1585,7 +1674,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button id="859">
-                                            <rect key="frame" x="29" y="141" width="187" height="18"/>
+                                            <rect key="frame" x="29" y="195" width="187" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Ungroup after embedding" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="860">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>

@@ -545,7 +545,6 @@ DQ
         <customObject id="420" customClass="NSFontManager"/>
         <window title="プリアンブル部" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="480">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="137" width="327" height="373"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
             <value key="minSize" type="size" width="327" height="100"/>
@@ -893,7 +892,7 @@ DQ
                                                     <button id="521">
                                                         <rect key="frame" x="16" y="112" width="293" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="背景色を透過させる (PNG / GIF / TIFF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
+                                                        <buttonCell key="cell" type="check" title="背景色を透過させる (PNG / TIFF / GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -907,9 +906,9 @@ DQ
                                                         </buttonCell>
                                                     </button>
                                                     <button id="gEE-o1-8T3">
-                                                        <rect key="frame" x="16" y="62" width="220" height="18"/>
+                                                        <rect key="frame" x="16" y="62" width="331" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="単一ファイルにまとめる (PDF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="9TQ-YH-p3i">
+                                                        <buttonCell key="cell" type="check" title="単一ファイルまたはアニメを生成 (PDF / TIFF / GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="9TQ-YH-p3i">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -948,7 +947,94 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="変換ツール" identifier="2" id="581">
+                            <tabViewItem label="アニメ" identifier="2" id="GbP-bc-4VC">
+                                <view key="view" id="UP3-kP-mxL">
+                                    <rect key="frame" x="10" y="33" width="421" height="400"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <box autoresizesSubviews="NO" title="アニメーション GIF の設定" borderType="line" id="ktw-zN-awF">
+                                            <rect key="frame" x="6" y="308" width="409" height="92"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <view key="contentView">
+                                                <rect key="frame" x="1" y="1" width="407" height="76"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="sME-hA-615">
+                                                        <rect key="frame" x="16" y="47" width="168" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="フレーム間のディレイ(秒)：" id="IKj-cS-bSQ">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="ZlO-tW-8Cq">
+                                                        <rect key="frame" x="232" y="41" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="9999" doubleValue="1" id="4Fx-pj-zjg">
+                                                            <connections>
+                                                                <action selector="takeFloatValueFrom:" target="nf1-YG-QFO" id="kPV-3v-XIb"/>
+                                                            </connections>
+                                                        </stepperCell>
+                                                    </stepper>
+                                                    <textField toolTip="コンパイル回数" verticalHuggingPriority="750" id="nf1-YG-QFO">
+                                                        <rect key="frame" x="185" y="44" width="47" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" drawsBackground="YES" id="vmi-ET-rdm">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="Yhl-Q1-rHG">
+                                                                <real key="minimum" value="0.0"/>
+                                                                <real key="maximum" value="9999"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="takeFloatValueFrom:" target="ZlO-tW-8Cq" id="nFh-Bb-hDH"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="CbW-IS-DeO">
+                                                        <rect key="frame" x="47" y="17" width="137" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="ループ回数 (0=無限)：" id="chM-Kc-6I0">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="qa3-jX-2oH">
+                                                        <rect key="frame" x="232" y="11" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" maxValue="9999" id="PEe-4P-Yw3"/>
+                                                        <connections>
+                                                            <action selector="takeIntValueFrom:" target="UXf-F1-Ah9" id="53f-fz-3Qe"/>
+                                                        </connections>
+                                                    </stepper>
+                                                    <textField toolTip="コンパイル回数" verticalHuggingPriority="750" id="UXf-F1-Ah9">
+                                                        <rect key="frame" x="185" y="14" width="47" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="cdR-Mj-2jB">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="0wd-IJ-sGP">
+                                                                <real key="minimum" value="0.0"/>
+                                                                <real key="maximum" value="9999"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="takeIntValueFrom:" target="qa3-jX-2oH" id="SCg-mD-3aj"/>
+                                                        </connections>
+                                                    </textField>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="変換ツール" identifier="3" id="581">
                                 <view key="view" id="584">
                                     <rect key="frame" x="10" y="33" width="421" height="400"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1164,7 +1250,7 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="表示" identifier="3" id="EnK-oW-z8i">
+                            <tabViewItem label="表示" identifier="4" id="EnK-oW-z8i">
                                 <view key="view" id="dCI-tZ-eeA">
                                     <rect key="frame" x="10" y="33" width="421" height="400"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1691,6 +1777,8 @@ DQ
                 <outlet property="colorStyleMatrix" destination="Nw7-Li-duZ" id="oFc-ZQ-gnV"/>
                 <outlet property="colorTextField" destination="ece-oe-9xN" id="R9l-mw-NJG"/>
                 <outlet property="convertYenMarkMenuItem" destination="760" id="762"/>
+                <outlet property="delayStepper" destination="ZlO-tW-8Cq" id="GbE-da-2Om"/>
+                <outlet property="delayTextField" destination="nf1-YG-QFO" id="xXZ-2O-WSr"/>
                 <outlet property="deleteDisplaySizeCheckBox" destination="afr-f7-ZEX" id="oSG-fY-bJT"/>
                 <outlet property="deleteTmpFileCheckBox" destination="591" id="594"/>
                 <outlet property="directInputButton" destination="TFq-OD-TeI" id="hA5-5h-RAw"/>
@@ -1714,6 +1802,8 @@ DQ
                 <outlet property="latexPathTextField" destination="597" id="M67-Rd-WNW"/>
                 <outlet property="leftMarginLabel" destination="546" id="617"/>
                 <outlet property="leftMarginSlider" destination="545" id="622"/>
+                <outlet property="loopCountStepper" destination="qa3-jX-2oH" id="4dz-pE-2FY"/>
+                <outlet property="loopCountTextField" destination="UXf-F1-Ah9" id="fjC-4K-sGR"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
                 <outlet property="mergeOutputsCheckBox" destination="gEE-o1-8T3" id="yJL-Ln-AIi"/>
                 <outlet property="numberOfCompilationStepper" destination="NID-iG-ZgO" id="E4j-De-9eE"/>

@@ -46,6 +46,11 @@
     return [self stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 }
 
+- (NSString*)stringByQuotingWithDoubleQuotations
+{
+    return [NSString stringWithFormat:@"\"%@\"", self];
+}
+
 - (NSUInteger)numberOfComposedCharacters
 {
     // normalize using NFC
