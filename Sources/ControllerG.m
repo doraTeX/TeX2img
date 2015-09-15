@@ -453,6 +453,16 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(showCompileErrorOnMainThread) withObject:nil waitUntilDone:YES];
 }
 
+- (void)showImageSizeErrorOnMainThread
+{
+    runErrorPanel(localizedString(@"imageSizeErrorMsg"));
+}
+
+- (void)showImageSizeError
+{
+    [self performSelectorOnMainThread:@selector(showImageSizeErrorOnMainThread) withObject:nil waitUntilDone:YES];
+}
+
 - (void)showErrorsIgnoredWarningOnMainThread
 {
     runWarningPanel(localizedString(@"errorsIgnoredWarning"));
@@ -664,7 +674,7 @@ typedef enum {
     }
 
     if ([keys containsObject:DelayKey]) {
-        delayTextField.floatValue = MAX(0, [aProfile integerForKey:DelayKey]);
+        delayTextField.floatValue = MAX(0, [aProfile floatForKey:DelayKey]);
         [delayStepper takeFloatValueFrom:delayTextField];
     }
     

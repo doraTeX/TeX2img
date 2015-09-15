@@ -12,6 +12,7 @@
 - (void)showCannotOverwriteError:(NSString*)path;
 - (void)showCannotCreateDirectoryError:(NSString*)dir;
 - (void)showCompileError;
+- (void)showImageSizeError;
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet;
 - (void)prepareOutputTextView;
 - (void)releaseOutputTextView;
