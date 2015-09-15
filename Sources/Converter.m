@@ -1291,8 +1291,9 @@
     
     // 生成ファイルを集める
     NSMutableArray *generatedFiles = [NSMutableArray array];
+    NSInteger generatedPageCount = pageCount - emptyPageFlags.indexesOfTrueValue.count;
     
-    if ([@[@"pdf", @"tiff", @"gif"] containsObject:extension] && mergeOutputsFlag && (emptyPageFlags.indexesOfTrueValue.count < pageCount)) {
+    if ([@[@"pdf", @"tiff", @"gif"] containsObject:extension] && mergeOutputsFlag && (generatedPageCount > 0)) {
         [generatedFiles addObject:outputFilePath];
     } else {
         if (![emptyPageFlags[0] boolValue]) {
@@ -1308,7 +1309,7 @@
     // プレビュー処理
     if (status && previewFlag) {
         NSString *previewApp;
-        if ([@"svg" isEqualToString:extension] || ([@"gif" isEqualToString:extension] && mergeOutputsFlag)) {
+        if ([@"svg" isEqualToString:extension] || ([@"gif" isEqualToString:extension] && mergeOutputsFlag && (generatedPageCount > 1))) {
             previewApp = @"Safari";
         } else {
             previewApp = @"Preview";

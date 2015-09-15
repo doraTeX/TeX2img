@@ -828,7 +828,7 @@ typedef enum {
     }
 
     if ([keys containsObject:DelayKey]) {
-        delayTextField.floatValue = MAX(0, [aProfile integerForKey:DelayKey]);
+        delayTextField.floatValue = MAX(0, [aProfile floatForKey:DelayKey]);
         [delayStepper takeFloatValueFrom:delayTextField];
     }
     

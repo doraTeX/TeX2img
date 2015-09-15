@@ -10,7 +10,7 @@
 #import "NSDictionary-Extension.h"
 
 #define OPTION_NUM 48
-#define VERSION "2.0.3b1"
+#define VERSION "2.0.3b2"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
