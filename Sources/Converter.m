@@ -379,6 +379,17 @@
 // page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
 - (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin
 {
+    NSString *cropFileBasePath = [NSString stringWithFormat:@"%@-pdfcrop-%ld%d",
+                                  [tempdir stringByAppendingPathComponent:tempFileBaseName], page, addMargin];
+    NSString *cropTeXSourcePath = [cropFileBasePath stringByAppendingString:@".tex"];
+    NSString *cropPdfSourcePath = [cropFileBasePath stringByAppendingString:@".pdf"];
+    NSString *cropLogSourcePath = [cropFileBasePath stringByAppendingString:@".log"];
+    
+    // 同じものがあれば再利用
+    if ([fileManager fileExistsAtPath:cropPdfSourcePath]) {
+        return [fileManager copyItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
+    }
+
     PDFDocument *doc = [PDFDocument documentWithFilePath:pdfPath];
     if (!doc){
         return NO;
@@ -396,32 +407,32 @@
     }
     [cropTeX appendString:@"\\end"];
     
-    NSString *cropFileBasePath = [[tempdir stringByAppendingPathComponent:tempFileBaseName] stringByAppendingString:@"-pdfcrop"];
-    NSString *cropTeXSourcePath = [cropFileBasePath stringByAppendingString:@".tex"];
-    NSString *cropPdfSourcePath = [cropFileBasePath stringByAppendingString:@".pdf"];
-    NSString *cropLogSourcePath = [cropFileBasePath stringByAppendingString:@".log"];
     
     [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
     [cropTeX writeToFile:cropTeXSourcePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
 
     NSString *pdfTeXPath = [latexPath.programPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
     
-	BOOL status = [controller execCommand:pdfTeXPath
-                              atDirectory:tempdir
-                            withArguments:@[@"-no-shell-escape", @"-interaction=batchmode", cropFileBasePath.lastPathComponent]
-                                    quiet:quietFlag];
+	BOOL success = [controller execCommand:pdfTeXPath
+                               atDirectory:tempdir
+                             withArguments:@[@"-no-shell-escape", @"-interaction=batchmode", cropFileBasePath.lastPathComponent]
+                                     quiet:quietFlag];
+    
+    [fileManager removeItemAtPath:outputFileName error:nil];
+    
+    if (success) {
+        if (page > 0) {
+            success = [fileManager moveItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
+        } else { // 全ページクロップの場合は，他のページで再度使う場合のためにファイルを残しておく
+            success = [fileManager copyItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
+        }
+    }
     
     [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
     [fileManager removeItemAtPath:cropLogSourcePath error:nil];
 
-    if (!status) {
-        return NO;
-    }
+    return success;
     
-    [fileManager removeItemAtPath:outputFileName error:nil];
-    [fileManager moveItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
-    
-	return YES;
 }
 
 - (BOOL)shouldUseEps2WriteDevice
@@ -1392,6 +1403,8 @@
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-outline.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-trim.pdf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-00.pdf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-01.pdf", basePath] error:nil];
         
         NSString *outputDir = [outputFilePath.stringByDeletingLastPathComponent stringByAppendingString:@"/"];
         if (![outputDir isEqualToString:tempdir]) {
