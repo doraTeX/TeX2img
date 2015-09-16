@@ -48,6 +48,7 @@
 @property NSInteger loopCount;
 @property NSMutableArray *emptyPageFlags;
 @property NSMutableArray *whitePageFlags;
+@property NSMutableDictionary *bboxDictionary;
 @end
 
 @implementation Converter
@@ -82,7 +83,7 @@
 @synthesize loopCount;
 @synthesize emptyPageFlags;
 @synthesize whitePageFlags;
-
+@synthesize bboxDictionary;
 
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
 {
@@ -135,6 +136,8 @@
 	tempdir = NSTemporaryDirectory();
     
 	tempFileBaseName = [NSString stringWithFormat:@"temp%d-%@", getpid(), NSString.UUIDString];
+    
+    bboxDictionary = [NSMutableDictionary dictionary];
 	
 	return self;
 }
@@ -335,24 +338,39 @@
     return status;
 }
 
-// gsを実行して(非HiRes)BoundingBox情報を取得
-- (NSString*)bboxStringOfPdf:(NSString*)pdfPath page:(NSUInteger)page
+- (NSString*)bboxStringOfPdf:(NSString*)pdfPath page:(NSUInteger)page hires:(BOOL)hires
 {
-    NSString *cmdline = [NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -q -sDEVICE=bbox -dFirstPage=%ld -dLastPage=%ld \"%@\" 2>&1 | /usr/bin/grep %%%%BoundingBox", gsPath.programPath, page, page, pdfPath];
-    return execCommand(cmdline);
-
-}
-
-// gsを実行してHiResBoundingBox情報を取得
-- (NSString*)hiresBBoxStringOfPdf:(NSString*)pdfPath page:(NSUInteger)page
-{
-    NSString *cmdline = [NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -q -sDEVICE=bbox -dFirstPage=%ld -dLastPage=%ld \"%@\" 2>&1 | /usr/bin/grep %%%%HiResBoundingBox", gsPath.programPath, page, page, pdfPath];
-    return execCommand(cmdline);
+    NSString *key = [NSString stringWithFormat:@"%@-%ld-%d", pdfPath, page, hires];
+    
+    if (![bboxDictionary.allKeys containsObject:key]) { // このPDFに対する gs -sDEVICE=bbox の実行が初めてなら
+        // gsを実行してBoundingBox情報を取得
+        NSString *bboxOutput = execCommand([NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -sDEVICE=bbox \"%@\" 2>&1", gsPath.programPath, pdfPath]);
+        
+        // 出力を解析
+        NSUInteger currentPage = 0;
+        
+        for (NSString *line in [bboxOutput componentsSeparatedByString:@"\n"]) {
+            if ((line.length >= 5) && [[line substringWithRange:NSMakeRange(0, 5)] isEqualToString:@"Page "]) { // "Page "から始まる行について
+                currentPage = [line substringFromIndex:5].integerValue;
+                continue;
+            }
+            if ((line.length >= 14) && [[line substringWithRange:NSMakeRange(0, 14)] isEqualToString:@"%%BoundingBox:"]) { // "%%BoundingBox:"から始まる行について
+                bboxDictionary[[NSString stringWithFormat:@"%@-%ld-0", pdfPath, currentPage]] = [line stringByAppendingString:@"\n"];
+                continue;
+            }
+            if ((line.length >= 19) && [[line substringWithRange:NSMakeRange(0, 19)] isEqualToString:@"%%HiResBoundingBox:"]) { // "%%HiResBoundingBox:"から始まる行について
+                bboxDictionary[[NSString stringWithFormat:@"%@-%ld-1", pdfPath, currentPage]] = [line stringByAppendingString:@"\n"];
+                continue;
+            }
+        }
+    }
+    
+    return bboxDictionary[key];
 }
 
 - (BOOL)isEmptyPage:(NSString*)pdfPath page:(NSUInteger)page
 {
-    return [[self bboxStringOfPdf:pdfPath page:page] isEqualToString:EMPTY_BBOX];
+    return [[self bboxStringOfPdf:pdfPath page:page hires:NO] isEqualToString:EMPTY_BBOX];
 }
 
 - (BOOL)willEmptyPageBeCreated:(NSString*)pdfPath page:(NSUInteger)page
@@ -369,7 +387,7 @@
     
     NSString *bbStr = keepPageSizeFlag ?
     [[PDFPageBox pageBoxWithFilePath:pdfPath page:page] bboxStringOfBox:pageBoxType hires:NO clipWithMediaBox:YES relativeToMediaBox:YES addHeader:YES] :
-    [self bboxStringOfPdf:pdfPath page:page];
+    [self bboxStringOfPdf:pdfPath page:page hires:NO];
     // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiReSのBBoxを使うのが得策。
     
     return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin=-#1bp\\relax\\pdfvorigin=#2bp\\relax\\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight=\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight\\relax\\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
@@ -487,8 +505,8 @@
 - (BOOL)replaceEpsBBox:(NSString*)epsName withBBoxOfPdf:(NSString*)pdfName page:(NSUInteger)page
 {
     NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
-    NSString *bbStr = [self bboxStringOfPdf:pdfName page:page];
-    NSString *hiresBbStr = [self hiresBBoxStringOfPdf:pdfName page:page];
+    NSString *bbStr = [self bboxStringOfPdf:pdfName page:page hires:NO];
+    NSString *hiresBbStr = [self bboxStringOfPdf:pdfName page:page hires:YES];
     
     if (!bbStr) {
         return NO;
