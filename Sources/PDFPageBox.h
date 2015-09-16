@@ -4,5 +4,9 @@
 - (instancetype)initWithPDFPage:(PDFPage*)page;
 + (instancetype)pageBoxWithPDFPage:(PDFPage*)page;
 + (instancetype)pageBoxWithFilePath:(NSString*)path page:(NSUInteger)page;
-- (NSString*)bboxStringOfBox:(CGPDFBox)boxType hires:(BOOL)hires clipWithMediaBox:(BOOL)clip relativeToMediaBox:(BOOL)relativeToMediaBox addHeader:(BOOL)addHeader;
+- (NSString*)bboxStringOfBox:(CGPDFBox)boxType
+                       hires:(BOOL)hires
+            clipWithMediaBox:(BOOL)clip
+          relativeToMediaBox:(BOOL)relativeToMediaBox
+                   addHeader:(BOOL)addHeader;
 @end

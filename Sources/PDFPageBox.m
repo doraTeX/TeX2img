@@ -33,7 +33,11 @@
 }
 
 
-- (NSString*)bboxStringOfBox:(CGPDFBox)boxType hires:(BOOL)hires clipWithMediaBox:(BOOL)clip relativeToMediaBox:(BOOL)relativeToMediaBox addHeader:(BOOL)addHeader
+- (NSString*)bboxStringOfBox:(CGPDFBox)boxType
+                       hires:(BOOL)hires
+            clipWithMediaBox:(BOOL)clip
+          relativeToMediaBox:(BOOL)relativeToMediaBox
+                   addHeader:(BOOL)addHeader
 {
     CGPDFPageRef pageRef = pdfPage.pageRef;
     CGRect mediaBoxRect = CGPDFPageGetBoxRect(pageRef, kCGPDFMediaBox);

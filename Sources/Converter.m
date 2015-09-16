@@ -769,7 +769,11 @@
         NSData *animatedData = [NSData dataWithData:(NSData*)CFBridgingRelease(gifData)];
         if (animatedData) {
             animatedData = [self GIF89aDataFromGIF87aData:animatedData];
-            success = [animatedData writeToFile:destPath atomically:YES];
+            if (animatedData) {
+                success = [animatedData writeToFile:destPath atomically:YES];
+            } else {
+                success = NO;
+            }
         } else {
             success = NO;
         }
