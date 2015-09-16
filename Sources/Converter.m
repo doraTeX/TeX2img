@@ -603,6 +603,19 @@
 	return [[NSBitmapImageRep alloc] initWithData:backgroundImage.TIFFRepresentation];
 }
 
+- (NSData*)GIF89aDataFromGIF87aData:(NSData*)gif87aData
+{
+    if (!gif87aData) {
+        return  nil;
+    }
+    
+    NSMutableData *gif89aData = [NSMutableData dataWithData:gif87aData];
+    const char gif89a = '9';
+    [gif89aData replaceBytesInRange:NSMakeRange(4, 1) withBytes:&gif89a];
+
+    return gif89aData;
+}
+
 - (BOOL)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page crop:(BOOL)crop
 {
 	NSString* extension = outputFileName.pathExtension.lowercaseString;
@@ -669,7 +682,7 @@
         if (!transparentFlag) {
             imageRep = [self fillBackground:imageRep];
         }
-        outputData = [imageRep representationUsingType:NSGIFFileType properties:nil];
+        outputData = [self GIF89aDataFromGIF87aData:[imageRep representationUsingType:NSGIFFileType properties:nil]];
     } else if ([@"tiff" isEqualToString:extension]) {
         if (!transparentFlag) {
             imageRep = [self fillBackground:imageRep];
@@ -755,6 +768,7 @@
     
         NSData *animatedData = [NSData dataWithData:(NSData*)CFBridgingRelease(gifData)];
         if (animatedData) {
+            animatedData = [self GIF89aDataFromGIF87aData:animatedData];
             success = [animatedData writeToFile:destPath atomically:YES];
         } else {
             success = NO;
