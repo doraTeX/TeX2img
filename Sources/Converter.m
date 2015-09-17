@@ -85,7 +85,6 @@
 @synthesize whitePageFlags;
 @synthesize bboxDictionary;
 
-
 - (Converter*)initWithProfile:(NSDictionary*)aProfile
 {
     pageCount = 1;
@@ -345,7 +344,30 @@
     
     if (![bboxDictionary.allKeys containsObject:key]) { // このPDFに対する gs -sDEVICE=bbox の実行が初めてなら
         // gsを実行してBoundingBox情報を取得
-        NSString *bboxOutput = execCommand([NSString stringWithFormat:@"\"%@\" -dBATCH -dNOPAUSE -sDEVICE=bbox \"%@\" 2>&1", gsPath.programPath, pdfPath]);
+        NSString *bboxFileName = @"tex2img-bbox";
+        NSString *bboxFilePath = [tempdir stringByAppendingPathComponent:bboxFileName];
+        
+        // 中断ボタンによる中断を可能とするため，あえて controller を通して実行する。
+        // この出力は出力ビューの方に流れてしまうので，リダイレクトによってテキストファイル経由でBoundingBox情報を受け取ることにする。
+        
+        [controller appendOutputAndScroll:@"TeX2img: Getting the bounding box...\n\n" quiet:quietFlag];
+        
+        BOOL success = [controller execCommand:gsPath.programPath
+                                   atDirectory:tempdir
+                                 withArguments:@[@"-dBATCH",
+                                                 @"-dNOPAUSE",
+                                                 @"-sDEVICE=bbox",
+                                                 pdfPath.stringByQuotingWithDoubleQuotations,
+                                                 [@"> " stringByAppendingString:bboxFileName],
+                                                 ]
+                                         quiet:quietFlag];
+        
+        if (!success) {
+            return nil;
+        }
+        
+        NSString *bboxOutput = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:bboxFilePath] encoding:NSUTF8StringEncoding error:NULL];
+        [NSFileManager.defaultManager removeItemAtPath:bboxFilePath error:nil];
         
         // 出力を解析
         NSUInteger currentPage = 0;
@@ -432,6 +454,8 @@
 
     NSString *pdfTeXPath = [latexPath.programPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
     
+    [controller appendOutputAndScroll:@"TeX2img: Cropping PDF...\n\n" quiet:quietFlag];
+    
 	BOOL success = [controller execCommand:pdfTeXPath
                                atDirectory:tempdir
                              withArguments:@[@"-no-shell-escape", @"-interaction=batchmode", cropFileBasePath.lastPathComponent]
@@ -464,7 +488,10 @@
     // 中断ボタンによる中断を可能とするため，あえて controller を通して実行する。
     // この出力は出力ビューの方に流れてしまうので，リダイレクトによってテキストファイル経由で gs のバージョンを受け取ることにする。
     // https://github.com/doraTeX/TeX2img/issues/40
-    BOOL success = [controller execCommand:gsPath.programPath atDirectory:tempdir withArguments:@[@"--version", [@"> " stringByAppendingString:gsVerFileName]] quiet:YES];
+    BOOL success = [controller execCommand:gsPath.programPath
+                               atDirectory:tempdir
+                             withArguments:@[@"--version", [@"> " stringByAppendingString:gsVerFileName]]
+                                     quiet:YES];
     
     if (!success) {
         return YES;
@@ -654,6 +681,8 @@
         [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO];
     }
 	
+    [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: PDF → %@ (Page %ld)\n", extension.uppercaseString, page] quiet:quietFlag];
+     
 	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
 	NSData* pageData = [[PDFDocument documentWithFilePath:pdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
 	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
@@ -1123,18 +1152,21 @@
     // 最終出力がビットマップ形式で「速度優先」の場合は，PDFからQuartzで直接変換
     if ([@[@"jpg", @"png", @"gif", @"tiff", @"bmp"] containsObject:extension] && speedPriorityMode) {
         success = [self pdf2image:pdfFilePath outputFileName:outputFileName page:1 crop:YES];
+        [controller exitCurrentThreadIfTaskKilled];
         if (!success) {
             return success;
         }
         
         for (NSUInteger i=2; i<=pageCount; i++) {
             success = [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i crop:YES];
+            [controller exitCurrentThreadIfTaskKilled];
             if (!success) {
                 return success;
             }
         }
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPS を経由しなくてよいので，pdfcrop類似処理で直接生成する。
         success = [self pdfcrop:pdfFilePath outputFileName:outputFileName page:1 addMargin:YES];
+        [controller exitCurrentThreadIfTaskKilled];
         if (!success) {
             return success;
         }
@@ -1144,16 +1176,19 @@
                      outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                page:i
                           addMargin:YES];
+            [controller exitCurrentThreadIfTaskKilled];
             if (!success) {
                 return success;
             }
         }
     } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
         [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES];
+        [controller exitCurrentThreadIfTaskKilled];
 
         success = [self pdf2svg:croppedPdfFilePath
                  outputFileName:outputFileName
                            page:1];
+        [controller exitCurrentThreadIfTaskKilled];
         if (!success) {
             return success;
         }
@@ -1162,6 +1197,7 @@
             success = [self pdf2svg:croppedPdfFilePath
                      outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                page:i];
+            [controller exitCurrentThreadIfTaskKilled];
             if (!success) {
                 return success;
             }
@@ -1171,6 +1207,7 @@
                       outputEpsFileName:outputEpsFileName
                          outputFileName:outputFileName
                                    page:1];
+        [controller exitCurrentThreadIfTaskKilled];
         if (!success) {
             return success;
         }
@@ -1180,6 +1217,7 @@
                      outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                         outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                   page:i];
+            [controller exitCurrentThreadIfTaskKilled];
             if (!success) {
                 return success;
             }
@@ -1209,6 +1247,8 @@
                 [controller showCannotOverwriteError:outputFilePath];
                 return NO;
             }
+            
+            [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: Merging %@s...\n\n", extension.uppercaseString] quiet:quietFlag];
             
             if ([@"pdf" isEqualToString:extension]) {
                 // PDFマージ作業の実行
