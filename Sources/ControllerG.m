@@ -316,6 +316,7 @@ typedef enum {
     if (taskKilled) {
         taskKilled = NO;
         [NSThread.currentThread cancel];
+        [self appendOutputAndScroll:[NSString stringWithFormat:@"\n\nTeX2img: %@\n\n", localizedString(@"processAborted")] quiet:NO];
     }
     
     if (NSThread.currentThread.isCancelled) {
@@ -2143,6 +2144,7 @@ typedef enum {
     generateButton.action = @selector(generate:);
     generateMenuItem.enabled = YES;
     abortMenuItem.enabled = NO;
+    taskKilled = NO;
 }
 
 - (void)generationDidFinishOnMainThread
@@ -2314,11 +2316,11 @@ typedef enum {
 
 - (IBAction)abortCompilation:(id)sender
 {
+    taskKilled = YES;
+    
     if (runningTask && runningTask.isRunning) {
-        taskKilled = YES;
         [runningTask terminate];
         runningTask = nil;
-        [self appendOutputAndScroll:[NSString stringWithFormat:@"\n\nTeX2img: %@\n\n", localizedString(@"processAborted")] quiet:NO];
         [self generationDidFinish];
     }
 }
