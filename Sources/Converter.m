@@ -725,12 +725,12 @@
 		if (!transparentFlag) {
 			imageRep = [self fillBackground:imageRep];
 		}
-		outputData = [imageRep representationUsingType:NSPNGFileType properties:nil];
+        outputData = [imageRep representationUsingType:NSPNGFileType properties:@{}];
     } else if ([@"gif" isEqualToString:extension]) {
         if (!transparentFlag) {
             imageRep = [self fillBackground:imageRep];
         }
-        outputData = [self GIF89aDataFromGIF87aData:[imageRep representationUsingType:NSGIFFileType properties:nil]];
+        outputData = [self GIF89aDataFromGIF87aData:[imageRep representationUsingType:NSGIFFileType properties:@{}]];
     } else if ([@"tiff" isEqualToString:extension]) {
         if (!transparentFlag) {
             imageRep = [self fillBackground:imageRep];
@@ -739,13 +739,13 @@
         outputData = [imageRep representationUsingType:NSTIFFFileType properties:prop];
     } else if ([@"bmp" isEqualToString:extension]) {
         imageRep = [self fillBackground:imageRep];
-        outputData = [imageRep representationUsingType:NSBMPFileType properties:nil];
+        outputData = [imageRep representationUsingType:NSBMPFileType properties:@{}];
     }
     NSString *outputPath = [tempdir stringByAppendingPathComponent:outputFileName];
 	[outputData writeToFile:outputPath atomically:YES];
     
     // 生成物のチェック
-    NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithContentsOfFile:outputPath];
+    NSImageRep *rep = [NSImageRep imageRepWithContentsOfFile:outputPath];
     if (!rep) {
         [controller showImageSizeError];
         return NO;
@@ -772,9 +772,9 @@
     system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
 }
 
-- (BOOL)mergeTIFFFiles:(NSArray*)sourcePaths toPath:(NSString*)destPath
+- (BOOL)mergeTIFFFiles:(NSArray<NSString*>*)sourcePaths toPath:(NSString*)destPath
 {
-    NSMutableArray *arguments = [NSMutableArray arrayWithObject:@"-cat"];
+    NSMutableArray<NSString*> *arguments = [NSMutableArray arrayWithObject:@"-cat"];
     
     [arguments addObjectsFromArray:[sourcePaths mapUsingBlock:^NSString*(NSString *path) {
         return path.stringByQuotingWithDoubleQuotations;
@@ -790,7 +790,7 @@
     return success;
 }
 
-- (BOOL)generateAnimatedGIFFrom:(NSArray*)sourcePaths toPath:(NSString*)destPath
+- (BOOL)generateAnimatedGIFFrom:(NSArray<NSString*>*)sourcePaths toPath:(NSString*)destPath
 {
     NSDictionary *frameProperties = @{(NSString*)kCGImagePropertyGIFDictionary: @{(NSString*)kCGImagePropertyGIFDelayTime: @(delay)}};
     NSDictionary *gifProperties = @{(NSString*)kCGImagePropertyGIFDictionary: @{(NSString*)kCGImagePropertyGIFLoopCount: @(loopCount)}};
@@ -801,7 +801,7 @@
     __block BOOL success = YES;
     
     [sourcePaths enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
-        NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithContentsOfFile:path];
+        NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithData:[NSData dataWithContentsOfFile:path]];
         if (rep) {
             CGImageDestinationAddImage(destination, rep.CGImage, (__bridge CFDictionaryRef)frameProperties);
         } else {
@@ -1371,7 +1371,7 @@
     [controller releaseOutputTextView];
     
     // 生成ファイルを集める
-    NSMutableArray *generatedFiles = [NSMutableArray array];
+    NSMutableArray<NSString*> *generatedFiles = [NSMutableArray array];
     NSInteger generatedPageCount = pageCount - emptyPageFlags.indexesOfTrueValue.count;
     
     if ([@[@"pdf", @"tiff", @"gif"] containsObject:extension] && mergeOutputsFlag && (generatedPageCount > 0)) {
