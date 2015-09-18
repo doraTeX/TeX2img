@@ -67,7 +67,10 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
 
 - (instancetype)init
 {
-    return [self initWithAttributedString:nil];
+    if (self = [super init]) {
+        contents = [NSMutableAttributedString new];
+    }
+    return self;
 }
 
 - (NSString*)string

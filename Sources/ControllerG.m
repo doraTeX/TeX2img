@@ -1176,7 +1176,7 @@ typedef enum {
 
 - (void)constructTemplatePopupRecursivelyAtDirectory:(NSString*)directory parentMenu:(NSMenu*)menu
 {
-    NSArray *files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:directory error:nil];
+    NSArray<NSString*> *files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:directory error:nil];
     [files enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger idx, BOOL *stop) {
         [self addTemplateMenuItem:filename atDirectory:directory toMenu:menu atIndex:nil];
     }];

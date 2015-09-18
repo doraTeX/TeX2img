@@ -3,7 +3,7 @@
 @implementation NSMatrix (Extension)
 - (void)setCellColor:(NSColor*)color
 {
-    [self.cells enumerateObjectsUsingBlock:^(NSButtonCell *cell, NSUInteger idx, BOOL *stop) {
+    [(NSArray<NSButtonCell*>*)(self.cells) enumerateObjectsUsingBlock:^(NSButtonCell * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
         NSMutableAttributedString *title =
         [[NSMutableAttributedString alloc] initWithAttributedString:cell.attributedTitle];
         
@@ -17,7 +17,7 @@
 
 - (void)setCellFont:(NSFont*)font
 {
-    [self.cells enumerateObjectsUsingBlock:^(NSButtonCell *cell, NSUInteger idx, BOOL *stop) {
+    [(NSArray<NSButtonCell*>*)(self.cells) enumerateObjectsUsingBlock:^(NSButtonCell * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
         NSMutableAttributedString *title =
         [[NSMutableAttributedString alloc] initWithAttributedString:cell.attributedTitle];
         

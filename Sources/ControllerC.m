@@ -175,7 +175,7 @@
     previewFiles(files, app);
 }
 
-- (void)printResult:(NSArray*)generatedFiles quiet:(BOOL)quiet
+- (void)printResult:(NSArray<NSString*>*)generatedFiles quiet:(BOOL)quiet
 {
     NSUInteger count = generatedFiles.count;
     
