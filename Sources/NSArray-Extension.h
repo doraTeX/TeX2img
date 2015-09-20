@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-@interface NSArray (Extension)
+@interface NSArray <__covariant ObjectType> (Extension)
 - (NSIndexSet*)indexesOfTrueValue;
-- (NSArray*)mapUsingBlock:(id (^)(id))block;
+- (NSArray*)mapUsingBlock:(id (^)(ObjectType))block;
 @end

@@ -1,4 +1,5 @@
 #import "NSDictionary-Extension.h"
+#import "NSColor-Extension.h"
 
 @implementation NSDictionary (Extension)
 - (float)floatForKey:(NSString*)aKey
