@@ -1195,14 +1195,14 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="表示" identifier="3" id="EnK-oW-z8i">
                                 <view key="view" id="dCI-tZ-eeA">
-                                    <rect key="frame" x="10" y="33" width="421" height="393"/>
+                                    <rect key="frame" x="10" y="33" width="426" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <box autoresizesSubviews="NO" title="対応する括弧の強調表示" borderType="line" id="Qlb-Le-07g">
-                                            <rect key="frame" x="6" y="93" width="407" height="177"/>
+                                            <rect key="frame" x="6" y="98" width="412" height="177"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="tUm-in-vWO">
-                                                <rect key="frame" x="1" y="1" width="405" height="161"/>
+                                                <rect key="frame" x="1" y="1" width="410" height="161"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <box autoresizesSubviews="NO" title="対応チェック対象" borderType="line" id="7rY-RS-z06">
@@ -1313,10 +1313,10 @@ DQ
                                             <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="ソース表示" borderType="line" id="NwF-4V-z52">
-                                            <rect key="frame" x="6" y="279" width="242" height="114"/>
+                                            <rect key="frame" x="6" y="279" width="247" height="114"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="CzJ-wJ-lCz">
-                                                <rect key="frame" x="1" y="1" width="240" height="98"/>
+                                                <rect key="frame" x="1" y="1" width="245" height="98"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="aHu-v1-wTJ">
@@ -1345,7 +1345,7 @@ DQ
                                                         </connections>
                                                     </textField>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="UfO-wD-pSG">
-                                                        <rect key="frame" x="64" y="43" width="164" height="17"/>
+                                                        <rect key="frame" x="64" y="43" width="169" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Font" id="3Oc-2Z-ijP">
                                                             <font key="font" metaFont="system"/>
@@ -1398,7 +1398,7 @@ DQ
                                             <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="不可視文字の表示" borderType="line" id="wIf-oC-qXE">
-                                            <rect key="frame" x="250" y="279" width="163" height="114"/>
+                                            <rect key="frame" x="255" y="279" width="163" height="114"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="W7T-5X-ruu">
                                                 <rect key="frame" x="1" y="1" width="161" height="98"/>
@@ -1498,12 +1498,50 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
                                         </box>
+                                        <box autoresizesSubviews="NO" title="コマンド補完キー" borderType="line" id="yVE-bR-DHB">
+                                            <rect key="frame" x="6" y="37" width="412" height="57"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                            <view key="contentView" id="gmF-MY-XeU">
+                                                <rect key="frame" x="1" y="1" width="410" height="41"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="YdH-me-3lX">
+                                                        <rect key="frame" x="15" y="13" width="380" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="188" height="18"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="Cve-Os-kkM">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Escape" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="iRf-jD-DQ4">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </column>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Tab" imagePosition="left" alignment="left" tag="2" inset="2" id="AVW-rO-OYx">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </column>
+                                                        </cells>
+                                                    </matrix>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <font key="titleFont" size="11" name="HiraKakuProN-W3"/>
+                                        </box>
                                     </subviews>
                                 </view>
                             </tabViewItem>
                             <tabViewItem label="色" identifier="4" id="Pcf-Iw-L7g">
                                 <view key="view" id="D2J-BB-0CI">
-                                    <rect key="frame" x="10" y="33" width="421" height="393"/>
+                                    <rect key="frame" x="10" y="33" width="426" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button verticalHuggingPriority="750" id="Wt2-ec-htK">
@@ -1978,6 +2016,7 @@ DQ
                 <outlet property="colorStyleMatrix" destination="Nw7-Li-duZ" id="oFc-ZQ-gnV"/>
                 <outlet property="colorTextField" destination="ece-oe-9xN" id="R9l-mw-NJG"/>
                 <outlet property="commandColorWell" destination="jTZ-4o-f0r" id="Bhl-HB-rCC"/>
+                <outlet property="commandCompletionKeyMatrix" destination="YdH-me-3lX" id="AqL-Am-nPU"/>
                 <outlet property="commentColorWell" destination="5fH-Qw-pGy" id="2pA-3P-jk1"/>
                 <outlet property="convertYenMarkMenuItem" destination="760" id="762"/>
                 <outlet property="cursorColorWell" destination="Yy9-T4-uMu" id="K7f-eV-fZS"/>

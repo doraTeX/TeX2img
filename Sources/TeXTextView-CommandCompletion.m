@@ -1,5 +1,6 @@
 #import "TeXTextView.h"
 #import "UtilityG.h"
+#import "NSDictionary-Extension.h"
 
 static NSString* placeholderString = @"•";
 static NSString* startcommentString = @"•‹";
@@ -102,7 +103,12 @@ static NSString* endcommentString = @"›";
 	// End Changed by (HS) - define ins2Range, selectlength
 	NSCharacterSet *charSet;
 	unichar c;
-    unichar esc = 0x001B;
+    
+    Profile *profile = [controller currentProfile];
+    NSInteger commandCompletionKeyTag = [profile integerForKey:CommandCompletionKeyKey];
+    
+    unichar esc = (commandCompletionKeyTag == ESCAPE_KEY) ? 0x001B : '\t';
+    
     NSString *commandCompletionChar = [NSString stringWithCharacters:&esc length:1];
     NSString *commandCompletionList = controller.commandCompletionList;
 	

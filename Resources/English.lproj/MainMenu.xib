@@ -602,6 +602,7 @@ DQ
                 <outlet property="colorStyleMatrix" destination="ZdF-pn-USE" id="sul-BX-2Ez"/>
                 <outlet property="colorTextField" destination="FSu-oQ-wrx" id="2Pb-rY-fhi"/>
                 <outlet property="commandColorWell" destination="W2S-6n-OLu" id="bbG-b6-1bw"/>
+                <outlet property="commandCompletionKeyMatrix" destination="v4G-0e-MKD" id="v8u-tl-4RR"/>
                 <outlet property="commentColorWell" destination="G6m-jH-sBa" id="Dc8-A1-LoF"/>
                 <outlet property="convertYenMarkMenuItem" destination="730" id="731"/>
                 <outlet property="cursorColorWell" destination="G2n-jL-xHL" id="dpt-vu-mh6"/>
@@ -1314,14 +1315,14 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="View" identifier="3" id="sci-do-lkd">
                                 <view key="view" id="RZt-Sg-m5Y">
-                                    <rect key="frame" x="10" y="33" width="471" height="393"/>
+                                    <rect key="frame" x="10" y="33" width="482" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <box autoresizesSubviews="NO" title="Highlight Matching Brackets" borderType="line" id="IW1-X2-Kne">
-                                            <rect key="frame" x="6" y="93" width="459" height="177"/>
+                                            <rect key="frame" x="6" y="98" width="470" height="177"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="C1x-rq-ijE">
-                                                <rect key="frame" x="1" y="1" width="457" height="161"/>
+                                                <rect key="frame" x="1" y="1" width="468" height="161"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <box autoresizesSubviews="NO" title="Target" borderType="line" id="csC-GF-SWd">
@@ -1430,10 +1431,10 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="Source Style" borderType="line" id="Zts-dg-dde">
-                                            <rect key="frame" x="6" y="279" width="257" height="114"/>
+                                            <rect key="frame" x="6" y="279" width="268" height="114"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="rX7-di-0fk">
-                                                <rect key="frame" x="1" y="1" width="255" height="98"/>
+                                                <rect key="frame" x="1" y="1" width="266" height="98"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="iEM-GL-Ypt">
@@ -1470,7 +1471,7 @@ DQ
                                                         </connections>
                                                     </stepper>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="H1k-tV-Nig">
-                                                        <rect key="frame" x="52" y="43" width="226" height="17"/>
+                                                        <rect key="frame" x="52" y="43" width="237" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Font" id="yx9-Z0-QOx">
                                                             <font key="font" metaFont="system"/>
@@ -1514,7 +1515,7 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="Show Invisible Characters" borderType="line" id="Ch8-g0-Xrf">
-                                            <rect key="frame" x="265" y="279" width="200" height="114"/>
+                                            <rect key="frame" x="276" y="279" width="200" height="114"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="MUc-oe-pKg">
                                                 <rect key="frame" x="1" y="1" width="198" height="98"/>
@@ -1608,6 +1609,43 @@ DQ
                                                             <action selector="showTabCharacterKindSettingPopover:" target="450" id="Qxn-Cp-otx"/>
                                                         </connections>
                                                     </button>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
+                                        <box autoresizesSubviews="NO" title="Command Completion Key" borderType="line" id="Ntc-1N-tXD">
+                                            <rect key="frame" x="6" y="37" width="470" height="57"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                            <view key="contentView" id="xfA-8A-wPl">
+                                                <rect key="frame" x="1" y="1" width="468" height="41"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="v4G-0e-MKD">
+                                                        <rect key="frame" x="15" y="13" width="438" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="217" height="18"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="KPD-1U-k9v">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Escape" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="osZ-yF-PcK">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </column>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Tab" imagePosition="left" alignment="left" tag="2" inset="2" id="PgD-1j-762">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </column>
+                                                        </cells>
+                                                    </matrix>
                                                 </subviews>
                                             </view>
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
