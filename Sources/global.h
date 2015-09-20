@@ -56,6 +56,8 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define TabIndentKey @"tabIndent"
 #define WrapLineKey @"warpLines"
 
+#define CommandCompletionKeyKey @"commandCompletionKey"
+
 #define ColorPalleteColorKey @"colorPalleteColor"
 
 #define ConvertYenMarkKey @"convertYenMark"
@@ -94,6 +96,9 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
 #define ControllerKey @"controller"
 #define TeX2imgVersionKey @"TeX2imgVersion"
+
+#define ESCAPE_KEY 1
+#define TAB_KEY 2
 
 #define PX_UNIT_TAG 1
 #define BP_UNIT_TAG 2

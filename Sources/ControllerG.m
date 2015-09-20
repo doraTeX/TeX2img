@@ -67,6 +67,8 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSButton *showNewLineCharacterCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *showFullwidthSpaceCharacterCheckBox;
 
+@property (nonatomic, strong) IBOutlet NSMatrix *commandCompletionKeyMatrix;
+
 @property (nonatomic, strong) IBOutlet NSWindow *colorPalleteWindow;
 @property (nonatomic, strong) IBOutlet NSMenuItem *colorPalleteWindowMenuItem;
 @property (nonatomic, strong) IBOutlet NSColorWell *colorPalleteColorWell;
@@ -167,6 +169,8 @@ typedef enum {
 @synthesize tabWidthTextField;
 @synthesize tabIndentCheckBox;
 @synthesize wrapLineCheckBox;
+
+@synthesize commandCompletionKeyMatrix;
 
 @synthesize templatePopupButton;
 
@@ -680,6 +684,11 @@ typedef enum {
         [loopCountStepper takeIntValueFrom:loopCountTextField];
     }
     
+    if ([keys containsObject:CommandCompletionKeyKey]) {
+        NSInteger commandCompletionKeyTag = [aProfile integerForKey:CommandCompletionKeyKey];
+        [commandCompletionKeyMatrix selectCellWithTag:commandCompletionKeyTag];
+    }
+    
     NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
     if (aFont) {
         sourceTextView.font = aFont;
@@ -796,6 +805,8 @@ typedef enum {
         
         currentProfile[UnitKey] = @(unitMatrix.selectedTag);
         currentProfile[PriorityKey] = @(priorityMatrix.selectedTag);
+        
+        currentProfile[CommandCompletionKeyKey] = @(commandCompletionKeyMatrix.selectedTag);
         
         currentProfile[AutoDetectionTargetKey] = @(autoDetectionTargetPopupButton.selectedTag);
         currentProfile[PageBoxKey] = @(pageBoxPopupButton.selectedTag);
