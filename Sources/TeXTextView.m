@@ -835,14 +835,14 @@
     return YES;
 }
 
-- (NSArray*)filelistInDraggingInfo:(id<NSDraggingInfo>)info
+- (NSArray<NSString*>*)filelistInDraggingInfo:(id<NSDraggingInfo>)info
 {
     return [info.draggingPasteboard propertyListForType:NSFilenamesPboardType];
 }
 
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)info
 {
-    NSArray *draggedFiles = [self filelistInDraggingInfo:info];
+    NSArray<NSString*> *draggedFiles = [self filelistInDraggingInfo:info];
     
     // sourceTextView へのドロップのみ可
     if (self != controller.sourceTextView) {
@@ -855,7 +855,7 @@
     }
     
     // ドラッグされたパスが受付可能であるかチェック
-    NSString *draggedFilePath = (NSString*)(draggedFiles[0]);
+    NSString *draggedFilePath = draggedFiles[0];
     BOOL isDir;
     
     BOOL fileExists = [NSFileManager.defaultManager fileExistsAtPath:draggedFilePath isDirectory:&isDir];
