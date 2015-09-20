@@ -1,6 +1,5 @@
 #import <Quartz/Quartz.h>
 #import <sys/xattr.h>
-#import "global.h"
 #import "Utility.h"
 
 #define RESOLUTION_SCALE 5.0
@@ -85,7 +84,7 @@
 @synthesize whitePageFlags;
 @synthesize bboxDictionary;
 
-- (Converter*)initWithProfile:(Profile*)aProfile
+- (instancetype)initWithProfile:(Profile*)aProfile
 {
     pageCount = 1;
     
@@ -142,7 +141,7 @@
 	return self;
 }
 
-+ (Converter*)converterWithProfile:(Profile*)aProfile
++ (instancetype)converterWithProfile:(Profile*)aProfile
 {
 	return [[Converter alloc] initWithProfile:aProfile];
 }

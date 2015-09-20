@@ -6,7 +6,6 @@
 #import "MyLayoutManager.h"
 #import "MyGlyphPopoverController.h"
 #import "UtilityG.h"
-#import "global.h"
 
 @implementation TeXTextView
 - (void)awakeFromNib

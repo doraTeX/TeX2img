@@ -1,6 +1,5 @@
 #import <Cocoa/Cocoa.h>
 #import "global.h"
-#import "ControllerG.h"
 
 @interface ProfileController : NSObject
 - (void)initProfiles;

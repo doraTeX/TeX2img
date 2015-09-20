@@ -1,5 +1,4 @@
 #import <sys/xattr.h>
-#import "global.h"
 #import "ControllerG.h"
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"

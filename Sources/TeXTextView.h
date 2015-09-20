@@ -1,6 +1,5 @@
 #import <Cocoa/Cocoa.h>
 #import "ControllerG.h"
-#import "global.h"
 
 @class ControllerG;
 

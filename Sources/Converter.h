@@ -30,7 +30,7 @@
 @end
 
 @interface Converter : NSObject
-+ (Converter*)converterWithProfile:(Profile*)aProfile;
++ (instancetype)converterWithProfile:(Profile*)aProfile;
 - (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath;
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr;
 - (BOOL)compileAndConvertWithBody:(NSString*)texBodyStr;

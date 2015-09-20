@@ -1,4 +1,3 @@
-#import "global.h"
 #import "Utility.h"
 #import "NSArray-Extension.h"
 #import "NSPipe-Extension.h"

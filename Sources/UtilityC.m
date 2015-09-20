@@ -1,7 +1,6 @@
 #import <stdio.h>
 #import <stdarg.h>
 #import "UtilityC.h"
-#import "global.h"
 
 void printStdErr(const char *format, ...)
 {
