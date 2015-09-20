@@ -15,7 +15,7 @@
 	NSUInteger		aLineEnd;
 	NSUInteger		end;
 	
-    NSDictionary<NSString*,id> *profile = controller.currentProfile;
+    Profile *profile = [controller currentProfile];
     
     NSColor *color;
     
@@ -117,7 +117,7 @@
 
 - (void)resetBackgroundColorOfTextView:(id)sender
 {
-	self.backgroundColor = [controller.currentProfile colorForKey:BackgroundColorKey];
+	self.backgroundColor = [[controller currentProfile] colorForKey:BackgroundColorKey];
 }
 
 - (void)resetBackgroundColor:(id)sender
@@ -130,7 +130,7 @@
 - (void)highlightContent:(NSString*)range
 {
 	contentHighlighting = YES;
-    NSColor *color = [controller.currentProfile colorForKey:EnclosedContentBackgroundColorKey];
+    NSColor *color = [[controller currentProfile] colorForKey:EnclosedContentBackgroundColorKey];
     if (!color) {
         color = NSColor.enclosedContentBackgroundColor;
     }
@@ -141,7 +141,7 @@
 - (void)textViewDidChangeSelection:(NSNotification*)inNotification
 {
 	NSLayoutManager *layoutManager = self.layoutManager;
-	NSDictionary<NSString*,id> *profile = controller.currentProfile;
+	Profile *profile = [controller currentProfile];
     NSColor *color;
 
 	// Notification の処理で色づけの変更を行うと，delete を押したときにバグるので，performSelector で別途呼び出して処理する
@@ -299,7 +299,7 @@
     
     rightpar = [replacementString characterAtIndex:0];
     
-    NSDictionary<NSString*,id> *profile = controller.currentProfile;
+    Profile *profile = [controller currentProfile];
     
     HighlightPattern highlightPattern = SOLID;
     BOOL checkBrace = [profile boolForKey:CheckBraceKey];

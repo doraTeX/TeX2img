@@ -1,3 +1,9 @@
+#ifndef TeX2img_global_h
+#define TeX2img_global_h
+
+typedef NSDictionary<NSString*,id> Profile;
+typedef NSMutableDictionary<NSString*,id> MutableProfile;
+
 NSString *commandCompletionChar;
 NSMutableString *commandCompletionList;
 
@@ -141,3 +147,5 @@ NSMutableString *commandCompletionList;
 #define EA_Key "com.loveinequality.TeX2img"
 
 #define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf"
+
+#endif

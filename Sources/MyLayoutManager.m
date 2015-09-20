@@ -27,7 +27,7 @@
 	float theInsetWidth = 0.0;
 	float theInsetHeight = 4.0;
 	NSSize theSize = NSMakeSize(theInsetWidth, theInsetHeight);
-    NSDictionary<NSString*,id> *currentProfile = controller.currentProfile;
+    Profile *currentProfile = [controller currentProfile];
 	
     NSFont *theFont = self.textStorage.font;
     NSColor *theColor = [currentProfile colorForKey:InvisibleColorKey];

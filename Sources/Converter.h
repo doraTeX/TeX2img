@@ -1,4 +1,5 @@
 #import <Cocoa/Cocoa.h>
+#import "global.h"
 
 @protocol OutputController
 - (void)showExtensionError;
@@ -29,7 +30,7 @@
 @end
 
 @interface Converter : NSObject
-+ (Converter*)converterWithProfile:(NSDictionary<NSString*,id>*)aProfile;
++ (Converter*)converterWithProfile:(Profile*)aProfile;
 - (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath;
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr;
 - (BOOL)compileAndConvertWithBody:(NSString*)texBodyStr;

@@ -85,7 +85,7 @@
 @synthesize whitePageFlags;
 @synthesize bboxDictionary;
 
-- (Converter*)initWithProfile:(NSDictionary<NSString*,id>*)aProfile
+- (Converter*)initWithProfile:(Profile*)aProfile
 {
     pageCount = 1;
     
@@ -142,7 +142,7 @@
 	return self;
 }
 
-+ (Converter*)converterWithProfile:(NSDictionary<NSString*,id>*)aProfile
++ (Converter*)converterWithProfile:(Profile*)aProfile
 {
 	return [[Converter alloc] initWithProfile:aProfile];
 }
@@ -433,6 +433,7 @@
     
     // 同じものがあれば再利用
     if ([fileManager fileExistsAtPath:cropPdfSourcePath]) {
+        [fileManager removeItemAtPath:outputFileName error:nil];
         return [fileManager copyItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
     }
 
@@ -689,12 +690,12 @@
     }
 
 	// PDFのバウンディングボックスで切り取る
-    BOOL success = YES;
     if (crop) {
-        success = [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO];
-    }
-    if (!success) {
-        return NO;
+        BOOL success = [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO];
+        if (!success) {
+            [controller showCannotOverwriteError:pdfFilePath];
+            return NO;
+        }
     }
 	
     [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: PDF → %@ (Page %ld)\n", extension.uppercaseString, page] quiet:quietFlag];

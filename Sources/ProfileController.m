@@ -6,7 +6,7 @@
 #define MovedRowsType @"TeX2imgMovedRowsType"
 
 @interface ProfileController()
-@property (nonatomic, copy) NSMutableArray<NSDictionary<NSString*,id>*> *profiles;
+@property (nonatomic, copy) NSMutableArray<Profile*> *profiles;
 @property (nonatomic, copy) NSMutableArray<NSString*> *profileNames;
 @property (nonatomic, strong) IBOutlet NSWindow *profilesWindow;
 @property (nonatomic, weak) IBOutlet NSTableView *profilesTableView;
@@ -22,26 +22,26 @@
 @synthesize saveAsTextField;
 @synthesize controllerG;
 
-- (NSMutableDictionary<NSString*,id>*)profileForName:(NSString*)profileName
+- (MutableProfile*)profileForName:(NSString*)profileName
 {
     if (!profileNames) {
         return nil;
     }
 	
 	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
-	return (targetIndex == NSNotFound) ? nil : [NSMutableDictionary<NSString*,id> dictionaryWithDictionary:profiles[targetIndex]];
+	return (targetIndex == NSNotFound) ? nil : [MutableProfile dictionaryWithDictionary:profiles[targetIndex]];
 }
 
 - (void)loadProfilesFromPlist
 {
 	profileNames = [NSMutableArray<NSString*> arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:ProfileNamesKey]];
-	profiles =  [NSMutableArray<NSDictionary<NSString*,id>*> arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:ProfilesKey]];
+	profiles =  [NSMutableArray<Profile*> arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:ProfilesKey]];
 }
 
 - (void)initProfiles
 {
 	profileNames = [NSMutableArray<NSString*> array];
-	profiles = [NSMutableArray<NSDictionary<NSString*,id>*> array];
+	profiles = [NSMutableArray<Profile*> array];
 }
 
 - (void)removeProfileForName:(NSString*)profileName
@@ -54,7 +54,7 @@
 	[profiles removeObjectAtIndex:targetIndex];
 }
 
-- (void)updateProfile:(NSDictionary<NSString*,id>*)aProfile forName:(NSString*)profileName
+- (void)updateProfile:(Profile*)aProfile forName:(NSString*)profileName
 {
 	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
 	if (targetIndex == NSNotFound) {
@@ -97,12 +97,12 @@
 	} else {
 		NSUInteger aIndex = [profileNames indexOfObject:newProfileName];
 		if (aIndex == NSNotFound) {
-			[self updateProfile:controllerG.currentProfile forName:newProfileName];
+			[self updateProfile:[controllerG currentProfile] forName:newProfileName];
 			saveAsTextField.stringValue = @"";
 			[profilesWindow makeFirstResponder:saveAsTextField]; // フォーカスを入力欄に
 		} else {
 			if (runConfirmPanel(localizedString(@"profileOverwriteMsg"))) {
-				[self updateProfile:controllerG.currentProfile forName:newProfileName];
+				[self updateProfile:[controllerG currentProfile] forName:newProfileName];
 				saveAsTextField.stringValue = @"";
 			} else {
 				[profilesWindow makeFirstResponder:saveAsTextField]; // フォーカスを入力欄に
