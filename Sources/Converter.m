@@ -335,6 +335,10 @@
                                     quiet:quietFlag];
     [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
     
+    if (!status) {
+        [controller showExecError:@"Ghostscript"];
+    }
+    
     return status;
 }
 
@@ -363,6 +367,7 @@
                                          quiet:quietFlag];
         
         if (!success) {
+            [controller showExecError:@"Ghostscript"];
             return nil;
         }
         
@@ -494,6 +499,7 @@
                                      quiet:YES];
     
     if (!success) {
+        [controller showExecError:@"Ghostscript"];
         return YES;
     }
     
@@ -598,6 +604,7 @@
     BOOL status = [controller execCommand:gsPath atDirectory:tempdir withArguments:arguments quiet:quietFlag];
     
     if (!status) {
+        [controller showExecError:@"Ghostscript"];
         return NO;
     }
     
@@ -682,8 +689,12 @@
     }
 
 	// PDFのバウンディングボックスで切り取る
+    BOOL success = YES;
     if (crop) {
-        [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO];
+        success = [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO];
+    }
+    if (!success) {
+        return NO;
     }
 	
     [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: PDF → %@ (Page %ld)\n", extension.uppercaseString, page] quiet:quietFlag];
@@ -896,7 +907,6 @@
     // PDF→EPS の変換の実行（この時点で強制cropされる）
     if (![self pdf2eps:pdfFileName outputEpsFileName:outputEpsFileName resolution:resolution page:page]
         || ![fileManager fileExistsAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName]]) {
-        [controller showExecError:@"ghostscript"];
         return NO;
     }
     
@@ -1102,7 +1112,6 @@
             if (ignoreErrorsFlag) {
                 errorsIgnored = YES;
             } else {
-                [controller showExecError:@"Ghostscript"];
                 return NO;
             }
         }
