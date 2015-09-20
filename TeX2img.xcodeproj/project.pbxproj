@@ -353,7 +353,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "TeX2img" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -582,6 +582,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.loveinequality.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = TeX2img;
 				SDKROOT = macosx;
 				VALID_ARCHS = x86_64;
@@ -609,6 +610,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.loveinequality.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = TeX2img;
 				SDKROOT = macosx;
 				VALID_ARCHS = x86_64;
@@ -618,7 +620,8 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Developer ID Application: Yusuke Terada (86GWZ48925)";
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = "";
@@ -635,7 +638,7 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Developer ID Application: Yusuke Terada (86GWZ48925)";
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
