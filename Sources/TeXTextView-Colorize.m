@@ -128,7 +128,7 @@
 - (void)textViewDidChangeSelection:(NSNotification*)inNotification
 {
 	NSLayoutManager *layoutManager = self.layoutManager;
-	NSDictionary<NSString*,id> *profile = controller.currentProfile;
+	Profile *profile = [controller currentProfile];
     NSColor *color;
 
 	// Notification の処理で色づけの変更を行うと，delete を押したときにバグるので，performSelector で別途呼び出して処理する
@@ -283,7 +283,7 @@
     
     rightpar = [replacementString characterAtIndex:0];
     
-    NSDictionary<NSString*,id> *profile = controller.currentProfile;
+    Profile *profile = [controller currentProfile];
     
     HighlightPattern highlightPattern = SOLID;
     BOOL checkBrace = [profile boolForKey:CheckBraceKey];

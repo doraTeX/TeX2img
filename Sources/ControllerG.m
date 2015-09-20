@@ -1,6 +1,4 @@
 #import <sys/xattr.h>
-#import "ProfileController.h"
-#import "global.h"
 #import "ControllerG.h"
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
@@ -28,9 +26,6 @@ typedef enum {
     JIS = 3,
     EUC = 4
 } EncodingTag;
-
-@class ProfileController;
-@class TeXTextView;
 
 #define AutoSavedProfileName @"*AutoSavedProfile*"
 #define TemplateDirectoryName @"Templates"
@@ -529,7 +524,7 @@ typedef enum {
 }
 
 #pragma mark - プロファイルの読み書き関連
-- (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary<NSString*,id>*)aProfile forKey:(NSString*)aKey
+- (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
 {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
@@ -538,7 +533,7 @@ typedef enum {
 	}
 }
 
-- (void)loadSettingForTextView:(NSTextView*)textView fromProfile:(NSDictionary<NSString*,id>*)aProfile forKey:(NSString*)aKey
+- (void)loadSettingForTextView:(NSTextView*)textView fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
 {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
@@ -547,7 +542,7 @@ typedef enum {
 	}
 }
 
-- (void)adoptProfile:(NSDictionary<NSString*,id>*)aProfile
+- (void)adoptProfile:(Profile*)aProfile
 {
     if (!aProfile) {
         return;
@@ -721,7 +716,7 @@ typedef enum {
 
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
 {
-	NSDictionary<NSString*,id> *aProfile = [profileController profileForName:profileName];
+	Profile *aProfile = [profileController profileForName:profileName];
     if (!aProfile) {
         return NO;
     }
@@ -743,9 +738,9 @@ typedef enum {
 
 
 
-- (NSMutableDictionary<NSString*,id>*)currentProfile
+- (MutableProfile*)currentProfile
 {
-	NSMutableDictionary<NSString*,id> *currentProfile = [NSMutableDictionary<NSString*,id> dictionary];
+	MutableProfile *currentProfile = [MutableProfile dictionary];
 	@try {
         currentProfile[TeX2imgVersionKey] = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"];
         
@@ -1258,7 +1253,7 @@ typedef enum {
         [self closeFontPanel];
     }
 
-	[profileController updateProfile:self.currentProfile forName:AutoSavedProfileName];
+	[profileController updateProfile:[self currentProfile] forName:AutoSavedProfileName];
 	[profileController saveProfiles];
 }
 
@@ -1317,7 +1312,7 @@ typedef enum {
 
 - (NSArray<NSString*>*)analyzeContents:(NSString*)contents
 {
-    BOOL convertYenMark = [self.currentProfile boolForKey:ConvertYenMarkKey];
+    BOOL convertYenMark = [[self currentProfile] boolForKey:ConvertYenMarkKey];
     if (convertYenMark) {
         contents = [[NSMutableString stringWithString:contents] replaceYenWithBackSlash];
     }
@@ -1438,7 +1433,7 @@ typedef enum {
             NSString *preamble = preambleTextView.textStorage.mutableString;
             NSString *body = sourceTextView.textStorage.mutableString;
             NSString *contents = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}\n", preamble, body];
-            NSStringEncoding encoding = [self stringEncodingFromEncodingOption:[self.currentProfile stringForKey:EncodingKey]];
+            NSStringEncoding encoding = [self stringEncodingFromEncodingOption:[[self currentProfile] stringForKey:EncodingKey]];
             
             if (![contents writeToFile:outputPath atomically:YES encoding:encoding error:nil]) {
                 runErrorPanel(localizedString(@"cannotWriteErrorMsg"), outputPath);
@@ -1886,7 +1881,7 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(generationDidFinishOnMainThread) withObject:nil waitUntilDone:YES];
 }
 
-- (void)printCurrentStatus:(NSDictionary<NSString*,id>*)aProfile
+- (void)printCurrentStatus:(Profile*)aProfile
 {
     NSMutableString *output = [NSMutableString string];
     
@@ -1967,7 +1962,7 @@ typedef enum {
 - (void)generateImage
 {
     NSString *inputSourceFilePath;
-    NSMutableDictionary<NSString*,id> *aProfile = self.currentProfile;
+    MutableProfile *aProfile = [self currentProfile];
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
     aProfile[MudrawPathKey] = [[NSBundle.mainBundle pathForResource:@"mupdf" ofType:nil] stringByAppendingPathComponent:@"mudraw"];
     aProfile[QuietKey] = @(NO);

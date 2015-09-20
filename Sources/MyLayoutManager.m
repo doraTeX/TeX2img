@@ -1,6 +1,5 @@
 #import "MyLayoutManager.h"
 #import "NSDictionary-Extension.h"
-#import "global.h"
 
 @implementation MyLayoutManager
 @synthesize controller;
@@ -27,7 +26,7 @@
 	float theInsetWidth = 0.0;
 	float theInsetHeight = 4.0;
 	NSSize theSize = NSMakeSize(theInsetWidth, theInsetHeight);
-    NSDictionary<NSString*,id> *currentProfile = controller.currentProfile;
+    Profile *currentProfile = [controller currentProfile];
 	
     NSFont *theFont = self.textStorage.font;
     NSColor *theColor = NSColor.invisibleColor;

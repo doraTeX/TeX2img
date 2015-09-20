@@ -1,7 +1,6 @@
 #import <stdio.h>
 #import <stdarg.h>
 #import "ControllerC.h"
-#import "global.h"
 #import "UtilityC.h"
 #import "NSString-Extension.h"
 

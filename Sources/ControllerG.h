@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import "Converter.h"
+#import "ProfileController.h"
 
 @class TeXTextView;
 
@@ -14,8 +15,8 @@ typedef enum  {
 } HighlightPattern;
 
 @interface ControllerG : NSObject<OutputController, DnDDelegate>
-- (void)adoptProfile:(NSDictionary<NSString*,id>*)aProfile;
-- (NSMutableDictionary<NSString*,id>*)currentProfile;
+- (void)adoptProfile:(Profile*)aProfile;
+- (MutableProfile*)currentProfile;
 - (NSString*)spaceCharacter;
 - (NSString*)fullwidthSpaceCharacter;
 - (NSString*)returnCharacter;

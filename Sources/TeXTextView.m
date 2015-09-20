@@ -4,7 +4,6 @@
 #import "NSMutableString-Extension.h"
 #import "MyLayoutManager.h"
 #import "UtilityG.h"
-#import "global.h"
 
 @implementation TeXTextView
 - (void)awakeFromNib
@@ -114,7 +113,7 @@
 
 - (void)fixupTabs
 {
-    NSDictionary<NSString*,id> *currentProfile = controller.currentProfile;
+    Profile *currentProfile = [controller currentProfile];
     
     NSMutableParagraphStyle* paragraphStyle = [self.defaultParagraphStyle mutableCopy];
     
@@ -141,7 +140,7 @@
 
 - (void)refreshWordWrap
 {
-    NSDictionary<NSString*,id> *currentProfile = controller.currentProfile;
+    Profile *currentProfile = [controller currentProfile];
     BOOL wrap = [currentProfile boolForKey:WrapLineKey];
     
     if (wrap) {
@@ -257,7 +256,7 @@
     }
 
     NSString *theString = (NSString*)aString;
-    NSDictionary<NSString*,id> *currentProfile = controller.currentProfile;
+    Profile *currentProfile = [controller currentProfile];
     unichar texChar = 0x5c;
     
     if ([theString isEqualToString:@"¥"] && [currentProfile boolForKey:ConvertYenMarkKey]) {
@@ -298,7 +297,7 @@
 // クリップボードから貼り付けられる円マークをバックスラッシュに置き換えて貼り付ける
 - (BOOL)readSelectionFromPasteboard:(NSPasteboard*)pboard type:(NSString*)type
 {
-    NSDictionary<NSString*,id> *currentProfile = controller.currentProfile;
+    Profile *currentProfile = [controller currentProfile];
     
     if ([type isEqualToString:NSStringPboardType] && [currentProfile boolForKey:ConvertYenMarkKey]) {
         NSMutableString *string = [NSMutableString stringWithString:[pboard stringForType:NSStringPboardType]];
@@ -343,7 +342,7 @@
     NSString *theCommand;
     NSUInteger tabWidth, i;
     NSString *indentString;
-    NSDictionary<NSString*,id> *aProfile = controller.currentProfile;
+    Profile *aProfile = [controller currentProfile];
     BOOL useTabForIndent = [aProfile boolForKey:TabIndentKey];
     tabWidth = [aProfile integerForKey:TabWidthKey];
     
