@@ -36,108 +36,107 @@ typedef enum {
 #define TemplateDirectoryName @"Templates"
 
 @interface ControllerG()
-@property IBOutlet ProfileController *profileController;
-@property IBOutlet NSWindow *mainWindow;
-@property IBOutlet NSDrawer *outputDrawer;
-@property IBOutlet NSTextView *outputTextView;
-@property IBOutlet NSTextField *outputFileTextField;
-@property IBOutlet NSPopUpButton *templatePopupButton;
+@property (nonatomic, strong) IBOutlet ProfileController *profileController;
+@property (nonatomic, strong) IBOutlet NSWindow *mainWindow;
+@property (nonatomic, strong) IBOutlet NSDrawer *outputDrawer;
+@property (nonatomic, strong) IBOutlet NSTextView *outputTextView;
+@property (nonatomic, strong) IBOutlet NSTextField *outputFileTextField;
+@property (nonatomic, strong) IBOutlet NSPopUpButton *templatePopupButton;
 
-@property IBOutlet NSWindow *preambleWindow;
-@property IBOutlet TeXTextView *preambleTextView;
-@property IBOutlet NSMenuItem *convertYenMarkMenuItem;
-@property IBOutlet NSMenuItem *outputDrawerMenuItem;
-@property IBOutlet NSMenuItem *preambleWindowMenuItem;
-@property IBOutlet NSMenuItem *generateMenuItem;
-@property IBOutlet NSMenuItem *abortMenuItem;
-@property IBOutlet NSMenuItem *autoCompleteMenuItem;
+@property (nonatomic, strong) IBOutlet NSWindow *preambleWindow;
+@property (nonatomic, strong) IBOutlet TeXTextView *preambleTextView;
+@property (nonatomic, strong) IBOutlet NSMenuItem *convertYenMarkMenuItem;
+@property (nonatomic, strong) IBOutlet NSMenuItem *outputDrawerMenuItem;
+@property (nonatomic, strong) IBOutlet NSMenuItem *preambleWindowMenuItem;
+@property (nonatomic, strong) IBOutlet NSMenuItem *generateMenuItem;
+@property (nonatomic, strong) IBOutlet NSMenuItem *abortMenuItem;
+@property (nonatomic, strong) IBOutlet NSMenuItem *autoCompleteMenuItem;
 
-@property IBOutlet NSButton *flashInMovingCheckBox;
-@property IBOutlet NSButton *highlightContentCheckBox;
-@property IBOutlet NSButton *beepCheckBox;
-@property IBOutlet NSButton *flashBackgroundCheckBox;
-@property IBOutlet NSButton *checkBraceCheckBox;
-@property IBOutlet NSButton *checkBracketCheckBox;
-@property IBOutlet NSButton *checkSquareCheckBox;
-@property IBOutlet NSButton *checkParenCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *flashInMovingCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *highlightContentCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *beepCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *flashBackgroundCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *checkBraceCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *checkBracketCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *checkSquareCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *checkParenCheckBox;
 
-@property IBOutlet NSTextField *fontTextField;
-@property IBOutlet NSTextField *tabWidthTextField;
-@property IBOutlet NSStepper *tabWidthStepper;
-@property IBOutlet NSButton *tabIndentCheckBox;
-@property IBOutlet NSButton *wrapLineCheckBox;
+@property (nonatomic, strong) IBOutlet NSTextField *fontTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *tabWidthTextField;
+@property (nonatomic, strong) IBOutlet NSStepper *tabWidthStepper;
+@property (nonatomic, strong) IBOutlet NSButton *tabIndentCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *wrapLineCheckBox;
 
-@property IBOutlet NSButton *showTabCharacterCheckBox;
-@property IBOutlet NSButton *showSpaceCharacterCheckBox;
-@property IBOutlet NSButton *showNewLineCharacterCheckBox;
-@property IBOutlet NSButton *showFullwidthSpaceCharacterCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *showTabCharacterCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *showSpaceCharacterCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *showNewLineCharacterCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *showFullwidthSpaceCharacterCheckBox;
 
-@property IBOutlet NSWindow *colorPalleteWindow;
-@property IBOutlet NSMenuItem *colorPalleteWindowMenuItem;
-@property IBOutlet NSColorWell *colorPalleteColorWell;
-@property IBOutlet NSMatrix *colorStyleMatrix;
-@property IBOutlet NSTextField *colorTextField;
+@property (nonatomic, strong) IBOutlet NSWindow *colorPalleteWindow;
+@property (nonatomic, strong) IBOutlet NSMenuItem *colorPalleteWindowMenuItem;
+@property (nonatomic, strong) IBOutlet NSColorWell *colorPalleteColorWell;
+@property (nonatomic, strong) IBOutlet NSMatrix *colorStyleMatrix;
+@property (nonatomic, strong) IBOutlet NSTextField *colorTextField;
 
-@property IBOutlet NSButton *directInputButton;
-@property IBOutlet NSButton *inputSourceFileButton;
-@property IBOutlet NSTextField *inputSourceFileTextField;
-@property IBOutlet NSButton *browseSourceFileButton;
+@property (nonatomic, strong) IBOutlet NSButton *directInputButton;
+@property (nonatomic, strong) IBOutlet NSButton *inputSourceFileButton;
+@property (nonatomic, strong) IBOutlet NSTextField *inputSourceFileTextField;
+@property (nonatomic, strong) IBOutlet NSButton *browseSourceFileButton;
 
-@property IBOutlet NSButton *generateButton;
-@property IBOutlet NSButton *transparentCheckBox;
-@property IBOutlet NSButton *deleteDisplaySizeCheckBox;
-@property IBOutlet NSButton *mergeOutputsCheckBox;
-@property IBOutlet NSButton *keepPageSizeCheckBox;
-@property IBOutlet NSButton *showOutputDrawerCheckBox;
-@property IBOutlet NSButton *previewCheckBox;
-@property IBOutlet NSButton *deleteTmpFileCheckBox;
-@property IBOutlet NSButton *toClipboardCheckBox;
-@property IBOutlet NSButton *embedSourceCheckBox;
-@property IBOutlet NSButton *embedInIllustratorCheckBox;
-@property IBOutlet NSButton *ungroupCheckBox;
-@property IBOutlet NSWindow *preferenceWindow;
-@property IBOutlet NSTextField *resolutionLabel;
-@property IBOutlet NSTextField *leftMarginLabel;
-@property IBOutlet NSTextField *rightMarginLabel;
-@property IBOutlet NSTextField *topMarginLabel;
-@property IBOutlet NSTextField *bottomMarginLabel;
-@property IBOutlet NSSlider *resolutionSlider;
-@property IBOutlet NSSlider *leftMarginSlider;
-@property IBOutlet NSSlider *rightMarginSlider;
-@property IBOutlet NSSlider *topMarginSlider;
-@property IBOutlet NSSlider *bottomMarginSlider;
-@property IBOutlet NSTextField *latexPathTextField;
-@property IBOutlet NSTextField *dviwarePathTextField;
-@property IBOutlet NSTextField *gsPathTextField;
-@property IBOutlet NSButton *guessCompilationButton;
-@property IBOutlet NSTextField *numberOfCompilationTextField;
-@property IBOutlet NSStepper *numberOfCompilationStepper;
-@property IBOutlet NSButton *textPdfCheckBox;
-@property IBOutlet NSButton *ignoreErrorCheckBox;
-@property IBOutlet NSButton *utfExportCheckBox;
-@property IBOutlet NSPopUpButton *encodingPopUpButton;
-@property IBOutlet NSMatrix *unitMatrix;
-@property IBOutlet NSMatrix *priorityMatrix;
-@property NSString *lastSavedPath;
+@property (nonatomic, strong) IBOutlet NSButton *generateButton;
+@property (nonatomic, strong) IBOutlet NSButton *transparentCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *deleteDisplaySizeCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *mergeOutputsCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *keepPageSizeCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *showOutputDrawerCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *previewCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *deleteTmpFileCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *toClipboardCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *embedSourceCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *embedInIllustratorCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *ungroupCheckBox;
+@property (nonatomic, strong) IBOutlet NSWindow *preferenceWindow;
+@property (nonatomic, strong) IBOutlet NSTextField *resolutionLabel;
+@property (nonatomic, strong) IBOutlet NSTextField *leftMarginLabel;
+@property (nonatomic, strong) IBOutlet NSTextField *rightMarginLabel;
+@property (nonatomic, strong) IBOutlet NSTextField *topMarginLabel;
+@property (nonatomic, strong) IBOutlet NSTextField *bottomMarginLabel;
+@property (nonatomic, strong) IBOutlet NSSlider *resolutionSlider;
+@property (nonatomic, strong) IBOutlet NSSlider *leftMarginSlider;
+@property (nonatomic, strong) IBOutlet NSSlider *rightMarginSlider;
+@property (nonatomic, strong) IBOutlet NSSlider *topMarginSlider;
+@property (nonatomic, strong) IBOutlet NSSlider *bottomMarginSlider;
+@property (nonatomic, strong) IBOutlet NSTextField *latexPathTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *dviwarePathTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *gsPathTextField;
+@property (nonatomic, strong) IBOutlet NSButton *guessCompilationButton;
+@property (nonatomic, strong) IBOutlet NSTextField *numberOfCompilationTextField;
+@property (nonatomic, strong) IBOutlet NSStepper *numberOfCompilationStepper;
+@property (nonatomic, strong) IBOutlet NSButton *textPdfCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *ignoreErrorCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *utfExportCheckBox;
+@property (nonatomic, strong) IBOutlet NSPopUpButton *encodingPopUpButton;
+@property (nonatomic, strong) IBOutlet NSMatrix *unitMatrix;
+@property (nonatomic, strong) IBOutlet NSMatrix *priorityMatrix;
+@property (nonatomic, copy) NSString *lastSavedPath;
 
+@property (nonatomic, strong) NSWindow *lastActiveWindow;
+@property (nonatomic, copy) NSMutableDictionary<NSString*,NSColor*> *lastColorDict;
 
-@property NSWindow *lastActiveWindow;
-@property NSMutableDictionary *lastColorDict;
+@property (nonatomic, strong) IBOutlet NSBox *invisibleCharacterBox;
 
-@property IBOutlet NSBox *invisibleCharacterBox;
+@property (nonatomic, strong) IBOutlet NSPopUpButton *autoDetectionTargetPopupButton;
+@property (nonatomic, strong) IBOutlet NSPopUpButton *pageBoxPopupButton;
 
-@property IBOutlet NSPopUpButton *autoDetectionTargetPopupButton;
-@property IBOutlet NSPopUpButton *pageBoxPopupButton;
+@property (nonatomic, strong) IBOutlet NSTextField *delayTextField;;
+@property (nonatomic, strong) IBOutlet NSStepper *delayStepper;
+@property (nonatomic, strong) IBOutlet NSTextField *loopCountTextField;
+@property (nonatomic, strong) IBOutlet NSStepper *loopCountStepper;
 
-@property IBOutlet NSTextField *delayTextField;;
-@property IBOutlet NSStepper *delayStepper;
-@property IBOutlet NSTextField *loopCountTextField;
-@property IBOutlet NSStepper *loopCountStepper;
-
-@property Converter *converter;
-@property NSTask *runningTask;
-@property NSPipe *outputPipe;
-@property BOOL *taskKilled;
+@property (atomic, strong) Converter *converter;
+@property (atomic, strong) NSTask *runningTask;
+@property (atomic, strong) NSPipe *outputPipe;
+@property (atomic, assign) BOOL *taskKilled;
 
 @end
 
@@ -258,7 +257,7 @@ typedef enum {
     }
 }
 
-- (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments quiet:(BOOL)quiet
+- (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray<NSString*>*)arguments quiet:(BOOL)quiet
 {
     [self exitCurrentThreadIfTaskKilled];
     
@@ -474,7 +473,7 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(showErrorsIgnoredWarningOnMainThread) withObject:nil waitUntilDone:YES];
 }
 
-- (void)showPageSkippedWarning:(NSArray*)pages
+- (void)showPageSkippedWarning:(NSArray<NSNumber*>*)pages
 {
     [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: [%@] ", localizedString(@"Warning")] quiet:NO];
     
@@ -482,14 +481,14 @@ typedef enum {
         [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"pagesSkippedWarning"), [pages componentsJoinedByString:@", "]]
                               quiet:NO];
     } else {
-        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"pageSkippedWarning"), [pages[0] stringValue]]
+        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"pageSkippedWarning"), pages[0].stringValue]
                               quiet:NO];
     }
 
     [self appendOutputAndScroll:@"\n" quiet:NO];
 }
 
-- (void)showWhitePageWarning:(NSArray*)pages
+- (void)showWhitePageWarning:(NSArray<NSNumber*>*)pages
 {
     [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: [%@] ", localizedString(@"Warning")] quiet:NO];
     
@@ -497,7 +496,7 @@ typedef enum {
         [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"whitePagesWarning"), [pages componentsJoinedByString:@", "]]
                               quiet:NO];
     } else {
-        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"whitePageWarning"), [pages[0] stringValue]]
+        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"whitePageWarning"), pages[0].stringValue]
                               quiet:NO];
     }
     
@@ -506,17 +505,17 @@ typedef enum {
 
 - (void)previewFilesOnMainThread:(NSArray*)parameters
 {
-    NSArray *files = (NSArray*)(parameters[0]);
+    NSArray<NSString*> *files = (NSArray<NSString*>*)(parameters[0]);
     NSString *app = (NSString*)(parameters[1]);
     previewFiles(files, app);
 }
 
-- (void)previewFiles:(NSArray*)files withApplication:(NSString*)app
+- (void)previewFiles:(NSArray<NSString*>*)files withApplication:(NSString*)app
 {
     [self performSelectorOnMainThread:@selector(previewFilesOnMainThread:) withObject:@[files, app] waitUntilDone:NO];
 }
 
-- (void)printResult:(NSArray*)generatedFiles quiet:(BOOL)quiet
+- (void)printResult:(NSArray<NSString*>*)generatedFiles quiet:(BOOL)quiet
 {
     NSUInteger count = generatedFiles.count;
     
@@ -530,7 +529,7 @@ typedef enum {
 }
 
 #pragma mark - プロファイルの読み書き関連
-- (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
+- (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary<NSString*,id>*)aProfile forKey:(NSString*)aKey
 {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
@@ -539,7 +538,7 @@ typedef enum {
 	}
 }
 
-- (void)loadSettingForTextView:(NSTextView*)textView fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
+- (void)loadSettingForTextView:(NSTextView*)textView fromProfile:(NSDictionary<NSString*,id>*)aProfile forKey:(NSString*)aKey
 {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
@@ -548,13 +547,13 @@ typedef enum {
 	}
 }
 
-- (void)adoptProfile:(NSDictionary*)aProfile
+- (void)adoptProfile:(NSDictionary<NSString*,id>*)aProfile
 {
     if (!aProfile) {
         return;
     }
     
-    NSArray *keys = aProfile.allKeys;
+    NSArray<NSString*> *keys = aProfile.allKeys;
 	
 	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
 	
@@ -722,7 +721,7 @@ typedef enum {
 
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
 {
-	NSDictionary *aProfile = [profileController profileForName:profileName];
+	NSDictionary<NSString*,id> *aProfile = [profileController profileForName:profileName];
     if (!aProfile) {
         return NO;
     }
@@ -744,9 +743,9 @@ typedef enum {
 
 
 
-- (NSMutableDictionary*)currentProfile
+- (NSMutableDictionary<NSString*,id>*)currentProfile
 {
-	NSMutableDictionary *currentProfile = [NSMutableDictionary dictionary];
+	NSMutableDictionary<NSString*,id> *currentProfile = [NSMutableDictionary<NSString*,id> dictionary];
 	@try {
         currentProfile[TeX2imgVersionKey] = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"];
         
@@ -866,7 +865,7 @@ typedef enum {
     [task launch];
     [task waitUntilExit];
     
-    NSMutableArray *searchPaths = [NSMutableArray arrayWithArray:[pipe.stringValue componentsSeparatedByString:@":"]];
+    NSMutableArray<NSString*> *searchPaths = [NSMutableArray arrayWithArray:[pipe.stringValue componentsSeparatedByString:@":"]];
 
     [searchPaths addObjectsFromArray: @[
                                         @"/Applications/Ghostscript.app/bin",
@@ -1054,7 +1053,7 @@ typedef enum {
 	//	[mainWindow setReleasedWhenClosed:NO];
 	//	[preambleWindow setReleasedWhenClosed:NO];
 
-    lastColorDict = [NSMutableDictionary dictionary];
+    lastColorDict = [NSMutableDictionary<NSString*,NSColor*> dictionary];
 
 	// ノティフィケーションの設定
 	NSNotificationCenter *aCenter = NSNotificationCenter.defaultCenter;
@@ -1235,7 +1234,7 @@ typedef enum {
     fontTextField.stringValue = [NSString stringWithFormat:@"%@ - %.1fpt", font.displayName, font.pointSize];
 }
 
-- (void)showAutoDetectionResult:(NSDictionary*)parameters
+- (void)showAutoDetectionResult:(NSDictionary<NSString*,NSString*>*)parameters
 {
     runOkPanel(parameters[@"Title"],
                @"%@\n%@\n%@\n%@\n%@",
@@ -1316,7 +1315,7 @@ typedef enum {
 
 #pragma mark - Import / Export
 
-- (NSArray*)analyzeContents:(NSString*)contents
+- (NSArray<NSString*>*)analyzeContents:(NSString*)contents
 {
     BOOL convertYenMark = [self.currentProfile boolForKey:ConvertYenMarkKey];
     if (convertYenMark) {
@@ -1344,9 +1343,9 @@ typedef enum {
 
 - (void)placeImportedSource:(NSString*)contents
 {
-    NSArray *parts = [self analyzeContents:contents];
-    NSString *preamble = (NSString*)(parts[0]);
-    NSString *body = (NSString*)(parts[1]);
+    NSArray<NSString*> *parts = [self analyzeContents:contents];
+    NSString *preamble = parts[0];
+    NSString *body = parts[1];
     
     if (![preamble isEqualToString:@""]) {
         [preambleTextView replaceEntireContentsWithString:preamble];
@@ -1804,7 +1803,7 @@ typedef enum {
     [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
 }
 
-- (void)searchProgramsLogic:(NSDictionary*)parameters
+- (void)searchProgramsLogic:(NSDictionary<NSString*,NSString*>*)parameters
 {
     NSString *latexPath;
     NSString *dviwarePath;
@@ -1887,7 +1886,7 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(generationDidFinishOnMainThread) withObject:nil waitUntilDone:YES];
 }
 
-- (void)printCurrentStatus:(NSDictionary*)aProfile
+- (void)printCurrentStatus:(NSDictionary<NSString*,id>*)aProfile
 {
     NSMutableString *output = [NSMutableString string];
     
@@ -1968,7 +1967,7 @@ typedef enum {
 - (void)generateImage
 {
     NSString *inputSourceFilePath;
-    NSMutableDictionary *aProfile = self.currentProfile;
+    NSMutableDictionary<NSString*,id> *aProfile = self.currentProfile;
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
     aProfile[MudrawPathKey] = [[NSBundle.mainBundle pathForResource:@"mupdf" ofType:nil] stringByAppendingPathComponent:@"mudraw"];
     aProfile[QuietKey] = @(NO);

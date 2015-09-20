@@ -7,7 +7,7 @@
 
 @implementation ControllerC
 #pragma mark OutputController プロトコルの実装
-- (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments quiet:(BOOL)quiet
+- (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray<NSString*>*)arguments quiet:(BOOL)quiet
 {
     char str[MAX_LEN];
     FILE *fp;
@@ -152,25 +152,25 @@
     printStdErr("tex2img: [Warning] Some errors were ignored. The result may be different from what you expected.\n");
 }
 
-- (void)showPageSkippedWarning:(NSArray*)pages
+- (void)showPageSkippedWarning:(NSArray<NSNumber*>*)pages
 {
     if (pages.count > 1) {
         printStdErr("tex2img: [Warning] Page %s were empty and they were skipped.\n", [pages componentsJoinedByString:@", "].UTF8String);
     } else {
-        printStdErr("tex2img: [Warning] Page %d was empty and it was skipped.\n", [pages[0] integerValue]);
+        printStdErr("tex2img: [Warning] Page %d was empty and it was skipped.\n", pages[0].integerValue);
     }
 }
 
-- (void)showWhitePageWarning:(NSArray*)pages
+- (void)showWhitePageWarning:(NSArray<NSNumber*>*)pages
 {
     if (pages.count > 1) {
         printStdErr("tex2img: [Warning] Page %s were empty and white pages were generated.\n", [pages componentsJoinedByString:@", "].UTF8String);
     } else {
-        printStdErr("tex2img: [Warning] Page %d was empty and a white page was generated.\n", [pages[0] integerValue]);
+        printStdErr("tex2img: [Warning] Page %d was empty and a white page was generated.\n", pages[0].integerValue);
     }
 }
 
-- (void)previewFiles:(NSArray*)files withApplication:(NSString*)app
+- (void)previewFiles:(NSArray<NSString*>*)files withApplication:(NSString*)app
 {
     previewFiles(files, app);
 }

@@ -56,7 +56,7 @@ NSString * const DirectoryLocationDomain = @"DirectoryLocationDomain";
 	//
 	// Search for the path
 	//
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(searchPathDirectory, domainMask, YES);
+	NSArray<NSString*> *paths = NSSearchPathForDirectoriesInDomains(searchPathDirectory, domainMask, YES);
 	if (paths.count == 0) {
 		if (errorOut) {
             NSDictionary *userInfo = @{

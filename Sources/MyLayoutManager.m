@@ -27,17 +27,17 @@
 	float theInsetWidth = 0.0;
 	float theInsetHeight = 4.0;
 	NSSize theSize = NSMakeSize(theInsetWidth, theInsetHeight);
-    NSDictionary* currentProfile = controller.currentProfile;
+    NSDictionary<NSString*,id> *currentProfile = controller.currentProfile;
 	
     NSFont *theFont = self.textStorage.font;
     NSColor *theColor = NSColor.invisibleColor;
     if (!theColor) {
         theColor = NSColor.invisibleColor;
     }
-    NSDictionary* attributes = @{
-                                 NSFontAttributeName: theFont,
-                                 NSForegroundColorAttributeName: theColor
-                                 };
+    NSDictionary<NSString*,id> *attributes = @{
+                                               NSFontAttributeName: theFont,
+                                               NSForegroundColorAttributeName: theColor
+                                               };
 	
 	for (theGlyphIndex = inGlyphRange.location; theGlyphIndex < theLengthToRedraw; theGlyphIndex++) {
 		theCharIndex = [self characterIndexForGlyphAtIndex:theGlyphIndex];

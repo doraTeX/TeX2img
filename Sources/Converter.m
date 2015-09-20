@@ -17,38 +17,38 @@
 #import "Converter.h"
 
 @interface Converter()
-@property NSString *latexPath;
-@property NSString *dviwarePath;
-@property NSString *gsPath;
-@property NSString *encoding;
-@property NSString *outputFilePath;
-@property NSString *preambleStr;
-@property float resolutionLevel;
-@property BOOL guessCompilation;
-@property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
-@property NSObject<OutputController> *controller;
-@property NSFileManager *fileManager;
-@property NSString *tempdir;
-@property pid_t pid;
-@property NSString *tempFileBaseName;
-@property NSString *epstopdfPath;
-@property NSString *mudrawPath;
-@property NSUInteger pageCount;
-@property BOOL useBP;
-@property BOOL speedPriorityMode;
-@property BOOL embedSource;
-@property BOOL copyToClipboard;
-@property NSString *additionalInputPath;
-@property BOOL pdfInputMode;
-@property BOOL psInputMode;
-@property BOOL errorsIgnored;
-@property CGPDFBox pageBoxType;
-@property float delay;
-@property NSInteger loopCount;
-@property NSMutableArray *emptyPageFlags;
-@property NSMutableArray *whitePageFlags;
-@property NSMutableDictionary *bboxDictionary;
+@property (nonatomic, copy) NSString *latexPath;
+@property (nonatomic, copy) NSString *dviwarePath;
+@property (nonatomic, copy) NSString *gsPath;
+@property (nonatomic, copy) NSString *encoding;
+@property (nonatomic, copy) NSString *outputFilePath;
+@property (nonatomic, copy) NSString *preambleStr;
+@property (nonatomic, assign) float resolutionLevel;
+@property (nonatomic, assign) BOOL guessCompilation;
+@property (nonatomic, assign) NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
+@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property (nonatomic, strong) NSObject<OutputController> *controller;
+@property (nonatomic, strong) NSFileManager *fileManager;
+@property (nonatomic, copy) NSString *tempdir;
+@property (nonatomic, assign) pid_t pid;
+@property (nonatomic, copy) NSString *tempFileBaseName;
+@property (nonatomic, copy) NSString *epstopdfPath;
+@property (nonatomic, copy) NSString *mudrawPath;
+@property (nonatomic, assign) NSUInteger pageCount;
+@property (nonatomic, assign) BOOL useBP;
+@property (nonatomic, assign) BOOL speedPriorityMode;
+@property (nonatomic, assign) BOOL embedSource;
+@property (nonatomic, assign) BOOL copyToClipboard;
+@property (nonatomic, copy) NSString *additionalInputPath;
+@property (nonatomic, assign) BOOL pdfInputMode;
+@property (nonatomic, assign) BOOL psInputMode;
+@property (nonatomic, assign) BOOL errorsIgnored;
+@property (nonatomic, assign) CGPDFBox pageBoxType;
+@property (nonatomic, assign) float delay;
+@property (nonatomic, assign) NSInteger loopCount;
+@property (nonatomic, copy) NSMutableArray<NSNumber*> *emptyPageFlags;
+@property (nonatomic, copy) NSMutableArray<NSNumber*> *whitePageFlags;
+@property (nonatomic, copy) NSMutableDictionary<NSString*,NSString*> *bboxDictionary;
 @end
 
 @implementation Converter
@@ -85,7 +85,7 @@
 @synthesize whitePageFlags;
 @synthesize bboxDictionary;
 
-- (Converter*)initWithProfile:(NSDictionary*)aProfile
+- (Converter*)initWithProfile:(NSDictionary<NSString*,id>*)aProfile
 {
     pageCount = 1;
     
@@ -137,12 +137,12 @@
     
 	tempFileBaseName = [NSString stringWithFormat:@"temp%d-%@", getpid(), NSString.UUIDString];
     
-    bboxDictionary = [NSMutableDictionary dictionary];
+    bboxDictionary = [NSMutableDictionary<NSString*,NSString*> dictionary];
 	
 	return self;
 }
 
-+ (Converter*)converterWithProfile:(NSDictionary*)aProfile
++ (Converter*)converterWithProfile:(NSDictionary<NSString*,id>*)aProfile
 {
 	return [[Converter alloc] initWithProfile:aProfile];
 }
@@ -235,7 +235,7 @@
     return cmdline;
 }
 
-- (BOOL)compileWithArguments:(NSArray*)arguments
+- (BOOL)compileWithArguments:(NSArray<NSString*>*)arguments
 {
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
     
@@ -250,7 +250,7 @@
 
 - (BOOL)tex2dvi:(NSString*)teXFilePath
 {
-    NSMutableArray *arguments = [NSMutableArray arrayWithObject:@"-interaction=nonstopmode"];
+    NSMutableArray<NSString*> *arguments = [NSMutableArray arrayWithObject:@"-interaction=nonstopmode"];
  
     if (![encoding isEqualToString:PTEX_ENCODING_NONE]) {
         [arguments addObject:[NSString stringWithFormat:@"-kanji=%@", encoding]];
@@ -570,13 +570,13 @@
 
 - (BOOL)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(NSInteger)resolution page:(NSUInteger)page;
 {
-    NSMutableArray *arguments = [NSMutableArray arrayWithArray:@[@"-dNOPAUSE",
-                                                                 @"-dBATCH",
-                                                                 [NSString stringWithFormat:@"-r%ld", resolution],
-                                                                 [NSString stringWithFormat:@"-sOutputFile=%@", outputEpsFileName],
-                                                                 [NSString stringWithFormat:@"-dFirstPage=%lu", page],
-                                                                 [NSString stringWithFormat:@"-dLastPage=%lu", page],
-                                                                 ]];
+    NSMutableArray<NSString*> *arguments = [NSMutableArray<NSString*> arrayWithArray:@[@"-dNOPAUSE",
+                                                                                       @"-dBATCH",
+                                                                                       [NSString stringWithFormat:@"-r%ld", resolution],
+                                                                                       [NSString stringWithFormat:@"-sOutputFile=%@", outputEpsFileName],
+                                                                                       [NSString stringWithFormat:@"-dFirstPage=%lu", page],
+                                                                                       [NSString stringWithFormat:@"-dLastPage=%lu", page],
+                                                                                       ]];
     
     BOOL shouldUseEps2WriteDevice = [self shouldUseEps2WriteDevice];
     
@@ -719,7 +719,7 @@
     NSData *outputData;
 	if ([@"jpg" isEqualToString:extension]) {
 		imageRep = [self fillBackground:imageRep];
-        NSDictionary *prop = @{NSImageCompressionFactor: @1.0f};
+        NSDictionary<NSString*,id> *prop = @{NSImageCompressionFactor: @1.0f};
 		outputData = [imageRep representationUsingType:NSJPEGFileType properties:prop];
 	} else if ([@"png" isEqualToString:extension]) {
 		if (!transparentFlag) {
@@ -735,7 +735,7 @@
         if (!transparentFlag) {
             imageRep = [self fillBackground:imageRep];
         }
-        NSDictionary *prop = @{NSImageCompressionFactor: @1.0f};
+        NSDictionary<NSString*,id> *prop = @{NSImageCompressionFactor: @1.0f};
         outputData = [imageRep representationUsingType:NSTIFFFileType properties:prop];
     } else if ([@"bmp" isEqualToString:extension]) {
         imageRep = [self fillBackground:imageRep];
@@ -792,8 +792,8 @@
 
 - (BOOL)generateAnimatedGIFFrom:(NSArray<NSString*>*)sourcePaths toPath:(NSString*)destPath
 {
-    NSDictionary *frameProperties = @{(NSString*)kCGImagePropertyGIFDictionary: @{(NSString*)kCGImagePropertyGIFDelayTime: @(delay)}};
-    NSDictionary *gifProperties = @{(NSString*)kCGImagePropertyGIFDictionary: @{(NSString*)kCGImagePropertyGIFLoopCount: @(loopCount)}};
+    NSDictionary<NSString*,NSDictionary*> *frameProperties = @{(NSString*)kCGImagePropertyGIFDictionary: @{(NSString*)kCGImagePropertyGIFDelayTime: @(delay)}};
+    NSDictionary<NSString*,NSDictionary*> *gifProperties = @{(NSString*)kCGImagePropertyGIFDictionary: @{(NSString*)kCGImagePropertyGIFLoopCount: @(loopCount)}};
     
     __block CFMutableDataRef gifData = CFDataCreateMutable(kCFAllocatorDefault, 0);
     CGImageDestinationRef destination = CGImageDestinationCreateWithData(gifData, kUTTypeGIF, sourcePaths.count, NULL);
@@ -842,7 +842,7 @@
         return YES;
     }
     
-    NSArray *arguments = @[@"-o", svgFilePath.stringByQuotingWithDoubleQuotations, pdfFilePath.stringByQuotingWithDoubleQuotations, [NSString stringWithFormat:@"%ld", page]];
+    NSArray<NSString*> *arguments = @[@"-o", svgFilePath.stringByQuotingWithDoubleQuotations, pdfFilePath.stringByQuotingWithDoubleQuotations, [NSString stringWithFormat:@"%ld", page]];
     
     BOOL success = [controller execCommand:mudrawPath
                                atDirectory:tempdir
@@ -983,10 +983,10 @@
 
 - (NSDate*)fileModificationDateAtPath:(NSString*)filePath
 {
-    NSDictionary *attributes = [fileManager attributesOfItemAtPath:filePath error:nil];
+    NSDictionary<NSString*,id> *attributes = [fileManager attributesOfItemAtPath:filePath error:nil];
     
     if (attributes) {
-        return (NSDate*)[attributes objectForKey:NSFileModificationDate];
+        return (NSDate*)(attributes[NSFileModificationDate]);
     } else {
         return nil;
     }
@@ -1127,14 +1127,14 @@
     
     pageCount = pdfDocument.pageCount;
 
-    emptyPageFlags = [NSMutableArray array];
+    emptyPageFlags = [NSMutableArray<NSNumber*> array];
     for (NSInteger i=1; i<=pageCount; i++) {
         [emptyPageFlags addObject:@([self willEmptyPageBeCreated:pdfFilePath page:i])];
     }
 
-    whitePageFlags = [NSMutableArray array];
+    whitePageFlags = [NSMutableArray<NSNumber*> array];
     for (NSInteger i=1; i<=pageCount; i++) {
-        [whitePageFlags addObject:@([self isEmptyPage:pdfFilePath page:i] && !(((NSNumber*)emptyPageFlags[i-1]).boolValue))];
+        [whitePageFlags addObject:@([self isEmptyPage:pdfFilePath page:i] && !(emptyPageFlags[i-1].boolValue))];
     }
 
     // ありうる経路
@@ -1227,7 +1227,7 @@
     // 単一PDF出力/マルチページTIFF/アニメーションGIF出力の場合
     if ([@[@"pdf", @"tiff", @"gif"] containsObject:extension] && mergeOutputsFlag) {
         // 実際に生成したファイルのパスを集める
-        NSMutableArray *outputFiles = [NSMutableArray array];
+        NSMutableArray<NSString*> *outputFiles = [NSMutableArray<NSString*> array];
         
         if (![emptyPageFlags[0] boolValue]) {
             [outputFiles addObject:[tempdir stringByAppendingPathComponent:outputFileName]];
@@ -1315,7 +1315,7 @@
         if (copyToClipboard) {
             NSPasteboard *pboard = NSPasteboard.generalPasteboard;
             [pboard declareTypes:@[NSURLPboardType] owner:nil];
-            NSMutableArray *outputFiles = [NSMutableArray array];
+            NSMutableArray<NSURL*> *outputFiles = [NSMutableArray<NSURL*> array];
             
             if (![emptyPageFlags[0] boolValue]) {
                 [outputFiles addObject:[NSURL fileURLWithPath:outputFilePath]];
@@ -1371,7 +1371,7 @@
     [controller releaseOutputTextView];
     
     // 生成ファイルを集める
-    NSMutableArray<NSString*> *generatedFiles = [NSMutableArray array];
+    NSMutableArray<NSString*> *generatedFiles = [NSMutableArray<NSString*> array];
     NSInteger generatedPageCount = pageCount - emptyPageFlags.indexesOfTrueValue.count;
     
     if ([@[@"pdf", @"tiff", @"gif"] containsObject:extension] && mergeOutputsFlag && (generatedPageCount > 0)) {

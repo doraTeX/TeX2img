@@ -30,7 +30,7 @@ NSString* getFullPath(NSString *aPath)
     return @(str);
 }
 
-void previewFiles(NSArray *files, NSString *app)
+void previewFiles(NSArray<NSString*> *files, NSString *app)
 {
     if (files.count == 0) {
         return;

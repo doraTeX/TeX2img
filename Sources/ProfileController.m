@@ -6,12 +6,12 @@
 #define MovedRowsType @"TeX2imgMovedRowsType"
 
 @interface ProfileController()
-@property NSMutableArray *profiles;
-@property NSMutableArray *profileNames;
-@property IBOutlet NSWindow *profilesWindow;
-@property IBOutlet NSTableView *profilesTableView;
-@property IBOutlet NSTextField *saveAsTextField;
-@property IBOutlet ControllerG *controllerG;
+@property (nonatomic, copy) NSMutableArray<NSDictionary<NSString*,id>*> *profiles;
+@property (nonatomic, copy) NSMutableArray<NSString*> *profileNames;
+@property (nonatomic, strong) IBOutlet NSWindow *profilesWindow;
+@property (nonatomic, strong) IBOutlet NSTableView *profilesTableView;
+@property (nonatomic, strong) IBOutlet NSTextField *saveAsTextField;
+@property (nonatomic, strong) IBOutlet ControllerG *controllerG;
 @end
 
 @implementation ProfileController
@@ -22,26 +22,26 @@
 @synthesize saveAsTextField;
 @synthesize controllerG;
 
-- (NSMutableDictionary*)profileForName:(NSString*)profileName
+- (NSMutableDictionary<NSString*,id>*)profileForName:(NSString*)profileName
 {
     if (!profileNames) {
         return nil;
     }
 	
 	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
-	return (targetIndex == NSNotFound) ? nil : [NSMutableDictionary dictionaryWithDictionary:profiles[targetIndex]];
+	return (targetIndex == NSNotFound) ? nil : [NSMutableDictionary<NSString*,id> dictionaryWithDictionary:profiles[targetIndex]];
 }
 
 - (void)loadProfilesFromPlist
 {
-	profileNames = [NSMutableArray arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:ProfileNamesKey]];
-	profiles =  [NSMutableArray arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:ProfilesKey]];
+	profileNames = [NSMutableArray<NSString*> arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:ProfileNamesKey]];
+	profiles =  [NSMutableArray<NSDictionary<NSString*,id>*> arrayWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:ProfilesKey]];
 }
 
 - (void)initProfiles
 {
-	profileNames = [NSMutableArray array];
-	profiles = [NSMutableArray array];
+	profileNames = [NSMutableArray<NSString*> array];
+	profiles = [NSMutableArray<NSDictionary<NSString*,id>*> array];
 }
 
 - (void)removeProfileForName:(NSString*)profileName
@@ -54,7 +54,7 @@
 	[profiles removeObjectAtIndex:targetIndex];
 }
 
-- (void)updateProfile:(NSDictionary*)aProfile forName:(NSString*)profileName
+- (void)updateProfile:(NSDictionary<NSString*,id>*)aProfile forName:(NSString*)profileName
 {
 	NSUInteger targetIndex = [profileNames indexOfObject:profileName];
 	if (targetIndex == NSNotFound) {
@@ -169,7 +169,7 @@
      toPasteboard:(NSPasteboard*)pboard
 {
 	// declare our own pasteboard types
-    NSArray *typesArray = @[MovedRowsType];
+    NSArray<NSString*> *typesArray = @[MovedRowsType];
 	[pboard declareTypes:typesArray owner:self];
 	
     // add rows array for local move

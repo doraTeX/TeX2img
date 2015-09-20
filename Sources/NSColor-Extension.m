@@ -15,7 +15,7 @@
 + (NSColor*)colorWithSerializedString:(NSString*)string
 {
     CGFloat components[4];
-    NSArray* chunks = [string componentsSeparatedByString:@":"];
+    NSArray<NSString*> *chunks = [string componentsSeparatedByString:@":"];
     
     if (chunks.count != 4) {
         return nil;

@@ -14,11 +14,11 @@ typedef enum  {
 } HighlightPattern;
 
 @interface ControllerG : NSObject<OutputController, DnDDelegate>
-- (void)adoptProfile:(NSDictionary*)aProfile;
-- (NSMutableDictionary*)currentProfile;
+- (void)adoptProfile:(NSDictionary<NSString*,id>*)aProfile;
+- (NSMutableDictionary<NSString*,id>*)currentProfile;
 - (NSString*)spaceCharacter;
 - (NSString*)fullwidthSpaceCharacter;
 - (NSString*)returnCharacter;
 - (NSString*)tabCharacter;
-@property IBOutlet TeXTextView *sourceTextView;
+@property (nonatomic, strong) IBOutlet TeXTextView *sourceTextView;
 @end

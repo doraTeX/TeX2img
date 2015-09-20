@@ -3,5 +3,5 @@
 
 NSString* execCommand(NSString *cmdline);
 NSString* getFullPath(NSString *aPath);
-void previewFiles(NSArray *files, NSString *app);
+void previewFiles(NSArray<NSString*> *files, NSString *app);
 #endif

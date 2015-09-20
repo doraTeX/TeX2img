@@ -2,6 +2,6 @@
 #import "ControllerG.h"
 
 @interface MyLayoutManager : NSLayoutManager
-@property ControllerG *controller;
+@property (nonatomic, strong) ControllerG *controller;
 @end
 

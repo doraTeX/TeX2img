@@ -88,7 +88,7 @@ NSInteger strtoi(char *str)
 	return (NSInteger)val;
 }
 
-void printCurrentStatus(NSString *inputFilePath, NSDictionary *aProfile)
+void printCurrentStatus(NSString *inputFilePath, NSDictionary<NSString*,id> *aProfile)
 {
     printf("************************************\n");
     printf("  TeX2img settings\n");
@@ -829,7 +829,7 @@ int main (int argc, char *argv[]) {
             mudrawPath = @"mudraw";
         }
         
-        NSMutableDictionary *aProfile = [NSMutableDictionary dictionary];
+        NSMutableDictionary<NSString*,id> *aProfile = [NSMutableDictionary<NSString*,id> dictionary];
         
         aProfile[LatexPathKey] = [latexPath stringByAppendingStringSeparetedBySpace:latex.argumentsString];
         aProfile[DviwarePathKey] = [dviwarePath stringByAppendingStringSeparetedBySpace:dviware.argumentsString];
