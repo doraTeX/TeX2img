@@ -22,7 +22,7 @@
 
 - (NSString*)argumentsString
 {
-    NSMutableArray *array = [NSMutableArray arrayWithArray:[self componentsSeparatedByString:@" "]];
+    NSMutableArray<NSString*> *array = [NSMutableArray<NSString*> arrayWithArray:[self componentsSeparatedByString:@" "]];
     [array removeObjectAtIndex:0];
     return [array componentsJoinedByString:@" "];
 }

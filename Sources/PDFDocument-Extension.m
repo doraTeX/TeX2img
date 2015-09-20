@@ -6,20 +6,20 @@
     return [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:path]];
 }
 
-+ (instancetype)documentWithMergingPDFFiles:(NSArray*)paths
++ (instancetype)documentWithMergingPDFFiles:(NSArray<NSString*>*)paths
 {
     if (paths.count == 0) {
         return nil;
     }
     
-    PDFDocument *doc = [PDFDocument documentWithFilePath:(NSString*)(paths[0])];
+    PDFDocument *doc = [PDFDocument documentWithFilePath:paths[0]];
     if (!doc) {
         return nil;
     }
     
     NSUInteger pageCount = doc.pageCount;
     for (NSUInteger i=1; i<paths.count; i++) {
-        PDFDocument *insertedDoc = [PDFDocument documentWithFilePath:(NSString*)(paths[i])];
+        PDFDocument *insertedDoc = [PDFDocument documentWithFilePath:paths[i]];
         if (!insertedDoc) {
             return nil;
         }

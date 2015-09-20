@@ -10,10 +10,10 @@
     BOOL autoCompleting;
     BOOL contentHighlighting;
     BOOL braceHighlighting;
-    NSDictionary *highlightBracesColorDict;
+    NSDictionary<NSString*,id> *highlightBracesColorDict;
     NSUInteger lastCursorLocation;
     NSUInteger lastStringLength;
-    NSDictionary *autocompletionDictionary;
+    NSDictionary<NSString*,NSString*> *autocompletionDictionary;
     BOOL dragging;
     NSDragOperation currentDragOperation;
 }

@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
 @interface NSColorWell (Extension)
-- (void)saveColorToMutableDictionary:(NSMutableDictionary*)dictionary;
-- (void)restoreColorFromDictionary:(NSDictionary*)dictionary;
+- (void)saveColorToMutableDictionary:(NSMutableDictionary<NSString*,NSColor*>*)dictionary;
+- (void)restoreColorFromDictionary:(NSDictionary<NSString*,NSColor*>*)dictionary;
 @end

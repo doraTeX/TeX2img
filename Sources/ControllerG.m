@@ -122,7 +122,7 @@ typedef enum {
 @property NSString *lastSavedPath;
 
 @property NSWindow *lastActiveWindow;
-@property NSMutableDictionary *lastColorDict;
+@property NSMutableDictionary<NSString*,NSColor*> *lastColorDict;
 
 @property IBOutlet NSColorWell *foregroundColorWell;
 @property IBOutlet NSColorWell *backgroundColorWell;
@@ -325,7 +325,7 @@ typedef enum {
     }
 }
 
-- (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray*)arguments quiet:(BOOL)quiet
+- (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray<NSString*>*)arguments quiet:(BOOL)quiet
 {
     [self exitCurrentThreadIfTaskKilled];
     
@@ -541,7 +541,7 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(showErrorsIgnoredWarningOnMainThread) withObject:nil waitUntilDone:YES];
 }
 
-- (void)showPageSkippedWarning:(NSArray*)pages
+- (void)showPageSkippedWarning:(NSArray<NSNumber*>*)pages
 {
     [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: [%@] ", localizedString(@"Warning")] quiet:NO];
     
@@ -549,14 +549,14 @@ typedef enum {
         [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"pagesSkippedWarning"), [pages componentsJoinedByString:@", "]]
                               quiet:NO];
     } else {
-        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"pageSkippedWarning"), [pages[0] stringValue]]
+        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"pageSkippedWarning"), pages[0].stringValue]
                               quiet:NO];
     }
 
     [self appendOutputAndScroll:@"\n" quiet:NO];
 }
 
-- (void)showWhitePageWarning:(NSArray*)pages
+- (void)showWhitePageWarning:(NSArray<NSNumber*>*)pages
 {
     [self appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: [%@] ", localizedString(@"Warning")] quiet:NO];
     
@@ -564,7 +564,7 @@ typedef enum {
         [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"whitePagesWarning"), [pages componentsJoinedByString:@", "]]
                               quiet:NO];
     } else {
-        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"whitePageWarning"), [pages[0] stringValue]]
+        [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"whitePageWarning"), pages[0].stringValue]
                               quiet:NO];
     }
     
@@ -573,17 +573,17 @@ typedef enum {
 
 - (void)previewFilesOnMainThread:(NSArray*)parameters
 {
-    NSArray *files = (NSArray*)(parameters[0]);
+    NSArray<NSString*> *files = (NSArray<NSString*>*)(parameters[0]);
     NSString *app = (NSString*)(parameters[1]);
     previewFiles(files, app);
 }
 
-- (void)previewFiles:(NSArray*)files withApplication:(NSString*)app
+- (void)previewFiles:(NSArray<NSString*>*)files withApplication:(NSString*)app
 {
     [self performSelectorOnMainThread:@selector(previewFilesOnMainThread:) withObject:@[files, app] waitUntilDone:NO];
 }
 
-- (void)printResult:(NSArray*)generatedFiles quiet:(BOOL)quiet
+- (void)printResult:(NSArray<NSString*>*)generatedFiles quiet:(BOOL)quiet
 {
     NSUInteger count = generatedFiles.count;
     
@@ -597,7 +597,7 @@ typedef enum {
 }
 
 #pragma mark - プロファイルの読み書き関連
-- (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
+- (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(NSDictionary<NSString*,id>*)aProfile forKey:(NSString*)aKey
 {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
@@ -606,7 +606,7 @@ typedef enum {
 	}
 }
 
-- (void)loadSettingForTextView:(NSTextView*)textView fromProfile:(NSDictionary*)aProfile forKey:(NSString*)aKey
+- (void)loadSettingForTextView:(NSTextView*)textView fromProfile:(NSDictionary<NSString*,id>*)aProfile forKey:(NSString*)aKey
 {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
@@ -615,13 +615,13 @@ typedef enum {
 	}
 }
 
-- (void)adoptProfile:(NSDictionary*)aProfile
+- (void)adoptProfile:(NSDictionary<NSString*,id>*)aProfile
 {
     if (!aProfile) {
         return;
     }
     
-    NSArray *keys = aProfile.allKeys;
+    NSArray<NSString*> *keys = aProfile.allKeys;
 	
 	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
 	
@@ -895,7 +895,7 @@ typedef enum {
 
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
 {
-	NSDictionary *aProfile = [profileController profileForName:profileName];
+	NSDictionary<NSString*,id> *aProfile = [profileController profileForName:profileName];
     if (!aProfile) {
         return NO;
     }
@@ -917,9 +917,9 @@ typedef enum {
 
 
 
-- (NSMutableDictionary*)currentProfile
+- (NSMutableDictionary<NSString*,id>*)currentProfile
 {
-	NSMutableDictionary *currentProfile = [NSMutableDictionary dictionary];
+	NSMutableDictionary<NSString*,id> *currentProfile = [NSMutableDictionary<NSString*,id> dictionary];
 	@try {
         currentProfile[TeX2imgVersionKey] = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"];
         
@@ -1057,7 +1057,7 @@ typedef enum {
     [task launch];
     [task waitUntilExit];
     
-    NSMutableArray *searchPaths = [NSMutableArray arrayWithArray:[pipe.stringValue componentsSeparatedByString:@":"]];
+    NSMutableArray<NSString*> *searchPaths = [NSMutableArray arrayWithArray:[pipe.stringValue componentsSeparatedByString:@":"]];
 
     [searchPaths addObjectsFromArray: @[
                                         @"/Applications/TeXLive/Library/mactexaddons/bin",
@@ -1244,7 +1244,7 @@ typedef enum {
 	//	[mainWindow setReleasedWhenClosed:NO];
 	//	[preambleWindow setReleasedWhenClosed:NO];
 
-    lastColorDict = [NSMutableDictionary dictionary];
+    lastColorDict = [NSMutableDictionary<NSString*,NSColor*> dictionary];
 
 	// ノティフィケーションの設定
 	NSNotificationCenter *aCenter = NSNotificationCenter.defaultCenter;
@@ -1468,7 +1468,7 @@ typedef enum {
     fontTextField.stringValue = [NSString stringWithFormat:@"%@ - %.1fpt", font.displayName, font.pointSize];
 }
 
-- (void)showAutoDetectionResult:(NSDictionary*)parameters
+- (void)showAutoDetectionResult:(NSDictionary<NSString*,NSString*>*)parameters
 {
     runOkPanel(parameters[@"Title"],
                @"%@\n%@\n%@\n%@\n%@",
@@ -1549,7 +1549,7 @@ typedef enum {
 
 #pragma mark - Import / Export
 
-- (NSArray*)analyzeContents:(NSString*)contents
+- (NSArray<NSString*>*)analyzeContents:(NSString*)contents
 {
     BOOL convertYenMark = [self.currentProfile boolForKey:ConvertYenMarkKey];
     if (convertYenMark) {
@@ -1578,9 +1578,9 @@ typedef enum {
 
 - (void)placeImportedSource:(NSString*)contents
 {
-    NSArray *parts = [self analyzeContents:contents];
-    NSString *preamble = (NSString*)(parts[0]);
-    NSString *body = (NSString*)(parts[1]);
+    NSArray<NSString*> *parts = [self analyzeContents:contents];
+    NSString *preamble = parts[0];
+    NSString *body = parts[1];
     
     if (![preamble isEqualToString:@""]) {
         [preambleTextView replaceEntireContentsWithString:preamble];
@@ -2074,7 +2074,7 @@ typedef enum {
     [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
 }
 
-- (void)searchProgramsLogic:(NSDictionary*)parameters
+- (void)searchProgramsLogic:(NSDictionary<NSString*,NSString*>*)parameters
 {
     NSString *latexPath;
     NSString *dviwarePath;
@@ -2157,7 +2157,7 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(generationDidFinishOnMainThread) withObject:nil waitUntilDone:YES];
 }
 
-- (void)printCurrentStatus:(NSDictionary*)aProfile
+- (void)printCurrentStatus:(NSDictionary<NSString*,id>*)aProfile
 {
     NSMutableString *output = [NSMutableString string];
     
@@ -2238,7 +2238,7 @@ typedef enum {
 - (void)generateImage
 {
     NSString *inputSourceFilePath;
-    NSMutableDictionary *aProfile = self.currentProfile;
+    NSMutableDictionary<NSString*,id> *aProfile = self.currentProfile;
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
     aProfile[MudrawPathKey] = [[NSBundle.mainBundle pathForResource:@"mupdf" ofType:nil] stringByAppendingPathComponent:@"mudraw"];
     aProfile[QuietKey] = @(NO);

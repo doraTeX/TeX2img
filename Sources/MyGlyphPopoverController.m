@@ -78,8 +78,8 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
     return contents.string;
 }
 
-- (NSDictionary*)attributesAtIndex:(NSUInteger)location
-                    effectiveRange:(NSRange*)range
+- (NSDictionary<NSString*,id>*)attributesAtIndex:(NSUInteger)location
+                                  effectiveRange:(NSRange*)range
 {
     return [contents attributesAtIndex:location effectiveRange:range];
 }
@@ -147,7 +147,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
         
         // unicode hex
         NSString *unicode;
-        NSMutableArray *unicodes = [NSMutableArray array];
+        NSMutableArray<NSString*> *unicodes = [NSMutableArray<NSString*> array];
         
         for (NSUInteger i = 0; i < length; i++) {
             unichar theChar = [character characterAtIndex:i];

@@ -15,7 +15,7 @@
 	NSUInteger		aLineEnd;
 	NSUInteger		end;
 	
-    NSDictionary *profile = controller.currentProfile;
+    NSDictionary<NSString*,id> *profile = controller.currentProfile;
     
     NSColor *color;
     
@@ -39,21 +39,21 @@
         color = NSColor.commandColor;
     }
 
-    NSDictionary *commandColorAttribute = @{NSForegroundColorAttributeName: color};
+    NSDictionary<NSString*,id> *commandColorAttribute = @{NSForegroundColorAttributeName: color};
     
     color = [profile colorForKey:CommentColorKey];
     if (!color) {
         color = NSColor.commentColor;
     }
     
-    NSDictionary *commentColorAttribute = @{NSForegroundColorAttributeName: color};
+    NSDictionary<NSString*,id> *commentColorAttribute = @{NSForegroundColorAttributeName: color};
 
     color = [profile colorForKey:BraceColorKey];
     if (!color) {
         color = NSColor.braceColor;
     }
     
-    NSDictionary *markerColorAttribute = @{NSForegroundColorAttributeName: color};
+    NSDictionary<NSString*,id> *markerColorAttribute = @{NSForegroundColorAttributeName: color};
 	
 	layoutManager = self.layoutManager;
 	textString = self.string;
@@ -140,8 +140,8 @@
 
 - (void)textViewDidChangeSelection:(NSNotification*)inNotification
 {
-	NSLayoutManager* layoutManager = self.layoutManager;
-	NSDictionary* profile = controller.currentProfile;
+	NSLayoutManager *layoutManager = self.layoutManager;
+	NSDictionary<NSString*,id> *profile = controller.currentProfile;
     NSColor *color;
 
 	// Notification の処理で色づけの変更を行うと，delete を押したときにバグるので，performSelector で別途呼び出して処理する
@@ -299,7 +299,7 @@
     
     rightpar = [replacementString characterAtIndex:0];
     
-    NSDictionary* profile = controller.currentProfile;
+    NSDictionary<NSString*,id> *profile = controller.currentProfile;
     
     HighlightPattern highlightPattern = SOLID;
     BOOL checkBrace = [profile boolForKey:CheckBraceKey];
