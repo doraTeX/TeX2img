@@ -22,4 +22,5 @@ typedef enum  {
 - (NSString*)returnCharacter;
 - (NSString*)tabCharacter;
 @property (nonatomic, strong) IBOutlet TeXTextView *sourceTextView;
+@property (nonatomic, copy) NSMutableString *commandCompletionList;
 @end

@@ -4,9 +4,6 @@
 typedef NSDictionary<NSString*,id> Profile;
 typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
-NSString *commandCompletionChar;
-NSMutableString *commandCompletionList;
-
 #define MAX_LEN 2048
 #define BASH_PATH @"/bin/bash"
 

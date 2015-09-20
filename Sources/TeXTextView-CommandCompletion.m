@@ -102,6 +102,9 @@ static NSString* endcommentString = @"›";
 	// End Changed by (HS) - define ins2Range, selectlength
 	NSCharacterSet *charSet;
 	unichar c;
+    unichar esc = 0x001B;
+    NSString *commandCompletionChar = [NSString stringWithCharacters:&esc length:1];
+    NSString *commandCompletionList = controller.commandCompletionList;
 	
 	if ([theEvent.characters isEqualToString:commandCompletionChar] && (theEvent.modifierFlags & NSAlternateKeyMask) != 0) {
 		[self doNextBullet:self];

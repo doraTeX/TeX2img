@@ -231,6 +231,8 @@ typedef enum {
 @synthesize loopCountTextField;
 @synthesize loopCountStepper;
 
+@synthesize commandCompletionList;
+
 @synthesize converter;
 @synthesize runningTask;
 @synthesize outputPipe;
@@ -1187,8 +1189,6 @@ typedef enum {
 	}
     
 	// CommandComepletion.txt のロード
-	unichar esc = 0x001B;
-	commandCompletionChar = [NSString stringWithCharacters:&esc length:1];
 	NSData *completionData;
 
 	NSString *completionPath = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt".stringByStandardizingPath;

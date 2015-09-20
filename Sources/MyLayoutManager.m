@@ -1,5 +1,6 @@
 #import "MyLayoutManager.h"
 #import "NSDictionary-Extension.h"
+#import "NSColor-Extension.h"
 
 @implementation MyLayoutManager
 @synthesize controller;
