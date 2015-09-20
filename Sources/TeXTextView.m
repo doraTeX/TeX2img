@@ -536,7 +536,7 @@
                                                                            options:0
                                                                              error:nil];
     NSString *target = [self.textStorage.string substringToIndex:oldRange.location];
-    NSEnumerator* enumerator = [regex matchesInString:target options:0 range:NSMakeRange(0, target.length)].reverseObjectEnumerator;
+    NSEnumerator<NSTextCheckingResult*>* enumerator = [regex matchesInString:target options:0 range:NSMakeRange(0, target.length)].reverseObjectEnumerator;
     
     NSRange range1, range2;
     NSString *newString, *environment, *prefix;
@@ -545,7 +545,7 @@
     NSMutableDictionary<NSString*,NSNumber*> *environmentStack = [NSMutableDictionary<NSString*,NSNumber*> dictionary];
     NSTextCheckingResult *match;
     
-    while ((match = (NSTextCheckingResult*)[enumerator nextObject])) {
+    while ((match = [enumerator nextObject])) {
         range1 = [match rangeAtIndex:1];
         range2 = [match rangeAtIndex:2];
         
