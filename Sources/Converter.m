@@ -17,38 +17,38 @@
 #import "Converter.h"
 
 @interface Converter()
-@property NSString *latexPath;
-@property NSString *dviwarePath;
-@property NSString *gsPath;
-@property NSString *encoding;
-@property NSString *outputFilePath;
-@property NSString *preambleStr;
-@property float resolutionLevel;
-@property BOOL guessCompilation;
-@property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
-@property NSObject<OutputController> *controller;
-@property NSFileManager *fileManager;
-@property NSString *tempdir;
-@property pid_t pid;
-@property NSString *tempFileBaseName;
-@property NSString *epstopdfPath;
-@property NSString *mudrawPath;
-@property NSUInteger pageCount;
-@property BOOL useBP;
-@property BOOL speedPriorityMode;
-@property BOOL embedSource;
-@property BOOL copyToClipboard;
-@property NSString *additionalInputPath;
-@property BOOL pdfInputMode;
-@property BOOL psInputMode;
-@property BOOL errorsIgnored;
-@property CGPDFBox pageBoxType;
-@property float delay;
-@property NSInteger loopCount;
-@property NSMutableArray<NSNumber*> *emptyPageFlags;
-@property NSMutableArray<NSNumber*> *whitePageFlags;
-@property NSMutableDictionary<NSString*,NSString*> *bboxDictionary;
+@property (nonatomic, copy) NSString *latexPath;
+@property (nonatomic, copy) NSString *dviwarePath;
+@property (nonatomic, copy) NSString *gsPath;
+@property (nonatomic, copy) NSString *encoding;
+@property (nonatomic, copy) NSString *outputFilePath;
+@property (nonatomic, copy) NSString *preambleStr;
+@property (nonatomic, assign) float resolutionLevel;
+@property (nonatomic, assign) BOOL guessCompilation;
+@property (nonatomic, assign) NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
+@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property (nonatomic, strong) NSObject<OutputController> *controller;
+@property (nonatomic, strong) NSFileManager *fileManager;
+@property (nonatomic, copy) NSString *tempdir;
+@property (nonatomic, assign) pid_t pid;
+@property (nonatomic, copy) NSString *tempFileBaseName;
+@property (nonatomic, copy) NSString *epstopdfPath;
+@property (nonatomic, copy) NSString *mudrawPath;
+@property (nonatomic, assign) NSUInteger pageCount;
+@property (nonatomic, assign) BOOL useBP;
+@property (nonatomic, assign) BOOL speedPriorityMode;
+@property (nonatomic, assign) BOOL embedSource;
+@property (nonatomic, assign) BOOL copyToClipboard;
+@property (nonatomic, copy) NSString *additionalInputPath;
+@property (nonatomic, assign) BOOL pdfInputMode;
+@property (nonatomic, assign) BOOL psInputMode;
+@property (nonatomic, assign) BOOL errorsIgnored;
+@property (nonatomic, assign) CGPDFBox pageBoxType;
+@property (nonatomic, assign) float delay;
+@property (nonatomic, assign) NSInteger loopCount;
+@property (nonatomic, copy) NSMutableArray<NSNumber*> *emptyPageFlags;
+@property (nonatomic, copy) NSMutableArray<NSNumber*> *whitePageFlags;
+@property (nonatomic, copy) NSMutableDictionary<NSString*,NSString*> *bboxDictionary;
 @end
 
 @implementation Converter

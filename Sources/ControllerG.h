@@ -20,5 +20,5 @@ typedef enum  {
 - (NSString*)fullwidthSpaceCharacter;
 - (NSString*)returnCharacter;
 - (NSString*)tabCharacter;
-@property IBOutlet TeXTextView *sourceTextView;
+@property (nonatomic, strong) IBOutlet TeXTextView *sourceTextView;
 @end

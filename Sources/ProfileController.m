@@ -6,12 +6,12 @@
 #define MovedRowsType @"TeX2imgMovedRowsType"
 
 @interface ProfileController()
-@property NSMutableArray<NSDictionary<NSString*,id>*> *profiles;
-@property NSMutableArray<NSString*> *profileNames;
-@property IBOutlet NSWindow *profilesWindow;
-@property IBOutlet NSTableView *profilesTableView;
-@property IBOutlet NSTextField *saveAsTextField;
-@property IBOutlet ControllerG *controllerG;
+@property (nonatomic, copy) NSMutableArray<NSDictionary<NSString*,id>*> *profiles;
+@property (nonatomic, copy) NSMutableArray<NSString*> *profileNames;
+@property (nonatomic, strong) IBOutlet NSWindow *profilesWindow;
+@property (nonatomic, weak) IBOutlet NSTableView *profilesTableView;
+@property (nonatomic, weak) IBOutlet NSTextField *saveAsTextField;
+@property (nonatomic, strong) IBOutlet ControllerG *controllerG;
 @end
 
 @implementation ProfileController

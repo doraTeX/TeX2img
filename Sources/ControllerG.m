@@ -37,141 +37,141 @@ typedef enum {
 #define TemplateDirectoryName @"Templates"
 
 @interface ControllerG()
-@property IBOutlet ProfileController *profileController;
-@property IBOutlet NSWindow *mainWindow;
-@property IBOutlet NSDrawer *outputDrawer;
-@property IBOutlet NSTextView *outputTextView;
-@property IBOutlet NSTextField *outputFileTextField;
-@property IBOutlet NSPopUpButton *templatePopupButton;
+@property (nonatomic, strong) IBOutlet ProfileController *profileController;
+@property (nonatomic, strong) IBOutlet NSWindow *mainWindow;
+@property (nonatomic, strong) IBOutlet NSDrawer *outputDrawer;
+@property (nonatomic, strong) IBOutlet NSTextView *outputTextView;
+@property (nonatomic, weak) IBOutlet NSTextField *outputFileTextField;
+@property (nonatomic, weak) IBOutlet NSPopUpButton *templatePopupButton;
 
-@property IBOutlet NSWindow *preambleWindow;
-@property IBOutlet TeXTextView *preambleTextView;
-@property IBOutlet NSMenuItem *convertYenMarkMenuItem;
-@property IBOutlet NSMenuItem *outputDrawerMenuItem;
-@property IBOutlet NSMenuItem *preambleWindowMenuItem;
-@property IBOutlet NSMenuItem *generateMenuItem;
-@property IBOutlet NSMenuItem *abortMenuItem;
-@property IBOutlet NSMenuItem *autoCompleteMenuItem;
+@property (nonatomic, strong) IBOutlet NSWindow *preambleWindow;
+@property (nonatomic, strong) IBOutlet TeXTextView *preambleTextView;
+@property (nonatomic, weak) IBOutlet NSMenuItem *convertYenMarkMenuItem;
+@property (nonatomic, weak) IBOutlet NSMenuItem *outputDrawerMenuItem;
+@property (nonatomic, weak) IBOutlet NSMenuItem *preambleWindowMenuItem;
+@property (nonatomic, weak) IBOutlet NSMenuItem *generateMenuItem;
+@property (nonatomic, weak) IBOutlet NSMenuItem *abortMenuItem;
+@property (nonatomic, weak) IBOutlet NSMenuItem *autoCompleteMenuItem;
 
-@property IBOutlet NSButton *flashInMovingCheckBox;
-@property IBOutlet NSButton *highlightContentCheckBox;
-@property IBOutlet NSButton *beepCheckBox;
-@property IBOutlet NSButton *flashBackgroundCheckBox;
-@property IBOutlet NSButton *checkBraceCheckBox;
-@property IBOutlet NSButton *checkBracketCheckBox;
-@property IBOutlet NSButton *checkSquareCheckBox;
-@property IBOutlet NSButton *checkParenCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *flashInMovingCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *highlightContentCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *beepCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *flashBackgroundCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *checkBraceCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *checkBracketCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *checkSquareCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *checkParenCheckBox;
 
-@property IBOutlet NSTextField *fontTextField;
-@property IBOutlet NSTextField *tabWidthTextField;
-@property IBOutlet NSStepper *tabWidthStepper;
-@property IBOutlet NSButton *tabIndentCheckBox;
-@property IBOutlet NSButton *wrapLineCheckBox;
+@property (nonatomic, weak) IBOutlet NSTextField *fontTextField;
+@property (nonatomic, weak) IBOutlet NSTextField *tabWidthTextField;
+@property (nonatomic, weak) IBOutlet NSStepper *tabWidthStepper;
+@property (nonatomic, weak) IBOutlet NSButton *tabIndentCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *wrapLineCheckBox;
 
-@property IBOutlet NSButton *showTabCharacterCheckBox;
-@property IBOutlet NSButton *showSpaceCharacterCheckBox;
-@property IBOutlet NSButton *showNewLineCharacterCheckBox;
-@property IBOutlet NSButton *showFullwidthSpaceCharacterCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *showTabCharacterCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *showSpaceCharacterCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *showNewLineCharacterCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *showFullwidthSpaceCharacterCheckBox;
 
-@property IBOutlet NSWindow *colorPalleteWindow;
-@property IBOutlet NSMenuItem *colorPalleteWindowMenuItem;
-@property IBOutlet NSColorWell *colorPalleteColorWell;
-@property IBOutlet NSMatrix *colorStyleMatrix;
-@property IBOutlet NSTextField *colorTextField;
+@property (nonatomic, strong) IBOutlet NSWindow *colorPalleteWindow;
+@property (nonatomic, weak) IBOutlet NSMenuItem *colorPalleteWindowMenuItem;
+@property (nonatomic, weak) IBOutlet NSColorWell *colorPalleteColorWell;
+@property (nonatomic, weak) IBOutlet NSMatrix *colorStyleMatrix;
+@property (nonatomic, weak) IBOutlet NSTextField *colorTextField;
 
-@property IBOutlet NSButton *directInputButton;
-@property IBOutlet NSButton *inputSourceFileButton;
-@property IBOutlet NSTextField *inputSourceFileTextField;
-@property IBOutlet NSButton *browseSourceFileButton;
+@property (nonatomic, weak) IBOutlet NSButton *directInputButton;
+@property (nonatomic, weak) IBOutlet NSButton *inputSourceFileButton;
+@property (nonatomic, weak) IBOutlet NSTextField *inputSourceFileTextField;
+@property (nonatomic, weak) IBOutlet NSButton *browseSourceFileButton;
 
-@property IBOutlet NSButton *generateButton;
-@property IBOutlet NSButton *transparentCheckBox;
-@property IBOutlet NSButton *deleteDisplaySizeCheckBox;
-@property IBOutlet NSButton *mergeOutputsCheckBox;
-@property IBOutlet NSButton *keepPageSizeCheckBox;
-@property IBOutlet NSButton *showOutputDrawerCheckBox;
-@property IBOutlet NSButton *previewCheckBox;
-@property IBOutlet NSButton *deleteTmpFileCheckBox;
-@property IBOutlet NSButton *toClipboardCheckBox;
-@property IBOutlet NSButton *embedSourceCheckBox;
-@property IBOutlet NSButton *embedInIllustratorCheckBox;
-@property IBOutlet NSButton *ungroupCheckBox;
-@property IBOutlet NSWindow *preferenceWindow;
-@property IBOutlet NSTextField *resolutionLabel;
-@property IBOutlet NSTextField *leftMarginLabel;
-@property IBOutlet NSTextField *rightMarginLabel;
-@property IBOutlet NSTextField *topMarginLabel;
-@property IBOutlet NSTextField *bottomMarginLabel;
-@property IBOutlet NSSlider *resolutionSlider;
-@property IBOutlet NSSlider *leftMarginSlider;
-@property IBOutlet NSSlider *rightMarginSlider;
-@property IBOutlet NSSlider *topMarginSlider;
-@property IBOutlet NSSlider *bottomMarginSlider;
-@property IBOutlet NSTextField *latexPathTextField;
-@property IBOutlet NSTextField *dviwarePathTextField;
-@property IBOutlet NSTextField *gsPathTextField;
-@property IBOutlet NSButton *guessCompilationButton;
-@property IBOutlet NSTextField *numberOfCompilationTextField;
-@property IBOutlet NSStepper *numberOfCompilationStepper;
-@property IBOutlet NSButton *textPdfCheckBox;
-@property IBOutlet NSButton *ignoreErrorCheckBox;
-@property IBOutlet NSButton *utfExportCheckBox;
-@property IBOutlet NSPopUpButton *encodingPopUpButton;
-@property IBOutlet NSMatrix *unitMatrix;
-@property IBOutlet NSMatrix *priorityMatrix;
-@property NSString *lastSavedPath;
+@property (nonatomic, weak) IBOutlet NSButton *generateButton;
+@property (nonatomic, weak) IBOutlet NSButton *transparentCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *deleteDisplaySizeCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *mergeOutputsCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *keepPageSizeCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *showOutputDrawerCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *previewCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *deleteTmpFileCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *toClipboardCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *embedSourceCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *embedInIllustratorCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *ungroupCheckBox;
+@property (nonatomic, weak) IBOutlet NSWindow *preferenceWindow;
+@property (nonatomic, weak) IBOutlet NSTextField *resolutionLabel;
+@property (nonatomic, weak) IBOutlet NSTextField *leftMarginLabel;
+@property (nonatomic, weak) IBOutlet NSTextField *rightMarginLabel;
+@property (nonatomic, weak) IBOutlet NSTextField *topMarginLabel;
+@property (nonatomic, weak) IBOutlet NSTextField *bottomMarginLabel;
+@property (nonatomic, weak) IBOutlet NSSlider *resolutionSlider;
+@property (nonatomic, weak) IBOutlet NSSlider *leftMarginSlider;
+@property (nonatomic, weak) IBOutlet NSSlider *rightMarginSlider;
+@property (nonatomic, weak) IBOutlet NSSlider *topMarginSlider;
+@property (nonatomic, weak) IBOutlet NSSlider *bottomMarginSlider;
+@property (nonatomic, weak) IBOutlet NSTextField *latexPathTextField;
+@property (nonatomic, weak) IBOutlet NSTextField *dviwarePathTextField;
+@property (nonatomic, weak) IBOutlet NSTextField *gsPathTextField;
+@property (nonatomic, weak) IBOutlet NSButton *guessCompilationButton;
+@property (nonatomic, weak) IBOutlet NSTextField *numberOfCompilationTextField;
+@property (nonatomic, weak) IBOutlet NSStepper *numberOfCompilationStepper;
+@property (nonatomic, weak) IBOutlet NSButton *textPdfCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *ignoreErrorCheckBox;
+@property (nonatomic, weak) IBOutlet NSButton *utfExportCheckBox;
+@property (nonatomic, weak) IBOutlet NSPopUpButton *encodingPopUpButton;
+@property (nonatomic, weak) IBOutlet NSMatrix *unitMatrix;
+@property (nonatomic, weak) IBOutlet NSMatrix *priorityMatrix;
+@property (nonatomic, copy) NSString *lastSavedPath;
 
-@property NSWindow *lastActiveWindow;
-@property NSMutableDictionary<NSString*,NSColor*> *lastColorDict;
+@property (nonatomic, strong) NSWindow *lastActiveWindow;
+@property (nonatomic, copy) NSMutableDictionary<NSString*,NSColor*> *lastColorDict;
 
-@property IBOutlet NSColorWell *foregroundColorWell;
-@property IBOutlet NSColorWell *backgroundColorWell;
-@property IBOutlet NSColorWell *cursorColorWell;
-@property IBOutlet NSColorWell *braceColorWell;
-@property IBOutlet NSColorWell *commentColorWell;
-@property IBOutlet NSColorWell *commandColorWell;
-@property IBOutlet NSColorWell *invisibleColorWell;
-@property IBOutlet NSColorWell *highlightedBraceColorWell;
-@property IBOutlet NSColorWell *enclosedContentBackgroundColorWell;
-@property IBOutlet NSColorWell *flashingBackgroundColorWell;
-@property IBOutlet NSButton *makeatletterEnabledCheckBox;
+@property (nonatomic, weak) IBOutlet NSColorWell *foregroundColorWell;
+@property (nonatomic, weak) IBOutlet NSColorWell *backgroundColorWell;
+@property (nonatomic, weak) IBOutlet NSColorWell *cursorColorWell;
+@property (nonatomic, weak) IBOutlet NSColorWell *braceColorWell;
+@property (nonatomic, weak) IBOutlet NSColorWell *commentColorWell;
+@property (nonatomic, weak) IBOutlet NSColorWell *commandColorWell;
+@property (nonatomic, weak) IBOutlet NSColorWell *invisibleColorWell;
+@property (nonatomic, weak) IBOutlet NSColorWell *highlightedBraceColorWell;
+@property (nonatomic, weak) IBOutlet NSColorWell *enclosedContentBackgroundColorWell;
+@property (nonatomic, weak) IBOutlet NSColorWell *flashingBackgroundColorWell;
+@property (nonatomic, weak) IBOutlet NSButton *makeatletterEnabledCheckBox;
 
-@property IBOutlet NSViewController *autoDetectionTargetSettingViewController;
-@property IBOutlet NSMatrix *autoDetectionTargetMatrix;
+@property (nonatomic, strong) IBOutlet NSViewController *autoDetectionTargetSettingViewController;
+@property (nonatomic, weak) IBOutlet NSMatrix *autoDetectionTargetMatrix;
 
-@property IBOutlet NSBox *invisibleCharacterBox;
+@property (nonatomic, weak) IBOutlet NSBox *invisibleCharacterBox;
 
-@property IBOutlet NSButton *spaceCharacterKindButton;
-@property IBOutlet NSButton *fullwidthSpaceCharacterKindButton;
-@property IBOutlet NSButton *returnCharacterKindButton;
-@property IBOutlet NSButton *tabCharacterKindButton;
+@property (nonatomic, weak) IBOutlet NSButton *spaceCharacterKindButton;
+@property (nonatomic, weak) IBOutlet NSButton *fullwidthSpaceCharacterKindButton;
+@property (nonatomic, weak) IBOutlet NSButton *returnCharacterKindButton;
+@property (nonatomic, weak) IBOutlet NSButton *tabCharacterKindButton;
 
-@property IBOutlet NSViewController *spaceCharacterKindSettingViewController;
-@property IBOutlet NSMatrix *spaceCharacterKindMatrix;
+@property (nonatomic, strong) IBOutlet NSViewController *spaceCharacterKindSettingViewController;
+@property (nonatomic, weak) IBOutlet NSMatrix *spaceCharacterKindMatrix;
 
-@property IBOutlet NSViewController *fullwidthSpaceCharacterKindSettingViewController;
-@property IBOutlet NSMatrix *fullwidthSpaceCharacterKindMatrix;
+@property (nonatomic, strong) IBOutlet NSViewController *fullwidthSpaceCharacterKindSettingViewController;
+@property (nonatomic, weak) IBOutlet NSMatrix *fullwidthSpaceCharacterKindMatrix;
 
-@property IBOutlet NSViewController *returnCharacterKindSettingViewController;
-@property IBOutlet NSMatrix *returnCharacterKindMatrix;
+@property (nonatomic, strong) IBOutlet NSViewController *returnCharacterKindSettingViewController;
+@property (nonatomic, weak) IBOutlet NSMatrix *returnCharacterKindMatrix;
 
-@property IBOutlet NSViewController *tabCharacterKindSettingViewController;
-@property IBOutlet NSMatrix *tabCharacterKindMatrix;
+@property (nonatomic, strong) IBOutlet NSViewController *tabCharacterKindSettingViewController;
+@property (nonatomic, weak) IBOutlet NSMatrix *tabCharacterKindMatrix;
 
-@property IBOutlet NSViewController *pageBoxSettingViewController;
-@property IBOutlet NSMatrix *pageBoxMatrix;
+@property (nonatomic, strong) IBOutlet NSViewController *pageBoxSettingViewController;
+@property (nonatomic, weak) IBOutlet NSMatrix *pageBoxMatrix;
 
-@property IBOutlet NSViewController *animationParameterSettingViewController;
-@property IBOutlet NSTextField *delayTextField;;
-@property IBOutlet NSStepper *delayStepper;
-@property IBOutlet NSTextField *loopCountTextField;
-@property IBOutlet NSStepper *loopCountStepper;
+@property (nonatomic, strong) IBOutlet NSViewController *animationParameterSettingViewController;
+@property (nonatomic, weak) IBOutlet NSTextField *delayTextField;;
+@property (nonatomic, weak) IBOutlet NSStepper *delayStepper;
+@property (nonatomic, weak) IBOutlet NSTextField *loopCountTextField;
+@property (nonatomic, weak) IBOutlet NSStepper *loopCountStepper;
 
 
-@property Converter *converter;
-@property NSTask *runningTask;
-@property NSPipe *outputPipe;
-@property BOOL *taskKilled;
+@property (atomic, strong) Converter *converter;
+@property (atomic, strong) NSTask *runningTask;
+@property (atomic, strong) NSPipe *outputPipe;
+@property (atomic, assign) BOOL *taskKilled;
 
 @end
 
