@@ -972,7 +972,7 @@ typedef enum {
     }
     
     NSString *templateDirectoryPath = self.templateDirectoryPath;
-    NSEnumerator *enumerator = [NSFileManager.defaultManager contentsOfDirectoryAtPath:templateDirectoryPath error:nil].reverseObjectEnumerator;
+    NSEnumerator<NSString*> *enumerator = [NSFileManager.defaultManager contentsOfDirectoryAtPath:templateDirectoryPath error:nil].reverseObjectEnumerator;
     
     NSString *filename;
     while ((filename = [enumerator nextObject])) {
