@@ -32,6 +32,35 @@
     return [doc pageAtIndex:page-1].pageBox;
 }
 
+- (NSRect)mediaBoxRect
+{
+    CGRect rect = CGPDFPageGetBoxRect(pdfPage.pageRef, kCGPDFMediaBox);
+    return *(NSRect*)&rect;
+}
+
+- (NSRect)cropBoxRect
+{
+    CGRect rect = CGPDFPageGetBoxRect(pdfPage.pageRef, kCGPDFCropBox);
+    return *(NSRect*)&rect;
+}
+
+- (NSRect)bleedBoxRect
+{
+    CGRect rect = CGPDFPageGetBoxRect(pdfPage.pageRef, kCGPDFBleedBox);
+    return *(NSRect*)&rect;
+}
+
+- (NSRect)trimBoxRect
+{
+    CGRect rect = CGPDFPageGetBoxRect(pdfPage.pageRef, kCGPDFTrimBox);
+    return *(NSRect*)&rect;
+}
+
+- (NSRect)artBoxRect
+{
+    CGRect rect = CGPDFPageGetBoxRect(pdfPage.pageRef, kCGPDFArtBox);
+    return *(NSRect*)&rect;
+}
 
 - (NSString*)bboxStringOfBox:(CGPDFBox)boxType
                        hires:(BOOL)hires
