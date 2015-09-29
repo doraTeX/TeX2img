@@ -1,3 +1,4 @@
+#import <Quartz/Quartz.h>
 #import "TeXTextView.h"
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
@@ -38,7 +39,7 @@
     self.automaticSpellingCorrectionEnabled = NO;
     self.automaticTextReplacementEnabled = NO;
     
-    [self registerForDraggedTypes:@[NSFilenamesPboardType]];
+    [self registerForDraggedTypes:@[NSFilenamesPboardType, NSPasteboardTypePDF]];
     
     NSNotificationCenter *defaultCenter = NSNotificationCenter.defaultCenter;
     NSUndoManager *undoManager = self.undoManager;
@@ -842,12 +843,44 @@
 
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)info
 {
-    NSArray<NSString*> *draggedFiles = [self filelistInDraggingInfo:info];
-    
     // sourceTextView へのドロップのみ可
     if (self != controller.sourceTextView) {
         return NSDragOperationNone;
     }
+
+    NSPasteboard *pboard = info.draggingPasteboard;
+    
+    // PDFイメージの直接ドラッグ時の対応
+    if ([pboard.types containsObject:NSPDFPboardType]) {
+        PDFDocument *doc = [[PDFDocument alloc] initWithData:[pboard dataForType:NSPDFPboardType]];
+        if (!doc) {
+            return NSDragOperationNone;
+        }
+
+        PDFPage *page = [doc pageAtIndex:0];
+        if (!page) {
+            return NSDragOperationNone;
+        }
+        
+        NSArray<PDFAnnotation*> *annotations = page.annotations;
+        if (!annotations) {
+            return NSDragOperationNone;
+        }
+
+        // TeX2img によって埋め込まれたソース情報が含まれるかどうかのチェック
+        for (PDFAnnotation *annotation in annotations) {
+            if (isTeX2imgAnnotation(annotation)) {
+                self.draggingState = YES;
+                return currentDragOperation;
+            }
+        }
+        
+        return NSDragOperationNone;
+    }
+    
+    // 以下，ファイルのドラッグ時の対応
+    NSArray<NSString*> *draggedFiles = [self filelistInDraggingInfo:info];
+    
     
     // 複数のドラッグは受付不可
     if (draggedFiles.count > 1) {
@@ -889,7 +922,18 @@
 
 - (BOOL)performDragOperation:(id<NSDraggingInfo>)info
 {
-    [self.dropDelegate textViewDroppedFile:[self filelistInDraggingInfo:info][0]];
+    NSPasteboard *pboard = info.draggingPasteboard;
+    
+    // PDFイメージの直接ドラッグ時の対応
+    if ([pboard.types containsObject:NSPDFPboardType]) {
+        PDFDocument *doc = [[PDFDocument alloc] initWithData:[pboard dataForType:NSPDFPboardType]];
+        if (!doc) {
+            return NO;
+        }
+        [self.dropDelegate textViewDroppedFile:doc];
+    } else { // ファイルドラッグ時の対応
+        [self.dropDelegate textViewDroppedFile:[self filelistInDraggingInfo:info][0]];
+    }
     return YES;
 }
 

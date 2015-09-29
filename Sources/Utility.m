@@ -54,3 +54,8 @@ void previewFiles(NSArray<NSString*> *files, NSString *app)
     [task launch];
 
 }
+
+BOOL isTeX2imgAnnotation(PDFAnnotation *annotation)
+{
+    return ([annotation.type isEqualToString:@"Text"] && ([annotation.contents rangeOfString:AnnotationHeader].location == 0));
+}

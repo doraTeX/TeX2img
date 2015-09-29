@@ -5,7 +5,7 @@
 @class TeXTextView;
 
 @protocol DnDDelegate <NSObject>
-- (void)textViewDroppedFile:(NSString*)file;
+- (void)textViewDroppedFile:(id)file;
 @end
 
 typedef enum  {
