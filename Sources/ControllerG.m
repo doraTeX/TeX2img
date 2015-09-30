@@ -1644,57 +1644,62 @@ typedef enum {
     return contents;
 }
 
-- (void)importSourceLogic:(id)inputFile
+- (BOOL)importSourceFromFilePathOrPDFDocument:(id)input
 {
     [NSApp activateIgnoringOtherApps:YES];
-    if (runConfirmPanel(localizedString(@"overwriteContentsWarningMsg"))) {
-
-        NSString *contents = nil;
-        
-        if ([inputFile isKindOfClass:NSString.class]) { // ファイルパスが指定されたインポート
-            NSString *inputPath = (NSString*)inputFile;
-            NSString *extension = inputPath.pathExtension.lowercaseString;
-            if ([@"tex" isEqualToString:extension]) { // TeX ソースのインプット
-                NSData *data = [NSData dataWithContentsOfFile:inputPath];
-                NSStringEncoding detectedEncoding;
-                contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
-                lastSavedPath = inputPath;
-            } else { // 画像ファイルのインプット
-                ssize_t bufferLength = getxattr(inputPath.UTF8String, EA_Key, NULL, 0, 0, 0); // EAを取得
-                if (bufferLength < 0) { // ソース情報が含まれない画像ファイルの場合
-                    // PDFの場合はファイル内のアノテーション情報も探索を試みる
-                    if ([@"pdf" isEqualToString:extension]) {
-                        PDFDocument *doc = [PDFDocument documentWithFilePath:inputPath];
-                        contents = [self extractTeXSourceStringFromAnnotationOfPDF:doc];
-                        if (!contents) {
-                            runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
-                            return;
-                        }
-                    } else {
+    
+    NSString *contents = nil;
+    
+    if ([input isKindOfClass:NSString.class]) { // ファイルパスが指定されたインポート
+        NSString *inputPath = (NSString*)input;
+        NSString *extension = inputPath.pathExtension.lowercaseString;
+        if ([@"tex" isEqualToString:extension]) { // TeX ソースのインプット
+            NSData *data = [NSData dataWithContentsOfFile:inputPath];
+            NSStringEncoding detectedEncoding;
+            contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
+            lastSavedPath = inputPath;
+        } else { // 画像ファイルのインプット
+            ssize_t bufferLength = getxattr(inputPath.UTF8String, EA_Key, NULL, 0, 0, 0); // EAを取得
+            if (bufferLength < 0) { // ソース情報が含まれない画像ファイルの場合
+                // PDFの場合はファイル内のアノテーション情報も探索を試みる
+                if ([@"pdf" isEqualToString:extension]) {
+                    PDFDocument *doc = [PDFDocument documentWithFilePath:inputPath];
+                    contents = [self extractTeXSourceStringFromAnnotationOfPDF:doc];
+                    if (!contents) {
                         runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
-                        return;
+                        return NO;
                     }
-                } else { // ソース情報が含まれる画像ファイルの場合はそれをEAから取得して contents にセット（EAに保存されたソースは常にUTF8）
-                    char *buffer = (char*)malloc(bufferLength);
-                    getxattr(inputPath.UTF8String, EA_Key, buffer, bufferLength, 0, 0);
-                    contents = [[NSString alloc] initWithBytes:buffer length:bufferLength encoding:NSUTF8StringEncoding];
-                    free(buffer);
+                } else {
+                    runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
+                    return NO;
                 }
+            } else { // ソース情報が含まれる画像ファイルの場合はそれをEAから取得して contents にセット（EAに保存されたソースは常にUTF8）
+                char *buffer = (char*)malloc(bufferLength);
+                getxattr(inputPath.UTF8String, EA_Key, buffer, bufferLength, 0, 0);
+                contents = [[NSString alloc] initWithBytes:buffer length:bufferLength encoding:NSUTF8StringEncoding];
+                free(buffer);
             }
-        } else if ([inputFile isKindOfClass:PDFDocument.class]) { // PDFファイルが直接ドラッグされたインポート
-            contents = [self extractTeXSourceStringFromAnnotationOfPDF:inputFile];
-        } else {
-            runErrorPanel(localizedString(@"doesNotContainSource"), [inputFile description]);
-            return;
         }
-        
-        if (contents) {
-            [self placeImportedSource:contents];
-        } else {
-            runErrorPanel(localizedString(@"cannotReadErrorMsg"), [inputFile description]);
-            return;
+    } else if ([input isKindOfClass:PDFDocument.class]) { // PDFからのインポート
+        contents = [self extractTeXSourceStringFromAnnotationOfPDF:input];
+        if (!contents) {
+            runErrorPanel(localizedString(@"doesNotContainSource"), [input description]);
+            return NO;
         }
+    } else {
+        runErrorPanel(localizedString(@"doesNotContainSource"), [input description]);
+        return NO;
     }
+    
+    if (contents) {
+        if (runConfirmPanel(localizedString(@"overwriteContentsWarningMsg"))) {
+            [self placeImportedSource:contents];
+        }
+    } else {
+        runErrorPanel(localizedString(@"cannotReadErrorMsg"), [input description]);
+        return NO;
+    }
+    return YES;
 }
 
 - (IBAction)importSource:(id)sender
@@ -1707,7 +1712,7 @@ typedef enum {
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
-            [self importSourceLogic:openPanel.URL.path];
+            [self importSourceFromFilePathOrPDFDocument:openPanel.URL.path];
         }
     }];
 }
@@ -1744,7 +1749,7 @@ typedef enum {
 
 - (void)textViewDroppedFile:(id)file;
 {
-    [self importSourceLogic:file];
+    [self importSourceFromFilePathOrPDFDocument:file];
 }
 
 

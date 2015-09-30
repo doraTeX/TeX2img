@@ -305,13 +305,14 @@
 }
 
 
-// クリップボードから貼り付けられる円マークをバックスラッシュに置き換えて貼り付ける
+// ペースト時の対応
 - (BOOL)readSelectionFromPasteboard:(NSPasteboard*)pboard type:(NSString*)type
 {
     Profile *currentProfile = [controller currentProfile];
     
-    if ([type isEqualToString:NSStringPboardType] && [currentProfile boolForKey:ConvertYenMarkKey]) {
-        NSMutableString *string = [NSMutableString stringWithString:[pboard stringForType:NSStringPboardType]];
+    // テキスト貼り付け時，クリップボードから貼り付けられる円マークをバックスラッシュに置き換えて貼り付ける
+    if ([type isEqualToString:NSPasteboardTypeString] && [currentProfile boolForKey:ConvertYenMarkKey]) {
+        NSMutableString *string = [NSMutableString stringWithString:[pboard stringForType:NSPasteboardTypeString]];
         if (string) {
             [string replaceYenWithBackSlash];
             
@@ -326,9 +327,16 @@
         } else {
             return NO;
         }
+    } else if ([type isEqualToString:NSPasteboardTypePDF] && (self == controller.sourceTextView)) { // PDFをペーストされたときにソースを復元
+        PDFDocument *doc = [[PDFDocument alloc] initWithData:[pboard dataForType:NSPasteboardTypePDF]];
+        if (!doc) {
+            return NO;
+        }
+
+        return [controller importSourceFromFilePathOrPDFDocument:doc];
+    } else {
+        return [super readSelectionFromPasteboard:pboard type:type];
     }
-    
-    return [super readSelectionFromPasteboard:pboard type:type];
 }
 
 - (void)setEnabled:(BOOL)enabled
@@ -816,6 +824,13 @@
     return replacementRange;
 }
 
+#pragma mark - Paste PDF
+- (NSArray<NSString*>*)readablePasteboardTypes
+{
+    NSMutableArray<NSString*> *types = [NSMutableArray<NSString*> arrayWithArray:[super readablePasteboardTypes]];
+    [types addObject:NSPasteboardTypePDF]; // ペースト可能形式に PDF を加える
+    return types;
+}
 
 #pragma mark - Drag & Drop
 
@@ -851,8 +866,8 @@
     NSPasteboard *pboard = info.draggingPasteboard;
     
     // PDFイメージの直接ドラッグ時の対応
-    if ([pboard.types containsObject:NSPDFPboardType]) {
-        PDFDocument *doc = [[PDFDocument alloc] initWithData:[pboard dataForType:NSPDFPboardType]];
+    if ([pboard.types containsObject:NSPasteboardTypePDF]) {
+        PDFDocument *doc = [[PDFDocument alloc] initWithData:[pboard dataForType:NSPasteboardTypePDF]];
         if (!doc) {
             return NSDragOperationNone;
         }
@@ -925,8 +940,8 @@
     NSPasteboard *pboard = info.draggingPasteboard;
     
     // PDFイメージの直接ドラッグ時の対応
-    if ([pboard.types containsObject:NSPDFPboardType]) {
-        PDFDocument *doc = [[PDFDocument alloc] initWithData:[pboard dataForType:NSPDFPboardType]];
+    if ([pboard.types containsObject:NSPasteboardTypePDF]) {
+        PDFDocument *doc = [[PDFDocument alloc] initWithData:[pboard dataForType:NSPasteboardTypePDF]];
         if (!doc) {
             return NO;
         }
