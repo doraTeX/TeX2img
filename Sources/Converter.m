@@ -1281,7 +1281,9 @@
                 return NO;
             }
             
-            [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: Merging %@s...\n\n", extension.uppercaseString] quiet:quietFlag];
+            if (outputFiles.count > 1) {
+                [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: Merging %@s...\n\n", extension.uppercaseString] quiet:quietFlag];
+            }
             
             if ([@"pdf" isEqualToString:extension]) {
                 // PDFマージ作業の実行
