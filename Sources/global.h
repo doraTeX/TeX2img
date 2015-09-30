@@ -4,6 +4,8 @@
 typedef NSDictionary<NSString*,id> Profile;
 typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
+#define AnnotationHeader @"% TeX2img Document\n"
+
 #define MAX_LEN 2048
 #define BASH_PATH @"/bin/bash"
 

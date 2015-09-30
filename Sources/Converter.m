@@ -989,6 +989,30 @@
     const char *val = contents.UTF8String;
     
     setxattr(target, EA_Key, val, strlen(val), 0, 0);
+    
+    // PDF のアノテーション情報にも保存
+    NSString *extension = filePath.pathExtension.lowercaseString;
+    if ([@"pdf" isEqualToString:extension]) {
+        PDFDocument *doc = [PDFDocument documentWithFilePath:filePath];
+        if (!doc) {
+            return;
+        }
+        
+        PDFPage *page = [doc pageAtIndex:0];
+        if (!page) {
+            return;
+        }
+        
+        PDFAnnotation *annotation = [[PDFAnnotationText alloc] initWithBounds:NSZeroRect];
+        annotation.shouldDisplay = NO;
+        annotation.shouldPrint = NO;
+        annotation.contents = [AnnotationHeader stringByAppendingString:contents];
+        // annotation.userName にアプリ名を埋め込む方法では，なぜか Preview.app でアノテーション情報を表示させたときにクラッシュしてしまう。
+        
+        [page addAnnotation:annotation];
+        
+        [doc writeToFile:filePath];
+    }
 }
 
 - (NSDate*)fileModificationDateAtPath:(NSString*)filePath

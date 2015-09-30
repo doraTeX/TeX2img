@@ -1,3 +1,4 @@
+#import <Quartz/Quartz.h>
 #import <sys/xattr.h>
 #import "ControllerG.h"
 #import "NSDictionary-Extension.h"
@@ -8,6 +9,7 @@
 #import "NSColorWell-Extension.h"
 #import "NSPipe-Extension.h"
 #import "NSMatrix-Extension.h"
+#import "PDFDocument-Extension.h"
 #import "TeXTextView.h"
 #import "UtilityG.h"
 
@@ -1331,14 +1333,14 @@ typedef enum {
     NSString *preamble = @"";
     NSString *body = @"";
     
-    NSRange range = [contents rangeOfString:@"\\begin{document}"];
+    NSRange range = [contents rangeOfString:@"\n\\begin{document}\n"];
     
     if (range.location == NSNotFound) {
         body = contents;
     } else {
         preamble = [contents substringWithRange:NSMakeRange(0, range.location)];
         body = [contents substringWithRange:NSMakeRange(range.location + range.length, contents.length - range.location - range.length)];
-        range = [body rangeOfString:@"\\end{document}"];
+        range = [body rangeOfString:@"\n\\end{document}"];
         if (range.location != NSNotFound) {
             body = [body substringWithRange:NSMakeRange(0, range.location)];
         }
@@ -1377,23 +1379,66 @@ typedef enum {
     return encoding;
 }
 
-- (void)importSourceLogic:(NSString*)inputPath
+- (NSString*)extractTeXSourceStringFromAnnotationOfPDF:(PDFDocument*)document
+{
+    if (!document) {
+        return nil;
+    }
+    
+    NSString *contents = nil;
+    
+    PDFPage *page = [document pageAtIndex:0];
+    if (!page) {
+        runErrorPanel(localizedString(@"doesNotContainSource"), [document description]);
+        return nil;
+    }
+    
+    NSArray<PDFAnnotation*> *annotations = page.annotations;
+    if (!annotations) {
+        runErrorPanel(localizedString(@"doesNotContainSource"), [document description]);
+        return nil;
+    }
+    
+    // TeX2img によって埋め込まれたソース情報が含まれるかどうかのチェック
+    for (PDFAnnotation *annotation in annotations) {
+        if (isTeX2imgAnnotation(annotation)) {
+            contents = [annotation.contents substringFromIndex:[AnnotationHeader length]];
+            break;
+        }
+    }
+    
+    return contents;
+}
+
+- (BOOL)importSourceFromFilePathOrPDFDocument:(id)input
 {
     [NSApp activateIgnoringOtherApps:YES];
-    if (runConfirmPanel(localizedString(@"overwriteContentsWarningMsg"))) {
-
-        NSString *contents = nil;
-        
-        if ([inputPath.pathExtension isEqualToString:@"tex"]) { // TeX ソースのインプット
+    
+    NSString *contents = nil;
+    
+    if ([input isKindOfClass:NSString.class]) { // ファイルパスが指定されたインポート
+        NSString *inputPath = (NSString*)input;
+        NSString *extension = inputPath.pathExtension.lowercaseString;
+        if ([@"tex" isEqualToString:extension]) { // TeX ソースのインプット
             NSData *data = [NSData dataWithContentsOfFile:inputPath];
             NSStringEncoding detectedEncoding;
             contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
             lastSavedPath = inputPath;
         } else { // 画像ファイルのインプット
             ssize_t bufferLength = getxattr(inputPath.UTF8String, EA_Key, NULL, 0, 0, 0); // EAを取得
-            if (bufferLength < 0) { // ソース情報が含まれない画像ファイルの場合はエラー
-                runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
-                return;
+            if (bufferLength < 0) { // ソース情報が含まれない画像ファイルの場合
+                // PDFの場合はファイル内のアノテーション情報も探索を試みる
+                if ([@"pdf" isEqualToString:extension]) {
+                    PDFDocument *doc = [PDFDocument documentWithFilePath:inputPath];
+                    contents = [self extractTeXSourceStringFromAnnotationOfPDF:doc];
+                    if (!contents) {
+                        runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
+                        return NO;
+                    }
+                } else {
+                    runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
+                    return NO;
+                }
             } else { // ソース情報が含まれる画像ファイルの場合はそれをEAから取得して contents にセット（EAに保存されたソースは常にUTF8）
                 char *buffer = (char*)malloc(bufferLength);
                 getxattr(inputPath.UTF8String, EA_Key, buffer, bufferLength, 0, 0);
@@ -1401,13 +1446,26 @@ typedef enum {
                 free(buffer);
             }
         }
-        
-        if (contents) {
-            [self placeImportedSource:contents];
-        } else {
-            runErrorPanel(localizedString(@"cannotReadErrorMsg"), inputPath);
+    } else if ([input isKindOfClass:PDFDocument.class]) { // PDFからのインポート
+        contents = [self extractTeXSourceStringFromAnnotationOfPDF:input];
+        if (!contents) {
+            runErrorPanel(localizedString(@"doesNotContainSource"), [input description]);
+            return NO;
         }
+    } else {
+        runErrorPanel(localizedString(@"doesNotContainSource"), [input description]);
+        return NO;
     }
+    
+    if (contents) {
+        if (runConfirmPanel(localizedString(@"overwriteContentsWarningMsg"))) {
+            [self placeImportedSource:contents];
+        }
+    } else {
+        runErrorPanel(localizedString(@"cannotReadErrorMsg"), [input description]);
+        return NO;
+    }
+    return YES;
 }
 
 - (IBAction)importSource:(id)sender
@@ -1420,7 +1478,7 @@ typedef enum {
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
-            [self importSourceLogic:openPanel.URL.path];
+            [self importSourceFromFilePathOrPDFDocument:openPanel.URL.path];
         }
     }];
 }
@@ -1455,10 +1513,11 @@ typedef enum {
 
 #pragma mark - Drag & Drop
 
-- (void)textViewDroppedFile:(NSString*)file;
+- (void)textViewDroppedFile:(id)file;
 {
-    [self importSourceLogic:file];
+    [self importSourceFromFilePathOrPDFDocument:file];
 }
+
 
 #pragma mark - 色選択パネル
 - (IBAction)toggleColorPalleteWindow:(id)sender {
@@ -1716,8 +1775,11 @@ typedef enum {
 
 - (IBAction)toggleMenuItem:(id)sender
 {
-    [sender setState:![sender state]];
-    [self refreshTextView:sender];
+    if ([sender isKindOfClass:NSMenuItem.class]) {
+        NSMenuItem *theMenuItem = (NSMenuItem*)sender;
+        theMenuItem.state = !theMenuItem.state;
+        [self refreshTextView:theMenuItem];
+    }
 }
 
 - (IBAction)refreshTextView:(id)sender

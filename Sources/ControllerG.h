@@ -5,7 +5,7 @@
 @class TeXTextView;
 
 @protocol DnDDelegate <NSObject>
-- (void)textViewDroppedFile:(NSString*)file;
+- (void)textViewDroppedFile:(id)file;
 @end
 
 typedef enum  {
@@ -21,6 +21,7 @@ typedef enum  {
 - (NSString*)fullwidthSpaceCharacter;
 - (NSString*)returnCharacter;
 - (NSString*)tabCharacter;
+- (BOOL)importSourceFromFilePathOrPDFDocument:(id)input;
 @property (nonatomic, strong) IBOutlet TeXTextView *sourceTextView;
 @property (nonatomic, copy) NSMutableString *commandCompletionList;
 @end
