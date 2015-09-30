@@ -26,7 +26,7 @@
 - (void)insertTextWithIndicator:(id)aString;
 - (void)fixupTabs;
 - (void)refreshWordWrap;
-@property (nonatomic, weak) id<DnDDelegate> dropDelegate;
+@property (nonatomic, assign) id<DnDDelegate> dropDelegate;
 @end
 
 @interface TeXTextView (Colorize)

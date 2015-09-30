@@ -34,142 +34,142 @@ typedef enum {
 #define TemplateDirectoryName @"Templates"
 
 @interface ControllerG()
-@property (nonatomic, strong) IBOutlet ProfileController *profileController;
-@property (nonatomic, strong) IBOutlet NSWindow *mainWindow;
-@property (nonatomic, strong) IBOutlet NSDrawer *outputDrawer;
-@property (nonatomic, strong) IBOutlet NSTextView *outputTextView;
-@property (nonatomic, weak) IBOutlet NSTextField *outputFileTextField;
-@property (nonatomic, weak) IBOutlet NSPopUpButton *templatePopupButton;
+@property IBOutlet ProfileController *profileController;
+@property IBOutlet NSWindow *mainWindow;
+@property IBOutlet NSDrawer *outputDrawer;
+@property IBOutlet NSTextView *outputTextView;
+@property IBOutlet NSTextField *outputFileTextField;
+@property IBOutlet NSPopUpButton *templatePopupButton;
 
-@property (nonatomic, strong) IBOutlet NSWindow *preambleWindow;
-@property (nonatomic, strong) IBOutlet TeXTextView *preambleTextView;
-@property (nonatomic, weak) IBOutlet NSMenuItem *convertYenMarkMenuItem;
-@property (nonatomic, weak) IBOutlet NSMenuItem *outputDrawerMenuItem;
-@property (nonatomic, weak) IBOutlet NSMenuItem *preambleWindowMenuItem;
-@property (nonatomic, weak) IBOutlet NSMenuItem *generateMenuItem;
-@property (nonatomic, weak) IBOutlet NSMenuItem *abortMenuItem;
-@property (nonatomic, weak) IBOutlet NSMenuItem *autoCompleteMenuItem;
+@property IBOutlet NSWindow *preambleWindow;
+@property IBOutlet TeXTextView *preambleTextView;
+@property IBOutlet NSMenuItem *convertYenMarkMenuItem;
+@property IBOutlet NSMenuItem *outputDrawerMenuItem;
+@property IBOutlet NSMenuItem *preambleWindowMenuItem;
+@property IBOutlet NSMenuItem *generateMenuItem;
+@property IBOutlet NSMenuItem *abortMenuItem;
+@property IBOutlet NSMenuItem *autoCompleteMenuItem;
 
-@property (nonatomic, weak) IBOutlet NSButton *flashInMovingCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *highlightContentCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *beepCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *flashBackgroundCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *checkBraceCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *checkBracketCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *checkSquareCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *checkParenCheckBox;
+@property IBOutlet NSButton *flashInMovingCheckBox;
+@property IBOutlet NSButton *highlightContentCheckBox;
+@property IBOutlet NSButton *beepCheckBox;
+@property IBOutlet NSButton *flashBackgroundCheckBox;
+@property IBOutlet NSButton *checkBraceCheckBox;
+@property IBOutlet NSButton *checkBracketCheckBox;
+@property IBOutlet NSButton *checkSquareCheckBox;
+@property IBOutlet NSButton *checkParenCheckBox;
 
-@property (nonatomic, weak) IBOutlet NSTextField *fontTextField;
-@property (nonatomic, weak) IBOutlet NSTextField *tabWidthTextField;
-@property (nonatomic, weak) IBOutlet NSStepper *tabWidthStepper;
-@property (nonatomic, weak) IBOutlet NSButton *tabIndentCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *wrapLineCheckBox;
+@property IBOutlet NSTextField *fontTextField;
+@property IBOutlet NSTextField *tabWidthTextField;
+@property IBOutlet NSStepper *tabWidthStepper;
+@property IBOutlet NSButton *tabIndentCheckBox;
+@property IBOutlet NSButton *wrapLineCheckBox;
 
-@property (nonatomic, weak) IBOutlet NSButton *showTabCharacterCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *showSpaceCharacterCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *showNewLineCharacterCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *showFullwidthSpaceCharacterCheckBox;
+@property IBOutlet NSButton *showTabCharacterCheckBox;
+@property IBOutlet NSButton *showSpaceCharacterCheckBox;
+@property IBOutlet NSButton *showNewLineCharacterCheckBox;
+@property IBOutlet NSButton *showFullwidthSpaceCharacterCheckBox;
 
-@property (nonatomic, weak) IBOutlet NSMatrix *commandCompletionKeyMatrix;
+@property IBOutlet NSMatrix *commandCompletionKeyMatrix;
 
-@property (nonatomic, strong) IBOutlet NSWindow *colorPalleteWindow;
-@property (nonatomic, weak) IBOutlet NSMenuItem *colorPalleteWindowMenuItem;
-@property (nonatomic, weak) IBOutlet NSColorWell *colorPalleteColorWell;
-@property (nonatomic, weak) IBOutlet NSMatrix *colorStyleMatrix;
-@property (nonatomic, weak) IBOutlet NSTextField *colorTextField;
+@property IBOutlet NSWindow *colorPalleteWindow;
+@property IBOutlet NSMenuItem *colorPalleteWindowMenuItem;
+@property IBOutlet NSColorWell *colorPalleteColorWell;
+@property IBOutlet NSMatrix *colorStyleMatrix;
+@property IBOutlet NSTextField *colorTextField;
 
-@property (nonatomic, weak) IBOutlet NSButton *directInputButton;
-@property (nonatomic, weak) IBOutlet NSButton *inputSourceFileButton;
-@property (nonatomic, weak) IBOutlet NSTextField *inputSourceFileTextField;
-@property (nonatomic, weak) IBOutlet NSButton *browseSourceFileButton;
+@property IBOutlet NSButton *directInputButton;
+@property IBOutlet NSButton *inputSourceFileButton;
+@property IBOutlet NSTextField *inputSourceFileTextField;
+@property IBOutlet NSButton *browseSourceFileButton;
 
-@property (nonatomic, weak) IBOutlet NSButton *generateButton;
-@property (nonatomic, weak) IBOutlet NSButton *transparentCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *deleteDisplaySizeCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *mergeOutputsCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *keepPageSizeCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *showOutputDrawerCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *previewCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *deleteTmpFileCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *toClipboardCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *embedSourceCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *embedInIllustratorCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *ungroupCheckBox;
-@property (nonatomic, weak) IBOutlet NSWindow *preferenceWindow;
-@property (nonatomic, weak) IBOutlet NSTextField *resolutionLabel;
-@property (nonatomic, weak) IBOutlet NSTextField *leftMarginLabel;
-@property (nonatomic, weak) IBOutlet NSTextField *rightMarginLabel;
-@property (nonatomic, weak) IBOutlet NSTextField *topMarginLabel;
-@property (nonatomic, weak) IBOutlet NSTextField *bottomMarginLabel;
-@property (nonatomic, weak) IBOutlet NSSlider *resolutionSlider;
-@property (nonatomic, weak) IBOutlet NSSlider *leftMarginSlider;
-@property (nonatomic, weak) IBOutlet NSSlider *rightMarginSlider;
-@property (nonatomic, weak) IBOutlet NSSlider *topMarginSlider;
-@property (nonatomic, weak) IBOutlet NSSlider *bottomMarginSlider;
-@property (nonatomic, weak) IBOutlet NSTextField *latexPathTextField;
-@property (nonatomic, weak) IBOutlet NSTextField *dviwarePathTextField;
-@property (nonatomic, weak) IBOutlet NSTextField *gsPathTextField;
-@property (nonatomic, weak) IBOutlet NSButton *guessCompilationButton;
-@property (nonatomic, weak) IBOutlet NSTextField *numberOfCompilationTextField;
-@property (nonatomic, weak) IBOutlet NSStepper *numberOfCompilationStepper;
-@property (nonatomic, weak) IBOutlet NSButton *textPdfCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *ignoreErrorCheckBox;
-@property (nonatomic, weak) IBOutlet NSButton *utfExportCheckBox;
-@property (nonatomic, weak) IBOutlet NSPopUpButton *encodingPopUpButton;
-@property (nonatomic, weak) IBOutlet NSMatrix *unitMatrix;
-@property (nonatomic, weak) IBOutlet NSMatrix *priorityMatrix;
-@property (nonatomic, copy) NSString *lastSavedPath;
+@property IBOutlet NSButton *generateButton;
+@property IBOutlet NSButton *transparentCheckBox;
+@property IBOutlet NSButton *deleteDisplaySizeCheckBox;
+@property IBOutlet NSButton *mergeOutputsCheckBox;
+@property IBOutlet NSButton *keepPageSizeCheckBox;
+@property IBOutlet NSButton *showOutputDrawerCheckBox;
+@property IBOutlet NSButton *previewCheckBox;
+@property IBOutlet NSButton *deleteTmpFileCheckBox;
+@property IBOutlet NSButton *toClipboardCheckBox;
+@property IBOutlet NSButton *embedSourceCheckBox;
+@property IBOutlet NSButton *embedInIllustratorCheckBox;
+@property IBOutlet NSButton *ungroupCheckBox;
+@property IBOutlet NSWindow *preferenceWindow;
+@property IBOutlet NSTextField *resolutionLabel;
+@property IBOutlet NSTextField *leftMarginLabel;
+@property IBOutlet NSTextField *rightMarginLabel;
+@property IBOutlet NSTextField *topMarginLabel;
+@property IBOutlet NSTextField *bottomMarginLabel;
+@property IBOutlet NSSlider *resolutionSlider;
+@property IBOutlet NSSlider *leftMarginSlider;
+@property IBOutlet NSSlider *rightMarginSlider;
+@property IBOutlet NSSlider *topMarginSlider;
+@property IBOutlet NSSlider *bottomMarginSlider;
+@property IBOutlet NSTextField *latexPathTextField;
+@property IBOutlet NSTextField *dviwarePathTextField;
+@property IBOutlet NSTextField *gsPathTextField;
+@property IBOutlet NSButton *guessCompilationButton;
+@property IBOutlet NSTextField *numberOfCompilationTextField;
+@property IBOutlet NSStepper *numberOfCompilationStepper;
+@property IBOutlet NSButton *textPdfCheckBox;
+@property IBOutlet NSButton *ignoreErrorCheckBox;
+@property IBOutlet NSButton *utfExportCheckBox;
+@property IBOutlet NSPopUpButton *encodingPopUpButton;
+@property IBOutlet NSMatrix *unitMatrix;
+@property IBOutlet NSMatrix *priorityMatrix;
+@property NSString *lastSavedPath;
 
-@property (nonatomic, strong) NSWindow *lastActiveWindow;
-@property (nonatomic, copy) NSMutableDictionary<NSString*,NSColor*> *lastColorDict;
+@property NSWindow *lastActiveWindow;
+@property NSMutableDictionary<NSString*,NSColor*> *lastColorDict;
 
-@property (nonatomic, weak) IBOutlet NSColorWell *foregroundColorWell;
-@property (nonatomic, weak) IBOutlet NSColorWell *backgroundColorWell;
-@property (nonatomic, weak) IBOutlet NSColorWell *cursorColorWell;
-@property (nonatomic, weak) IBOutlet NSColorWell *braceColorWell;
-@property (nonatomic, weak) IBOutlet NSColorWell *commentColorWell;
-@property (nonatomic, weak) IBOutlet NSColorWell *commandColorWell;
-@property (nonatomic, weak) IBOutlet NSColorWell *invisibleColorWell;
-@property (nonatomic, weak) IBOutlet NSColorWell *highlightedBraceColorWell;
-@property (nonatomic, weak) IBOutlet NSColorWell *enclosedContentBackgroundColorWell;
-@property (nonatomic, weak) IBOutlet NSColorWell *flashingBackgroundColorWell;
-@property (nonatomic, weak) IBOutlet NSButton *makeatletterEnabledCheckBox;
+@property IBOutlet NSColorWell *foregroundColorWell;
+@property IBOutlet NSColorWell *backgroundColorWell;
+@property IBOutlet NSColorWell *cursorColorWell;
+@property IBOutlet NSColorWell *braceColorWell;
+@property IBOutlet NSColorWell *commentColorWell;
+@property IBOutlet NSColorWell *commandColorWell;
+@property IBOutlet NSColorWell *invisibleColorWell;
+@property IBOutlet NSColorWell *highlightedBraceColorWell;
+@property IBOutlet NSColorWell *enclosedContentBackgroundColorWell;
+@property IBOutlet NSColorWell *flashingBackgroundColorWell;
+@property IBOutlet NSButton *makeatletterEnabledCheckBox;
 
-@property (nonatomic, strong) IBOutlet NSViewController *autoDetectionTargetSettingViewController;
-@property (nonatomic, weak) IBOutlet NSMatrix *autoDetectionTargetMatrix;
+@property IBOutlet NSViewController *autoDetectionTargetSettingViewController;
+@property IBOutlet NSMatrix *autoDetectionTargetMatrix;
 
-@property (nonatomic, weak) IBOutlet NSBox *invisibleCharacterBox;
+@property IBOutlet NSBox *invisibleCharacterBox;
 
-@property (nonatomic, weak) IBOutlet NSButton *spaceCharacterKindButton;
-@property (nonatomic, weak) IBOutlet NSButton *fullwidthSpaceCharacterKindButton;
-@property (nonatomic, weak) IBOutlet NSButton *returnCharacterKindButton;
-@property (nonatomic, weak) IBOutlet NSButton *tabCharacterKindButton;
+@property IBOutlet NSButton *spaceCharacterKindButton;
+@property IBOutlet NSButton *fullwidthSpaceCharacterKindButton;
+@property IBOutlet NSButton *returnCharacterKindButton;
+@property IBOutlet NSButton *tabCharacterKindButton;
 
-@property (nonatomic, strong) IBOutlet NSViewController *spaceCharacterKindSettingViewController;
-@property (nonatomic, weak) IBOutlet NSMatrix *spaceCharacterKindMatrix;
+@property IBOutlet NSViewController *spaceCharacterKindSettingViewController;
+@property IBOutlet NSMatrix *spaceCharacterKindMatrix;
 
-@property (nonatomic, strong) IBOutlet NSViewController *fullwidthSpaceCharacterKindSettingViewController;
-@property (nonatomic, weak) IBOutlet NSMatrix *fullwidthSpaceCharacterKindMatrix;
+@property IBOutlet NSViewController *fullwidthSpaceCharacterKindSettingViewController;
+@property IBOutlet NSMatrix *fullwidthSpaceCharacterKindMatrix;
 
-@property (nonatomic, strong) IBOutlet NSViewController *returnCharacterKindSettingViewController;
-@property (nonatomic, weak) IBOutlet NSMatrix *returnCharacterKindMatrix;
+@property IBOutlet NSViewController *returnCharacterKindSettingViewController;
+@property IBOutlet NSMatrix *returnCharacterKindMatrix;
 
-@property (nonatomic, strong) IBOutlet NSViewController *tabCharacterKindSettingViewController;
-@property (nonatomic, weak) IBOutlet NSMatrix *tabCharacterKindMatrix;
+@property IBOutlet NSViewController *tabCharacterKindSettingViewController;
+@property IBOutlet NSMatrix *tabCharacterKindMatrix;
 
-@property (nonatomic, strong) IBOutlet NSViewController *pageBoxSettingViewController;
-@property (nonatomic, weak) IBOutlet NSMatrix *pageBoxMatrix;
+@property IBOutlet NSViewController *pageBoxSettingViewController;
+@property IBOutlet NSMatrix *pageBoxMatrix;
 
-@property (nonatomic, strong) IBOutlet NSViewController *animationParameterSettingViewController;
-@property (nonatomic, weak) IBOutlet NSTextField *delayTextField;;
-@property (nonatomic, weak) IBOutlet NSStepper *delayStepper;
-@property (nonatomic, weak) IBOutlet NSTextField *loopCountTextField;
-@property (nonatomic, weak) IBOutlet NSStepper *loopCountStepper;
+@property IBOutlet NSViewController *animationParameterSettingViewController;
+@property IBOutlet NSTextField *delayTextField;;
+@property IBOutlet NSStepper *delayStepper;
+@property IBOutlet NSTextField *loopCountTextField;
+@property IBOutlet NSStepper *loopCountStepper;
 
-@property (atomic, strong) Converter *converter;
-@property (atomic, strong) NSTask *runningTask;
-@property (atomic, strong) NSPipe *outputPipe;
-@property (atomic, assign) BOOL *taskKilled;
+@property Converter *converter;
+@property NSTask *runningTask;
+@property NSPipe *outputPipe;
+@property BOOL *taskKilled;
 
 @end
 
@@ -357,7 +357,7 @@ typedef enum {
     [runningTask waitUntilExit];
     
     [self appendOutputAndScroll:@"\n" quiet:quiet];
-
+    
     [self exitCurrentThreadIfTaskKilled];
     
     return (runningTask.terminationStatus == 0) ? YES : NO;
@@ -365,7 +365,7 @@ typedef enum {
 
 - (void)showMainWindow
 {
-	[mainWindow makeKeyAndOrderFront:nil];
+    [mainWindow makeKeyAndOrderFront:nil];
 }
 
 - (void)appendOutputAndScrollOnMainThread:(NSString*)str
@@ -380,9 +380,9 @@ typedef enum {
     if (quiet) {
         return;
     }
-	if (str) {
+    if (str) {
         [self performSelectorOnMainThread:@selector(appendOutputAndScrollOnMainThread:) withObject:str waitUntilDone:YES];
-	}
+    }
 }
 
 - (void)prepareOutputTextView
@@ -435,27 +435,27 @@ typedef enum {
 
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dviwarePath:(NSString*)dviwarePath gsPath:(NSString*)gsPath
 {
-	NSFileManager *fileManager = NSFileManager.defaultManager;
-	
-	if (![fileManager fileExistsAtPath:latexPath.programPath]) {
-		[self showNotFoundError:latexPath];
-		return NO;
-	}
-	if (![fileManager fileExistsAtPath:dviwarePath.programPath]) {
-		[self showNotFoundError:dviwarePath];
-		return NO;
-	}
-	if (![fileManager fileExistsAtPath:gsPath.programPath]) {
-		[self showNotFoundError:gsPath];
-		return NO;
-	}
-	
-	return YES;
+    NSFileManager *fileManager = NSFileManager.defaultManager;
+    
+    if (![fileManager fileExistsAtPath:latexPath.programPath]) {
+        [self showNotFoundError:latexPath];
+        return NO;
+    }
+    if (![fileManager fileExistsAtPath:dviwarePath.programPath]) {
+        [self showNotFoundError:dviwarePath];
+        return NO;
+    }
+    if (![fileManager fileExistsAtPath:gsPath.programPath]) {
+        [self showNotFoundError:gsPath];
+        return NO;
+    }
+    
+    return YES;
 }
 
 - (BOOL)epstopdfExists;
 {
-	return YES;
+    return YES;
 }
 
 - (BOOL)mudrawExists;
@@ -554,7 +554,7 @@ typedef enum {
         [self appendOutputAndScroll:[NSString stringWithFormat:localizedString(@"pageSkippedWarning"), pages[0].stringValue]
                               quiet:NO];
     }
-
+    
     [self appendOutputAndScroll:@"\n" quiet:NO];
 }
 
@@ -601,20 +601,20 @@ typedef enum {
 #pragma mark - プロファイルの読み書き関連
 - (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
 {
-	NSString *tempStr = [aProfile stringForKey:aKey];
-	
-	if (tempStr) {
-		textField.stringValue = tempStr;
-	}
+    NSString *tempStr = [aProfile stringForKey:aKey];
+    
+    if (tempStr) {
+        textField.stringValue = tempStr;
+    }
 }
 
 - (void)loadSettingForTextView:(NSTextView*)textView fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
 {
-	NSString *tempStr = [aProfile stringForKey:aKey];
-	
-	if (tempStr) {
-		textView.textStorage.mutableString.string = tempStr;
-	}
+    NSString *tempStr = [aProfile stringForKey:aKey];
+    
+    if (tempStr) {
+        textView.textStorage.mutableString.string = tempStr;
+    }
 }
 
 - (void)adoptProfile:(Profile*)aProfile
@@ -624,45 +624,45 @@ typedef enum {
     }
     
     NSArray<NSString*> *keys = aProfile.allKeys;
-	
-	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
-	
-	showOutputDrawerCheckBox.state = [aProfile integerForKey:ShowOutputDrawerKey];
-	previewCheckBox.state = [aProfile integerForKey:PreviewKey];
-	deleteTmpFileCheckBox.state = [aProfile integerForKey:DeleteTmpFileKey];
-
+    
+    [self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
+    
+    showOutputDrawerCheckBox.state = [aProfile integerForKey:ShowOutputDrawerKey];
+    previewCheckBox.state = [aProfile integerForKey:PreviewKey];
+    deleteTmpFileCheckBox.state = [aProfile integerForKey:DeleteTmpFileKey];
+    
     if ([keys containsObject:EmbedSourceKey]) {
         embedSourceCheckBox.state = [aProfile integerForKey:EmbedSourceKey];
     } else {
         embedSourceCheckBox.state = NSOnState;
     }
-
+    
     toClipboardCheckBox.state = [aProfile integerForKey:CopyToClipboardKey];
     
-	embedInIllustratorCheckBox.state = [aProfile integerForKey:EmbedInIllustratorKey];
-	ungroupCheckBox.state = [aProfile integerForKey:UngroupKey];
-	
-	transparentCheckBox.state = [aProfile boolForKey:TransparentKey];
-	textPdfCheckBox.state = ![aProfile boolForKey:GetOutlineKey];
+    embedInIllustratorCheckBox.state = [aProfile integerForKey:EmbedInIllustratorKey];
+    ungroupCheckBox.state = [aProfile integerForKey:UngroupKey];
+    
+    transparentCheckBox.state = [aProfile boolForKey:TransparentKey];
+    textPdfCheckBox.state = ![aProfile boolForKey:GetOutlineKey];
     deleteDisplaySizeCheckBox.state = [aProfile boolForKey:DeleteDisplaySizeKey];
     mergeOutputsCheckBox.state = [aProfile boolForKey:MergeOutputsKey];
     keepPageSizeCheckBox.state = [aProfile boolForKey:KeepPageSizeKey];
-
-	ignoreErrorCheckBox.state = [aProfile boolForKey:IgnoreErrorKey];
-	utfExportCheckBox.state = [aProfile boolForKey:UtfExportKey];
-	
-	convertYenMarkMenuItem.state = [aProfile boolForKey:ConvertYenMarkKey];
-	
-	flashInMovingCheckBox.state = [aProfile boolForKey:FlashInMovingKey];
-
-	highlightContentCheckBox.state = [aProfile boolForKey:HighlightContentKey];
-	beepCheckBox.state = [aProfile boolForKey:BeepKey];
-	flashBackgroundCheckBox.state = [aProfile boolForKey:FlashBackgroundKey];
-
-	checkBraceCheckBox.state = [aProfile boolForKey:CheckBraceKey];
-	checkBracketCheckBox.state = [aProfile boolForKey:CheckBracketKey];
-	checkSquareCheckBox.state = [aProfile boolForKey:CheckSquareBracketKey];
-	checkParenCheckBox.state = [aProfile boolForKey:CheckParenKey];
+    
+    ignoreErrorCheckBox.state = [aProfile boolForKey:IgnoreErrorKey];
+    utfExportCheckBox.state = [aProfile boolForKey:UtfExportKey];
+    
+    convertYenMarkMenuItem.state = [aProfile boolForKey:ConvertYenMarkKey];
+    
+    flashInMovingCheckBox.state = [aProfile boolForKey:FlashInMovingKey];
+    
+    highlightContentCheckBox.state = [aProfile boolForKey:HighlightContentKey];
+    beepCheckBox.state = [aProfile boolForKey:BeepKey];
+    flashBackgroundCheckBox.state = [aProfile boolForKey:FlashBackgroundKey];
+    
+    checkBraceCheckBox.state = [aProfile boolForKey:CheckBraceKey];
+    checkBracketCheckBox.state = [aProfile boolForKey:CheckBracketKey];
+    checkSquareCheckBox.state = [aProfile boolForKey:CheckSquareBracketKey];
+    checkParenCheckBox.state = [aProfile boolForKey:CheckParenKey];
     
     NSInteger tabWidth = [aProfile integerForKey:TabWidthKey];
     if (tabWidth > 0) {
@@ -671,7 +671,7 @@ typedef enum {
         tabWidthTextField.integerValue = 4;
     }
     [tabWidthStepper takeIntegerValueFrom:tabWidthTextField];
-
+    
     if ([keys containsObject:TabIndentKey]) {
         tabIndentCheckBox.state = [aProfile integerForKey:TabIndentKey];
     } else {
@@ -683,14 +683,14 @@ typedef enum {
     } else {
         wrapLineCheckBox.state = NSOnState;
     }
-
+    
     //// 色設定の読み取り
     if ([keys containsObject:ForegroundColorKey]) {
         foregroundColorWell.color = [aProfile colorForKey:ForegroundColorKey];
     } else {
         foregroundColorWell.color = NSColor.textColor;
     }
-
+    
     if ([keys containsObject:BackgroundColorKey]) {
         backgroundColorWell.color = [aProfile colorForKey:BackgroundColorKey];
     } else {
@@ -738,13 +738,13 @@ typedef enum {
     } else {
         enclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
     }
-
+    
     if ([keys containsObject:FlashingBackgroundColorKey]) {
         flashingBackgroundColorWell.color = [aProfile colorForKey:FlashingBackgroundColorKey];
     } else {
         flashingBackgroundColorWell.color = NSColor.flashingBackgroundColor;
     }
-
+    
     if ([keys containsObject:ColorPalleteColorKey]) {
         colorPalleteColorWell.color = [aProfile colorForKey:ColorPalleteColorKey];
     } else {
@@ -756,13 +756,13 @@ typedef enum {
     } else {
         makeatletterEnabledCheckBox.state = NSOnState;
     }
-
-	autoCompleteMenuItem.state = [aProfile boolForKey:AutoCompleteKey];
-	showTabCharacterCheckBox.state = [aProfile boolForKey:ShowTabCharacterKey];
-	showSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowSpaceCharacterKey];
-	showFullwidthSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowFullwidthSpaceCharacterKey];
-	showNewLineCharacterCheckBox.state = [aProfile boolForKey:ShowNewLineCharacterKey];
-	guessCompilationButton.state = [aProfile boolForKey:GuessCompilationKey];
+    
+    autoCompleteMenuItem.state = [aProfile boolForKey:AutoCompleteKey];
+    showTabCharacterCheckBox.state = [aProfile boolForKey:ShowTabCharacterKey];
+    showSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowSpaceCharacterKey];
+    showFullwidthSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowFullwidthSpaceCharacterKey];
+    showNewLineCharacterCheckBox.state = [aProfile boolForKey:ShowNewLineCharacterKey];
+    guessCompilationButton.state = [aProfile boolForKey:GuessCompilationKey];
     
     NSString *encoding = [aProfile stringForKey:EncodingKey];
     if (encoding) {
@@ -780,12 +780,12 @@ typedef enum {
         
         [encodingPopUpButton selectItemWithTag:tag];
     }
-	
-	[self loadSettingForTextField:latexPathTextField fromProfile:aProfile forKey:LatexPathKey];
-	[self loadSettingForTextField:dviwarePathTextField fromProfile:aProfile forKey:DviwarePathKey];
-	[self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
-	
-	[self loadSettingForTextField:resolutionLabel fromProfile:aProfile forKey:ResolutionLabelKey];
+    
+    [self loadSettingForTextField:latexPathTextField fromProfile:aProfile forKey:LatexPathKey];
+    [self loadSettingForTextField:dviwarePathTextField fromProfile:aProfile forKey:DviwarePathKey];
+    [self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
+    
+    [self loadSettingForTextField:resolutionLabel fromProfile:aProfile forKey:ResolutionLabelKey];
     [self loadSettingForTextField:leftMarginLabel fromProfile:aProfile forKey:LeftMarginLabelKey];
     [self loadSettingForTextField:rightMarginLabel fromProfile:aProfile forKey:RightMarginLabelKey];
     [self loadSettingForTextField:topMarginLabel fromProfile:aProfile forKey:TopMarginLabelKey];
@@ -805,31 +805,31 @@ typedef enum {
     
     NSInteger priorityTag = [aProfile integerForKey:PriorityKey];
     [priorityMatrix selectCellWithTag:priorityTag];
-
+    
     if ([keys containsObject:AutoDetectionTargetKey]) {
         [autoDetectionTargetMatrix selectCellWithTag:[aProfile integerForKey:AutoDetectionTargetKey]];
     }
-
+    
     if ([keys containsObject:SpaceCharacterKindKey]) {
         [spaceCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:SpaceCharacterKindKey]];
     }
-
+    
     if ([keys containsObject:FullwidthSpaceCharacterKindKey]) {
         [fullwidthSpaceCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:FullwidthSpaceCharacterKindKey]];
     }
-
+    
     if ([keys containsObject:ReturnCharacterKindKey]) {
         [returnCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:ReturnCharacterKindKey]];
     }
-
+    
     if ([keys containsObject:TabCharacterKindKey]) {
         [tabCharacterKindMatrix selectCellWithTag:[aProfile integerForKey:TabCharacterKindKey]];
     }
-
+    
     if ([keys containsObject:PageBoxKey]) {
         [pageBoxMatrix selectCellWithTag:[aProfile integerForKey:PageBoxKey]];
     }
-
+    
     if ([keys containsObject:DelayKey]) {
         delayTextField.floatValue = MAX(0, [aProfile floatForKey:DelayKey]);
         [delayStepper takeFloatValueFrom:delayTextField];
@@ -844,9 +844,9 @@ typedef enum {
         NSInteger commandCompletionKeyTag = [aProfile integerForKey:CommandCompletionKeyKey];
         [commandCompletionKeyMatrix selectCellWithTag:commandCompletionKeyTag];
     }
-
+    
     [self invisibleCharacterKindChanged:nil];
-
+    
     [self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:PreambleKey];
     
     NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
@@ -902,32 +902,32 @@ typedef enum {
 
 - (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
 {
-	Profile *aProfile = [profileController profileForName:profileName];
+    Profile *aProfile = [profileController profileForName:profileName];
     if (!aProfile) {
         return NO;
     }
-	
-	[self adoptProfile:aProfile];
-
-	float x, y, mainWindowWidth, mainWindowHeight; 
-	x = [aProfile floatForKey:XKey];
-	y = [aProfile floatForKey:YKey];
-	mainWindowWidth = [aProfile floatForKey:MainWindowWidthKey];
-	mainWindowHeight = [aProfile floatForKey:MainWindowHeightKey];
-	
-	if (x!=0 && y!=0 && mainWindowWidth!=0 && mainWindowHeight!=0) {
-		[mainWindow setFrame:NSMakeRect(x, y, mainWindowWidth, mainWindowHeight) display:YES];
-	}
-	
-	return YES;
+    
+    [self adoptProfile:aProfile];
+    
+    float x, y, mainWindowWidth, mainWindowHeight;
+    x = [aProfile floatForKey:XKey];
+    y = [aProfile floatForKey:YKey];
+    mainWindowWidth = [aProfile floatForKey:MainWindowWidthKey];
+    mainWindowHeight = [aProfile floatForKey:MainWindowHeightKey];
+    
+    if (x!=0 && y!=0 && mainWindowWidth!=0 && mainWindowHeight!=0) {
+        [mainWindow setFrame:NSMakeRect(x, y, mainWindowWidth, mainWindowHeight) display:YES];
+    }
+    
+    return YES;
 }
 
 
 
 - (MutableProfile*)currentProfile
 {
-	MutableProfile *currentProfile = [MutableProfile dictionary];
-	@try {
+    MutableProfile *currentProfile = [MutableProfile dictionary];
+    @try {
         currentProfile[TeX2imgVersionKey] = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"];
         
         currentProfile[XKey] = @(NSMinX(mainWindow.frame));
@@ -982,19 +982,19 @@ typedef enum {
         currentProfile[PriorityKey] = @(priorityMatrix.selectedTag);
         
         currentProfile[CommandCompletionKeyKey] = @(commandCompletionKeyMatrix.selectedTag);
-
+        
         currentProfile[AutoDetectionTargetKey] = @(autoDetectionTargetMatrix.selectedTag);
-
+        
         currentProfile[SpaceCharacterKindKey] = @(spaceCharacterKindMatrix.selectedTag);
         currentProfile[FullwidthSpaceCharacterKindKey] = @(fullwidthSpaceCharacterKindMatrix.selectedTag);
         currentProfile[ReturnCharacterKindKey] = @(returnCharacterKindMatrix.selectedTag);
         currentProfile[TabCharacterKindKey] = @(tabCharacterKindMatrix.selectedTag);
-
+        
         currentProfile[PageBoxKey] = @(pageBoxMatrix.selectedTag);
         
         currentProfile[DelayKey] = @(delayTextField.floatValue);
         currentProfile[LoopCountKey] = @(loopCountTextField.integerValue);
-
+        
         currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
         currentProfile[FlashInMovingKey] = @(flashInMovingCheckBox.state);
         currentProfile[HighlightContentKey] = @(highlightContentCheckBox.state);
@@ -1051,8 +1051,8 @@ typedef enum {
             currentProfile[EncodingKey] = PTEX_ENCODING_NONE;
             break;
     }
-	
-	return currentProfile;
+    
+    return currentProfile;
 }
 
 #pragma mark - 他のメソッドから呼び出されるユーティリティメソッド
@@ -1067,7 +1067,7 @@ typedef enum {
     [task waitUntilExit];
     
     NSMutableArray<NSString*> *searchPaths = [NSMutableArray arrayWithArray:[pipe.stringValue componentsSeparatedByString:@":"]];
-
+    
     [searchPaths addObjectsFromArray: @[
                                         @"/Applications/TeXLive/Library/mactexaddons/bin",
                                         @"/Applications/TeXLive/Library/texlive/2016/bin/x86_64-darwin",
@@ -1121,16 +1121,16 @@ typedef enum {
                                         @"/sw/bin"
                                         ]];
     
-	NSFileManager *fileManager = NSFileManager.defaultManager;
-	
-	for (NSString *aPath in searchPaths) {
-		NSString *aFullPath = [aPath stringByAppendingPathComponent:programName];
+    NSFileManager *fileManager = NSFileManager.defaultManager;
+    
+    for (NSString *aPath in searchPaths) {
+        NSString *aFullPath = [aPath stringByAppendingPathComponent:programName];
         if ([fileManager fileExistsAtPath:aFullPath]) {
             return aFullPath;
         }
-	}
-	
-	return nil;
+    }
+    
+    return nil;
 }
 
 #pragma mark - プリアンブルの管理
@@ -1206,7 +1206,7 @@ typedef enum {
     NSData *data = [NSData dataWithContentsOfFile:templatePath];
     NSStringEncoding detectedEncoding;
     NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
-
+    
     if (contents) {
         NSString *message = [NSString stringWithFormat:@"%@\n\n%@", localizedString(@"resotrePreambleMsg"), [contents stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]];
         
@@ -1249,62 +1249,62 @@ typedef enum {
 #pragma mark - デリゲート・ノティフィケーションのコールバック
 - (void)awakeFromNib
 {
-	//	以下は Interface Builder 上で設定できる
-	//	[mainWindow setReleasedWhenClosed:NO];
-	//	[preambleWindow setReleasedWhenClosed:NO];
-
+    //	以下は Interface Builder 上で設定できる
+    //	[mainWindow setReleasedWhenClosed:NO];
+    //	[preambleWindow setReleasedWhenClosed:NO];
+    
     lastColorDict = [NSMutableDictionary<NSString*,NSColor*> dictionary];
-
-	// ノティフィケーションの設定
-	NSNotificationCenter *aCenter = NSNotificationCenter.defaultCenter;
-	
-	// アプリケーションがアクティブになったときにメインウィンドウを表示
-	[aCenter addObserver:self
-				selector:@selector(showMainWindow:)
-					name:NSApplicationDidBecomeActiveNotification
-				  object:NSApp];
-	
-	// プログラム終了時に設定保存実行
-	[aCenter addObserver:self
-				selector:@selector(applicationWillTerminate:)
-					name:NSApplicationWillTerminateNotification
-				  object:NSApp];
-	
-	// プリアンブルウィンドウが閉じられるときにメニューのチェックを外す
-	[aCenter addObserver:self
-				selector:@selector(uncheckPreambleWindowMenuItem:)
-					name:NSWindowWillCloseNotification
-				  object:preambleWindow];
-
+    
+    // ノティフィケーションの設定
+    NSNotificationCenter *aCenter = NSNotificationCenter.defaultCenter;
+    
+    // アプリケーションがアクティブになったときにメインウィンドウを表示
+    [aCenter addObserver:self
+                selector:@selector(showMainWindow:)
+                    name:NSApplicationDidBecomeActiveNotification
+                  object:NSApp];
+    
+    // プログラム終了時に設定保存実行
+    [aCenter addObserver:self
+                selector:@selector(applicationWillTerminate:)
+                    name:NSApplicationWillTerminateNotification
+                  object:NSApp];
+    
+    // プリアンブルウィンドウが閉じられるときにメニューのチェックを外す
+    [aCenter addObserver:self
+                selector:@selector(uncheckPreambleWindowMenuItem:)
+                    name:NSWindowWillCloseNotification
+                  object:preambleWindow];
+    
     // 色入力支援パレットが閉じられるときにメニューのチェックを外す
     [aCenter addObserver:self
                 selector:@selector(uncheckColorPalleteWindowMenuItem:)
                     name:NSWindowWillCloseNotification
                   object:colorPalleteWindow];
-	
-	// メインウィンドウが閉じられるときに他のウィンドウも閉じる
-	[aCenter addObserver:self
-				selector:@selector(closeOtherWindows:)
-					name:NSWindowWillCloseNotification
-				  object:mainWindow];
-	
-	// テキストビューのカーソル移動の通知を受ける
-	[aCenter addObserver:sourceTextView
-				selector:@selector(textViewDidChangeSelection:)
-					name:NSTextViewDidChangeSelectionNotification
-				  object:sourceTextView];
-
-	[aCenter addObserver:preambleTextView
-				selector:@selector(textViewDidChangeSelection:)
-					name:NSTextViewDidChangeSelectionNotification
-				  object:preambleTextView];
+    
+    // メインウィンドウが閉じられるときに他のウィンドウも閉じる
+    [aCenter addObserver:self
+                selector:@selector(closeOtherWindows:)
+                    name:NSWindowWillCloseNotification
+                  object:mainWindow];
+    
+    // テキストビューのカーソル移動の通知を受ける
+    [aCenter addObserver:sourceTextView
+                selector:@selector(textViewDidChangeSelection:)
+                    name:NSTextViewDidChangeSelectionNotification
+                  object:sourceTextView];
+    
+    [aCenter addObserver:preambleTextView
+                selector:@selector(textViewDidChangeSelection:)
+                    name:NSTextViewDidChangeSelectionNotification
+                  object:preambleTextView];
     
     // テンプレートボタンのポップアップ寸前
     [aCenter addObserver:self
                 selector:@selector(constructTemplatePopup:)
                     name:NSPopUpButtonWillPopUpNotification
                   object:templatePopupButton];
-
+    
     // ウィンドウがアクティブになったときにその通知を受け取る
     [aCenter addObserver:self
                 selector:@selector(otherWindowsDidBecomeKey:)
@@ -1328,23 +1328,23 @@ typedef enum {
                 selector:@selector(refreshNumberOfCompilation:)
                     name:NSControlTextDidChangeNotification
                   object:numberOfCompilationTextField];
-
+    
     // タブ幅の変更
     [aCenter addObserver:self
                 selector:@selector(refreshTextView:)
                     name:NSControlTextDidChangeNotification
                   object:tabWidthTextField];
-	
-	// デフォルトのアウトプットファイルのパスをセット
-	outputFileTextField.stringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
     
-
+    // デフォルトのアウトプットファイルのパスをセット
+    outputFileTextField.stringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
+    
+    
     // 色パレットが表示されていれば消す
     [self closeColorPanel];
-
+    
     // フォントパネルが表示されていれば消す
     [self closeFontPanel];
-
+    
     lastActiveWindow = mainWindow;
     
     // 色入力支援パレットにデフォルトの文字を入れる
@@ -1358,22 +1358,22 @@ typedef enum {
     [returnCharacterKindMatrix setCellColor:NSColor.textColor];
     [tabCharacterKindMatrix setCellColor:NSColor.textColor];
     [pageBoxMatrix setCellColor:NSColor.textColor];
-	
-	// 保存された設定を読み込む
-	NSFileManager *fileManager = NSFileManager.defaultManager;
-	NSString *plistFile = [NSString stringWithFormat:@"%@/Library/Preferences/%@.plist", NSHomeDirectory(), [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
     
-	
-	BOOL loadLastProfileSuccess = NO;
-	
-	if ([fileManager fileExistsAtPath:plistFile]) {
-		[profileController loadProfilesFromPlist];
-		loadLastProfileSuccess = [self adoptProfileWithWindowFrameForName:AutoSavedProfileName];
-		[profileController removeProfileForName:AutoSavedProfileName];
-	}
+    // 保存された設定を読み込む
+    NSFileManager *fileManager = NSFileManager.defaultManager;
+    NSString *plistFile = [NSString stringWithFormat:@"%@/Library/Preferences/%@.plist", NSHomeDirectory(), [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
     
-	if (!loadLastProfileSuccess) { // 初回起動時の各種プログラムのパスの自動設定
-		[profileController initProfiles];
+    
+    BOOL loadLastProfileSuccess = NO;
+    
+    if ([fileManager fileExistsAtPath:plistFile]) {
+        [profileController loadProfilesFromPlist];
+        loadLastProfileSuccess = [self adoptProfileWithWindowFrameForName:AutoSavedProfileName];
+        [profileController removeProfileForName:AutoSavedProfileName];
+    }
+    
+    if (!loadLastProfileSuccess) { // 初回起動時の各種プログラムのパスの自動設定
+        [profileController initProfiles];
         
         [self searchProgramsLogic:@{
                                     @"Title": localizedString(@"initSettingsMsg"),
@@ -1381,7 +1381,7 @@ typedef enum {
                                     @"Msg2": localizedString(@"setPathMsg2"),
                                     @"waitUntilDone": @(NO)
                                     }];
-
+        
         // デフォルトプリアンブルのロード
         NSString *templateName = [autoDetectionTargetMatrix.selectedCell title];
         NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
@@ -1393,30 +1393,30 @@ typedef enum {
         if (contents) {
             [preambleTextView replaceEntireContentsWithString:contents];
         }
-
+        
         [self loadDefaultFont];
         [self loadDefaultColors:nil];
-		
-		[NSUserDefaults.standardUserDefaults setBool:YES forKey:@"SUEnableAutomaticChecks"];
-	}
-    
-	// CommandComepletion.txt のロード
-	NSData *completionData;
-
-	NSString *completionPath = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt".stringByStandardizingPath;
-    if ([fileManager fileExistsAtPath:completionPath]) {
-		completionData = [NSData dataWithContentsOfFile:completionPath];
+        
+        [NSUserDefaults.standardUserDefaults setBool:YES forKey:@"SUEnableAutomaticChecks"];
     }
-	
-	if (completionData) {
-		commandCompletionList = [[NSMutableString alloc] initWithData:completionData encoding:NSUTF8StringEncoding];
-		
-		[commandCompletionList insertString:@"\n" atIndex:0];
+    
+    // CommandComepletion.txt のロード
+    NSData *completionData;
+    
+    NSString *completionPath = @"~/Library/TeXShop/CommandCompletion/CommandCompletion.txt".stringByStandardizingPath;
+    if ([fileManager fileExistsAtPath:completionPath]) {
+        completionData = [NSData dataWithContentsOfFile:completionPath];
+    }
+    
+    if (completionData) {
+        commandCompletionList = [[NSMutableString alloc] initWithData:completionData encoding:NSUTF8StringEncoding];
+        
+        [commandCompletionList insertString:@"\n" atIndex:0];
         if ([commandCompletionList characterAtIndex:commandCompletionList.length-1] != '\n') {
-			[commandCompletionList appendString:@"\n"];
+            [commandCompletionList appendString:@"\n"];
         }
-	}
-
+    }
+    
     // Application Support の準備
     NSString *templateDirectoryPath = self.templateDirectoryPath;
     if (![fileManager fileExistsAtPath:templateDirectoryPath isDirectory:nil]) {
@@ -1465,7 +1465,7 @@ typedef enum {
     [flashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
     
     makeatletterEnabledCheckBox.state = NSOnState;
-
+    
     [sourceTextView colorizeText];
     [preambleTextView colorizeText];
 }
@@ -1498,44 +1498,44 @@ typedef enum {
     if (NSFontPanel.sharedFontPanelExists) {
         [self closeFontPanel];
     }
-
-	[profileController updateProfile:[self currentProfile] forName:AutoSavedProfileName];
-	[profileController saveProfiles];
+    
+    [profileController updateProfile:[self currentProfile] forName:AutoSavedProfileName];
+    [profileController saveProfiles];
 }
 
 - (void)dealloc
 {
-	[NSNotificationCenter.defaultCenter removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 - (void)closeOtherWindows:(NSNotification*)aNotification
 {
-	[preambleWindow close];
-	[preferenceWindow close];
+    [preambleWindow close];
+    [preferenceWindow close];
 }
 
 - (void)uncheckOutputDrawerMenuItem:(NSNotification*)aNotification
 {
-	outputDrawerMenuItem.state = NO;
+    outputDrawerMenuItem.state = NO;
 }
 
 - (void)uncheckPreambleWindowMenuItem:(NSNotification*)aNotification
 {
-	preambleWindowMenuItem.state = NO;
+    preambleWindowMenuItem.state = NO;
 }
 
 
 - (void)otherWindowsDidBecomeKey:(NSNotification*)aNotification
 {
     lastActiveWindow = aNotification.object;
-
+    
     // 色パレットが表示されていれば消す
     [self closeColorPanel];
 }
 
 - (IBAction)showMainWindow:(id)sender
 {
-	[self showMainWindow];
+    [self showMainWindow];
 }
 
 - (void)readOutputData:(NSNotification*)aNotification
@@ -1572,7 +1572,7 @@ typedef enum {
     NSTextCheckingResult *match = [regex firstMatchInString:contents
                                                     options:0
                                                       range:NSMakeRange(0, contents.length)];
-
+    
     if (match) {
         preamble = [[contents substringWithRange:[match rangeAtIndex:1]] stringByAppendingString:@"\n"];
         body = [[contents substringWithRange:[match rangeAtIndex:2]].stringByDeletingLastReturnCharacters stringByAppendingString:@"\n"];
@@ -1769,9 +1769,9 @@ typedef enum {
     if (!colorPalleteWindow.isKeyWindow) {
         return;
     }
-
+    
     [colorPalleteColorWell saveColorToMutableDictionary:lastColorDict];
-
+    
     NSColor *color = colorPalleteColorWell.color;
     
     NSString *formatString;
@@ -1859,7 +1859,7 @@ typedef enum {
     [colorPalleteColorWell deactivate];
     
     [NSColorPanel.sharedColorPanel performSelector:@selector(orderOut:) withObject:self afterDelay:0];
-
+    
     [foregroundColorWell restoreColorFromDictionary:lastColorDict];
     [backgroundColorWell restoreColorFromDictionary:lastColorDict];
     [cursorColorWell restoreColorFromDictionary:lastColorDict];
@@ -1870,7 +1870,7 @@ typedef enum {
     [highlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
     [enclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
     [flashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
-
+    
     [colorPalleteColorWell restoreColorFromDictionary:lastColorDict];
 }
 
@@ -1947,7 +1947,7 @@ typedef enum {
             [self saveAsTemplate:title];
             return;
         }
-
+        
         NSString *filePath = [self.templateDirectoryPath stringByAppendingPathComponent:[title stringByAppendingPathExtension:@"tex"]];
         
         if ([fileManager fileExistsAtPath:filePath isDirectory:nil]
@@ -1970,17 +1970,17 @@ typedef enum {
 
 - (IBAction)openTempDir:(id)sender
 {
-	[NSWorkspace.sharedWorkspace openFile:NSTemporaryDirectory() withApplication:@"Finder"];
+    [NSWorkspace.sharedWorkspace openFile:NSTemporaryDirectory() withApplication:@"Finder"];
 }
 
 - (IBAction)showPreferenceWindow:(id)sender
 {
-	[preferenceWindow makeKeyAndOrderFront:nil];
+    [preferenceWindow makeKeyAndOrderFront:nil];
 }
 
 - (IBAction)showProfilesWindow:(id)sender
 {
-	[profileController showProfileWindow];
+    [profileController showProfileWindow];
 }
 
 - (IBAction)sourceSettingChanged:(id)sender
@@ -2031,7 +2031,7 @@ typedef enum {
     
     NSString *defaultFilePath = outputFileTextField.stringValue;
     savePanel.nameFieldStringValue = defaultFilePath.lastPathComponent;
-        savePanel.directoryURL = [NSURL fileURLWithPath:defaultFilePath.stringByDeletingLastPathComponent];
+    savePanel.directoryURL = [NSURL fileURLWithPath:defaultFilePath.stringByDeletingLastPathComponent];
     
     [savePanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
@@ -2073,36 +2073,36 @@ typedef enum {
 
 - (IBAction)toggleOutputDrawer:(id)sender
 {
-	if (outputDrawer.state == NSDrawerOpenState) {
-		outputDrawerMenuItem.state = NO;
-		[outputDrawer close];
-	} else {
-		[self showOutputDrawer];
-	}
+    if (outputDrawer.state == NSDrawerOpenState) {
+        outputDrawerMenuItem.state = NO;
+        [outputDrawer close];
+    } else {
+        [self showOutputDrawer];
+    }
 }
 
 - (IBAction)togglePreambleWindow:(id)sender
 {
-	if (preambleWindow.isVisible) {
-		[preambleWindow close];
-	} else {
-		preambleWindowMenuItem.state = YES;
-
-		NSRect mainWindowRect = mainWindow.frame;
-		NSRect preambleWindowRect = preambleWindow.frame;
-		[preambleWindow setFrame:NSMakeRect(NSMinX(mainWindowRect) - NSWidth(preambleWindowRect), 
-											NSMinY(mainWindowRect) + NSHeight(mainWindowRect) - NSHeight(preambleWindowRect), 
-											NSWidth(preambleWindowRect), NSHeight(preambleWindowRect))
-						 display:NO];
-		[preambleWindow makeKeyAndOrderFront:nil];
+    if (preambleWindow.isVisible) {
+        [preambleWindow close];
+    } else {
+        preambleWindowMenuItem.state = YES;
+        
+        NSRect mainWindowRect = mainWindow.frame;
+        NSRect preambleWindowRect = preambleWindow.frame;
+        [preambleWindow setFrame:NSMakeRect(NSMinX(mainWindowRect) - NSWidth(preambleWindowRect),
+                                            NSMinY(mainWindowRect) + NSHeight(mainWindowRect) - NSHeight(preambleWindowRect),
+                                            NSWidth(preambleWindowRect), NSHeight(preambleWindowRect))
+                         display:NO];
+        [preambleWindow makeKeyAndOrderFront:nil];
         [preambleTextView colorizeText];
-	}
+    }
     
 }
 
 - (IBAction)closeWindow:(id)sender
 {
-	[[NSApp keyWindow] close];
+    [[NSApp keyWindow] close];
 }
 
 - (IBAction)showFontPanelOfSource:(id)sender
@@ -2136,7 +2136,7 @@ typedef enum {
     }
     
     [(NSColorWell*)sender saveColorToMutableDictionary:lastColorDict];
-
+    
     [sourceTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
     [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
 }
@@ -2171,7 +2171,7 @@ typedef enum {
         [self showNotFoundError:@"Ghostscript"];
     }
     
-
+    
     latexPathTextField.stringValue = latexPath;
     dviwarePathTextField.stringValue = dviwarePath;
     gsPathTextField.stringValue = gsPath;
@@ -2263,7 +2263,7 @@ typedef enum {
     NSString *ext = outputFilePath.pathExtension;
     NSString *unit = (([aProfile integerForKey:UnitKey] == PX_UNIT_TAG) &&
                       ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"])) ?
-                        @"px" : @"bp";
+    @"px" : @"bp";
     
     [output appendFormat:@"Left   margin: %ld%@\n", [aProfile integerForKey:LeftMarginKey], unit];
     [output appendFormat:@"Right  margin: %ld%@\n", [aProfile integerForKey:RightMarginKey], unit];
@@ -2312,7 +2312,7 @@ typedef enum {
     aProfile[ControllerKey] = self;
     
     converter = [Converter converterWithProfile:aProfile];
-
+    
     // 出力ビューをクリアし，現在の設定を表示
     outputTextView.textStorage.mutableString.string = @"";
     [self printCurrentStatus:aProfile];
@@ -2345,7 +2345,7 @@ typedef enum {
 {
     // 余白設定・解像度設定などの数値の妥当性チェック
     __block BOOL valid = YES;
-
+    
     [@[leftMarginLabel, rightMarginLabel, topMarginLabel, bottomMarginLabel, resolutionLabel, numberOfCompilationTextField, tabWidthTextField] enumerateObjectsUsingBlock:^(NSTextField *label, NSUInteger idx, BOOL *stop) {
         NSNumber *value = [(NSNumberFormatter*)(label.formatter) numberFromString:label.stringValue];
         if (value) {
@@ -2372,10 +2372,10 @@ typedef enum {
     if (showOutputDrawerCheckBox.state) {
         [self showOutputDrawer];
     }
-	
+    
     generateButton.title = localizedString(@"Abort");
     generateButton.action = @selector(abortCompilation:);
-	generateMenuItem.enabled = NO;
+    generateMenuItem.enabled = NO;
     abortMenuItem.enabled = YES;
     
     [self generateImage];
@@ -2463,7 +2463,7 @@ typedef enum {
     fullwidthSpaceCharacterKindButton.title = self.fullwidthSpaceCharacter;
     returnCharacterKindButton.title = self.returnCharacter;
     tabCharacterKindButton.title = self.tabCharacter;
-
+    
     [sourceTextView colorizeText];
     [preambleTextView colorizeText];
 }
