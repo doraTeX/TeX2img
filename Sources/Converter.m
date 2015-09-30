@@ -16,38 +16,38 @@
 #import "Converter.h"
 
 @interface Converter()
-@property NSString *latexPath;
-@property NSString *dviwarePath;
-@property NSString *gsPath;
-@property NSString *encoding;
-@property NSString *outputFilePath;
-@property NSString *preambleStr;
-@property float resolutionLevel;
-@property BOOL guessCompilation;
-@property NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
-@property NSObject<OutputController> *controller;
-@property NSFileManager *fileManager;
-@property NSString *tempdir;
-@property pid_t pid;
-@property NSString *tempFileBaseName;
-@property NSString *epstopdfPath;
-@property NSString *mudrawPath;
-@property NSUInteger pageCount;
-@property BOOL useBP;
-@property BOOL speedPriorityMode;
-@property BOOL embedSource;
-@property BOOL copyToClipboard;
-@property NSString *additionalInputPath;
-@property BOOL pdfInputMode;
-@property BOOL psInputMode;
-@property BOOL errorsIgnored;
-@property CGPDFBox pageBoxType;
-@property float delay;
-@property NSInteger loopCount;
-@property NSMutableArray<NSNumber*> *emptyPageFlags;
-@property NSMutableArray<NSNumber*> *whitePageFlags;
-@property NSMutableDictionary<NSString*,NSString*> *bboxDictionary;
+@property (nonatomic, copy) NSString *latexPath;
+@property (nonatomic, copy) NSString *dviwarePath;
+@property (nonatomic, copy) NSString *gsPath;
+@property (nonatomic, copy) NSString *encoding;
+@property (nonatomic, copy) NSString *outputFilePath;
+@property (nonatomic, copy) NSString *preambleStr;
+@property (nonatomic, assign) float resolutionLevel;
+@property (nonatomic, assign) BOOL guessCompilation;
+@property (nonatomic, assign) NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
+@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property (nonatomic, strong) NSObject<OutputController> *controller;
+@property (nonatomic, strong) NSFileManager *fileManager;
+@property (nonatomic, copy) NSString *tempdir;
+@property (nonatomic, assign) pid_t pid;
+@property (nonatomic, copy) NSString *tempFileBaseName;
+@property (nonatomic, copy) NSString *epstopdfPath;
+@property (nonatomic, copy) NSString *mudrawPath;
+@property (nonatomic, assign) NSUInteger pageCount;
+@property (nonatomic, assign) BOOL useBP;
+@property (nonatomic, assign) BOOL speedPriorityMode;
+@property (nonatomic, assign) BOOL embedSource;
+@property (nonatomic, assign) BOOL copyToClipboard;
+@property (nonatomic, copy) NSString *additionalInputPath;
+@property (nonatomic, assign) BOOL pdfInputMode;
+@property (nonatomic, assign) BOOL psInputMode;
+@property (nonatomic, assign) BOOL errorsIgnored;
+@property (nonatomic, assign) CGPDFBox pageBoxType;
+@property (nonatomic, assign) float delay;
+@property (nonatomic, assign) NSInteger loopCount;
+@property (nonatomic, copy) NSMutableArray<NSNumber*> *emptyPageFlags;
+@property (nonatomic, copy) NSMutableArray<NSNumber*> *whitePageFlags;
+@property (nonatomic, copy) NSMutableDictionary<NSString*,NSString*> *bboxDictionary;
 @end
 
 @implementation Converter
@@ -131,19 +131,19 @@
     psInputMode = NO;
     errorsIgnored = NO;
     
-    fileManager = NSFileManager.defaultManager;
-    tempdir = NSTemporaryDirectory();
+	fileManager = NSFileManager.defaultManager;
+	tempdir = NSTemporaryDirectory();
     
-    tempFileBaseName = [NSString stringWithFormat:@"temp%d-%@", getpid(), NSString.UUIDString];
+	tempFileBaseName = [NSString stringWithFormat:@"temp%d-%@", getpid(), NSString.UUIDString];
     
     bboxDictionary = [NSMutableDictionary<NSString*,NSString*> dictionary];
-    
-    return self;
+	
+	return self;
 }
 
 + (instancetype)converterWithProfile:(Profile*)aProfile
 {
-    return [[Converter alloc] initWithProfile:aProfile];
+	return [[Converter alloc] initWithProfile:aProfile];
 }
 
 - (void)exitCurrentThread
@@ -160,39 +160,39 @@
 // JIS X 0208 外の文字を \UTF に置き換える
 - (NSMutableString*)substituteUTF:(NSString*)dataString
 {
-    NSMutableString *utfString, *newString = [NSMutableString string];
-    unichar texChar = 0x5c;
-    NSRange charRange;
-    NSString *subString;
-    NSUInteger startl, endl, end;
-    
-    charRange = NSMakeRange(0,1);
-    endl = 0;
-    while (charRange.location < dataString.length) {
-        if (charRange.location == endl) {
-            [dataString getLineStart:&startl end:&endl contentsEnd:&end forRange:charRange];
-        }
-        charRange = [dataString rangeOfComposedCharacterSequenceAtIndex:charRange.location];
-        subString = [dataString substringWithRange: charRange];
-        
-        if (![subString canBeConvertedToEncoding:CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP)]) {
-            if ([subString characterAtIndex:0] == 0x2015) {
-                utfString = [NSMutableString stringWithFormat:@"%C", 0x2014];
-            } else {
-                utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}", texChar, [subString characterAtIndex: 0]];
-            }
-            if ((charRange.location + charRange.length) == end) {
-                [utfString appendString:@"%"];
-            }
-            [newString appendString:utfString];
-        } else {
-            [newString appendString:subString];
-        }
-        charRange.location += charRange.length;
-        charRange.length = 1;
-    }
-    
-    return newString;
+	NSMutableString *utfString, *newString = [NSMutableString string];
+	unichar texChar = 0x5c;
+	NSRange charRange;
+	NSString *subString;
+	NSUInteger startl, endl, end;
+	
+	charRange = NSMakeRange(0,1);
+	endl = 0;
+	while (charRange.location < dataString.length) {
+		if (charRange.location == endl) {
+			[dataString getLineStart:&startl end:&endl contentsEnd:&end forRange:charRange];
+		}
+		charRange = [dataString rangeOfComposedCharacterSequenceAtIndex:charRange.location];
+		subString = [dataString substringWithRange: charRange];
+		
+		if (![subString canBeConvertedToEncoding:CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP)]) {
+			if ([subString characterAtIndex:0] == 0x2015) {
+				utfString = [NSMutableString stringWithFormat:@"%C", 0x2014];
+			} else {
+				utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}", texChar, [subString characterAtIndex: 0]];
+			}
+			if ((charRange.location + charRange.length) == end) {
+				[utfString appendString:@"%"];
+			}
+			[newString appendString:utfString];
+		} else {
+			[newString appendString:subString];
+		}
+		charRange.location += charRange.length;
+		charRange.length = 1;
+	}
+	
+	return newString;
 }
 
 
@@ -201,26 +201,26 @@
 - (BOOL)writeStringWithYenBackslashConverting:(NSString*)targetString toFile:(NSString*)path
 {
     NSMutableString* mstr = [NSMutableString string];
-    [mstr appendString:targetString];
-    
-    [mstr replaceYenWithBackSlash];
-    
+	[mstr appendString:targetString];
+	
+	[mstr replaceYenWithBackSlash];
+		
     if (utfExportFlag) {
         mstr = [self substituteUTF:mstr];
     }
-    
-    UInt32 enc;
-    if ([encoding isEqualToString:PTEX_ENCODING_SJIS]) {
-        enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese);
-    } else if ([encoding isEqualToString:PTEX_ENCODING_EUC]) {
-        enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP);
-    } else if ([encoding isEqualToString:PTEX_ENCODING_JIS]) {
-        enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
+	
+	UInt32 enc;
+	if ([encoding isEqualToString:PTEX_ENCODING_SJIS]) {
+		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese);
+	} else if ([encoding isEqualToString:PTEX_ENCODING_EUC]) {
+		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingEUC_JP);
+	} else if ([encoding isEqualToString:PTEX_ENCODING_JIS]) {
+		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP);
     } else { // utf8
-        enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
-    }
-    
-    return [mstr writeToFile:path atomically:NO encoding:enc error:NULL];
+		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingUTF8);
+	}
+	
+	return [mstr writeToFile:path atomically:NO encoding:enc error:NULL];
 }
 
 - (NSMutableString*)preliminaryCommandsForEnvironmentVariables
@@ -250,7 +250,7 @@
 - (BOOL)tex2dvi:(NSString*)teXFilePath
 {
     NSMutableArray<NSString*> *arguments = [NSMutableArray arrayWithObject:@"-interaction=nonstopmode"];
-    
+ 
     if (![encoding isEqualToString:PTEX_ENCODING_NONE]) {
         [arguments addObject:[NSString stringWithFormat:@"-kanji=%@", encoding]];
     }
@@ -277,7 +277,7 @@
         if ([oldAuxData isEqualToData:[@"\\relax \n" dataUsingEncoding:NSUTF8StringEncoding]]) {
             return success;
         }
-        
+ 
         for (NSInteger i=1; i<numberOfCompilation; i++) {
             success = [self compileWithArguments:arguments];
             if (!success && !ignoreErrorsFlag) {
@@ -306,13 +306,13 @@
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
     [cmdline appendString:dviwarePath];
     
-    BOOL status = [controller execCommand:cmdline
+	BOOL status = [controller execCommand:cmdline
                               atDirectory:tempdir
                             withArguments:@[dviFilePath]
                                     quiet:quietFlag];
-    [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
-    
-    return status;
+	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];	
+	
+	return status;
 }
 
 - (BOOL)ps2pdf:(NSString*)psFilePath outputFile:(NSString*)pdfFilePath
@@ -435,7 +435,7 @@
         [fileManager removeItemAtPath:outputFileName error:nil];
         return [fileManager copyItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
     }
-    
+
     PDFDocument *doc = [PDFDocument documentWithFilePath:pdfPath];
     if (!doc){
         return NO;
@@ -443,7 +443,7 @@
     
     NSUInteger totalPages = doc.pageCount;
     NSMutableString *cropTeX = [NSMutableString stringWithString:@"\\pdfoutput=1"];
-    
+
     if (page > 0) {
         [cropTeX appendString:[self buildCropTeXSource:pdfPath page:page addMargin:addMargin]];
     } else {
@@ -456,12 +456,12 @@
     
     [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
     [cropTeX writeToFile:cropTeXSourcePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
-    
+
     NSString *pdfTeXPath = [latexPath.programPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
     
     [controller appendOutputAndScroll:@"TeX2img: Cropping PDF...\n\n" quiet:quietFlag];
     
-    BOOL success = [controller execCommand:pdfTeXPath
+	BOOL success = [controller execCommand:pdfTeXPath
                                atDirectory:tempdir
                              withArguments:@[@"-no-shell-escape", @"-interaction=batchmode", cropFileBasePath.lastPathComponent]
                                      quiet:quietFlag];
@@ -478,7 +478,7 @@
     
     [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
     [fileManager removeItemAtPath:cropLogSourcePath error:nil];
-    
+
     return success;
     
 }
@@ -600,7 +600,7 @@
     }
     
     [arguments addObject:pdfName];
-    
+
     BOOL status = [controller execCommand:gsPath atDirectory:tempdir withArguments:arguments quiet:quietFlag];
     
     if (!status) {
@@ -618,7 +618,7 @@
         // 生成したEPSのBBox情報をオリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する
         // https://github.com/doraTeX/TeX2img/issues/18
         // https://github.com/doraTeX/TeX2img/issues/37
-        
+    
         return [self replaceEpsBBox:outputEpsFileName withBBoxOfPdf:pdfName page:page];
     }
 }
@@ -626,15 +626,15 @@
 - (BOOL)epstopdf:(NSString*)epsName outputPdfFileName:(NSString*)outputPdfFileName
 {
     if (![controller epstopdfExists]) {
-        return NO;
-    }
-    
-    [controller execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
+		return NO;
+	}
+	
+	[controller execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
                 atDirectory:tempdir
               withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
                               epsName]
                       quiet:quietFlag];
-    return YES;
+	return YES;
 }
 
 - (BOOL)eps2pdf:(NSString*)epsName outputFileName:(NSString*)outputFileName addMargin:(BOOL)addMargin
@@ -654,17 +654,17 @@
 // NSBitmapImageRep の背景を白く塗りつぶす
 - (NSBitmapImageRep*)fillBackground:(NSBitmapImageRep*)bitmapRep
 {
-    NSImage *srcImage = [NSImage new];
-    [srcImage addRepresentation:bitmapRep];
-    NSSize size = srcImage.size;
-    
-    NSImage *backgroundImage = [[NSImage alloc] initWithSize:size];
-    [backgroundImage lockFocus];
-    [NSColor.whiteColor set];
-    [NSBezierPath fillRect:NSMakeRect(0, 0, size.width, size.height)];
+	NSImage *srcImage = [NSImage new];
+	[srcImage addRepresentation:bitmapRep];
+	NSSize size = srcImage.size;
+	
+	NSImage *backgroundImage = [[NSImage alloc] initWithSize:size];
+	[backgroundImage lockFocus];
+	[NSColor.whiteColor set];
+	[NSBezierPath fillRect:NSMakeRect(0, 0, size.width, size.height)];
     [srcImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    [backgroundImage unlockFocus];
-    return [[NSBitmapImageRep alloc] initWithData:backgroundImage.TIFFRepresentation];
+	[backgroundImage unlockFocus];
+	return [[NSBitmapImageRep alloc] initWithData:backgroundImage.TIFFRepresentation];
 }
 
 - (NSData*)GIF89aDataFromGIF87aData:(NSData*)gif87aData
@@ -676,19 +676,19 @@
     NSMutableData *gif89aData = [NSMutableData dataWithData:gif87aData];
     const char gif89a = '9';
     [gif89aData replaceBytesInRange:NSMakeRange(4, 1) withBytes:&gif89a];
-    
+
     return gif89aData;
 }
 
 - (BOOL)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page crop:(BOOL)crop
 {
-    NSString* extension = outputFileName.pathExtension.lowercaseString;
+	NSString* extension = outputFileName.pathExtension.lowercaseString;
     
     if ([self willEmptyPageBeCreated:pdfFilePath page:page]) {
         return YES;
     }
-    
-    // PDFのバウンディングボックスで切り取る
+
+	// PDFのバウンディングボックスで切り取る
     if (crop) {
         BOOL success = [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO];
         if (!success) {
@@ -696,14 +696,14 @@
             return NO;
         }
     }
-    
+	
     [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: PDF → %@ (Page %ld)\n", extension.uppercaseString, page] quiet:quietFlag];
-    
-    // PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
-    NSData* pageData = [[PDFDocument documentWithFilePath:pdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
-    NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
-    
-    // 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
+     
+	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
+	NSData* pageData = [[PDFDocument documentWithFilePath:pdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
+	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
+
+	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
     NSRect rect = pdfImageRep.bounds;
     CGFloat width = rect.size.width;
     CGFloat height = rect.size.height;
@@ -712,7 +712,7 @@
     CGFloat thisRightMargin = (CGFloat)rightMargin;
     CGFloat thisTopMargin = (CGFloat)topMargin;
     CGFloat thisBottomMargin = (CGFloat)bottomMargin;
-    
+
     if (useBP) {
         thisLeftMargin *= resolutionLevel;
         thisRightMargin *= resolutionLevel;
@@ -726,27 +726,27 @@
         thisBottomMargin /= factor;
     }
     
-    NSSize size = NSMakeSize((NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin,
+	NSSize size = NSMakeSize((NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin,
                              (NSInteger)(height * resolutionLevel) + thisTopMargin + thisBottomMargin);
+	
+	NSImage* image = [[NSImage alloc] initWithSize:size];
+	[image lockFocus];
+	[pdfImageRep drawInRect:NSMakeRect(thisLeftMargin, thisBottomMargin, width * resolutionLevel, height * resolutionLevel)];
+	[image unlockFocus];
+	
+	// NSImage を TIFF 形式の NSBitmapImageRep に変換する
+	NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithData:image.TIFFRepresentation];
     
-    NSImage* image = [[NSImage alloc] initWithSize:size];
-    [image lockFocus];
-    [pdfImageRep drawInRect:NSMakeRect(thisLeftMargin, thisBottomMargin, width * resolutionLevel, height * resolutionLevel)];
-    [image unlockFocus];
-    
-    // NSImage を TIFF 形式の NSBitmapImageRep に変換する
-    NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithData:image.TIFFRepresentation];
-    
-    // 指定のビットマップ形式に変換
+	// 指定のビットマップ形式に変換
     NSData *outputData;
-    if ([@"jpg" isEqualToString:extension]) {
-        imageRep = [self fillBackground:imageRep];
+	if ([@"jpg" isEqualToString:extension]) {
+		imageRep = [self fillBackground:imageRep];
         NSDictionary<NSString*,id> *prop = @{NSImageCompressionFactor: @1.0f};
-        outputData = [imageRep representationUsingType:NSJPEGFileType properties:prop];
-    } else if ([@"png" isEqualToString:extension]) {
-        if (!transparentFlag) {
-            imageRep = [self fillBackground:imageRep];
-        }
+		outputData = [imageRep representationUsingType:NSJPEGFileType properties:prop];
+	} else if ([@"png" isEqualToString:extension]) {
+		if (!transparentFlag) {
+			imageRep = [self fillBackground:imageRep];
+		}
         outputData = [imageRep representationUsingType:NSPNGFileType properties:@{}];
     } else if ([@"gif" isEqualToString:extension]) {
         if (!transparentFlag) {
@@ -764,7 +764,7 @@
         outputData = [imageRep representationUsingType:NSBMPFileType properties:@{}];
     }
     NSString *outputPath = [tempdir stringByAppendingPathComponent:outputFileName];
-    [outputData writeToFile:outputPath atomically:YES];
+	[outputData writeToFile:outputPath atomically:YES];
     
     // 生成物のチェック
     NSImageRep *rep = [NSImageRep imageRepWithContentsOfFile:outputPath];
@@ -772,7 +772,7 @@
         [controller showImageSizeError];
         return NO;
     }
-    
+
     return YES;
 }
 
@@ -780,13 +780,13 @@
 {
     NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
     NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: (\\-?[0-9]+) (\\-?[0-9]+) (\\-?[0-9]+) (\\-?[0-9]+)\\n/){ \"%%%%BoundingBox: #{$1.to_i-%ld} #{$2.to_i-%ld} #{$3.to_i+%ld} #{$4.to_i+%ld}\\n\"}.sub(/%%%%HiResBoundingBox\\: (\\-?[0-9\\.]+) (\\-?[0-9\\.]+) (\\-?[0-9\\.]+) (\\-?[0-9\\.]+)\\n/){ \"%%%%HiResBoundingBox: #{$1.to_f-%f} #{$2.to_f-%f} #{$3.to_f+%f} #{$4.to_f+%f}\\n\"};File.open('%@', 'wb') {|f| f.write s}",
-                        epsPath,
-                        leftMargin, bottomMargin, rightMargin, topMargin,
-                        (CGFloat)leftMargin, (CGFloat)bottomMargin, (CGFloat)rightMargin, (CGFloat)topMargin,
-                        epsPath
-                        ];
+                          epsPath,
+                          leftMargin, bottomMargin, rightMargin, topMargin,
+                          (CGFloat)leftMargin, (CGFloat)bottomMargin, (CGFloat)rightMargin, (CGFloat)topMargin,
+                          epsPath
+                          ];
     NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-enlargeBB"];
-    
+
     FILE *fp = fopen(scriptPath.UTF8String, "w");
     fputs(script.UTF8String, fp);
     fclose(fp);
@@ -819,7 +819,7 @@
     
     __block CFMutableDataRef gifData = CFDataCreateMutable(kCFAllocatorDefault, 0);
     CGImageDestinationRef destination = CGImageDestinationCreateWithData(gifData, kUTTypeGIF, sourcePaths.count, NULL);
-    
+
     __block BOOL success = YES;
     
     [sourcePaths enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
@@ -835,7 +835,7 @@
     if (success) {
         CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)gifProperties);
         CGImageDestinationFinalize(destination);
-        
+    
         NSData *animatedData = [NSData dataWithData:(NSData*)CFBridgingRelease(gifData)];
         if (animatedData) {
             animatedData = [self GIF89aDataFromGIF87aData:animatedData];
@@ -850,7 +850,7 @@
     }
     
     CFRelease(destination);
-    
+        
     return success;
 }
 
@@ -890,16 +890,16 @@
 
 - (BOOL)convertPDF:(NSString*)pdfFileName outputEpsFileName:(NSString*)outputEpsFileName outputFileName:(NSString*)outputFileName page:(NSUInteger)page
 {
-    NSString* extension = outputFileName.pathExtension.lowercaseString;
+	NSString* extension = outputFileName.pathExtension.lowercaseString;
     NSString* outlinedPdfFileName = [NSString stringWithFormat:@"%@-outline.pdf", tempFileBaseName];
-    
+
     NSInteger lowResolution = resolutionLevel*((NSInteger)RESOLUTION_SCALE)*2*72;
     NSInteger resolution = speedPriorityMode ? lowResolution : 20016;
     
     if (!emptyPageFlags || emptyPageFlags.count == 0) {
         [self exitCurrentThread];
     }
-    
+
     if ([emptyPageFlags[page-1] boolValue]) {
         return YES;
     }
@@ -932,7 +932,7 @@
                 return NO;
             }
         } else {
-            // アウトラインを取ったEPSをPDFへ戻す（余白はこの時点では付与しない）
+             // アウトラインを取ったEPSをPDFへ戻す（余白はこの時点では付与しない）
             [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:NO];
             // PDFを目的の画像ファイルへ変換（ここで余白付与）
             if (![self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1 crop:NO]) {
@@ -968,7 +968,7 @@
             return NO;
         }
     }
-    
+
     return [fileManager copyItemAtPath:sourcePath toPath:destPath error:nil];
 }
 
@@ -980,7 +980,7 @@
     }
     
     const char *target = filePath.fileSystemRepresentation;
-    
+   
     // ソース情報を UTF8 で EA に保存
     NSData *data = [NSData dataWithContentsOfFile:texFilePath];
     if (!data) {
@@ -1035,18 +1035,18 @@
 
 - (BOOL)compileAndConvert
 {
-    NSString* texFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-    NSString* dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString* texFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString* dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
     NSString* psFilePath  = [NSString stringWithFormat:@"%@.ps",  [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-    NSString* pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString* pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
     NSString* croppedPdfFilePath = [NSString stringWithFormat:@"%@-crop.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
     NSString* pdfFileName = [NSString stringWithFormat:@"%@.pdf", tempFileBaseName];
-    NSString* outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
-    NSString* outputFileName = outputFilePath.lastPathComponent;
-    NSString* extension = outputFilePath.pathExtension.lowercaseString;
+	NSString* outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
+	NSString* outputFileName = outputFilePath.lastPathComponent;
+	NSString* extension = outputFilePath.pathExtension.lowercaseString;
     NSDate *texDate, *dviDate, *psDate, *pdfDate;
     BOOL success = NO, compilationSuceeded = NO, requireDviware = NO, requireGS = NO;
-    
+
     errorsIgnored = NO;
     
     [fileManager changeCurrentDirectoryPath:tempdir];
@@ -1102,7 +1102,7 @@
                 }
             }
             [controller exitCurrentThreadIfTaskKilled];
-            
+
             compilationSuceeded = NO;
             requireGS = NO;
             
@@ -1128,7 +1128,7 @@
             }
         }
     }
-    
+
     // PS→PDF
     if (psInputMode || requireGS) {
         success = [self ps2pdf:psFilePath outputFile:pdfFilePath];
@@ -1155,7 +1155,7 @@
             return NO;
         }
     }
-    
+
     [controller exitCurrentThreadIfTaskKilled];
     
     PDFDocument *pdfDocument = [PDFDocument documentWithFilePath:pdfFilePath];
@@ -1166,17 +1166,17 @@
     }
     
     pageCount = pdfDocument.pageCount;
-    
+
     emptyPageFlags = [NSMutableArray<NSNumber*> array];
     for (NSInteger i=1; i<=pageCount; i++) {
         [emptyPageFlags addObject:@([self willEmptyPageBeCreated:pdfFilePath page:i])];
     }
-    
+
     whitePageFlags = [NSMutableArray<NSNumber*> array];
     for (NSInteger i=1; i<=pageCount; i++) {
         [whitePageFlags addObject:@([self isEmptyPage:pdfFilePath page:i] && !(emptyPageFlags[i-1].boolValue))];
     }
-    
+
     // ありうる経路
     // 【gsを通さない経路]
     //  1. 速度優先モードでのビットマップ生成 (PDF →[pdfcrop類似処理でクロップ]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JPEG/PNG/GIF/TIFF/BMP)
@@ -1204,7 +1204,7 @@
                 return success;
             }
         }
-    } else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPS を経由しなくてよいので，pdfcrop類似処理で直接生成する。
+	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPS を経由しなくてよいので，pdfcrop類似処理で直接生成する。
         success = [self pdfcrop:pdfFilePath outputFileName:outputFileName page:1 addMargin:YES];
         [controller exitCurrentThreadIfTaskKilled];
         if (!success) {
@@ -1224,7 +1224,7 @@
     } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
         [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES];
         [controller exitCurrentThreadIfTaskKilled];
-        
+
         success = [self pdf2svg:croppedPdfFilePath
                  outputFileName:outputFileName
                            page:1];
@@ -1242,7 +1242,7 @@
                 return success;
             }
         }
-    } else { // EPS を経由する形式(EPS/outlined-PDF/ビットマップ形式)の場合
+	} else { // EPS を経由する形式(EPS/outlined-PDF/ビットマップ形式)の場合
         BOOL success = [self convertPDF:pdfFileName
                       outputEpsFileName:outputEpsFileName
                          outputFileName:outputFileName
@@ -1262,8 +1262,8 @@
                 return success;
             }
         }
-    }
-    
+	}
+
     // 単一PDF出力/マルチページTIFF/アニメーションGIF出力の場合
     if ([@[@"pdf", @"tiff", @"gif"] containsObject:extension] && mergeOutputsFlag) {
         // 実際に生成したファイルのパスを集める
@@ -1313,7 +1313,7 @@
                     return NO;
                 }
             }
-            
+
             if (success) {
                 [self embedSource:texFilePath intoFile:outputFilePath];
             }
@@ -1326,7 +1326,7 @@
                 [pboard writeObjects:@[[NSURL fileURLWithPath:outputFilePath]]];
             }
         }
-        
+
     } else { // バラバラ出力の場合
         // 最終出力ファイルを目的地へコピー
         if (![emptyPageFlags[0] boolValue]) {
@@ -1373,8 +1373,8 @@
             }
         }
     }
-    
-    return YES;
+	
+	return YES;
 }
 
 - (void)runAppleScriptOnMainThread:(NSString*)script
@@ -1384,19 +1384,19 @@
 
 - (BOOL)compileAndConvertWithCheck
 {
-    // 最初にプログラムの存在確認と出力ファイル形式確認
-    if (![controller latexExistsAtPath:latexPath.programPath dviwarePath:dviwarePath.programPath gsPath:gsPath.programPath]) {
+	// 最初にプログラムの存在確認と出力ファイル形式確認
+	if (![controller latexExistsAtPath:latexPath.programPath dviwarePath:dviwarePath.programPath gsPath:gsPath.programPath]) {
         [controller generationDidFinish];
-        return NO;
-    }
-    
-    NSString* extension = outputFilePath.pathExtension.lowercaseString;
-    
+		return NO;
+	}
+	
+	NSString* extension = outputFilePath.pathExtension.lowercaseString;
+
     if (![TargetExtensionsArray containsObject:extension]) {
-        [controller showExtensionError];
+		[controller showExtensionError];
         [controller generationDidFinish];
-        return NO;
-    }
+		return NO;
+	}
     
     // 一連のコンパイル処理の開始準備
     [controller prepareOutputTextView];
@@ -1407,7 +1407,7 @@
     
     // 一連のコンパイル処理を実行
     BOOL status = [self compileAndConvert];
-    
+
     [controller releaseOutputTextView];
     
     // 生成ファイルを集める
@@ -1435,7 +1435,7 @@
         } else {
             previewApp = @"Preview";
         }
-        
+            
         [controller previewFiles:generatedFiles withApplication:previewApp];
     }
     
@@ -1455,7 +1455,7 @@
         [script appendFormat:@"end tell\n"];
         [self performSelectorOnMainThread:@selector(runAppleScriptOnMainThread:) withObject:script waitUntilDone:NO];
     }
-    
+
     // 結果表示
     if (status) {
         [controller printResult:generatedFiles quiet:quietFlag];
@@ -1467,14 +1467,14 @@
     if (skippedPageIndexes.count > 0) {
         [controller showPageSkippedWarning:skippedPageIndexes.arrayOfIndexesPlusOne];
     }
-    
+
     // 白色ページ生成警告を表示
     NSIndexSet *whitePageIndexes = whitePageFlags.indexesOfTrueValue;
     
     if (status && whitePageIndexes.count > 0) {
         [controller showWhitePageWarning:whitePageIndexes.arrayOfIndexesPlusOne];
     }
-    
+
     // エラーを無視した場合は警告
     if (ignoreErrorsFlag && errorsIgnored) {
         [controller showErrorsIgnoredWarning];
@@ -1484,7 +1484,7 @@
     [self deleteTemporaryFiles];
     [controller generationDidFinish]; // GUI版の場合はここでも deleteTemporaryFiles が呼び出されるが，CUI版では呼び出されないので二重呼び出しは仕方ない
     
-    return status;
+	return status;
 }
 
 - (void)deleteTemporaryFiles
@@ -1522,16 +1522,16 @@
 
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr
 {
-    // TeX ソースを準備
-    NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-    
-    if (![self writeStringWithYenBackslashConverting:texSourceStr toFile:tempTeXFilePath]) {
-        [controller showFileGenerationError:tempTeXFilePath];
+	// TeX ソースを準備
+	NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	
+	if (![self writeStringWithYenBackslashConverting:texSourceStr toFile:tempTeXFilePath]) {
+		[controller showFileGenerationError:tempTeXFilePath];
         [controller generationDidFinish];
-        return NO;
-    }
-    
-    return [self compileAndConvertWithCheck];
+		return NO;
+	}
+	
+	return [self compileAndConvertWithCheck];
 }
 
 - (BOOL)compileAndConvertWithBody:(NSString*)texBodyStr
@@ -1564,7 +1564,7 @@
                 [controller generationDidFinish];
                 return NO;
             }
-            
+
             NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
                 [controller showFileGenerationError:tempPdfFilePath];
