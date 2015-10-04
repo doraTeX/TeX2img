@@ -2,6 +2,7 @@
 #import "TeXTextView.h"
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
+#import "NSString-Normalization.h"
 #import "NSMutableString-Extension.h"
 #import "MyLayoutManager.h"
 #import "UtilityG.h"
@@ -66,6 +67,7 @@
         [@[
           @[@(NFC_Tag), @"NFC"],
           @[@(NFD_Tag), @"NFD"],
+          @[@(Modified_NFD_Tag), @"Modified NFD"],
           @[@(NFKC_Tag), @"NFKC"],
           @[@(NFKD_Tag), @"NFKD"],
           ] enumerateObjectsUsingBlock:^(NSArray *pair, NSUInteger idx, BOOL *stop) {
@@ -547,6 +549,10 @@
         case NFD_Tag:
             newString = selectedString.decomposedStringWithCanonicalMapping;
             undoKey = @"NFD";
+            break;
+        case Modified_NFD_Tag:
+            newString = selectedString.normalizedStringWithModifiedNFD;
+            undoKey = @"Modified NFD";
             break;
         case NFKC_Tag:
             newString = selectedString.precomposedStringWithCompatibilityMapping;

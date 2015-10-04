@@ -121,6 +121,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
 #define NFC_Tag 1
 #define NFD_Tag 3
+#define Modified_NFD_Tag 4
 #define NFKC_Tag 5
 #define NFKD_Tag 6
 

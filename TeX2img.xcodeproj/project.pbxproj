@@ -30,6 +30,7 @@
 		348F29611B848C68009AA3CF /* NSPipe-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348F295F1B848C11009AA3CF /* NSPipe-Extension.m */; };
 		349564B81ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
 		349564B91ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
+		3499FD5E1BC1AFA2009FD637 /* NSString-Normalization.m in Sources */ = {isa = PBXBuildFile; fileRef = 3499FD5D1BC1AFA2009FD637 /* NSString-Normalization.m */; settings = {ASSET_TAGS = (); }; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
 		34BFF6E31BA025CB00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6DE1BA025CB00E8DE77 /* PDFDocument-Extension.m */; };
 		34BFF6E41BA025CB00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6DE1BA025CB00E8DE77 /* PDFDocument-Extension.m */; };
@@ -110,6 +111,8 @@
 		348F295F1B848C11009AA3CF /* NSPipe-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPipe-Extension.m"; sourceTree = "<group>"; };
 		349564B71ABFF3D1004B9C1D /* Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utility.m; sourceTree = "<group>"; };
 		349564BA1ABFF3E5004B9C1D /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
+		3499FD5C1BC1AFA2009FD637 /* NSString-Normalization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Normalization.h"; sourceTree = "<group>"; };
+		3499FD5D1BC1AFA2009FD637 /* NSString-Normalization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Normalization.m"; sourceTree = "<group>"; };
 		34BF870A12AC10D20099654C /* MyLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyLayoutManager.h; sourceTree = "<group>"; };
 		34BF870B12AC10D20099654C /* MyLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyLayoutManager.m; sourceTree = "<group>"; };
 		34BFF6DD1BA025CB00E8DE77 /* PDFDocument-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PDFDocument-Extension.h"; sourceTree = "<group>"; };
@@ -284,6 +287,8 @@
 				34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */,
 				34D41D1C17A6BE2C00997795 /* NSString-Extension.h */,
 				34D41D1D17A6BE2C00997795 /* NSString-Extension.m */,
+				3499FD5C1BC1AFA2009FD637 /* NSString-Normalization.h */,
+				3499FD5D1BC1AFA2009FD637 /* NSString-Normalization.m */,
 				7025539710353D33000D6D05 /* NSMutableString-Extension.h */,
 				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
 				3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */,
@@ -455,6 +460,7 @@
 				34BFF6E31BA025CB00E8DE77 /* PDFDocument-Extension.m in Sources */,
 				34BFF6E51BA025CB00E8DE77 /* PDFPage-Extension.m in Sources */,
 				345339911B93DDD10027CBE7 /* NSMatrix-Extension.m in Sources */,
+				3499FD5E1BC1AFA2009FD637 /* NSString-Normalization.m in Sources */,
 				346DA57F1B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
 				348F29601B848C11009AA3CF /* NSPipe-Extension.m in Sources */,
