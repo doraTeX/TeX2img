@@ -9,8 +9,8 @@
 #import "NSString-Extension.h"
 #import "NSDictionary-Extension.h"
 
-#define OPTION_NUM 48
-#define VERSION "2.0.5b1"
+#define OPTION_NUM 49
+#define VERSION "2.0.5b3"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -31,17 +31,22 @@ void usage()
     printf("               (*extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
     printf("Options:\n");
     printf("  --latex      COMPILER      : set the LaTeX compiler (default: platex)\n");
-    printf("  *synonym: --compiler\n");
+    printf("   *synonym: --compiler\n");
     printf("  --kanji      ENCODING      : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
     printf("  --[no-]guess-compile       : disable/enable guessing the appropriate number of compilation (default: enabled)\n");
     printf("  --num        NUMBER        : set the (maximal) number of compilation\n");
     printf("  --dvidriver  DRIVER        : set the DVI driver    (default: dvipdfmx)\n");
-    printf("  *synonym: --dviware, --dvipdfmx\n");
+    printf("   *synonym: --dviware, --dvipdfmx\n");
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
     printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
+    printf("  --margins    \"VALUE\"       : set the margins (default: \"0 0 0 0\")\n");
+    printf("   *VALUE format:\n");
+    printf("      a single value : used for all margins\n");
+    printf("      two values     : left/right and top/bottom margins\n");
+    printf("      four values    : left, top, right, and bottom margin respectively\n");
     printf("  --left-margin    MARGIN    : set the left margin   (default: 0)\n");
-    printf("  --right-margin   MARGIN    : set the right margin  (default: 0)\n");
     printf("  --top-margin     MARGIN    : set the top margin    (default: 0)\n");
+    printf("  --right-margin   MARGIN    : set the right margin  (default: 0)\n");
     printf("  --bottom-margin  MARGIN    : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT                : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
     printf("                               (*bp is always used for EPS/PDF/SVG)\n");
@@ -66,9 +71,14 @@ void usage()
     exit(1);
 }
 
-NSInteger strtoi(char *str)
+NSInteger strtoi(const char * _Nullable str)
 {
-	char *endptr;
+    if (str == NULL) {
+        printStdErr("error : Not a number.\n");
+        exit(1);
+    }
+
+    char *endptr;
 	long val;
     
     errno = 0;    /* To distinguish success/failure after call */
@@ -138,8 +148,8 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
                         @"px" : @"bp";
 
     printf("Left   margin: %ld%s\n", [aProfile integerForKey:LeftMarginKey], unit.UTF8String);
-    printf("Right  margin: %ld%s\n", [aProfile integerForKey:RightMarginKey], unit.UTF8String);
     printf("Top    margin: %ld%s\n", [aProfile integerForKey:TopMarginKey], unit.UTF8String);
+    printf("Right  margin: %ld%s\n", [aProfile integerForKey:RightMarginKey], unit.UTF8String);
     printf("Bottom margin: %ld%s\n", [aProfile integerForKey:BottomMarginKey], unit.UTF8String);
 
     if ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"]) {
@@ -472,6 +482,12 @@ int main (int argc, char *argv[]) {
         options[i].flag = NULL;
         options[i].val = i+1;
 
+        i++;
+        options[i].name = "margins";
+        options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+        
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
         options[OPTION_NUM - 3].flag = NULL;
@@ -759,6 +775,35 @@ int main (int argc, char *argv[]) {
                         exit(1);
                     }
                     break;
+                case 46: // --margins
+                    if (optarg) {
+                        NSString *marginsString = @(optarg);
+                        NSMutableArray<NSString*> *marginsArray = [NSMutableArray<NSString*> arrayWithArray:[marginsString componentsSeparatedByCharactersInSet:NSCharacterSet.whitespaceCharacterSet]];
+                        [marginsArray removeObject:@""];
+                        switch (marginsArray.count) {
+                            case 1:
+                                leftMargin = topMargin = rightMargin = bottomMargin = strtoi(marginsArray[0].UTF8String);
+                                break;
+                            case 2:
+                                leftMargin = rightMargin = strtoi(marginsArray[0].UTF8String);
+                                topMargin = bottomMargin = strtoi(marginsArray[1].UTF8String);
+                                break;
+                            case 4:
+                                leftMargin   = strtoi(marginsArray[0].UTF8String);
+                                topMargin    = strtoi(marginsArray[1].UTF8String);
+                                rightMargin  = strtoi(marginsArray[2].UTF8String);
+                                bottomMargin = strtoi(marginsArray[3].UTF8String);
+                                break;
+                            default:
+                                printf("The number of \"--margins\" values must be 1, 2 or 4.\n");
+                                exit(1);
+                                break;
+                        }
+                    } else {
+                        printf("--margins is invalid.\n");
+                        exit(1);
+                    }
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -791,6 +836,11 @@ int main (int argc, char *argv[]) {
         }
         if (![InputExtensionsArray containsObject:inputFilePath.pathExtension]) {
             printStdErr("tex2img : Invalid input file type - %s\n", inputFilePath.UTF8String);
+            exit(1);
+        }
+        
+        if (!((leftMargin >= 0) && (rightMargin >= 0) && (topMargin >= 0) && (bottomMargin >= 0))) {
+            printStdErr("tex2img : Margins must not be negative.\n");
             exit(1);
         }
         
