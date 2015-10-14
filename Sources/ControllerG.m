@@ -922,6 +922,7 @@ typedef enum {
                                         @"/opt/texlive/2013/bin/universal-darwin",
                                         @"/Library/TeX/texbin",
                                         @"/usr/texbin",
+                                        @"/Applications/UpTeX.app/Contents/Resources/TEX/texbin/",
                                         @"/Applications/UpTeX.app/Contents/Resources/texbin/",
                                         @"/Applications/UpTeX.app/teTeX/bin",
                                         @"/Applications/pTeX.app/teTeX/bin",
