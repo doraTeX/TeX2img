@@ -94,6 +94,16 @@
     return YES;
 }
 
+- (BOOL)pdftopsExists;
+{
+    if (!checkWhich(@"pdftops")) {
+        [self showNotFoundError:@"pdftops"];
+        return NO;
+    }
+    
+    return YES;
+}
+
 - (void)showNotFoundError:(NSString*)aPath
 {
     printStdErr("tex2img: [Error] Command \"%s\" cannot be found.\nCheck the environment variable $PATH.\n", aPath.UTF8String);

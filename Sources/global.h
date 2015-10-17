@@ -96,6 +96,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define EncodingKey @"encoding"
 #define EpstopdfPathKey @"epstopdfPath"
 #define MudrawPathKey @"mudrawPath"
+#define PdftopsPathKey @"pdftopsPath"
 #define QuietKey @"quiet"
 
 #define AutoDetectionTargetKey @"autoDetectionTarget"
@@ -150,6 +151,6 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
 #define EA_Key "com.loveinequality.TeX2img"
 
-#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf"
+#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf:/Applications/TeX2img.app/Contents/Resources/pdftops:/Applications/TeXLive/TeX2img.app/Contents/Resources/pdftops"
 
 #endif

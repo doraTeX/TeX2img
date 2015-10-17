@@ -463,6 +463,11 @@ typedef enum {
     return YES;
 }
 
+- (BOOL)pdftopsExists;
+{
+    return YES;
+}
+
 - (void)showFileFormatErrorOnMainThread:(NSString*)aPath
 {
     runErrorPanel(localizedString(@"fileFormatErrorMsg"), aPath);
@@ -2309,6 +2314,7 @@ typedef enum {
     MutableProfile *aProfile = [self currentProfile];
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
     aProfile[MudrawPathKey] = [[NSBundle.mainBundle pathForResource:@"mupdf" ofType:nil] stringByAppendingPathComponent:@"mudraw"];
+    aProfile[PdftopsPathKey] = [[NSBundle.mainBundle pathForResource:@"pdftops" ofType:nil] stringByAppendingPathComponent:@"pdftops"];
     aProfile[QuietKey] = @(NO);
     aProfile[ControllerKey] = self;
     

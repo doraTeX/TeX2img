@@ -33,6 +33,7 @@
 @property (nonatomic, copy) NSString *tempFileBaseName;
 @property (nonatomic, copy) NSString *epstopdfPath;
 @property (nonatomic, copy) NSString *mudrawPath;
+@property (nonatomic, copy) NSString *pdftopsPath;
 @property (nonatomic, assign) NSUInteger pageCount;
 @property (nonatomic, assign) BOOL useBP;
 @property (nonatomic, assign) BOOL speedPriorityMode;
@@ -68,6 +69,7 @@
 @synthesize tempFileBaseName;
 @synthesize epstopdfPath;
 @synthesize mudrawPath;
+@synthesize pdftopsPath;
 @synthesize pageCount;
 @synthesize useBP;
 @synthesize speedPriorityMode;
@@ -93,6 +95,7 @@
     gsPath = [aProfile stringForKey:GsPathKey];
     epstopdfPath = [aProfile stringForKey:EpstopdfPathKey];
     mudrawPath = [aProfile stringForKey:MudrawPathKey];
+    pdftopsPath = [aProfile stringForKey:PdftopsPathKey];
     guessCompilation = [aProfile boolForKey:GuessCompilationKey];
     numberOfCompilation = [aProfile integerForKey:NumberOfCompilationKey];
     
