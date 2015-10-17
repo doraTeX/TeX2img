@@ -634,7 +634,7 @@
 	
 	[controller execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
                 atDirectory:tempdir
-              withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
+              withArguments:@[@"--hires", [NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
                               epsName]
                       quiet:quietFlag];
 	return YES;
