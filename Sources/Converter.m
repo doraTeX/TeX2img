@@ -17,7 +17,7 @@
 
 @interface Converter()
 @property (nonatomic, copy) NSString *latexPath;
-@property (nonatomic, copy) NSString *dviwarePath;
+@property (nonatomic, copy) NSString *dviDriverPath;
 @property (nonatomic, copy) NSString *gsPath;
 @property (nonatomic, copy) NSString *encoding;
 @property (nonatomic, copy) NSString *outputFilePath;
@@ -25,7 +25,7 @@
 @property (nonatomic, assign) float resolutionLevel;
 @property (nonatomic, assign) BOOL guessCompilation;
 @property (nonatomic, assign) NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property (nonatomic, strong) NSObject<OutputController> *controller;
 @property (nonatomic, strong) NSFileManager *fileManager;
 @property (nonatomic, copy) NSString *tempdir;
@@ -33,6 +33,7 @@
 @property (nonatomic, copy) NSString *tempFileBaseName;
 @property (nonatomic, copy) NSString *epstopdfPath;
 @property (nonatomic, copy) NSString *mudrawPath;
+@property (nonatomic, copy) NSString *pdftopsPath;
 @property (nonatomic, assign) NSUInteger pageCount;
 @property (nonatomic, assign) BOOL useBP;
 @property (nonatomic, assign) BOOL speedPriorityMode;
@@ -45,6 +46,7 @@
 @property (nonatomic, assign) CGPDFBox pageBoxType;
 @property (nonatomic, assign) float delay;
 @property (nonatomic, assign) NSInteger loopCount;
+@property (nonatomic, copy) NSNumber *useEps2WriteDeviceFlag; // nilable BOOL として使用
 @property (nonatomic, copy) NSMutableArray<NSNumber*> *emptyPageFlags;
 @property (nonatomic, copy) NSMutableArray<NSNumber*> *whitePageFlags;
 @property (nonatomic, copy) NSMutableDictionary<NSString*,NSString*> *bboxDictionary;
@@ -52,7 +54,7 @@
 
 @implementation Converter
 @synthesize latexPath;
-@synthesize dviwarePath;
+@synthesize dviDriverPath;
 @synthesize gsPath;
 @synthesize encoding;
 @synthesize outputFilePath;
@@ -60,7 +62,7 @@
 @synthesize resolutionLevel;
 @synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@synthesize leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
 @synthesize fileManager;
 @synthesize tempdir;
@@ -68,6 +70,7 @@
 @synthesize tempFileBaseName;
 @synthesize epstopdfPath;
 @synthesize mudrawPath;
+@synthesize pdftopsPath;
 @synthesize pageCount;
 @synthesize useBP;
 @synthesize speedPriorityMode;
@@ -80,6 +83,7 @@
 @synthesize pageBoxType;
 @synthesize delay;
 @synthesize loopCount;
+@synthesize useEps2WriteDeviceFlag;
 @synthesize emptyPageFlags;
 @synthesize whitePageFlags;
 @synthesize bboxDictionary;
@@ -89,10 +93,11 @@
     pageCount = 1;
     
     latexPath = [aProfile stringForKey:LatexPathKey];
-    dviwarePath = [aProfile stringForKey:DviwarePathKey];
+    dviDriverPath = [aProfile stringForKey:DviDriverPathKey];
     gsPath = [aProfile stringForKey:GsPathKey];
     epstopdfPath = [aProfile stringForKey:EpstopdfPathKey];
     mudrawPath = [aProfile stringForKey:MudrawPathKey];
+    pdftopsPath = [aProfile stringForKey:PdftopsPathKey];
     guessCompilation = [aProfile boolForKey:GuessCompilationKey];
     numberOfCompilation = [aProfile integerForKey:NumberOfCompilationKey];
     
@@ -107,6 +112,7 @@
     bottomMargin = [aProfile integerForKey:BottomMarginKey];
     leaveTextFlag = ![aProfile boolForKey:GetOutlineKey];
     transparentFlag = [aProfile boolForKey:TransparentKey];
+    plainTextFlag = [aProfile boolForKey:PlainTextKey];
     deleteDisplaySizeFlag = [aProfile boolForKey:DeleteDisplaySizeKey];
     mergeOutputsFlag = [aProfile boolForKey:MergeOutputsKey];
     keepPageSizeFlag = [aProfile boolForKey:KeepPageSizeKey];
@@ -126,6 +132,7 @@
     pageBoxType = [aProfile integerForKey:PageBoxKey];
     delay = [aProfile floatForKey:DelayKey];
     loopCount = [aProfile integerForKey:LoopCountKey];
+    useEps2WriteDeviceFlag = nil;
     additionalInputPath = nil;
     pdfInputMode = NO;
     psInputMode = NO;
@@ -301,10 +308,10 @@
     return success;
 }
 
-- (BOOL)execDVIware:(NSString*)dviFilePath
+- (BOOL)execDviDriver:(NSString*)dviFilePath
 {
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
-    [cmdline appendString:dviwarePath];
+    [cmdline appendString:dviDriverPath];
     
 	BOOL status = [controller execCommand:cmdline
                               atDirectory:tempdir
@@ -422,7 +429,7 @@
 
 // pdfcrop類似処理
 // page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
-- (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin
+- (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin useCache:(BOOL)useCache
 {
     NSString *cropFileBasePath = [NSString stringWithFormat:@"%@-pdfcrop-%ld%d",
                                   [tempdir stringByAppendingPathComponent:tempFileBaseName], page, addMargin];
@@ -431,7 +438,7 @@
     NSString *cropLogSourcePath = [cropFileBasePath stringByAppendingString:@".log"];
     
     // 同じものがあれば再利用
-    if ([fileManager fileExistsAtPath:cropPdfSourcePath]) {
+    if (useCache && [fileManager fileExistsAtPath:cropPdfSourcePath]) {
         [fileManager removeItemAtPath:outputFileName error:nil];
         return [fileManager copyItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
     }
@@ -469,7 +476,7 @@
     [fileManager removeItemAtPath:outputFileName error:nil];
     
     if (success) {
-        if (page > 0) {
+        if (!useCache || (page > 0)) {
             success = [fileManager moveItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
         } else { // 全ページクロップの場合は，他のページで再度使う場合のためにファイルを残しておく
             success = [fileManager copyItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
@@ -485,6 +492,10 @@
 
 - (BOOL)shouldUseEps2WriteDevice
 {
+    if (useEps2WriteDeviceFlag) {
+        return useEps2WriteDeviceFlag.boolValue;
+    }
+    
     BOOL result = YES;
     
     NSString *gsVerFileName = @"tex2img-gsver";
@@ -510,6 +521,8 @@
     if (version < 9.15) {
         result = NO;
     }
+    
+    useEps2WriteDeviceFlag = @(result);
     
     return result;
 }
@@ -626,7 +639,7 @@
 	
 	[controller execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
                 atDirectory:tempdir
-              withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
+              withArguments:@[@"--hires", [NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
                               epsName]
                       quiet:quietFlag];
 	return YES;
@@ -637,7 +650,7 @@
     if (addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0)) {
         NSString* trimFileName = [NSString stringWithFormat:@"%@-trim.pdf", epsName.stringByDeletingPathExtension];
         // まず，epstopdf を使って PDF に戻し，次に，pdfcrop類似処理を使って余白を付け加える
-        return [self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName page:0 addMargin:YES];
+        return [self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName page:0 addMargin:YES useCache:NO];
     } else {
         // epstopdf を使って PDF に戻すのみ
         return [self epstopdf:epsName outputPdfFileName:outputFileName];
@@ -685,7 +698,7 @@
 
 	// PDFのバウンディングボックスで切り取る
     if (crop) {
-        BOOL success = [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO];
+        BOOL success = [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO useCache:YES];
         if (!success) {
             [controller showCannotOverwriteError:pdfFilePath];
             return NO;
@@ -763,6 +776,27 @@
     }
 
     return YES;
+}
+
+- (BOOL)eps2plainTextEps:(NSString*)epsName
+{
+    if (![controller pdftopsExists]) {
+        return NO;
+    }
+    
+    NSString *pdfName = [[tempFileBaseName stringByAppendingString:@"-pdftops"] stringByAppendingPathExtension:@"pdf"];
+    
+    BOOL success = [self epstopdf:epsName outputPdfFileName:pdfName];
+    if (!success) {
+        return NO;
+    }
+    
+    NSArray<NSString*> *arguments = @[@"-eps", pdfName, epsName];
+    
+    return [controller execCommand:pdftopsPath
+                       atDirectory:tempdir
+                     withArguments:arguments
+                             quiet:quietFlag];
 }
 
 - (void)enlargeBB:(NSString*)epsName
@@ -859,7 +893,7 @@
                                atDirectory:tempdir
                              withArguments:arguments
                                      quiet:quietFlag];
-    if (!success ) {
+    if (!success) {
         return NO;
     }
     
@@ -905,7 +939,7 @@
     
     if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す（ここでpdfcrop類似処理で余白付与）
         if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は epstopdf が使えない（エラーになる）ので，そこだけpdfcrop類似処理で変換する
-            [self pdfcrop:pdfFileName outputFileName:outputFileName page:page addMargin:YES];
+            [self pdfcrop:pdfFileName outputFileName:outputFileName page:page addMargin:YES useCache:YES];
         } else {
             [self eps2pdf:outputEpsFileName outputFileName:outputFileName addMargin:YES];
         }
@@ -914,7 +948,13 @@
         if (topMargin + bottomMargin + leftMargin + rightMargin > 0) {
             [self enlargeBB:outputEpsFileName];
         }
-        //生成したEPSファイルの名前を最終出力ファイル名へ変更する
+        // テキスト形式に変更する必要がある場合
+        if (useEps2WriteDeviceFlag.boolValue && plainTextFlag) {
+            if (![self eps2plainTextEps:outputEpsFileName]) {
+                return NO;
+            }
+        }
+        // 生成したEPSファイルの名前を最終出力ファイル名へ変更する
         if ([fileManager fileExistsAtPath:outputFileName]) {
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
@@ -1038,7 +1078,7 @@
 	NSString* outputFileName = outputFilePath.lastPathComponent;
 	NSString* extension = outputFilePath.pathExtension.lowercaseString;
     NSDate *texDate, *dviDate, *psDate, *pdfDate;
-    BOOL success = NO, compilationSuceeded = NO, requireDviware = NO, requireGS = NO;
+    BOOL success = NO, compilationSuceeded = NO, requireDviDriver = NO, requireGS = NO;
 
     errorsIgnored = NO;
     
@@ -1058,14 +1098,14 @@
         [controller exitCurrentThreadIfTaskKilled];
         
         compilationSuceeded = NO;
-        requireDviware = NO;
+        requireDviDriver = NO;
         
         texDate = [self fileModificationDateAtPath:texFilePath];
         
         if ([fileManager fileExistsAtPath:pdfFilePath]) { // PDF が存在する場合
             pdfDate = [self fileModificationDateAtPath:pdfFilePath];
             if (pdfDate && [pdfDate isNewerThan:texDate]) {
-                requireDviware = NO; // 新しい PDF が生成されていれば DVIware にかける必要なしと見なす
+                requireDviDriver = NO; // 新しい PDF が生成されていれば DVI Driver にかける必要なしと見なす
                 compilationSuceeded = YES;
             }
         }
@@ -1073,7 +1113,7 @@
         if (!compilationSuceeded && [fileManager fileExistsAtPath:dviFilePath]) { // 新しい PDF が存在せず，DVI が存在する場合
             dviDate = [self fileModificationDateAtPath:dviFilePath];
             if (dviDate && [dviDate isNewerThan:texDate]) {
-                requireDviware = YES; // 新しい PDF が存在せず，新しい DVI が生成されていれば DVIware にかける必要ありと見なす
+                requireDviDriver = YES; // 新しい PDF が存在せず，新しい DVI が生成されていれば DVI Driver にかける必要ありと見なす
                 compilationSuceeded = YES;
             }
         }
@@ -1084,8 +1124,8 @@
         }
         
         // DVI→PDF
-        if (requireDviware) {
-            success = [self execDVIware:dviFilePath];
+        if (requireDviDriver) {
+            success = [self execDviDriver:dviFilePath];
             if (!success) {
                 if (ignoreErrorsFlag) {
                     errorsIgnored = YES;
@@ -1179,7 +1219,8 @@
     // 【gsを通す経路]
     //  4. 画質優先モードでのビットマップ生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ]→ EPS →[epstopdf(gs)]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JEPG/PNG/GIF/TIFF/BMP)
     //  5. アウトライン化PDF生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[epstopdf(gs)]→ PDF →[pdfcrop類似処理で余白付与]→ PDF)
-    //  6. アウトライン化EPS生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS)
+    //  6. アウトライン化EPS（バイナリ形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS)
+    //  7. アウトライン化EPS（テキスト形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS →[epstopdf(gs)]→ PDF →[pdftops])
     // [*1] このgsによるアウトライン化は，画質優先モードの場合は -r20016 固定，速度優先モードの場合は解像度レベル設定に従う
     
     // 最終出力がビットマップ形式で「速度優先」の場合は，PDFからQuartzで直接変換
@@ -1198,7 +1239,7 @@
             }
         }
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPS を経由しなくてよいので，pdfcrop類似処理で直接生成する。
-        success = [self pdfcrop:pdfFilePath outputFileName:outputFileName page:1 addMargin:YES];
+        success = [self pdfcrop:pdfFilePath outputFileName:outputFileName page:1 addMargin:YES useCache:NO];
         [controller exitCurrentThreadIfTaskKilled];
         if (!success) {
             return success;
@@ -1208,14 +1249,16 @@
             success = [self pdfcrop:pdfFilePath
                      outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                page:i
-                          addMargin:YES];
+                          addMargin:YES
+                           useCache:NO
+                       ];
             [controller exitCurrentThreadIfTaskKilled];
             if (!success) {
                 return success;
             }
         }
     } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
-        [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES];
+        [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES useCache:YES];
         [controller exitCurrentThreadIfTaskKilled];
 
         success = [self pdf2svg:croppedPdfFilePath
@@ -1380,7 +1423,7 @@
 - (BOOL)compileAndConvertWithCheck
 {
 	// 最初にプログラムの存在確認と出力ファイル形式確認
-	if (![controller latexExistsAtPath:latexPath.programPath dviwarePath:dviwarePath.programPath gsPath:gsPath.programPath]) {
+	if (![controller latexExistsAtPath:latexPath.programPath dviDriverPath:dviDriverPath.programPath gsPath:gsPath.programPath]) {
         [controller generationDidFinish];
 		return NO;
 	}
@@ -1497,6 +1540,7 @@
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-outline.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-trim.pdf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdftops.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-00.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-01.pdf", basePath] error:nil];
         

@@ -303,8 +303,8 @@
     Profile *currentProfile = [controller currentProfile];
     
     // テキスト貼り付け時，クリップボードから貼り付けられる円マークをバックスラッシュに置き換えて貼り付ける
-    if ([type isEqualToString:NSPasteboardTypeString] && [currentProfile boolForKey:ConvertYenMarkKey]) {
-        NSMutableString *string = [NSMutableString stringWithString:[pboard stringForType:NSPasteboardTypeString]];
+    if ([type isEqualToString:NSStringPboardType] && [currentProfile boolForKey:ConvertYenMarkKey]) {
+        NSMutableString *string = [NSMutableString stringWithString:[pboard stringForType:NSStringPboardType]];
         if (string) {
             [string replaceYenWithBackSlash];
             

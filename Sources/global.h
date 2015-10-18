@@ -29,6 +29,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define EmbedInIllustratorKey @"embedInIllustrator"
 #define UngroupKey @"ungroup"
 #define TransparentKey @"transparent"
+#define PlainTextKey @"plainText"
 #define GetOutlineKey @"getOutline"
 #define DeleteDisplaySizeKey @"deleteDisplaySize"
 #define MergeOutputsKey @"mergeOutputs"
@@ -36,16 +37,11 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define IgnoreErrorKey @"ignoreError"
 #define UtfExportKey @"utfExport"
 #define LatexPathKey @"platexPath"
-// DviwarePathKey の内容は，互換性を考えて "dvipdfmxPath" のままで維持
-#define DviwarePathKey @"dvipdfmxPath"
+// DviDriverPathKey の内容は，互換性を考えて "dvipdfmxPath" のままで維持
+#define DviDriverPathKey @"dvipdfmxPath"
 #define GsPathKey @"gsPath"
 #define GuessCompilationKey @"guessCompilation"
 #define NumberOfCompilationKey @"numberOfCompilation"
-#define ResolutionLabelKey @"resolutionLabel"
-#define LeftMarginLabelKey @"leftMarginLabel"
-#define RightMarginLabelKey @"rightMarginLabel"
-#define TopMarginLabelKey @"topMarginLabel"
-#define BottomMarginLabelKey @"bottomMarginLabel"
 #define ResolutionKey @"resolution"
 #define LeftMarginKey @"leftMargin"
 #define RightMarginKey @"rightMargin"
@@ -84,6 +80,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define EncodingKey @"encoding"
 #define EpstopdfPathKey @"epstopdfPath"
 #define MudrawPathKey @"mudrawPath"
+#define PdftopsPathKey @"pdftopsPath"
 #define QuietKey @"quiet"
 
 #define AutoDetectionTargetKey @"autoDetectionTarget"
@@ -136,6 +133,6 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
 #define EA_Key "com.loveinequality.TeX2img"
 
-#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf"
+#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf:/Applications/TeX2img.app/Contents/Resources/pdftops:/Applications/TeXLive/TeX2img.app/Contents/Resources/pdftops"
 
 #endif

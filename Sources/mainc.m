@@ -9,8 +9,8 @@
 #import "NSString-Extension.h"
 #import "NSDictionary-Extension.h"
 
-#define OPTION_NUM 49
-#define VERSION "1.10.5"
+#define OPTION_NUM 51
+#define VERSION "1.10.6"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -52,6 +52,7 @@ void usage()
     printf("                               (*bp is always used for EPS/PDF/SVG)\n");
     printf("  --[no-]transparent         : disable/enable transparent PNG/TIFF/GIF (default: enabled)\n");
     printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
+    printf("  --[no-]plain-text          : disable/enable outputting EPS as a plain text (default: disabled)\n");
     printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or animated GIF (default: disabled)\n");
     printf("  --animation-delay TIME     : set the delay time (sec) of an animated GIF (default: 1)\n");
     printf("  --animation-loop  NUMBER   : set the number of times to repeat an animated GIF (default: 0 (infinity))\n");
@@ -129,8 +130,8 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
         printf("The number of compilation: %ld\n", [aProfile integerForKey:NumberOfCompilationKey]);
     }
 
-    NSString *dviware = [aProfile stringForKey:DviwarePathKey];
-    printf("DVIware: %s %s\n", getPath(dviware.programName).UTF8String, dviware.argumentsString.UTF8String);
+    NSString *dviDriver = [aProfile stringForKey:DviDriverPathKey];
+    printf("DVI Driver: %s %s\n", getPath(dviDriver.programName).UTF8String, dviDriver.argumentsString.UTF8String);
 
     NSString *gs = [aProfile stringForKey:GsPathKey];
     printf("Ghostscript: %s %s\n", getPath(gs.programName).UTF8String, gs.argumentsString.UTF8String);
@@ -139,6 +140,9 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     
     NSString *mudrawPath = getPath([aProfile stringForKey:MudrawPathKey]);
     printf("mudraw: %s\n", mudrawPath ? mudrawPath.UTF8String : "NOT FOUND");
+    
+    NSString *pdftopsPath = getPath([aProfile stringForKey:PdftopsPathKey]);
+    printf("pdftops: %s\n", pdftopsPath ? pdftopsPath.UTF8String : "NOT FOUND");
     
     printf("Resolution level: %f\n", [aProfile floatForKey:ResolutionKey]);
     
@@ -157,6 +161,9 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     }
     if ([ext isEqualToString:@"pdf"]) {
         printf("Text embedded PDF: %s\n", [aProfile boolForKey:GetOutlineKey] ? DISABLED : ENABLED);
+    }
+    if ([ext isEqualToString:@"eps"]) {
+        printf("Plain text EPS: %s\n", [aProfile boolForKey:PlainTextKey] ? ENABLED : DISABLED);
     }
     if ([ext isEqualToString:@"svg"]) {
         printf("Delete width and height attributes of SVG: %s\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? ENABLED : DISABLED);
@@ -196,10 +203,11 @@ int main (int argc, char *argv[]) {
         BOOL embedSourceFlag = YES;
         BOOL mergeFlag = NO;
         BOOL keepPageSizeFlag = NO;
-        NSString *encoding = PTEX_ENCODING_NONE;
-        NSString *latex    = @"platex";
-        NSString *dviware  = @"dvipdfmx";
-        NSString *gs       = @"gs";
+        BOOL plainTextFlag = NO;
+        NSString *encoding  = PTEX_ENCODING_NONE;
+        NSString *latex     = @"platex";
+        NSString *dviDriver = @"dvipdfmx";
+        NSString *gs        = @"gs";
         NSNumber *unitTag = @(PX_UNIT_TAG);
         CGPDFBox pageBoxType = kCGPDFCropBox;
         float delay = 1;
@@ -487,6 +495,18 @@ int main (int argc, char *argv[]) {
         options[i].has_arg = required_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
+
+        i++;
+        options[i].name = "plain-text";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+        
+        i++;
+        options[i].name = "no-plain-text";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
         
         options[OPTION_NUM - 3].name = "version";
         options[OPTION_NUM - 3].has_arg = no_argument;
@@ -695,7 +715,7 @@ int main (int argc, char *argv[]) {
                     break;
                 case 36: // --dvidriver
                     if (optarg) {
-                        dviware = @(optarg);
+                        dviDriver = @(optarg);
                     } else {
                         printf("error: --dvidriver is invalid.\n");
                         exit(1);
@@ -703,7 +723,7 @@ int main (int argc, char *argv[]) {
                     break;
                 case 37: // --dviware (synonym for --dvidriver)
                     if (optarg) {
-                        dviware = @(optarg);
+                        dviDriver = @(optarg);
                     } else {
                         printf("error: --dviware is invalid.\n");
                         exit(1);
@@ -711,7 +731,7 @@ int main (int argc, char *argv[]) {
                     break;
                 case 38: // --dvipdfmx (synonym for --dvidriver)
                     if (optarg) {
-                        dviware = @(optarg);
+                        dviDriver = @(optarg);
                     } else {
                         printf("error: --dvipdfmx is invalid.\n");
                         exit(1);
@@ -804,6 +824,12 @@ int main (int argc, char *argv[]) {
                         exit(1);
                     }
                     break;
+                case 47: // --plain-text
+                    plainTextFlag = YES;
+                    break;
+                case 48: // --no-plain-text
+                    plainTextFlag = NO;
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -853,18 +879,19 @@ int main (int argc, char *argv[]) {
         
         // 実行プログラムのパスチェック
         NSString *latexPath = getPath(latex.programPath);
-        NSString *dviwarePath = getPath(dviware.programPath);
+        NSString *dviDriverPath = getPath(dviDriver.programPath);
         NSString *gsPath = getPath(gs.programPath);
         NSString *epstopdfPath = getPath(@"epstopdf");
         NSString *mudrawPath = getPath(@"mudraw");
+        NSString *pdftopsPath = getPath(@"pdftops");
         
         if (!latexPath) {
             [controller showNotFoundError:latex.programName];
             suggestLatexOption();
             return 1;
         }
-        if (!dviwarePath) {
-            [controller showNotFoundError:dviware.programName];
+        if (!dviDriverPath) {
+            [controller showNotFoundError:dviDriver.programName];
             return 1;
         }
         if (!gsPath) {
@@ -878,14 +905,19 @@ int main (int argc, char *argv[]) {
         if (!mudrawPath) {
             mudrawPath = @"mudraw";
         }
+
+        if (!pdftopsPath) {
+            pdftopsPath = @"pdftops";
+        }
         
         MutableProfile *aProfile = [MutableProfile dictionary];
         
         aProfile[LatexPathKey] = [latexPath stringByAppendingStringSeparetedBySpace:latex.argumentsString];
-        aProfile[DviwarePathKey] = [dviwarePath stringByAppendingStringSeparetedBySpace:dviware.argumentsString];
+        aProfile[DviDriverPathKey] = [dviDriverPath stringByAppendingStringSeparetedBySpace:dviDriver.argumentsString];
         aProfile[GsPathKey] = [gsPath stringByAppendingStringSeparetedBySpace:gs.argumentsString];
         aProfile[EpstopdfPathKey] = epstopdfPath;
         aProfile[MudrawPathKey] = mudrawPath;
+        aProfile[PdftopsPathKey] = pdftopsPath;
         aProfile[OutputFileKey] = outputFilePath;
         aProfile[EncodingKey] = encoding;
         aProfile[NumberOfCompilationKey] = @(numberOfCompilation);
@@ -913,6 +945,7 @@ int main (int argc, char *argv[]) {
         aProfile[EmbedSourceKey] = @(embedSourceFlag);
         aProfile[MergeOutputsKey] = @(mergeFlag);
         aProfile[KeepPageSizeKey] = @(keepPageSizeFlag);
+        aProfile[PlainTextKey] = @(plainTextFlag);
         aProfile[PageBoxKey] = @(pageBoxType);
         aProfile[LoopCountKey] = @(loopCount);
         aProfile[DelayKey] = @(delay);

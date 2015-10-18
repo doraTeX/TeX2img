@@ -84,6 +84,7 @@ typedef enum {
 
 @property (nonatomic, strong) IBOutlet NSButton *generateButton;
 @property (nonatomic, strong) IBOutlet NSButton *transparentCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *plainTextCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *deleteDisplaySizeCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *mergeOutputsCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *keepPageSizeCheckBox;
@@ -95,18 +96,21 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSButton *embedInIllustratorCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *ungroupCheckBox;
 @property (nonatomic, strong) IBOutlet NSWindow *preferenceWindow;
-@property (nonatomic, strong) IBOutlet NSTextField *resolutionLabel;
-@property (nonatomic, strong) IBOutlet NSTextField *leftMarginLabel;
-@property (nonatomic, strong) IBOutlet NSTextField *rightMarginLabel;
-@property (nonatomic, strong) IBOutlet NSTextField *topMarginLabel;
-@property (nonatomic, strong) IBOutlet NSTextField *bottomMarginLabel;
-@property (nonatomic, strong) IBOutlet NSSlider *resolutionSlider;
-@property (nonatomic, strong) IBOutlet NSSlider *leftMarginSlider;
-@property (nonatomic, strong) IBOutlet NSSlider *rightMarginSlider;
-@property (nonatomic, strong) IBOutlet NSSlider *topMarginSlider;
-@property (nonatomic, strong) IBOutlet NSSlider *bottomMarginSlider;
+
+@property (nonatomic, strong) IBOutlet NSTextField *resolutionTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *leftMarginTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *rightMarginTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *topMarginTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *bottomMarginTextField;
+
+@property (nonatomic, strong) IBOutlet NSStepper *resolutionStepper;
+@property (nonatomic, strong) IBOutlet NSStepper *leftMarginStepper;
+@property (nonatomic, strong) IBOutlet NSStepper *rightMarginStepper;
+@property (nonatomic, strong) IBOutlet NSStepper *topMarginStepper;
+@property (nonatomic, strong) IBOutlet NSStepper *bottomMarginStepper;
+
 @property (nonatomic, strong) IBOutlet NSTextField *latexPathTextField;
-@property (nonatomic, strong) IBOutlet NSTextField *dviwarePathTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *dviDriverPathTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *gsPathTextField;
 @property (nonatomic, strong) IBOutlet NSButton *guessCompilationButton;
 @property (nonatomic, strong) IBOutlet NSTextField *numberOfCompilationTextField;
@@ -189,6 +193,7 @@ typedef enum {
 
 @synthesize generateButton;
 @synthesize transparentCheckBox;
+@synthesize plainTextCheckBox;
 @synthesize deleteDisplaySizeCheckBox;
 @synthesize mergeOutputsCheckBox;
 @synthesize keepPageSizeCheckBox;
@@ -200,18 +205,21 @@ typedef enum {
 @synthesize embedInIllustratorCheckBox;
 @synthesize ungroupCheckBox;
 @synthesize preferenceWindow;
-@synthesize resolutionLabel;
-@synthesize leftMarginLabel;
-@synthesize rightMarginLabel;
-@synthesize topMarginLabel;
-@synthesize bottomMarginLabel;
-@synthesize resolutionSlider;
-@synthesize leftMarginSlider;
-@synthesize rightMarginSlider;
-@synthesize topMarginSlider;
-@synthesize bottomMarginSlider;
+
+@synthesize resolutionTextField;
+@synthesize leftMarginTextField;
+@synthesize rightMarginTextField;
+@synthesize topMarginTextField;
+@synthesize bottomMarginTextField;
+
+@synthesize resolutionStepper;
+@synthesize leftMarginStepper;
+@synthesize rightMarginStepper;
+@synthesize topMarginStepper;
+@synthesize bottomMarginStepper;
+
 @synthesize latexPathTextField;
-@synthesize dviwarePathTextField;
+@synthesize dviDriverPathTextField;
 @synthesize gsPathTextField;
 @synthesize guessCompilationButton;
 @synthesize numberOfCompilationTextField;
@@ -366,7 +374,7 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(showNotFoundErrorOnMainThread:) withObject:aPath waitUntilDone:YES];
 }
 
-- (BOOL)latexExistsAtPath:(NSString*)latexPath dviwarePath:(NSString*)dviwarePath gsPath:(NSString*)gsPath
+- (BOOL)latexExistsAtPath:(NSString*)latexPath dviDriverPath:(NSString*)dviDriverPath gsPath:(NSString*)gsPath
 {
 	NSFileManager *fileManager = NSFileManager.defaultManager;
 	
@@ -374,8 +382,8 @@ typedef enum {
 		[self showNotFoundError:latexPath];
 		return NO;
 	}
-	if (![fileManager fileExistsAtPath:dviwarePath.programPath]) {
-		[self showNotFoundError:dviwarePath];
+	if (![fileManager fileExistsAtPath:dviDriverPath.programPath]) {
+		[self showNotFoundError:dviDriverPath];
 		return NO;
 	}
 	if (![fileManager fileExistsAtPath:gsPath.programPath]) {
@@ -392,6 +400,11 @@ typedef enum {
 }
 
 - (BOOL)mudrawExists;
+{
+    return YES;
+}
+
+- (BOOL)pdftopsExists;
 {
     return YES;
 }
@@ -532,13 +545,22 @@ typedef enum {
 }
 
 #pragma mark - プロファイルの読み書き関連
-- (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
+- (void)loadStringSettingForTextField:(NSTextField*)textField fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
 {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
 	if (tempStr) {
 		textField.stringValue = tempStr;
 	}
+}
+
+- (void)loadNumberSettingForTextField:(NSTextField*)textField fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
+{
+    NSNumber *tempNumber = (NSNumber*)(aProfile[aKey]);
+    
+    if (tempNumber) {
+        textField.floatValue = tempNumber.floatValue;
+    }
 }
 
 - (void)loadSettingForTextView:(NSTextView*)textView fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
@@ -558,7 +580,7 @@ typedef enum {
     
     NSArray<NSString*> *keys = aProfile.allKeys;
 	
-	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
+	[self loadStringSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
 	
 	showOutputDrawerCheckBox.state = [aProfile integerForKey:ShowOutputDrawerKey];
 	previewCheckBox.state = [aProfile integerForKey:PreviewKey];
@@ -576,6 +598,7 @@ typedef enum {
 	ungroupCheckBox.state = [aProfile integerForKey:UngroupKey];
 	
 	transparentCheckBox.state = [aProfile boolForKey:TransparentKey];
+    plainTextCheckBox.state = [aProfile boolForKey:PlainTextKey];
 	textPdfCheckBox.state = ![aProfile boolForKey:GetOutlineKey];
     deleteDisplaySizeCheckBox.state = [aProfile boolForKey:DeleteDisplaySizeKey];
     mergeOutputsCheckBox.state = [aProfile boolForKey:MergeOutputsKey];
@@ -641,24 +664,24 @@ typedef enum {
         [encodingPopUpButton selectItemWithTag:tag];
     }
 	
-	[self loadSettingForTextField:latexPathTextField fromProfile:aProfile forKey:LatexPathKey];
-	[self loadSettingForTextField:dviwarePathTextField fromProfile:aProfile forKey:DviwarePathKey];
-	[self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
+	[self loadStringSettingForTextField:latexPathTextField fromProfile:aProfile forKey:LatexPathKey];
+	[self loadStringSettingForTextField:dviDriverPathTextField fromProfile:aProfile forKey:DviDriverPathKey];
+	[self loadStringSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
 	
-	[self loadSettingForTextField:resolutionLabel fromProfile:aProfile forKey:ResolutionLabelKey];
-    [self loadSettingForTextField:leftMarginLabel fromProfile:aProfile forKey:LeftMarginLabelKey];
-    [self loadSettingForTextField:rightMarginLabel fromProfile:aProfile forKey:RightMarginLabelKey];
-    [self loadSettingForTextField:topMarginLabel fromProfile:aProfile forKey:TopMarginLabelKey];
-    [self loadSettingForTextField:bottomMarginLabel fromProfile:aProfile forKey:BottomMarginLabelKey];
+	[self loadNumberSettingForTextField:resolutionTextField fromProfile:aProfile forKey:ResolutionKey];
+    [self loadNumberSettingForTextField:leftMarginTextField fromProfile:aProfile forKey:LeftMarginKey];
+    [self loadNumberSettingForTextField:rightMarginTextField fromProfile:aProfile forKey:RightMarginKey];
+    [self loadNumberSettingForTextField:topMarginTextField fromProfile:aProfile forKey:TopMarginKey];
+    [self loadNumberSettingForTextField:bottomMarginTextField fromProfile:aProfile forKey:BottomMarginKey];
+    
+    [resolutionStepper takeFloatValueFrom:resolutionTextField];
+    [leftMarginStepper takeIntValueFrom:leftMarginTextField];
+    [rightMarginStepper takeIntValueFrom:rightMarginTextField];
+    [topMarginStepper takeIntValueFrom:topMarginTextField];
+    [bottomMarginStepper takeIntValueFrom:bottomMarginTextField];
     
     numberOfCompilationTextField.integerValue = MAX(1, [aProfile integerForKey:NumberOfCompilationKey]);
     [numberOfCompilationStepper takeIntegerValueFrom:numberOfCompilationTextField];
-    
-    resolutionSlider.floatValue = [aProfile integerForKey:ResolutionKey];
-    leftMarginSlider.integerValue = [aProfile integerForKey:LeftMarginKey];
-    rightMarginSlider.integerValue = [aProfile integerForKey:RightMarginKey];
-    topMarginSlider.integerValue = [aProfile integerForKey:TopMarginKey];
-    bottomMarginSlider.integerValue = [aProfile integerForKey:BottomMarginKey];
     
     NSInteger unitTag = [aProfile integerForKey:UnitKey];
     [unitMatrix selectCellWithTag:unitTag];
@@ -773,6 +796,7 @@ typedef enum {
         currentProfile[UngroupKey] = @(ungroupCheckBox.state);
         
         currentProfile[TransparentKey] = @(transparentCheckBox.state);
+        currentProfile[PlainTextKey] = @(plainTextCheckBox.state);
         currentProfile[GetOutlineKey] = @(!textPdfCheckBox.state);
         currentProfile[DeleteDisplaySizeKey] = @(deleteDisplaySizeCheckBox.state);
         currentProfile[MergeOutputsKey] = @(mergeOutputsCheckBox.state);
@@ -781,22 +805,16 @@ typedef enum {
         currentProfile[UtfExportKey] = @(utfExportCheckBox.state);
         
         currentProfile[LatexPathKey] = latexPathTextField.stringValue;
-        currentProfile[DviwarePathKey] = dviwarePathTextField.stringValue;
+        currentProfile[DviDriverPathKey] = dviDriverPathTextField.stringValue;
         currentProfile[GsPathKey] = gsPathTextField.stringValue;
         currentProfile[GuessCompilationKey] = @(guessCompilationButton.state);
         currentProfile[NumberOfCompilationKey] = @(numberOfCompilationTextField.integerValue);
         
-        currentProfile[ResolutionLabelKey] = resolutionLabel.stringValue;
-        currentProfile[LeftMarginLabelKey] = leftMarginLabel.stringValue;
-        currentProfile[RightMarginLabelKey] = rightMarginLabel.stringValue;
-        currentProfile[TopMarginLabelKey] = topMarginLabel.stringValue;
-        currentProfile[BottomMarginLabelKey] = bottomMarginLabel.stringValue;
-        
-        currentProfile[ResolutionKey] = @(resolutionLabel.floatValue);
-        currentProfile[LeftMarginKey] = @(leftMarginLabel.integerValue);
-        currentProfile[RightMarginKey] = @(rightMarginLabel.integerValue);
-        currentProfile[TopMarginKey] = @(topMarginLabel.integerValue);
-        currentProfile[BottomMarginKey] = @(bottomMarginLabel.integerValue);
+        currentProfile[ResolutionKey] = @(resolutionTextField.floatValue);
+        currentProfile[LeftMarginKey] = @(leftMarginTextField.integerValue);
+        currentProfile[RightMarginKey] = @(rightMarginTextField.integerValue);
+        currentProfile[TopMarginKey] = @(topMarginTextField.integerValue);
+        currentProfile[BottomMarginKey] = @(bottomMarginTextField.integerValue);
         
         NSInteger tabWidth = tabWidthTextField.integerValue;
         currentProfile[TabWidthKey] = @((tabWidth > 0) ? tabWidth : 4);
@@ -1134,9 +1152,26 @@ typedef enum {
                     name:NSWindowDidBecomeKeyNotification
                   object:colorPalleteWindow];
     
-    // コンパイル回数の変更
+    // 数値を記入した NSTextField の値を変更したときに直ちに関連づけられたステッパーに反映されるように
+    // ただし，resolutionTextField は，小数点値を反映させるために対象外としている
     [aCenter addObserver:self
-                selector:@selector(refreshNumberOfCompilation:)
+                selector:@selector(refreshRelatedStepperValue:)
+                    name:NSControlTextDidChangeNotification
+                  object:leftMarginTextField];
+    [aCenter addObserver:self
+                selector:@selector(refreshRelatedStepperValue:)
+                    name:NSControlTextDidChangeNotification
+                  object:rightMarginTextField];
+    [aCenter addObserver:self
+                selector:@selector(refreshRelatedStepperValue:)
+                    name:NSControlTextDidChangeNotification
+                  object:topMarginTextField];
+    [aCenter addObserver:self
+                selector:@selector(refreshRelatedStepperValue:)
+                    name:NSControlTextDidChangeNotification
+                  object:bottomMarginTextField];
+    [aCenter addObserver:self
+                selector:@selector(refreshRelatedStepperValue:)
                     name:NSControlTextDidChangeNotification
                   object:numberOfCompilationTextField];
 
@@ -1249,7 +1284,7 @@ typedef enum {
                @"%@\n%@\n%@\n%@\n%@",
                parameters[@"Msg1"],
                parameters[LatexPathKey],
-               parameters[DviwarePathKey],
+               parameters[DviDriverPathKey],
                parameters[GsPathKey],
                parameters[@"Msg2"]
                );
@@ -1800,9 +1835,11 @@ typedef enum {
     [self refreshTextView:sender];
 }
 
-- (void)refreshNumberOfCompilation:(id)sender
+- (void)refreshRelatedStepperValue:(NSNotification*)notification
 {
-    [numberOfCompilationStepper takeIntegerValueFrom:numberOfCompilationTextField];
+    NSTextField *textField = (NSTextField*)(notification.object);
+    
+    [(NSStepper*)(textField.target) takeIntValueFrom:textField];
 }
 
 - (IBAction)toggleOutputDrawer:(id)sender
@@ -1860,41 +1897,29 @@ typedef enum {
     outputTextView.font = font;
 }
 
-- (IBAction)colorSettingChanged:(id)sender
-{
-    if (!preferenceWindow.isKeyWindow || ![sender isKindOfClass:NSColorWell.class]) {
-        return;
-    }
-    
-    [(NSColorWell*)sender saveColorToMutableDictionary:lastColorDict];
-
-    [sourceTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
-    [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
-}
-
 - (void)searchProgramsLogic:(NSDictionary<NSString*,NSString*>*)parameters
 {
     NSString *latexPath;
-    NSString *dviwarePath;
+    NSString *dviDriverPath;
     NSString *gsPath;
     
     NSString *templateName = autoDetectionTargetPopupButton.selectedItem.title;
     NSString *engineName = [templateName.lowercaseString componentsSeparatedByString:@" "][0];
-    NSString *dviwareName = ([templateName rangeOfString:@"dvips"].location == NSNotFound) ? @"dvipdfmx" : @"dvips";
+    NSString *dviDriverName = ([templateName rangeOfString:@"dvips"].location == NSNotFound) ? @"dvipdfmx" : @"dvips";
     
     if (!(latexPath = [self searchProgram:engineName])) {
         latexPath = @"";
         [self showNotFoundError:engineName];
     }
-    if (!(dviwarePath = [self searchProgram:dviwareName])) {
-        dviwarePath = @"";
-        [self showNotFoundError:dviwareName];
+    if (!(dviDriverPath = [self searchProgram:dviDriverName])) {
+        dviDriverPath = @"";
+        [self showNotFoundError:dviDriverName];
     } else {
-        if ([dviwareName isEqualToString:@"dvipdfmx"]) {
-            dviwarePath = [dviwarePath stringByAppendingString:@" -vv"];
+        if ([dviDriverName isEqualToString:@"dvipdfmx"]) {
+            dviDriverPath = [dviDriverPath stringByAppendingString:@" -vv"];
         }
-        if ([dviwareName isEqualToString:@"dvips"]) {
-            dviwarePath = [dviwarePath stringByAppendingString:@" -Ppdf"];
+        if ([dviDriverName isEqualToString:@"dvips"]) {
+            dviDriverPath = [dviDriverPath stringByAppendingString:@" -Ppdf"];
         }
     }
     if (!(gsPath = [self searchProgram:@"gs"])) {
@@ -1904,7 +1929,7 @@ typedef enum {
     
 
     latexPathTextField.stringValue = latexPath;
-    dviwarePathTextField.stringValue = dviwarePath;
+    dviDriverPathTextField.stringValue = dviDriverPath;
     gsPathTextField.stringValue = gsPath;
     
     [self performSelectorOnMainThread:@selector(showAutoDetectionResult:)
@@ -1913,7 +1938,7 @@ typedef enum {
                                         @"Msg1": parameters[@"Msg1"],
                                         @"Msg2": parameters[@"Msg2"],
                                         LatexPathKey: [latexPath isEqualToString:@""] ? @"LaTeX: Not Found" : latexPath,
-                                        DviwarePathKey: [dviwarePath isEqualToString:@""] ? @"DVIware: Not Found" : dviwarePath,
+                                        DviDriverPathKey: [dviDriverPath isEqualToString:@""] ? @"DVI Driver: Not Found" : dviDriverPath,
                                         GsPathKey: [gsPath isEqualToString:@""] ? @"Ghostscript: Not Found" : gsPath
                                         }
                         waitUntilDone:[parameters[@"waitUntilDone"] boolValue]];
@@ -1986,7 +2011,7 @@ typedef enum {
         [output appendFormat:@"The number of compilation: %ld\n", [aProfile integerForKey:NumberOfCompilationKey]];
     }
     
-    [output appendFormat:@"DVIware: %@\n", [aProfile stringForKey:DviwarePathKey]];
+    [output appendFormat:@"DVI Driver: %@\n", [aProfile stringForKey:DviDriverPathKey]];
     [output appendFormat:@"Ghostscript: %@\n", [aProfile stringForKey:GsPathKey]];
     
     [output appendFormat:@"Resolution level: %.1f\n", [aProfile floatForKey:ResolutionKey]];
@@ -2006,6 +2031,9 @@ typedef enum {
     }
     if ([ext isEqualToString:@"pdf"]) {
         [output appendFormat:@"Text embedded PDF: %@\n", [aProfile boolForKey:GetOutlineKey] ? DISABLED : ENABLED];
+    }
+    if ([ext isEqualToString:@"eps"]) {
+        [output appendFormat:@"Plain text EPS: %@\n", [aProfile boolForKey:PlainTextKey] ? ENABLED : DISABLED];
     }
     if ([ext isEqualToString:@"svg"]) {
         [output appendFormat:@"Delete width and height attributes of SVG: %@\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? ENABLED : DISABLED];
@@ -2039,6 +2067,7 @@ typedef enum {
     MutableProfile *aProfile = [self currentProfile];
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
     aProfile[MudrawPathKey] = [[NSBundle.mainBundle pathForResource:@"mupdf" ofType:nil] stringByAppendingPathComponent:@"mudraw"];
+    aProfile[PdftopsPathKey] = [[NSBundle.mainBundle pathForResource:@"pdftops" ofType:nil] stringByAppendingPathComponent:@"pdftops"];
     aProfile[QuietKey] = @(NO);
     aProfile[ControllerKey] = self;
     
@@ -2077,7 +2106,7 @@ typedef enum {
     // 余白設定・解像度設定などの数値の妥当性チェック
     __block BOOL valid = YES;
 
-    [@[leftMarginLabel, rightMarginLabel, topMarginLabel, bottomMarginLabel, resolutionLabel, numberOfCompilationTextField, tabWidthTextField] enumerateObjectsUsingBlock:^(NSTextField *label, NSUInteger idx, BOOL *stop) {
+    [@[leftMarginTextField, rightMarginTextField, topMarginTextField, bottomMarginTextField, resolutionTextField, numberOfCompilationTextField, tabWidthTextField] enumerateObjectsUsingBlock:^(NSTextField *label, NSUInteger idx, BOOL *stop) {
         NSNumber *value = [(NSNumberFormatter*)(label.formatter) numberFromString:label.stringValue];
         if (value) {
             // 中途半端に入力されている数値を確定させる
