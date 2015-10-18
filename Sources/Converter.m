@@ -25,7 +25,7 @@
 @property (nonatomic, assign) float resolutionLevel;
 @property (nonatomic, assign) BOOL guessCompilation;
 @property (nonatomic, assign) NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property (nonatomic, strong) NSObject<OutputController> *controller;
 @property (nonatomic, strong) NSFileManager *fileManager;
 @property (nonatomic, copy) NSString *tempdir;
@@ -46,6 +46,7 @@
 @property (nonatomic, assign) CGPDFBox pageBoxType;
 @property (nonatomic, assign) float delay;
 @property (nonatomic, assign) NSInteger loopCount;
+@property (nonatomic, copy) NSNumber *useEps2WriteDeviceFlag; // nilable BOOL として使用
 @property (nonatomic, copy) NSMutableArray<NSNumber*> *emptyPageFlags;
 @property (nonatomic, copy) NSMutableArray<NSNumber*> *whitePageFlags;
 @property (nonatomic, copy) NSMutableDictionary<NSString*,NSString*> *bboxDictionary;
@@ -61,7 +62,7 @@
 @synthesize resolutionLevel;
 @synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@synthesize leaveTextFlag, transparentFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
 @synthesize fileManager;
 @synthesize tempdir;
@@ -82,6 +83,7 @@
 @synthesize pageBoxType;
 @synthesize delay;
 @synthesize loopCount;
+@synthesize useEps2WriteDeviceFlag;
 @synthesize emptyPageFlags;
 @synthesize whitePageFlags;
 @synthesize bboxDictionary;
@@ -110,6 +112,7 @@
     bottomMargin = [aProfile integerForKey:BottomMarginKey];
     leaveTextFlag = ![aProfile boolForKey:GetOutlineKey];
     transparentFlag = [aProfile boolForKey:TransparentKey];
+    plainTextFlag = [aProfile boolForKey:PlainTextKey];
     deleteDisplaySizeFlag = [aProfile boolForKey:DeleteDisplaySizeKey];
     mergeOutputsFlag = [aProfile boolForKey:MergeOutputsKey];
     keepPageSizeFlag = [aProfile boolForKey:KeepPageSizeKey];
@@ -129,6 +132,7 @@
     pageBoxType = [aProfile integerForKey:PageBoxKey];
     delay = [aProfile floatForKey:DelayKey];
     loopCount = [aProfile integerForKey:LoopCountKey];
+    useEps2WriteDeviceFlag = nil;
     additionalInputPath = nil;
     pdfInputMode = NO;
     psInputMode = NO;
@@ -488,6 +492,10 @@
 
 - (BOOL)shouldUseEps2WriteDevice
 {
+    if (useEps2WriteDeviceFlag) {
+        return useEps2WriteDeviceFlag.boolValue;
+    }
+    
     BOOL result = YES;
     
     NSString *gsVerFileName = @"tex2img-gsver";
@@ -518,6 +526,8 @@
             result = NO;
         }
     }
+    
+    useEps2WriteDeviceFlag = @(result);
     
     return result;
 }
@@ -779,6 +789,27 @@
     return YES;
 }
 
+- (BOOL)eps2plainTextEps:(NSString*)epsName
+{
+    if (![controller pdftopsExists]) {
+        return NO;
+    }
+    
+    NSString *pdfName = [[tempFileBaseName stringByAppendingString:@"-pdftops"] stringByAppendingPathExtension:@"pdf"];
+    
+    BOOL success = [self epstopdf:epsName outputPdfFileName:pdfName];
+    if (!success) {
+        return NO;
+    }
+    
+    NSArray<NSString*> *arguments = @[@"-eps", pdfName, epsName];
+    
+    return [controller execCommand:pdftopsPath
+                       atDirectory:tempdir
+                     withArguments:arguments
+                             quiet:quietFlag];
+}
+
 - (void)enlargeBB:(NSString*)epsName
 {
     NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
@@ -873,7 +904,7 @@
                                atDirectory:tempdir
                              withArguments:arguments
                                      quiet:quietFlag];
-    if (!success ) {
+    if (!success) {
         return NO;
     }
     
@@ -924,7 +955,13 @@
         if (topMargin + bottomMargin + leftMargin + rightMargin > 0) {
             [self enlargeBB:outputEpsFileName];
         }
-        //生成したEPSファイルの名前を最終出力ファイル名へ変更する
+        // テキスト形式に変更する必要がある場合
+        if (useEps2WriteDeviceFlag.boolValue && plainTextFlag) {
+            if (![self eps2plainTextEps:outputEpsFileName]) {
+                return NO;
+            }
+        }
+        // 生成したEPSファイルの名前を最終出力ファイル名へ変更する
         if ([fileManager fileExistsAtPath:outputFileName]) {
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
@@ -1189,7 +1226,8 @@
     // 【gsを通す経路]
     //  4. 画質優先モードでのビットマップ生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ]→ EPS →[epstopdf(gs)]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JEPG/PNG/GIF/TIFF/BMP)
     //  5. アウトライン化PDF生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[epstopdf(gs)]→ PDF →[pdfcrop類似処理で余白付与]→ PDF)
-    //  6. アウトライン化EPS生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS)
+    //  6. アウトライン化EPS（バイナリ形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS)
+    //  7. アウトライン化EPS（テキスト形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS →[epstopdf(gs)]→ PDF →[pdftops])
     // [*1] このgsによるアウトライン化は，画質優先モードの場合は -r20016 固定，速度優先モードの場合は解像度レベル設定に従う
     
     // 最終出力がビットマップ形式で「速度優先」の場合は，PDFからQuartzで直接変換
@@ -1509,6 +1547,7 @@
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-outline.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-trim.pdf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdftops.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-00.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-01.pdf", basePath] error:nil];
         
