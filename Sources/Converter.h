@@ -4,7 +4,7 @@
 @protocol OutputController
 - (void)showExtensionError;
 - (void)showNotFoundError:(NSString*)aPath;
-- (BOOL)latexExistsAtPath:(NSString*)latexPath dviwarePath:(NSString*)dviwarePath gsPath:(NSString*)gsPath;
+- (BOOL)latexExistsAtPath:(NSString*)latexPath dviDriverPath:(NSString*)dviDriverPath gsPath:(NSString*)gsPath;
 - (BOOL)epstopdfExists;
 - (BOOL)mudrawExists;
 - (BOOL)pdftopsExists;

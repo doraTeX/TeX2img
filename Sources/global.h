@@ -36,8 +36,8 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define IgnoreErrorKey @"ignoreError"
 #define UtfExportKey @"utfExport"
 #define LatexPathKey @"platexPath"
-// DviwarePathKey の内容は，互換性を考えて "dvipdfmxPath" のままで維持
-#define DviwarePathKey @"dvipdfmxPath"
+// DviDriverPathKey の内容は，互換性を考えて "dvipdfmxPath" のままで維持
+#define DviDriverPathKey @"dvipdfmxPath"
 #define GsPathKey @"gsPath"
 #define GuessCompilationKey @"guessCompilation"
 #define NumberOfCompilationKey @"numberOfCompilation"

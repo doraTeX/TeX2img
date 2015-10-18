@@ -129,8 +129,8 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
         printf("The number of compilation: %ld\n", [aProfile integerForKey:NumberOfCompilationKey]);
     }
 
-    NSString *dviware = [aProfile stringForKey:DviwarePathKey];
-    printf("DVIware: %s %s\n", getPath(dviware.programName).UTF8String, dviware.argumentsString.UTF8String);
+    NSString *dviDriver = [aProfile stringForKey:DviDriverPathKey];
+    printf("DVI Driver: %s %s\n", getPath(dviDriver.programName).UTF8String, dviDriver.argumentsString.UTF8String);
 
     NSString *gs = [aProfile stringForKey:GsPathKey];
     printf("Ghostscript: %s %s\n", getPath(gs.programName).UTF8String, gs.argumentsString.UTF8String);
@@ -199,10 +199,10 @@ int main (int argc, char *argv[]) {
         BOOL embedSourceFlag = YES;
         BOOL mergeFlag = NO;
         BOOL keepPageSizeFlag = NO;
-        NSString *encoding = PTEX_ENCODING_NONE;
-        NSString *latex    = @"platex";
-        NSString *dviware  = @"dvipdfmx";
-        NSString *gs       = @"gs";
+        NSString *encoding  = PTEX_ENCODING_NONE;
+        NSString *latex     = @"platex";
+        NSString *dviDriver = @"dvipdfmx";
+        NSString *gs        = @"gs";
         NSNumber *unitTag = @(PX_UNIT_TAG);
         CGPDFBox pageBoxType = kCGPDFCropBox;
         float delay = 1;
@@ -698,7 +698,7 @@ int main (int argc, char *argv[]) {
                     break;
                 case 36: // --dvidriver
                     if (optarg) {
-                        dviware = @(optarg);
+                        dviDriver = @(optarg);
                     } else {
                         printf("error: --dvidriver is invalid.\n");
                         exit(1);
@@ -706,7 +706,7 @@ int main (int argc, char *argv[]) {
                     break;
                 case 37: // --dviware (synonym for --dvidriver)
                     if (optarg) {
-                        dviware = @(optarg);
+                        dviDriver = @(optarg);
                     } else {
                         printf("error: --dviware is invalid.\n");
                         exit(1);
@@ -714,7 +714,7 @@ int main (int argc, char *argv[]) {
                     break;
                 case 38: // --dvipdfmx (synonym for --dvidriver)
                     if (optarg) {
-                        dviware = @(optarg);
+                        dviDriver = @(optarg);
                     } else {
                         printf("error: --dvipdfmx is invalid.\n");
                         exit(1);
@@ -856,7 +856,7 @@ int main (int argc, char *argv[]) {
         
         // 実行プログラムのパスチェック
         NSString *latexPath = getPath(latex.programPath);
-        NSString *dviwarePath = getPath(dviware.programPath);
+        NSString *dviDriverPath = getPath(dviDriver.programPath);
         NSString *gsPath = getPath(gs.programPath);
         NSString *epstopdfPath = getPath(@"epstopdf");
         NSString *mudrawPath = getPath(@"mudraw");
@@ -867,8 +867,8 @@ int main (int argc, char *argv[]) {
             suggestLatexOption();
             return 1;
         }
-        if (!dviwarePath) {
-            [controller showNotFoundError:dviware.programName];
+        if (!dviDriverPath) {
+            [controller showNotFoundError:dviDriver.programName];
             return 1;
         }
         if (!gsPath) {
@@ -890,7 +890,7 @@ int main (int argc, char *argv[]) {
         MutableProfile *aProfile = [MutableProfile dictionary];
         
         aProfile[LatexPathKey] = [latexPath stringByAppendingStringSeparetedBySpace:latex.argumentsString];
-        aProfile[DviwarePathKey] = [dviwarePath stringByAppendingStringSeparetedBySpace:dviware.argumentsString];
+        aProfile[DviDriverPathKey] = [dviDriverPath stringByAppendingStringSeparetedBySpace:dviDriver.argumentsString];
         aProfile[GsPathKey] = [gsPath stringByAppendingStringSeparetedBySpace:gs.argumentsString];
         aProfile[EpstopdfPathKey] = epstopdfPath;
         aProfile[MudrawPathKey] = mudrawPath;

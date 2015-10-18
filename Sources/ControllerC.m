@@ -56,15 +56,15 @@
 {	
 }
 
-- (BOOL)latexExistsAtPath:(NSString*)latexPath dviwarePath:(NSString*)dviwarePath gsPath:(NSString*)gsPath
+- (BOOL)latexExistsAtPath:(NSString*)latexPath dviDriverPath:(NSString*)dviDriverPath gsPath:(NSString*)gsPath
 {
 	if (!checkWhich(latexPath)) {
 		[self showNotFoundError:latexPath.programName];
         suggestLatexOption();
 		return NO;
 	}
-	if (!checkWhich(dviwarePath)) {
-		[self showNotFoundError:dviwarePath.programName];
+	if (!checkWhich(dviDriverPath)) {
+		[self showNotFoundError:dviDriverPath.programName];
 		return NO;
 	}
 	if (!checkWhich(gsPath)) {

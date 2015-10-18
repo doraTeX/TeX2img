@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="15B30a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="15B38b" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
@@ -630,7 +630,7 @@ DQ
                 <outlet property="deleteDisplaySizeCheckBox" destination="H7g-7q-uFe" id="3bf-7G-Nrb"/>
                 <outlet property="deleteTmpFileCheckBox" destination="591" id="594"/>
                 <outlet property="directInputButton" destination="Jlp-tG-8jx" id="nfr-l4-glA"/>
-                <outlet property="dviwarePathTextField" destination="600" id="L5g-DG-Mpt"/>
+                <outlet property="dviDriverPathTextField" destination="600" id="2sp-GM-RbI"/>
                 <outlet property="embedInIllustratorCheckBox" destination="857" id="861"/>
                 <outlet property="embedSourceCheckBox" destination="On1-La-dwy" id="VMh-uZ-oVY"/>
                 <outlet property="enclosedContentBackgroundColorWell" destination="mfZ-Hg-uIe" id="i7E-Dl-ef9"/>
@@ -1158,11 +1158,11 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="Engines" identifier="2" id="581">
                                 <view key="view" id="584">
-                                    <rect key="frame" x="10" y="33" width="471" height="393"/>
+                                    <rect key="frame" x="10" y="33" width="482" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField verticalHuggingPriority="750" id="597">
-                                            <rect key="frame" x="95" y="358" width="360" height="22"/>
+                                            <rect key="frame" x="95" y="358" width="371" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="598">
@@ -1172,7 +1172,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="600">
-                                            <rect key="frame" x="95" y="328" width="360" height="22"/>
+                                            <rect key="frame" x="95" y="328" width="371" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="601">
@@ -1192,7 +1192,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="604">
-                                            <rect key="frame" x="95" y="298" width="360" height="22"/>
+                                            <rect key="frame" x="95" y="298" width="371" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="605">
@@ -1256,18 +1256,18 @@ DQ
                                             </buttonCell>
                                         </button>
                                         <box autoresizesSubviews="NO" title="Priority in Conversion" borderType="line" id="OkG-sC-Zd3">
-                                            <rect key="frame" x="13" y="60" width="445" height="58"/>
+                                            <rect key="frame" x="13" y="60" width="456" height="58"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                                            <view key="contentView" id="9Ma-TS-Ucn">
-                                                <rect key="frame" x="1" y="1" width="443" height="42"/>
+                                            <view key="contentView" autoresizesSubviews="NO" id="9Ma-TS-Ucn">
+                                                <rect key="frame" x="1" y="1" width="454" height="42"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="V8v-1d-qa2">
-                                                        <rect key="frame" x="18" y="14" width="407" height="18"/>
+                                                        <rect key="frame" x="18" y="14" width="416" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="179" height="18"/>
+                                                        <size key="cellSize" width="206" height="18"/>
                                                         <size key="intercellSpacing" width="4" height="2"/>
                                                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="Gwj-I9-jlR">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1335,7 +1335,7 @@ DQ
                                             </popUpButtonCell>
                                         </popUpButton>
                                         <button verticalHuggingPriority="750" id="FwS-Cq-GFW">
-                                            <rect key="frame" x="376" y="270" width="78" height="17"/>
+                                            <rect key="frame" x="387" y="270" width="78" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <buttonCell key="cell" type="inline" title="Advanced..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VAb-nX-PNb">
@@ -1357,7 +1357,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" id="718">
-                                            <rect key="frame" x="259" y="262" width="115" height="32"/>
+                                            <rect key="frame" x="270" y="262" width="115" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <buttonCell key="cell" type="push" title="Auto Detect" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="719">
@@ -2102,7 +2102,7 @@ DQ
                 </subviews>
                 <animations/>
             </view>
-            <point key="canvasLocation" x="194" y="872.5"/>
+            <point key="canvasLocation" x="22" y="791.5"/>
         </window>
         <window title="Save / Load Profiles" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="670" userLabel="Window (ProfileWindow)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>

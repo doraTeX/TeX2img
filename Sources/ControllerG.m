@@ -107,7 +107,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSSlider *topMarginSlider;
 @property (nonatomic, strong) IBOutlet NSSlider *bottomMarginSlider;
 @property (nonatomic, strong) IBOutlet NSTextField *latexPathTextField;
-@property (nonatomic, strong) IBOutlet NSTextField *dviwarePathTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *dviDriverPathTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *gsPathTextField;
 @property (nonatomic, strong) IBOutlet NSButton *guessCompilationButton;
 @property (nonatomic, strong) IBOutlet NSTextField *numberOfCompilationTextField;
@@ -245,7 +245,7 @@ typedef enum {
 @synthesize topMarginSlider;
 @synthesize bottomMarginSlider;
 @synthesize latexPathTextField;
-@synthesize dviwarePathTextField;
+@synthesize dviDriverPathTextField;
 @synthesize gsPathTextField;
 @synthesize guessCompilationButton;
 @synthesize numberOfCompilationTextField;
@@ -433,7 +433,7 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(showNotFoundErrorOnMainThread:) withObject:aPath waitUntilDone:YES];
 }
 
-- (BOOL)latexExistsAtPath:(NSString*)latexPath dviwarePath:(NSString*)dviwarePath gsPath:(NSString*)gsPath
+- (BOOL)latexExistsAtPath:(NSString*)latexPath dviDriverPath:(NSString*)dviDriverPath gsPath:(NSString*)gsPath
 {
 	NSFileManager *fileManager = NSFileManager.defaultManager;
 	
@@ -441,8 +441,8 @@ typedef enum {
 		[self showNotFoundError:latexPath];
 		return NO;
 	}
-	if (![fileManager fileExistsAtPath:dviwarePath.programPath]) {
-		[self showNotFoundError:dviwarePath];
+	if (![fileManager fileExistsAtPath:dviDriverPath.programPath]) {
+		[self showNotFoundError:dviDriverPath];
 		return NO;
 	}
 	if (![fileManager fileExistsAtPath:gsPath.programPath]) {
@@ -787,7 +787,7 @@ typedef enum {
     }
 	
 	[self loadSettingForTextField:latexPathTextField fromProfile:aProfile forKey:LatexPathKey];
-	[self loadSettingForTextField:dviwarePathTextField fromProfile:aProfile forKey:DviwarePathKey];
+	[self loadSettingForTextField:dviDriverPathTextField fromProfile:aProfile forKey:DviDriverPathKey];
 	[self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
 	
 	[self loadSettingForTextField:resolutionLabel fromProfile:aProfile forKey:ResolutionLabelKey];
@@ -959,7 +959,7 @@ typedef enum {
         currentProfile[UtfExportKey] = @(utfExportCheckBox.state);
         
         currentProfile[LatexPathKey] = latexPathTextField.stringValue;
-        currentProfile[DviwarePathKey] = dviwarePathTextField.stringValue;
+        currentProfile[DviDriverPathKey] = dviDriverPathTextField.stringValue;
         currentProfile[GsPathKey] = gsPathTextField.stringValue;
         currentProfile[GuessCompilationKey] = @(guessCompilationButton.state);
         currentProfile[NumberOfCompilationKey] = @(numberOfCompilationTextField.integerValue);
@@ -1487,7 +1487,7 @@ typedef enum {
                @"%@\n%@\n%@\n%@\n%@",
                parameters[@"Msg1"],
                parameters[LatexPathKey],
-               parameters[DviwarePathKey],
+               parameters[DviDriverPathKey],
                parameters[GsPathKey],
                parameters[@"Msg2"]
                );
@@ -2150,26 +2150,26 @@ typedef enum {
 - (void)searchProgramsLogic:(NSDictionary<NSString*,NSString*>*)parameters
 {
     NSString *latexPath;
-    NSString *dviwarePath;
+    NSString *dviDriverPath;
     NSString *gsPath;
     
     NSString *templateName = [autoDetectionTargetMatrix.selectedCell title];
     NSString *engineName = [templateName.lowercaseString componentsSeparatedByString:@" "][0];
-    NSString *dviwareName = ([templateName rangeOfString:@"dvips"].location == NSNotFound) ? @"dvipdfmx" : @"dvips";
+    NSString *dviDriverName = ([templateName rangeOfString:@"dvips"].location == NSNotFound) ? @"dvipdfmx" : @"dvips";
     
     if (!(latexPath = [self searchProgram:engineName])) {
         latexPath = @"";
         [self showNotFoundError:engineName];
     }
-    if (!(dviwarePath = [self searchProgram:dviwareName])) {
-        dviwarePath = @"";
-        [self showNotFoundError:dviwareName];
+    if (!(dviDriverPath = [self searchProgram:dviDriverName])) {
+        dviDriverPath = @"";
+        [self showNotFoundError:dviDriverName];
     } else {
-        if ([dviwareName isEqualToString:@"dvipdfmx"]) {
-            dviwarePath = [dviwarePath stringByAppendingString:@" -vv"];
+        if ([dviDriverName isEqualToString:@"dvipdfmx"]) {
+            dviDriverPath = [dviDriverPath stringByAppendingString:@" -vv"];
         }
-        if ([dviwareName isEqualToString:@"dvips"]) {
-            dviwarePath = [dviwarePath stringByAppendingString:@" -Ppdf"];
+        if ([dviDriverName isEqualToString:@"dvips"]) {
+            dviDriverPath = [dviDriverPath stringByAppendingString:@" -Ppdf"];
         }
     }
     if (!(gsPath = [self searchProgram:@"gs"])) {
@@ -2179,7 +2179,7 @@ typedef enum {
     
 
     latexPathTextField.stringValue = latexPath;
-    dviwarePathTextField.stringValue = dviwarePath;
+    dviDriverPathTextField.stringValue = dviDriverPath;
     gsPathTextField.stringValue = gsPath;
     
     [self performSelectorOnMainThread:@selector(showAutoDetectionResult:)
@@ -2188,7 +2188,7 @@ typedef enum {
                                         @"Msg1": parameters[@"Msg1"],
                                         @"Msg2": parameters[@"Msg2"],
                                         LatexPathKey: [latexPath isEqualToString:@""] ? @"LaTeX: Not Found" : latexPath,
-                                        DviwarePathKey: [dviwarePath isEqualToString:@""] ? @"DVIware: Not Found" : dviwarePath,
+                                        DviDriverPathKey: [dviDriverPath isEqualToString:@""] ? @"DVI Driver: Not Found" : dviDriverPath,
                                         GsPathKey: [gsPath isEqualToString:@""] ? @"Ghostscript: Not Found" : gsPath
                                         }
                         waitUntilDone:[parameters[@"waitUntilDone"] boolValue]];
@@ -2261,7 +2261,7 @@ typedef enum {
         [output appendFormat:@"The number of compilation: %ld\n", [aProfile integerForKey:NumberOfCompilationKey]];
     }
     
-    [output appendFormat:@"DVIware: %@\n", [aProfile stringForKey:DviwarePathKey]];
+    [output appendFormat:@"DVI Driver: %@\n", [aProfile stringForKey:DviDriverPathKey]];
     [output appendFormat:@"Ghostscript: %@\n", [aProfile stringForKey:GsPathKey]];
     
     [output appendFormat:@"Resolution level: %.1f\n", [aProfile floatForKey:ResolutionKey]];
