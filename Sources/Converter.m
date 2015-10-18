@@ -425,7 +425,7 @@
 
 // pdfcrop類似処理
 // page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
-- (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin
+- (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin useCache:(BOOL)useCache
 {
     NSString *cropFileBasePath = [NSString stringWithFormat:@"%@-pdfcrop-%ld%d",
                                   [tempdir stringByAppendingPathComponent:tempFileBaseName], page, addMargin];
@@ -434,7 +434,7 @@
     NSString *cropLogSourcePath = [cropFileBasePath stringByAppendingString:@".log"];
     
     // 同じものがあれば再利用
-    if ([fileManager fileExistsAtPath:cropPdfSourcePath]) {
+    if (useCache && [fileManager fileExistsAtPath:cropPdfSourcePath]) {
         [fileManager removeItemAtPath:outputFileName error:nil];
         return [fileManager copyItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
     }
@@ -472,7 +472,7 @@
     [fileManager removeItemAtPath:outputFileName error:nil];
     
     if (success) {
-        if (page > 0) {
+        if (!useCache || (page > 0)) {
             success = [fileManager moveItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
         } else { // 全ページクロップの場合は，他のページで再度使う場合のためにファイルを残しておく
             success = [fileManager copyItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
@@ -645,7 +645,7 @@
     if (addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0)) {
         NSString* trimFileName = [NSString stringWithFormat:@"%@-trim.pdf", epsName.stringByDeletingPathExtension];
         // まず，epstopdf を使って PDF に戻し，次に，pdfcrop類似処理を使って余白を付け加える
-        return [self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName page:0 addMargin:YES];
+        return [self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName page:0 addMargin:YES useCache:NO];
     } else {
         // epstopdf を使って PDF に戻すのみ
         return [self epstopdf:epsName outputPdfFileName:outputFileName];
@@ -693,7 +693,7 @@
 
 	// PDFのバウンディングボックスで切り取る
     if (crop) {
-        BOOL success = [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO];
+        BOOL success = [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO useCache:YES];
         if (!success) {
             [controller showCannotOverwriteError:pdfFilePath];
             return NO;
@@ -915,7 +915,7 @@
     
     if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す（ここでpdfcrop類似処理で余白付与）
         if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は epstopdf が使えない（エラーになる）ので，そこだけpdfcrop類似処理で変換する
-            [self pdfcrop:pdfFileName outputFileName:outputFileName page:page addMargin:YES];
+            [self pdfcrop:pdfFileName outputFileName:outputFileName page:page addMargin:YES useCache:YES];
         } else {
             [self eps2pdf:outputEpsFileName outputFileName:outputFileName addMargin:YES];
         }
@@ -1208,7 +1208,7 @@
             }
         }
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPS を経由しなくてよいので，pdfcrop類似処理で直接生成する。
-        success = [self pdfcrop:pdfFilePath outputFileName:outputFileName page:1 addMargin:YES];
+        success = [self pdfcrop:pdfFilePath outputFileName:outputFileName page:1 addMargin:YES useCache:NO];
         [controller exitCurrentThreadIfTaskKilled];
         if (!success) {
             return success;
@@ -1218,14 +1218,16 @@
             success = [self pdfcrop:pdfFilePath
                      outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                page:i
-                          addMargin:YES];
+                          addMargin:YES
+                           useCache:NO
+                       ];
             [controller exitCurrentThreadIfTaskKilled];
             if (!success) {
                 return success;
             }
         }
     } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
-        [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES];
+        [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES useCache:YES];
         [controller exitCurrentThreadIfTaskKilled];
 
         success = [self pdf2svg:croppedPdfFilePath
