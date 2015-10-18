@@ -29,6 +29,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define EmbedInIllustratorKey @"embedInIllustrator"
 #define UngroupKey @"ungroup"
 #define TransparentKey @"transparent"
+#define PlainTextKey @"plainText"
 #define GetOutlineKey @"getOutline"
 #define DeleteDisplaySizeKey @"deleteDisplaySize"
 #define MergeOutputsKey @"mergeOutputs"

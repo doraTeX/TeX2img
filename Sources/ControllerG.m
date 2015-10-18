@@ -85,6 +85,7 @@ typedef enum {
 
 @property (nonatomic, strong) IBOutlet NSButton *generateButton;
 @property (nonatomic, strong) IBOutlet NSButton *transparentCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *plainTextCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *deleteDisplaySizeCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *mergeOutputsCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *keepPageSizeCheckBox;
@@ -96,16 +97,19 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSButton *embedInIllustratorCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *ungroupCheckBox;
 @property (nonatomic, strong) IBOutlet NSWindow *preferenceWindow;
-@property (nonatomic, strong) IBOutlet NSTextField *resolutionLabel;
-@property (nonatomic, strong) IBOutlet NSTextField *leftMarginLabel;
-@property (nonatomic, strong) IBOutlet NSTextField *rightMarginLabel;
-@property (nonatomic, strong) IBOutlet NSTextField *topMarginLabel;
-@property (nonatomic, strong) IBOutlet NSTextField *bottomMarginLabel;
-@property (nonatomic, strong) IBOutlet NSSlider *resolutionSlider;
-@property (nonatomic, strong) IBOutlet NSSlider *leftMarginSlider;
-@property (nonatomic, strong) IBOutlet NSSlider *rightMarginSlider;
-@property (nonatomic, strong) IBOutlet NSSlider *topMarginSlider;
-@property (nonatomic, strong) IBOutlet NSSlider *bottomMarginSlider;
+
+@property (nonatomic, strong) IBOutlet NSTextField *resolutionTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *leftMarginTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *rightMarginTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *topMarginTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *bottomMarginTextField;
+
+@property (nonatomic, strong) IBOutlet NSStepper *resolutionStepper;
+@property (nonatomic, strong) IBOutlet NSStepper *leftMarginStepper;
+@property (nonatomic, strong) IBOutlet NSStepper *rightMarginStepper;
+@property (nonatomic, strong) IBOutlet NSStepper *topMarginStepper;
+@property (nonatomic, strong) IBOutlet NSStepper *bottomMarginStepper;
+
 @property (nonatomic, strong) IBOutlet NSTextField *latexPathTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *dviDriverPathTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *gsPathTextField;
@@ -223,6 +227,7 @@ typedef enum {
 
 @synthesize generateButton;
 @synthesize transparentCheckBox;
+@synthesize plainTextCheckBox;
 @synthesize deleteDisplaySizeCheckBox;
 @synthesize mergeOutputsCheckBox;
 @synthesize keepPageSizeCheckBox;
@@ -234,16 +239,19 @@ typedef enum {
 @synthesize embedInIllustratorCheckBox;
 @synthesize ungroupCheckBox;
 @synthesize preferenceWindow;
-@synthesize resolutionLabel;
-@synthesize leftMarginLabel;
-@synthesize rightMarginLabel;
-@synthesize topMarginLabel;
-@synthesize bottomMarginLabel;
-@synthesize resolutionSlider;
-@synthesize leftMarginSlider;
-@synthesize rightMarginSlider;
-@synthesize topMarginSlider;
-@synthesize bottomMarginSlider;
+
+@synthesize resolutionTextField;
+@synthesize leftMarginTextField;
+@synthesize rightMarginTextField;
+@synthesize topMarginTextField;
+@synthesize bottomMarginTextField;
+
+@synthesize resolutionStepper;
+@synthesize leftMarginStepper;
+@synthesize rightMarginStepper;
+@synthesize topMarginStepper;
+@synthesize bottomMarginStepper;
+
 @synthesize latexPathTextField;
 @synthesize dviDriverPathTextField;
 @synthesize gsPathTextField;
@@ -648,6 +656,7 @@ typedef enum {
 	ungroupCheckBox.state = [aProfile integerForKey:UngroupKey];
 	
 	transparentCheckBox.state = [aProfile boolForKey:TransparentKey];
+    plainTextCheckBox.state = [aProfile boolForKey:PlainTextKey];
 	textPdfCheckBox.state = ![aProfile boolForKey:GetOutlineKey];
     deleteDisplaySizeCheckBox.state = [aProfile boolForKey:DeleteDisplaySizeKey];
     mergeOutputsCheckBox.state = [aProfile boolForKey:MergeOutputsKey];
@@ -790,20 +799,20 @@ typedef enum {
 	[self loadSettingForTextField:dviDriverPathTextField fromProfile:aProfile forKey:DviDriverPathKey];
 	[self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
 	
-	[self loadSettingForTextField:resolutionLabel fromProfile:aProfile forKey:ResolutionLabelKey];
-    [self loadSettingForTextField:leftMarginLabel fromProfile:aProfile forKey:LeftMarginLabelKey];
-    [self loadSettingForTextField:rightMarginLabel fromProfile:aProfile forKey:RightMarginLabelKey];
-    [self loadSettingForTextField:topMarginLabel fromProfile:aProfile forKey:TopMarginLabelKey];
-    [self loadSettingForTextField:bottomMarginLabel fromProfile:aProfile forKey:BottomMarginLabelKey];
+	[self loadSettingForTextField:resolutionTextField fromProfile:aProfile forKey:ResolutionLabelKey];
+    [self loadSettingForTextField:leftMarginTextField fromProfile:aProfile forKey:LeftMarginLabelKey];
+    [self loadSettingForTextField:rightMarginTextField fromProfile:aProfile forKey:RightMarginLabelKey];
+    [self loadSettingForTextField:topMarginTextField fromProfile:aProfile forKey:TopMarginLabelKey];
+    [self loadSettingForTextField:bottomMarginTextField fromProfile:aProfile forKey:BottomMarginLabelKey];
     
     numberOfCompilationTextField.integerValue = MAX(1, [aProfile integerForKey:NumberOfCompilationKey]);
     [numberOfCompilationStepper takeIntegerValueFrom:numberOfCompilationTextField];
     
-    resolutionSlider.floatValue = [aProfile integerForKey:ResolutionKey];
-    leftMarginSlider.integerValue = [aProfile integerForKey:LeftMarginKey];
-    rightMarginSlider.integerValue = [aProfile integerForKey:RightMarginKey];
-    topMarginSlider.integerValue = [aProfile integerForKey:TopMarginKey];
-    bottomMarginSlider.integerValue = [aProfile integerForKey:BottomMarginKey];
+    [resolutionStepper takeFloatValueFrom:resolutionTextField];
+    [leftMarginTextField takeIntValueFrom:leftMarginTextField];
+    [rightMarginTextField takeIntValueFrom:rightMarginTextField];
+    [topMarginTextField takeIntValueFrom:topMarginTextField];
+    [bottomMarginTextField takeIntValueFrom:bottomMarginTextField];
     
     NSInteger unitTag = [aProfile integerForKey:UnitKey];
     [unitMatrix selectCellWithTag:unitTag];
@@ -951,6 +960,7 @@ typedef enum {
         currentProfile[UngroupKey] = @(ungroupCheckBox.state);
         
         currentProfile[TransparentKey] = @(transparentCheckBox.state);
+        currentProfile[PlainTextKey] = @(plainTextCheckBox.state);
         currentProfile[GetOutlineKey] = @(!textPdfCheckBox.state);
         currentProfile[DeleteDisplaySizeKey] = @(deleteDisplaySizeCheckBox.state);
         currentProfile[MergeOutputsKey] = @(mergeOutputsCheckBox.state);
@@ -964,17 +974,17 @@ typedef enum {
         currentProfile[GuessCompilationKey] = @(guessCompilationButton.state);
         currentProfile[NumberOfCompilationKey] = @(numberOfCompilationTextField.integerValue);
         
-        currentProfile[ResolutionLabelKey] = resolutionLabel.stringValue;
-        currentProfile[LeftMarginLabelKey] = leftMarginLabel.stringValue;
-        currentProfile[RightMarginLabelKey] = rightMarginLabel.stringValue;
-        currentProfile[TopMarginLabelKey] = topMarginLabel.stringValue;
-        currentProfile[BottomMarginLabelKey] = bottomMarginLabel.stringValue;
+        currentProfile[ResolutionLabelKey] = resolutionTextField.stringValue;
+        currentProfile[LeftMarginLabelKey] = leftMarginTextField.stringValue;
+        currentProfile[RightMarginLabelKey] = rightMarginTextField.stringValue;
+        currentProfile[TopMarginLabelKey] = topMarginTextField.stringValue;
+        currentProfile[BottomMarginLabelKey] = bottomMarginTextField.stringValue;
         
-        currentProfile[ResolutionKey] = @(resolutionLabel.floatValue);
-        currentProfile[LeftMarginKey] = @(leftMarginLabel.integerValue);
-        currentProfile[RightMarginKey] = @(rightMarginLabel.integerValue);
-        currentProfile[TopMarginKey] = @(topMarginLabel.integerValue);
-        currentProfile[BottomMarginKey] = @(bottomMarginLabel.integerValue);
+        currentProfile[ResolutionKey] = @(resolutionTextField.floatValue);
+        currentProfile[LeftMarginKey] = @(leftMarginTextField.integerValue);
+        currentProfile[RightMarginKey] = @(rightMarginTextField.integerValue);
+        currentProfile[TopMarginKey] = @(topMarginTextField.integerValue);
+        currentProfile[BottomMarginKey] = @(bottomMarginTextField.integerValue);
         
         NSInteger tabWidth = tabWidthTextField.integerValue;
         currentProfile[TabWidthKey] = @((tabWidth > 0) ? tabWidth : 4);
@@ -2282,6 +2292,9 @@ typedef enum {
     if ([ext isEqualToString:@"pdf"]) {
         [output appendFormat:@"Text embedded PDF: %@\n", [aProfile boolForKey:GetOutlineKey] ? DISABLED : ENABLED];
     }
+    if ([ext isEqualToString:@"eps"]) {
+        [output appendFormat:@"Plain text EPS: %@\n", [aProfile boolForKey:PlainTextKey] ? ENABLED : DISABLED];
+    }
     if ([ext isEqualToString:@"svg"]) {
         [output appendFormat:@"Delete width and height attributes of SVG: %@\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? ENABLED : DISABLED];
     }
@@ -2353,7 +2366,7 @@ typedef enum {
     // 余白設定・解像度設定などの数値の妥当性チェック
     __block BOOL valid = YES;
 
-    [@[leftMarginLabel, rightMarginLabel, topMarginLabel, bottomMarginLabel, resolutionLabel, numberOfCompilationTextField, tabWidthTextField] enumerateObjectsUsingBlock:^(NSTextField *label, NSUInteger idx, BOOL *stop) {
+    [@[leftMarginTextField, rightMarginTextField, topMarginTextField, bottomMarginTextField, resolutionTextField, numberOfCompilationTextField, tabWidthTextField] enumerateObjectsUsingBlock:^(NSTextField *label, NSUInteger idx, BOOL *stop) {
         NSNumber *value = [(NSNumberFormatter*)(label.formatter) numberFromString:label.stringValue];
         if (value) {
             // 中途半端に入力されている数値を確定させる
@@ -2414,7 +2427,7 @@ typedef enum {
                              atRightOfButton:(NSButton*)sender
                                       ofView:preferenceWindow.contentView
                                      offsetX:31
-                                           Y:35];
+                                           Y:preferenceWindow.frame.size.height - 272];
 }
 
 - (IBAction)showAnimationParameterSettingPopover:(id)sender
@@ -2423,7 +2436,7 @@ typedef enum {
                              atRightOfButton:(NSButton*)sender
                                       ofView:preferenceWindow.contentView
                                      offsetX:31
-                                           Y:35];
+                                           Y:preferenceWindow.frame.size.height - 432];
 }
 
 #pragma mark - 不可視文字表示の種別設定

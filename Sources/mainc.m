@@ -9,7 +9,7 @@
 #import "NSString-Extension.h"
 #import "NSDictionary-Extension.h"
 
-#define OPTION_NUM 49
+#define OPTION_NUM 51
 #define VERSION "2.0.5"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
@@ -52,6 +52,7 @@ void usage()
     printf("                               (*bp is always used for EPS/PDF/SVG)\n");
     printf("  --[no-]transparent         : disable/enable transparent PNG/TIFF/GIF (default: enabled)\n");
     printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
+    printf("  --[no-]plain-text          : disable/enable outputting EPS as a plain text (default: disabled)\n");
     printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or animated GIF (default: disabled)\n");
     printf("  --animation-delay TIME     : set the delay time (sec) of an animated GIF (default: 1)\n");
     printf("  --animation-loop  NUMBER   : set the number of times to repeat an animated GIF (default: 0 (infinity))\n");
@@ -161,6 +162,9 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     if ([ext isEqualToString:@"pdf"]) {
         printf("Text embedded PDF: %s\n", [aProfile boolForKey:GetOutlineKey] ? DISABLED : ENABLED);
     }
+    if ([ext isEqualToString:@"eps"]) {
+        printf("Plain text EPS: %s\n", [aProfile boolForKey:PlainTextKey] ? ENABLED : DISABLED);
+    }
     if ([ext isEqualToString:@"svg"]) {
         printf("Delete width and height attributes of SVG: %s\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? ENABLED : DISABLED);
     }
@@ -199,6 +203,7 @@ int main (int argc, char *argv[]) {
         BOOL embedSourceFlag = YES;
         BOOL mergeFlag = NO;
         BOOL keepPageSizeFlag = NO;
+        BOOL plainTextFlag = NO;
         NSString *encoding  = PTEX_ENCODING_NONE;
         NSString *latex     = @"platex";
         NSString *dviDriver = @"dvipdfmx";
@@ -488,6 +493,18 @@ int main (int argc, char *argv[]) {
         i++;
         options[i].name = "margins";
         options[i].has_arg = required_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+
+        i++;
+        options[i].name = "plain-text";
+        options[i].has_arg = no_argument;
+        options[i].flag = NULL;
+        options[i].val = i+1;
+        
+        i++;
+        options[i].name = "no-plain-text";
+        options[i].has_arg = no_argument;
         options[i].flag = NULL;
         options[i].val = i+1;
         
@@ -807,6 +824,12 @@ int main (int argc, char *argv[]) {
                         exit(1);
                     }
                     break;
+                case 47: // --plain-text
+                    plainTextFlag = YES;
+                    break;
+                case 48: // --no-plain-text
+                    plainTextFlag = NO;
+                    break;
                 case (OPTION_NUM - 2): // --version
                     version();
                     exit(1);
@@ -922,6 +945,7 @@ int main (int argc, char *argv[]) {
         aProfile[EmbedSourceKey] = @(embedSourceFlag);
         aProfile[MergeOutputsKey] = @(mergeFlag);
         aProfile[KeepPageSizeKey] = @(keepPageSizeFlag);
+        aProfile[PlainTextKey] = @(plainTextFlag);
         aProfile[PageBoxKey] = @(pageBoxType);
         aProfile[LoopCountKey] = @(loopCount);
         aProfile[DelayKey] = @(delay);
