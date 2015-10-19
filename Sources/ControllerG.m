@@ -612,13 +612,22 @@ typedef enum {
 }
 
 #pragma mark - プロファイルの読み書き関連
-- (void)loadSettingForTextField:(NSTextField*)textField fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
+- (void)loadStringSettingForTextField:(NSTextField*)textField fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
 {
 	NSString *tempStr = [aProfile stringForKey:aKey];
 	
 	if (tempStr) {
 		textField.stringValue = tempStr;
 	}
+}
+
+- (void)loadNumberSettingForTextField:(NSTextField*)textField fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
+{
+    NSNumber *tempNumber = (NSNumber*)(aProfile[aKey]);
+    
+    if (tempNumber) {
+        textField.floatValue = tempNumber.floatValue;
+    }
 }
 
 - (void)loadSettingForTextView:(NSTextView*)textView fromProfile:(Profile*)aProfile forKey:(NSString*)aKey
@@ -638,7 +647,7 @@ typedef enum {
     
     NSArray<NSString*> *keys = aProfile.allKeys;
 	
-	[self loadSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
+	[self loadStringSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
 	
 	showOutputDrawerCheckBox.state = [aProfile integerForKey:ShowOutputDrawerKey];
 	previewCheckBox.state = [aProfile integerForKey:PreviewKey];
@@ -795,24 +804,24 @@ typedef enum {
         [encodingPopUpButton selectItemWithTag:tag];
     }
 	
-	[self loadSettingForTextField:latexPathTextField fromProfile:aProfile forKey:LatexPathKey];
-	[self loadSettingForTextField:dviDriverPathTextField fromProfile:aProfile forKey:DviDriverPathKey];
-	[self loadSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
+	[self loadStringSettingForTextField:latexPathTextField fromProfile:aProfile forKey:LatexPathKey];
+	[self loadStringSettingForTextField:dviDriverPathTextField fromProfile:aProfile forKey:DviDriverPathKey];
+	[self loadStringSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
 	
-	[self loadSettingForTextField:resolutionTextField fromProfile:aProfile forKey:ResolutionLabelKey];
-    [self loadSettingForTextField:leftMarginTextField fromProfile:aProfile forKey:LeftMarginLabelKey];
-    [self loadSettingForTextField:rightMarginTextField fromProfile:aProfile forKey:RightMarginLabelKey];
-    [self loadSettingForTextField:topMarginTextField fromProfile:aProfile forKey:TopMarginLabelKey];
-    [self loadSettingForTextField:bottomMarginTextField fromProfile:aProfile forKey:BottomMarginLabelKey];
+	[self loadNumberSettingForTextField:resolutionTextField fromProfile:aProfile forKey:ResolutionKey];
+    [self loadNumberSettingForTextField:leftMarginTextField fromProfile:aProfile forKey:LeftMarginKey];
+    [self loadNumberSettingForTextField:rightMarginTextField fromProfile:aProfile forKey:RightMarginKey];
+    [self loadNumberSettingForTextField:topMarginTextField fromProfile:aProfile forKey:TopMarginKey];
+    [self loadNumberSettingForTextField:bottomMarginTextField fromProfile:aProfile forKey:BottomMarginKey];
+    
+    [resolutionStepper takeFloatValueFrom:resolutionTextField];
+    [leftMarginStepper takeIntValueFrom:leftMarginTextField];
+    [rightMarginStepper takeIntValueFrom:rightMarginTextField];
+    [topMarginStepper takeIntValueFrom:topMarginTextField];
+    [bottomMarginStepper takeIntValueFrom:bottomMarginTextField];
     
     numberOfCompilationTextField.integerValue = MAX(1, [aProfile integerForKey:NumberOfCompilationKey]);
     [numberOfCompilationStepper takeIntegerValueFrom:numberOfCompilationTextField];
-    
-    [resolutionStepper takeFloatValueFrom:resolutionTextField];
-    [leftMarginTextField takeIntValueFrom:leftMarginTextField];
-    [rightMarginTextField takeIntValueFrom:rightMarginTextField];
-    [topMarginTextField takeIntValueFrom:topMarginTextField];
-    [bottomMarginTextField takeIntValueFrom:bottomMarginTextField];
     
     NSInteger unitTag = [aProfile integerForKey:UnitKey];
     [unitMatrix selectCellWithTag:unitTag];
@@ -973,12 +982,6 @@ typedef enum {
         currentProfile[GsPathKey] = gsPathTextField.stringValue;
         currentProfile[GuessCompilationKey] = @(guessCompilationButton.state);
         currentProfile[NumberOfCompilationKey] = @(numberOfCompilationTextField.integerValue);
-        
-        currentProfile[ResolutionLabelKey] = resolutionTextField.stringValue;
-        currentProfile[LeftMarginLabelKey] = leftMarginTextField.stringValue;
-        currentProfile[RightMarginLabelKey] = rightMarginTextField.stringValue;
-        currentProfile[TopMarginLabelKey] = topMarginTextField.stringValue;
-        currentProfile[BottomMarginLabelKey] = bottomMarginTextField.stringValue;
         
         currentProfile[ResolutionKey] = @(resolutionTextField.floatValue);
         currentProfile[LeftMarginKey] = @(leftMarginTextField.integerValue);
@@ -1339,9 +1342,26 @@ typedef enum {
                     name:NSWindowDidBecomeKeyNotification
                   object:colorPalleteWindow];
     
-    // コンパイル回数の変更
+    // 数値を記入した NSTextField の値を変更したときに直ちに関連づけられたステッパーに反映されるように
+    // ただし，resolutionTextField は，小数点値を反映させるために対象外としている
     [aCenter addObserver:self
-                selector:@selector(refreshNumberOfCompilation:)
+                selector:@selector(refreshRelatedStepperValue:)
+                    name:NSControlTextDidChangeNotification
+                  object:leftMarginTextField];
+    [aCenter addObserver:self
+                selector:@selector(refreshRelatedStepperValue:)
+                    name:NSControlTextDidChangeNotification
+                  object:rightMarginTextField];
+    [aCenter addObserver:self
+                selector:@selector(refreshRelatedStepperValue:)
+                    name:NSControlTextDidChangeNotification
+                  object:topMarginTextField];
+    [aCenter addObserver:self
+                selector:@selector(refreshRelatedStepperValue:)
+                    name:NSControlTextDidChangeNotification
+                  object:bottomMarginTextField];
+    [aCenter addObserver:self
+                selector:@selector(refreshRelatedStepperValue:)
                     name:NSControlTextDidChangeNotification
                   object:numberOfCompilationTextField];
 
@@ -2082,9 +2102,11 @@ typedef enum {
     [self refreshTextView:sender];
 }
 
-- (void)refreshNumberOfCompilation:(id)sender
+- (void)refreshRelatedStepperValue:(NSNotification*)notification
 {
-    [numberOfCompilationStepper takeIntegerValueFrom:numberOfCompilationTextField];
+    NSTextField *textField = (NSTextField*)(notification.object);
+    
+    [(NSStepper*)(textField.target) takeIntValueFrom:textField];
 }
 
 - (IBAction)toggleOutputDrawer:(id)sender

@@ -684,6 +684,7 @@ DQ
                 <outlet property="returnCharacterKindButton" destination="F5j-ml-oqG" id="1x0-wo-anX"/>
                 <outlet property="returnCharacterKindMatrix" destination="8He-X3-oCY" id="Piq-Jw-Z8m"/>
                 <outlet property="returnCharacterKindSettingViewController" destination="MFX-1Y-GbK" id="cs7-wc-DMu"/>
+                <outlet property="rightMarginStepper" destination="avL-Du-X07" id="cad-5e-wR9"/>
                 <outlet property="rightMarginTextField" destination="0pz-V8-6fa" id="b2N-BO-Pai"/>
                 <outlet property="showFullwidthSpaceCharacterCheckBox" destination="UOc-tL-oge" id="f0L-rP-JYJ"/>
                 <outlet property="showNewLineCharacterCheckBox" destination="tuH-Mu-6qj" id="9Ri-Ee-btf"/>
@@ -871,16 +872,6 @@ DQ
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Left:" id="Eeu-dp-ytU">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" id="4sq-Hh-vKI">
-                                                        <rect key="frame" x="341" y="105" width="40" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <animations/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Right:" id="mAM-uC-0hz">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1077,6 +1068,16 @@ DQ
                                                             <action selector="showPageBoxSettingPopover:" target="450" id="vaP-HC-TQ2"/>
                                                         </connections>
                                                     </button>
+                                                    <textField verticalHuggingPriority="750" id="4sq-Hh-vKI">
+                                                        <rect key="frame" x="334" y="105" width="40" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Right:" id="mAM-uC-0hz">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
                                                 </subviews>
                                                 <animations/>
                                             </view>
