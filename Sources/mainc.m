@@ -25,11 +25,13 @@ void usage()
 {
 	version();
     printf("Usage: tex2img [options] InputFile OutputFile\n");
+    printf("\n");
     printf("Arguments:\n");
     printf("  InputFile  : path of a TeX source or PDF/PS/EPS file\n");
     printf("  OutputFile : path of an output file\n");
     printf("               (*extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
-    printf("Options:\n");
+    printf("\n");
+    printf("Conversion Settings:\n");
     printf("  --latex      COMPILER      : set the LaTeX compiler (default: platex)\n");
     printf("   *synonym: --compiler\n");
     printf("  --kanji      ENCODING      : set the Japanese encoding (no|utf8|sjis|jis|euc) (default: no)\n");
@@ -39,6 +41,11 @@ void usage()
     printf("   *synonym: --dviware, --dvipdfmx\n");
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
     printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
+    printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
+    printf("  --[no-]utf-export          : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
+    printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
+    printf("\n");
+    printf("Image Settings:\n");
     printf("  --margins    \"VALUE\"       : set the margins (default: \"0 0 0 0\")\n");
     printf("   *VALUE format:\n");
     printf("      a single value : used for all margins\n");
@@ -50,6 +57,10 @@ void usage()
     printf("  --bottom-margin  MARGIN    : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT                : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
     printf("                               (*bp is always used for EPS/PDF/SVG)\n");
+    printf("  --[no-]keep-page-size      : disable/enable keeping the original page size (default: disabled)\n");
+    printf("  --pagebox BOX              : select the page box type used as the page size (media|crop|bleed|trim|art) (default: crop)\n");
+    printf("\n");
+    printf("Image Settings (peculiar to image formats):\n");
     printf("  --[no-]transparent         : disable/enable transparent PNG/TIFF/GIF (default: enabled)\n");
     printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
     printf("  --[no-]plain-text          : disable/enable outputting EPS as a plain text (default: disabled)\n");
@@ -57,15 +68,14 @@ void usage()
     printf("  --animation-delay TIME     : set the delay time (sec) of an animated GIF (default: 1)\n");
     printf("  --animation-loop  NUMBER   : set the number of times to repeat an animated GIF (default: 0 (infinity))\n");
     printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
-    printf("  --[no-]keep-page-size      : disable/enable keeping the original page size (default: disabled)\n");
-    printf("  --pagebox BOX              : set the page box type used as the page size (media|crop|bleed|trim|art) (default: crop)\n");
-    printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
-    printf("  --[no-]utf-export          : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
-    printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
+    printf("\n");
+    printf("Behavior After Compiling:\n");
     printf("  --[no-]preview             : disable/enable opening products (default: disabled)\n");
     printf("  --[no-]delete-tmpfiles     : disable/enable deleting temporary files (default: enabled)\n");
     printf("  --[no-]embed-source        : disable/enable embedding of the source in products (default: enabled)\n");
     printf("  --[no-]copy-to-clipboard   : disable/enable copying products to the clipboard (default: disabled)\n");
+    printf("\n");
+    printf("Other Options:\n");
     printf("  --[no-]quiet               : disable/enable quiet mode (default: disabled)\n");
     printf("  --version                  : display version info\n");
     printf("  --help                     : display this message\n");
