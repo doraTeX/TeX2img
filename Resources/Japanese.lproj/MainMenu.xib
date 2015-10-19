@@ -906,18 +906,39 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="In7-CS-F2J">
-                                                        <rect key="frame" x="16" y="170" width="145" height="17"/>
+                                                    <button id="cWr-5u-guv">
+                                                        <rect key="frame" x="16" y="13" width="293" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="解像度レベル (1～100)：" id="vNp-fU-H6J">
+                                                        <buttonCell key="cell" type="check" title="元のページサイズを維持する" bezelStyle="regularSquare" imagePosition="left" inset="2" id="tqs-Uh-T2C">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                    </button>
+                                                    <button verticalHuggingPriority="750" id="8JZ-m4-5B8">
+                                                        <rect key="frame" x="212" y="14" width="53" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <buttonCell key="cell" type="inline" title="詳細..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3pJ-5v-vML">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" size="11" name="HiraKakuProN-W6"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="showPageBoxSettingPopover:" target="450" id="KfL-6f-IS2"/>
+                                                        </connections>
+                                                    </button>
+                                                    <textField verticalHuggingPriority="750" id="In7-CS-F2J">
+                                                        <rect key="frame" x="18" y="168" width="145" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="解像度レベル (1～100)：" id="vNp-fU-H6J">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="5ap-wP-ykM">
-                                                        <rect key="frame" x="206" y="164" width="19" height="27"/>
+                                                        <rect key="frame" x="216" y="162" width="19" height="27"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="F1L-pc-4dG"/>
@@ -926,7 +947,7 @@ DQ
                                                         </connections>
                                                     </stepper>
                                                     <textField toolTip="解像度レベル" verticalHuggingPriority="750" id="Vlv-Cz-5Tf">
-                                                        <rect key="frame" x="159" y="167" width="47" height="22"/>
+                                                        <rect key="frame" x="169" y="165" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="MRz-hS-WiB">
@@ -942,27 +963,6 @@ DQ
                                                             </connections>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <button id="cWr-5u-guv">
-                                                        <rect key="frame" x="16" y="13" width="191" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <animations/>
-                                                        <buttonCell key="cell" type="check" title="元のページサイズを維持する" bezelStyle="regularSquare" imagePosition="left" inset="2" id="tqs-Uh-T2C">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                    </button>
-                                                    <button verticalHuggingPriority="750" id="8JZ-m4-5B8">
-                                                        <rect key="frame" x="205" y="13" width="53" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <animations/>
-                                                        <buttonCell key="cell" type="inline" title="詳細..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3pJ-5v-vML">
-                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" size="11" name="HiraKakuProN-W6"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="showPageBoxSettingPopover:" target="450" id="KfL-6f-IS2"/>
-                                                        </connections>
-                                                    </button>
                                                 </subviews>
                                                 <animations/>
                                             </view>
@@ -1014,8 +1014,17 @@ DQ
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                     </button>
+                                                    <button id="jkO-mv-Iw1">
+                                                        <rect key="frame" x="13" y="14" width="293" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <buttonCell key="cell" type="check" title="プレーンテキストで出力する (EPS)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="eke-Gc-iT2">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                    </button>
                                                     <button verticalHuggingPriority="750" id="ypa-x6-QvN">
-                                                        <rect key="frame" x="334" y="59" width="53" height="17"/>
+                                                        <rect key="frame" x="349" y="59" width="53" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <buttonCell key="cell" type="inline" title="詳細..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="7Lh-eu-voy">
@@ -1025,15 +1034,6 @@ DQ
                                                         <connections>
                                                             <action selector="showAnimationParameterSettingPopover:" target="450" id="oMx-pi-2aq"/>
                                                         </connections>
-                                                    </button>
-                                                    <button id="jkO-mv-Iw1">
-                                                        <rect key="frame" x="13" y="14" width="215" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <animations/>
-                                                        <buttonCell key="cell" type="check" title="プレーンテキストで出力する (EPS)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="eke-Gc-iT2">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
                                                     </button>
                                                 </subviews>
                                                 <animations/>
