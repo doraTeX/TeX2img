@@ -857,42 +857,6 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="8gz-nZ-AGD">
-                                                        <rect key="frame" x="18" y="164" width="160" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <animations/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Resolution level (1―100) :" id="7Wn-5x-1Ls">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="J9O-Fd-gti">
-                                                        <rect key="frame" x="231" y="158" width="19" height="27"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <animations/>
-                                                        <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="cuR-06-9Fo"/>
-                                                        <connections>
-                                                            <action selector="takeFloatValueFrom:" target="SU1-z4-fyr" id="MgH-UZ-Lyy"/>
-                                                        </connections>
-                                                    </stepper>
-                                                    <textField toolTip="resolution level" verticalHuggingPriority="750" id="SU1-z4-fyr">
-                                                        <rect key="frame" x="184" y="161" width="47" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <animations/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="h2a-oG-Q1O">
-                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="KaN-0U-exL">
-                                                                <real key="minimum" value="1"/>
-                                                                <real key="maximum" value="100"/>
-                                                            </numberFormatter>
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            <connections>
-                                                                <action selector="takeFloatValueFrom:" target="J9O-Fd-gti" id="2HO-jl-kB8"/>
-                                                            </connections>
-                                                        </textFieldCell>
-                                                    </textField>
                                                     <textField verticalHuggingPriority="750" id="ofG-d0-vys">
                                                         <rect key="frame" x="168" y="78" width="52" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -1028,6 +992,42 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
+                                                    <textField verticalHuggingPriority="750" id="8gz-nZ-AGD">
+                                                        <rect key="frame" x="11" y="164" width="180" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Resolution level (1―100) :" id="7Wn-5x-1Ls">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="J9O-Fd-gti">
+                                                        <rect key="frame" x="244" y="158" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="cuR-06-9Fo"/>
+                                                        <connections>
+                                                            <action selector="takeFloatValueFrom:" target="SU1-z4-fyr" id="MgH-UZ-Lyy"/>
+                                                        </connections>
+                                                    </stepper>
+                                                    <textField toolTip="resolution level" verticalHuggingPriority="750" id="SU1-z4-fyr">
+                                                        <rect key="frame" x="197" y="161" width="47" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="h2a-oG-Q1O">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="KaN-0U-exL">
+                                                                <real key="minimum" value="1"/>
+                                                                <real key="maximum" value="100"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <action selector="takeFloatValueFrom:" target="J9O-Fd-gti" id="2HO-jl-kB8"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                    </textField>
                                                 </subviews>
                                                 <animations/>
                                             </view>
@@ -1070,7 +1070,7 @@ DQ
                                                         </buttonCell>
                                                     </button>
                                                     <button id="DdC-a2-cPr">
-                                                        <rect key="frame" x="16" y="66" width="348" height="18"/>
+                                                        <rect key="frame" x="16" y="66" width="373" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <buttonCell key="cell" type="check" title="Output as a single file or animation (PDF / TIFF / GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="bvP-V3-8he">
@@ -1079,7 +1079,7 @@ DQ
                                                         </buttonCell>
                                                     </button>
                                                     <button id="Q0h-xM-aWu">
-                                                        <rect key="frame" x="16" y="12" width="205" height="18"/>
+                                                        <rect key="frame" x="16" y="12" width="309" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <buttonCell key="cell" type="check" title="Ouput as a plain text file (EPS)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="6UZ-39-Jkx">
@@ -1260,7 +1260,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button id="653">
-                                            <rect key="frame" x="13" y="222" width="294" height="18"/>
+                                            <rect key="frame" x="13" y="222" width="346" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <buttonCell key="cell" type="check" title="Force conversion by ignoring nonfatal errors" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="654">
@@ -1343,16 +1343,6 @@ DQ
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="1vz-wd-Muj">
-                                            <rect key="frame" x="310" y="224" width="112" height="14"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <animations/>
-                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="(Unrecommended)" id="hRc-Df-MLu">
-                                                <font key="font" metaFont="smallSystem"/>
-                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
                                         <button id="657">
                                             <rect key="frame" x="14" y="200" width="345" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -1435,6 +1425,16 @@ DQ
                                                 <action selector="searchPrograms:" target="450" id="720"/>
                                             </connections>
                                         </button>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="1vz-wd-Muj">
+                                            <rect key="frame" x="319" y="221" width="112" height="14"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <animations/>
+                                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="(Unrecommended)" id="hRc-Df-MLu">
+                                                <font key="font" metaFont="miniSystem"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
                                     </subviews>
                                     <animations/>
                                 </view>
@@ -1514,7 +1514,7 @@ DQ
                                                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     </box>
                                                     <button id="Bh6-7t-qwa">
-                                                        <rect key="frame" x="16" y="72" width="184" height="18"/>
+                                                        <rect key="frame" x="16" y="72" width="285" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <buttonCell key="cell" type="check" title="Flash indicators in moving" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="8yE-Y7-QFv">
@@ -1526,7 +1526,7 @@ DQ
                                                         </connections>
                                                     </button>
                                                     <button id="5Rq-aL-FFQ">
-                                                        <rect key="frame" x="16" y="52" width="206" height="18"/>
+                                                        <rect key="frame" x="16" y="52" width="285" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <buttonCell key="cell" type="check" title="Highlight enclosed characters" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Kmm-Kn-LbB">
@@ -1538,7 +1538,7 @@ DQ
                                                         </connections>
                                                     </button>
                                                     <button id="S8e-Q4-bYm">
-                                                        <rect key="frame" x="16" y="32" width="185" height="18"/>
+                                                        <rect key="frame" x="16" y="32" width="285" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <buttonCell key="cell" type="check" title="Beep for isolated brackets" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="dbk-x5-9qc">
@@ -1550,7 +1550,7 @@ DQ
                                                         </connections>
                                                     </button>
                                                     <button id="cqv-iM-ddW">
-                                                        <rect key="frame" x="16" y="12" width="263" height="18"/>
+                                                        <rect key="frame" x="16" y="12" width="292" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <buttonCell key="cell" type="check" title="Flash background for isolated brackets" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="tv7-et-9N3">
