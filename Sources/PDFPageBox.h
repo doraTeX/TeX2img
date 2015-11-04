@@ -11,7 +11,5 @@
 - (NSRect)artBoxRect;
 - (NSString*)bboxStringOfBox:(CGPDFBox)boxType
                        hires:(BOOL)hires
-            clipWithMediaBox:(BOOL)clip
-          relativeToMediaBox:(BOOL)relativeToMediaBox
                    addHeader:(BOOL)addHeader;
 @end
