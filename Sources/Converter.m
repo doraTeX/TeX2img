@@ -420,7 +420,11 @@
     NSInteger bottommargin = addMargin ? bottomMargin : 0;
     
     NSString *bbStr = keepPageSizeFlag ?
-    [[PDFPageBox pageBoxWithFilePath:pdfPath page:page] bboxStringOfBox:pageBoxType hires:NO clipWithMediaBox:YES relativeToMediaBox:YES addHeader:YES] :
+    [[PDFPageBox pageBoxWithFilePath:pdfPath
+                                page:page]
+     bboxStringOfBox:pageBoxType
+     hires:NO
+     addHeader:YES] :
     [self bboxStringOfPdf:pdfPath page:page hires:NO];
     // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiReSのBBoxを使うのが得策。
     
@@ -466,7 +470,7 @@
 
     NSString *pdfTeXPath = [latexPath.programPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
     
-    [controller appendOutputAndScroll:@"TeX2img: Cropping PDF...\n\n" quiet:quietFlag];
+    [controller appendOutputAndScroll:@"TeX2img: Adjusting the bounding box using pdfTeX...\n\n" quiet:quietFlag];
     
 	BOOL success = [controller execCommand:pdfTeXPath
                                atDirectory:tempdir
@@ -584,8 +588,12 @@
 {
     PDFPageBox *pageBox = [PDFPageBox pageBoxWithFilePath:[tempdir stringByAppendingPathComponent:pdfName] page:page];
     NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
-    NSString *bbStr = [pageBox bboxStringOfBox:pageBoxType hires:NO clipWithMediaBox:YES relativeToMediaBox:YES addHeader:NO];
-    NSString *hiresBbStr = [pageBox bboxStringOfBox:pageBoxType hires:YES clipWithMediaBox:YES relativeToMediaBox:YES addHeader:NO];
+    NSString *bbStr = [pageBox bboxStringOfBox:pageBoxType
+                                         hires:NO
+                                     addHeader:NO];
+    NSString *hiresBbStr = [pageBox bboxStringOfBox:pageBoxType
+                                              hires:YES
+                                          addHeader:NO];
     
     [self replaceBBoxOfEps:epsPath bb:bbStr hiresBb:hiresBbStr];
     return YES;
