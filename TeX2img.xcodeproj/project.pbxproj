@@ -12,13 +12,14 @@
 		3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */ = {isa = PBXBuildFile; fileRef = 3424A8E20E4F2DC1003C9F96 /* ControllerG.m */; };
 		342C6196101E637F00E29FEB /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 342C6194101E637F00E29FEB /* epstopdf */; };
 		3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
+		343E47AA1BEE4E1000F892A5 /* eps2emf in Resources */ = {isa = PBXBuildFile; fileRef = 343E47A91BEE4E1000F892A5 /* eps2emf */; };
 		345339911B93DDD10027CBE7 /* NSMatrix-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 345339901B93DDD10027CBE7 /* NSMatrix-Extension.m */; };
 		346225661AB558AB00F632AD /* mupdf in Resources */ = {isa = PBXBuildFile; fileRef = 346225651AB558AB00F632AD /* mupdf */; };
 		346DA57B1B705F6800B51BD7 /* NSArray-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */; };
 		346DA57C1B705F6800B51BD7 /* NSArray-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */; };
 		346DA57F1B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57E1B70605100B51BD7 /* NSIndexSet-Extension.m */; };
 		346DA5801B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57E1B70605100B51BD7 /* NSIndexSet-Extension.m */; };
-		3471A10F1BD473A600858DB9 /* pdftops in Resources */ = {isa = PBXBuildFile; fileRef = 3471A10E1BD473A600858DB9 /* pdftops */; settings = {ASSET_TAGS = (); }; };
+		3471A10F1BD473A600858DB9 /* pdftops in Resources */ = {isa = PBXBuildFile; fileRef = 3471A10E1BD473A600858DB9 /* pdftops */; };
 		34821EC810282CF9008DEB1F /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34821EC710282CF9008DEB1F /* ProfileController.m */; };
 		34867AC91B7B4804002AD2CF /* NSColorWell-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34867AC81B7B4804002AD2CF /* NSColorWell-Extension.m */; };
 		348BB5190F08C3850063003D /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
@@ -31,7 +32,7 @@
 		348F29611B848C68009AA3CF /* NSPipe-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348F295F1B848C11009AA3CF /* NSPipe-Extension.m */; };
 		349564B81ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
 		349564B91ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
-		3499FD5E1BC1AFA2009FD637 /* NSString-Normalization.m in Sources */ = {isa = PBXBuildFile; fileRef = 3499FD5D1BC1AFA2009FD637 /* NSString-Normalization.m */; settings = {ASSET_TAGS = (); }; };
+		3499FD5E1BC1AFA2009FD637 /* NSString-Normalization.m in Sources */ = {isa = PBXBuildFile; fileRef = 3499FD5D1BC1AFA2009FD637 /* NSString-Normalization.m */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
 		34BFF6E31BA025CB00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6DE1BA025CB00E8DE77 /* PDFDocument-Extension.m */; };
 		34BFF6E41BA025CB00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6DE1BA025CB00E8DE77 /* PDFDocument-Extension.m */; };
@@ -88,6 +89,7 @@
 		3424A8E10E4F2DC1003C9F96 /* ControllerG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerG.h; sourceTree = "<group>"; };
 		3424A8E20E4F2DC1003C9F96 /* ControllerG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerG.m; sourceTree = "<group>"; };
 		342C6194101E637F00E29FEB /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
+		343E47A91BEE4E1000F892A5 /* eps2emf */ = {isa = PBXFileReference; lastKnownFileType = folder; path = eps2emf; sourceTree = "<group>"; };
 		3453398F1B93DDD10027CBE7 /* NSMatrix-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMatrix-Extension.h"; sourceTree = "<group>"; };
 		345339901B93DDD10027CBE7 /* NSMatrix-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMatrix-Extension.m"; sourceTree = "<group>"; };
 		346225651AB558AB00F632AD /* mupdf */ = {isa = PBXFileReference; lastKnownFileType = folder; path = mupdf; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				343E47A91BEE4E1000F892A5 /* eps2emf */,
 				3471A10E1BD473A600858DB9 /* pdftops */,
 				346225651AB558AB00F632AD /* mupdf */,
 				34CCBB061A964E8A0061842E /* Templates */,
@@ -391,6 +394,7 @@
 				34CCBB071A964E8A0061842E /* Templates in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
+				343E47AA1BEE4E1000F892A5 /* eps2emf in Resources */,
 				CE4A31F10E5036500095D4FC /* Localizable.strings in Resources */,
 				7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */,
 				342C6196101E637F00E29FEB /* epstopdf in Resources */,

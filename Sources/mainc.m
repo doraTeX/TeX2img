@@ -10,7 +10,7 @@
 #import "NSDictionary-Extension.h"
 
 #define OPTION_NUM 51
-#define VERSION "1.10.7"
+#define VERSION "1.10.8"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -29,7 +29,7 @@ void usage()
     printf("Arguments:\n");
     printf("  InputFile  : path of a TeX source or PDF/PS/EPS file\n");
     printf("  OutputFile : path of an output file\n");
-    printf("               (*extension: eps/pdf/svg/jpg/png/gif/tiff/bmp)\n");
+    printf("               (*extension: eps/pdf/svg/emf/jpg/png/gif/tiff/bmp)\n");
     printf("\n");
     printf("Conversion Settings:\n");
     printf("  --latex      COMPILER      : set the LaTeX compiler (default: platex)\n");
@@ -153,6 +153,9 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     
     NSString *pdftopsPath = getPath([aProfile stringForKey:PdftopsPathKey]);
     printf("pdftops: %s\n", pdftopsPath ? pdftopsPath.UTF8String : "NOT FOUND");
+    
+    NSString *eps2emfPath = getPath([aProfile stringForKey:Eps2emfPathKey]);
+    printf("eps2emf: %s\n", eps2emfPath ? eps2emfPath.UTF8String : "NOT FOUND");
     
     printf("Resolution level: %f\n", [aProfile floatForKey:ResolutionKey]);
     
@@ -860,8 +863,8 @@ int main (int argc, char *argv[]) {
             usage();
         }
         
-        NSString* inputFilePath = @(argv[0]);
-        NSString* outputFilePath = getFullPath(@(argv[1]));
+        NSString *inputFilePath = @(argv[0]);
+        NSString *outputFilePath = getFullPath(@(argv[1]));
         
         if (!quietFlag) {
             version();
@@ -894,6 +897,7 @@ int main (int argc, char *argv[]) {
         NSString *epstopdfPath = getPath(@"epstopdf");
         NSString *mudrawPath = getPath(@"mudraw");
         NSString *pdftopsPath = getPath(@"pdftops");
+        NSString *eps2emfPath = getPath(@"eps2emf");
         
         if (!latexPath) {
             [controller showNotFoundError:latex.programName];
@@ -920,6 +924,10 @@ int main (int argc, char *argv[]) {
             pdftopsPath = @"pdftops";
         }
         
+        if (!eps2emfPath) {
+            eps2emfPath = @"eps2emf";
+        }
+        
         MutableProfile *aProfile = [MutableProfile dictionary];
         
         aProfile[LatexPathKey] = [latexPath stringByAppendingStringSeparetedBySpace:latex.argumentsString];
@@ -928,6 +936,7 @@ int main (int argc, char *argv[]) {
         aProfile[EpstopdfPathKey] = epstopdfPath;
         aProfile[MudrawPathKey] = mudrawPath;
         aProfile[PdftopsPathKey] = pdftopsPath;
+        aProfile[Eps2emfPathKey] = eps2emfPath;
         aProfile[OutputFileKey] = outputFilePath;
         aProfile[EncodingKey] = encoding;
         aProfile[NumberOfCompilationKey] = @(numberOfCompilation);

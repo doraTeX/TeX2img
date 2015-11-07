@@ -9,8 +9,8 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define MAX_LEN 2048
 #define BASH_PATH @"/bin/bash"
 
-#define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg"])
-#define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"tex"])
+#define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"emf"])
+#define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"emf", @"tex"])
 #define InputExtensionsArray (@[@"tex", @"pdf", @"ps", @"eps"])
 
 #define ProfileNamesKey @"profileNames"
@@ -81,6 +81,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define EpstopdfPathKey @"epstopdfPath"
 #define MudrawPathKey @"mudrawPath"
 #define PdftopsPathKey @"pdftopsPath"
+#define Eps2emfPathKey @"eps2emfPath"
 #define QuietKey @"quiet"
 
 #define AutoDetectionTargetKey @"autoDetectionTarget"

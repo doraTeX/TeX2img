@@ -2,9 +2,9 @@
 #import "UtilityG.h"
 #import "NSDictionary-Extension.h"
 
-static NSString* placeholderString = @"•";
-static NSString* startcommentString = @"•‹";
-static NSString* endcommentString = @"›";
+static NSString *placeholderString = @"•";
+static NSString *startcommentString = @"•‹";
+static NSString *endcommentString = @"›";
 
 @implementation TeXTextView (CommandCompletion)
 - (IBAction)doNextBullet:(id)sender

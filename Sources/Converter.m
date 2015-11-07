@@ -34,6 +34,7 @@
 @property (nonatomic, copy) NSString *epstopdfPath;
 @property (nonatomic, copy) NSString *mudrawPath;
 @property (nonatomic, copy) NSString *pdftopsPath;
+@property (nonatomic, copy) NSString *eps2emfPath;
 @property (nonatomic, assign) NSUInteger pageCount;
 @property (nonatomic, assign) BOOL useBP;
 @property (nonatomic, assign) BOOL speedPriorityMode;
@@ -71,6 +72,7 @@
 @synthesize epstopdfPath;
 @synthesize mudrawPath;
 @synthesize pdftopsPath;
+@synthesize eps2emfPath;
 @synthesize pageCount;
 @synthesize useBP;
 @synthesize speedPriorityMode;
@@ -98,6 +100,7 @@
     epstopdfPath = [aProfile stringForKey:EpstopdfPathKey];
     mudrawPath = [aProfile stringForKey:MudrawPathKey];
     pdftopsPath = [aProfile stringForKey:PdftopsPathKey];
+    eps2emfPath = [aProfile stringForKey:Eps2emfPathKey];
     guessCompilation = [aProfile boolForKey:GuessCompilationKey];
     numberOfCompilation = [aProfile integerForKey:NumberOfCompilationKey];
     
@@ -207,7 +210,7 @@
 // 返り値：書き込みの正否(BOOL)
 - (BOOL)writeStringWithYenBackslashConverting:(NSString*)targetString toFile:(NSString*)path
 {
-    NSMutableString* mstr = [NSMutableString string];
+    NSMutableString *mstr = [NSMutableString string];
 	[mstr appendString:targetString];
 	
 	[mstr replaceYenWithBackSlash];
@@ -378,7 +381,7 @@
         }
         
         NSString *bboxOutput = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:bboxFilePath] encoding:NSUTF8StringEncoding error:NULL];
-        [NSFileManager.defaultManager removeItemAtPath:bboxFilePath error:nil];
+        [fileManager removeItemAtPath:bboxFilePath error:nil];
         
         // 出力を解析
         NSUInteger currentPage = 0;
@@ -519,7 +522,7 @@
     }
     
     NSString *versionString = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:gsVerFilePath] encoding:NSUTF8StringEncoding error:NULL];
-    [NSFileManager.defaultManager removeItemAtPath:gsVerFilePath error:nil];
+    [fileManager removeItemAtPath:gsVerFilePath error:nil];
     
     double version = versionString.doubleValue;
     if (version < 9.15) {
@@ -639,6 +642,25 @@
     }
 }
 
+- (BOOL)eps2emf:(NSString*)epsName outputFileName:(NSString*)outputEmfFileName
+{
+    if (![controller eps2emfExists]) {
+        return NO;
+    }
+    
+    NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
+    [cmdline appendFormat:@"%@", eps2emfPath];
+    
+    NSArray<NSString*> *arguments = @[epsName.stringByQuotingWithDoubleQuotations, outputEmfFileName.stringByQuotingWithDoubleQuotations];
+    
+    BOOL success = [controller execCommand:cmdline
+                               atDirectory:tempdir
+                             withArguments:arguments
+                                     quiet:quietFlag];
+    return success;
+}
+
+
 - (BOOL)epstopdf:(NSString*)epsName outputPdfFileName:(NSString*)outputPdfFileName
 {
     if (![controller epstopdfExists]) {
@@ -656,7 +678,7 @@
 - (BOOL)eps2pdf:(NSString*)epsName outputFileName:(NSString*)outputFileName addMargin:(BOOL)addMargin
 {
     if (addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0)) {
-        NSString* trimFileName = [NSString stringWithFormat:@"%@-trim.pdf", epsName.stringByDeletingPathExtension];
+        NSString *trimFileName = [NSString stringWithFormat:@"%@-trim.pdf", epsName.stringByDeletingPathExtension];
         // まず，epstopdf を使って PDF に戻し，次に，pdfcrop類似処理を使って余白を付け加える
         return [self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName page:0 addMargin:YES useCache:NO];
     } else {
@@ -698,7 +720,7 @@
 
 - (BOOL)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page crop:(BOOL)crop
 {
-	NSString* extension = outputFileName.pathExtension.lowercaseString;
+	NSString *extension = outputFileName.pathExtension.lowercaseString;
     
     if ([self willEmptyPageBeCreated:pdfFilePath page:page]) {
         return YES;
@@ -716,7 +738,7 @@
     [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: PDF → %@ (Page %ld)\n", extension.uppercaseString, page] quiet:quietFlag];
      
 	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
-	NSData* pageData = [[PDFDocument documentWithFilePath:pdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
+	NSData *pageData = [[PDFDocument documentWithFilePath:pdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
 	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
 
 	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
@@ -739,7 +761,7 @@
 	NSSize size = NSMakeSize((NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin,
                              (NSInteger)(height * resolutionLevel) + thisTopMargin + thisBottomMargin);
 	
-	NSImage* image = [[NSImage alloc] initWithSize:size];
+	NSImage *image = [[NSImage alloc] initWithSize:size];
 	[image lockFocus];
 	[pdfImageRep drawInRect:NSMakeRect(thisLeftMargin, thisBottomMargin, width * resolutionLevel, height * resolutionLevel)];
 	[image unlockFocus];
@@ -925,8 +947,8 @@
 
 - (BOOL)convertPDF:(NSString*)pdfFileName outputEpsFileName:(NSString*)outputEpsFileName outputFileName:(NSString*)outputFileName page:(NSUInteger)page
 {
-	NSString* extension = outputFileName.pathExtension.lowercaseString;
-    NSString* outlinedPdfFileName = [NSString stringWithFormat:@"%@-outline.pdf", tempFileBaseName];
+	NSString *extension = outputFileName.pathExtension.lowercaseString;
+    NSString *outlinedPdfFileName = [NSString stringWithFormat:@"%@-outline.pdf", tempFileBaseName];
 
     NSInteger lowResolution = resolutionLevel*((NSInteger)RESOLUTION_SCALE)*2*72;
     NSInteger resolution = speedPriorityMode ? lowResolution : 20016;
@@ -967,6 +989,8 @@
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
         [fileManager moveItemAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
+    } else if ([@"emf" isEqualToString:extension]) { // 最終出力が EMF の場合
+        [self eps2emf:outputEpsFileName outputFileName:outputFileName];
     } else { // ビットマップ形式出力の場合，EPSをPDFに戻した上で，それをさらにビットマップ形式に変換する
         if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は epstopdf が使えない（エラーになる）ので，そこだけ Quartz で変換する
             if (![self pdf2image:[tempdir stringByAppendingPathComponent:pdfFileName] outputFileName:outputFileName page:page crop:YES]) {
@@ -1076,15 +1100,15 @@
 
 - (BOOL)compileAndConvert
 {
-	NSString* texFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-	NSString* dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-    NSString* psFilePath  = [NSString stringWithFormat:@"%@.ps",  [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-	NSString* pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-    NSString* croppedPdfFilePath = [NSString stringWithFormat:@"%@-crop.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-    NSString* pdfFileName = [NSString stringWithFormat:@"%@.pdf", tempFileBaseName];
-	NSString* outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
-	NSString* outputFileName = outputFilePath.lastPathComponent;
-	NSString* extension = outputFilePath.pathExtension.lowercaseString;
+	NSString *texFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString *dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+    NSString *psFilePath  = [NSString stringWithFormat:@"%@.ps",  [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString *pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+    NSString *croppedPdfFilePath = [NSString stringWithFormat:@"%@-crop.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+    NSString *pdfFileName = [NSString stringWithFormat:@"%@.pdf", tempFileBaseName];
+	NSString *outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
+	NSString *outputFileName = outputFilePath.lastPathComponent;
+	NSString *extension = outputFilePath.pathExtension.lowercaseString;
     NSDate *texDate, *dviDate, *psDate, *pdfDate;
     BOOL success = NO, compilationSuceeded = NO, requireDviDriver = NO, requireGS = NO;
 
@@ -1219,16 +1243,17 @@
     }
 
     // ありうる経路
-    // 【gsを通さない経路]
+    // 【gsを通さない経路】
     //  1. 速度優先モードでのビットマップ生成 (PDF →[pdfcrop類似処理でクロップ]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JPEG/PNG/GIF/TIFF/BMP)
     //  2. テキスト情報を残したPDF生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF)
     //  3. テキスト情報を残したSVG生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF →[mudraw]→ SVG)
     //
-    // 【gsを通す経路]
+    // 【gsを通す経路】
     //  4. 画質優先モードでのビットマップ生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ]→ EPS →[epstopdf(gs)]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JEPG/PNG/GIF/TIFF/BMP)
     //  5. アウトライン化PDF生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[epstopdf(gs)]→ PDF →[pdfcrop類似処理で余白付与]→ PDF)
     //  6. アウトライン化EPS（バイナリ形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS)
-    //  7. アウトライン化EPS（テキスト形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS →[epstopdf(gs)]→ PDF →[pdftops])
+    //  7. アウトライン化EPS（テキスト形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS →[epstopdf(gs)]→ PDF →[pdftops]→ EPS)
+    //  8. アウトライン化EMF生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[pstoedit] → EMF)
     // [*1] このgsによるアウトライン化は，画質優先モードの場合は -r20016 固定，速度優先モードの場合は解像度レベル設定に従う
     
     // 最終出力がビットマップ形式で「速度優先」の場合は，PDFからQuartzで直接変換
@@ -1286,7 +1311,14 @@
                 return success;
             }
         }
-	} else { // EPS を経由する形式(EPS/outlined-PDF/ビットマップ形式)の場合
+	} else { // EPS を経由する形式(EPS/outlined-PDF/ビットマップ形式(画質優先)/EMF)の場合
+        // 最終出力が EMF の場合，まずpdfcrop類似処理をかけてBB左下を原点に持っていく
+        if ([@"emf" isEqualToString:extension]) {
+            [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES useCache:YES];
+            [controller exitCurrentThreadIfTaskKilled];
+            pdfFileName = croppedPdfFilePath.lastPathComponent;
+        }
+
         BOOL success = [self convertPDF:pdfFileName
                       outputEpsFileName:outputEpsFileName
                          outputFileName:outputFileName
@@ -1436,7 +1468,7 @@
 		return NO;
 	}
 	
-	NSString* extension = outputFilePath.pathExtension.lowercaseString;
+	NSString *extension = outputFilePath.pathExtension.lowercaseString;
 
     if (![TargetExtensionsArray containsObject:extension]) {
 		[controller showExtensionError];
@@ -1474,7 +1506,7 @@
     }
     
     // プレビュー処理
-    if (status && previewFlag) {
+    if (status && previewFlag && ![@"emf" isEqualToString:extension]) {
         NSString *previewApp;
         if ([@"svg" isEqualToString:extension] || ([@"gif" isEqualToString:extension] && mergeOutputsFlag && (generatedPageCount > 1))) {
             previewApp = @"Safari";
@@ -1491,7 +1523,7 @@
         [script appendFormat:@"tell application \"Adobe Illustrator\"\n"];
         [script appendFormat:@"activate\n"];
         
-        [generatedFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL *stop) {
+        [generatedFiles enumerateObjectsUsingBlock:^(NSString *filePath, NSUInteger idx, BOOL *stop) {
             [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
             if (ungroupFlag) {
                 [script appendFormat:@"move page items of selection of current document to end of current document\n"];
@@ -1536,8 +1568,8 @@
 - (void)deleteTemporaryFiles
 {
     if (deleteTmpFileFlag) {
-        NSString* outputFileName = outputFilePath.lastPathComponent;
-        NSString* basePath = [tempdir stringByAppendingPathComponent:tempFileBaseName];
+        NSString *outputFileName = outputFilePath.lastPathComponent;
+        NSString *basePath = [tempdir stringByAppendingPathComponent:tempFileBaseName];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.tex", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.dvi", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.log", basePath] error:nil];
@@ -1570,7 +1602,7 @@
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr
 {
 	// TeX ソースを準備
-	NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	
 	if (![self writeStringWithYenBackslashConverting:texSourceStr toFile:tempTeXFilePath]) {
 		[controller showFileGenerationError:tempTeXFilePath];
@@ -1585,7 +1617,7 @@
 {
     @autoreleasepool {
         // TeX ソースを用意
-        NSString* texSourceStr = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}", preambleStr, texBodyStr];
+        NSString *texSourceStr = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}", preambleStr, texBodyStr];
         return [self compileAndConvertWithSource:texSourceStr];
     }
 }

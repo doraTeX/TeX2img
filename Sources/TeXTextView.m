@@ -10,7 +10,7 @@
 @implementation TeXTextView
 - (void)awakeFromNib
 {
-    NSString* autoCompletionPath = @"~/Library/TeXShop/Keyboard/autocompletion.plist".stringByStandardizingPath;
+    NSString *autoCompletionPath = @"~/Library/TeXShop/Keyboard/autocompletion.plist".stringByStandardizingPath;
     if ([NSFileManager.defaultManager fileExistsAtPath:autoCompletionPath]) {
         autocompletionDictionary = [NSDictionary<NSString*,NSString*> dictionaryWithContentsOfFile:autoCompletionPath];
     } else {
@@ -52,7 +52,7 @@
                         object:undoManager];
     
     // 右クリックメニューの追加
-    NSMenu* aMenu = self.menu;
+    NSMenu *aMenu = self.menu;
     
     // 最初のセパレータ位置を取得
     NSUInteger index = [aMenu.itemArray indexOfObjectPassingTest:^BOOL(NSMenuItem *menuItem, NSUInteger idx, BOOL *stop) {
@@ -118,7 +118,7 @@
 {
     Profile *currentProfile = [controller currentProfile];
     
-    NSMutableParagraphStyle* paragraphStyle = [self.defaultParagraphStyle mutableCopy];
+    NSMutableParagraphStyle *paragraphStyle = [self.defaultParagraphStyle mutableCopy];
     
     if (!paragraphStyle) {
         paragraphStyle = [NSParagraphStyle.defaultParagraphStyle mutableCopy];

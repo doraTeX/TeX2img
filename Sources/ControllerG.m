@@ -409,6 +409,11 @@ typedef enum {
     return YES;
 }
 
+- (BOOL)eps2emfExists;
+{
+    return YES;
+}
+
 - (void)showFileFormatErrorOnMainThread:(NSString*)aPath
 {
     runErrorPanel(localizedString(@"fileFormatErrorMsg"), aPath);
@@ -1685,7 +1690,7 @@ typedef enum {
         input.stringValue = (NSString*)sender;
     }
     
-    NSButton* cancelButton = [NSButton new];
+    NSButton *cancelButton = [NSButton new];
     cancelButton.title = localizedString(@"Cancel");
     cancelButton.frame = NSMakeRect(dialogSize.width - 206, 12, 96, 32);
     cancelButton.bezelStyle = NSRoundedBezelStyle;
@@ -1695,7 +1700,7 @@ typedef enum {
     cancelButton.action = @selector(dialogCancel:);
     [dialog.contentView addSubview:cancelButton];
     
-    NSButton* okButton = [NSButton new];
+    NSButton *okButton = [NSButton new];
     okButton.title = @"OK";
     okButton.frame = NSMakeRect(dialogSize.width - 110, 12, 96, 32);
     okButton.bezelStyle = NSRoundedBezelStyle;
@@ -2068,6 +2073,7 @@ typedef enum {
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
     aProfile[MudrawPathKey] = [[NSBundle.mainBundle pathForResource:@"mupdf" ofType:nil] stringByAppendingPathComponent:@"mudraw"];
     aProfile[PdftopsPathKey] = [[NSBundle.mainBundle pathForResource:@"pdftops" ofType:nil] stringByAppendingPathComponent:@"pdftops"];
+    aProfile[Eps2emfPathKey] = [[NSBundle.mainBundle pathForResource:@"eps2emf" ofType:nil] stringByAppendingPathComponent:@"eps2emf"];
     aProfile[QuietKey] = @(NO);
     aProfile[ControllerKey] = self;
     
