@@ -34,6 +34,7 @@
 @property (nonatomic, copy) NSString *epstopdfPath;
 @property (nonatomic, copy) NSString *mudrawPath;
 @property (nonatomic, copy) NSString *pdftopsPath;
+@property (nonatomic, copy) NSString *eps2emfPath;
 @property (nonatomic, assign) NSUInteger pageCount;
 @property (nonatomic, assign) BOOL useBP;
 @property (nonatomic, assign) BOOL speedPriorityMode;
@@ -71,6 +72,7 @@
 @synthesize epstopdfPath;
 @synthesize mudrawPath;
 @synthesize pdftopsPath;
+@synthesize eps2emfPath;
 @synthesize pageCount;
 @synthesize useBP;
 @synthesize speedPriorityMode;
@@ -98,6 +100,7 @@
     epstopdfPath = [aProfile stringForKey:EpstopdfPathKey];
     mudrawPath = [aProfile stringForKey:MudrawPathKey];
     pdftopsPath = [aProfile stringForKey:PdftopsPathKey];
+    eps2emfPath = [aProfile stringForKey:Eps2emfPathKey];
     guessCompilation = [aProfile boolForKey:GuessCompilationKey];
     numberOfCompilation = [aProfile integerForKey:NumberOfCompilationKey];
     
@@ -644,6 +647,25 @@
     }
 }
 
+- (BOOL)eps2emf:(NSString*)epsName outputFileName:(NSString*)outputEmfFileName
+{
+    if (![controller eps2emfExists]) {
+        return NO;
+    }
+    
+    NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
+    [cmdline appendFormat:@"%@", eps2emfPath];
+    
+    NSArray<NSString*> *arguments = @[epsName.stringByQuotingWithDoubleQuotations, outputEmfFileName.stringByQuotingWithDoubleQuotations];
+    
+    BOOL success = [controller execCommand:cmdline
+                               atDirectory:tempdir
+                             withArguments:arguments
+                                     quiet:quietFlag];
+    return success;
+}
+
+
 - (BOOL)epstopdf:(NSString*)epsName outputPdfFileName:(NSString*)outputPdfFileName
 {
     if (![controller epstopdfExists]) {
@@ -974,6 +996,8 @@
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
         [fileManager moveItemAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
+    } else if ([@"emf" isEqualToString:extension]) { // 最終出力が EMF の場合
+        [self eps2emf:outputEpsFileName outputFileName:outputFileName];
     } else { // ビットマップ形式出力の場合，EPSをPDFに戻した上で，それをさらにビットマップ形式に変換する
         if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は epstopdf が使えない（エラーになる）ので，そこだけ Quartz で変換する
             if (![self pdf2image:[tempdir stringByAppendingPathComponent:pdfFileName] outputFileName:outputFileName page:page crop:YES]) {
@@ -1235,7 +1259,8 @@
     //  4. 画質優先モードでのビットマップ生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ]→ EPS →[epstopdf(gs)]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JEPG/PNG/GIF/TIFF/BMP)
     //  5. アウトライン化PDF生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[epstopdf(gs)]→ PDF →[pdfcrop類似処理で余白付与]→ PDF)
     //  6. アウトライン化EPS（バイナリ形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS)
-    //  7. アウトライン化EPS（テキスト形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS →[epstopdf(gs)]→ PDF →[pdftops])
+    //  7. アウトライン化EPS（テキスト形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS →[epstopdf(gs)]→ PDF →[pdftops]→ EPS)
+    //  8. アウトライン化EMF生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[pstoedit] → EMF)
     // [*1] このgsによるアウトライン化は，画質優先モードの場合は -r20016 固定，速度優先モードの場合は解像度レベル設定に従う
     
     // 最終出力がビットマップ形式で「速度優先」の場合は，PDFからQuartzで直接変換
@@ -1293,7 +1318,14 @@
                 return success;
             }
         }
-	} else { // EPS を経由する形式(EPS/outlined-PDF/ビットマップ形式)の場合
+	} else { // EPS を経由する形式(EPS/outlined-PDF/ビットマップ形式(画質優先)/EMF)の場合
+        // 最終出力が EMF の場合，まずpdfcrop類似処理をかけてBB左下を原点に持っていく
+        if ([@"emf" isEqualToString:extension]) {
+            [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES useCache:YES];
+            [controller exitCurrentThreadIfTaskKilled];
+            pdfFileName = croppedPdfFilePath.lastPathComponent;
+        }
+
         BOOL success = [self convertPDF:pdfFileName
                       outputEpsFileName:outputEpsFileName
                          outputFileName:outputFileName
@@ -1481,7 +1513,7 @@
     }
     
     // プレビュー処理
-    if (status && previewFlag) {
+    if (status && previewFlag && ![@"emf" isEqualToString:extension]) {
         NSString *previewApp;
         if ([@"svg" isEqualToString:extension] || ([@"gif" isEqualToString:extension] && mergeOutputsFlag && (generatedPageCount > 1))) {
             previewApp = @"Safari";

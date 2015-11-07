@@ -12,6 +12,7 @@
 		3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */ = {isa = PBXBuildFile; fileRef = 3424A8E20E4F2DC1003C9F96 /* ControllerG.m */; };
 		342C6196101E637F00E29FEB /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 342C6194101E637F00E29FEB /* epstopdf */; };
 		3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
+		343E47A81BED59DB00F892A5 /* eps2emf in Resources */ = {isa = PBXBuildFile; fileRef = 343E47A71BED59DB00F892A5 /* eps2emf */; };
 		34522C121BAC550800DE1B86 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 34522C111BAC550800DE1B86 /* libicucore.tbd */; };
 		3453398E1B93D5830027CBE7 /* NSPopover-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3453398D1B93D5830027CBE7 /* NSPopover-Extension.m */; };
 		345339911B93DDD10027CBE7 /* NSMatrix-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 345339901B93DDD10027CBE7 /* NSMatrix-Extension.m */; };
@@ -39,7 +40,7 @@
 		349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349927381B786546009BD5F1 /* MyGlyphPopoverController.m */; };
 		3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */; };
 		3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */; };
-		34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */ = {isa = PBXBuildFile; fileRef = 34BF70F91BD1C6FC00AB76A9 /* pdftops */; settings = {ASSET_TAGS = (); }; };
+		34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */ = {isa = PBXBuildFile; fileRef = 34BF70F91BD1C6FC00AB76A9 /* pdftops */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
 		34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */; };
 		34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */; };
@@ -97,6 +98,7 @@
 		3424A8E10E4F2DC1003C9F96 /* ControllerG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerG.h; sourceTree = "<group>"; };
 		3424A8E20E4F2DC1003C9F96 /* ControllerG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerG.m; sourceTree = "<group>"; };
 		342C6194101E637F00E29FEB /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
+		343E47A71BED59DB00F892A5 /* eps2emf */ = {isa = PBXFileReference; lastKnownFileType = folder; path = eps2emf; sourceTree = "<group>"; };
 		34522C111BAC550800DE1B86 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		3453398C1B93D5830027CBE7 /* NSPopover-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPopover-Extension.h"; sourceTree = "<group>"; };
 		3453398D1B93D5830027CBE7 /* NSPopover-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPopover-Extension.m"; sourceTree = "<group>"; };
@@ -300,6 +302,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				343E47A71BED59DB00F892A5 /* eps2emf */,
 				34BF70F91BD1C6FC00AB76A9 /* pdftops */,
 				346225651AB558AB00F632AD /* mupdf */,
 				34CCBB061A964E8A0061842E /* Templates */,
@@ -473,6 +476,7 @@
 				3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */,
 				34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */,
 				346225661AB558AB00F632AD /* mupdf in Resources */,
+				343E47A81BED59DB00F892A5 /* eps2emf in Resources */,
 				34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */,
 				3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */,
 			);

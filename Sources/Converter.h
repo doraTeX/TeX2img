@@ -8,6 +8,7 @@
 - (BOOL)epstopdfExists;
 - (BOOL)mudrawExists;
 - (BOOL)pdftopsExists;
+- (BOOL)eps2emfExists;
 - (void)showFileFormatError:(NSString*)aPath;
 - (void)showFileGenerationError:(NSString*)aPath;
 - (void)showExecError:(NSString*)command;

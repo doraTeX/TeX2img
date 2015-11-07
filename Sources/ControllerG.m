@@ -476,6 +476,11 @@ typedef enum {
     return YES;
 }
 
+- (BOOL)eps2emfExists;
+{
+    return YES;
+}
+
 - (void)showFileFormatErrorOnMainThread:(NSString*)aPath
 {
     runErrorPanel(localizedString(@"fileFormatErrorMsg"), aPath);
@@ -2350,6 +2355,7 @@ typedef enum {
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
     aProfile[MudrawPathKey] = [[NSBundle.mainBundle pathForResource:@"mupdf" ofType:nil] stringByAppendingPathComponent:@"mudraw"];
     aProfile[PdftopsPathKey] = [[NSBundle.mainBundle pathForResource:@"pdftops" ofType:nil] stringByAppendingPathComponent:@"pdftops"];
+    aProfile[Eps2emfPathKey] = [[NSBundle.mainBundle pathForResource:@"eps2emf" ofType:nil] stringByAppendingPathComponent:@"eps2emf"];
     aProfile[QuietKey] = @(NO);
     aProfile[ControllerKey] = self;
     
