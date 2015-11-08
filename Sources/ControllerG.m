@@ -1957,7 +1957,7 @@ typedef enum {
         input.stringValue = (NSString*)sender;
     }
     
-    NSButton* cancelButton = [NSButton new];
+    NSButton *cancelButton = [NSButton new];
     cancelButton.title = localizedString(@"Cancel");
     cancelButton.frame = NSMakeRect(dialogSize.width - 206, 12, 96, 32);
     cancelButton.bezelStyle = NSRoundedBezelStyle;
@@ -1967,7 +1967,7 @@ typedef enum {
     cancelButton.action = @selector(dialogCancel:);
     [dialog.contentView addSubview:cancelButton];
     
-    NSButton* okButton = [NSButton new];
+    NSButton *okButton = [NSButton new];
     okButton.title = @"OK";
     okButton.frame = NSMakeRect(dialogSize.width - 110, 12, 96, 32);
     okButton.bezelStyle = NSRoundedBezelStyle;

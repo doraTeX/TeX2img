@@ -210,7 +210,7 @@
 // 返り値：書き込みの正否(BOOL)
 - (BOOL)writeStringWithYenBackslashConverting:(NSString*)targetString toFile:(NSString*)path
 {
-    NSMutableString* mstr = [NSMutableString string];
+    NSMutableString *mstr = [NSMutableString string];
 	[mstr appendString:targetString];
 	
 	[mstr replaceYenWithBackSlash];
@@ -381,7 +381,7 @@
         }
         
         NSString *bboxOutput = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:bboxFilePath] encoding:NSUTF8StringEncoding error:NULL];
-        [NSFileManager.defaultManager removeItemAtPath:bboxFilePath error:nil];
+        [fileManager removeItemAtPath:bboxFilePath error:nil];
         
         // 出力を解析
         NSUInteger currentPage = 0;
@@ -522,7 +522,7 @@
     }
     
     NSString *versionString = [NSString stringWithContentsOfURL:[NSURL fileURLWithPath:gsVerFilePath] encoding:NSUTF8StringEncoding error:NULL];
-    [NSFileManager.defaultManager removeItemAtPath:gsVerFilePath error:nil];
+    [fileManager removeItemAtPath:gsVerFilePath error:nil];
     
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\d+(?:\\.\\d+)?" options:0 error:nil];
     NSTextCheckingResult *match = [regex firstMatchInString:versionString options:0 range:NSMakeRange(0, versionString.length)];
@@ -683,7 +683,7 @@
 - (BOOL)eps2pdf:(NSString*)epsName outputFileName:(NSString*)outputFileName addMargin:(BOOL)addMargin
 {
     if (addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0)) {
-        NSString* trimFileName = [NSString stringWithFormat:@"%@-trim.pdf", epsName.stringByDeletingPathExtension];
+        NSString *trimFileName = [NSString stringWithFormat:@"%@-trim.pdf", epsName.stringByDeletingPathExtension];
         // まず，epstopdf を使って PDF に戻し，次に，pdfcrop類似処理を使って余白を付け加える
         return [self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName page:0 addMargin:YES useCache:NO];
     } else {
@@ -725,7 +725,7 @@
 
 - (BOOL)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page crop:(BOOL)crop
 {
-	NSString* extension = outputFileName.pathExtension.lowercaseString;
+	NSString *extension = outputFileName.pathExtension.lowercaseString;
     
     if ([self willEmptyPageBeCreated:pdfFilePath page:page]) {
         return YES;
@@ -743,7 +743,7 @@
     [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: PDF → %@ (Page %ld)\n", extension.uppercaseString, page] quiet:quietFlag];
      
 	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
-	NSData* pageData = [[PDFDocument documentWithFilePath:pdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
+	NSData *pageData = [[PDFDocument documentWithFilePath:pdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
 	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
 
 	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
@@ -772,7 +772,7 @@
 	NSSize size = NSMakeSize((NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin,
                              (NSInteger)(height * resolutionLevel) + thisTopMargin + thisBottomMargin);
 	
-	NSImage* image = [[NSImage alloc] initWithSize:size];
+	NSImage *image = [[NSImage alloc] initWithSize:size];
 	[image lockFocus];
 	[pdfImageRep drawInRect:NSMakeRect(thisLeftMargin, thisBottomMargin, width * resolutionLevel, height * resolutionLevel)];
 	[image unlockFocus];
@@ -954,8 +954,8 @@
 
 - (BOOL)convertPDF:(NSString*)pdfFileName outputEpsFileName:(NSString*)outputEpsFileName outputFileName:(NSString*)outputFileName page:(NSUInteger)page
 {
-	NSString* extension = outputFileName.pathExtension.lowercaseString;
-    NSString* outlinedPdfFileName = [NSString stringWithFormat:@"%@-outline.pdf", tempFileBaseName];
+	NSString *extension = outputFileName.pathExtension.lowercaseString;
+    NSString *outlinedPdfFileName = [NSString stringWithFormat:@"%@-outline.pdf", tempFileBaseName];
 
     NSInteger lowResolution = resolutionLevel*((NSInteger)RESOLUTION_SCALE)*2*72;
     NSInteger resolution = speedPriorityMode ? lowResolution : 20016;
@@ -1107,15 +1107,15 @@
 
 - (BOOL)compileAndConvert
 {
-	NSString* texFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-	NSString* dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-    NSString* psFilePath  = [NSString stringWithFormat:@"%@.ps",  [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-	NSString* pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-    NSString* croppedPdfFilePath = [NSString stringWithFormat:@"%@-crop.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-    NSString* pdfFileName = [NSString stringWithFormat:@"%@.pdf", tempFileBaseName];
-	NSString* outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
-	NSString* outputFileName = outputFilePath.lastPathComponent;
-	NSString* extension = outputFilePath.pathExtension.lowercaseString;
+	NSString *texFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString *dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+    NSString *psFilePath  = [NSString stringWithFormat:@"%@.ps",  [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString *pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+    NSString *croppedPdfFilePath = [NSString stringWithFormat:@"%@-crop.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+    NSString *pdfFileName = [NSString stringWithFormat:@"%@.pdf", tempFileBaseName];
+	NSString *outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
+	NSString *outputFileName = outputFilePath.lastPathComponent;
+	NSString *extension = outputFilePath.pathExtension.lowercaseString;
     NSDate *texDate, *dviDate, *psDate, *pdfDate;
     BOOL success = NO, compilationSuceeded = NO, requireDviDriver = NO, requireGS = NO;
 
@@ -1250,12 +1250,12 @@
     }
 
     // ありうる経路
-    // 【gsを通さない経路]
+    // 【gsを通さない経路】
     //  1. 速度優先モードでのビットマップ生成 (PDF →[pdfcrop類似処理でクロップ]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JPEG/PNG/GIF/TIFF/BMP)
     //  2. テキスト情報を残したPDF生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF)
     //  3. テキスト情報を残したSVG生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF →[mudraw]→ SVG)
     //
-    // 【gsを通す経路]
+    // 【gsを通す経路】
     //  4. 画質優先モードでのビットマップ生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ]→ EPS →[epstopdf(gs)]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JEPG/PNG/GIF/TIFF/BMP)
     //  5. アウトライン化PDF生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[epstopdf(gs)]→ PDF →[pdfcrop類似処理で余白付与]→ PDF)
     //  6. アウトライン化EPS（バイナリ形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS)
@@ -1475,7 +1475,7 @@
 		return NO;
 	}
 	
-	NSString* extension = outputFilePath.pathExtension.lowercaseString;
+	NSString *extension = outputFilePath.pathExtension.lowercaseString;
 
     if (![TargetExtensionsArray containsObject:extension]) {
 		[controller showExtensionError];
@@ -1530,7 +1530,7 @@
         [script appendFormat:@"tell application \"Adobe Illustrator\"\n"];
         [script appendFormat:@"activate\n"];
         
-        [generatedFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL *stop) {
+        [generatedFiles enumerateObjectsUsingBlock:^(NSString *filePath, NSUInteger idx, BOOL *stop) {
             [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
             if (ungroupFlag) {
                 [script appendFormat:@"move page items of selection of current document to end of current document\n"];
@@ -1575,8 +1575,8 @@
 - (void)deleteTemporaryFiles
 {
     if (deleteTmpFileFlag) {
-        NSString* outputFileName = outputFilePath.lastPathComponent;
-        NSString* basePath = [tempdir stringByAppendingPathComponent:tempFileBaseName];
+        NSString *outputFileName = outputFilePath.lastPathComponent;
+        NSString *basePath = [tempdir stringByAppendingPathComponent:tempFileBaseName];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.tex", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.dvi", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.log", basePath] error:nil];
@@ -1609,7 +1609,7 @@
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr
 {
 	// TeX ソースを準備
-	NSString* tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
 	
 	if (![self writeStringWithYenBackslashConverting:texSourceStr toFile:tempTeXFilePath]) {
 		[controller showFileGenerationError:tempTeXFilePath];
@@ -1624,7 +1624,7 @@
 {
     @autoreleasepool {
         // TeX ソースを用意
-        NSString* texSourceStr = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}", preambleStr, texBodyStr];
+        NSString *texSourceStr = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}", preambleStr, texBodyStr];
         return [self compileAndConvertWithSource:texSourceStr];
     }
 }

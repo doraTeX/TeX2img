@@ -10,7 +10,7 @@
 #import "NSDictionary-Extension.h"
 
 #define OPTION_NUM 51
-#define VERSION "2.0.8b1"
+#define VERSION "2.0.8"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -863,8 +863,8 @@ int main (int argc, char *argv[]) {
             usage();
         }
         
-        NSString* inputFilePath = @(argv[0]);
-        NSString* outputFilePath = getFullPath(@(argv[1]));
+        NSString *inputFilePath = @(argv[0]);
+        NSString *outputFilePath = getFullPath(@(argv[1]));
         
         if (!quietFlag) {
             version();
