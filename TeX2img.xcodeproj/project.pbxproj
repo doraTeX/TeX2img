@@ -509,7 +509,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "VER=`cat Sources/mainc.m | grep \"#define VERSION\" | cut -d' ' -f 3 | sed 's/\"//g'`\ncd $BUILT_PRODUCTS_DIR\nzip tex2imgcMac$VER.zip tex2img";
+			shellScript = "VER=`cat Sources/mainc.m | grep \"#define VERSION\" | cut -d' ' -f 3 | sed 's/\"//g'`\ncd $BUILT_PRODUCTS_DIR\necho \"#!/bin/sh\" > deployc.sh\necho zip tex2imgcMac$VER.zip tex2img >> deployc.sh\nchmod +x deployc.sh";
 		};
 /* End PBXShellScriptBuildPhase section */
 
