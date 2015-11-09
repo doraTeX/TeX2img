@@ -1,0 +1,83 @@
+\documentclass[uplatex,dvipdfmx,a3paper,landscape]{jsarticle}
+\usepackage[dvipdfm,margin=2cm,noheadfoot]{geometry}
+\usepackage{metalogo}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+\usepackage{enumitem}
+\pagestyle{empty}
+\begin{document}
+\baselineskip12pt
+\parindent0pt
+
+\tikzset{input node/.style={draw,rectangle,ultra thick}}
+\tikzset{relay node/.style={draw,rectangle}}
+\tikzset{output node/.style={draw,rectangle,double,outer sep=1pt}}
+\tikzset{speed priority/.style={->,>={Stealth[scale=1.2]},dashed,thick}}
+\tikzset{legend box/.style={minimum width=1cm,minimum height=\baselineskip}}
+
+\fbox{\parbox{20zw}{\baselineskip18pt\lineskiplimit12pt\lineskip4pt
+{\Large\textgt{凡例}}\par
+\tikz[baseline=-3pt]\node[legend box,input node] {};\hspace{1zw}入力ファイル\par
+\tikz[baseline=-3pt]\node[legend box,output node] {};\hspace{1zw}出力ファイル\par
+\tikz[baseline=-3pt]\draw[speed priority](0,0) -- (1,0);\hspace{1zw}速度優先モードのみでの経路\par
+}}
+
+\begin{center}
+\begin{tikzpicture}[x=1.3cm,y=1.3cm,align=center,>={Stealth[scale=1.6]}]
+\node[input node] (TeX) at (0,0) {\TeX};
+\node[draw,rectangle] (DVI) at ($(TeX) + (0,-2)$) {DVI};
+\draw[->] (TeX) --  node[left] {((u)p)\LaTeX} (DVI) ;
+\node[input node] (PS) at ($(DVI) + (-2,0)$) {PS};
+\draw[->] (DVI) --  node[above] {dvips} (PS) ;
+\node[input node] (PDF) at ($(TeX) + (0,-4)$) {PDF};
+\draw[->] (DVI) --  node[right] {dvipdfmx} (PDF) ;
+\draw[->] (PS) --  node[left] {Ghostscript} (PDF) ;
+\node[input node] (EPS) at ($(PDF) + (-4,0)$) {EPS};
+\draw[->] (EPS) --  node[above] {Ghostscript} (PDF) ;
+\draw[->] (TeX) -- ++ (1,0) to [bend left=90]  node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} ($(PDF) + (1,0)$) to (PDF) ;
+\node[output node] (PDF with text) at ($(PDF) + (-8,-2)$) {テキスト保持PDF\\（余白あり）};
+\draw[->] (PDF) -- node[left,align=left,xshift=-10pt] {pdf\TeX でクロップ\\＋余白付与} (PDF with text.north east);
+\node[output node] (SVG) at ($(PDF with text) + (0,-2)$) {SVG};
+\draw[->] (PDF with text) -- node[left] {mudraw} (SVG);
+\node[relay node] (EPS2) at ($(PDF with text) + (-4,0)$) {EPS};
+\draw[->] (PDF with text) -- node[above] {Ghostscript\textsuperscript{*1}} (EPS2);
+\node[output node] (EMF) at ($(EPS2) + (0,-2)$) {EMF};
+\draw[->] (EPS2) -- node[left] {eps2emf\\（改造版pstoedit）} (EMF);
+\node[relay node] (PDF with text without margin) at ($(PDF with text) + (6,0)$) {テキスト保持PDF\\（余白なし）};
+\draw[speed priority] (PDF) -- node[left,xshift=-5pt,yshift=-2pt] {pdf\TeX で\\クロップ} (PDF with text without margin);
+\node[output node] (Bitmap) at ($(PDF with text without margin) + (0,-2)$) {ビットマップ画像\\（速度優先）};
+\draw[speed priority] (PDF with text without margin) -- node[left,align=right] {Quartz API でビットマップ化\\＋余白付与} (Bitmap);
+\node[output node] (EPS without margin) at ($(PDF with text without margin) + (5,0)$) {EPS\\（余白なし）};
+\draw[->] (PDF) -- node[right,yshift=6pt] {Ghostscript\textsuperscript{*1}} (EPS without margin.north west);
+\node[output node] (Outlined PDF without margin) at ($(EPS without margin) + (4,0)$) {アウトライン化PDF\\（余白なし）};
+\draw[->] (EPS without margin) -- node[above] {epstopdf} (Outlined PDF without margin);
+\node[output node] (Bitmap2) at ($(Outlined PDF without margin) + (7,0)$) {ビットマップ画像\\（画質優先）};
+\draw[->] (Outlined PDF without margin) -- node[above] {Quartz API でビットマップ化\\＋余白付与} (Bitmap2);
+\node[output node] (Outlined PDF with margin) at ($(Outlined PDF without margin) + (0,-2)$) {アウトライン化PDF\\（余白あり）};
+\draw[->] (Outlined PDF without margin) -- node[left] {pdf\TeX} (Outlined PDF with margin);
+\node[output node] (EPS with margin) at ($(EPS without margin) + (0,-2)$) {EPS\\（余白あり）};
+\draw[->] (EPS without margin) -- node[left] {BB編集} (EPS with margin);
+\node[relay node] (PDF2) at ($(EPS with margin) + (0,-2)$) {アウトライン化PDF\\（余白あり）};
+\draw[->] (EPS with margin) -- node[left] {epstopdf\textsuperscript{*2}} (PDF2);
+\node[output node] (Text EPS) at ($(PDF2) + (0,-2)$) {テキスト形式EPS};
+\draw[->] (PDF2) -- node[left] {pdftops\textsuperscript{*2}} (Text EPS);
+\end{tikzpicture}
+\end{center}
+
+\vspace{5mm}
+
+
+\textgt{\Large 補足事項}
+
+{\baselineskip18pt
+\begin{itemize}[leftmargin=2zw]
+\item\relax[*1] の Ghostscirpt 実行においては，Ghostscript 9.15 以上では eps2write デバイスが，それ未満では epswrite が用いられる。
+\item\relax[*1] の Ghostscirpt 実行における \texttt{-r} オプションの値は，画質優先モードでは 20016 固定，速度優先モードでは解像度レベル設定に従う。
+\item\relax[*1] の Ghostscript 実行においては，epswrite / eps2write どちらのデバイスであっても，出力される EPS の BoundingBox 値が誤っている場合がある。そこで，eps(2)write で生成されたEPSに対しては，Ghostscript の bbox デバイスで取得される BoundingBox 値によって常に上書きするようにしている。
+\item\relax[*2] の経路は Ghostscirpt 9.15 以上の環境で「テキスト形式EPS出力」を選んだときのみ実行される。Ghostscirpt 9.15 未満の場合は epswrite デバイスで得られたEPSをそのまま最終出力とする。
+\item 余白は原則としてbp単位が用いられるが，設定でpx単位を選んでいて，かつビットマップ画像出力の場合は，Quartz API によるビットマップ化実行時にpx単位の余白が付与される。
+\end{itemize}
+}
+
+\end{document}

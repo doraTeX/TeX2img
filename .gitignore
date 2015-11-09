@@ -1,4 +1,11 @@
 .DS_Store
+*.aux
+*.toc
+*.log
+*.dvi
+*.synctex
+*.synctex.gz
+*.synctex.gz(busy)
 *~.nib
 # Xcode project files except for the project file
 *.xcodeproj/*
