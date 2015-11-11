@@ -114,6 +114,7 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     printf("************************************\n");
     printf("  TeX2img settings\n");
     printf("************************************\n");
+    printf("Version: %s\n", VERSION);
     printf("Input  file: %s\n", inputFilePath.UTF8String);
 
     NSString *outputFilePath = [aProfile stringForKey:OutputFileKey];

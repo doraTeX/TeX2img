@@ -2274,6 +2274,8 @@ typedef enum {
     [output appendString:@"************************************\n"];
     [output appendString:@"  TeX2img settings\n"];
     [output appendString:@"************************************\n"];
+
+    [output appendFormat:@"Version: %@\n", [aProfile stringForKey:TeX2imgVersionKey]];
     
     NSString *outputFilePath = [aProfile stringForKey:OutputFileKey];
     [output appendFormat:@"Output file: %@\n", outputFilePath];
