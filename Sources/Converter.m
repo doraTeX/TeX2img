@@ -415,47 +415,6 @@
     return (!keepPageSizeFlag && [self isEmptyPage:pdfPath page:page] && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0)));
 }
 
-// 1ページずつのPDFを pdfTeX を用いてマージする
-- (BOOL)mergePDFFiles:(NSArray<NSString*>*)sourcePaths toPath:(NSString*)destPath
-{
-    NSString *mergeFileBasePath  = [[tempdir stringByAppendingPathComponent:tempFileBaseName] stringByAppendingString:@"-merge"];
-    NSString *mergeTeXSourcePath = [mergeFileBasePath stringByAppendingPathExtension:@"tex"];
-    NSString *mergePdfSourcePath = [mergeFileBasePath stringByAppendingPathExtension:@"pdf"];
-    NSString *mergeLogSourcePath = [mergeFileBasePath stringByAppendingPathExtension:@"log"];
-
-    __block NSMutableString *texSource = [NSMutableString stringWithString:@"\\pdfoutput=1"];
-    
-    [sourcePaths enumerateObjectsUsingBlock:^(NSString * _Nonnull pdfPath, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSString *bbStr = [[PDFPageBox pageBoxWithFilePath:pdfPath page:1] bboxStringOfBox:kCGPDFMediaBox
-                                                                                     hires:YES
-                                                                                 addHeader:YES];
-        [texSource appendFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin=-#1bp\\relax\\pdfvorigin=#2bp\\relax\\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight=\\dimexpr#4bp-#2bp\\relax}\\do\\setbox0=\\hbox{\\pdfximage page 1 mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight\\relax\\shipout\\box0\\relax", bbStr, pdfPath];
-    }];
-
-    [texSource appendString:@"\\end"];
-    
-    [fileManager removeItemAtPath:mergeTeXSourcePath error:nil];
-    [texSource writeToFile:mergeTeXSourcePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
-    
-    NSString *pdfTeXPath = [latexPath.programPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
-    
-    BOOL success = [controller execCommand:pdfTeXPath
-                               atDirectory:tempdir
-                             withArguments:@[@"-no-shell-escape", @"-interaction=batchmode", mergeTeXSourcePath.lastPathComponent]
-                                     quiet:quietFlag];
-    
-    if (success) {
-        [fileManager removeItemAtPath:destPath error:nil];
-        success = [fileManager moveItemAtPath:mergePdfSourcePath toPath:destPath error:nil];
-    }
-    
-    [fileManager removeItemAtPath:mergeTeXSourcePath error:nil];
-    [fileManager removeItemAtPath:mergeLogSourcePath error:nil];
-    
-    return success;
-
-}
-
 - (NSString*)buildCropTeXSource:(NSString*)pdfPath page:(NSUInteger)page addMargin:(BOOL)addMargin
 {
     NSInteger leftmargin   = addMargin ? leftMargin   : 0;
@@ -713,7 +672,10 @@
 	
 	[controller execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
                 atDirectory:tempdir
-              withArguments:@[@"--hires", [NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
+              withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
+                              // 10.10 以下で --hires を渡すと，その後の Quartz API での処理時に端が欠けてしまうので，10.10 以下では --nohires を渡す
+                              // https://github.com/doraTeX/TeX2img/issues/58
+                              (systemMajorVersion() >= 11) ? @"--hires" : @"--nohires",
                               epsName]
                       quiet:quietFlag];
 	return YES;
@@ -1416,9 +1378,7 @@
             
             if ([@"pdf" isEqualToString:extension]) {
                 if (outputFiles.count > 1) { // PDFマージ作業の実行
-                    // Quartz API を用いて結合すると，10.10 以下で端が欠ける現象が生じたので，pdfTeX を用いてマージするように変更。
-                    // https://github.com/doraTeX/TeX2img/issues/58
-                    success = [self mergePDFFiles:outputFiles toPath:outputFilePath];
+                    success = [[PDFDocument documentWithMergingPDFFiles:outputFiles] writeToFile:outputFilePath];
                 } else { // 結局1つしかPDFが生成しなかった場合はあえてマージしない
                     success = [self copyTargetFrom:outputFiles[0] toPath:outputFilePath];
                 }
