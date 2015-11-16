@@ -635,6 +635,7 @@ DQ
                 <outlet property="embedSourceCheckBox" destination="On1-La-dwy" id="VMh-uZ-oVY"/>
                 <outlet property="enclosedContentBackgroundColorWell" destination="mfZ-Hg-uIe" id="i7E-Dl-ef9"/>
                 <outlet property="encodingPopUpButton" destination="Gzh-vl-KcH" id="XMi-XA-snF"/>
+                <outlet property="fillColorWell" destination="OVS-E9-YmS" id="79h-j4-b18"/>
                 <outlet property="flashBackgroundCheckBox" destination="cqv-iM-ddW" id="6rE-vK-8l3"/>
                 <outlet property="flashInMovingCheckBox" destination="Bh6-7t-qwa" id="ZIU-pC-csp"/>
                 <outlet property="flashingBackgroundColorWell" destination="4xw-56-f2y" id="E1T-Hw-uar"/>
@@ -1078,6 +1079,25 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="ZPH-FD-sf5">
+                                                        <rect key="frame" x="273" y="162" width="117" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Background Color:" id="011-bR-aeH">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <colorWell id="OVS-E9-YmS">
+                                                        <rect key="frame" x="395" y="159" width="48" height="23"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <color key="color" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <connections>
+                                                            <action selector="colorSettingChanged:" target="450" id="vJG-s3-WyB"/>
+                                                        </connections>
+                                                    </colorWell>
                                                 </subviews>
                                                 <animations/>
                                             </view>
@@ -1774,7 +1794,7 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="Colors" identifier="4" id="FfZ-rW-Hp3">
                                 <view key="view" id="Ubb-r3-NuU">
-                                    <rect key="frame" x="10" y="33" width="494" height="393"/>
+                                    <rect key="frame" x="10" y="33" width="491" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="xeR-4s-N6c">

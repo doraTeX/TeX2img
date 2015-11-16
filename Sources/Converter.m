@@ -137,6 +137,7 @@
     pageBoxType = [aProfile integerForKey:PageBoxKey];
     delay = [aProfile floatForKey:DelayKey];
     loopCount = [aProfile integerForKey:LoopCountKey];
+    fillColor = [aProfile colorForKey:FillColorKey];
     useEps2WriteDeviceFlag = nil;
     additionalInputPath = nil;
     pdfInputMode = NO;
@@ -149,7 +150,6 @@
 	tempFileBaseName = [NSString stringWithFormat:@"temp%d-%@", getpid(), NSString.UUIDString];
     
     bboxDictionary = [NSMutableDictionary<NSString*,NSString*> dictionary];
-    fillColor = NSColor.yellowColor;
 	
 	return self;
 }

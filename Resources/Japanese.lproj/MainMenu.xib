@@ -963,6 +963,25 @@ DQ
                                                             </connections>
                                                         </textFieldCell>
                                                     </textField>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Gqh-Db-Ox9">
+                                                        <rect key="frame" x="277" y="168" width="53" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="背景色：" id="O4N-bC-RnA">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <colorWell id="DXG-iX-6XI">
+                                                        <rect key="frame" x="336" y="165" width="48" height="23"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <color key="color" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <connections>
+                                                            <action selector="colorSettingChanged:" target="450" id="jKo-yN-VW7"/>
+                                                        </connections>
+                                                    </colorWell>
                                                 </subviews>
                                                 <animations/>
                                             </view>
@@ -2198,6 +2217,7 @@ DQ
                 <outlet property="embedSourceCheckBox" destination="Bld-79-KdN" id="fcB-Wi-hye"/>
                 <outlet property="enclosedContentBackgroundColorWell" destination="Qkx-sU-Fa1" id="3pf-OO-73c"/>
                 <outlet property="encodingPopUpButton" destination="SEX-u4-2gO" id="9ZB-Jt-h0v"/>
+                <outlet property="fillColorWell" destination="DXG-iX-6XI" id="qHw-MT-VzP"/>
                 <outlet property="flashBackgroundCheckBox" destination="KWP-Tu-qp2" id="QJB-80-Aeu"/>
                 <outlet property="flashInMovingCheckBox" destination="pL6-0n-Zv5" id="VGF-Ti-v8p"/>
                 <outlet property="flashingBackgroundColorWell" destination="t6G-be-r7D" id="uw4-fp-ZG8"/>

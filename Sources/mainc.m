@@ -8,6 +8,7 @@
 #import "UtilityC.h"
 #import "NSString-Extension.h"
 #import "NSDictionary-Extension.h"
+#import "NSColor-Extension.h"
 
 #define OPTION_NUM 51
 #define VERSION "2.1.1b2"
@@ -969,6 +970,7 @@ int main (int argc, char *argv[]) {
         aProfile[PageBoxKey] = @(pageBoxType);
         aProfile[LoopCountKey] = @(loopCount);
         aProfile[DelayKey] = @(delay);
+        aProfile[FillColorKey] = NSColor.whiteColor.serializedString;
         
         if (!quietFlag) {
             printCurrentStatus(inputFilePath, aProfile);

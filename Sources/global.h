@@ -56,6 +56,8 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
 #define CommandCompletionKeyKey @"commandCompletionKey"
 
+#define FillColorKey @"fillColor"
+
 #define ForegroundColorKey @"foregroundColor"
 #define BackgroundColorKey @"backgroundColor"
 #define CursorColorKey @"cursorColor"
