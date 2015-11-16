@@ -1089,7 +1089,7 @@
         annotation.contents = [AnnotationHeader stringByAppendingString:contents];
         // annotation.userName にアプリ名を埋め込む方法では，なぜか Preview.app でアノテーション情報を表示させたときにクラッシュしてしまう。
         
-        [page addAnnotation:annotation];
+        [page performSelectorOnMainThread:@selector(addAnnotation:) withObject:annotation waitUntilDone:YES];
         
         [doc writeToFile:filePath];
     }
