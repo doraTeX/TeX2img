@@ -1016,7 +1016,7 @@
         }
     } else if ([@"eps" isEqualToString:extension]) { // 最終出力が EPS の場合
         // 余白を付け加えるようバウンディングボックスを改変（背景塗りを追加している場合は既に余白が付いているので除く）
-        if (topMargin + bottomMargin + leftMargin + rightMargin > 0) {
+        if (transparentFlag && (topMargin + bottomMargin + leftMargin + rightMargin > 0)) {
             [self enlargeBB:outputEpsFileName];
         }
         // テキスト形式に変更する必要がある場合
