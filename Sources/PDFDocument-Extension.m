@@ -37,4 +37,42 @@
     return [self pageAtIndex:index].pageBox;
 }
 
++ (void)fillBackgroundOfPdfFilePath:(NSString*)path withColor:(NSColor*)fillColor
+{
+    PDFDocument *doc = [PDFDocument documentWithFilePath:path];
+    NSUInteger pageCount = doc.pageCount;
+
+    CGColorRef fillColorRef;
+    
+    if ([fillColor respondsToSelector:@selector(CGColor)]) {
+        fillColorRef = fillColor.CGColor;
+    } else {
+        CGFloat components[fillColor.numberOfComponents];
+        [fillColor getComponents:(CGFloat*)&components];
+        fillColorRef = (CGColorRef)CGColorCreate(fillColor.colorSpace.CGColorSpace, components);
+    }
+
+    for (NSUInteger i = 0; i < pageCount; i++) {
+        CGPDFPageRef pdfPageRef = [doc pageAtIndex:i].pageRef;
+        const CGRect mediaBoxRect = CGPDFPageGetBoxRect(pdfPageRef, kCGPDFMediaBox);
+
+        CGContextRef contextRef = CGPDFContextCreateWithURL((CFURLRef)[NSURL fileURLWithPath:path], &mediaBoxRect, NULL);
+
+        CGPDFContextBeginPage(contextRef, NULL);
+
+        CGContextSaveGState(contextRef);
+        
+        CGContextSetFillColorWithColor(contextRef, fillColorRef);
+        CGRect drawRect = CGRectMake(mediaBoxRect.origin.x-1, mediaBoxRect.origin.y-1, mediaBoxRect.size.width+2, mediaBoxRect.size.height+2);
+        CGContextFillRect(contextRef, drawRect);
+        CGContextDrawPDFPage(contextRef, pdfPageRef);
+        
+        CGContextRestoreGState(contextRef);
+
+        CGPDFContextEndPage(contextRef);
+        CGContextRelease(contextRef);
+    }
+}
+
+
 @end

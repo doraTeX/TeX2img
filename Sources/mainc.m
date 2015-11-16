@@ -61,7 +61,7 @@ void usage()
     printf("  --pagebox BOX              : select the page box type used as the page size (media|crop|bleed|trim|art) (default: crop)\n");
     printf("\n");
     printf("Image Settings (peculiar to image formats):\n");
-    printf("  --[no-]transparent         : disable/enable transparent PNG/TIFF/GIF (default: enabled)\n");
+    printf("  --[no-]transparent         : disable/enable transparent EPS/PDF/SVG/EMF/PNG/TIFF/GIF (default: enabled)\n");
     printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
     printf("  --[no-]plain-text          : disable/enable outputting EPS as a plain text (default: disabled)\n");
     printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or animated GIF (default: disabled)\n");
