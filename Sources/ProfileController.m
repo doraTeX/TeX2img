@@ -72,7 +72,6 @@
 	[userDefaults setObject:profileNames forKey:ProfileNamesKey];
 	[userDefaults setObject:profiles forKey:ProfilesKey];
 	[userDefaults synchronize];
-    system("killall -SIGTERM cfprefsd"); // for 10.9 bug
 }
 
 

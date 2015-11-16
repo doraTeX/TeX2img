@@ -12,6 +12,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"emf"])
 #define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"emf", @"tex"])
 #define InputExtensionsArray (@[@"tex", @"pdf", @"ps", @"eps"])
+#define BitmapExtensionsArray (@[@"png", @"jpg", @"gif", @"tiff", @"bmp"])
 
 #define ProfileNamesKey @"profileNames"
 #define ProfilesKey @"profiles"
