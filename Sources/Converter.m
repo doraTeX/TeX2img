@@ -51,6 +51,7 @@
 @property (nonatomic, copy) NSMutableArray<NSNumber*> *emptyPageFlags;
 @property (nonatomic, copy) NSMutableArray<NSNumber*> *whitePageFlags;
 @property (nonatomic, copy) NSMutableDictionary<NSString*,NSString*> *bboxDictionary;
+@property (nonatomic, copy) NSColor *fillColor;
 @end
 
 @implementation Converter
@@ -89,6 +90,7 @@
 @synthesize emptyPageFlags;
 @synthesize whitePageFlags;
 @synthesize bboxDictionary;
+@synthesize fillColor;
 
 - (instancetype)initWithProfile:(Profile*)aProfile
 {
@@ -147,6 +149,7 @@
 	tempFileBaseName = [NSString stringWithFormat:@"temp%d-%@", getpid(), NSString.UUIDString];
     
     bboxDictionary = [NSMutableDictionary<NSString*,NSString*> dictionary];
+    fillColor = NSColor.whiteColor;
 	
 	return self;
 }
@@ -434,7 +437,12 @@
 
 // pdfcrop類似処理
 // page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
-- (BOOL)pdfcrop:(NSString*)pdfPath outputFileName:(NSString*)outputFileName page:(NSUInteger)page addMargin:(BOOL)addMargin useCache:(BOOL)useCache
+- (BOOL)pdfcrop:(NSString*)pdfPath
+ outputFileName:(NSString*)outputFileName
+           page:(NSUInteger)page
+      addMargin:(BOOL)addMargin
+       useCache:(BOOL)useCache
+ fillBackground:(BOOL)fillBackground
 {
     NSString *cropFileBasePath = [NSString stringWithFormat:@"%@-pdfcrop-%ld%d",
                                   [tempdir stringByAppendingPathComponent:tempFileBaseName], page, addMargin];
@@ -486,6 +494,10 @@
         } else { // 全ページクロップの場合は，他のページで再度使う場合のためにファイルを残しておく
             success = [fileManager copyItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
         }
+    }
+    
+    if (!transparentFlag && fillBackground) {
+        [PDFDocument fillBackgroundOfPdfFilePath:[tempdir stringByAppendingPathComponent:outputFileName.lastPathComponent] withColor:fillColor];
     }
     
     [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
@@ -678,7 +690,13 @@
     if (addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0)) {
         NSString *trimFileName = [NSString stringWithFormat:@"%@-trim.pdf", epsName.stringByDeletingPathExtension];
         // まず，epstopdf を使って PDF に戻し，次に，pdfcrop類似処理を使って余白を付け加える
-        return [self epstopdf:epsName outputPdfFileName:trimFileName] && [self pdfcrop:trimFileName outputFileName:outputFileName page:0 addMargin:YES useCache:NO];
+        return [self epstopdf:epsName outputPdfFileName:trimFileName] &&
+                [self pdfcrop:trimFileName
+               outputFileName:outputFileName
+                         page:0
+                    addMargin:YES
+                     useCache:NO
+               fillBackground:NO];
     } else {
         // epstopdf を使って PDF に戻すのみ
         return [self epstopdf:epsName outputPdfFileName:outputFileName];
@@ -696,7 +714,7 @@
 	
 	NSImage *backgroundImage = [[NSImage alloc] initWithSize:size];
 	[backgroundImage lockFocus];
-	[NSColor.whiteColor set];
+	[fillColor set];
 	[NSBezierPath fillRect:NSMakeRect(0, 0, size.width, size.height)];
     [srcImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
 	[backgroundImage unlockFocus];
@@ -726,7 +744,12 @@
 
 	// PDFのバウンディングボックスで切り取る
     if (crop) {
-        BOOL success = [self pdfcrop:pdfFilePath outputFileName:pdfFilePath page:0 addMargin:NO useCache:YES];
+        BOOL success = [self pdfcrop:pdfFilePath
+                      outputFileName:pdfFilePath
+                                page:0
+                           addMargin:NO
+                            useCache:YES
+                      fillBackground:NO];
         if (!success) {
             [controller showCannotOverwriteError:pdfFilePath];
             return NO;
@@ -967,13 +990,23 @@
     
     if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合，EPSからPDFに戻す（ここでpdfcrop類似処理で余白付与）
         if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は epstopdf が使えない（エラーになる）ので，そこだけpdfcrop類似処理で変換する
-            [self pdfcrop:pdfFileName outputFileName:outputFileName page:page addMargin:YES useCache:YES];
+            [self pdfcrop:pdfFileName
+           outputFileName:outputFileName
+                     page:page
+                addMargin:YES
+                 useCache:YES
+           fillBackground:NO];
         } else {
             [self eps2pdf:outputEpsFileName outputFileName:outputFileName addMargin:YES];
         }
+        // 生成したPDFに背景塗りを加える
+        if (!transparentFlag) {
+            [PDFDocument fillBackgroundOfPdfFilePath:[tempdir stringByAppendingPathComponent:outputFileName]
+                                           withColor:fillColor];
+        }
     } else if ([@"eps" isEqualToString:extension]) { // 最終出力が EPS の場合
-        // 余白を付け加えるようバウンディングボックスを改変
-        if (topMargin + bottomMargin + leftMargin + rightMargin > 0) {
+        // 余白を付け加えるようバウンディングボックスを改変（背景塗りを追加している場合は既に余白が付いているので除く）
+        if (transparentFlag && (topMargin + bottomMargin + leftMargin + rightMargin > 0)) {
             [self enlargeBB:outputEpsFileName];
         }
         // テキスト形式に変更する必要がある場合
@@ -1079,7 +1112,7 @@
         annotation.contents = [AnnotationHeader stringByAppendingString:contents];
         // annotation.userName にアプリ名を埋め込む方法では，なぜか Preview.app でアノテーション情報を表示させたときにクラッシュしてしまう。
         
-        [page addAnnotation:annotation];
+        [page performSelectorOnMainThread:@selector(addAnnotation:) withObject:annotation waitUntilDone:YES];
         
         [doc writeToFile:filePath];
     }
@@ -1270,18 +1303,25 @@
             }
         }
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPS を経由しなくてよいので，pdfcrop類似処理で直接生成する。
-        success = [self pdfcrop:pdfFilePath outputFileName:outputFileName page:1 addMargin:YES useCache:NO];
+        success = [self pdfcrop:pdfFilePath
+                 outputFileName:outputFileName
+                           page:1
+                      addMargin:YES
+                       useCache:NO
+                 fillBackground:!transparentFlag];
         [controller exitCurrentThreadIfTaskKilled];
         if (!success) {
             return success;
         }
         
         for (NSUInteger i=2; i<=pageCount; i++) {
+            NSString *thisOutputFileName = [outputFileName pathStringByAppendingPageNumber:i];
             success = [self pdfcrop:pdfFilePath
-                     outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                     outputFileName:thisOutputFileName
                                page:i
                           addMargin:YES
                            useCache:NO
+                     fillBackground:!transparentFlag
                        ];
             [controller exitCurrentThreadIfTaskKilled];
             if (!success) {
@@ -1289,51 +1329,135 @@
             }
         }
     } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
-        [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES useCache:YES];
-        [controller exitCurrentThreadIfTaskKilled];
-
-        success = [self pdf2svg:croppedPdfFilePath
-                 outputFileName:outputFileName
-                           page:1];
-        [controller exitCurrentThreadIfTaskKilled];
-        if (!success) {
-            return success;
-        }
-        
-        for (NSUInteger i=2; i<=pageCount; i++) {
+        if (transparentFlag) {
+            [self pdfcrop:pdfFilePath
+           outputFileName:croppedPdfFilePath
+                     page:0
+                addMargin:YES
+                 useCache:YES
+           fillBackground:NO];
+            [controller exitCurrentThreadIfTaskKilled];
+            
             success = [self pdf2svg:croppedPdfFilePath
-                     outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
-                               page:i];
+                     outputFileName:outputFileName
+                               page:1];
             [controller exitCurrentThreadIfTaskKilled];
             if (!success) {
                 return success;
             }
-        }
-	} else { // EPS を経由する形式(EPS/outlined-PDF/ビットマップ形式(画質優先)/EMF)の場合
-        // 最終出力が EMF の場合，まずpdfcrop類似処理をかけてBB左下を原点に持っていく
-        if ([@"emf" isEqualToString:extension]) {
-            [self pdfcrop:pdfFilePath outputFileName:croppedPdfFilePath page:0 addMargin:YES useCache:YES];
+            
+            for (NSUInteger i=2; i<=pageCount; i++) {
+                success = [self pdf2svg:croppedPdfFilePath
+                         outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                   page:i];
+                [controller exitCurrentThreadIfTaskKilled];
+                if (!success) {
+                    return success;
+                }
+            }
+        } else { // SVGの背景塗りを行う場合，背景塗りがマルチページPDFに未対応のため，1ページずつpdfcrop類似処理を分けて行い，その結果をそれぞれ mudraw にかける
+            [self pdfcrop:pdfFilePath
+           outputFileName:croppedPdfFilePath
+                     page:1
+                addMargin:YES
+                 useCache:NO
+           fillBackground:YES];
             [controller exitCurrentThreadIfTaskKilled];
-            pdfFileName = croppedPdfFilePath.lastPathComponent;
-        }
-
-        BOOL success = [self convertPDF:pdfFileName
-                      outputEpsFileName:outputEpsFileName
-                         outputFileName:outputFileName
-                                   page:1];
-        [controller exitCurrentThreadIfTaskKilled];
-        if (!success) {
-            return success;
-        }
-        
-        for (NSUInteger i=2; i<=pageCount; i++) {
-            success = [self convertPDF:pdfFileName
-                     outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
-                        outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
-                                  page:i];
+            
+            success = [self pdf2svg:croppedPdfFilePath
+                     outputFileName:outputFileName
+                               page:1];
             [controller exitCurrentThreadIfTaskKilled];
             if (!success) {
                 return success;
+            }
+            
+            for (NSUInteger i=2; i<=pageCount; i++) {
+                [self pdfcrop:pdfFilePath
+               outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
+                         page:i
+                    addMargin:YES
+                     useCache:NO
+               fillBackground:YES];
+                [controller exitCurrentThreadIfTaskKilled];
+                
+                success = [self pdf2svg:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
+                         outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                   page:1];
+                [controller exitCurrentThreadIfTaskKilled];
+                if (!success) {
+                    return success;
+                }
+            }
+        }
+	} else { // EPS を経由する形式(EPS/outlined-PDF/ビットマップ形式(画質優先)/EMF)の場合
+        if (transparentFlag) {
+            // 最終出力が EMF の場合，まずpdfcrop類似処理をかけてBB左下を原点に持っていく
+            if ([@"emf" isEqualToString:extension]) {
+                [self pdfcrop:pdfFilePath
+               outputFileName:croppedPdfFilePath
+                         page:0
+                    addMargin:YES
+                     useCache:YES
+               fillBackground:NO];
+                [controller exitCurrentThreadIfTaskKilled];
+                pdfFileName = croppedPdfFilePath.lastPathComponent;
+            }
+            
+            BOOL success = [self convertPDF:pdfFileName
+                          outputEpsFileName:outputEpsFileName
+                             outputFileName:outputFileName
+                                       page:1];
+            [controller exitCurrentThreadIfTaskKilled];
+            if (!success) {
+                return success;
+            }
+            
+            for (NSUInteger i=2; i<=pageCount; i++) {
+                success = [self convertPDF:pdfFileName
+                         outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                            outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                      page:i];
+                [controller exitCurrentThreadIfTaskKilled];
+                if (!success) {
+                    return success;
+                }
+            }
+        } else { // 背景塗りを行う場合，背景塗りがマルチページPDFに未対応のため，1ページずつpdfcrop類似処理を分けて行い，その結果をそれぞれ処理する
+            [self pdfcrop:pdfFilePath
+           outputFileName:croppedPdfFilePath
+                     page:1
+                addMargin:YES
+                 useCache:NO
+           fillBackground:YES];
+            [controller exitCurrentThreadIfTaskKilled];
+            
+            BOOL success = [self convertPDF:croppedPdfFilePath.lastPathComponent
+                          outputEpsFileName:outputEpsFileName
+                             outputFileName:outputFileName
+                                       page:1];
+            [controller exitCurrentThreadIfTaskKilled];
+            if (!success) {
+                return success;
+            }
+            
+            for (NSUInteger i=2; i<=pageCount; i++) {
+                [self pdfcrop:pdfFilePath
+               outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
+                         page:i
+                    addMargin:YES
+                     useCache:NO
+               fillBackground:YES];
+                [controller exitCurrentThreadIfTaskKilled];
+
+                success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
+                         outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                            outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                      page:1];
+                [controller exitCurrentThreadIfTaskKilled];
+                if (!success) {
+                    return success;
+                }
             }
         }
 	}
@@ -1593,6 +1717,7 @@
             if (![outputDir isEqualToString:tempdir]) {
                 [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
             }
+            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop-%ld.pdf", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-trim.pdf", basePath, i] error:nil];
         }
