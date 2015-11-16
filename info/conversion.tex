@@ -1,5 +1,5 @@
 \documentclass[uplatex,dvipdfmx,landscape]{jsarticle}
-\usepackage[dvipdfm,papersize={47cm,30cm},margin=2cm,noheadfoot]{geometry}
+\usepackage[dvipdfm,papersize={60cm,31cm},margin=2cm,noheadfoot]{geometry}
 \usepackage{metalogo}
 \newcommand*\TikZ{Ti\textit{k}Z}
 \usepackage{tikz}
@@ -45,23 +45,9 @@
 \draw[->] (EPS) --  node[above] {Ghostscript} (PDF) ;
 \draw[->] (TeX) -- ++ (1,0) to [bend left=90]  node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} ($(PDF) + (1,0)$) to (PDF) ;
 
-\node[output node] (PDF with text) at ($(PDF) + (-8,-2)$) {テキスト保持PDF\\（余白あり）};
-\draw[->] (PDF) -- node[left,align=left,xshift=-10pt] {pdf\TeX でクロップ\\＋余白付与} (PDF with text.north east);
 
-\node[output node] (Multipage PDF with text) at ($(PDF with text) + (0,-2)$) {マルチページ\\テキスト保持PDF};
-\draw[->] (PDF with text) -- node[right] {Quartz API} (Multipage PDF with text);
-
-\node[output node] (SVG) at ($(PDF with text) + (-3,-2)$) {SVG};
-\draw[->] (PDF with text.south west) -- node[left,yshift=5pt] {mudraw} (SVG.north east);
-
-\node[relay node] (EPS2) at ($(PDF with text) + (-5,0)$) {EPS};
-\draw[->] (PDF with text) -- node[above] {Ghostscript\textsuperscript{*1}} (EPS2);
-
-\node[output node] (EMF) at ($(EPS2) + (0,-2)$) {EMF};
-\draw[->] (EPS2) -- node[left] {eps2emf\\（改造版pstoedit）} (EMF);
-
-\node[relay node] (PDF with text without margin) at ($(PDF with text) + (6,0)$) {テキスト保持PDF\\（余白なし）};
-\draw[speed priority] (PDF) -- node[left,xshift=-5pt,yshift=-2pt] {pdf\TeX で\\クロップ} (PDF with text without margin);
+\node[relay node] (PDF with text without margin) at ($(PDF) + (-12,-3)$) {テキスト保持PDF\\（余白なし）};
+\draw[speed priority] (PDF) -- node[left,xshift=-5pt,yshift=9pt] {pdf\TeX で\\クロップ} (PDF with text without margin);
 
 \node[output node] (Bitmap) at ($(PDF with text without margin) + (0,-2)$) {ビットマップ画像\\（速度優先）};
 \draw[speed priority] (PDF with text without margin) -- node[left,align=right] {Quartz API でビットマップ化\\＋余白付与} (Bitmap);
@@ -72,30 +58,78 @@
 \node[output node] (Animation GIF) at ($(Bitmap) + (0,-2)$) {アニメーションGIF\\（速度優先）};
 \draw[speed priority] (Bitmap) -- node[right] {Quartz API} (Animation GIF);
 
-\node[output node] (EPS without margin) at ($(PDF with text without margin) + (5,0)$) {EPS\\（余白なし）};
+
+\node[output node] (PDF with text) at ($(PDF) + (-7,-3)$) {テキスト保持PDF\\（余白あり・透過）};
+\draw[->] (PDF) -- node[right,align=left,xshift=15pt,yshift=-3pt] {pdf\TeX でクロップ\\＋余白付与} (PDF with text.north east);
+
+\node[output node] (Multipage PDF with text) at ($(PDF with text) + (0,-4.5)$) {マルチページ\\テキスト保持PDF\\（透過）};
+\draw[->] (PDF with text) -- node[left] {Quartz API} (Multipage PDF with text);
+
+\node[output node] (SVG) at ($(PDF with text) + (4,-1)$) {SVG\\（透過）};
+\draw[->] (PDF with text) -- node[right,xshift=-8pt,yshift=6pt] {mudraw} (SVG);
+
+\node[relay node] (EPS2) at ($(PDF with text) + (4,-2.5)$) {EPS\\（透過）};
+\draw[->] (PDF with text) -- node[below,xshift=-18pt,yshift=-4pt] {Ghostscript\textsuperscript{*1}} (EPS2);
+
+\node[output node] (EMF) at ($(EPS2) + (0,-2)$) {EMF\\（透過）};
+\draw[->] (EPS2) -- node[left,align=right] {eps2emf\\（改造版pstoedit）} (EMF);
+
+\node[output node] (Filled PDF with text) at ($(PDF with text) + (10,0)$) {テキスト保持PDF\\（余白あり・非透過）};
+\draw[->] (PDF with text) --node[above] {Quartz API で\\背景塗り} (Filled PDF with text);
+
+\node[output node] (Filled Multipage PDF with text) at ($(Filled PDF with text) + (0,-4.5)$) {マルチページ\\テキスト保持PDF\\（非透過）};
+\draw[->] (Filled PDF with text) -- node[right] {Quartz API} (Filled Multipage PDF with text);
+
+
+\node[output node] (Filled SVG) at ($(Filled PDF with text) + (-4,-1)$) {SVG\\（非透過）};
+\draw[->] (Filled PDF with text) -- node[left,xshift=8pt,yshift=6pt] {mudraw} (Filled SVG);
+
+\node[relay node] (Filled EPS2) at ($(Filled PDF with text) + (-4,-2.5)$) {EPS\\（非透過）};
+\draw[->] (Filled PDF with text) -- node[below,xshift=18pt,yshift=-4pt] {Ghostscript\textsuperscript{*1}} (Filled EPS2);
+
+\node[output node] (Filled EMF) at ($(Filled EPS2) + (0,-2)$) {EMF\\（非透過）};
+\draw[->] (Filled EPS2) -- node[right,align=left] {eps2emf\\（改造版pstoedit）} (Filled EMF);
+
+
+
+
+\node[output node] (EPS without margin) at ($(Filled PDF with text) + (5,0)$) {EPS\\（余白なし・透過）};
 \draw[->] (PDF) -- node[right,yshift=6pt] {Ghostscript\textsuperscript{*1}} (EPS without margin.north west);
 
-\node[output node] (Outlined PDF without margin) at ($(EPS without margin) + (4,0)$) {アウトライン化PDF\\（余白なし）};
+\node[output node] (Outlined PDF without margin) at ($(EPS without margin) + (6,0)$) {アウトライン化PDF\\（余白なし・透過）};
 \draw[->] (EPS without margin) -- node[above] {epstopdf\textsuperscript{*3}} (Outlined PDF without margin);
 
-\node[output node] (Bitmap2) at ($(Outlined PDF without margin) + (7.5,0)$) {ビットマップ画像\\（画質優先）};
-\draw[->] (Outlined PDF without margin) -- node[above] {Quartz API でビットマップ化\\＋余白付与} (Bitmap2);
+\node[output node] (Bitmap2) at ($(Outlined PDF without margin) + (0,3)$) {ビットマップ画像\\（画質優先）};
+\draw[->] (Outlined PDF without margin) -- node[right,align=left] {Quartz API でビットマップ化\\＋余白付与} (Bitmap2);
 
-\node[output node] (Multipage TIFF 2) at ($(Bitmap2) + (-2,-2)$) {マルチページTIFF\\（画質優先）};
-\draw[->] (Bitmap2.south west) -- node[left,yshift=5pt] {tiffcp} (Multipage TIFF 2);
+\node[output node] (Multipage TIFF 2) at ($(Bitmap2) + (-2,2)$) {マルチページTIFF\\（画質優先）};
+\draw[->] (Bitmap2.north west) -- node[left,yshift=-5pt] {tiffcp} (Multipage TIFF 2);
 
-\node[output node] (Animation GIF 2) at ($(Bitmap2) + (2,-2)$) {アニメーションGIF\\（画質優先）};
-\draw[->] (Bitmap2.south east) -- node[right,yshift=5pt] {Quartz API} (Animation GIF 2);
+\node[output node] (Animation GIF 2) at ($(Bitmap2) + (2,2)$) {アニメーションGIF\\（画質優先）};
+\draw[->] (Bitmap2.north east) -- node[right,yshift=-5pt] {Quartz API} (Animation GIF 2);
 
-\node[output node] (Outlined PDF with margin) at ($(Outlined PDF without margin) + (0,-2)$) {アウトライン化PDF\\（余白あり）};
+\node[output node] (Outlined PDF with margin) at ($(Outlined PDF without margin) + (0,-3)$) {アウトライン化PDF\\（余白あり・透過）};
 \draw[->] (Outlined PDF without margin) -- node[left] {pdf\TeX} (Outlined PDF with margin);
 
-\node[output node] (Multipage Outlined PDF) at ($(Outlined PDF with margin) + (0,-2)$) {マルチページ\\アウトライン化PDF};
+
+\node[output node] (Filled Outlined PDF without margin) at ($(Outlined PDF without margin) + (6,0)$) {アウトライン化PDF\\（余白なし・非透過）};
+\draw[->] (Outlined PDF without margin) -- node[above] {Quartz APIで\\背景塗り} (Filled Outlined PDF without margin);
+
+\node[output node] (Filled Outlined PDF with margin) at ($(Filled Outlined PDF without margin) + (0,-3)$) {アウトライン化PDF\\（余白あり・非透過）};
+\draw[->] (Outlined PDF with margin) --node[above] {Quartz APIで\\背景塗り} (Filled Outlined PDF with margin);
+
+
+\node[output node] (Multipage Outlined PDF) at ($(Outlined PDF with margin) + (0,-3)$) {マルチページ\\アウトライン化PDF\\（透過）};
 \draw[->] (Outlined PDF with margin) -- node[left] {Quartz API} (Multipage Outlined PDF);
-\draw[->] (Outlined PDF without margin.south east) to [bend left=45] node[right] {Quartz API} (Multipage Outlined PDF.north east);
+\draw[->] (Outlined PDF without margin.south west) to [bend right=45] node[left] {Quartz API} (Multipage Outlined PDF.north west);
+
+\node[output node] (Filled Multipage Outlined PDF) at ($(Filled Outlined PDF with margin) + (0,-3)$) {マルチページ\\アウトライン化PDF\\（非透過）};
+\draw[->] (Filled Outlined PDF with margin) -- node[left] {Quartz API} (Filled Multipage Outlined PDF);
+\draw[->] (Filled Outlined PDF without margin.south east) to [bend left=45] node[right] {Quartz API} (Filled Multipage Outlined PDF.north east);
 
 \node[output node] (EPS with margin) at ($(EPS without margin) + (0,-2)$) {EPS\\（余白あり）};
 \draw[->] (EPS without margin) -- node[left] {BB編集} (EPS with margin);
+\draw[->] (Filled PDF with text) -- node[left,yshift=-5pt] {Ghostscript\textsuperscript{*1}} (EPS with margin);
 
 \node[relay node] (PDF2) at ($(EPS with margin) + (0,-2)$) {アウトライン化PDF\\（余白あり）};
 \draw[->] (EPS with margin) -- node[left] {epstopdf\textsuperscript{*2}} (PDF2);
