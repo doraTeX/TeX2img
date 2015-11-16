@@ -14,16 +14,18 @@
 \tikzset{input node/.style={draw,rectangle,ultra thick,fill=blue!30!white}}
 \tikzset{relay node/.style={draw,rectangle,fill=red!20!white}}
 \tikzset{output node/.style={draw,rectangle,double,outer sep=1pt,fill=green!30!white}}
-\tikzset{speed priority/.style={->,>={Stealth[scale=1.2]},dashed,thick}}
+\tikzset{speed priority/.style={->,>={Stealth[scale=1.2]},dashed,thick,color=blue}}
+\tikzset{fill background/.style={->,>={Stealth[scale=1.2]},dashed,thick,color=red}}
 \tikzset{legend box/.style={minimum width=1cm,minimum height=\baselineskip}}
 
 {\fboxsep8pt
-\fbox{\parbox{20zw}{\baselineskip18pt\lineskiplimit12pt\lineskip4pt
+\fbox{\parbox{26zw}{\baselineskip20pt\lineskiplimit12pt\lineskip4pt
 {\Large\textgt{凡例}}\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,input node] {};}\hspace{1zw}入力ファイル\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,relay node] {};}\hspace{1zw}中間ファイル\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,output node] {};}\hspace{1zw}出力ファイル\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[speed priority](0,0) -- (1,0);}\hspace{1zw}速度優先モードのみでの経路\par
+\makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[fill background](0,0) -- (1,0);}\hspace{1zw}非透過アウトライン化PDF生成時のみの経路\par
 }}}
 
 \vspace{-4cm}
@@ -43,7 +45,8 @@
 
 \node[input node] (EPS) at ($(PDF) + (-4,0)$) {EPS};
 \draw[->] (EPS) --  node[above] {Ghostscript} (PDF) ;
-\draw[->] (TeX) -- ++ (1,0) to [bend left=90]  node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} ($(PDF) + (1,0)$) to (PDF) ;
+\coordinate (right of PDF) at ($(PDF.north east) + (1,-0.1)$);
+\draw[->] (TeX) --  (TeX -| right of PDF) to [bend left=90]  node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} (right of PDF) to (PDF.north east |- right of PDF) ;
 
 
 \node[relay node] (PDF with text without margin) at ($(PDF) + (-12,-3)$) {テキスト保持PDF\\（余白なし）};
@@ -75,7 +78,7 @@
 \draw[->] (EPS2) -- node[left,align=right] {eps2emf\\（改造版pstoedit）} (EMF);
 
 \node[output node] (Filled PDF with text) at ($(PDF with text) + (10,0)$) {テキスト保持PDF\\（余白あり・非透過）};
-\draw[->] (PDF with text) --node[above] {Quartz API で\\背景塗り} (Filled PDF with text);
+\draw[->] (PDF with text) --node[above] {Quartz API で背景塗り} (Filled PDF with text);
 
 \node[output node] (Filled Multipage PDF with text) at ($(Filled PDF with text) + (0,-4.5)$) {マルチページ\\テキスト保持PDF\\（非透過）};
 \draw[->] (Filled PDF with text) -- node[right] {Quartz API} (Filled Multipage PDF with text);
@@ -95,6 +98,10 @@
 
 \node[output node] (EPS without margin) at ($(Filled PDF with text) + (5,0)$) {EPS\\（余白なし・透過）};
 \draw[->] (PDF) -- node[right,yshift=6pt] {Ghostscript\textsuperscript{*1}} (EPS without margin.north west);
+
+\node[relay node] (PDF with text 2) at ($(EPS without margin) + (0,3)$) {テキスト保持PDF\\（余白なし・透過・単一ページ）};
+\draw[fill background] (PDF) -- node[above] {pdf\TeX} (PDF with text 2);
+\draw[fill background] (PDF with text 2) -- node[right] {Ghostscript\textsuperscript{*1}} (EPS without margin);
 
 \node[output node] (Outlined PDF without margin) at ($(EPS without margin) + (6,0)$) {アウトライン化PDF\\（余白なし・透過）};
 \draw[->] (EPS without margin) -- node[above] {epstopdf\textsuperscript{*3}} (Outlined PDF without margin);
@@ -148,7 +155,7 @@
 {\baselineskip18pt
 \begin{itemize}[leftmargin=2zw]
 \item\relax[*1]のGhostscirpt実行においては，Ghostscript 9.15以上ではeps2writeデバイスが，それ未満ではepswriteが用いられる。
-\item\relax[*1]のGhostscirpt実行における\texttt{-r}オプションの値は，画質優先モードでは20016固定，速度優先モードでは解像度レベル設定に従う。
+\item\relax[*1]のGhostscirpt実行における \texttt{-r} オプションの値は，画質優先モードでは20016固定，速度優先モードでは解像度レベル設定に従う。
 \item\relax[*1]のGhostscript実行においては，epswrite / eps2writeどちらのデバイスであっても，出力されるEPSのBoundingBox値が誤っている場合がある。そこで，eps(2)writeで生成されたEPSに対しては，Ghostscriptのbboxデバイスで取得されるBoundingBox値によって常に上書きするようにしている。
 \item 「元のページサイズを維持」がONの場合，[*1]のGhostscript実行においては，出力されるEPSのBB値を，変換前のPDFの指定されたPageBoxの値で上書きする。
 \item 「元のページサイズを維持」がONの場合，「pdf\TeX でクロップ」の過程では，変換前のPDFの指定されたPageBox（余白付与の場合はそれに余白を加えたもの）をMediaBoxにしたPDF（左下が原点，他のBoxは非明示）を生成する。
