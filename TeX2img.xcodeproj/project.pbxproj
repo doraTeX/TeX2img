@@ -35,6 +35,7 @@
 		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
 		348F29601B848C11009AA3CF /* NSPipe-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348F295F1B848C11009AA3CF /* NSPipe-Extension.m */; };
 		348F29611B848C68009AA3CF /* NSPipe-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348F295F1B848C11009AA3CF /* NSPipe-Extension.m */; };
+		349276B01BFA19FB00C0BD99 /* NSColor-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.m */; };
 		349564B81ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
 		349564B91ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
 		349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349927381B786546009BD5F1 /* MyGlyphPopoverController.m */; };
@@ -524,6 +525,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				348F29611B848C68009AA3CF /* NSPipe-Extension.m in Sources */,
+				349276B01BFA19FB00C0BD99 /* NSColor-Extension.m in Sources */,
 				34BFF6DC1B9F240A00E8DE77 /* PDFPage-Extension.m in Sources */,
 				34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */,
 				349564B91ABFF3D1004B9C1D /* Utility.m in Sources */,

@@ -1434,39 +1434,77 @@
                 }
             }
         } else { // 背景塗りを行う場合，背景塗りがマルチページPDFに未対応のため，1ページずつpdfcrop類似処理を分けて行い，その結果をそれぞれ処理する
-            [self pdfcrop:pdfFilePath
-           outputFileName:croppedPdfFilePath
-                     page:1
-                addMargin:YES
-                 useCache:NO
-           fillBackground:YES];
-            [controller exitCurrentThreadIfTaskKilled];
-            
-            BOOL success = [self convertPDF:croppedPdfFilePath.lastPathComponent
-                          outputEpsFileName:outputEpsFileName
-                             outputFileName:outputFileName
-                                       page:1];
-            [controller exitCurrentThreadIfTaskKilled];
-            if (!success) {
-                return success;
-            }
-            
-            for (NSUInteger i=2; i<=pageCount; i++) {
+            if ([@"eps" isEqualToString:extension]) { // 背景塗りのある EPS 画像生成の場合
                 [self pdfcrop:pdfFilePath
-               outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
-                         page:i
+               outputFileName:croppedPdfFilePath
+                         page:1
                     addMargin:YES
                      useCache:NO
                fillBackground:YES];
                 [controller exitCurrentThreadIfTaskKilled];
-
-                success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
-                         outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
-                            outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
-                                      page:1];
+                
+                BOOL success = [self convertPDF:croppedPdfFilePath.lastPathComponent
+                              outputEpsFileName:outputEpsFileName
+                                 outputFileName:outputFileName
+                                           page:1];
                 [controller exitCurrentThreadIfTaskKilled];
                 if (!success) {
                     return success;
+                }
+                
+                for (NSUInteger i=2; i<=pageCount; i++) {
+                    [self pdfcrop:pdfFilePath
+                   outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
+                             page:i
+                        addMargin:YES
+                         useCache:NO
+                   fillBackground:YES];
+                    [controller exitCurrentThreadIfTaskKilled];
+                    
+                    success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
+                             outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                                outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                          page:1];
+                    [controller exitCurrentThreadIfTaskKilled];
+                    if (!success) {
+                        return success;
+                    }
+                }
+            } else { // 背景塗りのある PDF / ビットマップ画像生成の場合
+                [self pdfcrop:pdfFilePath
+               outputFileName:croppedPdfFilePath
+                         page:1
+                    addMargin:NO
+                     useCache:NO
+               fillBackground:NO];
+                [controller exitCurrentThreadIfTaskKilled];
+
+                BOOL success = [self convertPDF:croppedPdfFilePath.lastPathComponent
+                              outputEpsFileName:outputEpsFileName
+                                 outputFileName:outputFileName
+                                           page:1];
+                [controller exitCurrentThreadIfTaskKilled];
+                if (!success) {
+                    return success;
+                }
+                
+                for (NSUInteger i=2; i<=pageCount; i++) {
+                    [self pdfcrop:pdfFilePath
+                   outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
+                             page:i
+                        addMargin:NO
+                         useCache:NO
+                   fillBackground:NO];
+                    [controller exitCurrentThreadIfTaskKilled];
+
+                    success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
+                             outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                                outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                          page:1];
+                    [controller exitCurrentThreadIfTaskKilled];
+                    if (!success) {
+                        return success;
+                    }
                 }
             }
         }
@@ -1758,55 +1796,59 @@
     }
 }
 
-- (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath
+- (BOOL)compileAndConvertWithInputPathWithoutAutoReleasePool:(NSString*)sourcePath
 {
-    @autoreleasepool {
-        BOOL isDir;
-        if ([fileManager fileExistsAtPath:sourcePath isDirectory:&isDir] && isDir) {
+    BOOL isDir;
+    if ([fileManager fileExistsAtPath:sourcePath isDirectory:&isDir] && isDir) {
+        [controller showFileFormatError:sourcePath];
+        [controller generationDidFinish];
+        return NO;
+    }
+    
+    NSString *ext = sourcePath.pathExtension.lowercaseString;
+    pdfInputMode = [ext isEqualToString:@"pdf"];
+    psInputMode = [ext isEqualToString:@"ps"] || [ext isEqualToString:@"eps"];
+    
+    if (pdfInputMode) {
+        // PDFの書式チェック
+        if (![PDFDocument documentWithFilePath:sourcePath]) {
             [controller showFileFormatError:sourcePath];
             [controller generationDidFinish];
             return NO;
         }
         
-        NSString *ext = sourcePath.pathExtension.lowercaseString;
-        pdfInputMode = [ext isEqualToString:@"pdf"];
-        psInputMode = [ext isEqualToString:@"ps"] || [ext isEqualToString:@"eps"];
-        
-        if (pdfInputMode) {
-            // PDFの書式チェック
-            if (![PDFDocument documentWithFilePath:sourcePath]) {
-                [controller showFileFormatError:sourcePath];
-                [controller generationDidFinish];
-                return NO;
-            }
-
-            NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-            if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
-                [controller showFileGenerationError:tempPdfFilePath];
-                [controller generationDidFinish];
-                return NO;
-            }
-        } else if (psInputMode) {
-            NSString *tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-            if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
-                [controller showFileGenerationError:tempPsFilePath];
-                [controller generationDidFinish];
-                return NO;
-            }
-        } else {
-            NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-            if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
-                [controller showFileGenerationError:tempTeXFilePath];
-                [controller generationDidFinish];
-                return NO;
-            }
+        NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+        if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
+            [controller showFileGenerationError:tempPdfFilePath];
+            [controller generationDidFinish];
+            return NO;
         }
-        
-        additionalInputPath = getFullPath(sourcePath.stringByDeletingLastPathComponent);
-        
-        return [self compileAndConvertWithCheck];
+    } else if (psInputMode) {
+        NSString *tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+        if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
+            [controller showFileGenerationError:tempPsFilePath];
+            [controller generationDidFinish];
+            return NO;
+        }
+    } else {
+        NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+        if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
+            [controller showFileGenerationError:tempTeXFilePath];
+            [controller generationDidFinish];
+            return NO;
+        }
     }
+    
+    additionalInputPath = getFullPath(sourcePath.stringByDeletingLastPathComponent);
+    
+    return [self compileAndConvertWithCheck];
 }
 
+- (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath
+{
+    @autoreleasepool {
+        return [self compileAndConvertWithInputPathWithoutAutoReleasePool:sourcePath];
+    }
+}
 
 @end
