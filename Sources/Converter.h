@@ -34,7 +34,6 @@
 @interface Converter : NSObject
 + (instancetype)converterWithProfile:(Profile*)aProfile;
 - (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath;
-- (BOOL)compileAndConvertWithInputPathWithoutAutoReleasePool:(NSString*)sourcePath;
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr;
 - (BOOL)compileAndConvertWithBody:(NSString*)texBodyStr;
 - (NSUInteger)pageCount;

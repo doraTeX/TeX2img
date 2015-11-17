@@ -1112,10 +1112,7 @@
         annotation.contents = [AnnotationHeader stringByAppendingString:contents];
         // annotation.userName にアプリ名を埋め込む方法では，なぜか Preview.app でアノテーション情報を表示させたときにクラッシュしてしまう。
         
-        // このあたりがメモリの過剰解放を引き起こすが，対策が分からない……。
-        // objc_overrelease_during_dealloc_error をデバッガでブレークポイントに設定して確認すること。
-        // mainc.m の main() に @autorelease をかぶせると，この影響で Segmentation fault を起こすので，あえて @autorelease を外してある。
-        [page performSelectorOnMainThread:@selector(addAnnotation:) withObject:annotation waitUntilDone:YES];
+        [page addAnnotation:annotation];
         
         [doc writeToFile:filePath];
     }
@@ -1720,58 +1717,53 @@
     }
 }
 
-- (BOOL)compileAndConvertWithInputPathWithoutAutoReleasePool:(NSString*)sourcePath
+- (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath
 {
-    BOOL isDir;
-    if ([fileManager fileExistsAtPath:sourcePath isDirectory:&isDir] && isDir) {
-        [controller showFileFormatError:sourcePath];
-        [controller generationDidFinish];
-        return NO;
-    }
-    
-    NSString *ext = sourcePath.pathExtension.lowercaseString;
-    pdfInputMode = [ext isEqualToString:@"pdf"];
-    psInputMode = [ext isEqualToString:@"ps"] || [ext isEqualToString:@"eps"];
-    
-    if (pdfInputMode) {
-        // PDFの書式チェック
-        if (![PDFDocument documentWithFilePath:sourcePath]) {
+    @autoreleasepool {
+        BOOL isDir;
+        if ([fileManager fileExistsAtPath:sourcePath isDirectory:&isDir] && isDir) {
             [controller showFileFormatError:sourcePath];
             [controller generationDidFinish];
             return NO;
         }
         
-        NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-        if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
-            [controller showFileGenerationError:tempPdfFilePath];
-            [controller generationDidFinish];
-            return NO;
+        NSString *ext = sourcePath.pathExtension.lowercaseString;
+        pdfInputMode = [ext isEqualToString:@"pdf"];
+        psInputMode = [ext isEqualToString:@"ps"] || [ext isEqualToString:@"eps"];
+        
+        if (pdfInputMode) {
+            // PDFの書式チェック
+            if (![PDFDocument documentWithFilePath:sourcePath]) {
+                [controller showFileFormatError:sourcePath];
+                [controller generationDidFinish];
+                return NO;
+            }
+            
+            NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
+                [controller showFileGenerationError:tempPdfFilePath];
+                [controller generationDidFinish];
+                return NO;
+            }
+        } else if (psInputMode) {
+            NSString *tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
+                [controller showFileGenerationError:tempPsFilePath];
+                [controller generationDidFinish];
+                return NO;
+            }
+        } else {
+            NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
+                [controller showFileGenerationError:tempTeXFilePath];
+                [controller generationDidFinish];
+                return NO;
+            }
         }
-    } else if (psInputMode) {
-        NSString *tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-        if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
-            [controller showFileGenerationError:tempPsFilePath];
-            [controller generationDidFinish];
-            return NO;
-        }
-    } else {
-        NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-        if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
-            [controller showFileGenerationError:tempTeXFilePath];
-            [controller generationDidFinish];
-            return NO;
-        }
-    }
-    
-    additionalInputPath = getFullPath(sourcePath.stringByDeletingLastPathComponent);
-    
-    return [self compileAndConvertWithCheck];
-}
-
-- (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath
-{
-    @autoreleasepool {
-        return [self compileAndConvertWithInputPathWithoutAutoReleasePool:sourcePath];
+        
+        additionalInputPath = getFullPath(sourcePath.stringByDeletingLastPathComponent);
+        
+        return [self compileAndConvertWithCheck];
     }
 }
 
