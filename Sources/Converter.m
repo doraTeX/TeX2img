@@ -1122,10 +1122,14 @@
         annotation.contents = [AnnotationHeader stringByAppendingString:contents];
         // annotation.userName にアプリ名を埋め込む方法では，なぜか Preview.app でアノテーション情報を表示させたときにクラッシュしてしまう。
         
-        // このあたりがメモリの過剰解放を引き起こすが，対策が分からない……。
-        // objc_overrelease_during_dealloc_error をデバッガでブレークポイントに設定して確認すること。
-        // mainc.m の main() に @autorelease をかぶせると，この影響で Segmentation fault を起こすので，あえて @autorelease を外してある。
-        [page performSelectorOnMainThread:@selector(addAnnotation:) withObject:annotation waitUntilDone:YES];
+        // El Capitan では，アノテーションを付けるとメモリの過剰解放を引き起こすバグがある。
+        // objc_overrelease_during_dealloc_error をデバッガでブレークポイントに設定すると確認できる。
+        // mainc.m の main() に @autorelease をかぶせると，この影響で Segmentation fault を起こすので，このバグ対策にあえて @autorelease を外してある。
+        if (systemMajorVersion() >= 11) { // for El Capitan's bug
+            [page performSelectorOnMainThread:@selector(addAnnotation:) withObject:annotation waitUntilDone:YES];
+        } else {
+            [page addAnnotation:annotation];
+        }
         
         [doc writeToFile:filePath];
     }

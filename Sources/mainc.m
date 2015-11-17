@@ -194,7 +194,7 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     printf("************************************\n\n");
 }
 
-int main (int argc, char *argv[]) {
+NSArray<id>* generateConverter (int argc, char *argv[]) {
     NSApplicationLoad(); // PDFKit を使ったときに _NXCreateWindow: error setting window property のエラーを防ぐため
     
     float resolutoinLevel = 15;
@@ -903,19 +903,19 @@ int main (int argc, char *argv[]) {
     if (!latexPath) {
         [controller showNotFoundError:latex.programName];
         suggestLatexOption();
-        return 1;
+        exit(1);
     }
     if (!dviDriverPath) {
         [controller showNotFoundError:dviDriver.programName];
-        return 1;
+        exit(1);
     }
     if (!gsPath) {
         [controller showNotFoundError:gs.programName];
-        return 1;
+        exit(1);
     }
     if (!epstopdfPath) {
         [controller showNotFoundError:@"epstopdf"];
-        return 1;
+        exit(1);
     }
     if (!mudrawPath) {
         mudrawPath = @"mudraw";
@@ -975,8 +975,31 @@ int main (int argc, char *argv[]) {
         printCurrentStatus(inputFilePath, aProfile);
     }
     
-    Converter *converter = [Converter converterWithProfile:aProfile];
+    return @[[Converter converterWithProfile:aProfile], inputFilePath];
+}
+
+int mainWithAutoReleasePool (int argc, char *argv[]) {
+    @autoreleasepool {
+        NSArray<id> *array = generateConverter(argc, argv);
+        Converter *converter = (Converter*)array[0];
+        NSString *inputFilePath = (NSString*)array[1];
+        BOOL success = [converter compileAndConvertWithInputPath:inputFilePath];
+        
+        return success ? 0 : 1;
+    }
+}
+
+int mainWithoutAutoReleasePool (int argc, char *argv[]) { // for El Capitan's bug
+    NSArray<id> *array = generateConverter(argc, argv);
+    Converter *converter = (Converter*)array[0];
+    NSString *inputFilePath = (NSString*)array[1];
     BOOL success = [converter compileAndConvertWithInputPathWithoutAutoReleasePool:inputFilePath];
     
     return success ? 0 : 1;
+}
+
+int main (int argc, char *argv[]) {
+    // El Capitan の PDFKit で PDFAnnotation が余分に解放されてしまうバグに対する対処。
+    // El Capitan では @autoreleasepool をかぶせない。
+    return (systemMajorVersion() >= 11) ? mainWithoutAutoReleasePool(argc, argv) : mainWithAutoReleasePool(argc, argv);
 }
