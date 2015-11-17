@@ -1112,6 +1112,9 @@
         annotation.contents = [AnnotationHeader stringByAppendingString:contents];
         // annotation.userName にアプリ名を埋め込む方法では，なぜか Preview.app でアノテーション情報を表示させたときにクラッシュしてしまう。
         
+        // このあたりがメモリの過剰解放を引き起こすが，対策が分からない……。
+        // objc_overrelease_during_dealloc_error をデバッガでブレークポイントに設定して確認すること。
+        // mainc.m の main() に @autorelease をかぶせると，この影響で Segmentation fault を起こすので，あえて @autorelease を外してある。
         [page performSelectorOnMainThread:@selector(addAnnotation:) withObject:annotation waitUntilDone:YES];
         
         [doc writeToFile:filePath];
@@ -1290,13 +1293,7 @@
     
     // 最終出力がビットマップ形式で「速度優先」の場合は，PDFからQuartzで直接変換
     if ([@[@"jpg", @"png", @"gif", @"tiff", @"bmp"] containsObject:extension] && speedPriorityMode) {
-        success = [self pdf2image:pdfFilePath outputFileName:outputFileName page:1 crop:YES];
-        [controller exitCurrentThreadIfTaskKilled];
-        if (!success) {
-            return success;
-        }
-        
-        for (NSUInteger i=2; i<=pageCount; i++) {
+        for (NSUInteger i=1; i<=pageCount; i++) {
             success = [self pdf2image:pdfFilePath outputFileName:[outputFileName pathStringByAppendingPageNumber:i] page:i crop:YES];
             [controller exitCurrentThreadIfTaskKilled];
             if (!success) {
@@ -1305,21 +1302,9 @@
         }
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPS を経由しなくてよいので，pdfcrop類似処理で直接生成する。
         // 1ページずつバラバラにpdfcrop類似処理にかける
-        success = [self pdfcrop:pdfFilePath
-                 outputFileName:outputFileName
-                           page:1
-                      addMargin:YES
-                       useCache:NO
-                 fillBackground:!transparentFlag];
-        [controller exitCurrentThreadIfTaskKilled];
-        if (!success) {
-            return success;
-        }
-        
-        for (NSUInteger i=2; i<=pageCount; i++) {
-            NSString *thisOutputFileName = [outputFileName pathStringByAppendingPageNumber:i];
+        for (NSUInteger i=1; i<=pageCount; i++) {
             success = [self pdfcrop:pdfFilePath
-                     outputFileName:thisOutputFileName
+                     outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                page:i
                           addMargin:YES
                            useCache:NO
@@ -1342,15 +1327,7 @@
             [controller exitCurrentThreadIfTaskKilled];
             
             // クロップ済みPDFから1ページずつ mudraw にかけてSVGを生成
-            success = [self pdf2svg:croppedPdfFilePath
-                     outputFileName:outputFileName
-                               page:1];
-            [controller exitCurrentThreadIfTaskKilled];
-            if (!success) {
-                return success;
-            }
-            
-            for (NSUInteger i=2; i<=pageCount; i++) {
+            for (NSUInteger i=1; i<=pageCount; i++) {
                 success = [self pdf2svg:croppedPdfFilePath
                          outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                    page:i];
@@ -1370,15 +1347,7 @@
             [controller exitCurrentThreadIfTaskKilled];
             
             // クロップ済み単一ページPDFを mudraw にかけてSVGを生成
-            success = [self pdf2svg:croppedPdfFilePath
-                     outputFileName:outputFileName
-                               page:1];
-            [controller exitCurrentThreadIfTaskKilled];
-            if (!success) {
-                return success;
-            }
-            
-            for (NSUInteger i=2; i<=pageCount; i++) {
+            for (NSUInteger i=1; i<=pageCount; i++) {
                 [self pdfcrop:pdfFilePath
                outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
                          page:i
@@ -1410,16 +1379,7 @@
                 pdfFileName = croppedPdfFilePath.lastPathComponent;
             }
             
-            BOOL success = [self convertPDF:pdfFileName
-                          outputEpsFileName:outputEpsFileName
-                             outputFileName:outputFileName
-                                       page:1];
-            [controller exitCurrentThreadIfTaskKilled];
-            if (!success) {
-                return success;
-            }
-            
-            for (NSUInteger i=2; i<=pageCount; i++) {
+            for (NSUInteger i=1; i<=pageCount; i++) {
                 success = [self convertPDF:pdfFileName
                          outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                             outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
@@ -1431,26 +1391,8 @@
             }
         } else { // 背景塗りを行うベクター画像出力場合，背景塗りがマルチページPDFに未対応のため，1ページずつpdfcrop類似処理を分けて行い，その結果をそれぞれ処理する
             if ([@"eps" isEqualToString:extension]) { // 背景塗りのある EPS 画像生成の場合
-                // まずはpdfcrop類似処理で余白ありテキスト保持PDFを作り，その背景を塗る
-                [self pdfcrop:pdfFilePath
-               outputFileName:croppedPdfFilePath
-                         page:1
-                    addMargin:YES
-                     useCache:NO
-               fillBackground:YES];
-                [controller exitCurrentThreadIfTaskKilled];
-                
-                // 次に余白あり・背景塗りあり・単一ページのテキスト保持PDFを，Ghostscript でEPSに変換する
-                BOOL success = [self convertPDF:croppedPdfFilePath.lastPathComponent
-                              outputEpsFileName:outputEpsFileName
-                                 outputFileName:outputFileName
-                                           page:1];
-                [controller exitCurrentThreadIfTaskKilled];
-                if (!success) {
-                    return success;
-                }
-                
-                for (NSUInteger i=2; i<=pageCount; i++) {
+                for (NSUInteger i=1; i<=pageCount; i++) {
+                    // まずはpdfcrop類似処理で余白ありテキスト保持PDFを作り，その背景を塗る
                     [self pdfcrop:pdfFilePath
                    outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
                              page:i
@@ -1459,6 +1401,7 @@
                    fillBackground:YES];
                     [controller exitCurrentThreadIfTaskKilled];
                     
+                    // 次に余白あり・背景塗りあり・単一ページのテキスト保持PDFを，Ghostscript でEPSに変換する
                     success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
                              outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                                 outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
@@ -1469,26 +1412,8 @@
                     }
                 }
             } else if ([@"pdf" isEqualToString:extension]) { // 背景塗りのあるPDF生成の場合
-                // まずはpdfcrop類似処理で余白なし・テキスト保持・単一ページPDFを切り出す
-                [self pdfcrop:pdfFilePath
-               outputFileName:croppedPdfFilePath
-                         page:1
-                    addMargin:NO
-                     useCache:NO
-               fillBackground:NO];
-                [controller exitCurrentThreadIfTaskKilled];
-                
-                // 次に余白なし・背景塗りなし・単一ページのテキスト保持PDFを，-[Ghostscript]→余白なし透過EPS-[epstopdf]→余白なし透過アウトライン化PDF→……と処理する
-                BOOL success = [self convertPDF:croppedPdfFilePath.lastPathComponent
-                              outputEpsFileName:outputEpsFileName
-                                 outputFileName:outputFileName
-                                           page:1];
-                [controller exitCurrentThreadIfTaskKilled];
-                if (!success) {
-                    return success;
-                }
-                
-                for (NSUInteger i=2; i<=pageCount; i++) {
+                for (NSUInteger i=1; i<=pageCount; i++) {
+                    // まずはpdfcrop類似処理で余白なし・テキスト保持・単一ページPDFを切り出す
                     [self pdfcrop:pdfFilePath
                    outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
                              page:i
@@ -1497,6 +1422,7 @@
                    fillBackground:NO];
                     [controller exitCurrentThreadIfTaskKilled];
 
+                    // 次に余白なし・背景塗りなし・単一ページのテキスト保持PDFを，-[Ghostscript]→余白なし透過EPS-[epstopdf]→余白なし透過アウトライン化PDF→……と処理する
                     success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
                              outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                                 outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
@@ -1507,26 +1433,8 @@
                     }
                 }
             } else if ([@"emf" isEqualToString:extension]) { // 背景塗りのあるEMF生成の場合
-                // まずはpdfcrop類似処理で余白あり・背景塗りあり・テキスト保持・単一ページPDFを切り出す
-                [self pdfcrop:pdfFilePath
-               outputFileName:croppedPdfFilePath
-                         page:1
-                    addMargin:YES
-                     useCache:NO
-               fillBackground:YES];
-                [controller exitCurrentThreadIfTaskKilled];
-                
-                // 次に余白あり・背景塗りあり・テキスト保持・単一ページPDFを，-[Ghostscript]→余白あり非透過EPS-[pstoedit]→余白あり非透過EMF と変換する
-                BOOL success = [self convertPDF:croppedPdfFilePath.lastPathComponent
-                              outputEpsFileName:outputEpsFileName
-                                 outputFileName:outputFileName
-                                           page:1];
-                [controller exitCurrentThreadIfTaskKilled];
-                if (!success) {
-                    return success;
-                }
-                
-                for (NSUInteger i=2; i<=pageCount; i++) {
+                for (NSUInteger i=1; i<=pageCount; i++) {
+                    // まずはpdfcrop類似処理で余白あり・背景塗りあり・テキスト保持・単一ページPDFを切り出す
                     [self pdfcrop:pdfFilePath
                    outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
                              page:i
@@ -1535,6 +1443,7 @@
                    fillBackground:YES];
                     [controller exitCurrentThreadIfTaskKilled];
                     
+                    // 次に余白あり・背景塗りあり・テキスト保持・単一ページPDFを，-[Ghostscript]→余白あり非透過EPS-[pstoedit]→余白あり非透過EMF と変換する
                     success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
                              outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                                 outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
@@ -1553,11 +1462,7 @@
         // 実際に生成したファイルのパスを集める
         NSMutableArray<NSString*> *outputFiles = [NSMutableArray<NSString*> array];
         
-        if (![emptyPageFlags[0] boolValue]) {
-            [outputFiles addObject:[tempdir stringByAppendingPathComponent:outputFileName]];
-        }
-        
-        for (NSUInteger i=2; i<=pageCount; i++) {
+        for (NSUInteger i=1; i<=pageCount; i++) {
             if (![emptyPageFlags[i-1] boolValue]) {
                 [outputFiles addObject:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]];
             }
@@ -1618,16 +1523,7 @@
 
     } else { // バラバラ出力の場合
         // 最終出力ファイルを目的地へコピー
-        if (![emptyPageFlags[0] boolValue]) {
-            success = [self copyTargetFrom:[tempdir stringByAppendingPathComponent:outputFileName] toPath:outputFilePath];
-            if (success) {
-                [self embedSource:texFilePath intoFile:outputFilePath];
-            } else {
-                return NO;
-            }
-        }
-        
-        for (NSUInteger i=2; i<=pageCount; i++) {
+        for (NSUInteger i=1; i<=pageCount; i++) {
             if (![emptyPageFlags[i-1] boolValue]) {
                 NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
                 success = [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
@@ -1646,11 +1542,7 @@
             [pboard declareTypes:@[NSURLPboardType] owner:nil];
             NSMutableArray<NSURL*> *outputFiles = [NSMutableArray<NSURL*> array];
             
-            if (![emptyPageFlags[0] boolValue]) {
-                [outputFiles addObject:[NSURL fileURLWithPath:outputFilePath]];
-            }
-            
-            for (NSUInteger i=2; i<=pageCount; i++) {
+            for (NSUInteger i=1; i<=pageCount; i++) {
                 if (![emptyPageFlags[i-1] boolValue]) {
                     [outputFiles addObject:[NSURL fileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
                 }
@@ -1706,10 +1598,7 @@
     if ([@[@"pdf", @"tiff", @"gif"] containsObject:extension] && mergeOutputsFlag && (generatedPageCount > 0)) {
         [generatedFiles addObject:outputFilePath];
     } else {
-        if (![emptyPageFlags[0] boolValue]) {
-            [generatedFiles addObject:outputFilePath];
-        }
-        for (NSUInteger i=2; i<=pageCount; i++) {
+        for (NSUInteger i=1; i<=pageCount; i++) {
             if (![emptyPageFlags[i-1] boolValue]) {
                 [generatedFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
             }
@@ -1796,10 +1685,7 @@
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-01.pdf", basePath] error:nil];
         
         NSString *outputDir = [outputFilePath.stringByDeletingLastPathComponent stringByAppendingString:@"/"];
-        if (![outputDir isEqualToString:tempdir]) {
-            [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:outputFileName] error:nil];
-        }
-        for (NSUInteger i=2; i<=pageCount; i++) {
+        for (NSUInteger i=1; i<=pageCount; i++) {
             if (![outputDir isEqualToString:tempdir]) {
                 [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
             }
