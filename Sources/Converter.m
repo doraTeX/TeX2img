@@ -1291,10 +1291,11 @@
     //
     // 【gsを通す経路】
     //  4. 画質優先モードでのビットマップ生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ]→ EPS →[epstopdf(gs)]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JEPG/PNG/GIF/TIFF/BMP)
-    //  5. アウトライン化PDF生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[epstopdf(gs)]→ PDF →[pdfcrop類似処理で余白付与]→ PDF)
-    //  6. アウトライン化EPS（バイナリ形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS)
-    //  7. アウトライン化EPS（テキスト形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS →[epstopdf(gs)]→ PDF →[pdftops]→ EPS)
-    //  8. アウトライン化EMF生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[pstoedit] → EMF)
+    //  5. 透過アウトライン化PDF生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[epstopdf(gs)]→ PDF →[pdfcrop類似処理で余白付与]→ PDF)
+    //  6. 非透過アウトライン化PDF生成 (PDF →[pdfcrop類似処理でクロップ]→ PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[epstopdf(gs)]→ PDF →[pdfcrop類似処理で余白付与]→ PDF)
+    //  7. アウトライン化EPS（バイナリ形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS)
+    //  8. アウトライン化EPS（テキスト形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS →[epstopdf(gs)]→ PDF →[pdftops]→ EPS)
+    //  9. アウトライン化EMF生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[pstoedit] → EMF)
     // [*1] このgsによるアウトライン化は，画質優先モードの場合は -r20016 固定，速度優先モードの場合は解像度レベル設定に従う
     
     // 最終出力がビットマップ形式で「速度優先」の場合は，PDFからQuartzで直接変換
@@ -1313,6 +1314,7 @@
             }
         }
 	} else if ([@"pdf" isEqualToString:extension] && leaveTextFlag) { // 最終出力が文字埋め込み PDF の場合，EPS を経由しなくてよいので，pdfcrop類似処理で直接生成する。
+        // 1ページずつバラバラにpdfcrop類似処理にかける
         success = [self pdfcrop:pdfFilePath
                  outputFileName:outputFileName
                            page:1
@@ -1339,7 +1341,8 @@
             }
         }
     } else if ([@"svg" isEqualToString:extension]) { // 最終出力が SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
-        if (transparentFlag) {
+        if (transparentFlag) { // 透過SVG生成の場合
+            // まずは全ページ一括で，pdfcrop類似処理でクロップ＋余白付与
             [self pdfcrop:pdfFilePath
            outputFileName:croppedPdfFilePath
                      page:0
@@ -1348,6 +1351,7 @@
            fillBackground:NO];
             [controller exitCurrentThreadIfTaskKilled];
             
+            // クロップ済みPDFから1ページずつ mudraw にかけてSVGを生成
             success = [self pdf2svg:croppedPdfFilePath
                      outputFileName:outputFileName
                                page:1];
@@ -1366,6 +1370,7 @@
                 }
             }
         } else { // SVGの背景塗りを行う場合，背景塗りがマルチページPDFに未対応のため，1ページずつpdfcrop類似処理を分けて行い，その結果をそれぞれ mudraw にかける
+            // まずは1ページのみ切り出して pdfcrop類似処理でクロップ＋余白付与
             [self pdfcrop:pdfFilePath
            outputFileName:croppedPdfFilePath
                      page:1
@@ -1374,6 +1379,7 @@
            fillBackground:YES];
             [controller exitCurrentThreadIfTaskKilled];
             
+            // クロップ済み単一ページPDFを mudraw にかけてSVGを生成
             success = [self pdf2svg:croppedPdfFilePath
                      outputFileName:outputFileName
                                page:1];
@@ -1401,7 +1407,7 @@
             }
         }
 	} else { // EPS を経由する形式(EPS/outlined-PDF/ビットマップ形式(画質優先)/EMF)の場合
-        if (transparentFlag) {
+        if (transparentFlag || [BitmapExtensionsArray containsObject:extension]) { // 透過ベクター形式，またはビットマップ形式の場合
             // 最終出力が EMF の場合，まずpdfcrop類似処理をかけてBB左下を原点に持っていく
             if ([@"emf" isEqualToString:extension]) {
                 [self pdfcrop:pdfFilePath
@@ -1433,8 +1439,9 @@
                     return success;
                 }
             }
-        } else { // 背景塗りを行う場合，背景塗りがマルチページPDFに未対応のため，1ページずつpdfcrop類似処理を分けて行い，その結果をそれぞれ処理する
+        } else { // 背景塗りを行うベクター画像出力場合，背景塗りがマルチページPDFに未対応のため，1ページずつpdfcrop類似処理を分けて行い，その結果をそれぞれ処理する
             if ([@"eps" isEqualToString:extension]) { // 背景塗りのある EPS 画像生成の場合
+                // まずはpdfcrop類似処理で余白ありテキスト保持PDFを作り，その背景を塗る
                 [self pdfcrop:pdfFilePath
                outputFileName:croppedPdfFilePath
                          page:1
@@ -1443,6 +1450,7 @@
                fillBackground:YES];
                 [controller exitCurrentThreadIfTaskKilled];
                 
+                // 次に余白あり・背景塗りあり・単一ページのテキスト保持PDFを，Ghostscript でEPSに変換する
                 BOOL success = [self convertPDF:croppedPdfFilePath.lastPathComponent
                               outputEpsFileName:outputEpsFileName
                                  outputFileName:outputFileName
@@ -1470,7 +1478,8 @@
                         return success;
                     }
                 }
-            } else { // 背景塗りのある PDF / ビットマップ画像生成の場合
+            } else if ([@"pdf" isEqualToString:extension]) { // 背景塗りのあるPDF生成の場合
+                // まずはpdfcrop類似処理で余白なし・テキスト保持・単一ページPDFを切り出す
                 [self pdfcrop:pdfFilePath
                outputFileName:croppedPdfFilePath
                          page:1
@@ -1478,7 +1487,8 @@
                      useCache:NO
                fillBackground:NO];
                 [controller exitCurrentThreadIfTaskKilled];
-
+                
+                // 次に余白なし・背景塗りなし・単一ページのテキスト保持PDFを，-[Ghostscript]→余白なし透過EPS-[epstopdf]→余白なし透過アウトライン化PDF→……と処理する
                 BOOL success = [self convertPDF:croppedPdfFilePath.lastPathComponent
                               outputEpsFileName:outputEpsFileName
                                  outputFileName:outputFileName
@@ -1506,9 +1516,47 @@
                         return success;
                     }
                 }
+            } else if ([@"emf" isEqualToString:extension]) { // 背景塗りのあるEMF生成の場合
+                // まずはpdfcrop類似処理で余白あり・背景塗りあり・テキスト保持・単一ページPDFを切り出す
+                [self pdfcrop:pdfFilePath
+               outputFileName:croppedPdfFilePath
+                         page:1
+                    addMargin:YES
+                     useCache:NO
+               fillBackground:YES];
+                [controller exitCurrentThreadIfTaskKilled];
+                
+                // 次に余白あり・背景塗りあり・テキスト保持・単一ページPDFを，-[Ghostscript]→余白あり非透過EPS-[pstoedit]→余白あり非透過EMF と変換する
+                BOOL success = [self convertPDF:croppedPdfFilePath.lastPathComponent
+                              outputEpsFileName:outputEpsFileName
+                                 outputFileName:outputFileName
+                                           page:1];
+                [controller exitCurrentThreadIfTaskKilled];
+                if (!success) {
+                    return success;
+                }
+                
+                for (NSUInteger i=2; i<=pageCount; i++) {
+                    [self pdfcrop:pdfFilePath
+                   outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
+                             page:i
+                        addMargin:YES
+                         useCache:NO
+                   fillBackground:YES];
+                    [controller exitCurrentThreadIfTaskKilled];
+                    
+                    success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
+                             outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                                outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                          page:1];
+                    [controller exitCurrentThreadIfTaskKilled];
+                    if (!success) {
+                        return success;
+                    }
+                }
             }
         }
-	}
+    }
 
     // 単一PDF出力/マルチページTIFF/アニメーションGIF出力の場合
     if ([@[@"pdf", @"tiff", @"gif"] containsObject:extension] && mergeOutputsFlag) {
