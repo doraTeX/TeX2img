@@ -30,6 +30,10 @@
 
 - (NSString*)pathStringByAppendingPageNumber:(NSUInteger)page
 {
+    if (page == 1) {
+        return self;
+    }
+    
     NSString *dir = self.stringByDeletingLastPathComponent;
     NSString *basename = self.lastPathComponent.stringByDeletingPathExtension;
     NSString *ext = self.pathExtension;
