@@ -57,7 +57,7 @@ void usage()
     printf("  --right-margin   MARGIN    : set the right margin  (default: 0)\n");
     printf("  --bottom-margin  MARGIN    : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT                : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
-    printf("                               (*bp is always used for EPS/PDF/SVG)\n");
+    printf("                               (*bp is always used for EPS/PDF/SVG/EMF)\n");
     printf("  --[no-]keep-page-size      : disable/enable keeping the original page size (default: disabled)\n");
     printf("  --pagebox BOX              : select the page box type used as the page size (media|crop|bleed|trim|art) (default: crop)\n");
     printf("\n");
