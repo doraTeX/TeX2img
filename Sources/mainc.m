@@ -978,7 +978,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     return @[[Converter converterWithProfile:aProfile], inputFilePath];
 }
 
-int mainWithAutoReleasePool (int argc, char *argv[]) {
+int main (int argc, char *argv[]) {
     @autoreleasepool {
         NSArray<id> *array = generateConverter(argc, argv);
         Converter *converter = (Converter*)array[0];
@@ -987,19 +987,4 @@ int mainWithAutoReleasePool (int argc, char *argv[]) {
         
         return success ? 0 : 1;
     }
-}
-
-int mainWithoutAutoReleasePool (int argc, char *argv[]) { // for El Capitan's bug
-    NSArray<id> *array = generateConverter(argc, argv);
-    Converter *converter = (Converter*)array[0];
-    NSString *inputFilePath = (NSString*)array[1];
-    BOOL success = [converter compileAndConvertWithInputPathWithoutAutoReleasePool:inputFilePath];
-    
-    return success ? 0 : 1;
-}
-
-int main (int argc, char *argv[]) {
-    // El Capitan の PDFKit で PDFAnnotation が余分に解放されてしまうバグに対する対処。
-    // El Capitan では @autoreleasepool をかぶせない。
-    return (systemMajorVersion() >= 11) ? mainWithoutAutoReleasePool(argc, argv) : mainWithAutoReleasePool(argc, argv);
 }
