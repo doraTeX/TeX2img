@@ -28,7 +28,7 @@
 @property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property (nonatomic, strong) NSObject<OutputController> *controller;
 @property (nonatomic, strong) NSFileManager *fileManager;
-@property (nonatomic, copy) NSString *tempdir;
+@property (nonatomic, copy) NSString *workingDirectory;
 @property (nonatomic, assign) pid_t pid;
 @property (nonatomic, copy) NSString *tempFileBaseName;
 @property (nonatomic, copy) NSString *epstopdfPath;
@@ -67,7 +67,7 @@
 @synthesize leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
 @synthesize fileManager;
-@synthesize tempdir;
+@synthesize workingDirectory;
 @synthesize pid;
 @synthesize tempFileBaseName;
 @synthesize epstopdfPath;
@@ -145,7 +145,7 @@
     errorsIgnored = NO;
     
 	fileManager = NSFileManager.defaultManager;
-	tempdir = NSTemporaryDirectory();
+	workingDirectory = NSTemporaryDirectory();
     
 	tempFileBaseName = [NSString stringWithFormat:@"temp%d-%@", getpid(), NSString.UUIDString];
     
@@ -254,7 +254,7 @@
     [cmdline appendFormat:@"%@", latexPath];
     
     BOOL status = [controller execCommand:cmdline
-                              atDirectory:tempdir
+                              atDirectory:workingDirectory
                             withArguments:arguments
                                     quiet:quietFlag];
     return status;
@@ -270,7 +270,7 @@
     
     [arguments addObject:teXFilePath];
     
-    NSString *auxFilePath = [NSString stringWithFormat:@"%@.aux", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+    NSString *auxFilePath = [NSString stringWithFormat:@"%@.aux", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
     
     // まず aux を削除
     if ([fileManager fileExistsAtPath:auxFilePath isDirectory:nil] && ![fileManager removeItemAtPath:auxFilePath error:nil]) {
@@ -320,7 +320,7 @@
     [cmdline appendString:dviDriverPath];
     
 	BOOL status = [controller execCommand:cmdline
-                              atDirectory:tempdir
+                              atDirectory:workingDirectory
                             withArguments:@[dviFilePath]
                                     quiet:quietFlag];
 	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];	
@@ -333,7 +333,7 @@
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
     [cmdline appendString:gsPath];
     BOOL status = [controller execCommand:cmdline
-                              atDirectory:tempdir
+                              atDirectory:workingDirectory
                             withArguments:@[@"-dSAFER",
                                             @"-dNOPAUSE",
                                             @"-dBATCH",
@@ -361,7 +361,7 @@
     if (![bboxDictionary.allKeys containsObject:key]) { // このPDFに対する gs -sDEVICE=bbox の実行が初めてなら
         // gsを実行してBoundingBox情報を取得
         NSString *bboxFileName = @"tex2img-bbox";
-        NSString *bboxFilePath = [tempdir stringByAppendingPathComponent:bboxFileName];
+        NSString *bboxFilePath = [workingDirectory stringByAppendingPathComponent:bboxFileName];
         
         // 中断ボタンによる中断を可能とするため，あえて controller を通して実行する。
         // この出力は出力ビューの方に流れてしまうので，リダイレクトによってテキストファイル経由でBoundingBox情報を受け取ることにする。
@@ -369,7 +369,7 @@
         [controller appendOutputAndScroll:@"TeX2img: Getting the bounding box...\n\n" quiet:quietFlag];
         
         BOOL success = [controller execCommand:gsPath.programPath
-                                   atDirectory:tempdir
+                                   atDirectory:workingDirectory
                                  withArguments:@[@"-dBATCH",
                                                  @"-dNOPAUSE",
                                                  @"-sDEVICE=bbox",
@@ -445,7 +445,7 @@
  fillBackground:(BOOL)fillBackground
 {
     NSString *cropFileBasePath = [NSString stringWithFormat:@"%@-pdfcrop-%ld%d",
-                                  [tempdir stringByAppendingPathComponent:tempFileBaseName], page, addMargin];
+                                  [workingDirectory stringByAppendingPathComponent:tempFileBaseName], page, addMargin];
     NSString *cropTeXSourcePath = [cropFileBasePath stringByAppendingPathExtension:@"tex"];
     NSString *cropPdfSourcePath = [cropFileBasePath stringByAppendingPathExtension:@"pdf"];
     NSString *cropLogSourcePath = [cropFileBasePath stringByAppendingPathExtension:@"log"];
@@ -482,7 +482,7 @@
     [controller appendOutputAndScroll:@"TeX2img: Adjusting the bounding box using pdfTeX...\n\n" quiet:quietFlag];
     
 	BOOL success = [controller execCommand:pdfTeXPath
-                               atDirectory:tempdir
+                               atDirectory:workingDirectory
                              withArguments:@[@"-no-shell-escape", @"-interaction=batchmode", cropFileBasePath.lastPathComponent]
                                      quiet:quietFlag];
     
@@ -497,7 +497,7 @@
     }
     
     if (!transparentFlag && fillBackground) {
-        [PDFDocument fillBackgroundOfPdfFilePath:[tempdir stringByAppendingPathComponent:outputFileName.lastPathComponent] withColor:fillColor];
+        [PDFDocument fillBackgroundOfPdfFilePath:[workingDirectory stringByAppendingPathComponent:outputFileName.lastPathComponent] withColor:fillColor];
     }
     
     [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
@@ -516,13 +516,13 @@
     BOOL result = YES;
     
     NSString *gsVerFileName = @"tex2img-gsver";
-    NSString *gsVerFilePath = [tempdir stringByAppendingPathComponent:gsVerFileName];
+    NSString *gsVerFilePath = [workingDirectory stringByAppendingPathComponent:gsVerFileName];
     
     // 中断ボタンによる中断を可能とするため，あえて controller を通して実行する。
     // この出力は出力ビューの方に流れてしまうので，リダイレクトによってテキストファイル経由で gs のバージョンを受け取ることにする。
     // https://github.com/doraTeX/TeX2img/issues/40
     BOOL success = [controller execCommand:gsPath.programPath
-                               atDirectory:tempdir
+                               atDirectory:workingDirectory
                              withArguments:@[@"--version", [@"> " stringByAppendingString:gsVerFileName]]
                                      quiet:YES];
     
@@ -557,7 +557,7 @@
                         hiresBbStr,
                         epsPath
                         ];
-    NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-replaceBB"];
+    NSString *scriptPath = [workingDirectory stringByAppendingPathComponent:@"tex2img-replaceBB"];
     
     FILE *fp = fopen(scriptPath.UTF8String, "w");
     fputs(script.UTF8String, fp);
@@ -568,7 +568,7 @@
 
 - (BOOL)replaceEpsBBox:(NSString*)epsName withBBoxOfPdf:(NSString*)pdfName page:(NSUInteger)page
 {
-    NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
+    NSString *epsPath = [workingDirectory stringByAppendingPathComponent:epsName];
     NSString *bbStr = [self bboxStringOfPdf:pdfName page:page hires:NO];
     NSString *hiresBbStr = [self bboxStringOfPdf:pdfName page:page hires:YES];
     
@@ -589,7 +589,7 @@
 
 - (BOOL)replaceEpsBBoxWithEmptyBBox:(NSString*)epsName
 {
-    NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
+    NSString *epsPath = [workingDirectory stringByAppendingPathComponent:epsName];
     NSString *bbStr = @"0 0 0 0\n";
     NSString *hiresBbStr = @"0.000000 0.000000 0.000000 0.000000\n";
     
@@ -599,8 +599,8 @@
 
 - (BOOL)replaceEpsBBox:(NSString*)epsName withPageBoxOfPdf:(NSString*)pdfName page:(NSUInteger)page
 {
-    PDFPageBox *pageBox = [PDFPageBox pageBoxWithFilePath:[tempdir stringByAppendingPathComponent:pdfName] page:page];
-    NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
+    PDFPageBox *pageBox = [PDFPageBox pageBoxWithFilePath:[workingDirectory stringByAppendingPathComponent:pdfName] page:page];
+    NSString *epsPath = [workingDirectory stringByAppendingPathComponent:epsName];
     NSString *bbStr = [pageBox bboxStringOfBox:pageBoxType
                                          hires:NO
                                      addHeader:NO];
@@ -635,7 +635,7 @@
     
     [arguments addObject:pdfName];
 
-    BOOL status = [controller execCommand:gsPath atDirectory:tempdir withArguments:arguments quiet:quietFlag];
+    BOOL status = [controller execCommand:gsPath atDirectory:workingDirectory withArguments:arguments quiet:quietFlag];
     
     if (!status) {
         [controller showExecError:@"Ghostscript"];
@@ -669,7 +669,7 @@
     NSArray<NSString*> *arguments = @[epsName.stringByQuotingWithDoubleQuotations, outputEmfFileName.stringByQuotingWithDoubleQuotations];
     
     BOOL success = [controller execCommand:cmdline
-                               atDirectory:tempdir
+                               atDirectory:workingDirectory
                              withArguments:arguments
                                      quiet:quietFlag];
     return success;
@@ -683,7 +683,7 @@
 	}
 	
 	[controller execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
-                atDirectory:tempdir
+                atDirectory:workingDirectory
               withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
                               // 10.10 以下で --hires を渡すと，その後の Quartz API での処理時に端が欠けてしまうので，10.10 以下では --nohires を渡す
                               // https://github.com/doraTeX/TeX2img/issues/58
@@ -830,7 +830,7 @@
         imageRep = [self fillBackground:imageRep];
         outputData = [imageRep representationUsingType:NSBMPFileType properties:@{}];
     }
-    NSString *outputPath = [tempdir stringByAppendingPathComponent:outputFileName];
+    NSString *outputPath = [workingDirectory stringByAppendingPathComponent:outputFileName];
 	[outputData writeToFile:outputPath atomically:YES];
     
     // 生成物のチェック
@@ -859,21 +859,21 @@
     NSArray<NSString*> *arguments = @[@"-eps", pdfName, epsName];
     
     return [controller execCommand:pdftopsPath
-                       atDirectory:tempdir
+                       atDirectory:workingDirectory
                      withArguments:arguments
                              quiet:quietFlag];
 }
 
 - (void)enlargeBB:(NSString*)epsName
 {
-    NSString *epsPath = [tempdir stringByAppendingPathComponent:epsName];
+    NSString *epsPath = [workingDirectory stringByAppendingPathComponent:epsName];
     NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: (\\-?[0-9]+) (\\-?[0-9]+) (\\-?[0-9]+) (\\-?[0-9]+)\\n/){ \"%%%%BoundingBox: #{$1.to_i-%ld} #{$2.to_i-%ld} #{$3.to_i+%ld} #{$4.to_i+%ld}\\n\"}.sub(/%%%%HiResBoundingBox\\: (\\-?[0-9\\.]+) (\\-?[0-9\\.]+) (\\-?[0-9\\.]+) (\\-?[0-9\\.]+)\\n/){ \"%%%%HiResBoundingBox: #{$1.to_f-%f} #{$2.to_f-%f} #{$3.to_f+%f} #{$4.to_f+%f}\\n\"};File.open('%@', 'wb') {|f| f.write s}",
                           epsPath,
                           leftMargin, bottomMargin, rightMargin, topMargin,
                           (CGFloat)leftMargin, (CGFloat)bottomMargin, (CGFloat)rightMargin, (CGFloat)topMargin,
                           epsPath
                           ];
-    NSString *scriptPath = [tempdir stringByAppendingPathComponent:@"tex2img-enlargeBB"];
+    NSString *scriptPath = [workingDirectory stringByAppendingPathComponent:@"tex2img-enlargeBB"];
 
     FILE *fp = fopen(scriptPath.UTF8String, "w");
     fputs(script.UTF8String, fp);
@@ -894,7 +894,7 @@
     [arguments addObject:destPath.stringByQuotingWithDoubleQuotations];
     
     BOOL success = [controller execCommand:@"/usr/bin/tiffutil"
-                               atDirectory:tempdir
+                               atDirectory:workingDirectory
                              withArguments:arguments
                                      quiet:quietFlag];
     return success;
@@ -955,7 +955,7 @@
     NSArray<NSString*> *arguments = @[@"-o", svgFilePath.stringByQuotingWithDoubleQuotations, pdfFilePath.stringByQuotingWithDoubleQuotations, [NSString stringWithFormat:@"%ld", page]];
     
     BOOL success = [controller execCommand:mudrawPath
-                               atDirectory:tempdir
+                               atDirectory:workingDirectory
                              withArguments:arguments
                                      quiet:quietFlag];
     if (!success) {
@@ -994,7 +994,7 @@
     
     // PDF→EPS の変換の実行（この時点で強制cropされる）
     if (![self pdf2eps:pdfFileName outputEpsFileName:outputEpsFileName resolution:resolution page:page]
-        || ![fileManager fileExistsAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName]]) {
+        || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:outputEpsFileName]]) {
         return NO;
     }
     
@@ -1011,7 +1011,7 @@
         }
         // 生成したPDFに背景塗りを加える
         if (!transparentFlag) {
-            [PDFDocument fillBackgroundOfPdfFilePath:[tempdir stringByAppendingPathComponent:outputFileName]
+            [PDFDocument fillBackgroundOfPdfFilePath:[workingDirectory stringByAppendingPathComponent:outputFileName]
                                            withColor:fillColor];
         }
     } else if ([@"eps" isEqualToString:extension]) { // 最終出力が EPS の場合
@@ -1029,19 +1029,19 @@
         if ([fileManager fileExistsAtPath:outputFileName]) {
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
-        [fileManager moveItemAtPath:[tempdir stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
+        [fileManager moveItemAtPath:[workingDirectory stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
     } else if ([@"emf" isEqualToString:extension]) { // 最終出力が EMF の場合
         [self eps2emf:outputEpsFileName outputFileName:outputFileName];
     } else { // ビットマップ形式出力の場合，EPSをPDFに戻した上で，それをさらにビットマップ形式に変換する
         if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は epstopdf が使えない（エラーになる）ので，そこだけ Quartz で変換する
-            if (![self pdf2image:[tempdir stringByAppendingPathComponent:pdfFileName] outputFileName:outputFileName page:page crop:YES]) {
+            if (![self pdf2image:[workingDirectory stringByAppendingPathComponent:pdfFileName] outputFileName:outputFileName page:page crop:YES]) {
                 return NO;
             }
         } else {
              // アウトラインを取ったEPSをPDFへ戻す（余白はこの時点では付与しない）
             [self eps2pdf:outputEpsFileName outputFileName:outlinedPdfFileName addMargin:NO];
             // PDFを目的の画像ファイルへ変換（ここで余白付与）
-            if (![self pdf2image:[tempdir stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1 crop:NO]) {
+            if (![self pdf2image:[workingDirectory stringByAppendingPathComponent:outlinedPdfFileName] outputFileName:outputFileName page:1 crop:NO]) {
                 return NO;
             }
         }
@@ -1141,11 +1141,11 @@
 
 - (BOOL)compileAndConvert
 {
-	NSString *texFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-	NSString *dviFilePath = [NSString stringWithFormat:@"%@.dvi", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-    NSString *psFilePath  = [NSString stringWithFormat:@"%@.ps",  [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-	NSString *pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
-    NSString *croppedPdfFilePath = [NSString stringWithFormat:@"%@-crop.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString *texFilePath = [NSString stringWithFormat:@"%@.tex", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
+	NSString *dviFilePath = [NSString stringWithFormat:@"%@.dvi", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
+    NSString *psFilePath  = [NSString stringWithFormat:@"%@.ps",  [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
+	NSString *pdfFilePath = [NSString stringWithFormat:@"%@.pdf", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
+    NSString *croppedPdfFilePath = [NSString stringWithFormat:@"%@-crop.pdf", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
     NSString *pdfFileName = [NSString stringWithFormat:@"%@.pdf", tempFileBaseName];
 	NSString *outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
 	NSString *outputFileName = outputFilePath.lastPathComponent;
@@ -1155,7 +1155,7 @@
 
     errorsIgnored = NO;
     
-    [fileManager changeCurrentDirectoryPath:tempdir];
+    [fileManager changeCurrentDirectoryPath:workingDirectory];
     
     if (!pdfInputMode && !psInputMode) {
         // TeX コンパイル
@@ -1471,7 +1471,7 @@
         
         for (NSUInteger i=1; i<=pageCount; i++) {
             if (![emptyPageFlags[i-1] boolValue]) {
-                [outputFiles addObject:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]];
+                [outputFiles addObject:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]];
             }
         }
         
@@ -1533,7 +1533,7 @@
         for (NSUInteger i=1; i<=pageCount; i++) {
             if (![emptyPageFlags[i-1] boolValue]) {
                 NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
-                success = [self copyTargetFrom:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
+                success = [self copyTargetFrom:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
                                         toPath:destPath];
                 if (success) {
                     [self embedSource:texFilePath intoFile:destPath];
@@ -1676,7 +1676,7 @@
 {
     if (deleteTmpFileFlag) {
         NSString *outputFileName = outputFilePath.lastPathComponent;
-        NSString *basePath = [tempdir stringByAppendingPathComponent:tempFileBaseName];
+        NSString *basePath = [workingDirectory stringByAppendingPathComponent:tempFileBaseName];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.tex", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.dvi", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.log", basePath] error:nil];
@@ -1693,8 +1693,8 @@
         
         NSString *outputDir = [outputFilePath.stringByDeletingLastPathComponent stringByAppendingString:@"/"];
         for (NSUInteger i=1; i<=pageCount; i++) {
-            if (![outputDir isEqualToString:tempdir]) {
-                [fileManager removeItemAtPath:[tempdir stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
+            if (![outputDir isEqualToString:workingDirectory]) {
+                [fileManager removeItemAtPath:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
             }
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop-%ld.pdf", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps", basePath, i] error:nil];
@@ -1707,7 +1707,7 @@
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr
 {
 	// TeX ソースを準備
-	NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+	NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
 	
 	if (![self writeStringWithYenBackslashConverting:texSourceStr toFile:tempTeXFilePath]) {
 		[controller showFileGenerationError:tempTeXFilePath];
@@ -1749,21 +1749,21 @@
                 return NO;
             }
             
-            NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
                 [controller showFileGenerationError:tempPdfFilePath];
                 [controller generationDidFinish];
                 return NO;
             }
         } else if (psInputMode) {
-            NSString *tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            NSString *tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
                 [controller showFileGenerationError:tempPsFilePath];
                 [controller generationDidFinish];
                 return NO;
             }
         } else {
-            NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [tempdir stringByAppendingPathComponent:tempFileBaseName]];
+            NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
                 [controller showFileGenerationError:tempTeXFilePath];
                 [controller generationDidFinish];
