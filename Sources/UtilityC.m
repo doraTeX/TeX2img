@@ -18,7 +18,7 @@ void suggestLatexOption()
 
 BOOL checkWhich(NSString *cmdName)
 {
-    int status = system([NSString stringWithFormat:@"PATH=$PATH:%@; /usr/bin/which %@ > /dev/null", ADDITIONAL_PATH, cmdName].UTF8String);
+    int status = system([NSString stringWithFormat:@"PATH=%@:$PATH; /usr/bin/which %@ > /dev/null", ADDITIONAL_PATH, cmdName].UTF8String);
     return (status == 0) ? YES : NO;
 }
 
@@ -28,7 +28,7 @@ NSString* getPath(NSString *cmdName)
     FILE *fp;
     char *pStr;
     
-    if ((fp = popen([NSString stringWithFormat:@"PATH=$PATH:%@; /usr/bin/which %@", ADDITIONAL_PATH, cmdName].UTF8String, "r")) == NULL) {
+    if ((fp = popen([NSString stringWithFormat:@"PATH=%@:$PATH; /usr/bin/which %@", ADDITIONAL_PATH, cmdName].UTF8String, "r")) == NULL) {
         return nil;
     }
     fgets(str, MAX_LEN-1, fp);
