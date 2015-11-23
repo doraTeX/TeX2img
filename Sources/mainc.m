@@ -10,7 +10,7 @@
 #import "NSDictionary-Extension.h"
 #import "NSColor-Extension.h"
 
-#define OPTION_NUM 51
+#define OPTION_NUM 53
 #define VERSION "2.1.1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
@@ -45,6 +45,10 @@ void usage()
     printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
     printf("  --[no-]utf-export          : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
     printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
+    printf("  --workingdir               : set the working directory (tmp|file|current) (default: tmp)\n");
+    printf("   *tmp              : Standard user temporary directory ($TMPDIR)\n");
+    printf("    file             : The same directory as the input file\n");
+    printf("    current          : Current directory\n");
     printf("\n");
     printf("Image Settings:\n");
     printf("  --margins    \"VALUE\"       : set the margins (default: \"0 0 0 0\")\n");
@@ -60,9 +64,14 @@ void usage()
     printf("                               (*bp is always used for EPS/PDF/SVG/EMF)\n");
     printf("  --[no-]keep-page-size      : disable/enable keeping the original page size (default: disabled)\n");
     printf("  --pagebox BOX              : select the page box type used as the page size (media|crop|bleed|trim|art) (default: crop)\n");
+    printf("  --[no-]transparent         : disable/enable transparent (if possible) (default: enabled)\n");
+    printf("  --background-color COLOR   : set the background color (default: white)\n");
+    printf("   *COLOR format examples:\n");
+    printf("      magenta     : CSS-style color name\n");
+    printf("      FF00FF      : CSS-style HEX format\n");
+    printf("      \"255 0 255\" : RGB integers (0..255)\n");
     printf("\n");
     printf("Image Settings (peculiar to image formats):\n");
-    printf("  --[no-]transparent         : disable/enable transparent EPS/PDF/SVG/EMF/PNG/TIFF/GIF (default: enabled)\n");
     printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
     printf("  --[no-]plain-text          : disable/enable outputting EPS as a plain text (default: disabled)\n");
     printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or animated GIF (default: disabled)\n");
@@ -158,7 +167,23 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     
     NSString *eps2emfPath = getPath([aProfile stringForKey:Eps2emfPathKey]);
     printf("eps2emf: %s\n", eps2emfPath ? eps2emfPath.UTF8String : "NOT FOUND");
-    
+
+    printf("Working directory: ");
+    switch ([aProfile integerForKey:WorkingDirectoryTypeKey]) {
+        case WorkingDirectoryTmp:
+            printf("%s", NSTemporaryDirectory().UTF8String);
+            break;
+        case WorkingDirectoryFile:
+            printf("%s", getFullPath(inputFilePath).stringByDeletingLastPathComponent.UTF8String);
+            break;
+        case WorkingDirectoryCurrent:
+            printf("%s", NSFileManager.defaultManager.currentDirectoryPath.UTF8String);
+            break;
+        default:
+            break;
+    }
+    printf("\n");
+
     printf("Resolution level: %f\n", [aProfile floatForKey:ResolutionKey]);
     
     NSString *ext = outputFilePath.pathExtension;
@@ -171,9 +196,9 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     printf("Right  margin: %ld%s\n", [aProfile integerForKey:RightMarginKey], unit.UTF8String);
     printf("Bottom margin: %ld%s\n", [aProfile integerForKey:BottomMarginKey], unit.UTF8String);
     
-    if ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"]) {
-        printf("Transparent PNG/GIF/TIFF: %s\n", [aProfile boolForKey:TransparentKey] ? ENABLED : DISABLED);
-    }
+    printf("Transparent: %s\n", [aProfile boolForKey:TransparentKey] ? ENABLED : DISABLED);
+    printf("Background color: %s\n", [aProfile colorForKey:FillColorKey].descriptionString.UTF8String);
+    
     if ([ext isEqualToString:@"pdf"]) {
         printf("Text embedded PDF: %s\n", [aProfile boolForKey:GetOutlineKey] ? DISABLED : ENABLED);
     }
@@ -226,6 +251,8 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     CGPDFBox pageBoxType = kCGPDFCropBox;
     float delay = 1;
     NSInteger loopCount = 0;
+    NSInteger workingDirectoryType = WorkingDirectoryTmp;
+    NSColor *fillColor = NSColor.whiteColor;
     
     // getopt_long を使った，長いオプション対応のオプション解析
     struct option *options;
@@ -522,6 +549,18 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     options[i].flag = NULL;
     options[i].val = i+1;
     
+    i++;
+    options[i].name = "workingdir";
+    options[i].has_arg = required_argument;
+    options[i].flag = NULL;
+    options[i].val = i+1;
+
+    i++;
+    options[i].name = "background-color";
+    options[i].has_arg = required_argument;
+    options[i].flag = NULL;
+    options[i].val = i+1;
+
     options[OPTION_NUM - 3].name = "version";
     options[OPTION_NUM - 3].has_arg = no_argument;
     options[OPTION_NUM - 3].flag = NULL;
@@ -554,7 +593,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     resolutoinLevel = strtof(optarg, NULL);
                 } else {
-                    printf("--resolution is invalid.\n");
+                    printf("error: --resolution is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -562,7 +601,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     leftMargin = strtoi(optarg);
                 } else {
-                    printf("--left-margin is invalid.\n");
+                    printf("error: --left-margin is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -570,7 +609,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     rightMargin = strtoi(optarg);
                 } else {
-                    printf("--right-margin is invalid.\n");
+                    printf("error: --right-margin is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -578,7 +617,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     topMargin = strtoi(optarg);
                 } else {
-                    printf("--top-margin is invalid.\n");
+                    printf("error: --top-margin is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -586,7 +625,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     bottomMargin = strtoi(optarg);
                 } else {
-                    printf("--bottom-margin is invalid.\n");
+                    printf("error: --bottom-margin is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -789,11 +828,11 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     delay = strtof(optarg, NULL);
                 } else {
-                    printf("--animation-delay is invalid.\n");
+                    printf("error: --animation-delay is invalid.\n");
                     exit(1);
                 }
                 if (delay < 0) {
-                    printf("--animation-delay is invalid.\n");
+                    printf("error: --animation-delay is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -801,11 +840,11 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     loopCount = strtoi(optarg);
                 } else {
-                    printf("--animation-loop is invalid.\n");
+                    printf("error: --animation-loop is invalid.\n");
                     exit(1);
                 }
                 if (loopCount < 0) {
-                    printf("--animation-loop is invalid.\n");
+                    printf("error: --animation-loop is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -829,12 +868,12 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                             bottomMargin = strtoi(marginsArray[3].UTF8String);
                             break;
                         default:
-                            printf("The number of \"--margins\" values must be 1, 2 or 4.\n");
+                            printf("error: The number of \"--margins\" values must be 1, 2 or 4.\n");
                             exit(1);
                             break;
                     }
                 } else {
-                    printf("--margins is invalid.\n");
+                    printf("error: --margins is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -843,6 +882,83 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 break;
             case 48: // --no-plain-text
                 plainTextFlag = NO;
+                break;
+            case 49: // --workingdir
+                if (optarg) {
+                    NSString *pageboxString = @(optarg);
+                    if ([pageboxString isEqualToString:@"tmp"]) {
+                        workingDirectoryType = WorkingDirectoryTmp;
+                    } else if ([pageboxString isEqualToString:@"file"]) {
+                        workingDirectoryType = WorkingDirectoryFile;
+                    } else if ([pageboxString isEqualToString:@"current"]) {
+                        workingDirectoryType = WorkingDirectoryCurrent;
+                    } else {
+                        printf("error: --workingdir is invalid. It must be tmp/file/current.\n");
+                        exit(1);
+                    }
+                } else {
+                    printf("error: --workingdir is invalid. It must be tmp/file/current.\n");
+                    exit(1);
+                }
+                break;
+            case 50: // --background-color
+                transparentFlag = NO;
+                if (optarg) {
+                    NSString *bgcolorString = @(optarg);
+                    NSMutableArray<NSString*> *bgcolorArray = [NSMutableArray<NSString*> arrayWithArray:[bgcolorString componentsSeparatedByCharactersInSet:NSCharacterSet.whitespaceCharacterSet]];
+                    [bgcolorArray removeObject:@""];
+                    switch (bgcolorArray.count) {
+                        case 1:
+                        {
+                            NSString *colorValue = bgcolorArray[0].lowercaseString;
+                            NSRegularExpression *hexRegex = [[NSRegularExpression alloc] initWithPattern:@"^[0-9a-f]{6}$"
+                                                                                                 options:0
+                                                                                                   error:nil];
+                            if ([hexRegex rangeOfFirstMatchInString:colorValue options:0 range:NSMakeRange(0, colorValue.length)].location != NSNotFound) {
+                                unsigned int result = 0;
+                                NSScanner *scanner = [NSScanner scannerWithString:colorValue];
+                                
+                                [scanner scanHexInt:&result];
+                                NSInteger r = result >> 16;
+                                result -= r << 16;
+                                NSInteger g = result >> 8;
+                                NSInteger b = result - (g << 8);
+                                fillColor = [NSColor colorWithRed:((CGFloat)r)/255 green:((CGFloat)g)/255 blue:((CGFloat)b)/255 alpha:1.0];
+                            } else {
+                                fillColor = [NSColor colorWithCSSName:colorValue];
+                                if (!fillColor) {
+                                    printf("error: --background-color is invalid.\n");
+                                    exit(1);
+                                }
+                            }
+                        }
+                            break;
+                        case 3:
+                        {
+                            NSString *r = bgcolorArray[0];
+                            NSString *g = bgcolorArray[1];
+                            NSString *b = bgcolorArray[2];
+                            NSString *rgb = [NSString stringWithFormat:@"%@%@%@", r, g, b];
+                            NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"^\\d+$"
+                                                                                              options:NSRegularExpressionCaseInsensitive
+                                                                                                error:nil];
+                            if ([regex matchesInString:rgb options:0 range:NSMakeRange(0, rgb.length)]) {
+                                fillColor = [NSColor colorWithRed:r.floatValue/255 green:g.floatValue/255 blue:b.floatValue/255 alpha:1.0];
+                            } else {
+                                printf("error: --background-color is invalid.\n");
+                                exit(1);
+                            }
+                        }
+                            break;
+                        default:
+                            printf("error: The number of --background-color values must be 1 or 3.\n");
+                            exit(1);
+                            break;
+                    }
+                } else {
+                    printf("error: --background-color is invalid.\n");
+                    exit(1);
+                }
                 break;
             case (OPTION_NUM - 2): // --version
                 version();
@@ -948,6 +1064,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     aProfile[BottomMarginKey] = @(bottomMargin);
     aProfile[GetOutlineKey] = @(!textPdfFlag);
     aProfile[TransparentKey] = @(transparentFlag);
+    aProfile[FillColorKey] = fillColor.serializedString;
     aProfile[DeleteDisplaySizeKey] = @(deleteDisplaySizeFlag);
     aProfile[ShowOutputDrawerKey] = @(NO);
     aProfile[PreviewKey] = @(previewFlag);
@@ -969,7 +1086,8 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     aProfile[PageBoxKey] = @(pageBoxType);
     aProfile[LoopCountKey] = @(loopCount);
     aProfile[DelayKey] = @(delay);
-    aProfile[FillColorKey] = NSColor.whiteColor.serializedString;
+    aProfile[WorkingDirectoryTypeKey] = @(workingDirectoryType);
+    aProfile[WorkingDirectoryPathKey] = (workingDirectoryType == WorkingDirectoryCurrent) ? NSFileManager.defaultManager.currentDirectoryPath : @"";
     
     if (!quietFlag) {
         printCurrentStatus(inputFilePath, aProfile);

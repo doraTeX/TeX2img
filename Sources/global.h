@@ -71,6 +71,13 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define FlashingBackgroundColorKey @"flashingBackgroundColor"
 #define MakeatletterEnabledKey @"makeatletterEnabled"
 
+#define WorkingDirectoryTypeKey @"workingDirectoryType"
+#define WorkingDirectoryPathKey @"workingDirectoryPath"
+
+#define WorkingDirectoryTmp     1
+#define WorkingDirectoryFile    2
+#define WorkingDirectoryCurrent 3
+
 #define ColorPalleteColorKey @"colorPalleteColor"
 
 #define ConvertYenMarkKey @"convertYenMark"

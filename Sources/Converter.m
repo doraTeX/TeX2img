@@ -28,6 +28,7 @@
 @property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property (nonatomic, strong) NSObject<OutputController> *controller;
 @property (nonatomic, strong) NSFileManager *fileManager;
+@property (nonatomic, assign) NSInteger workingDirectoryType;
 @property (nonatomic, copy) NSString *workingDirectory;
 @property (nonatomic, assign) pid_t pid;
 @property (nonatomic, copy) NSString *tempFileBaseName;
@@ -67,6 +68,7 @@
 @synthesize leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize controller;
 @synthesize fileManager;
+@synthesize workingDirectoryType;
 @synthesize workingDirectory;
 @synthesize pid;
 @synthesize tempFileBaseName;
@@ -138,6 +140,17 @@
     delay = [aProfile floatForKey:DelayKey];
     loopCount = [aProfile integerForKey:LoopCountKey];
     fillColor = [aProfile colorForKey:FillColorKey];
+    workingDirectoryType = [aProfile integerForKey:WorkingDirectoryTypeKey];
+
+    switch (workingDirectoryType) {
+        case WorkingDirectoryCurrent:
+            workingDirectory = [aProfile stringForKey:WorkingDirectoryPathKey];
+            break;
+        default:
+            workingDirectory = NSTemporaryDirectory();
+            break;
+    }
+
     useEps2WriteDeviceFlag = nil;
     additionalInputPath = nil;
     pdfInputMode = NO;
@@ -145,7 +158,6 @@
     errorsIgnored = NO;
     
 	fileManager = NSFileManager.defaultManager;
-	workingDirectory = NSTemporaryDirectory();
     
 	tempFileBaseName = [NSString stringWithFormat:@"temp%d-%@", getpid(), NSString.UUIDString];
     
@@ -268,7 +280,7 @@
         [arguments addObject:[NSString stringWithFormat:@"-kanji=%@", encoding]];
     }
     
-    [arguments addObject:teXFilePath];
+    [arguments addObject:teXFilePath.stringByQuotingWithDoubleQuotations];
     
     NSString *auxFilePath = [NSString stringWithFormat:@"%@.aux", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
     
@@ -321,7 +333,7 @@
     
 	BOOL status = [controller execCommand:cmdline
                               atDirectory:workingDirectory
-                            withArguments:@[dviFilePath]
+                            withArguments:@[dviFilePath.stringByQuotingWithDoubleQuotations]
                                     quiet:quietFlag];
 	[controller appendOutputAndScroll:@"\n" quiet:quietFlag];	
 	
@@ -337,13 +349,13 @@
                             withArguments:@[@"-dSAFER",
                                             @"-dNOPAUSE",
                                             @"-dBATCH",
-                                            [@"-sOutputFile=" stringByAppendingString:pdfFilePath],
+                                            [@"-sOutputFile=" stringByAppendingString:pdfFilePath.stringByQuotingWithDoubleQuotations],
                                             @"-sDEVICE=pdfwrite",
                                             @"-dAutoRotatePages=/None",
                                             @"-c",
                                             @".setpdfwrite",
                                             @"-f",
-                                            psFilePath]
+                                            psFilePath.stringByQuotingWithDoubleQuotations]
                                     quiet:quietFlag];
     [controller appendOutputAndScroll:@"\n" quiet:quietFlag];
     
@@ -380,6 +392,7 @@
         
         if (!success) {
             [controller showExecError:@"Ghostscript"];
+            [fileManager removeItemAtPath:bboxFilePath error:nil];
             return nil;
         }
         
@@ -684,7 +697,7 @@
 	
 	[controller execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
                 atDirectory:workingDirectory
-              withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName],
+              withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName.stringByQuotingWithDoubleQuotations],
                               // 10.10 以下で --hires を渡すと，その後の Quartz API での処理時に端が欠けてしまうので，10.10 以下では --nohires を渡す
                               // https://github.com/doraTeX/TeX2img/issues/58
                               (systemMajorVersion() >= 11) ? @"--hires" : @"--nohires",
@@ -1691,9 +1704,9 @@
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-00.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-01.pdf", basePath] error:nil];
         
-        NSString *outputDir = [outputFilePath.stringByDeletingLastPathComponent stringByAppendingString:@"/"];
+        NSString *outputDir = outputFilePath.stringByDeletingLastPathComponent;
         for (NSUInteger i=1; i<=pageCount; i++) {
-            if (![outputDir isEqualToString:workingDirectory]) {
+            if (![getFullPath(outputDir) isEqualToString:getFullPath(workingDirectory)]) {
                 [fileManager removeItemAtPath:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
             }
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop-%ld.pdf", basePath, i] error:nil];
@@ -1731,6 +1744,11 @@
 {
     @autoreleasepool {
         BOOL isDir;
+        additionalInputPath = getFullPath(sourcePath.stringByDeletingLastPathComponent);
+        if (workingDirectoryType == WorkingDirectoryFile) {
+            workingDirectory = additionalInputPath;
+        }
+
         if ([fileManager fileExistsAtPath:sourcePath isDirectory:&isDir] && isDir) {
             [controller showFileFormatError:sourcePath];
             [controller generationDidFinish];
@@ -1770,8 +1788,6 @@
                 return NO;
             }
         }
-        
-        additionalInputPath = getFullPath(sourcePath.stringByDeletingLastPathComponent);
         
         return [self compileAndConvertWithCheck];
     }
