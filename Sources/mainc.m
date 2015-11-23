@@ -11,7 +11,7 @@
 #import "NSColor-Extension.h"
 
 #define OPTION_NUM 53
-#define VERSION "2.1.1"
+#define VERSION "2.1.2b1"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -45,10 +45,11 @@ void usage()
     printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
     printf("  --[no-]utf-export          : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
     printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
-    printf("  --workingdir               : set the working directory (tmp|file|current) (default: tmp)\n");
-    printf("   *tmp              : Standard user temporary directory ($TMPDIR)\n");
-    printf("    file             : The same directory as the input file\n");
-    printf("    current          : Current directory\n");
+    printf("  --workingdir DIR           : set the working directory (tmp|file|current) (default: tmp)\n");
+    printf("   *DIR values:\n");
+    printf("      tmp            : Standard user temporary directory ($TMPDIR)\n");
+    printf("      file           : The same directory as the input file\n");
+    printf("      current        : Current directory\n");
     printf("\n");
     printf("Image Settings:\n");
     printf("  --margins    \"VALUE\"       : set the margins (default: \"0 0 0 0\")\n");
