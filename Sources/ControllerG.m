@@ -122,6 +122,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSPopUpButton *encodingPopUpButton;
 @property (nonatomic, strong) IBOutlet NSMatrix *unitMatrix;
 @property (nonatomic, strong) IBOutlet NSMatrix *priorityMatrix;
+@property (nonatomic, strong) IBOutlet NSButton *workOnInputFileButton;
 @property (nonatomic, copy) NSString *lastSavedPath;
 
 @property (nonatomic, strong) NSWindow *lastActiveWindow;
@@ -266,6 +267,7 @@ typedef enum {
 @synthesize encodingPopUpButton;
 @synthesize unitMatrix;
 @synthesize priorityMatrix;
+@synthesize workOnInputFileButton;
 @synthesize lastSavedPath;
 
 @synthesize lastActiveWindow;
@@ -1061,6 +1063,10 @@ typedef enum {
         
         currentProfile[InputMethodKey] = (directInputButton.state == NSOnState) ? @(DIRECT) : @(FROMFILE);
         currentProfile[InputSourceFilePathKey] = inputSourceFileTextField.stringValue;
+        
+        currentProfile[WorkingDirectoryTypeKey] = (workOnInputFileButton.state == NSOnState) ? @(WorkingDirectoryFile) : @(WorkingDirectoryTmp);
+        currentProfile[WorkingDirectoryPathKey] = (([currentProfile integerForKey:WorkingDirectoryTypeKey] == WorkingDirectoryFile) && ([currentProfile integerForKey:InputMethodKey] == FROMFILE)) ?
+        [currentProfile stringForKey:InputSourceFilePathKey].stringByDeletingLastPathComponent : NSTemporaryDirectory();
 
         currentProfile[FillColorKey] = fillColorWell.color.serializedString;
 
@@ -2332,7 +2338,16 @@ typedef enum {
     
     [output appendFormat:@"DVI Driver: %@\n", [aProfile stringForKey:DviDriverPathKey]];
     [output appendFormat:@"Ghostscript: %@\n", [aProfile stringForKey:GsPathKey]];
+
+    [output appendString:@"Working directory: "];
     
+    if (([aProfile integerForKey:WorkingDirectoryTypeKey] == WorkingDirectoryFile) && ([aProfile integerForKey:InputMethodKey] == FROMFILE)) {
+        [output appendFormat:@"%@", [aProfile stringForKey:InputSourceFilePathKey].stringByDeletingLastPathComponent];
+    } else {
+        [output appendFormat:@"%@", NSTemporaryDirectory()];
+    }
+    [output appendString:@"\n"];
+
     [output appendFormat:@"Resolution level: %.1f\n", [aProfile floatForKey:ResolutionKey]];
     
     NSString *ext = outputFilePath.pathExtension;
@@ -2345,9 +2360,9 @@ typedef enum {
     [output appendFormat:@"Top    margin: %ld%@\n", [aProfile integerForKey:TopMarginKey], unit];
     [output appendFormat:@"Bottom margin: %ld%@\n", [aProfile integerForKey:BottomMarginKey], unit];
     
-    if ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"]) {
-        [output appendFormat:@"Transparent PNG/GIF/TIFF: %@\n", [aProfile boolForKey:TransparentKey] ? ENABLED : DISABLED];
-    }
+    [output appendFormat:@"Transparent: %@\n", [aProfile boolForKey:TransparentKey] ? ENABLED : DISABLED];
+    [output appendFormat:@"Background color: %@\n", [aProfile colorForKey:FillColorKey].descriptionString];
+    
     if ([ext isEqualToString:@"pdf"]) {
         [output appendFormat:@"Text embedded PDF: %@\n", [aProfile boolForKey:GetOutlineKey] ? DISABLED : ENABLED];
     }
