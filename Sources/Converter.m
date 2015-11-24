@@ -379,7 +379,7 @@
         // この出力は出力ビューの方に流れてしまうので，リダイレクトによってテキストファイル経由でBoundingBox情報を受け取ることにする。
         
         [controller appendOutputAndScroll:@"TeX2img: Getting the bounding box...\n\n" quiet:quietFlag];
-        printf("*** %s ***\n", pdfPath.UTF8String);
+
         BOOL success = [controller execCommand:gsPath.programPath
                                    atDirectory:workingDirectory
                                  withArguments:@[@"-dBATCH",
