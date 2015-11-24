@@ -31,28 +31,9 @@ NSString* getFullPath(NSString *aPath)
 
 void previewFiles(NSArray<NSString*> *files, NSString *app)
 {
-    if (files.count == 0) {
-        return;
-    }
-    
-    NSMutableString *script = [NSMutableString string];
-    [script appendString:@"tell application \"Finder\"\n"];
-    [script appendString:@"open {"];
-    [script appendString:[[files mapUsingBlock:^NSString*(NSString *path) {
-        return [NSString stringWithFormat:@"POSIX file (\"%@\")", path];
-    }] componentsJoinedByString:@", "]];
-    [script appendFormat:@"} using POSIX file \"/Applications/%@.app\"\n", app];
-    [script appendString:@"end tell\n"];
-    
-    NSTask *task = [NSTask new];
-    NSPipe *pipe = [NSPipe pipe];
-    task.launchPath = @"/usr/bin/osascript";
-    task.arguments = @[@"-e", script];
-    task.standardOutput = pipe;
-    task.standardError = pipe;
-    
-    [task launch];
-
+    [files enumerateObjectsUsingBlock:^(NSString * _Nonnull file, NSUInteger idx, BOOL * _Nonnull stop) {
+        [NSWorkspace.sharedWorkspace openFile:file withApplication:app];
+    }];
 }
 
 BOOL isTeX2imgAnnotation(PDFAnnotation *annotation)
