@@ -2503,7 +2503,7 @@ typedef enum {
                              atRightOfButton:(NSButton*)sender
                                       ofView:preferenceWindow.contentView
                                      offsetX:31
-                                           Y:preferenceWindow.frame.size.height - 272];
+                                           Y:preferenceWindow.frame.size.height - (isJapaneseLanguage() ? 313 : 300)]; // Japanese.lproj と English.lproj の MainMenu.xib の違いに対応
 }
 
 - (IBAction)showAnimationParameterSettingPopover:(id)sender
@@ -2512,7 +2512,7 @@ typedef enum {
                              atRightOfButton:(NSButton*)sender
                                       ofView:preferenceWindow.contentView
                                      offsetX:31
-                                           Y:preferenceWindow.frame.size.height - 432];
+                                           Y:preferenceWindow.frame.size.height - 447];
 }
 
 #pragma mark - 不可視文字表示の種別設定

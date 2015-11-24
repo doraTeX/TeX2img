@@ -38,3 +38,15 @@ BOOL runConfirmPanel(NSString *message, ...)
     return (result == NSOKButton);
 }
 
+
+BOOL isJapaneseLanguage()
+{
+    static BOOL isJapanese;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSArray *languages = [NSLocale preferredLanguages];
+        NSString *currentLanguage = [languages objectAtIndex:0];
+        isJapanese = [currentLanguage isEqualToString:@"ja"];
+    });
+    return isJapanese;
+}

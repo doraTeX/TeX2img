@@ -9,5 +9,6 @@ void runOkPanel(NSString *title, NSString *message, ...);
 void runErrorPanel(NSString *message, ...);
 void runWarningPanel(NSString *message, ...);
 BOOL runConfirmPanel(NSString *message, ...);
+BOOL isJapaneseLanguage();
 
 #endif
