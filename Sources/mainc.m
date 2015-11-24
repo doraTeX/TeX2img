@@ -11,7 +11,7 @@
 #import "NSColor-Extension.h"
 
 #define OPTION_NUM 53
-#define VERSION "2.1.2b2"
+#define VERSION "2.1.2b3"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -924,7 +924,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                                 result -= r << 16;
                                 NSInteger g = result >> 8;
                                 NSInteger b = result - (g << 8);
-                                fillColor = [NSColor colorWithCalibratedRed:((CGFloat)r)/255 green:((CGFloat)g)/255 blue:((CGFloat)b)/255 alpha:1.0];
+                                fillColor = [NSColor colorWithDeviceRed:((CGFloat)r)/255 green:((CGFloat)g)/255 blue:((CGFloat)b)/255 alpha:1.0];
                             } else {
                                 fillColor = [NSColor colorWithCSSName:colorValue];
                                 if (!fillColor) {
@@ -944,7 +944,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                                                                                               options:NSRegularExpressionCaseInsensitive
                                                                                                 error:nil];
                             if ([regex matchesInString:rgb options:0 range:NSMakeRange(0, rgb.length)]) {
-                                fillColor = [NSColor colorWithCalibratedRed:r.floatValue/255 green:g.floatValue/255 blue:b.floatValue/255 alpha:1.0];
+                                fillColor = [NSColor colorWithDeviceRed:r.floatValue/255 green:g.floatValue/255 blue:b.floatValue/255 alpha:1.0];
                             } else {
                                 printf("error: --background-color is invalid.\n");
                                 exit(1);
