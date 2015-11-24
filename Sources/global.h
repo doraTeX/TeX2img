@@ -57,6 +57,13 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
 #define CommandCompletionKeyKey @"commandCompletionKey"
 
+#define WorkingDirectoryTypeKey @"workingDirectoryType"
+#define WorkingDirectoryPathKey @"workingDirectoryPath"
+
+#define WorkingDirectoryTmp     1
+#define WorkingDirectoryFile    2
+#define WorkingDirectoryCurrent 3
+
 #define ColorPalleteColorKey @"colorPalleteColor"
 
 #define ConvertYenMarkKey @"convertYenMark"
@@ -135,6 +142,6 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
 #define EA_Key "com.loveinequality.TeX2img"
 
-#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf:/Applications/TeX2img.app/Contents/Resources/pdftops:/Applications/TeXLive/TeX2img.app/Contents/Resources/pdftops"
+#define ADDITIONAL_PATH @"/Applications/TeX2img.app/Contents/Resources/mupdf:/Applications/TeXLive/TeX2img.app/Contents/Resources/mupdf:/Applications/TeX2img.app/Contents/Resources/pdftops:/Applications/TeXLive/TeX2img.app/Contents/Resources/pdftops:/Applications/TeX2img.app/Contents/Resources/eps2emf:/Applications/TeXLive/TeX2img.app/Contents/Resources/eps2emf"
 
 #endif

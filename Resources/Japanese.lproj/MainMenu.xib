@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="15C40a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="14F1021" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
@@ -435,10 +435,10 @@ DQ
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <animations/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <size key="minSize" width="497" height="129"/>
+                                                <size key="minSize" width="497" height="125"/>
                                                 <size key="maxSize" width="996" height="10000000"/>
                                                 <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                <size key="minSize" width="497" height="129"/>
+                                                <size key="minSize" width="497" height="125"/>
                                                 <size key="maxSize" width="996" height="10000000"/>
                                                 <connections>
                                                     <outlet property="controller" destination="450" id="755"/>
@@ -1216,77 +1216,6 @@ DQ
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
-                                        <textField verticalHuggingPriority="750" id="bEk-zp-Lf1">
-                                            <rect key="frame" x="14" y="169" width="95" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <animations/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="文字コード指定" id="WAa-1J-cUd">
-                                                <font key="font" metaFont="system"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
-                                        <popUpButton verticalHuggingPriority="750" id="SEX-u4-2gO">
-                                            <rect key="frame" x="113" y="164" width="131" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <animations/>
-                                            <popUpButtonCell key="cell" type="push" title="指定しない" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="UXG-02-mia" id="YJO-Ve-3V6">
-                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="menu"/>
-                                                <menu key="menu" id="oR4-5p-FEm">
-                                                    <items>
-                                                        <menuItem title="指定しない" state="on" id="UXG-02-mia">
-                                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                                        </menuItem>
-                                                        <menuItem title="UTF-8" tag="1" id="rSq-ZY-qkc"/>
-                                                        <menuItem title="Shift-JIS" tag="2" id="FkU-0G-oGA"/>
-                                                        <menuItem title="JIS" tag="3" id="QE0-N9-G4X"/>
-                                                        <menuItem title="EUC-JP" tag="4" id="aTV-Ug-ACV"/>
-                                                    </items>
-                                                </menu>
-                                            </popUpButtonCell>
-                                        </popUpButton>
-                                        <box autoresizesSubviews="NO" title="変換処理" borderType="line" id="rl0-1h-G1Q">
-                                            <rect key="frame" x="14" y="90" width="394" height="57"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                            <view key="contentView" id="Xx0-e6-Anb">
-                                                <rect key="frame" x="1" y="1" width="392" height="39"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="Szf-rE-S5f">
-                                                        <rect key="frame" x="15" y="11" width="356" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                        <animations/>
-                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="176" height="18"/>
-                                                        <size key="intercellSpacing" width="4" height="2"/>
-                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="FaD-Kt-ONi">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <cells>
-                                                            <column>
-                                                                <buttonCell type="radio" title="画質優先（推奨）" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="AUh-C0-uz0">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                </buttonCell>
-                                                            </column>
-                                                            <column>
-                                                                <buttonCell type="radio" title="速度優先" imagePosition="left" alignment="left" tag="2" inset="2" id="aDM-FB-Yxj">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                </buttonCell>
-                                                            </column>
-                                                        </cells>
-                                                    </matrix>
-                                                </subviews>
-                                                <animations/>
-                                            </view>
-                                            <animations/>
-                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                            <font key="titleFont" size="12" name=".AppleSystemUIFont"/>
-                                        </box>
                                         <textField verticalHuggingPriority="750" id="595">
                                             <rect key="frame" x="47" y="378" width="42" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -1340,6 +1269,85 @@ DQ
                                                 <action selector="searchPrograms:" target="450" id="716"/>
                                             </connections>
                                         </button>
+                                        <button id="9Ua-Jh-E6i">
+                                            <rect key="frame" x="14" y="179" width="402" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="入力ファイルと同じフォルダ上で作業（外部ファイル入力時）" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="xcy-tY-ocn">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </button>
+                                        <textField verticalHuggingPriority="750" id="bEk-zp-Lf1">
+                                            <rect key="frame" x="14" y="147" width="95" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <animations/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="文字コード指定" id="WAa-1J-cUd">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <popUpButton verticalHuggingPriority="750" id="SEX-u4-2gO">
+                                            <rect key="frame" x="113" y="142" width="131" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <animations/>
+                                            <popUpButtonCell key="cell" type="push" title="指定しない" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="UXG-02-mia" id="YJO-Ve-3V6">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="menu"/>
+                                                <menu key="menu" id="oR4-5p-FEm">
+                                                    <items>
+                                                        <menuItem title="指定しない" state="on" id="UXG-02-mia">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="UTF-8" tag="1" id="rSq-ZY-qkc"/>
+                                                        <menuItem title="Shift-JIS" tag="2" id="FkU-0G-oGA"/>
+                                                        <menuItem title="JIS" tag="3" id="QE0-N9-G4X"/>
+                                                        <menuItem title="EUC-JP" tag="4" id="aTV-Ug-ACV"/>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                        </popUpButton>
+                                        <box autoresizesSubviews="NO" title="変換処理" borderType="line" id="rl0-1h-G1Q">
+                                            <rect key="frame" x="14" y="68" width="394" height="57"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="Xx0-e6-Anb">
+                                                <rect key="frame" x="1" y="1" width="392" height="39"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="Szf-rE-S5f">
+                                                        <rect key="frame" x="15" y="11" width="356" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                        <animations/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="176" height="18"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="FaD-Kt-ONi">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="画質優先（推奨）" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="AUh-C0-uz0">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </column>
+                                                            <column>
+                                                                <buttonCell type="radio" title="速度優先" imagePosition="left" alignment="left" tag="2" inset="2" id="aDM-FB-Yxj">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </column>
+                                                        </cells>
+                                                    </matrix>
+                                                </subviews>
+                                                <animations/>
+                                            </view>
+                                            <animations/>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <font key="titleFont" size="12" name=".AppleSystemUIFont"/>
+                                        </box>
                                     </subviews>
                                     <animations/>
                                 </view>
@@ -1704,7 +1712,7 @@ DQ
                                             <rect key="frame" x="38" y="303" width="226" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <animations/>
-                                            <buttonCell key="cell" type="push" title="Finder で作業フォルダを開く..." bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="634">
+                                            <buttonCell key="cell" type="push" title="Finder で一時フォルダを開く..." bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="634">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -2035,6 +2043,7 @@ DQ
                 <outlet property="ungroupCheckBox" destination="879" id="882"/>
                 <outlet property="unitMatrix" destination="1av-2K-JwW" id="Cz7-Yv-KG4"/>
                 <outlet property="utfExportCheckBox" destination="659" id="661"/>
+                <outlet property="workInInputFileDirectoryCheckBox" destination="9Ua-Jh-E6i" id="Tju-IP-EK5"/>
                 <outlet property="wrapLineCheckBox" destination="SOn-w4-4gh" id="9ie-N8-Yrz"/>
             </connections>
         </customObject>

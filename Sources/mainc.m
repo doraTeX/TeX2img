@@ -9,8 +9,8 @@
 #import "NSString-Extension.h"
 #import "NSDictionary-Extension.h"
 
-#define OPTION_NUM 51
-#define VERSION "1.11.1"
+#define OPTION_NUM 52
+#define VERSION "1.11.2"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -44,6 +44,11 @@ void usage()
     printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
     printf("  --[no-]utf-export          : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
     printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
+    printf("  --workingdir DIR           : set the working directory (tmp|file|current) (default: tmp)\n");
+    printf("   *DIR values:\n");
+    printf("      tmp            : Standard user temporary directory ($TMPDIR)\n");
+    printf("      file           : The same directory as the input file\n");
+    printf("      current        : Current directory\n");
     printf("\n");
     printf("Image Settings:\n");
     printf("  --margins    \"VALUE\"       : set the margins (default: \"0 0 0 0\")\n");
@@ -61,7 +66,7 @@ void usage()
     printf("  --pagebox BOX              : select the page box type used as the page size (media|crop|bleed|trim|art) (default: crop)\n");
     printf("\n");
     printf("Image Settings (peculiar to image formats):\n");
-    printf("  --[no-]transparent         : disable/enable transparent EPS/PDF/SVG/EMF/PNG/TIFF/GIF (default: enabled)\n");
+    printf("  --[no-]transparent         : disable/enable transparent (if possible) (default: enabled)\n");
     printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
     printf("  --[no-]plain-text          : disable/enable outputting EPS as a plain text (default: disabled)\n");
     printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or animated GIF (default: disabled)\n");
@@ -157,7 +162,23 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     
     NSString *eps2emfPath = getPath([aProfile stringForKey:Eps2emfPathKey]);
     printf("eps2emf: %s\n", eps2emfPath ? eps2emfPath.UTF8String : "NOT FOUND");
-    
+
+    printf("Working directory: ");
+    switch ([aProfile integerForKey:WorkingDirectoryTypeKey]) {
+        case WorkingDirectoryTmp:
+            printf("%s", NSTemporaryDirectory().UTF8String);
+            break;
+        case WorkingDirectoryFile:
+            printf("%s", getFullPath(inputFilePath).stringByDeletingLastPathComponent.UTF8String);
+            break;
+        case WorkingDirectoryCurrent:
+            printf("%s", NSFileManager.defaultManager.currentDirectoryPath.UTF8String);
+            break;
+        default:
+            break;
+    }
+    printf("\n");
+
     printf("Resolution level: %f\n", [aProfile floatForKey:ResolutionKey]);
     
     NSString *ext = outputFilePath.pathExtension;
@@ -170,9 +191,8 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     printf("Right  margin: %ld%s\n", [aProfile integerForKey:RightMarginKey], unit.UTF8String);
     printf("Bottom margin: %ld%s\n", [aProfile integerForKey:BottomMarginKey], unit.UTF8String);
     
-    if ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"]) {
-        printf("Transparent PNG/GIF/TIFF: %s\n", [aProfile boolForKey:TransparentKey] ? ENABLED : DISABLED);
-    }
+    printf("Transparent: %s\n", [aProfile boolForKey:TransparentKey] ? ENABLED : DISABLED);
+    
     if ([ext isEqualToString:@"pdf"]) {
         printf("Text embedded PDF: %s\n", [aProfile boolForKey:GetOutlineKey] ? DISABLED : ENABLED);
     }
@@ -225,6 +245,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     CGPDFBox pageBoxType = kCGPDFCropBox;
     float delay = 1;
     NSInteger loopCount = 0;
+    NSInteger workingDirectoryType = WorkingDirectoryTmp;
     
     // getopt_long を使った，長いオプション対応のオプション解析
     struct option *options;
@@ -521,6 +542,12 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     options[i].flag = NULL;
     options[i].val = i+1;
     
+    i++;
+    options[i].name = "workingdir";
+    options[i].has_arg = required_argument;
+    options[i].flag = NULL;
+    options[i].val = i+1;
+
     options[OPTION_NUM - 3].name = "version";
     options[OPTION_NUM - 3].has_arg = no_argument;
     options[OPTION_NUM - 3].flag = NULL;
@@ -553,7 +580,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     resolutoinLevel = strtof(optarg, NULL);
                 } else {
-                    printf("--resolution is invalid.\n");
+                    printf("error: --resolution is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -561,7 +588,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     leftMargin = strtoi(optarg);
                 } else {
-                    printf("--left-margin is invalid.\n");
+                    printf("error: --left-margin is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -569,7 +596,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     rightMargin = strtoi(optarg);
                 } else {
-                    printf("--right-margin is invalid.\n");
+                    printf("error: --right-margin is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -577,7 +604,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     topMargin = strtoi(optarg);
                 } else {
-                    printf("--top-margin is invalid.\n");
+                    printf("error: --top-margin is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -585,7 +612,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     bottomMargin = strtoi(optarg);
                 } else {
-                    printf("--bottom-margin is invalid.\n");
+                    printf("error: --bottom-margin is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -788,11 +815,11 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     delay = strtof(optarg, NULL);
                 } else {
-                    printf("--animation-delay is invalid.\n");
+                    printf("error: --animation-delay is invalid.\n");
                     exit(1);
                 }
                 if (delay < 0) {
-                    printf("--animation-delay is invalid.\n");
+                    printf("error: --animation-delay is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -800,11 +827,11 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 if (optarg) {
                     loopCount = strtoi(optarg);
                 } else {
-                    printf("--animation-loop is invalid.\n");
+                    printf("error: --animation-loop is invalid.\n");
                     exit(1);
                 }
                 if (loopCount < 0) {
-                    printf("--animation-loop is invalid.\n");
+                    printf("error: --animation-loop is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -828,12 +855,12 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                             bottomMargin = strtoi(marginsArray[3].UTF8String);
                             break;
                         default:
-                            printf("The number of \"--margins\" values must be 1, 2 or 4.\n");
+                            printf("error: The number of \"--margins\" values must be 1, 2 or 4.\n");
                             exit(1);
                             break;
                     }
                 } else {
-                    printf("--margins is invalid.\n");
+                    printf("error: --margins is invalid.\n");
                     exit(1);
                 }
                 break;
@@ -842,6 +869,24 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 break;
             case 48: // --no-plain-text
                 plainTextFlag = NO;
+                break;
+            case 49: // --workingdir
+                if (optarg) {
+                    NSString *pageboxString = @(optarg);
+                    if ([pageboxString isEqualToString:@"tmp"]) {
+                        workingDirectoryType = WorkingDirectoryTmp;
+                    } else if ([pageboxString isEqualToString:@"file"]) {
+                        workingDirectoryType = WorkingDirectoryFile;
+                    } else if ([pageboxString isEqualToString:@"current"]) {
+                        workingDirectoryType = WorkingDirectoryCurrent;
+                    } else {
+                        printf("error: --workingdir is invalid. It must be tmp/file/current.\n");
+                        exit(1);
+                    }
+                } else {
+                    printf("error: --workingdir is invalid. It must be tmp/file/current.\n");
+                    exit(1);
+                }
                 break;
             case (OPTION_NUM - 2): // --version
                 version();
@@ -968,6 +1013,8 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     aProfile[PageBoxKey] = @(pageBoxType);
     aProfile[LoopCountKey] = @(loopCount);
     aProfile[DelayKey] = @(delay);
+    aProfile[WorkingDirectoryTypeKey] = @(workingDirectoryType);
+    aProfile[WorkingDirectoryPathKey] = (workingDirectoryType == WorkingDirectoryCurrent) ? NSFileManager.defaultManager.currentDirectoryPath : @"";
     
     if (!quietFlag) {
         printCurrentStatus(inputFilePath, aProfile);
