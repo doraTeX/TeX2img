@@ -379,13 +379,13 @@
         // この出力は出力ビューの方に流れてしまうので，リダイレクトによってテキストファイル経由でBoundingBox情報を受け取ることにする。
         
         [controller appendOutputAndScroll:@"TeX2img: Getting the bounding box...\n\n" quiet:quietFlag];
-        
+        printf("*** %s ***\n", pdfPath.UTF8String);
         BOOL success = [controller execCommand:gsPath.programPath
                                    atDirectory:workingDirectory
                                  withArguments:@[@"-dBATCH",
                                                  @"-dNOPAUSE",
                                                  @"-sDEVICE=bbox",
-                                                 pdfPath.stringByQuotingWithDoubleQuotations,
+                                                 pdfPath.lastPathComponent.stringByQuotingWithDoubleQuotations,
                                                  [@"> " stringByAppendingString:bboxFileName],
                                                  ]
                                          quiet:quietFlag];
@@ -694,15 +694,23 @@
     if (![controller epstopdfExists]) {
 		return NO;
 	}
+    
+    NSString *temporaryOutputPdfFileName = [tempFileBaseName stringByAppendingString:@"-out.pdf"];
 	
 	[controller execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
                 atDirectory:workingDirectory
-              withArguments:@[[NSString stringWithFormat:@"--outfile=%@", outputPdfFileName.stringByQuotingWithDoubleQuotations],
+              withArguments:@[[NSString stringWithFormat:@"--outfile=%@", temporaryOutputPdfFileName.stringByQuotingWithDoubleQuotations],
                               // 10.10 以下で --hires を渡すと，その後の Quartz API での処理時に端が欠けてしまうので，10.10 以下では --nohires を渡す
                               // https://github.com/doraTeX/TeX2img/issues/58
                               (systemMajorVersion() >= 11) ? @"--hires" : @"--nohires",
                               epsName]
                       quiet:quietFlag];
+    
+    NSString *outFilePath = [workingDirectory stringByAppendingPathComponent:outputPdfFileName.lastPathComponent];
+    [fileManager removeItemAtPath:outFilePath error:nil];
+    [fileManager moveItemAtPath:[workingDirectory stringByAppendingPathComponent:temporaryOutputPdfFileName.lastPathComponent]
+                         toPath:outFilePath
+                          error:nil];
 	return YES;
 }
 
