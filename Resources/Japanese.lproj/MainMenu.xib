@@ -2302,7 +2302,7 @@ DQ
                 <outlet property="ungroupCheckBox" destination="879" id="882"/>
                 <outlet property="unitMatrix" destination="KJF-Fz-y67" id="m6x-pc-5vF"/>
                 <outlet property="utfExportCheckBox" destination="659" id="661"/>
-                <outlet property="workOnInputFileButton" destination="gSN-OB-fwo" id="UHM-LT-41c"/>
+                <outlet property="workInInputFileDirectoryCheckBox" destination="gSN-OB-fwo" id="iv3-Hv-kKO"/>
                 <outlet property="wrapLineCheckBox" destination="SOn-w4-4gh" id="9ie-N8-Yrz"/>
             </connections>
         </customObject>

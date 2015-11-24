@@ -122,7 +122,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSPopUpButton *encodingPopUpButton;
 @property (nonatomic, strong) IBOutlet NSMatrix *unitMatrix;
 @property (nonatomic, strong) IBOutlet NSMatrix *priorityMatrix;
-@property (nonatomic, strong) IBOutlet NSButton *workOnInputFileButton;
+@property (nonatomic, strong) IBOutlet NSButton *workInInputFileDirectoryCheckBox;
 @property (nonatomic, copy) NSString *lastSavedPath;
 
 @property (nonatomic, strong) NSWindow *lastActiveWindow;
@@ -267,7 +267,7 @@ typedef enum {
 @synthesize encodingPopUpButton;
 @synthesize unitMatrix;
 @synthesize priorityMatrix;
-@synthesize workOnInputFileButton;
+@synthesize workInInputFileDirectoryCheckBox;
 @synthesize lastSavedPath;
 
 @synthesize lastActiveWindow;
@@ -684,6 +684,7 @@ typedef enum {
 
 	ignoreErrorCheckBox.state = [aProfile boolForKey:IgnoreErrorKey];
 	utfExportCheckBox.state = [aProfile boolForKey:UtfExportKey];
+    workInInputFileDirectoryCheckBox.state = ([aProfile integerForKey:WorkingDirectoryTypeKey] == WorkingDirectoryFile) ? NSOnState : NSOffState;
 	
 	convertYenMarkMenuItem.state = [aProfile boolForKey:ConvertYenMarkKey];
 	
@@ -1064,7 +1065,7 @@ typedef enum {
         currentProfile[InputMethodKey] = (directInputButton.state == NSOnState) ? @(DIRECT) : @(FROMFILE);
         currentProfile[InputSourceFilePathKey] = inputSourceFileTextField.stringValue;
         
-        currentProfile[WorkingDirectoryTypeKey] = (workOnInputFileButton.state == NSOnState) ? @(WorkingDirectoryFile) : @(WorkingDirectoryTmp);
+        currentProfile[WorkingDirectoryTypeKey] = (workInInputFileDirectoryCheckBox.state == NSOnState) ? @(WorkingDirectoryFile) : @(WorkingDirectoryTmp);
         currentProfile[WorkingDirectoryPathKey] = (([currentProfile integerForKey:WorkingDirectoryTypeKey] == WorkingDirectoryFile) && ([currentProfile integerForKey:InputMethodKey] == FROMFILE)) ?
         [currentProfile stringForKey:InputSourceFilePathKey].stringByDeletingLastPathComponent : NSTemporaryDirectory();
 

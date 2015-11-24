@@ -711,7 +711,7 @@ DQ
                 <outlet property="ungroupCheckBox" destination="859" id="862"/>
                 <outlet property="unitMatrix" destination="GVy-l5-MNs" id="t08-0y-0me"/>
                 <outlet property="utfExportCheckBox" destination="657" id="659"/>
-                <outlet property="workOnInputFileButton" destination="Xy3-3W-kaD" id="Nkz-hL-0sH"/>
+                <outlet property="workInInputFileDirectoryCheckBox" destination="Xy3-3W-kaD" id="U5g-Ix-n77"/>
                 <outlet property="wrapLineCheckBox" destination="JhN-ga-3Ck" id="BEo-3N-DTm"/>
             </connections>
         </customObject>
