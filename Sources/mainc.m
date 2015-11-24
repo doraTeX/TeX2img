@@ -922,8 +922,6 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                                 NSRange hexRange = [matches[0] rangeAtIndex:1];
                                 unsigned int result = 0;
                                 NSScanner *scanner = [NSScanner scannerWithString:[colorValue substringWithRange:hexRange]];
-                                printf("%s\n", NSStringFromRange(hexRange).UTF8String);
-                                
                                 [scanner scanHexInt:&result];
                                 
                                 NSInteger r, g, b;
