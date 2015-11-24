@@ -11,7 +11,7 @@
 #import "NSColor-Extension.h"
 
 #define OPTION_NUM 53
-#define VERSION "2.1.2b5"
+#define VERSION "2.1.2b6"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -941,7 +941,10 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                                     b = (b << 4) + b;
                                 }
                                 
-                                fillColor = [NSColor colorWithDeviceRed:((CGFloat)r)/255 green:((CGFloat)g)/255 blue:((CGFloat)b)/255 alpha:1.0];
+                                fillColor = [NSColor colorWithDeviceRed:((CGFloat)r)/255
+                                                                  green:((CGFloat)g)/255
+                                                                   blue:((CGFloat)b)/255
+                                                                  alpha:1.0];
                             } else {
                                 fillColor = [NSColor colorWithCSSName:colorValue];
                                 if (!fillColor) {
@@ -953,15 +956,28 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                             break;
                         case 3:
                         {
-                            NSString *r = bgcolorArray[0];
-                            NSString *g = bgcolorArray[1];
-                            NSString *b = bgcolorArray[2];
-                            NSString *rgb = [NSString stringWithFormat:@"%@%@%@", r, g, b];
+                            NSString *sr = bgcolorArray[0];
+                            NSString *sg = bgcolorArray[1];
+                            NSString *sb = bgcolorArray[2];
+                            NSString *rgb = [NSString stringWithFormat:@"%@%@%@", sr, sg, sb];
                             NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"^\\d+$"
                                                                                               options:NSRegularExpressionCaseInsensitive
                                                                                                 error:nil];
-                            if ([regex matchesInString:rgb options:0 range:NSMakeRange(0, rgb.length)]) {
-                                fillColor = [NSColor colorWithDeviceRed:r.floatValue/255 green:g.floatValue/255 blue:b.floatValue/255 alpha:1.0];
+                            
+                            if ([regex rangeOfFirstMatchInString:rgb options:0 range:NSMakeRange(0, rgb.length)].location != NSNotFound) {
+                                NSInteger r = sr.integerValue;
+                                NSInteger g = sg.integerValue;
+                                NSInteger b = sb.integerValue;
+                                
+                                if (!((r <= 255) && (g <= 255) && (b <=255))) {
+                                    printf("error: --background-color is invalid. Each RGB value must be less than 256.\n");
+                                    exit(1);
+                                }
+                                
+                                fillColor = [NSColor colorWithDeviceRed:r/255.0
+                                                                  green:g/255.0
+                                                                   blue:b/255.0
+                                                                  alpha:1.0];
                             } else {
                                 printf("error: --background-color is invalid.\n");
                                 exit(1);
