@@ -11,7 +11,7 @@
 #import "NSColor-Extension.h"
 
 #define OPTION_NUM 53
-#define VERSION "2.1.2b4"
+#define VERSION "2.1.2b5"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -69,7 +69,8 @@ void usage()
     printf("  --background-color COLOR   : set the background color (default: white)\n");
     printf("   *COLOR format examples:\n");
     printf("      magenta     : CSS-style color name\n");
-    printf("      FF00FF      : CSS-style HEX format\n");
+    printf("      FF00FF      : CSS-style 6-digit HEX format\n");
+    printf("      F0F         : CSS-style 3-digit HEX format\n");
     printf("      \"255 0 255\" : RGB integers (0..255)\n");
     printf("\n");
     printf("Image Settings (peculiar to image formats):\n");
@@ -912,18 +913,36 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                         case 1:
                         {
                             NSString *colorValue = bgcolorArray[0].lowercaseString;
-                            NSRegularExpression *hexRegex = [[NSRegularExpression alloc] initWithPattern:@"^[0-9a-f]{6}$"
+                            NSRegularExpression *hexRegex = [[NSRegularExpression alloc] initWithPattern:@"^\\#?([0-9a-f]{6}|[0-9a-f]{3})$"
                                                                                                  options:0
                                                                                                    error:nil];
-                            if ([hexRegex rangeOfFirstMatchInString:colorValue options:0 range:NSMakeRange(0, colorValue.length)].location != NSNotFound) {
+                            NSArray<NSTextCheckingResult*>* matches = [hexRegex matchesInString:colorValue options:0 range:NSMakeRange(0, colorValue.length)];
+                            
+                            if (matches.count > 0) {
+                                NSRange hexRange = [matches[0] rangeAtIndex:1];
                                 unsigned int result = 0;
-                                NSScanner *scanner = [NSScanner scannerWithString:colorValue];
+                                NSScanner *scanner = [NSScanner scannerWithString:[colorValue substringWithRange:hexRange]];
+                                printf("%s\n", NSStringFromRange(hexRange).UTF8String);
                                 
                                 [scanner scanHexInt:&result];
-                                NSInteger r = result >> 16;
-                                result -= r << 16;
-                                NSInteger g = result >> 8;
-                                NSInteger b = result - (g << 8);
+                                
+                                NSInteger r, g, b;
+
+                                if (hexRange.length == 6) { // #FF00FF 形式のとき
+                                    r = result >> 16;
+                                    result -= r << 16;
+                                    g = result >> 8;
+                                    b = result - (g << 8);
+                                } else { // #F0F 形式のとき
+                                    r = result >> 8;
+                                    result -= r << 8;
+                                    g = result >> 4;
+                                    b = result - (g << 4);
+                                    r = (r << 4) + r;
+                                    g = (g << 4) + g;
+                                    b = (b << 4) + b;
+                                }
+                                
                                 fillColor = [NSColor colorWithDeviceRed:((CGFloat)r)/255 green:((CGFloat)g)/255 blue:((CGFloat)b)/255 alpha:1.0];
                             } else {
                                 fillColor = [NSColor colorWithCSSName:colorValue];
