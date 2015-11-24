@@ -56,7 +56,7 @@
 \draw[speed priority] (PDF with text without margin) -- node[left,align=right] {Quartz API でビットマップ化\\＋余白付与} (Bitmap);
 
 \node[output node] (Multipage TIFF) at ($(Bitmap) + (-4,-2)$) {マルチページTIFF\\（速度優先）};
-\draw[speed priority] (Bitmap.south west) -- node[above,xshift=-10pt] {tiffcp} (Multipage TIFF.north east);
+\draw[speed priority] (Bitmap.south west) -- node[above,xshift=-10pt] {tiffutil} (Multipage TIFF.north east);
 
 \node[output node] (Animation GIF) at ($(Bitmap) + (0,-2)$) {アニメーションGIF\\（速度優先）};
 \draw[speed priority] (Bitmap) -- node[right] {Quartz API} (Animation GIF);
@@ -110,7 +110,7 @@
 \draw[->] (Outlined PDF without margin) -- node[right,align=left] {Quartz API でビットマップ化\\＋余白付与} (Bitmap2);
 
 \node[output node] (Multipage TIFF 2) at ($(Bitmap2) + (-2,2)$) {マルチページTIFF\\（画質優先）};
-\draw[->] (Bitmap2.north west) -- node[left,yshift=-5pt] {tiffcp} (Multipage TIFF 2);
+\draw[->] (Bitmap2.north west) -- node[left,yshift=-5pt] {tiffutil} (Multipage TIFF 2);
 
 \node[output node] (Animation GIF 2) at ($(Bitmap2) + (2,2)$) {アニメーションGIF\\（画質優先）};
 \draw[->] (Bitmap2.north east) -- node[right,yshift=-5pt] {Quartz API} (Animation GIF 2);
