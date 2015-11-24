@@ -372,7 +372,7 @@
     
     if (![bboxDictionary.allKeys containsObject:key]) { // このPDFに対する gs -sDEVICE=bbox の実行が初めてなら
         // gsを実行してBoundingBox情報を取得
-        NSString *bboxFileName = @"tex2img-bbox";
+        NSString *bboxFileName = [tempFileBaseName stringByAppendingString:@"-bbox"];
         NSString *bboxFilePath = [workingDirectory stringByAppendingPathComponent:bboxFileName];
         
         // 中断ボタンによる中断を可能とするため，あえて controller を通して実行する。
@@ -528,7 +528,7 @@
     
     BOOL result = YES;
     
-    NSString *gsVerFileName = @"tex2img-gsver";
+    NSString *gsVerFileName = [tempFileBaseName stringByAppendingString:@"-gsver"];
     NSString *gsVerFilePath = [workingDirectory stringByAppendingPathComponent:gsVerFileName];
     
     // 中断ボタンによる中断を可能とするため，あえて controller を通して実行する。
@@ -570,7 +570,7 @@
                         hiresBbStr,
                         epsPath
                         ];
-    NSString *scriptPath = [workingDirectory stringByAppendingPathComponent:@"tex2img-replaceBB"];
+    NSString *scriptPath = [workingDirectory stringByAppendingPathComponent:[tempFileBaseName stringByAppendingString:@"-replaceBB"]];
     
     FILE *fp = fopen(scriptPath.UTF8String, "w");
     fputs(script.UTF8String, fp);
@@ -894,7 +894,7 @@
                           (CGFloat)leftMargin, (CGFloat)bottomMargin, (CGFloat)rightMargin, (CGFloat)topMargin,
                           epsPath
                           ];
-    NSString *scriptPath = [workingDirectory stringByAppendingPathComponent:@"tex2img-enlargeBB"];
+    NSString *scriptPath = [workingDirectory stringByAppendingPathComponent:[tempFileBaseName stringByAppendingString:@"-enlargeBB"]];
 
     FILE *fp = fopen(scriptPath.UTF8String, "w");
     fputs(script.UTF8String, fp);
