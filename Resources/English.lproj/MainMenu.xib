@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="14F1021" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="15C47a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
@@ -514,10 +514,10 @@ DQ
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <animations/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <size key="minSize" width="497" height="125"/>
+                                                <size key="minSize" width="497" height="129"/>
                                                 <size key="maxSize" width="996" height="10000000"/>
                                                 <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <size key="minSize" width="497" height="125"/>
+                                                <size key="minSize" width="497" height="129"/>
                                                 <size key="maxSize" width="996" height="10000000"/>
                                                 <connections>
                                                     <outlet property="controller" destination="450" id="0w9-sT-7AR"/>
@@ -1141,10 +1141,10 @@ DQ
                                                         </buttonCell>
                                                     </button>
                                                     <button id="iH4-6u-aJA">
-                                                        <rect key="frame" x="18" y="66" width="378" height="18"/>
+                                                        <rect key="frame" x="18" y="66" width="384" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
-                                                        <buttonCell key="cell" type="check" title="Output as a single file or animation (PDF / TIFF / GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="prq-A2-uxS">
+                                                        <buttonCell key="cell" type="check" title="Output as a single file or animation (PDF/TIFF/GIF/SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="prq-A2-uxS">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -1159,7 +1159,7 @@ DQ
                                                         </buttonCell>
                                                     </button>
                                                     <button verticalHuggingPriority="750" id="Wcc-by-C2o">
-                                                        <rect key="frame" x="379" y="65" width="81" height="17"/>
+                                                        <rect key="frame" x="384" y="65" width="81" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <buttonCell key="cell" type="inline" title="Advanced..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="DcF-qA-yFo">
@@ -2795,10 +2795,10 @@ DQ
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="99z-i8-lQg">
-                    <rect key="frame" x="18" y="75" width="155" height="17"/>
+                    <rect key="frame" x="18" y="75" width="241" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <animations/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="GIF Animation Settings:" id="ypk-QY-VCX">
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="GIF/SVG Animation Settings:" id="ypk-QY-VCX">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

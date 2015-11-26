@@ -76,9 +76,9 @@ void usage()
     printf("Image Settings (peculiar to image formats):\n");
     printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
     printf("  --[no-]plain-text          : disable/enable outputting EPS as a plain text (default: disabled)\n");
-    printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or animated GIF (default: disabled)\n");
-    printf("  --animation-delay TIME     : set the delay time (sec) of an animated GIF (default: 1)\n");
-    printf("  --animation-loop  NUMBER   : set the number of times to repeat an animated GIF (default: 0 (infinity))\n");
+    printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or an animation GIF/SVG (default: disabled)\n");
+    printf("  --animation-delay TIME     : set the delay time (sec) of an animated GIF/SVG (default: 1)\n");
+    printf("  --animation-loop  NUMBER   : set the number of times to repeat an animated GIF/SVG (default: 0 (infinity))\n");
     printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
     printf("\n");
     printf("Behavior After Compiling:\n");
