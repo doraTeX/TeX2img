@@ -5,6 +5,7 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathmorphing}
 \usepackage{enumitem}
 \pagestyle{empty}
 \begin{document}
@@ -15,17 +16,17 @@
 \tikzset{relay node/.style={draw,rectangle,fill=red!20!white}}
 \tikzset{output node/.style={draw,rectangle,double,outer sep=1pt,fill=green!30!white}}
 \tikzset{speed priority/.style={->,>={Stealth[scale=1.2]},dashed,thick,color=blue}}
-\tikzset{fill background/.style={->,>={Stealth[scale=1.2]},dashed,thick,color=red}}
+\tikzset{fill background/.style={->,>={Stealth[scale=1.2]},thick,color=red,decorate,decoration={snake, pre length=5pt, post length=5pt, segment length=6pt, amplitude=1pt}}}
 \tikzset{legend box/.style={minimum width=1cm,minimum height=\baselineskip}}
 
 {\fboxsep8pt
-\fbox{\parbox{26zw}{\baselineskip20pt\lineskiplimit12pt\lineskip4pt
+\fbox{\parbox{42zw}{\baselineskip20pt\lineskiplimit12pt\lineskip4pt
 {\Large\textgt{凡例}}\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,input node] {};}\hspace{1zw}入力ファイル\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,relay node] {};}\hspace{1zw}中間ファイル\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,output node] {};}\hspace{1zw}出力ファイル\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[speed priority](0,0) -- (1,0);}\hspace{1zw}速度優先モードのみでの経路\par
-\makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[fill background](0,0) -- (1,0);}\hspace{1zw}非透過アウトライン化PDF生成時のみの経路\par
+\makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[fill background](0,0) -- (1,0);}\hspace{1zw}非透過アウトライン化PDFまたは非透過アニメーションSVG生成時のみの経路\par
 }}}
 
 \vspace{-4cm}
@@ -133,6 +134,12 @@
 \node[output node] (Filled Multipage Outlined PDF) at ($(Filled Outlined PDF with margin) + (0,-3)$) {マルチページ\\アウトライン化PDF\\（非透過）};
 \draw[->] (Filled Outlined PDF with margin) -- node[left] {Quartz API} (Filled Multipage Outlined PDF);
 \draw[->] (Filled Outlined PDF without margin.south east) to [bend left=45] node[right] {Quartz API} (Filled Multipage Outlined PDF.north east);
+
+\node[output node] (Animation SVG) at ($(Filled Outlined PDF with margin)!.5!(Outlined PDF without margin)$) {アニメーションSVG};
+\draw[->] (Filled Outlined PDF with margin) --node[right,yshift=5pt] {mudraw} (Animation SVG.south east);
+\draw[->] (Outlined PDF with margin) --node[left,xshift=3pt,yshift=5pt] {mudraw} (Animation SVG.south west);
+\draw[->] (Filled Outlined PDF without margin) --node[right,yshift=-5pt] {mudraw} (Animation SVG.north east);
+\draw[->] (Outlined PDF without margin) --node[left,xshift=3pt,yshift=-5pt] {mudraw} (Animation SVG.north west);
 
 \node[output node] (EPS with margin) at ($(EPS without margin) + (0,-2)$) {EPS\\（余白あり）};
 \draw[->] (EPS without margin) -- node[left] {BB編集} (EPS with margin);
