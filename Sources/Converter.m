@@ -976,6 +976,10 @@
         NSMutableString *svg = [NSMutableString stringWithContentsOfFile:path
                                                                 encoding:NSUTF8StringEncoding
                                                                    error:NULL];
+        
+        if (!svg) {
+            return;
+        }
 
         // ヘッダ行2行分を削除
         [svg replaceFirstOccuarnceOfString:@"<?xml version=\"1.0\" standalone=\"no\"?>\n"
@@ -1019,8 +1023,14 @@
     NSString *output = [NSString stringWithFormat:@"<?xml version=\"1.0\" standalone=\"no\"?>\n"
                         @"<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
                         @"<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\">\n"
-                        @"<defs>%@</defs>\n"
-                        @"<use><animate attributeName=\"xlink:href\" begin=\"0s\" dur=\"%fs\" repeatCount=\"%@\" values=\"%@\" /></use></svg>", result, dur, repeatCount, svgIdRefs];
+                        @"<defs>"
+                        @"%@"
+                        @"</defs>"
+                        @"<use>"
+                        @"<animate attributeName=\"xlink:href\" begin=\"0s\" dur=\"%fs\" repeatCount=\"%@\" values=\"%@\" />"
+                        @"</use>"
+                        @"</svg>",
+                        result, dur, repeatCount, svgIdRefs];
     
     return [output writeToFile:destPath atomically:NO encoding:NSUTF8StringEncoding error:NULL];
 }
