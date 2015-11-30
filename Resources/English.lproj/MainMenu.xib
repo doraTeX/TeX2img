@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="14F1021" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="15C47a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
@@ -484,10 +484,10 @@ DQ
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <animations/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <size key="minSize" width="497" height="125"/>
+                                                <size key="minSize" width="497" height="129"/>
                                                 <size key="maxSize" width="996" height="10000000"/>
                                                 <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <size key="minSize" width="497" height="125"/>
+                                                <size key="minSize" width="497" height="129"/>
                                                 <size key="maxSize" width="996" height="10000000"/>
                                                 <connections>
                                                     <outlet property="controller" destination="450" id="0w9-sT-7AR"/>
@@ -1074,7 +1074,7 @@ DQ
                                                         <rect key="frame" x="16" y="66" width="373" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
-                                                        <buttonCell key="cell" type="check" title="Output as a single file or animation (PDF / TIFF / GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="bvP-V3-8he">
+                                                        <buttonCell key="cell" type="check" title="Output as a single file or animation (PDF/TIFF/GIF/SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="bvP-V3-8he">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -1101,14 +1101,14 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="Animation" identifier="2" id="GvH-Mj-CFZ">
                                 <view key="view" id="T8b-lR-pxM">
-                                    <rect key="frame" x="10" y="33" width="426" height="405"/>
+                                    <rect key="frame" x="10" y="33" width="434" height="405"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <box autoresizesSubviews="NO" title="GIF Animation Settings" borderType="line" id="hAm-4h-T6Q">
-                                            <rect key="frame" x="6" y="313" width="409" height="92"/>
+                                        <box autoresizesSubviews="NO" title="GIF / SVG Animation Settings" borderType="line" id="hAm-4h-T6Q">
+                                            <rect key="frame" x="6" y="313" width="417" height="92"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="A94-7N-WMs">
-                                                <rect key="frame" x="1" y="1" width="407" height="76"/>
+                                                <rect key="frame" x="1" y="1" width="415" height="76"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="IVJ-ea-5Xw">
@@ -1369,6 +1369,7 @@ DQ
                                         <button id="HSr-Qq-cah">
                                             <rect key="frame" x="14" y="178" width="425" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <animations/>
                                             <buttonCell key="cell" type="check" title="Work in the same folder as the input file (only in input mode)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="3n0-UD-NFT">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>

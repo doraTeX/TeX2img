@@ -10,4 +10,14 @@
 	[self replaceOccurrencesOfString:yenMark withString:backslash options:0 range:NSMakeRange(0, self.length)];
 	return self;
 }
+
+- (NSMutableString*)replaceFirstOccuarnceOfString:(NSString*)target replacment:(NSString*)replacement
+{
+    NSRange range = [self rangeOfString:target];
+    if (range.location != NSNotFound) {
+        [self replaceCharactersInRange:range withString:replacement];
+    }
+    return self;
+}
+
 @end

@@ -40,6 +40,7 @@
 		34BFF6E61BA025CB00E8DE77 /* PDFPage-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6E01BA025CB00E8DE77 /* PDFPage-Extension.m */; };
 		34BFF6E71BA025CB00E8DE77 /* PDFPageBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6E21BA025CB00E8DE77 /* PDFPageBox.m */; };
 		34BFF6E81BA025CB00E8DE77 /* PDFPageBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6E21BA025CB00E8DE77 /* PDFPageBox.m */; };
+		34CA04141C0C6B5600BC4293 /* NSMutableString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7025539810353D33000D6D05 /* NSMutableString-Extension.m */; };
 		34CCBB071A964E8A0061842E /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 34CCBB061A964E8A0061842E /* Templates */; };
 		34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CEA1931AB970CE00F98258 /* UtilityG.m */; };
 		34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
@@ -453,6 +454,7 @@
 				705DC7A70F1197E90052AFA5 /* mainc.m in Sources */,
 				34BFF6E61BA025CB00E8DE77 /* PDFPage-Extension.m in Sources */,
 				34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */,
+				34CA04141C0C6B5600BC4293 /* NSMutableString-Extension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
