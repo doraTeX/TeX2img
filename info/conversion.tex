@@ -85,16 +85,16 @@
 \node[output node] (SVG) at ($(PDF with text) + (4,-1)$) {SVG\\（透過）};
 \draw[->] (PDF with text) -- node[right,xshift=-8pt,yshift=6pt] {mudraw} (SVG);
 
-\node[relay node] (EPS2) at ($(PDF with text) + (4,-2.5)$) {バイナリ形式\\EPS\\（透過）};
+\node[relay node] (EPS2) at ($(PDF with text) + (4,-2.5)$) {バイナリ形式EPS\\（透過）};
 \draw[->] (PDF with text) -- node[below,xshift=-18pt,yshift=-4pt] {Ghostscript\textsuperscript{*1}} (EPS2);
 
 \node[output node] (EMF) at ($(EPS2) + (0,-2)$) {EMF\\（透過）};
 \draw[->] (EPS2) -- node[left,align=right] {eps2emf\\（改造版pstoedit）} (EMF);
 
-\node[output node] (Filled PDF with text) at ($(PDF with text) + (10,0)$) {テキスト保持PDF\\（余白あり・非透過）};
+\node[output node] (Filled PDF with text) at ($(PDF with text) + (11,0)$) {テキスト保持PDF\\（余白あり・非透過）};
 \draw[->] (PDF with text) --node[above] {Quartz API で背景塗り} (Filled PDF with text);
 
-\node[output node] (Filled EPS with margin) at ($(Filled PDF with text) + (5,0)$) {バイナリ形式\\EPS\\（余白あり・非透過）};
+\node[output node] (Filled EPS with margin) at ($(Filled PDF with text) + (5,0)$) {バイナリ形式EPS\\（余白あり・非透過）};
 \draw[->] (Filled PDF with text) -- node[above] {Ghostscript\textsuperscript{*1}} (Filled EPS with margin);
 
 \node[output node] (Filled Multipage PDF with text) at ($(Filled PDF with text) + (0,-4)$) {マルチページ\\テキスト保持PDF\\（非透過）};
@@ -104,16 +104,16 @@
 \node[output node] (Filled SVG) at ($(Filled PDF with text) + (-4,-1)$) {SVG\\（非透過）};
 \draw[->] (Filled PDF with text) -- node[left,xshift=8pt,yshift=6pt] {mudraw} (Filled SVG);
 
-\node[relay node] (Filled EPS2) at ($(Filled PDF with text) + (-4,-2.5)$) {バイナリ形式\\EPS\\（非透過）};
+\node[relay node] (Filled EPS2) at ($(Filled PDF with text) + (-4,-2.5)$) {バイナリ形式EPS\\（非透過）};
 \draw[->] (Filled PDF with text) -- node[below,xshift=18pt,yshift=-4pt] {Ghostscript\textsuperscript{*1}} (Filled EPS2);
 
 \node[output node] (Filled EMF) at ($(Filled EPS2) + (0,-2)$) {EMF\\（非透過）};
 \draw[->] (Filled EPS2) -- node[right,align=left] {eps2emf\\（改造版pstoedit）} (Filled EMF);
 
-\node[output node] (EPS without margin) at ($(PDF) + (6,0)$) {バイナリ形式\\EPS\\（余白なし・透過）};
+\node[output node] (EPS without margin) at ($(PDF) + (6,0)$) {バイナリ形式EPS\\（余白なし・透過）};
 \draw[->] (PDF) -- node[below] {Ghostscript\textsuperscript{*1}} (EPS without margin);
 
-\node[output node] (EPS with margin) at ($(EPS without margin) + (4,0)$) {バイナリ形式\\EPS\\（余白あり・透過）};
+\node[output node] (EPS with margin) at ($(EPS without margin) + (4,0)$) {バイナリ形式EPS\\（余白あり・透過）};
 \draw[->] (EPS without margin) -- node[below] {BB編集} (EPS with margin);
 
 
