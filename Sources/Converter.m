@@ -695,8 +695,11 @@
         return NO;
     }
     
+    NSString *thisOutputPath = [workingDirectory stringByAppendingPathComponent:outputFileName];
+
+    [fileManager removeItemAtPath:thisOutputPath error:nil];
     [fileManager moveItemAtPath:[workingDirectory stringByAppendingPathComponent:pdfOutName]
-                         toPath:[workingDirectory stringByAppendingPathComponent:outputFileName]
+                         toPath:thisOutputPath
                           error:nil];
  
     return YES;
@@ -1087,7 +1090,7 @@
         return NO;
     }
     
-    if (skipEmptyPage && [emptyPageFlags[page-1] boolValue]) {
+    if (skipEmptyPage && emptyPageFlags[page-1].boolValue) {
         return YES;
     }
     
@@ -1207,7 +1210,7 @@
         [self exitCurrentThread];
     }
 
-    if (skipEmptyPage && [emptyPageFlags[page-1] boolValue]) {
+    if (skipEmptyPage && emptyPageFlags[page-1].boolValue) {
         return YES;
     }
     
@@ -1253,7 +1256,7 @@
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
         [fileManager moveItemAtPath:[workingDirectory stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
-    } else if ([@"emf" isEqualToString:extension]) { // 最終出力が EMF の場合
+    } else if ([@"emf" isEqualToString:extension]) { // 最終出力が EMF の場合は EPS を経由
         [self outlinePDF:pdfFileName
        outputEpsFileName:outputEpsFileName
           outputFileName:outputEpsFileName
@@ -1514,20 +1517,7 @@
         [whitePageFlags addObject:@([self isEmptyPage:pdfFilePath page:i] && !(emptyPageFlags[i-1].boolValue))];
     }
 
-    // ありうる経路
-    // 【gsを通さない経路】
-    //  1. 速度優先モードでのビットマップ生成 (PDF →[pdfcrop類似処理でクロップ]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JPEG/PNG/GIF/TIFF/BMP)
-    //  2. テキスト情報を残したPDF生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF)
-    //  3. テキスト情報を残したSVG生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF →[mudraw]→ SVG)
-    //
-    // 【gsを通す経路】
-    //  4. 画質優先モードでのビットマップ生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ]→ EPS →[epstopdf(gs)]→ PDF →[Quartz API でビットマップ化＋余白付与]→ JEPG/PNG/GIF/TIFF/BMP)
-    //  5. 透過アウトライン化PDF生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[epstopdf(gs)]→ PDF →[pdfcrop類似処理で余白付与]→ PDF)
-    //  6. 非透過アウトライン化PDF生成 (PDF →[pdfcrop類似処理でクロップ]→ PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[epstopdf(gs)]→ PDF →[pdfcrop類似処理で余白付与]→ PDF)
-    //  7. アウトライン化EPS（バイナリ形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS)
-    //  8. アウトライン化EPS（テキスト形式）生成 (PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[BB情報を編集して余白付与] → EPS →[epstopdf(gs)]→ PDF →[pdftops]→ EPS)
-    //  9. アウトライン化EMF生成 (PDF →[pdfcrop類似処理でクロップ＋余白付与]→ PDF →[gs(eps(2)write)でアウトライン化[*1]＋クロップ] → EPS →[pstoedit] → EMF)
-    // [*1] このgsによるアウトライン化は，画質優先モードの場合は -r20016 固定，速度優先モードの場合は解像度レベル設定に従う
+    // PDFから各形式に変換
     
     // 最終出力がビットマップ形式で「速度優先」の場合は，PDFからQuartzで直接変換
     if ([@[@"jpg", @"png", @"gif", @"tiff", @"bmp"] containsObject:extension] && speedPriorityMode) {
@@ -1618,6 +1608,7 @@
                 pdfFileName = croppedPdfFilePath.lastPathComponent;
             }
             
+            // 透過PDFを pdfwrite 経由または epswrite 経由で透過ベクター形式またはビットマップ形式に変換する
             for (NSUInteger i=1; i<=pageCount; i++) {
                 success = [self convertPDF:pdfFileName
                          outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
@@ -1656,11 +1647,11 @@
                 }
             } else if ([@"pdf" isEqualToString:extension] || [@"svg" isEqualToString:extension]) { // 背景塗りのあるPDFまたは背景塗りのあるアニメーションSVG生成の場合
                 for (NSUInteger i=1; i<=pageCount; i++) {
-                    if ([emptyPageFlags[i-1] boolValue]) {
+                    if (emptyPageFlags[i-1].boolValue) {
                         continue;
                     }
                     
-                    if ([whitePageFlags[i-1] boolValue]) { // 白紙ページの場合はEPSを経由させない
+                    if (whitePageFlags[i-1].boolValue) { // 白紙ページの場合はEPSを経由させない
                         if ([@"pdf" isEqualToString:extension]) {
                             [self pdfcrop:pdfFilePath
                            outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
@@ -1695,7 +1686,7 @@
                        fillBackground:NO];
                         [controller exitCurrentThreadIfTaskKilled];
                         
-                        // 次に余白なし・背景塗りなし・単一ページのテキスト保持PDFを，余白なし透過アウトライン化PDF経由でアニメーションSVGに変換する
+                        // 次に余白なし・背景塗りなし・単一ページのテキスト保持PDFを，余白なし透過アウトライン化PDF経由で背景塗りのあるPDFまたはアニメーションSVGに変換する
                         success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
                                  outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                                     outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
@@ -1741,7 +1732,7 @@
         NSMutableArray<NSString*> *outputFiles = [NSMutableArray<NSString*> array];
         
         for (NSUInteger i=1; i<=pageCount; i++) {
-            if (![emptyPageFlags[i-1] boolValue]) {
+            if (!(emptyPageFlags[i-1].boolValue)) {
                 [outputFiles addObject:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]];
             }
         }
@@ -1824,7 +1815,7 @@
     } else { // バラバラ出力の場合
         // 最終出力ファイルを目的地へコピー
         for (NSUInteger i=1; i<=pageCount; i++) {
-            if (![emptyPageFlags[i-1] boolValue]) {
+            if (!(emptyPageFlags[i-1].boolValue)) {
                 NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
                 success = [self copyTargetFrom:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
                                         toPath:destPath];
@@ -1843,7 +1834,7 @@
             NSMutableArray<NSURL*> *outputFiles = [NSMutableArray<NSURL*> array];
             
             for (NSUInteger i=1; i<=pageCount; i++) {
-                if (![emptyPageFlags[i-1] boolValue]) {
+                if (!(emptyPageFlags[i-1].boolValue)) {
                     [outputFiles addObject:[NSURL fileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
                 }
             }
@@ -1899,7 +1890,7 @@
         [generatedFiles addObject:outputFilePath];
     } else {
         for (NSUInteger i=1; i<=pageCount; i++) {
-            if (![emptyPageFlags[i-1] boolValue]) {
+            if (!(emptyPageFlags[i-1].boolValue)) {
                 [generatedFiles addObject:[outputFilePath pathStringByAppendingPageNumber:i]];
             }
         }
