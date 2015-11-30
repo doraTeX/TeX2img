@@ -1,5 +1,5 @@
 \documentclass[uplatex,dvipdfmx,landscape]{jsarticle}
-\usepackage[dvipdfm,papersize={60cm,31cm},margin=2cm,noheadfoot]{geometry}
+\usepackage[dvipdfm,papersize={58cm,32cm},margin=2cm,noheadfoot]{geometry}
 \usepackage{metalogo}
 \newcommand*\TikZ{Ti\textit{k}Z}
 \usepackage{tikz}
@@ -8,9 +8,7 @@
 \usetikzlibrary{decorations.pathmorphing}
 \usepackage{enumitem}
 \pagestyle{empty}
-\begin{document}
-\baselineskip12pt
-\parindent0pt
+
 
 \tikzset{input node/.style={draw,rectangle,ultra thick,fill=blue!30!white}}
 \tikzset{relay node/.style={draw,rectangle,fill=red!20!white}}
@@ -18,6 +16,164 @@
 \tikzset{speed priority/.style={->,>={Stealth[scale=1.2]},dashed,thick,color=blue}}
 \tikzset{fill background/.style={->,>={Stealth[scale=1.2]},thick,color=red,decorate,decoration={snake, pre length=5pt, post length=5pt, segment length=6pt, amplitude=1pt}}}
 \tikzset{legend box/.style={minimum width=1cm,minimum height=\baselineskip}}
+
+\def\fboxtitle#1{\par\noindent {\fboxrule1pt\fbox{\huge\sffamily\bfseries Ghostscript #1を利用している場合}}\nopagebreak\par}
+
+\begin{document}
+\baselineskip12pt
+\parindent0pt
+
+\fboxtitle{9.15 以上}
+
+\vspace{5mm}
+
+{\fboxsep8pt
+\fbox{\parbox{42zw}{\baselineskip20pt\lineskiplimit12pt\lineskip4pt
+{\Large\textgt{凡例}}\par
+\makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,input node] {};}\hspace{1zw}入力ファイル\par
+\makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,relay node] {};}\hspace{1zw}中間ファイル\par
+\makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,output node] {};}\hspace{1zw}出力ファイル\par
+\makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[fill background](0,0) -- (1,0);}\hspace{1zw}画質優先モードのみでの経路\par
+\makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[speed priority](0,0) -- (1,0);}\hspace{1zw}速度優先モードのみでの経路\par
+}}}
+
+\vspace{-4cm}
+
+\begin{center}
+\begin{tikzpicture}[x=1.3cm,y=1.3cm,align=center,>={Stealth[scale=1.6]}]
+\node[input node] (TeX) at (0,0) {\TeX};
+\node[relay node] (DVI) at ($(TeX) + (0,-2)$) {DVI};
+\draw[->] (TeX) --  node[left] {((u)p)\LaTeX} (DVI) ;
+
+\node[input node] (PS) at ($(DVI) + (-2,0)$) {PS};
+\draw[->] (DVI) --  node[above] {dvips} (PS) ;
+
+\node[input node] (PDF) at ($(TeX) + (0,-4)$) {PDF};
+\draw[->] (DVI) --  node[right] {dvipdfmx} (PDF) ;
+\draw[->] (PS) --  node[left] {Ghostscript} (PDF) ;
+
+\node[input node] (EPS) at ($(PDF) + (-4,0)$) {EPS};
+\draw[->] (EPS) --  node[above] {Ghostscript} (PDF) ;
+\coordinate (right above of PDF) at ($(PDF.north east) + (1,-0.1)$);
+\coordinate (right below of PDF) at ($(PDF.south east) + (0, 0.1)$);
+\draw[->] (TeX) --  (TeX -| right above of PDF) to [bend left=90]  node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} (right above of PDF) to (PDF.north east |- right above of PDF) ;
+
+
+\node[relay node] (PDF with text without margin) at ($(PDF) + (-14,-3)$) {テキスト保持PDF\\（余白なし・透過）};
+\draw (PDF) -- node[left,xshift=-5pt,yshift=9pt] {pdf\TeX で\\クロップ} (PDF with text without margin);
+
+\node[relay node] (Outlined PDF without margin) at ($(PDF with text without margin) + (-5,0)$) {アウトライン化PDF\\（余白なし・透過）};
+\draw[fill background] (PDF with text without margin) -- node [above,xshift=4pt] {Ghostscript\textsuperscript{*2}} (Outlined PDF without margin);
+
+\node[output node] (Bitmap) at ($(PDF with text without margin) + (0,-2)$) {ビットマップ画像};
+\draw[speed priority] (PDF with text without margin) -- node[right,align=left] {Quartz API でビットマップ化\\＋余白付与（＋背景塗り）} (Bitmap);
+\draw[fill background] (Outlined PDF without margin.south east) -- node [left,align=right,xshift=-10pt,yshift=-10pt] {Quartz API でビットマップ化\\＋余白付与（＋背景塗り）} (Bitmap.north west);
+
+\node[output node] (Multipage TIFF) at ($(Bitmap) + (-4,-2)$) {マルチページTIFF};
+\draw[->] (Bitmap.south west) -- node[above,xshift=-10pt,yshift=2pt] {tiffutil} (Multipage TIFF.north east);
+
+\node[output node] (Animation GIF) at ($(Bitmap) + (0,-2)$) {アニメーションGIF};
+\draw[->] (Bitmap) -- node[right] {Quartz API} (Animation GIF);
+
+
+\node[output node] (PDF with text) at ($(PDF) + (0,-3)$) {テキスト保持PDF\\（余白あり・透過）};
+\draw[->] (PDF) -- node[right,align=left] {pdf\TeX でクロップ\\＋余白付与} (PDF with text);
+
+\node[output node] (Multipage PDF with text) at ($(PDF with text) + (0,-4)$) {マルチページ\\テキスト保持PDF\\（透過）};
+\draw[->] (PDF with text) -- node[left] {Quartz API} (Multipage PDF with text);
+
+\node[output node] (SVG) at ($(PDF with text) + (4,-1)$) {SVG\\（透過）};
+\draw[->] (PDF with text) -- node[right,xshift=-8pt,yshift=6pt] {mudraw} (SVG);
+
+\node[relay node] (EPS2) at ($(PDF with text) + (4,-2.5)$) {バイナリ形式\\EPS\\（透過）};
+\draw[->] (PDF with text) -- node[below,xshift=-18pt,yshift=-4pt] {Ghostscript\textsuperscript{*1}} (EPS2);
+
+\node[output node] (EMF) at ($(EPS2) + (0,-2)$) {EMF\\（透過）};
+\draw[->] (EPS2) -- node[left,align=right] {eps2emf\\（改造版pstoedit）} (EMF);
+
+\node[output node] (Filled PDF with text) at ($(PDF with text) + (10,0)$) {テキスト保持PDF\\（余白あり・非透過）};
+\draw[->] (PDF with text) --node[above] {Quartz API で背景塗り} (Filled PDF with text);
+
+\node[output node] (Filled EPS with margin) at ($(Filled PDF with text) + (5,0)$) {バイナリ形式\\EPS\\（余白あり・非透過）};
+\draw[->] (Filled PDF with text) -- node[above] {Ghostscript\textsuperscript{*1}} (Filled EPS with margin);
+
+\node[output node] (Filled Multipage PDF with text) at ($(Filled PDF with text) + (0,-4)$) {マルチページ\\テキスト保持PDF\\（非透過）};
+\draw[->] (Filled PDF with text) -- node[right] {Quartz API} (Filled Multipage PDF with text);
+
+
+\node[output node] (Filled SVG) at ($(Filled PDF with text) + (-4,-1)$) {SVG\\（非透過）};
+\draw[->] (Filled PDF with text) -- node[left,xshift=8pt,yshift=6pt] {mudraw} (Filled SVG);
+
+\node[relay node] (Filled EPS2) at ($(Filled PDF with text) + (-4,-2.5)$) {バイナリ形式\\EPS\\（非透過）};
+\draw[->] (Filled PDF with text) -- node[below,xshift=18pt,yshift=-4pt] {Ghostscript\textsuperscript{*1}} (Filled EPS2);
+
+\node[output node] (Filled EMF) at ($(Filled EPS2) + (0,-2)$) {EMF\\（非透過）};
+\draw[->] (Filled EPS2) -- node[right,align=left] {eps2emf\\（改造版pstoedit）} (Filled EMF);
+
+\node[output node] (EPS without margin) at ($(PDF) + (6,0)$) {バイナリ形式\\EPS\\（余白なし・透過）};
+\draw[->] (PDF) -- node[below] {Ghostscript\textsuperscript{*1}} (EPS without margin);
+
+\node[output node] (EPS with margin) at ($(EPS without margin) + (4,0)$) {バイナリ形式\\EPS\\（余白あり・透過）};
+\draw[->] (EPS without margin) -- node[below] {BB編集} (EPS with margin);
+
+
+%\node[relay node] (Text PDF without margin) at ($(PDF) + (6,0)$) {テキスト保持PDF\\（余白なし・透過）};
+%\draw[->] (PDF) -- node [above,near end,xshift=-15pt] {pdf\TeX でクロップ} (Text PDF without margin);
+
+
+%\node[output node] (Bitmap2) at ($(Outlined PDF without margin) + (6,0)$) {ビットマップ画像\\（画質優先）};
+%\draw[->] (Outlined PDF without margin) -- node[above] {Quartz API でビットマップ化\\＋余白付与（＋背景塗り）} (Bitmap2);
+%
+%\node[output node] (Multipage TIFF 2) at ($(Bitmap2) + (0,2)$) {マルチページTIFF\\（画質優先）};
+%\draw[->] (Bitmap2) -- node[right] {tiffutil} (Multipage TIFF 2);
+%
+%\node[output node] (Animation GIF 2) at ($(Bitmap2) + (0,-2)$) {アニメーションGIF\\（画質優先）};
+%\draw[->] (Bitmap2) -- node[right] {Quartz API} (Animation GIF 2);
+
+%\node[relay node] (Text PDF with margin) at (right below of PDF -| Outlined PDF without margin) {テキスト保持PDF\\（余白あり・透過）};
+%\draw[->] (right below of PDF) -- node[below] {pdf\TeX でクロップ＋余白付与} (Text PDF with margin);
+
+\node[output node] (Outlined PDF with margin) at ($(PDF with text) + (-5,0)$) {アウトライン化PDF};
+\path[->] (Outlined PDF with margin) edge  [loop above,in=45,out=135,distance=50] node[above] {Quartz API で背景塗り} (Outlined PDF with margin);
+\draw[->] (PDF with text) -- node[above,midway,xshift=4pt]{Ghostscript\textsuperscript{*2}} (Outlined PDF with margin); 
+
+\node[output node] (Multipage Outlined PDF) at ($(Outlined PDF with margin) + (0,-4)$) {マルチページ\\アウトライン化PDF};
+\draw[->] (Outlined PDF with margin) -- node[right] {Quartz API} (Multipage Outlined PDF);
+
+\node[output node] (Text EPS) at ($(Multipage Outlined PDF) + (-3,0)$) {テキスト形式EPS};
+\draw[->] (Outlined PDF with margin) -- node[left] {pdftops} (Text EPS);
+
+\node[output node] (Animation SVG) at ($(Text EPS) + (-3,0)$) {アニメーションSVG};
+\draw[->] (Outlined PDF with margin) -- node[left,yshift=4pt] {mudraw} (Animation SVG);
+
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{5mm}
+
+
+\textgt{\Large 補足情報}
+
+{\baselineskip18pt
+\begin{itemize}[leftmargin=2zw]
+\item\relax[*1]のGhostscirpt実行においては，eps2writeデバイスが用いられる。
+\item\relax[*2]のGhostscirpt実行においては，pdfwriteデバイスが用いられる。
+\item\relax[*1]および[*2]のGhostscirpt実行における \texttt{-r} オプションの値は，画質優先モードでは20016固定，速度優先モードでは解像度レベル設定に従う。
+\item\relax[*1]のGhostscript実行においては，出力されるEPSのBoundingBox値が誤っている場合がある。そこで，eps2writeで生成されたEPSに対しては，Ghostscriptのbboxデバイスで取得されるBoundingBox値によって常に上書きするようにしている。
+\item 「元のページサイズを維持」がONの場合，[*1]のGhostscript実行においては，出力されるEPSのBB値を，変換前のPDFの指定されたPageBoxの値で上書きする。
+\item 「元のページサイズを維持」がONの場合，「pdf\TeX でクロップ」の過程では，変換前のPDFの指定されたPageBox（余白付与の場合はそれに余白を加えたもの）をMediaBoxにしたPDF（左下が原点，他のBoxは非明示）を生成する。
+\item Ghostscriptのeps2writeデバイスは，\TikZ のshadowsライブラリを用いた場合など，特定の種類の図は苦手としている。Ghostscirpt 9.15以上のeps2writeデバイスの場合は，ぼやけたビットマップ画像にされてしまう。そのような図は，Ghostscriptによって綺麗にアウトライン化することはできないので，Ghostscriptを経由しない経路（PDF，SVG，ビットマップ画像）で代用できないか検討してほしい。
+\item 余白は原則としてbp単位が用いられるが，設定でpx単位を選んでいて，かつビットマップ画像出力の場合は，Quartz APIによるビットマップ化実行時にpx単位の余白が付与される。
+\end{itemize}
+}
+
+\newpage %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\fboxtitle{9.15 未満}
+
+
+\vspace{5mm}
 
 {\fboxsep8pt
 \fbox{\parbox{42zw}{\baselineskip20pt\lineskiplimit12pt\lineskip4pt
@@ -46,18 +202,18 @@
 
 \node[input node] (EPS) at ($(PDF) + (-4,0)$) {EPS};
 \draw[->] (EPS) --  node[above] {Ghostscript} (PDF) ;
-\coordinate (right of PDF) at ($(PDF.north east) + (1,-0.1)$);
-\draw[->] (TeX) --  (TeX -| right of PDF) to [bend left=90]  node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} (right of PDF) to (PDF.north east |- right of PDF) ;
+\coordinate (right above of PDF) at ($(PDF.north east) + (1,-0.1)$);
+\draw[->] (TeX) --  (TeX -| right above of PDF) to [bend left=90]  node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} (right above of PDF) to (PDF.north east |- right above of PDF) ;
 
 
-\node[relay node] (PDF with text without margin) at ($(PDF) + (-12,-3)$) {テキスト保持PDF\\（余白なし）};
+\node[relay node] (PDF with text without margin) at ($(PDF) + (-12,-3)$) {テキスト保持PDF\\（余白なし・透過）};
 \draw[speed priority] (PDF) -- node[left,xshift=-5pt,yshift=9pt] {pdf\TeX で\\クロップ} (PDF with text without margin);
 
 \node[output node] (Bitmap) at ($(PDF with text without margin) + (0,-2)$) {ビットマップ画像\\（速度優先）};
-\draw[speed priority] (PDF with text without margin) -- node[left,align=right] {Quartz API でビットマップ化\\＋余白付与} (Bitmap);
+\draw[speed priority] (PDF with text without margin) -- node[left,align=right] {Quartz API でビットマップ化\\＋余白付与（＋背景塗り）} (Bitmap);
 
 \node[output node] (Multipage TIFF) at ($(Bitmap) + (-4,-2)$) {マルチページTIFF\\（速度優先）};
-\draw[speed priority] (Bitmap.south west) -- node[above,xshift=-10pt] {tiffutil} (Multipage TIFF.north east);
+\draw[speed priority] (Bitmap.south west) -- node[above,xshift=-10pt,yshift=2pt] {tiffutil} (Multipage TIFF.north east);
 
 \node[output node] (Animation GIF) at ($(Bitmap) + (0,-2)$) {アニメーションGIF\\（速度優先）};
 \draw[speed priority] (Bitmap) -- node[right] {Quartz API} (Animation GIF);
@@ -105,10 +261,10 @@
 \draw[fill background] (PDF with text 2) -- node[right] {Ghostscript\textsuperscript{*1}} (EPS without margin);
 
 \node[output node] (Outlined PDF without margin) at ($(EPS without margin) + (6,0)$) {アウトライン化PDF\\（余白なし・透過）};
-\draw[->] (EPS without margin) -- node[above] {epstopdf\textsuperscript{*3}} (Outlined PDF without margin);
+\draw[->] (EPS without margin) -- node[above] {epstopdf\textsuperscript{*2}} (Outlined PDF without margin);
 
 \node[output node] (Bitmap2) at ($(Outlined PDF without margin) + (0,3)$) {ビットマップ画像\\（画質優先）};
-\draw[->] (Outlined PDF without margin) -- node[right,align=left] {Quartz API でビットマップ化\\＋余白付与} (Bitmap2);
+\draw[->] (Outlined PDF without margin) -- node[right,align=left] {Quartz API でビットマップ化\\＋余白付与（＋背景塗り）} (Bitmap2);
 
 \node[output node] (Multipage TIFF 2) at ($(Bitmap2) + (-2,2)$) {マルチページTIFF\\（画質優先）};
 \draw[->] (Bitmap2.north west) -- node[left,yshift=-5pt] {tiffutil} (Multipage TIFF 2);
@@ -145,11 +301,11 @@
 \draw[->] (EPS without margin) -- node[left] {BB編集} (EPS with margin);
 \draw[->] (Filled PDF with text) -- node[left,yshift=-5pt] {Ghostscript\textsuperscript{*1}} (EPS with margin);
 
-\node[relay node] (PDF2) at ($(EPS with margin) + (0,-2)$) {アウトライン化PDF\\（余白あり）};
-\draw[->] (EPS with margin) -- node[left] {epstopdf\textsuperscript{*2}} (PDF2);
+%\node[relay node] (PDF2) at ($(EPS with margin) + (0,-2)$) {アウトライン化PDF\\（余白あり）};
+%\draw[->] (EPS with margin) -- node[left] {epstopdf\textsuperscript{*2}} (PDF2);
 
-\node[output node] (Text EPS) at ($(PDF2) + (0,-2)$) {テキスト形式EPS};
-\draw[->] (PDF2) -- node[left] {pdftops\textsuperscript{*2}} (Text EPS);
+%\node[output node] (Text EPS) at ($(PDF2) + (0,-2)$) {テキスト形式EPS};
+%\draw[->] (PDF2) -- node[left] {pdftops\textsuperscript{*2}} (Text EPS);
 
 \end{tikzpicture}
 \end{center}
@@ -161,14 +317,13 @@
 
 {\baselineskip18pt
 \begin{itemize}[leftmargin=2zw]
-\item\relax[*1]のGhostscirpt実行においては，Ghostscript 9.15以上ではeps2writeデバイスが，それ未満ではepswriteが用いられる。
+\item\relax[*1]のGhostscirpt実行においては，epswriteデバイスが用いられる。
 \item\relax[*1]のGhostscirpt実行における \texttt{-r} オプションの値は，画質優先モードでは20016固定，速度優先モードでは解像度レベル設定に従う。
-\item\relax[*1]のGhostscript実行においては，epswrite / eps2writeどちらのデバイスであっても，出力されるEPSのBoundingBox値が誤っている場合がある。そこで，eps(2)writeで生成されたEPSに対しては，Ghostscriptのbboxデバイスで取得されるBoundingBox値によって常に上書きするようにしている。
+\item\relax[*1]のGhostscript実行においては，出力されるEPSのBoundingBox値が誤っている場合がある。そこで，epswriteで生成されたEPSに対しては，Ghostscriptのbboxデバイスで取得されるBoundingBox値によって常に上書きするようにしている。
 \item 「元のページサイズを維持」がONの場合，[*1]のGhostscript実行においては，出力されるEPSのBB値を，変換前のPDFの指定されたPageBoxの値で上書きする。
 \item 「元のページサイズを維持」がONの場合，「pdf\TeX でクロップ」の過程では，変換前のPDFの指定されたPageBox（余白付与の場合はそれに余白を加えたもの）をMediaBoxにしたPDF（左下が原点，他のBoxは非明示）を生成する。
-\item\relax[*2]の経路はGhostscirpt 9.15以上の環境で「テキスト形式EPS出力」を選んだときのみ実行される。Ghostscirpt 9.15未満の場合はepswriteデバイスで得られたEPSをそのまま最終出力とする。
-\item Ghostscriptのeps(2)writeデバイスは，\TikZ のshadowsライブラリを用いた場合など，特定の種類の図は苦手としている。Ghostscirpt 9.15未満のepswriteデバイスの場合は，無数のパスに分割されてエラーを起こす原因となる。Ghostscirpt 9.15以上のeps2writeデバイスの場合は，ビットマップ化されてしまう。そのような図は，Ghostscriptによって綺麗にアウトライン化することはできないので，Ghostscriptを経由しない経路（テキスト保持PDF，SVG，速度優先モードでのビットマップ画像）で代用できないか検討してほしい。
-\item\relax[*3]のepstopdf実行においては，OS X 10.11 El Capitan 以上では \texttt{--hires} オプションありで，それ未満ではなしで実行する。これは El Capitan で修正された Quartz API の不具合に対応するための措置である。OS X 10.10 Yosemite 以下のOSでは，\texttt{--hires} オプションありで生成されたPDFを Quartz API にかけると端が欠けるという現象が発生する。
+\item Ghostscriptのepswriteデバイスは，\TikZ のshadowsライブラリを用いた場合など，特定の種類の図は苦手としている。Ghostscirpt 9.15未満のepswriteデバイスの場合は，無数のパスに分割されてエラーを起こす原因となる。そのような図は，Ghostscriptによって綺麗にアウトライン化することはできないので，Ghostscriptを経由しない経路（テキスト保持PDF，SVG，速度優先モードでのビットマップ画像）で代用できないか検討してほしい。
+\item\relax[*2]のepstopdf実行においては，OS X 10.11 El Capitan 以上では \texttt{--hires} オプションありで，それ未満ではなしで実行する。これは El Capitan で修正された Quartz API の不具合に対応するための措置である。OS X 10.10 Yosemite 以下のOSでは，\texttt{--hires} オプションありで生成されたPDFを Quartz API にかけると端が欠けるという現象が発生する。
 \item 余白は原則としてbp単位が用いられるが，設定でpx単位を選んでいて，かつビットマップ画像出力の場合は，Quartz APIによるビットマップ化実行時にpx単位の余白が付与される。
 \end{itemize}
 }
