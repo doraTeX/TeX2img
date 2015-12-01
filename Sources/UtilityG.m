@@ -44,9 +44,7 @@ BOOL isJapaneseLanguage()
     static BOOL isJapanese;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSArray *languages = [NSLocale preferredLanguages];
-        NSString *currentLanguage = [languages objectAtIndex:0];
-        isJapanese = [currentLanguage isEqualToString:@"ja"];
+        isJapanese = [NSLocale.preferredLanguages[0] isEqualToString:@"ja"];
     });
     return isJapanese;
 }
