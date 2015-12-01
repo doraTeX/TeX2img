@@ -6,7 +6,7 @@
 - EPS ファイル（フォントをアウトライン化）
 - PDF ファイル（フォントをアウトライン化 または テキストを保持）
 - SVG ファイル（フォントをアウトライン化 かつ テキストも保持）
-- [SMIL](https://developer.mozilla.org/ja/docs/Web/SVG/SVG_animation_with_SMIL) を利用したSVGによるベクターグラフィックスアニメーション（フォントをアウトライン化）
+- [SMIL](https://developer.mozilla.org/ja/docs/Web/SVG/SVG_animation_with_SMIL) を利用したSVGによるベクターグラフィックスアニメーション（フォントをアウトライン化）[[サンプル]](http://island.geocities.jp/loveinequality/oscillation.svgz)
 - EMF ファイル（フォントをアウトライン化）
 
 ## ラスター（ビットマップ）画像形式
