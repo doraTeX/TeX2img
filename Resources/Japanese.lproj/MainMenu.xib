@@ -681,29 +681,29 @@ DQ
         </window>
         <window title="環境設定" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="517">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <rect key="contentRect" x="196" y="119" width="472" height="455"/>
+            <rect key="contentRect" x="196" y="119" width="498" height="455"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
-            <value key="minSize" type="size" width="472" height="455"/>
+            <value key="minSize" type="size" width="498" height="455"/>
             <view key="contentView" id="518">
-                <rect key="frame" x="0.0" y="0.0" width="472" height="455"/>
+                <rect key="frame" x="0.0" y="0.0" width="498" height="455"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <tabView id="580">
-                        <rect key="frame" x="13" y="10" width="446" height="439"/>
+                        <rect key="frame" x="13" y="10" width="472" height="439"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
                             <tabViewItem label="出力画像" identifier="1" id="582">
                                 <view key="view" id="583">
-                                    <rect key="frame" x="10" y="33" width="426" height="393"/>
+                                    <rect key="frame" x="10" y="33" width="452" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <box autoresizesSubviews="NO" title="共通設定" borderType="line" id="519">
-                                            <rect key="frame" x="6" y="138" width="414" height="255"/>
+                                            <rect key="frame" x="6" y="138" width="440" height="255"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="jCx-Rv-UuD">
-                                                <rect key="frame" x="1" y="1" width="412" height="236"/>
+                                                <rect key="frame" x="1" y="1" width="438" height="236"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textField verticalHuggingPriority="750" id="543">
@@ -1000,10 +1000,10 @@ DQ
                                             <font key="titleFont" metaFont="system"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="画像形式ごとの設定" borderType="line" id="cDD-5y-A58">
-                                            <rect key="frame" x="6" y="5" width="414" height="129"/>
+                                            <rect key="frame" x="6" y="5" width="440" height="129"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="nSA-gL-LIL">
-                                                <rect key="frame" x="1" y="1" width="412" height="110"/>
+                                                <rect key="frame" x="1" y="1" width="438" height="110"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button id="afr-f7-ZEX">
@@ -1043,7 +1043,7 @@ DQ
                                                         </buttonCell>
                                                     </button>
                                                     <button verticalHuggingPriority="750" id="ypa-x6-QvN">
-                                                        <rect key="frame" x="352" y="59" width="53" height="17"/>
+                                                        <rect key="frame" x="371" y="59" width="53" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <buttonCell key="cell" type="inline" title="詳細..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="7Lh-eu-voy">
@@ -2007,7 +2007,7 @@ DQ
                 </subviews>
                 <animations/>
             </view>
-            <point key="canvasLocation" x="-459" y="95.5"/>
+            <point key="canvasLocation" x="-446" y="95.5"/>
         </window>
         <window title="設定の保存・読み込み" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="672" userLabel="Window (設定の保存・読み込み)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
