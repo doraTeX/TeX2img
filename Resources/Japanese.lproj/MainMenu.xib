@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="15C47a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="15C48a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
@@ -1068,11 +1068,11 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="変換ツール" identifier="2" id="581">
                                 <view key="view" id="584">
-                                    <rect key="frame" x="10" y="33" width="426" height="393"/>
+                                    <rect key="frame" x="10" y="33" width="452" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField verticalHuggingPriority="750" id="597">
-                                            <rect key="frame" x="95" y="368" width="314" height="22"/>
+                                            <rect key="frame" x="95" y="368" width="340" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="598">
@@ -1082,7 +1082,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="600">
-                                            <rect key="frame" x="95" y="338" width="314" height="22"/>
+                                            <rect key="frame" x="95" y="338" width="340" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="601">
@@ -1102,7 +1102,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="604">
-                                            <rect key="frame" x="95" y="308" width="314" height="22"/>
+                                            <rect key="frame" x="95" y="308" width="340" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="605">
@@ -1195,14 +1195,14 @@ DQ
                                             </popUpButtonCell>
                                         </popUpButton>
                                         <box autoresizesSubviews="NO" title="変換処理" borderType="line" id="rl0-1h-G1Q">
-                                            <rect key="frame" x="12" y="62" width="399" height="57"/>
+                                            <rect key="frame" x="12" y="62" width="425" height="57"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="IwH-XL-p3k">
-                                                <rect key="frame" x="1" y="1" width="397" height="39"/>
+                                                <rect key="frame" x="1" y="1" width="423" height="39"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="Szf-rE-S5f">
-                                                        <rect key="frame" x="15" y="11" width="361" height="18"/>
+                                                        <rect key="frame" x="15" y="11" width="387" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1246,7 +1246,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" id="714">
-                                            <rect key="frame" x="258" y="272" width="96" height="32"/>
+                                            <rect key="frame" x="284" y="272" width="96" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <buttonCell key="cell" type="push" title="自動判定" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="715">
@@ -1258,7 +1258,7 @@ DQ
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" id="RkS-Yo-COm">
-                                            <rect key="frame" x="356" y="280" width="53" height="17"/>
+                                            <rect key="frame" x="382" y="280" width="53" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <buttonCell key="cell" type="inline" title="詳細..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="024-oF-i0v">
@@ -1304,14 +1304,14 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="表示" identifier="3" id="EnK-oW-z8i">
                                 <view key="view" id="dCI-tZ-eeA">
-                                    <rect key="frame" x="10" y="33" width="426" height="393"/>
+                                    <rect key="frame" x="10" y="33" width="452" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <box autoresizesSubviews="NO" title="対応する括弧の強調表示" borderType="line" id="Qlb-Le-07g">
-                                            <rect key="frame" x="6" y="98" width="412" height="177"/>
+                                            <rect key="frame" x="6" y="98" width="438" height="177"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="tUm-in-vWO">
-                                                <rect key="frame" x="1" y="1" width="410" height="159"/>
+                                                <rect key="frame" x="1" y="1" width="436" height="159"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <box autoresizesSubviews="NO" title="対応チェック対象" borderType="line" id="7rY-RS-z06">
@@ -1434,10 +1434,10 @@ DQ
                                             <font key="titleFont" size="12" name=".AppleSystemUIFont"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="ソース表示" borderType="line" id="NwF-4V-z52">
-                                            <rect key="frame" x="6" y="279" width="247" height="114"/>
+                                            <rect key="frame" x="6" y="279" width="273" height="114"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="CzJ-wJ-lCz">
-                                                <rect key="frame" x="1" y="1" width="245" height="96"/>
+                                                <rect key="frame" x="1" y="1" width="271" height="96"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="aHu-v1-wTJ">
@@ -1468,7 +1468,7 @@ DQ
                                                         </connections>
                                                     </textField>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="UfO-wD-pSG">
-                                                        <rect key="frame" x="64" y="41" width="169" height="17"/>
+                                                        <rect key="frame" x="64" y="41" width="195" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Font" id="3Oc-2Z-ijP">
@@ -1528,7 +1528,7 @@ DQ
                                             <font key="titleFont" size="12" name=".AppleSystemUIFont"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="不可視文字の表示" borderType="line" id="wIf-oC-qXE">
-                                            <rect key="frame" x="255" y="279" width="163" height="114"/>
+                                            <rect key="frame" x="281" y="279" width="163" height="114"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="W7T-5X-ruu">
                                                 <rect key="frame" x="1" y="1" width="161" height="96"/>
@@ -1639,14 +1639,14 @@ DQ
                                             <font key="titleFont" size="12" name=".AppleSystemUIFont"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="コマンド補完キー" borderType="line" id="yVE-bR-DHB">
-                                            <rect key="frame" x="6" y="37" width="412" height="57"/>
+                                            <rect key="frame" x="6" y="37" width="438" height="57"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="gmF-MY-XeU">
-                                                <rect key="frame" x="1" y="1" width="410" height="39"/>
+                                                <rect key="frame" x="1" y="1" width="436" height="39"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="YdH-me-3lX">
-                                                        <rect key="frame" x="15" y="11" width="380" height="18"/>
+                                                        <rect key="frame" x="15" y="11" width="406" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <animations/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1685,7 +1685,7 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="色" identifier="4" id="Pcf-Iw-L7g">
                                 <view key="view" id="D2J-BB-0CI">
-                                    <rect key="frame" x="10" y="33" width="426" height="393"/>
+                                    <rect key="frame" x="10" y="33" width="452" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button verticalHuggingPriority="750" id="Wt2-ec-htK">
@@ -1775,7 +1775,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="不可視文字" id="b74-6f-dN3">
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -1866,7 +1866,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="括弧不一致で点滅している背景" id="myR-76-IeO">
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -1908,7 +1908,7 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="コンパイル後処理" identifier="5" id="587">
                                 <view key="view" id="588">
-                                    <rect key="frame" x="10" y="33" width="426" height="393"/>
+                                    <rect key="frame" x="10" y="33" width="452" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button id="811">
@@ -2503,7 +2503,7 @@ DQ
             </connections>
         </popover>
         <customView id="6Cr-bj-DeA" userLabel="Space Chracter Kind View">
-            <rect key="frame" x="0.0" y="1" width="62" height="113"/>
+            <rect key="frame" x="0.0" y="0.0" width="62" height="113"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="JPr-r2-je9">
