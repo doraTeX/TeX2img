@@ -74,7 +74,7 @@ void usage()
     printf("      \"255 0 255\" : RGB integers (0..255)\n");
     printf("\n");
     printf("Image Settings (peculiar to image formats):\n");
-    printf("  --[no-]with-text           : disable/enable text-embedded PDF (default: disabled)\n");
+    printf("  --[no-]with-text           : disable/enable text-embedded PDF/SVG (default: disabled)\n");
     printf("  --[no-]plain-text          : disable/enable outputting EPS as a plain text (default: disabled)\n");
     printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or an animation GIF/SVG (default: disabled)\n");
     printf("  --animation-delay TIME     : set the delay time (sec) of an animated GIF/SVG (default: 1)\n");
