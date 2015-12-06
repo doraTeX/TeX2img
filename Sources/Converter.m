@@ -641,6 +641,8 @@
     if (shouldUseEps2WriteDevice) {
         [arguments addObject:@"-sDEVICE=eps2write"];
         [arguments addObject:@"-dNoOutputFonts"];
+        [arguments addObject:@"-dCompressPages=true"];
+        [arguments addObject:@"-dASCII85EncodePages=false"];
     } else {
         [arguments addObject:@"-sDEVICE=epswrite"];
         [arguments addObject:@"-dNOCACHE"];
