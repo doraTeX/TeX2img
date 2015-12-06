@@ -1230,7 +1230,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                addMargin:YES
                 useCache:useCache
           fillBackground:YES];
-    } else if ([@"svg" isEqualToString:extension]) { // 最終出力がアニメーションSVGの場合
+    } else if ([@"svg" isEqualToString:extension]) { // アウトライン化SVGの場合
         [self outlinePDF:pdfFileName
 intermediateOutlinedFileName:intermediateOutlinedFileName
           outputFileName:outlinedPdfFileName
@@ -1550,7 +1550,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 return success;
             }
         }
-    } else if ([@"svg" isEqualToString:extension] && !((pageCount - emptyPageFlags.indexesOfTrueValue.count > 1) && mergeOutputsFlag)) { // 最終出力が非アニメーション SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
+    } else if ([@"svg" isEqualToString:extension] && !((pageCount - emptyPageFlags.indexesOfTrueValue.count > 1) && mergeOutputsFlag) && leaveTextFlag) { // 最終出力がテキスト保持 SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
         if (transparentFlag) { // 透過SVG生成の場合
             // まずは全ページ一括で，pdfcrop類似処理でクロップ＋余白付与
             [self pdfcrop:pdfFilePath
