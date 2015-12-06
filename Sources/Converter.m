@@ -1148,7 +1148,7 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
                 return NO;
             }
 
-            if (![self pdf2plainTextEps:intermediateOutlinedFileName outputEpsFileName:outputFileName page:page]) {
+            if (![self pdf2plainTextEps:intermediateOutlinedFileName outputEpsFileName:outputFileName page:1]) {
                 return NO;
             }
         } else { // Ghostscript 経由の場合
@@ -1171,13 +1171,13 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
             if ([self shouldUseEps2WriteDevice]) { // Ghostscript 9.15 以降の場合は，-sDEVICE=pdfwrite -dNoOutputFonts によって直接アウトライン化PDFを作成する
                 [self pdfcrop:pdfFileName
                outputFileName:trimFileName
-                         page:0
+                         page:page
                     addMargin:addMargin
                      useCache:useCache
                fillBackground:NO];
                 
                 // PDF→PDF のアウトライン化変換の実行
-                if (![self pdf2pdf:trimFileName outputFileName:outputFileName resolution:resolution page:page]
+                if (![self pdf2pdf:trimFileName outputFileName:outputFileName resolution:resolution page:1]
                     || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:outputFileName]]) {
                     return NO;
                 }
@@ -1203,6 +1203,23 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
     
     return YES;
 }
+
+// EPSのパスのアウトラインをとる
+- (BOOL)modifyEpsForEmf:(NSString*)epsName
+{
+    NSData *epsData = [NSData dataWithContentsOfFile:epsName];
+    if (!epsData) {
+        return NO;
+    }
+    
+    NSMutableData *newData = [NSMutableData dataWithData:[@"/oldstroke /stroke load def\n/stroke {strokepath fill} def\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    [newData appendData:epsData];
+    [newData writeToFile:epsName atomically:NO];
+    
+    return YES;
+}
+
 
 - (BOOL)convertPDF:(NSString*)pdfFileName
 intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
@@ -1264,15 +1281,25 @@ intermediateOutlinedFileName:outlinedPdfFileName
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
         [fileManager moveItemAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName] toPath:outputFileName error:nil];
-    } else if ([@"emf" isEqualToString:extension]) { // 最終出力が EMF の場合は EPS を経由
+    } else if ([@"emf" isEqualToString:extension]) { // 最終出力が EMF の場合
+        // まずPDFをアウトライン化
         [self outlinePDF:pdfFileName
 intermediateOutlinedFileName:outlinedPdfFileName
-          outputFileName:intermediateOutlinedFileName
+          outputFileName:outlinedPdfFileName
                     page:page
                addMargin:NO
                 useCache:useCache
           fillBackground:NO];
         
+        // 次に pdftops でプレインテキストEPS化
+        [self pdf2plainTextEps:outlinedPdfFileName
+             outputEpsFileName:intermediateOutlinedFileName
+                          page:1];
+        
+        // EPSを修正
+        [self modifyEpsForEmf:intermediateOutlinedFileName];
+        
+        // 最後にEPSを eps2emf で処理
         [self eps2emf:intermediateOutlinedFileName outputFileName:outputFileName];
     } else { // ビットマップ形式出力の場合，PDFのアウトラインをとった上で，それをさらにビットマップ形式に変換する
         [self outlinePDF:pdfFileName
@@ -1718,7 +1745,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                    fillBackground:YES];
                     [controller exitCurrentThreadIfTaskKilled];
                     
-                    // 次に余白あり・背景塗りあり・テキスト保持・単一ページPDFを，-[Ghostscript]→余白あり非透過EPS-[pstoedit]→余白あり非透過EMF と変換する
+                    // 次に余白あり・背景塗りあり・テキスト保持・単一ページPDFをEMFへ変換する
                     success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
                   intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                                 outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
