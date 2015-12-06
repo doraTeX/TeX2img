@@ -637,6 +637,8 @@
     if (shouldUseEps2WriteDevice) {
         [arguments addObject:@"-sDEVICE=eps2write"];
         [arguments addObject:@"-dNoOutputFonts"];
+        [arguments addObject:@"-dCompressPages=true"];
+        [arguments addObject:@"-dASCII85EncodePages=false"];
     } else {
         [arguments addObject:@"-sDEVICE=epswrite"];
         [arguments addObject:@"-dNOCACHE"];
@@ -1107,7 +1109,7 @@
 
 // PDFを，アウトラインをとったPDFまたはEPSに変換する
 - (BOOL)outlinePDF:(NSString*)pdfFileName
- outputEpsFileName:(NSString*)outputEpsFileName
+intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
     outputFileName:(NSString*)outputFileName
               page:(NSUInteger)page
          addMargin:(BOOL)addMargin
@@ -1124,10 +1126,16 @@
             [self pdfcrop:pdfFileName
            outputFileName:trimFileName
                      page:0
-                addMargin:NO
+                addMargin:addMargin
                  useCache:useCache
            fillBackground:NO];
-            if (![self pdf2plainTextEps:trimFileName outputEpsFileName:outputFileName page:page]) {
+            
+            if (![self pdf2pdf:trimFileName outputFileName:intermediateOutlinedFileName resolution:resolution page:page]
+                || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName]]) {
+                return NO;
+            }
+
+            if (![self pdf2plainTextEps:intermediateOutlinedFileName outputEpsFileName:outputFileName page:1]) {
                 return NO;
             }
         } else { // Ghostscript 経由の場合
@@ -1150,23 +1158,23 @@
             if ([self shouldUseEps2WriteDevice]) { // Ghostscript 9.15 以降の場合は，-sDEVICE=pdfwrite -dNoOutputFonts によって直接アウトライン化PDFを作成する
                 [self pdfcrop:pdfFileName
                outputFileName:trimFileName
-                         page:0
+                         page:page
                     addMargin:addMargin
                      useCache:useCache
                fillBackground:NO];
                 
                 // PDF→PDF のアウトライン化変換の実行
-                if (![self pdf2pdf:trimFileName outputFileName:outputFileName resolution:resolution page:page]
+                if (![self pdf2pdf:trimFileName outputFileName:outputFileName resolution:resolution page:1]
                     || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:outputFileName]]) {
                     return NO;
                 }
             } else {
                 // PDF→EPS の変換の実行（この時点で強制cropされる）
-                if (![self pdf2eps:pdfFileName outputEpsFileName:outputEpsFileName resolution:resolution page:page]
-                    || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:outputEpsFileName]]) {
+                if (![self pdf2eps:pdfFileName outputEpsFileName:intermediateOutlinedFileName resolution:resolution page:page]
+                    || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName]]) {
                     return NO;
                 }
-                [self eps2pdf:outputEpsFileName outputFileName:outputFileName addMargin:addMargin];
+                [self eps2pdf:intermediateOutlinedFileName outputFileName:outputFileName addMargin:addMargin];
             }
         }
         if (fill) {
@@ -1183,8 +1191,25 @@
     return YES;
 }
 
+// EPSのパスのアウトラインをとる
+- (BOOL)modifyEpsForEmf:(NSString*)epsName
+{
+    NSData *epsData = [NSData dataWithContentsOfFile:epsName];
+    if (!epsData) {
+        return NO;
+    }
+    
+    NSMutableData *newData = [NSMutableData dataWithData:[@"/oldstroke /stroke load def\n/stroke {strokepath fill} def\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    [newData appendData:epsData];
+    [newData writeToFile:epsName atomically:NO];
+    
+    return YES;
+}
+
+
 - (BOOL)convertPDF:(NSString*)pdfFileName
- outputEpsFileName:(NSString*)outputEpsFileName
+intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
     outputFileName:(NSString*)outputFileName
               page:(NSUInteger)page
           useCache:(BOOL)useCache
@@ -1203,15 +1228,15 @@
     
     if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合
         [self outlinePDF:pdfFileName
-       outputEpsFileName:outputEpsFileName
+intermediateOutlinedFileName:intermediateOutlinedFileName
           outputFileName:outputFileName
                     page:page
                addMargin:YES
                 useCache:useCache
           fillBackground:YES];
-    } else if ([@"svg" isEqualToString:extension]) { // 最終出力がアニメーションSVGの場合
+    } else if ([@"svg" isEqualToString:extension]) { // アウトライン化SVGの場合
         [self outlinePDF:pdfFileName
-       outputEpsFileName:outputEpsFileName
+intermediateOutlinedFileName:intermediateOutlinedFileName
           outputFileName:outlinedPdfFileName
                     page:page
                addMargin:YES
@@ -1226,8 +1251,8 @@
         [controller exitCurrentThreadIfTaskKilled];
     } else if ([@"eps" isEqualToString:extension]) { // 最終出力が EPS の場合
         [self outlinePDF:pdfFileName
-       outputEpsFileName:outputEpsFileName
-          outputFileName:outputEpsFileName
+intermediateOutlinedFileName:outlinedPdfFileName
+          outputFileName:intermediateOutlinedFileName
                     page:page
                addMargin:NO
                 useCache:useCache
@@ -1235,27 +1260,37 @@
         
         // 余白を付け加えるようバウンディングボックスを改変（背景塗りを追加している場合は既に余白が付いているので除く）
         if (transparentFlag && (topMargin + bottomMargin + leftMargin + rightMargin > 0)) {
-            [self enlargeBB:outputEpsFileName];
+            [self enlargeBB:intermediateOutlinedFileName];
         }
         
         // 生成したEPSファイルの名前を最終出力ファイル名へ変更する
         if ([fileManager fileExistsAtPath:outputFileName]) {
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
-        [fileManager moveItemAtPath:[workingDirectory stringByAppendingPathComponent:outputEpsFileName] toPath:outputFileName error:nil];
-    } else if ([@"emf" isEqualToString:extension]) { // 最終出力が EMF の場合は EPS を経由
+        [fileManager moveItemAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName] toPath:outputFileName error:nil];
+    } else if ([@"emf" isEqualToString:extension]) { // 最終出力が EMF の場合
+        // まずPDFをアウトライン化
         [self outlinePDF:pdfFileName
-       outputEpsFileName:outputEpsFileName
-          outputFileName:outputEpsFileName
+intermediateOutlinedFileName:outlinedPdfFileName
+          outputFileName:outlinedPdfFileName
                     page:page
                addMargin:NO
                 useCache:useCache
           fillBackground:NO];
         
-        [self eps2emf:outputEpsFileName outputFileName:outputFileName];
+        // 次に pdftops でプレインテキストEPS化
+        [self pdf2plainTextEps:outlinedPdfFileName
+             outputEpsFileName:intermediateOutlinedFileName
+                          page:1];
+        
+        // EPSを修正
+        [self modifyEpsForEmf:intermediateOutlinedFileName];
+        
+        // 最後にEPSを eps2emf で処理
+        [self eps2emf:intermediateOutlinedFileName outputFileName:outputFileName];
     } else { // ビットマップ形式出力の場合，PDFのアウトラインをとった上で，それをさらにビットマップ形式に変換する
         [self outlinePDF:pdfFileName
-       outputEpsFileName:outputEpsFileName
+intermediateOutlinedFileName:intermediateOutlinedFileName
           outputFileName:outlinedPdfFileName
                     page:page
                addMargin:NO
@@ -1529,7 +1564,7 @@
                 return success;
             }
         }
-    } else if ([@"svg" isEqualToString:extension] && !((pageCount - emptyPageFlags.indexesOfTrueValue.count > 1) && mergeOutputsFlag)) { // 最終出力が非アニメーション SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
+    } else if ([@"svg" isEqualToString:extension] && !((pageCount - emptyPageFlags.indexesOfTrueValue.count > 1) && mergeOutputsFlag) && leaveTextFlag) { // 最終出力がテキスト保持 SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
         if (transparentFlag) { // 透過SVG生成の場合
             // まずは全ページ一括で，pdfcrop類似処理でクロップ＋余白付与
             [self pdfcrop:pdfFilePath
@@ -1598,7 +1633,7 @@
             // 透過PDFを pdfwrite 経由または epswrite 経由で透過ベクター形式またはビットマップ形式に変換する
             for (NSUInteger i=1; i<=pageCount; i++) {
                 success = [self convertPDF:pdfFileName
-                         outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+              intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                             outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                       page:i
                                   useCache:YES
@@ -1622,7 +1657,7 @@
                     
                     // 次に余白あり・背景塗りあり・単一ページのテキスト保持PDFを，Ghostscript でEPSに変換する
                     success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
-                             outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                  intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                                 outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                           page:1
                                       useCache:NO
@@ -1675,7 +1710,7 @@
                         
                         // 次に余白なし・背景塗りなし・単一ページのテキスト保持PDFを，余白なし透過アウトライン化PDF経由で背景塗りのあるPDFまたはアニメーションSVGに変換する
                         success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
-                                 outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                      intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                                     outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                               page:1
                                           useCache:NO
@@ -1697,9 +1732,9 @@
                    fillBackground:YES];
                     [controller exitCurrentThreadIfTaskKilled];
                     
-                    // 次に余白あり・背景塗りあり・テキスト保持・単一ページPDFを，-[Ghostscript]→余白あり非透過EPS-[pstoedit]→余白あり非透過EMF と変換する
+                    // 次に余白あり・背景塗りあり・テキスト保持・単一ページPDFをEMFへ変換する
                     success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
-                             outputEpsFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                  intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                                 outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                           page:1
                                       useCache:NO
