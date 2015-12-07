@@ -1728,6 +1728,10 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         } else { // 背景塗りを行うベクター画像出力場合，背景塗りがマルチページPDFに未対応のため，1ページずつpdfcrop類似処理を分けて行い，その結果をそれぞれ処理する
             if ([@"eps" isEqualToString:extension]) { // 背景塗りのある EPS 画像生成の場合
                 for (NSUInteger i=1; i<=pageCount; i++) {
+                    if (emptyPageFlags[i-1].boolValue) {
+                        continue;
+                    }
+                    
                     // まずはpdfcrop類似処理で余白ありテキスト保持PDFを作り，その背景を塗る
                     [self pdfcrop:pdfFilePath
                    outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
