@@ -1,5 +1,5 @@
 \documentclass[uplatex,dvipdfmx,landscape]{jsarticle}
-\usepackage[dvipdfm,papersize={58cm,33cm},margin=2cm,noheadfoot]{geometry}
+\usepackage[dvipdfm,papersize={58cm,31cm},margin=2cm,noheadfoot]{geometry}
 \usepackage{metalogo}
 \newcommand*\TikZ{Ti\textit{k}Z}
 \usepackage{tikz}
@@ -59,7 +59,7 @@
 \draw[->] (TeX) --  (TeX -| right above of PDF) to [bend left=90]  node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} (right above of PDF) to (PDF.north east |- right above of PDF) ;
 
 
-\node[relay node] (PDF with text without margin) at ($(PDF) + (-18,-3)$) {テキスト保持PDF\\（余白なし・透過）};
+\node[relay node] (PDF with text without margin) at ($(PDF) + (-16,-3)$) {テキスト保持PDF\\（余白なし・透過）};
 \draw (PDF) -- node[left,xshift=-5pt,yshift=9pt] {pdf\TeX で\\クロップ} (PDF with text without margin);
 
 \node[relay node] (Outlined PDF without margin) at ($(PDF with text without margin) + (-5,0)$) {アウトライン化PDF\\（余白なし・透過）};
@@ -100,8 +100,6 @@
 \node[output node] (Filled SVG) at ($(Filled PDF with text) + (-4,-2)$) {テキスト保持SVG\\（非透過）};
 \draw[->] (Filled PDF with text) -- node[left,xshift=8pt,yshift=8pt] {mudraw} (Filled SVG);
 
-
-
 \node[output node] (EPS without margin) at ($(PDF) + (6,0)$) {バイナリ形式EPS\\（余白なし・透過）};
 \draw[->] (PDF) -- node[below] {Ghostscript\textsuperscript{*1}} (EPS without margin);
 
@@ -112,22 +110,19 @@
 \path[->] (Outlined PDF with margin) edge  [loop above,in=45,out=135,distance=50] node[above] {Quartz API で背景塗り} (Outlined PDF with margin);
 \draw[->] (PDF with text) -- node[above,midway,xshift=4pt]{Ghostscript\textsuperscript{*2}} (Outlined PDF with margin); 
 
-\node[relay node] (EPS2) at ($(Outlined PDF with margin) + (4,-2)$) {テキスト形式EPS};
-\draw[->] (Outlined PDF with margin) -- node[above,xshift=12pt,yshift=4pt] {pdftops\textsuperscript{*3}} (EPS2);
+\node[output node] (EPS2) at ($(Outlined PDF with margin) + (4,-2)$) {テキスト形式EPS};
+\draw[->] (Outlined PDF with margin) -- node[right,yshift=4pt] {pdftops} (EPS2);
 
 \node[output node] (EMF) at ($(EPS2) + (0,-2)$) {EMF};
-\draw[->] (EPS2) -- node[left,align=right] {eps2emf\\（改造版pstoedit）} (EMF);
+\draw[->] (EPS2) -- node[left,align=right] {eps2emf\textsuperscript{*3}\\（改造版pstoedit）} (EMF);
 
 \node[output node] (Multipage Outlined PDF) at ($(Outlined PDF with margin) + (0,-4)$) {マルチページ\\アウトライン化PDF};
 \draw[->] (Outlined PDF with margin) -- node[right] {Quartz API} (Multipage Outlined PDF);
 
-\node[output node] (Text EPS) at ($(Multipage Outlined PDF) + (-3,0)$) {テキスト形式EPS};
-\draw[->] (Outlined PDF with margin) -- node[left] {pdftops} (Text EPS);
-
-\node[output node] (Outlined SVG) at ($(Text EPS) + (-3,2)$) {アウトライン化SVG};
+\node[output node] (Outlined SVG) at ($(EPS2) + (-8,0)$) {アウトライン化SVG};
 \draw[->] (Outlined PDF with margin) -- node[left,yshift=4pt] {mudraw} (Outlined SVG);
 
-\node[output node] (Animation SVG) at ($(Text EPS) + (-3,0)$) {アニメーションSVG};
+\node[output node] (Animation SVG) at ($(EPS2) + (-8,-2)$) {アニメーションSVG};
 \draw[->] (Outlined SVG) -- node[right] {SVG編集} (Animation SVG);
 
 
@@ -145,7 +140,7 @@
 \item\relax[*2]のGhostscirpt実行においては，pdfwriteデバイスが用いられる。
 \item\relax[*1]および[*2]のGhostscirpt実行における \texttt{-r} オプションの値は，画質優先モードでは20016固定，速度優先モードでは解像度レベル設定に従う。
 \item\relax[*1]のGhostscript実行においては，出力されるEPSのBoundingBox値が誤っている場合がある。そこで，eps2writeで生成されたEPSに対しては，Ghostscriptのbboxデバイスで取得されるBoundingBox値によって常に上書きするようにしている。
-\item\relax[*3]のpdftops実行で得られたEPSに対しては，パスのアウトライン化を行うように生成EPSを加工する。
+\item\relax[*3]のeps2emf実行前に，パスのアウトライン化を行うように生成EPSを加工しておく。
 \item 「元のページサイズを維持」がONの場合，[*1]のGhostscript実行においては，出力されるEPSのBB値を，変換前のPDFの指定されたPageBoxの値で上書きする。
 \item 「元のページサイズを維持」がONの場合，「pdf\TeX でクロップ」の過程では，変換前のPDFの指定されたPageBox（余白付与の場合はそれに余白を加えたもの）をMediaBoxにしたPDF（左下が原点，他のBoxは非明示）を生成する。
 \item Ghostscriptのeps2writeデバイスは，\TikZ のshadowsライブラリを用いた場合など，特定の種類の図は苦手としている。Ghostscirpt 9.15以上のeps2writeデバイスの場合は，ぼやけたビットマップ画像にされてしまう。そのような図は，Ghostscriptによって綺麗にアウトライン化することはできないので，Ghostscriptを経由しない経路（PDF，SVG，ビットマップ画像）で代用できないか検討してほしい。
@@ -229,13 +224,13 @@
 \path[->] (EPS2) edge  [loop left,out=165,in=-165,distance=20] node[left,xshift=2pt,yshift=2pt] {BB編集} (EPS2);
 
 \node[output node] (EMF) at ($(EPS2) + (0,-2)$) {EMF\\（透過）};
-\draw[->] (EPS2) -- node[left,align=right] {eps2emf\\（改造版pstoedit）} (EMF);
+\draw[->] (EPS2) -- node[left,align=right] {eps2emf\textsuperscript{*3}\\（改造版pstoedit）} (EMF);
 
 \node[relay node] (Filled EPS2) at ($(Filled PDF with text) + (-4,-2.5)$) {EPS\\（非透過）};
 \draw[->] (Filled PDF with text) -- node[below,xshift=15pt,yshift=-4pt] {Ghostscript\textsuperscript{*1}} (Filled EPS2);
 
 \node[output node] (Filled EMF) at ($(Filled EPS2) + (0,-2)$) {EMF\\（非透過）};
-\draw[->] (Filled EPS2) -- node[right,align=left] {eps2emf\\（改造版pstoedit）} (Filled EMF);
+\draw[->] (Filled EPS2) -- node[right,align=left] {eps2emf\textsuperscript{*3}\\（改造版pstoedit）} (Filled EMF);
 
 \node[output node] (EPS without margin) at ($(Filled PDF with text) + (5,0)$) {EPS\\（余白なし・透過）};
 \draw[->] (PDF) -- node[right,yshift=6pt] {Ghostscript\textsuperscript{*1}} (EPS without margin.north west);
@@ -286,10 +281,11 @@
 \item\relax[*1]のGhostscirpt実行においては，epswriteデバイスが用いられる。
 \item\relax[*1]のGhostscirpt実行における \texttt{-r} オプションの値は，画質優先モードでは20016固定，速度優先モードでは解像度レベル設定に従う。
 \item\relax[*1]のGhostscript実行においては，出力されるEPSのBoundingBox値が誤っている場合がある。そこで，epswriteで生成されたEPSに対しては，Ghostscriptのbboxデバイスで取得されるBoundingBox値によって常に上書きするようにしている。
+\item\relax[*2]のepstopdf実行においては，OS X 10.11 El Capitan 以上では \texttt{--hires} オプションありで，それ未満ではなしで実行する。これは El Capitan で修正された Quartz API の不具合に対応するための措置である。OS X 10.10 Yosemite 以下のOSでは，\texttt{--hires} オプションありで生成されたPDFを Quartz API にかけると端が欠けるという現象が発生する。
+\item\relax[*3]のeps2emf実行前に，パスのアウトライン化を行うように生成EPSを加工しておく。
 \item 「元のページサイズを維持」がONの場合，[*1]のGhostscript実行においては，出力されるEPSのBB値を，変換前のPDFの指定されたPageBoxの値で上書きする。
 \item 「元のページサイズを維持」がONの場合，「pdf\TeX でクロップ」の過程では，変換前のPDFの指定されたPageBox（余白付与の場合はそれに余白を加えたもの）をMediaBoxにしたPDF（左下が原点，他のBoxは非明示）を生成する。
 \item Ghostscriptのepswriteデバイスは，\TikZ のshadowsライブラリを用いた場合など，特定の種類の図は苦手としている。Ghostscirpt 9.15未満のepswriteデバイスの場合は，無数のパスに分割されてエラーを起こす原因となる。そのような図は，Ghostscriptによって綺麗にアウトライン化することはできないので，Ghostscriptを経由しない経路（テキスト保持PDF，SVG，速度優先モードでのビットマップ画像）で代用できないか検討してほしい。
-\item\relax[*2]のepstopdf実行においては，OS X 10.11 El Capitan 以上では \texttt{--hires} オプションありで，それ未満ではなしで実行する。これは El Capitan で修正された Quartz API の不具合に対応するための措置である。OS X 10.10 Yosemite 以下のOSでは，\texttt{--hires} オプションありで生成されたPDFを Quartz API にかけると端が欠けるという現象が発生する。
 \item 余白は原則としてbp単位が用いられるが，設定でpx単位を選んでいて，かつビットマップ画像出力の場合は，Quartz APIによるビットマップ化実行時にpx単位の余白が付与される。
 \end{itemize}
 }
