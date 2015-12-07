@@ -1398,6 +1398,27 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     }
 }
 
+// 単一ページのPDFを Quartz API で開いて保存し直す。
+// これによって eps(2)write で処理しやすくなる。
+// https://github.com/doraTeX/TeX2img/issues/70#issuecomment-162500813
+- (void)launderPDF:(NSString*)path
+{
+    PDFDocument *doc = [PDFDocument documentWithFilePath:path];
+    
+    CGPDFPageRef pdfPageRef = [doc pageAtIndex:0].pageRef;
+    const CGRect mediaBoxRect = CGPDFPageGetBoxRect(pdfPageRef, kCGPDFMediaBox);
+    
+    CGContextRef contextRef = CGPDFContextCreateWithURL((CFURLRef)[NSURL fileURLWithPath:path], &mediaBoxRect, NULL);
+    
+    CGPDFContextBeginPage(contextRef, NULL);
+    CGContextSaveGState(contextRef);
+    CGContextDrawPDFPage(contextRef, pdfPageRef);
+    CGContextRestoreGState(contextRef);
+    CGPDFContextEndPage(contextRef);
+    
+    CGContextRelease(contextRef);
+}
+
 - (BOOL)convertPDF:(NSString*)pdfFilePath
              toEMF:(NSString*)outputFileName
               page:(NSUInteger)page
@@ -1715,16 +1736,80 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 }
             } else {
                 // 透過PDFを pdfwrite 経由または epswrite 経由で透過ベクター形式またはビットマップ形式に変換する
-                for (NSUInteger i=1; i<=pageCount; i++) {
-                    success = [self convertPDF:pdfFileName
-                  intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
-                                outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
-                                          page:i
-                                      useCache:YES
-                                 skipEmptyPage:YES];
-                    [controller exitCurrentThreadIfTaskKilled];
-                    if (!success) {
-                        return success;
+                if ([self shouldUseEps2WriteDevice]) {  // eps2write による出力時には，ページごとにばらしてPDFロンダリングする
+                    if ([@"eps" isEqualToString:extension]) {
+                        for (NSUInteger i=1; i<=pageCount; i++) {
+                            if (emptyPageFlags[i-1].boolValue) {
+                                continue;
+                            }
+                            
+                            // まずはpdfcrop類似処理で余白ありテキスト保持PDFを作る
+                            NSString *croppedFile = [croppedPdfFilePath pathStringByAppendingPageNumber:i];
+                            [self pdfcrop:pdfFilePath
+                           outputFileName:croppedFile
+                                     page:i
+                                addMargin:NO
+                                 useCache:NO
+                           fillBackground:NO];
+                            [controller exitCurrentThreadIfTaskKilled];
+                            
+                            [self launderPDF:croppedFile];
+                            
+                            // 次に単一ページのテキスト保持PDFを透過ベクター形式またはビットマップ形式に変換する
+                            success = [self convertPDF:croppedFile.lastPathComponent
+                          intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                                        outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                                  page:1
+                                              useCache:NO
+                                         skipEmptyPage:NO];
+                            [controller exitCurrentThreadIfTaskKilled];
+                            if (!success) {
+                                return success;
+                            }
+                        }
+                    } else {
+                        for (NSUInteger i=1; i<=pageCount; i++) {
+                            success = [self convertPDF:pdfFileName
+                          intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                                        outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                                  page:i
+                                              useCache:YES
+                                         skipEmptyPage:YES];
+                            [controller exitCurrentThreadIfTaskKilled];
+                            if (!success) {
+                                return success;
+                            }
+                        }
+                    }
+                } else { // epswrite による出力時には，ページごとにばらしてPDFロンダリングする
+                    for (NSUInteger i=1; i<=pageCount; i++) {
+                        if (emptyPageFlags[i-1].boolValue) {
+                            continue;
+                        }
+                        
+                        // まずはpdfcrop類似処理で余白ありテキスト保持PDFを作る
+                        NSString *croppedFile = [croppedPdfFilePath pathStringByAppendingPageNumber:i];
+                        [self pdfcrop:pdfFilePath
+                       outputFileName:croppedFile
+                                 page:i
+                            addMargin:NO
+                             useCache:NO
+                       fillBackground:NO];
+                        [controller exitCurrentThreadIfTaskKilled];
+                        
+                        [self launderPDF:croppedFile];
+                        
+                        // 次に単一ページのテキスト保持PDFを透過ベクター形式またはビットマップ形式に変換する
+                        success = [self convertPDF:croppedFile.lastPathComponent
+                      intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                                    outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                              page:1
+                                          useCache:NO
+                                     skipEmptyPage:NO];
+                        [controller exitCurrentThreadIfTaskKilled];
+                        if (!success) {
+                            return success;
+                        }
                     }
                 }
             }
@@ -1736,8 +1821,10 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                     }
                     
                     // まずはpdfcrop類似処理で余白ありテキスト保持PDFを作り，その背景を塗る
+                    NSString *croppedFile = [croppedPdfFilePath pathStringByAppendingPageNumber:i];
+                    
                     [self pdfcrop:pdfFilePath
-                   outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
+                   outputFileName:croppedFile
                              page:i
                         addMargin:YES
                          useCache:NO
@@ -1745,7 +1832,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                     [controller exitCurrentThreadIfTaskKilled];
                     
                     // 次に余白あり・背景塗りあり・単一ページのテキスト保持PDFを，Ghostscript でEPSに変換する
-                    success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
+                    success = [self convertPDF:croppedFile.lastPathComponent
                   intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                                 outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
                                           page:1
