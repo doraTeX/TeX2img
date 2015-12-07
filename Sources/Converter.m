@@ -626,6 +626,7 @@
 {
     NSMutableArray<NSString*> *arguments = [NSMutableArray<NSString*> arrayWithArray:@[@"-dNOPAUSE",
                                                                                        @"-dBATCH",
+                                                                                       @"-dAutoRotatePages=/None",
                                                                                        [NSString stringWithFormat:@"-r%ld", resolution],
                                                                                        [NSString stringWithFormat:@"-sOutputFile=%@", outputEpsFileName],
                                                                                        [NSString stringWithFormat:@"-dFirstPage=%lu", page],
@@ -710,7 +711,7 @@
     }
     
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
-    [cmdline appendFormat:@"%@", eps2emfPath];
+    [cmdline appendFormat:@"%@", eps2emfPath.stringByQuotingWithDoubleQuotations];
     
     NSArray<NSString*> *arguments = @[epsName.stringByQuotingWithDoubleQuotations, outputEmfFileName.stringByQuotingWithDoubleQuotations];
     
@@ -901,7 +902,7 @@
     
     NSArray<NSString*> *arguments = @[@"-f", pageStr, @"-l", pageStr, @"-eps", pdfName, epsName];
     
-    return [controller execCommand:pdftopsPath
+    return [controller execCommand:pdftopsPath.stringByQuotingWithDoubleQuotations
                        atDirectory:workingDirectory
                      withArguments:arguments
                              quiet:quietFlag];
@@ -1081,7 +1082,7 @@
     
     NSArray<NSString*> *arguments = @[@"-o", svgFilePath.stringByQuotingWithDoubleQuotations, pdfFilePath.stringByQuotingWithDoubleQuotations, [NSString stringWithFormat:@"%ld", page]];
     
-    BOOL success = [controller execCommand:mudrawPath
+    BOOL success = [controller execCommand:mudrawPath.stringByQuotingWithDoubleQuotations
                                atDirectory:workingDirectory
                              withArguments:arguments
                                      quiet:quietFlag];
@@ -1130,11 +1131,20 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
                  useCache:useCache
            fillBackground:NO];
             
-            if (![self pdf2pdf:trimFileName outputFileName:intermediateOutlinedFileName resolution:resolution page:page]
-                || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName]]) {
-                return NO;
+            if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は pdfwrite が使えない（エラーになる）ので，そこだけpdfcrop類似処理で変換する
+                [self pdfcrop:pdfFileName
+               outputFileName:intermediateOutlinedFileName
+                         page:page
+                    addMargin:YES
+                     useCache:NO
+               fillBackground:NO];
+            } else {
+                if (![self pdf2pdf:trimFileName outputFileName:intermediateOutlinedFileName resolution:resolution page:page]
+                    || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName]]) {
+                    return NO;
+                }
             }
-
+            
             if (![self pdf2plainTextEps:intermediateOutlinedFileName outputEpsFileName:outputFileName page:1]) {
                 return NO;
             }
@@ -1268,26 +1278,6 @@ intermediateOutlinedFileName:outlinedPdfFileName
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
         [fileManager moveItemAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName] toPath:outputFileName error:nil];
-    } else if ([@"emf" isEqualToString:extension]) { // 最終出力が EMF の場合
-        // まずPDFをアウトライン化
-        [self outlinePDF:pdfFileName
-intermediateOutlinedFileName:outlinedPdfFileName
-          outputFileName:outlinedPdfFileName
-                    page:page
-               addMargin:NO
-                useCache:useCache
-          fillBackground:NO];
-        
-        // 次に pdftops でプレインテキストEPS化
-        [self pdf2plainTextEps:outlinedPdfFileName
-             outputEpsFileName:intermediateOutlinedFileName
-                          page:1];
-        
-        // EPSを修正
-        [self modifyEpsForEmf:intermediateOutlinedFileName];
-        
-        // 最後にEPSを eps2emf で処理
-        [self eps2emf:intermediateOutlinedFileName outputFileName:outputFileName];
     } else { // ビットマップ形式出力の場合，PDFのアウトラインをとった上で，それをさらにビットマップ形式に変換する
         [self outlinePDF:pdfFileName
 intermediateOutlinedFileName:intermediateOutlinedFileName
@@ -1393,6 +1383,85 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     } else {
         return nil;
     }
+}
+
+- (BOOL)convertPDF:(NSString*)pdfFilePath
+             toEMF:(NSString*)outputFileName
+              page:(NSUInteger)page
+{
+    NSString *croppedPdfFileName = [tempFileBaseName stringByAppendingString:@"-crop.pdf"];
+    NSString *trimmedPdfFileName = [tempFileBaseName stringByAppendingString:@"-trim.pdf"];
+    NSString *epsFileName = [tempFileBaseName stringByAppendingPathExtension:@"eps"];
+
+    NSInteger lowResolution = resolutionLevel*((NSInteger)RESOLUTION_SCALE)*2*72;
+    NSInteger resolution = speedPriorityMode ? lowResolution : 20016;
+    
+    // まずはpdfcrop類似処理で余白あり・テキスト保持・単一ページPDFを切り出す
+    [self pdfcrop:pdfFilePath
+   outputFileName:[workingDirectory stringByAppendingPathComponent:croppedPdfFileName]
+             page:page
+        addMargin:YES
+         useCache:NO
+   fillBackground:!transparentFlag];
+    [controller exitCurrentThreadIfTaskKilled];
+
+    NSMutableArray<NSString*> *arguments = [NSMutableArray<NSString*> arrayWithArray:@[@"-dNOPAUSE",
+                                                                                       @"-dBATCH",
+                                                                                       @"-dAutoRotatePages=/None",
+                                                                                       [NSString stringWithFormat:@"-r%ld", resolution],
+                                                                                       ]];
+    BOOL shouldUseEps2WriteDevice = [self shouldUseEps2WriteDevice];
+
+    if (shouldUseEps2WriteDevice) {
+        [arguments addObject:@"-sDEVICE=pdfwrite"];
+        [arguments addObject:@"-dNoOutputFonts"];
+        [arguments addObject:[NSString stringWithFormat:@"-sOutputFile=%@", trimmedPdfFileName]];
+        [arguments addObject:@"-f"];
+    } else { // gs 9.15 未満の場合は epswrite を適用
+        [arguments addObject:@"-sDEVICE=epswrite"];
+        [arguments addObject:@"-dNOCACHE"];
+        [arguments addObject:[NSString stringWithFormat:@"-sOutputFile=%@", epsFileName]];
+        [arguments addObject:@"-f"];
+    }
+
+    [arguments addObject:croppedPdfFileName];
+ 
+    BOOL status = [controller execCommand:gsPath atDirectory:workingDirectory withArguments:arguments quiet:quietFlag];
+
+    if (!status) {
+        [controller showExecError:@"Ghostscript"];
+        return NO;
+    }
+
+    if (shouldUseEps2WriteDevice) { // gs 9.15 未満の場合は pdfwrite で生成した PDF を eps に変換
+        [self pdf2plainTextEps:trimmedPdfFileName outputEpsFileName:epsFileName page:1];
+    } else { // gs 9.15 未満の場合は epswrite で生成した EPS をいじる
+        if ([self isEmptyPage:pdfFilePath page:page]) {
+            [self replaceEpsBBoxWithEmptyBBox:epsFileName];
+        }
+        
+        if (keepPageSizeFlag) {
+            status = [self replaceEpsBBox:epsFileName withPageBoxOfPdf:pdfFilePath.lastPathComponent page:page];
+        } else {
+            // 生成したEPSのBBox情報をオリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する
+            status = [self replaceEpsBBox:epsFileName withBBoxOfPdf:pdfFilePath.lastPathComponent page:page];
+        }
+        if (!status) {
+            return NO;
+        }
+        
+        if (transparentFlag && (topMargin + bottomMargin + leftMargin + rightMargin > 0)) {
+            [self enlargeBB:epsFileName];
+        }
+    }
+    
+    // EPSを修正
+    [self modifyEpsForEmf:[workingDirectory stringByAppendingPathComponent:epsFileName]];
+
+    // 最後にEPSを eps2emf で処理
+    [self eps2emf:epsFileName outputFileName:outputFileName];
+
+    return YES;
 }
 
 - (BOOL)compileAndConvert
@@ -1618,17 +1687,29 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         }
 	} else { // ghostscript を用いたアウトライン化を行う形式(EPS/outlined-PDF/ビットマップ形式(画質優先)/EMF/アニメーションSVG)の場合
         if (transparentFlag || [BitmapExtensionsArray containsObject:extension]) { // 透過ベクター形式，またはビットマップ形式の場合
-            // 透過PDFを pdfwrite 経由または epswrite 経由で透過ベクター形式またはビットマップ形式に変換する
-            for (NSUInteger i=1; i<=pageCount; i++) {
-                success = [self convertPDF:pdfFileName
-              intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
-                            outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
-                                      page:i
-                                  useCache:YES
-                             skipEmptyPage:YES];
-                [controller exitCurrentThreadIfTaskKilled];
-                if (!success) {
-                    return success;
+            if ([@"emf" isEqualToString:extension]) {
+                for (NSUInteger i=1; i<=pageCount; i++) {
+                    success = [self convertPDF:pdfFileName
+                                         toEMF:[outputFileName pathStringByAppendingPageNumber:i]
+                                          page:i];
+                    [controller exitCurrentThreadIfTaskKilled];
+                    if (!success) {
+                        return success;
+                    }
+                }
+            } else {
+                // 透過PDFを pdfwrite 経由または epswrite 経由で透過ベクター形式またはビットマップ形式に変換する
+                for (NSUInteger i=1; i<=pageCount; i++) {
+                    success = [self convertPDF:pdfFileName
+                  intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
+                                outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
+                                          page:i
+                                      useCache:YES
+                                 skipEmptyPage:YES];
+                    [controller exitCurrentThreadIfTaskKilled];
+                    if (!success) {
+                        return success;
+                    }
                 }
             }
         } else { // 背景塗りを行うベクター画像出力場合，背景塗りがマルチページPDFに未対応のため，1ページずつpdfcrop類似処理を分けて行い，その結果をそれぞれ処理する
@@ -1711,22 +1792,9 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 }
             } else if ([@"emf" isEqualToString:extension]) { // 背景塗りのあるEMF生成の場合
                 for (NSUInteger i=1; i<=pageCount; i++) {
-                    // まずはpdfcrop類似処理で余白あり・背景塗りあり・テキスト保持・単一ページPDFを切り出す
-                    [self pdfcrop:pdfFilePath
-                   outputFileName:[croppedPdfFilePath pathStringByAppendingPageNumber:i]
-                             page:i
-                        addMargin:YES
-                         useCache:NO
-                   fillBackground:YES];
-                    [controller exitCurrentThreadIfTaskKilled];
-                    
-                    // 次に余白あり・背景塗りあり・テキスト保持・単一ページPDFをEMFへ変換する
-                    success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
-                  intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
-                                outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
-                                          page:1
-                                      useCache:NO
-                                 skipEmptyPage:NO];
+                    success = [self convertPDF:pdfFileName
+                                         toEMF:[outputFileName pathStringByAppendingPageNumber:i]
+                                          page:i];
                     [controller exitCurrentThreadIfTaskKilled];
                     if (!success) {
                         return success;
