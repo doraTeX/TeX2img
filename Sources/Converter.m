@@ -1466,7 +1466,6 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         if (transparentFlag && (topMargin + bottomMargin + leftMargin + rightMargin > 0)) {
             [self enlargeBB:epsFileName];
         }
-        
     }
     
     // EPSを修正
