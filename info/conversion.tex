@@ -210,7 +210,7 @@
 \node[output node] (Multipage PDF with text) at ($(PDF with text) + (0,-4.5)$) {マルチページ\\テキスト保持PDF\\（透過）};
 \draw[->] (PDF with text) -- node[left] {Quartz API} (Multipage PDF with text);
 
-\node[output node] (SVG) at ($(PDF with text) + (4,-2)$) {テキスト保持\\SVG\\（透過）};
+\node[output node] (SVG) at ($(PDF with text) + (4,-1)$) {テキスト保持\\SVG（透過）};
 \draw[->] (PDF with text) -- node[right,xshift=-8pt,yshift=8pt] {mudraw} (SVG);
 
 \node[output node] (Filled PDF with text) at ($(PDF with text) + (10,0)$) {テキスト保持PDF\\（余白あり・非透過）};
@@ -220,8 +220,22 @@
 \draw[->] (Filled PDF with text) -- node[right] {Quartz API} (Filled Multipage PDF with text);
 
 
-\node[output node] (Filled SVG) at ($(Filled PDF with text) + (-4,-2)$) {テキスト保持\\SVG\\（非透過）};
+\node[output node] (Filled SVG) at ($(Filled PDF with text) + (-4,-1)$) {テキスト保持\\SVG（非透過）};
 \draw[->] (Filled PDF with text) -- node[left,xshift=8pt,yshift=8pt] {mudraw} (Filled SVG);
+
+\node[relay node] (EPS2) at ($(PDF with text) + (4,-2.5)$) {EPS\\（透過）};
+\draw[->] (PDF with text) -- node[below,xshift=-18pt,yshift=-4pt] {Ghostscript\textsuperscript{*1}} (EPS2);
+
+\path[->] (EPS2) edge  [loop left,out=165,in=-165,distance=20] node[left,xshift=2pt,yshift=2pt] {BB編集} (EPS2);
+
+\node[output node] (EMF) at ($(EPS2) + (0,-2)$) {EMF\\（透過）};
+\draw[->] (EPS2) -- node[left,align=right] {eps2emf\\（改造版pstoedit）} (EMF);
+
+\node[relay node] (Filled EPS2) at ($(Filled PDF with text) + (-4,-2.5)$) {EPS\\（非透過）};
+\draw[->] (Filled PDF with text) -- node[below,xshift=15pt,yshift=-4pt] {Ghostscript\textsuperscript{*1}} (Filled EPS2);
+
+\node[output node] (Filled EMF) at ($(Filled EPS2) + (0,-2)$) {EMF\\（非透過）};
+\draw[->] (Filled EPS2) -- node[right,align=left] {eps2emf\\（改造版pstoedit）} (Filled EMF);
 
 \node[output node] (EPS without margin) at ($(Filled PDF with text) + (5,0)$) {EPS\\（余白なし・透過）};
 \draw[->] (PDF) -- node[right,yshift=6pt] {Ghostscript\textsuperscript{*1}} (EPS without margin.north west);
@@ -232,15 +246,8 @@
 
 \node[output node] (Outlined PDF without margin) at ($(EPS without margin) + (6,0)$) {アウトライン化PDF};
 \draw[->] (EPS without margin) -- node[above] {epstopdf\textsuperscript{*2}} (Outlined PDF without margin);
-\path[->] ($(Outlined PDF without margin.north east) + (-12pt,0pt)$) edge  [loop right,out=135,in=45,distance=35] node[right,xshift=12pt,yshift=2pt] {pdf\TeX で余白付与} ($(Outlined PDF without margin.north east) + (-6pt,0pt)$);
-\path[->] ($(Outlined PDF without margin.south east) + (-12pt,0pt)$) edge  [loop right,out=-135,in=-45,distance=35] node[right,xshift=12pt,yshift=-2pt] {Quartz APIで背景塗り} ($(Outlined PDF without margin.south east) + (-6pt,0pt)$);
-
-
-\node[relay node] (EPS2) at ($(Outlined PDF without margin) + (6,0)$) {EPS};
-\draw[->] (Outlined PDF without margin) -- node[above] {pdftops\textsuperscript{*3}} (EPS2);
-
-\node[output node] (EMF) at ($(EPS2) + (0,-2)$) {EMF};
-\draw[->] (EPS2) -- node[right,align=left] {eps2emf\\（改造版pstoedit）} (EMF);
+\path[->] ($(Outlined PDF without margin.north east) + (-6pt,0pt)$) edge  [loop right,out=90,in=0,distance=35] node[right,xshift=2pt,yshift=2pt] {pdf\TeX で余白付与} ($(Outlined PDF without margin.north east) + (0pt,-6pt)$);
+\path[->] ($(Outlined PDF without margin.south east) + (0pt,6pt)$) edge  [loop right,out=0,in=-90,distance=35] node[right,xshift=2pt,yshift=-2pt] {Quartz APIで背景塗り} ($(Outlined PDF without margin.south east) + (-6pt,0pt)$);
 
 
 \node[output node] (Multipage Outlined PDF) at ($(Outlined PDF without margin) + (-2,-3)$) {マルチページ\\アウトライン化PDF};
@@ -279,7 +286,6 @@
 \item\relax[*1]のGhostscirpt実行においては，epswriteデバイスが用いられる。
 \item\relax[*1]のGhostscirpt実行における \texttt{-r} オプションの値は，画質優先モードでは20016固定，速度優先モードでは解像度レベル設定に従う。
 \item\relax[*1]のGhostscript実行においては，出力されるEPSのBoundingBox値が誤っている場合がある。そこで，epswriteで生成されたEPSに対しては，Ghostscriptのbboxデバイスで取得されるBoundingBox値によって常に上書きするようにしている。
-\item\relax[*3]のpdftops実行で得られたEPSに対しては，パスのアウトライン化を行うように生成EPSを加工する。
 \item 「元のページサイズを維持」がONの場合，[*1]のGhostscript実行においては，出力されるEPSのBB値を，変換前のPDFの指定されたPageBoxの値で上書きする。
 \item 「元のページサイズを維持」がONの場合，「pdf\TeX でクロップ」の過程では，変換前のPDFの指定されたPageBox（余白付与の場合はそれに余白を加えたもの）をMediaBoxにしたPDF（左下が原点，他のBoxは非明示）を生成する。
 \item Ghostscriptのepswriteデバイスは，\TikZ のshadowsライブラリを用いた場合など，特定の種類の図は苦手としている。Ghostscirpt 9.15未満のepswriteデバイスの場合は，無数のパスに分割されてエラーを起こす原因となる。そのような図は，Ghostscriptによって綺麗にアウトライン化することはできないので，Ghostscriptを経由しない経路（テキスト保持PDF，SVG，速度優先モードでのビットマップ画像）で代用できないか検討してほしい。
