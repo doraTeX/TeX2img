@@ -1818,7 +1818,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     }
 
     // 単一PDF出力/マルチページTIFF/アニメーションGIF/アニメーションSVG出力の場合
-    if ([@[@"pdf", @"tiff", @"gif", @"svg"] containsObject:extension] && mergeOutputsFlag) {
+    if ([MergeableExtensionsArray containsObject:extension] && mergeOutputsFlag) {
         // 実際に生成したファイルのパスを集める
         NSMutableArray<NSString*> *outputFiles = [NSMutableArray<NSString*> array];
         
@@ -1977,7 +1977,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     NSMutableArray<NSString*> *generatedFiles = [NSMutableArray<NSString*> array];
     NSInteger generatedPageCount = pageCount - emptyPageFlags.indexesOfTrueValue.count;
     
-    if ([@[@"pdf", @"tiff", @"gif", @"svg"] containsObject:extension] && mergeOutputsFlag && (generatedPageCount > 0)) {
+    if ([MergeableExtensionsArray containsObject:extension] && mergeOutputsFlag && (generatedPageCount > 0)) {
         [generatedFiles addObject:outputFilePath];
     } else {
         for (NSUInteger i=1; i<=pageCount; i++) {
@@ -2072,7 +2072,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         for (NSUInteger i=1; i<=pageCount; i++) {
             if (![getFullPath(outputDir) isEqualToString:getFullPath(workingDirectory)]) {
                 [fileManager removeItemAtPath:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
-            } else if (mergeOutputsFlag && (i>=2)) {
+            } else if ([MergeableExtensionsArray containsObject:outputFilePath.pathExtension] && mergeOutputsFlag && (i>=2)) {
                 [fileManager removeItemAtPath:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
             }
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop-%ld.pdf", basePath, i] error:nil];
