@@ -1144,11 +1144,20 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
                  useCache:useCache
            fillBackground:NO];
             
-            if (![self pdf2pdf:trimFileName outputFileName:intermediateOutlinedFileName resolution:resolution page:page]
-                || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName]]) {
-                return NO;
+            if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は pdfwrite が使えない（エラーになる）ので，そこだけpdfcrop類似処理で変換する
+                [self pdfcrop:pdfFileName
+               outputFileName:intermediateOutlinedFileName
+                         page:page
+                    addMargin:YES
+                     useCache:NO
+               fillBackground:NO];
+            } else {
+                if (![self pdf2pdf:trimFileName outputFileName:intermediateOutlinedFileName resolution:resolution page:page]
+                    || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName]]) {
+                    return NO;
+                }
             }
-
+            
             if (![self pdf2plainTextEps:intermediateOutlinedFileName outputEpsFileName:outputFileName page:1]) {
                 return NO;
             }
