@@ -649,7 +649,7 @@
         [arguments addObject:@"-dNOCACHE"];
     }
     
-    [arguments addObject:pdfName];
+    [arguments addObject:pdfName.stringByQuotingWithDoubleQuotations];
 
     BOOL status = [controller execCommand:gsPath atDirectory:workingDirectory withArguments:arguments quiet:quietFlag];
     
@@ -1702,6 +1702,9 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         if (transparentFlag || [BitmapExtensionsArray containsObject:extension]) { // 透過ベクター形式，またはビットマップ形式の場合
             if ([@"emf" isEqualToString:extension]) {
                 for (NSUInteger i=1; i<=pageCount; i++) {
+                    if (emptyPageFlags[i-1].boolValue) {
+                        continue;
+                    }
                     success = [self convertPDF:pdfFileName
                                          toEMF:[outputFileName pathStringByAppendingPageNumber:i]
                                           page:i];
@@ -1809,6 +1812,9 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 }
             } else if ([@"emf" isEqualToString:extension]) { // 背景塗りのあるEMF生成の場合
                 for (NSUInteger i=1; i<=pageCount; i++) {
+                    if (emptyPageFlags[i-1].boolValue) {
+                        continue;
+                    }
                     success = [self convertPDF:pdfFileName
                                          toEMF:[outputFileName pathStringByAppendingPageNumber:i]
                                           page:i];
