@@ -714,7 +714,7 @@
     }
     
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
-    [cmdline appendFormat:@"%@", eps2emfPath];
+    [cmdline appendFormat:@"%@", eps2emfPath.stringByQuotingWithDoubleQuotations];
     
     NSArray<NSString*> *arguments = @[epsName.stringByQuotingWithDoubleQuotations, outputEmfFileName.stringByQuotingWithDoubleQuotations];
     
@@ -914,7 +914,7 @@
     
     NSArray<NSString*> *arguments = @[@"-f", pageStr, @"-l", pageStr, @"-eps", pdfName, epsName];
     
-    return [controller execCommand:pdftopsPath
+    return [controller execCommand:pdftopsPath.stringByQuotingWithDoubleQuotations
                        atDirectory:workingDirectory
                      withArguments:arguments
                              quiet:quietFlag];
@@ -1098,7 +1098,7 @@
     
     NSArray<NSString*> *arguments = @[@"-o", svgFilePath.stringByQuotingWithDoubleQuotations, pdfFilePath.stringByQuotingWithDoubleQuotations, [NSString stringWithFormat:@"%ld", page]];
     
-    BOOL success = [controller execCommand:mudrawPath
+    BOOL success = [controller execCommand:mudrawPath.stringByQuotingWithDoubleQuotations
                                atDirectory:workingDirectory
                              withArguments:arguments
                                      quiet:quietFlag];
