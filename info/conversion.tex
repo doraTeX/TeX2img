@@ -14,7 +14,7 @@
 \tikzset{relay node/.style={draw,rectangle,fill=red!20!white}}
 \tikzset{output node/.style={draw,rectangle,double,outer sep=1pt,fill=green!30!white}}
 \tikzset{speed priority/.style={->,>={Stealth[scale=1.2]},dashed,thick,color=blue}}
-\tikzset{fill background/.style={->,>={Stealth[scale=1.2]},thick,color=red,decorate,decoration={snake, pre length=5pt, post length=5pt, segment length=6pt, amplitude=1pt}}}
+\tikzset{quality priority/.style={->,>={Stealth[scale=1.2]},thick,color=red,decorate,decoration={snake, pre length=5pt, post length=5pt, segment length=6pt, amplitude=1pt}}}
 \tikzset{legend box/.style={minimum width=1cm,minimum height=\baselineskip}}
 
 \def\fboxtitle#1{\par\noindent {\fboxrule1pt\fbox{\huge\sffamily\bfseries Ghostscript #1を利用している場合}}\nopagebreak\par}
@@ -33,7 +33,7 @@
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,input node] {};}\hspace{1zw}入力ファイル\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,relay node] {};}\hspace{1zw}中間ファイル\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,output node] {};}\hspace{1zw}出力ファイル\par
-\makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[fill background](0,0) -- (1,0);}\hspace{1zw}画質優先モードのみでの経路\par
+\makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[quality priority](0,0) -- (1,0);}\hspace{1zw}画質優先モードのみでの経路\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[speed priority](0,0) -- (1,0);}\hspace{1zw}速度優先モードのみでの経路\par
 }}}
 
@@ -63,11 +63,11 @@
 \draw (PDF) -- node[left,xshift=-5pt,yshift=9pt] {pdf\TeX で\\クロップ} (PDF with text without margin);
 
 \node[relay node] (Outlined PDF without margin) at ($(PDF with text without margin) + (-5,0)$) {アウトライン化PDF\\（余白なし・透過）};
-\draw[fill background] (PDF with text without margin) -- node [above,xshift=4pt] {Ghostscript\textsuperscript{*2}} (Outlined PDF without margin);
+\draw[quality priority] (PDF with text without margin) -- node [above,xshift=4pt] {Ghostscript\textsuperscript{*2}} (Outlined PDF without margin);
 
 \node[output node] (Bitmap) at ($(PDF with text without margin) + (0,-2)$) {ビットマップ画像};
 \draw[speed priority] (PDF with text without margin) -- node[right,align=left] {Quartz API でビットマップ化\\＋余白付与（＋背景塗り）} (Bitmap);
-\draw[fill background] (Outlined PDF without margin.south east) -- node [left,align=right,xshift=-10pt,yshift=-10pt] {Quartz API でビットマップ化\\＋余白付与（＋背景塗り）} (Bitmap.north west);
+\draw[quality priority] (Outlined PDF without margin.south east) -- node [left,align=right,xshift=-10pt,yshift=-10pt] {Quartz API でビットマップ化\\＋余白付与（＋背景塗り）} (Bitmap.north west);
 
 \node[output node] (Multipage TIFF) at ($(Bitmap) + (-4,-2)$) {マルチページTIFF};
 \draw[->] (Bitmap.south west) -- node[above,xshift=-10pt,yshift=2pt] {tiffutil} (Multipage TIFF.north east);
@@ -100,10 +100,14 @@
 \node[output node] (Filled SVG) at ($(Filled PDF with text) + (-4,-2)$) {テキスト保持SVG\\（非透過）};
 \draw[->] (Filled PDF with text) -- node[left,xshift=8pt,yshift=8pt] {mudraw} (Filled SVG);
 
-\node[output node] (EPS without margin) at ($(PDF) + (6,0)$) {バイナリ形式EPS\\（余白なし・透過）};
-\draw[->] (PDF) -- node[below] {Ghostscript\textsuperscript{*1}} (EPS without margin);
+\node[relay node] (Single page PDF) at ($(PDF) + (6,0)$) {単一ページPDF\\（余白なし・透過）};
+\draw[->] (PDF) -- node[below] {pdf\TeX でクロップ} (Single page PDF);
+\path[->] (Single page PDF) edge  [loop right,out=135,in=45,distance=35] node[above,yshift=2pt] {Quartz APIで再保存} (Single page PDF);
 
-\node[output node] (EPS with margin) at ($(EPS without margin) + (4,0)$) {バイナリ形式EPS\\（余白あり・透過）};
+\node[output node] (EPS without margin) at ($(Single page PDF) + (5,0)$) {バイナリ形式EPS\\（余白なし・透過）};
+\draw[->] (Single page PDF) -- node[below] {Ghostscript\textsuperscript{*1}} (EPS without margin);
+
+\node[output node] (EPS with margin) at ($(EPS without margin) + (5,0)$) {バイナリ形式EPS\\（余白あり・透過）};
 \draw[->] (EPS without margin) -- node[below] {BB編集} (EPS with margin);
 
 \node[output node] (Outlined PDF with margin) at ($(PDF with text) + (-7,0)$) {アウトライン化PDF};
@@ -162,7 +166,6 @@
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,relay node] {};}\hspace{1zw}中間ファイル\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\node[legend box,output node] {};}\hspace{1zw}出力ファイル\par
 \makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[speed priority](0,0) -- (1,0);}\hspace{1zw}速度優先モードのみでの経路\par
-\makebox[3.5zw][c]{\tikz[baseline=-3pt]\draw[fill background](0,0) -- (1,0);}\hspace{1zw}非透過アウトライン化PDFまたは非透過アニメーションSVG生成時のみの経路\par
 }}}
 
 \vspace{-4cm}
@@ -233,11 +236,11 @@
 \draw[->] (Filled EPS2) -- node[right,align=left] {eps2emf\textsuperscript{*3}\\（改造版pstoedit）} (Filled EMF);
 
 \node[output node] (EPS without margin) at ($(Filled PDF with text) + (5,0)$) {EPS\\（余白なし・透過）};
-\draw[->] (PDF) -- node[right,yshift=6pt] {Ghostscript\textsuperscript{*1}} (EPS without margin.north west);
 
 \node[relay node] (PDF with text 2) at ($(EPS without margin) + (0,3)$) {テキスト保持PDF\\（余白なし・透過・単一ページ）};
-\draw[fill background] (PDF) -- node[above] {pdf\TeX} (PDF with text 2);
-\draw[fill background] (PDF with text 2) -- node[right] {Ghostscript\textsuperscript{*1}} (EPS without margin);
+\path[->] ($(PDF with text 2.north east) + (-6pt,0pt)$) edge  [loop right,out=90,in=0,distance=35] node[above,yshift=2pt] {Quartz APIで再保存} ($(PDF with text 2.north east) + (0pt,-6pt)$);
+\draw[->] (PDF) -- node[above] {pdf\TeX} (PDF with text 2);
+\draw[->] (PDF with text 2) -- node[right] {Ghostscript\textsuperscript{*1}} (EPS without margin);
 
 \node[output node] (Outlined PDF without margin) at ($(EPS without margin) + (6,0)$) {アウトライン化PDF};
 \draw[->] (EPS without margin) -- node[above] {epstopdf\textsuperscript{*2}} (Outlined PDF without margin);
