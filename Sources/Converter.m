@@ -1618,18 +1618,6 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         }
 	} else { // ghostscript を用いたアウトライン化を行う形式(EPS/outlined-PDF/ビットマップ形式(画質優先)/EMF/アニメーションSVG)の場合
         if (transparentFlag || [BitmapExtensionsArray containsObject:extension]) { // 透過ベクター形式，またはビットマップ形式の場合
-            // 最終出力が EMF の場合，まずpdfcrop類似処理をかけてBB左下を原点に持っていく
-            if ([@"emf" isEqualToString:extension]) {
-                [self pdfcrop:pdfFilePath
-               outputFileName:croppedPdfFilePath
-                         page:0
-                    addMargin:YES
-                     useCache:YES
-               fillBackground:NO];
-                [controller exitCurrentThreadIfTaskKilled];
-                pdfFileName = croppedPdfFilePath.lastPathComponent;
-            }
-            
             // 透過PDFを pdfwrite 経由または epswrite 経由で透過ベクター形式またはビットマップ形式に変換する
             for (NSUInteger i=1; i<=pageCount; i++) {
                 success = [self convertPDF:pdfFileName
