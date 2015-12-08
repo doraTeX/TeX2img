@@ -626,7 +626,10 @@
 }
 
 
-- (BOOL)pdf2eps:(NSString*)pdfName outputEpsFileName:(NSString*)outputEpsFileName resolution:(NSInteger)resolution page:(NSUInteger)page
+- (BOOL)pdf2eps:(NSString*)pdfName
+outputEpsFileName:(NSString*)outputEpsFileName
+     resolution:(NSInteger)resolution
+           page:(NSUInteger)page
 {
     NSMutableArray<NSString*> *arguments = [NSMutableArray<NSString*> arrayWithArray:@[@"-dNOPAUSE",
                                                                                        @"-dBATCH",
@@ -658,7 +661,7 @@
         return NO;
     }
     
-    if ([self isEmptyPage:pdfName page:page]) {
+    if ([self isEmptyPage:pdfName page:page] && !keepPageSizeFlag) {
         return [self replaceEpsBBoxWithEmptyBBox:outputEpsFileName];
     }
     
@@ -1290,7 +1293,9 @@ intermediateOutlinedFileName:outlinedPdfFileName
         if ([fileManager fileExistsAtPath:outputFileName]) {
             [fileManager removeItemAtPath:outputFileName error:nil];
         }
-        [fileManager moveItemAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName] toPath:outputFileName error:nil];
+        [fileManager moveItemAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName]
+                             toPath:outputFileName
+                              error:nil];
     } else { // ビットマップ形式出力の場合，PDFのアウトラインをとった上で，それをさらにビットマップ形式に変換する
         [self outlinePDF:pdfFileName
 intermediateOutlinedFileName:intermediateOutlinedFileName
