@@ -1399,7 +1399,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 }
 
 // 単一ページのPDFを Quartz API で開いて保存し直す。
-// これによって eps(2)write で処理しやすくなる。
+// これによって余計な /Transparency が消え，eps(2)write で処理しやすくなる。
 // https://github.com/doraTeX/TeX2img/issues/70#issuecomment-162500813
 - (void)launderPDF:(NSString*)path
 {
@@ -1734,10 +1734,10 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                         return success;
                     }
                 }
-            } else {
+            } else { // EMF以外の透過ベクター形式，またはビットマップ形式の場合
                 // 透過PDFを pdfwrite 経由または epswrite 経由で透過ベクター形式またはビットマップ形式に変換する
-                if ([self shouldUseEps2WriteDevice]) {  // eps2write による出力時には，ページごとにばらしてPDFロンダリングする
-                    if ([@"eps" isEqualToString:extension]) {
+                if ([self shouldUseEps2WriteDevice]) {
+                    if ([@"eps" isEqualToString:extension]) { // eps2write による出力時には，ページごとにばらしてPDFロンダリングする
                         for (NSUInteger i=1; i<=pageCount; i++) {
                             if (emptyPageFlags[i-1].boolValue) {
                                 continue;
@@ -1767,7 +1767,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                                 return success;
                             }
                         }
-                    } else {
+                    } else { // Ghostscript 9.15 以上を利用していて，EMF/EPS以外の透過ベクター形式，またはビットマップ形式を出力する場合
                         for (NSUInteger i=1; i<=pageCount; i++) {
                             success = [self convertPDF:pdfFileName
                           intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
@@ -1781,7 +1781,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                             }
                         }
                     }
-                } else { // epswrite による出力時には，ページごとにばらしてPDFロンダリングする
+                } else { // epswrite を経由する際には，ページごとにばらしてPDFロンダリングする
                     for (NSUInteger i=1; i<=pageCount; i++) {
                         if (emptyPageFlags[i-1].boolValue) {
                             continue;
@@ -2221,6 +2221,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         NSString *ext = sourcePath.pathExtension.lowercaseString;
         pdfInputMode = [ext isEqualToString:@"pdf"];
         psInputMode = [ext isEqualToString:@"ps"] || [ext isEqualToString:@"eps"];
+        NSString *basePath = [workingDirectory stringByAppendingPathComponent:tempFileBaseName];
         
         if (pdfInputMode) {
             // PDFの書式チェック
@@ -2230,21 +2231,21 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 return NO;
             }
             
-            NSString *tempPdfFilePath = [NSString stringWithFormat:@"%@.pdf", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
+            NSString *tempPdfFilePath = [basePath stringByAppendingPathExtension:@"pdf"];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
                 [controller showFileGenerationError:tempPdfFilePath];
                 [controller generationDidFinish];
                 return NO;
             }
         } else if (psInputMode) {
-            NSString *tempPsFilePath = [NSString stringWithFormat:@"%@.ps", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
+            NSString *tempPsFilePath = [basePath stringByAppendingPathExtension:@"ps"];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
                 [controller showFileGenerationError:tempPsFilePath];
                 [controller generationDidFinish];
                 return NO;
             }
         } else {
-            NSString *tempTeXFilePath = [NSString stringWithFormat:@"%@.tex", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
+            NSString *tempTeXFilePath = [basePath stringByAppendingPathExtension:@"tex"];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
                 [controller showFileGenerationError:tempTeXFilePath];
                 [controller generationDidFinish];
