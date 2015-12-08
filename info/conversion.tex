@@ -102,7 +102,7 @@
 
 \node[relay node] (Single page PDF) at ($(PDF) + (6,0)$) {単一ページPDF\\（余白なし・透過）};
 \draw[->] (PDF) -- node[below] {pdf\TeX でクロップ} (Single page PDF);
-\path[->] (Single page PDF) edge  [loop right,out=135,in=45,distance=35] node[above,yshift=2pt] {Quartz APIで再保存} (Single page PDF);
+\path[->] (Single page PDF) edge  [loop above,out=135,in=45,distance=50] node[above,yshift=2pt] {Quartz APIで再保存} (Single page PDF);
 
 \node[output node] (EPS without margin) at ($(Single page PDF) + (5,0)$) {バイナリ形式EPS\\（余白なし・透過）};
 \draw[->] (Single page PDF) -- node[below] {Ghostscript\textsuperscript{*1}} (EPS without margin);
@@ -111,7 +111,7 @@
 \draw[->] (EPS without margin) -- node[below] {BB編集} (EPS with margin);
 
 \node[output node] (Outlined PDF with margin) at ($(PDF with text) + (-7,0)$) {アウトライン化PDF};
-\path[->] (Outlined PDF with margin) edge  [loop above,in=45,out=135,distance=50] node[above] {Quartz API で背景塗り} (Outlined PDF with margin);
+\path[->] (Outlined PDF with margin) edge  [loop above,out=135,in=45,distance=50] node[above] {Quartz API で背景塗り} (Outlined PDF with margin);
 \draw[->] (PDF with text) -- node[above,midway,xshift=4pt]{Ghostscript\textsuperscript{*2}} (Outlined PDF with margin); 
 
 \node[output node] (EPS2) at ($(Outlined PDF with margin) + (4,-2)$) {テキスト形式EPS};
