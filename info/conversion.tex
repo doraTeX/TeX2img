@@ -239,8 +239,8 @@
 
 \node[relay node] (PDF with text 2) at ($(EPS without margin) + (0,3)$) {テキスト保持PDF\\（余白なし・透過・単一ページ）};
 \path[->] ($(PDF with text 2.north east) + (-6pt,0pt)$) edge  [loop right,out=90,in=0,distance=35] node[above,yshift=2pt] {Quartz APIで再保存} ($(PDF with text 2.north east) + (0pt,-6pt)$);
-\draw[->] (PDF) -- node[above] {pdf\TeX} (PDF with text 2);
-\draw[->] (PDF with text 2) -- node[right] {Ghostscript\textsuperscript{*1}} (EPS without margin);
+\draw[->] (PDF) -- node[below] {pdf\TeX でクロップ} (PDF with text 2);
+\draw[->] (PDF with text 2) -- node[left] {Ghostscript\textsuperscript{*1}} (EPS without margin);
 
 \node[output node] (Outlined PDF without margin) at ($(EPS without margin) + (6,0)$) {アウトライン化PDF};
 \draw[->] (EPS without margin) -- node[above] {epstopdf\textsuperscript{*2}} (Outlined PDF without margin);
