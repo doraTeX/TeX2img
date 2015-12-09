@@ -5,6 +5,7 @@
 - (NSString*)pathStringByAppendingPageNumber:(NSUInteger)page;
 - (NSString*)stringByDeletingLastReturnCharacters;
 - (NSString*)stringByQuotingWithDoubleQuotations;
+- (NSData*)dataUsingUTF8StringEncoding;
 - (NSString*)programPath;
 - (NSString*)programName;
 - (NSString*)argumentsString;
