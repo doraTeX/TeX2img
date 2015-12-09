@@ -61,6 +61,11 @@
     return [NSString stringWithFormat:@"\"%@\"", self];
 }
 
+- (NSData*)dataUsingUTF8StringEncoding
+{
+    return [self dataUsingEncoding:NSUTF8StringEncoding];
+}
+
 - (NSUInteger)numberOfComposedCharacters
 {
     // normalize using NFC

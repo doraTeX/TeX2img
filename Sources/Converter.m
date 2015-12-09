@@ -204,7 +204,7 @@
 			if ([subString characterAtIndex:0] == 0x2015) {
 				utfString = [NSMutableString stringWithFormat:@"%C", 0x2014];
 			} else {
-				utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}", texChar, [subString characterAtIndex: 0]];
+				utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}", texChar, [subString characterAtIndex:0]];
 			}
 			if ((charRange.location + charRange.length) == end) {
 				[utfString appendString:@"%"];
@@ -250,7 +250,9 @@
 
 - (NSMutableString*)preliminaryCommandsForEnvironmentVariables
 {
-    NSMutableString *cmdline = [NSMutableString stringWithFormat:@"export PATH=$PATH:\"%@\":\"%@\";", latexPath.programPath.stringByDeletingLastPathComponent, gsPath.programPath.stringByDeletingLastPathComponent];
+    NSMutableString *cmdline = [NSMutableString stringWithFormat:@"export PATH=$PATH:%@:%@;",
+                                latexPath.programPath.stringByDeletingLastPathComponent.stringByQuotingWithDoubleQuotations,
+                                gsPath.programPath.stringByDeletingLastPathComponent.stringByQuotingWithDoubleQuotations];
     
     if (additionalInputPath) {
         [cmdline appendFormat:@"export TEXINPUTS=\"%@:`kpsewhich -progname=%@ -expand-var=\\\\$TEXINPUTS`\";", additionalInputPath, latexPath.programName];
@@ -272,17 +274,17 @@
     return status;
 }
 
-- (BOOL)tex2dvi:(NSString*)teXFilePath
+- (BOOL)tex2dvi:(NSString*)texFilePath
 {
     NSMutableArray<NSString*> *arguments = [NSMutableArray arrayWithObject:@"-interaction=nonstopmode"];
  
     if (![encoding isEqualToString:PTEX_ENCODING_NONE]) {
-        [arguments addObject:[NSString stringWithFormat:@"-kanji=%@", encoding]];
+        [arguments addObject:[@"-kanji=" stringByAppendingString:encoding]];
     }
     
-    [arguments addObject:teXFilePath.stringByQuotingWithDoubleQuotations];
+    [arguments addObject:texFilePath.stringByQuotingWithDoubleQuotations];
     
-    NSString *auxFilePath = [NSString stringWithFormat:@"%@.aux", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
+    NSString *auxFilePath = [[workingDirectory stringByAppendingPathComponent:tempFileBaseName] stringByAppendingPathExtension:@"aux"];
     
     // まず aux を削除
     if ([fileManager fileExistsAtPath:auxFilePath isDirectory:nil] && ![fileManager removeItemAtPath:auxFilePath error:nil]) {
@@ -299,7 +301,7 @@
         NSData *newAuxData = nil;
         
         // aux が \relax のみのときは終了
-        if ([oldAuxData isEqualToData:[@"\\relax \n" dataUsingEncoding:NSUTF8StringEncoding]]) {
+        if ([oldAuxData isEqualToData:@"\\relax \n".dataUsingUTF8StringEncoding]) {
             return success;
         }
  
@@ -340,7 +342,8 @@
 	return status;
 }
 
-- (BOOL)ps2pdf:(NSString*)psFilePath outputFile:(NSString*)pdfFilePath
+- (BOOL)ps2pdf:(NSString*)psFilePath
+    outputFile:(NSString*)pdfFilePath
 {
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
     [cmdline appendString:gsPath];
@@ -366,7 +369,9 @@
     return status;
 }
 
-- (NSString*)bboxStringOfPdf:(NSString*)pdfPath page:(NSUInteger)page hires:(BOOL)hires
+- (NSString*)bboxStringOfPdf:(NSString*)pdfPath
+                        page:(NSUInteger)page
+                       hires:(BOOL)hires
 {
     NSString *key = [NSString stringWithFormat:@"%@-%ld-%d", pdfPath.lastPathComponent, page, hires];
     
@@ -431,7 +436,9 @@
     return (!keepPageSizeFlag && [self isEmptyPage:pdfPath page:page] && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0)));
 }
 
-- (NSString*)buildCropTeXSource:(NSString*)pdfPath page:(NSUInteger)page addMargin:(BOOL)addMargin
+- (NSString*)buildCropTeXSource:(NSString*)pdfPath
+                           page:(NSUInteger)page
+                      addMargin:(BOOL)addMargin
 {
     NSInteger leftmargin   = addMargin ? leftMargin   : 0;
     NSInteger rightmargin  = addMargin ? rightMargin  : 0;
@@ -443,7 +450,7 @@
                                                                   hires:NO
                                                               addHeader:YES] :
         [self bboxStringOfPdf:pdfPath page:page hires:NO];
-    // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiReSのBBoxを使うのが得策。
+    // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiResのBBoxを使うのが得策。
     
     return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin=-#1bp\\relax\\pdfvorigin=#2bp\\relax\\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight=\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight\\relax\\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
 }
@@ -562,7 +569,9 @@
     return result;
 }
 
-- (void)replaceBBoxOfEps:(NSString*)epsPath bb:(NSString*)bbStr hiresBb:(NSString*)hiresBbStr
+- (void)replaceBBoxOfEps:(NSString*)epsPath
+                      bb:(NSString*)bbStr
+                 hiresBb:(NSString*)hiresBbStr
 {
     NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: .+?\\n/){ \"%%%%BoundingBox: %@\"}.sub(/%%%%HiResBoundingBox\\: .+?\\n/){ \"%%%%HiResBoundingBox: %@\"};File.open('%@', 'wb') {|f| f.write s}",
                         epsPath,
@@ -579,7 +588,9 @@
     system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
 }
 
-- (BOOL)replaceEpsBBox:(NSString*)epsName withBBoxOfPdf:(NSString*)pdfName page:(NSUInteger)page
+- (BOOL)replaceEpsBBox:(NSString*)epsName
+         withBBoxOfPdf:(NSString*)pdfName
+                  page:(NSUInteger)page
 {
     NSString *epsPath = [workingDirectory stringByAppendingPathComponent:epsName];
     NSString *bbStr = [self bboxStringOfPdf:pdfName page:page hires:NO];
@@ -610,7 +621,9 @@
     return YES;
 }
 
-- (BOOL)replaceEpsBBox:(NSString*)epsName withPageBoxOfPdf:(NSString*)pdfName page:(NSUInteger)page
+- (BOOL)replaceEpsBBox:(NSString*)epsName
+      withPageBoxOfPdf:(NSString*)pdfName
+                  page:(NSUInteger)page
 {
     PDFPageBox *pageBox = [PDFPageBox pageBoxWithFilePath:[workingDirectory stringByAppendingPathComponent:pdfName] page:page];
     NSString *epsPath = [workingDirectory stringByAppendingPathComponent:epsName];
@@ -627,7 +640,7 @@
 
 
 - (BOOL)pdf2eps:(NSString*)pdfName
-outputEpsFileName:(NSString*)outputEpsFileName
+ outputFileName:(NSString*)epsName
      resolution:(NSInteger)resolution
            page:(NSUInteger)page
 {
@@ -635,7 +648,7 @@ outputEpsFileName:(NSString*)outputEpsFileName
                                                                                        @"-dBATCH",
                                                                                        @"-dAutoRotatePages=/None",
                                                                                        [NSString stringWithFormat:@"-r%ld", resolution],
-                                                                                       [NSString stringWithFormat:@"-sOutputFile=%@", outputEpsFileName],
+                                                                                       [NSString stringWithFormat:@"-sOutputFile=%@", epsName.stringByQuotingWithDoubleQuotations],
                                                                                        [NSString stringWithFormat:@"-dFirstPage=%lu", page],
                                                                                        [NSString stringWithFormat:@"-dLastPage=%lu", page],
                                                                                        ]];
@@ -662,21 +675,24 @@ outputEpsFileName:(NSString*)outputEpsFileName
     }
     
     if ([self isEmptyPage:pdfName page:page] && !keepPageSizeFlag) {
-        return [self replaceEpsBBoxWithEmptyBBox:outputEpsFileName];
+        return [self replaceEpsBBoxWithEmptyBBox:epsName];
     }
     
     if (keepPageSizeFlag) {
-        return [self replaceEpsBBox:outputEpsFileName withPageBoxOfPdf:pdfName page:page];
+        return [self replaceEpsBBox:epsName withPageBoxOfPdf:pdfName page:page];
     } else {
         // 生成したEPSのBBox情報をオリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する
         // https://github.com/doraTeX/TeX2img/issues/18
         // https://github.com/doraTeX/TeX2img/issues/37
     
-        return [self replaceEpsBBox:outputEpsFileName withBBoxOfPdf:pdfName page:page];
+        return [self replaceEpsBBox:epsName withBBoxOfPdf:pdfName page:page];
     }
 }
 
-- (BOOL)pdf2pdf:(NSString*)pdfName outputFileName:(NSString*)outputFileName resolution:(NSInteger)resolution page:(NSUInteger)page
+- (BOOL)pdf2pdf:(NSString*)pdfName
+ outputFileName:(NSString*)outputFileName
+     resolution:(NSInteger)resolution
+           page:(NSUInteger)page
 {
     NSString *pdfOutName = [tempFileBaseName stringByAppendingString:@"-pdfwrite.pdf"];
     NSMutableArray<NSString*> *arguments = [NSMutableArray<NSString*> arrayWithArray:@[@"-dNOPAUSE",
@@ -711,7 +727,8 @@ outputEpsFileName:(NSString*)outputEpsFileName
     return YES;
 }
 
-- (BOOL)eps2emf:(NSString*)epsName outputFileName:(NSString*)outputEmfFileName
+- (BOOL)eps2emf:(NSString*)epsName
+ outputFileName:(NSString*)emfName
 {
     if (![controller eps2emfExists]) {
         return NO;
@@ -720,7 +737,7 @@ outputEpsFileName:(NSString*)outputEpsFileName
     NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
     [cmdline appendFormat:@"%@", eps2emfPath.stringByQuotingWithDoubleQuotations];
     
-    NSArray<NSString*> *arguments = @[epsName.stringByQuotingWithDoubleQuotations, outputEmfFileName.stringByQuotingWithDoubleQuotations];
+    NSArray<NSString*> *arguments = @[epsName.stringByQuotingWithDoubleQuotations, emfName.stringByQuotingWithDoubleQuotations];
     
     BOOL success = [controller execCommand:cmdline
                                atDirectory:workingDirectory
@@ -730,7 +747,8 @@ outputEpsFileName:(NSString*)outputEpsFileName
 }
 
 
-- (BOOL)epstopdf:(NSString*)epsName outputPdfFileName:(NSString*)outputPdfFileName
+- (BOOL)epstopdf:(NSString*)epsName
+  outputFileName:(NSString*)pdfName
 {
     if (![controller epstopdfExists]) {
 		return NO;
@@ -747,7 +765,7 @@ outputEpsFileName:(NSString*)outputEpsFileName
                               epsName]
                       quiet:quietFlag];
     
-    NSString *outFilePath = [workingDirectory stringByAppendingPathComponent:outputPdfFileName.lastPathComponent];
+    NSString *outFilePath = [workingDirectory stringByAppendingPathComponent:pdfName.lastPathComponent];
     [fileManager removeItemAtPath:outFilePath error:nil];
     [fileManager moveItemAtPath:[workingDirectory stringByAppendingPathComponent:temporaryOutputPdfFileName.lastPathComponent]
                          toPath:outFilePath
@@ -755,21 +773,21 @@ outputEpsFileName:(NSString*)outputEpsFileName
 	return YES;
 }
 
-- (BOOL)eps2pdf:(NSString*)epsName outputFileName:(NSString*)outputFileName addMargin:(BOOL)addMargin
+- (BOOL)eps2pdf:(NSString*)epsName outputFileName:(NSString*)pdfName addMargin:(BOOL)addMargin
 {
     if (addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0)) {
         NSString *trimFileName = [NSString stringWithFormat:@"%@-trim.pdf", epsName.stringByDeletingPathExtension];
         // まず，epstopdf を使って PDF に戻し，次に，pdfcrop類似処理を使って余白を付け加える
-        return [self epstopdf:epsName outputPdfFileName:trimFileName] &&
+        return [self epstopdf:epsName outputFileName:trimFileName] &&
                 [self pdfcrop:trimFileName
-               outputFileName:outputFileName
+               outputFileName:pdfName
                          page:0
                     addMargin:YES
                      useCache:NO
                fillBackground:NO];
     } else {
         // epstopdf を使って PDF に戻すのみ
-        return [self epstopdf:epsName outputPdfFileName:outputFileName];
+        return [self epstopdf:epsName outputFileName:pdfName];
     }
     
     return NO;
@@ -908,7 +926,9 @@ outputEpsFileName:(NSString*)outputEpsFileName
     return YES;
 }
 
-- (BOOL)pdf2plainTextEps:(NSString*)pdfName outputEpsFileName:(NSString*)epsName page:(NSUInteger)page
+- (BOOL)pdf2plainTextEps:(NSString*)pdfName
+          outputFileName:(NSString*)epsName
+                    page:(NSUInteger)page
 {
     if (![controller pdftopsExists]) {
         return NO;
@@ -1161,12 +1181,12 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
                 }
             }
             
-            if (![self pdf2plainTextEps:intermediateOutlinedFileName outputEpsFileName:outputFileName page:1]) {
+            if (![self pdf2plainTextEps:intermediateOutlinedFileName outputFileName:outputFileName page:1]) {
                 return NO;
             }
         } else { // Ghostscript 経由の場合
             // PDF→EPS の変換の実行（この時点で強制cropされる）
-            if (![self pdf2eps:pdfFileName outputEpsFileName:outputFileName resolution:resolution page:page]
+            if (![self pdf2eps:pdfFileName outputFileName:outputFileName resolution:resolution page:page]
                 || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:outputFileName]]) {
                 return NO;
             }
@@ -1196,7 +1216,7 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
                 }
             } else {
                 // PDF→EPS の変換の実行（この時点で強制cropされる）
-                if (![self pdf2eps:pdfFileName outputEpsFileName:intermediateOutlinedFileName resolution:resolution page:page]
+                if (![self pdf2eps:pdfFileName outputFileName:intermediateOutlinedFileName resolution:resolution page:page]
                     || ![fileManager fileExistsAtPath:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName]]) {
                     return NO;
                 }
@@ -1225,7 +1245,7 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
         return NO;
     }
     
-    NSMutableData *newData = [NSMutableData dataWithData:[@"/oldstroke /stroke load def\n/stroke {strokepath fill} def\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    NSMutableData *newData = [NSMutableData dataWithData:@"/oldstroke /stroke load def\n/stroke {strokepath fill} def\n".dataUsingUTF8StringEncoding];
     
     [newData appendData:epsData];
     [newData writeToFile:epsName atomically:NO];
@@ -1233,7 +1253,7 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
     return YES;
 }
 
-
+// PDFをアウトライン化した上で他の形式に変換する
 - (BOOL)convertPDF:(NSString*)pdfFileName
 intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
     outputFileName:(NSString*)outputFileName
@@ -1425,7 +1445,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 }
 
 - (BOOL)convertPDF:(NSString*)pdfFilePath
-             toEMF:(NSString*)outputFileName
+             toEMF:(NSString*)emfName
               page:(NSUInteger)page
 {
     NSString *croppedPdfFileName = [tempFileBaseName stringByAppendingString:@"-crop.pdf"];
@@ -1473,7 +1493,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     }
 
     if (shouldUseEps2WriteDevice) { // gs 9.15 未満の場合は pdfwrite で生成した PDF を eps に変換
-        [self pdf2plainTextEps:trimmedPdfFileName outputEpsFileName:epsFileName page:1];
+        [self pdf2plainTextEps:trimmedPdfFileName outputFileName:epsFileName page:1];
     } else { // gs 9.15 未満の場合は epswrite で生成した EPS をいじる
         if ([self isEmptyPage:pdfFilePath page:page]) {
             [self replaceEpsBBoxWithEmptyBBox:epsFileName];
@@ -1498,7 +1518,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     [self modifyEpsForEmf:[workingDirectory stringByAppendingPathComponent:epsFileName]];
 
     // 最後にEPSを eps2emf で処理
-    [self eps2emf:epsFileName outputFileName:outputFileName];
+    [self eps2emf:epsFileName outputFileName:emfName];
 
     return YES;
 }
