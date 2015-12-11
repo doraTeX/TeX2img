@@ -36,6 +36,5 @@
 - (BOOL)compileAndConvertWithInputPath:(NSString*)sourcePath;
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr;
 - (BOOL)compileAndConvertWithBody:(NSString*)texBodyStr;
-- (NSUInteger)pageCount;
 - (void)deleteTemporaryFiles;
 @end

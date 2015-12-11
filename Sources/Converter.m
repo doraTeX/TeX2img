@@ -224,7 +224,8 @@
 
 // 文字列の円マーク・バックスラッシュを全てバックスラッシュに統一してファイルに書き込む。
 // 返り値：書き込みの正否(BOOL)
-- (BOOL)writeStringWithYenBackslashConverting:(NSString*)targetString toFile:(NSString*)path
+- (BOOL)writeStringWithYenBackslashConverting:(NSString*)targetString
+                                       toFile:(NSString*)path
 {
     NSMutableString *mstr = [NSMutableString string];
 	[mstr appendString:targetString];
@@ -427,12 +428,14 @@
     return bboxDictionary[key];
 }
 
-- (BOOL)isEmptyPage:(NSString*)pdfPath page:(NSUInteger)page
+- (BOOL)isEmptyPage:(NSString*)pdfPath
+               page:(NSUInteger)page
 {
     return [[self bboxStringOfPdf:pdfPath page:page hires:NO] isEqualToString:EMPTY_BBOX];
 }
 
-- (BOOL)willEmptyPageBeCreated:(NSString*)pdfPath page:(NSUInteger)page
+- (BOOL)willEmptyPageBeCreated:(NSString*)pdfPath
+                          page:(NSUInteger)page
 {
     return (!keepPageSizeFlag && [self isEmptyPage:pdfPath page:page] && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0)));
 }
@@ -766,7 +769,9 @@
 	return YES;
 }
 
-- (BOOL)eps2pdf:(NSString*)epsName outputFileName:(NSString*)pdfName addMargin:(BOOL)addMargin
+- (BOOL)eps2pdf:(NSString*)epsName
+ outputFileName:(NSString*)pdfName
+      addMargin:(BOOL)addMargin
 {
     if (addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0)) {
         NSString *trimFileName = [NSString stringWithFormat:@"%@-trim.pdf", epsName.stringByDeletingPathExtension];
@@ -815,7 +820,10 @@
     return gif89aData;
 }
 
-- (BOOL)pdf2image:(NSString*)pdfFilePath outputFileName:(NSString*)outputFileName page:(NSUInteger)page crop:(BOOL)crop
+- (BOOL)pdf2image:(NSString*)pdfFilePath
+   outputFileName:(NSString*)outputFileName
+             page:(NSUInteger)page
+             crop:(BOOL)crop
 {
 	NSString *extension = outputFileName.pathExtension.lowercaseString;
     NSString *cropPdfFilePath = [workingDirectory stringByAppendingPathComponent:[tempFileBaseName stringByAppendingString:@"-image.pdf"]];
@@ -949,7 +957,8 @@
     system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
 }
 
-- (BOOL)mergeTIFFFiles:(NSArray<NSString*>*)sourcePaths toPath:(NSString*)destPath
+- (BOOL)mergeTIFFFiles:(NSArray<NSString*>*)sourcePaths
+                toPath:(NSString*)destPath
 {
     NSMutableArray<NSString*> *arguments = [NSMutableArray arrayWithObject:@"-cat"];
     
@@ -970,7 +979,8 @@
     return success;
 }
 
-- (BOOL)generateAnimatedGIFFrom:(NSArray<NSString*>*)sourcePaths toPath:(NSString*)destPath
+- (BOOL)generateAnimatedGIFFrom:(NSArray<NSString*>*)sourcePaths
+                         toPath:(NSString*)destPath
 {
     NSDictionary<NSString*,NSDictionary*> *frameProperties = @{(NSString*)kCGImagePropertyGIFDictionary: @{(NSString*)kCGImagePropertyGIFDelayTime: @(delay)}};
     NSDictionary<NSString*,NSDictionary*> *gifProperties = @{(NSString*)kCGImagePropertyGIFDictionary: @{(NSString*)kCGImagePropertyGIFLoopCount: @(loopCount)}};
@@ -1018,7 +1028,8 @@
     return success;
 }
 
-- (BOOL)generateAnimatedSVGFrom:(NSArray<NSString*>*)sourcePaths toPath:(NSString*)destPath
+- (BOOL)generateAnimatedSVGFrom:(NSArray<NSString*>*)sourcePaths
+                         toPath:(NSString*)destPath
 {
     NSMutableString __block *result = [NSMutableString string];
     NSMutableArray<NSString*> __block *svgIds = [NSMutableArray<NSString*> array];
@@ -1321,7 +1332,8 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     return YES;
 }
 
-- (BOOL)copyTargetFrom:(NSString*)sourcePath toPath:(NSString*)destPath
+- (BOOL)copyTargetFrom:(NSString*)sourcePath
+                toPath:(NSString*)destPath
 {
     if ([sourcePath isEqualToString:destPath]) {
         return YES;
@@ -1349,7 +1361,8 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     return [fileManager copyItemAtPath:sourcePath toPath:destPath error:nil];
 }
 
-- (void)embedSource:(NSString*)texFilePath intoFile:(NSString*)filePath
+- (void)embedSource:(NSString*)texFilePath
+           intoFile:(NSString*)filePath
 {
     BOOL isDir;
     if (!embedSource || ![fileManager fileExistsAtPath:texFilePath isDirectory:&isDir] || isDir) {
@@ -1462,14 +1475,13 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         [arguments addObject:@"-sDEVICE=pdfwrite"];
         [arguments addObject:@"-dNoOutputFonts"];
         [arguments addObject:[NSString stringWithFormat:@"-sOutputFile=%@", trimmedPdfFileName]];
-        [arguments addObject:@"-f"];
     } else { // gs 9.15 未満の場合は epswrite を適用
         [arguments addObject:@"-sDEVICE=epswrite"];
         [arguments addObject:@"-dNOCACHE"];
         [arguments addObject:[NSString stringWithFormat:@"-sOutputFile=%@", epsFileName]];
-        [arguments addObject:@"-f"];
     }
 
+    [arguments addObject:@"-f"];
     [arguments addObject:croppedPdfFileName];
  
     BOOL status = [controller execCommand:gsPath atDirectory:workingDirectory withArguments:arguments quiet:quietFlag];
@@ -1679,7 +1691,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 return success;
             }
         }
-    } else if ([@"svg" isEqualToString:extension] && !((pageCount - emptyPageFlags.indexesOfTrueValue.count > 1) && mergeOutputsFlag) && leaveTextFlag) { // 最終出力がテキスト保持 SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
+    } else if ([@"svg" isEqualToString:extension] && leaveTextFlag && !(mergeOutputsFlag && (pageCount - emptyPageFlags.indexesOfTrueValue.count > 1))) { // 最終出力がテキスト保持 SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
         if (transparentFlag) { // 透過SVG生成の場合
             // まずは全ページ一括で，pdfcrop類似処理でクロップ＋余白付与
             [self pdfcrop:pdfFilePath
@@ -2014,9 +2026,13 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 
     } else { // バラバラ出力の場合
         // 最終出力ファイルを目的地へコピー
+        NSMutableArray<NSURL*> *destURLs = [NSMutableArray<NSURL*> array];
+        
         for (NSUInteger i=1; i<=pageCount; i++) {
             if (!(emptyPageFlags[i-1].boolValue)) {
                 NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
+                [destURLs addObject:[NSURL fileURLWithPath:destPath]];
+                
                 success = [self copyTargetFrom:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
                                         toPath:destPath];
                 if (success) {
@@ -2031,17 +2047,10 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         if (copyToClipboard) {
             NSPasteboard *pboard = NSPasteboard.generalPasteboard;
             [pboard declareTypes:@[NSURLPboardType] owner:nil];
-            NSMutableArray<NSURL*> *outputFiles = [NSMutableArray<NSURL*> array];
             
-            for (NSUInteger i=1; i<=pageCount; i++) {
-                if (!(emptyPageFlags[i-1].boolValue)) {
-                    [outputFiles addObject:[NSURL fileURLWithPath:[outputFilePath pathStringByAppendingPageNumber:i]]];
-                }
-            }
-            
-            if (outputFiles.count > 0) {
+            if (destURLs.count > 0) {
                 [pboard clearContents];
-                [pboard writeObjects:outputFiles];
+                [pboard writeObjects:destURLs];
             }
         }
     }
