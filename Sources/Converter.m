@@ -1756,7 +1756,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 }
             }
         }
-	} else { // ghostscript を用いたアウトライン化を行う形式(EPS/outlined-PDF/ビットマップ形式(画質優先)/EMF/アニメーションSVG)の場合
+	} else { // ghostscript を用いたアウトライン化を行う形式(EPS/outlined-PDF/ビットマップ形式(画質優先)/EMF/アウトライン化SVG/アニメーションSVG)の場合
         if (transparentFlag || [BitmapExtensionsArray containsObject:extension]) { // 透過ベクター形式，またはビットマップ形式の場合
             if ([@"emf" isEqualToString:extension]) {
                 for (NSUInteger i=1; i<=pageCount; i++) {
@@ -1880,7 +1880,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                         return success;
                     }
                 }
-            } else if ([@"pdf" isEqualToString:extension] || [@"svg" isEqualToString:extension]) { // 背景塗りのあるPDFまたは背景塗りのあるアニメーションSVG生成の場合
+            } else if ([@"pdf" isEqualToString:extension] || [@"svg" isEqualToString:extension]) { // 背景塗りのあるPDFまたは背景塗りのあるアウトライン化SVG/アニメーションSVG生成の場合
                 for (NSUInteger i=1; i<=pageCount; i++) {
                     if (emptyPageFlags[i-1].boolValue) {
                         continue;
@@ -1921,7 +1921,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                        fillBackground:NO];
                         [controller exitCurrentThreadIfTaskKilled];
                         
-                        // 次に余白なし・背景塗りなし・単一ページのテキスト保持PDFを，余白なし透過アウトライン化PDF経由で背景塗りのあるPDFまたはアニメーションSVGに変換する
+                        // 次に余白なし・背景塗りなし・単一ページのテキスト保持PDFを，余白なし透過アウトライン化PDF経由で背景塗りのあるPDFまたはアウトライン化SVG/アニメーションSVGに変換する
                         success = [self convertPDF:[croppedPdfFilePath.lastPathComponent pathStringByAppendingPageNumber:i]
                       intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
                                     outputFileName:[outputFileName pathStringByAppendingPageNumber:i]
