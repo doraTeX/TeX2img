@@ -1,6 +1,14 @@
 #ifndef TeX2img_global_h
 #define TeX2img_global_h
 
+typedef enum  {
+	apWord = 1,
+    apPowerPoint = 2,
+    apPages = 3,
+    apNumbers = 4,
+    apKeynote = 5
+} AutoPasteDestination;
+
 typedef NSDictionary<NSString*,id> Profile;
 typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
@@ -28,6 +36,8 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define PreviewKey @"preview"
 #define DeleteTmpFileKey @"deleteTmpFile"
 #define CopyToClipboardKey @"copyToClipboard"
+#define AutoPasteKey @"autoPaste"
+#define AutoPasteDestinationKey @"autoPasteDestination"
 #define EmbedInIllustratorKey @"embedInIllustrator"
 #define UngroupKey @"ungroup"
 #define TransparentKey @"transparent"

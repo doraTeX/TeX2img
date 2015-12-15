@@ -25,7 +25,8 @@
 @property (nonatomic, assign) float resolutionLevel;
 @property (nonatomic, assign) BOOL guessCompilation;
 @property (nonatomic, assign) NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, autoPasteFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property (nonatomic, assign) AutoPasteDestination autoPasteDestination;
 @property (nonatomic, strong) NSObject<OutputController> *controller;
 @property (nonatomic, strong) NSFileManager *fileManager;
 @property (nonatomic, assign) NSInteger workingDirectoryType;
@@ -65,7 +66,8 @@
 @synthesize resolutionLevel;
 @synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@synthesize leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, autoPasteFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize autoPasteDestination;
 @synthesize controller;
 @synthesize fileManager;
 @synthesize workingDirectoryType;
@@ -127,6 +129,8 @@
     previewFlag = [aProfile boolForKey:PreviewKey];
     deleteTmpFileFlag = [aProfile boolForKey:DeleteTmpFileKey];
     copyToClipboard = [aProfile boolForKey:CopyToClipboardKey];
+    autoPasteFlag = [aProfile boolForKey:AutoPasteKey];
+    autoPasteDestination = [aProfile integerForKey:AutoPasteDestinationKey];
     embedInIllustratorFlag = [aProfile boolForKey:EmbedInIllustratorKey];
     ungroupFlag = [aProfile boolForKey:UngroupKey];
     ignoreErrorsFlag = [aProfile boolForKey:IgnoreErrorKey];
@@ -2129,22 +2133,52 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
             
         [controller previewFiles:generatedFiles withApplication:previewApp];
     }
+
+    // 自動ペースト
+    if (status && copyToClipboard && autoPasteFlag && (autoPasteDestination != 0) && (generatedFiles.count > 0)) {
+        NSString *script;
+        switch (autoPasteDestination) {
+        	case apWord:
+        		script = [self appleScriptForWord:generatedFiles];
+        		break;
+        	case apPowerPoint:
+                script = [self appleScriptForPowerPoint:generatedFiles];
+        		break;
+        	case apPages:
+                script = [self appleScriptForiWork:@"Pages"];
+        		break;
+        	case apNumbers:
+                script = [self appleScriptForiWork:@"Numbers"];
+        		break;
+        	case apKeynote:
+                script = [self appleScriptForiWork:@"Keynote"];
+        		break;
+        	default:
+        		break;
+        }
+
+        [self performSelectorOnMainThread:@selector(runAppleScriptOnMainThread:)
+                               withObject:script
+                            waitUntilDone:NO];
+    }
     
     // Illustrator に配置
-    if (status && embedInIllustratorFlag && generatedFiles.count > 0) {
+    if (status && embedInIllustratorFlag && (generatedFiles.count > 0)) {
         NSMutableString *script = [NSMutableString string];
-        [script appendFormat:@"tell application \"Adobe Illustrator\"\n"];
-        [script appendFormat:@"activate\n"];
+        [script appendString:@"tell application \"Adobe Illustrator\"\n"];
+        [script appendString:@"activate\n"];
         
         [generatedFiles enumerateObjectsUsingBlock:^(NSString *filePath, NSUInteger idx, BOOL *stop) {
             [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
             if (ungroupFlag) {
-                [script appendFormat:@"move page items of selection of current document to end of current document\n"];
+                [script appendString:@"move page items of selection of current document to end of current document\n"];
             }
         }];
         
-        [script appendFormat:@"end tell\n"];
-        [self performSelectorOnMainThread:@selector(runAppleScriptOnMainThread:) withObject:script waitUntilDone:NO];
+        [script appendString:@"end tell\n"];
+        [self performSelectorOnMainThread:@selector(runAppleScriptOnMainThread:)
+                               withObject:script
+                            waitUntilDone:NO];
     }
 
     // 結果表示
@@ -2194,7 +2228,6 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-outline.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-trim.pdf", basePath] error:nil];
-        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdftops.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-00.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-01.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-out.%@", basePath, outputFilePath.pathExtension] error:nil];
@@ -2289,6 +2322,79 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         
         return [self compileAndConvertWithCheck];
     }
+}
+
+- (NSString*)appleScriptForWord:(NSArray<NSString*>*)paths
+{
+    NSMutableString *script = [NSMutableString string];
+    [script appendString:@"tell application \"Microsoft Word\"\n"];
+    [script appendString:@"activate\n"];
+    [script appendString:@"if version < 15 then\n"];
+    [script appendString:@"tell selection\n"];
+    [script appendString:@"set myStart to selection start\n"];
+    [script appendString:@"set myEnd to selection end\n"];
+    [script appendString:@"end tell\n"];
+    [script appendString:@"tell active document\n"];
+    [script appendString:@"set theRange to create range start myStart end myEnd\n"];
+    
+    NSEnumerator *enumerator = paths.reverseObjectEnumerator;
+    NSString *posixPath;
+    
+    while ((posixPath = [enumerator nextObject])) {
+        [script appendFormat:@"make new inline picture at theRange with properties {file name:\"%@\", save with document:true}\n", posixPath.pathStringWithHFSStyle];
+    }
+    
+    [script appendString:@"end tell\n"];
+    [script appendString:@"else\n"];
+    [script appendString:@"tell active document\n"];
+    [script appendString:@"tell application \"System Events\" to (keystroke \"v\" using command down)\n"];
+    [script appendString:@"end tell\n"];
+    [script appendString:@"end if\n"];
+    [script appendString:@"end tell\n"];
+
+    return script;
+}
+
+- (NSString*)appleScriptForPowerPoint:(NSArray<NSString*>*)paths
+{
+    NSMutableString *script = [NSMutableString string];
+    [script appendString:@"tell application \"Microsoft PowerPoint\"\n"];
+    [script appendString:@"activate\n"];
+    [script appendString:@"if version < 15 then\n"];
+    [script appendString:@"set thisSlide to slide index of slide of view of active window\n"];
+    [script appendString:@"tell slide thisSlide of active presentation\n"];
+    
+    for (NSString *posixPath in paths) {
+        [script appendFormat:@"set thePicture to make new picture at end with properties {file name:\"%@\", save with document:true}\n", posixPath.pathStringWithHFSStyle];
+        [script appendString:@"tell thePicture\n"];
+        [script appendString:@"scale height factor 1 scale scale from top left with relative to original size\n"];
+        [script appendString:@"scale width factor 1 scale scale from top left with relative to original size\n"];
+        [script appendString:@"end tell\n"];
+    }
+    
+    [script appendString:@"end tell\n"];
+    [script appendString:@"else\n"];
+    [script appendString:@"tell active presentation\n"];
+    [script appendString:@"tell application \"System Events\" to (keystroke \"v\" using command down)\n"];
+    [script appendString:@"end tell\n"];
+    [script appendString:@"end if\n"];
+    [script appendString:@"end tell\n"];
+    
+    return script;
+}
+
+- (NSString*)appleScriptForiWork:(NSString*)appName
+{
+    NSMutableString *script = [NSMutableString string];
+
+    [script appendFormat:@"tell application \"%@\"\n", appName];
+    [script appendString:@"activate\n"];
+    [script appendString:@"tell document\n"];
+    [script appendString:@"tell application \"System Events\" to (keystroke \"v\" using command down)\n"];
+    [script appendString:@"end tell\n"];
+    [script appendString:@"end tell\n"];
+    
+    return script;
 }
 
 @end

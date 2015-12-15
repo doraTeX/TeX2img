@@ -111,6 +111,12 @@
     return [mutableUnicodeName substringWithRange:[firstMatch rangeAtIndex:1]];
 }
 
+- (NSString*)pathStringWithHFSStyle
+{
+    return (NSString*)CFBridgingRelease(CFURLCopyFileSystemPath((CFURLRef)[NSURL fileURLWithPath:self], kCFURLHFSPathStyle));
+}
+
+
 + (NSString*)stringWithUTF32Char:(UTF32Char)character
 {
     character = NSSwapHostIntToLittle(character);
