@@ -110,7 +110,7 @@
     guessCompilation = [aProfile boolForKey:GuessCompilationKey];
     numberOfCompilation = [aProfile integerForKey:NumberOfCompilationKey];
     
-    outputFilePath = [aProfile stringForKey:OutputFileKey];
+    outputFilePath = [aProfile stringForKey:OutputFileKey].stringByStandardizingPath;
     preambleStr = [aProfile stringForKey:PreambleKey];
     
     encoding = [aProfile stringForKey:EncodingKey];

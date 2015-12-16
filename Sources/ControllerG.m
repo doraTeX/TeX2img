@@ -2436,7 +2436,7 @@ typedef enum {
             [NSThread detachNewThreadSelector:@selector(compileAndConvertWithBody:) toTarget:converter withObject:sourceTextView.textStorage.string];
             break;
         case FROMFILE:
-            inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
+            inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey].stringByStandardizingPath;
             if ([NSFileManager.defaultManager fileExistsAtPath:inputSourceFilePath]) {
                 if ([InputExtensionsArray containsObject:inputSourceFilePath.pathExtension]) {
                     [NSThread detachNewThreadSelector:@selector(compileAndConvertWithInputPath:) toTarget:converter withObject:inputSourceFilePath];
