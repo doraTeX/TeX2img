@@ -996,6 +996,8 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     aProfile[ShowOutputDrawerKey] = @(NO);
     aProfile[PreviewKey] = @(previewFlag);
     aProfile[DeleteTmpFileKey] = @(deleteTmpFileFlag);
+    aProfile[AutoPasteKey] = @(NO);
+    aProfile[AutoPasteDestinationKey] = @(0);
     aProfile[EmbedInIllustratorKey] = @(NO);
     aProfile[UngroupKey] = @(NO);
     aProfile[IgnoreErrorKey] = @(ignoreErrorFlag);

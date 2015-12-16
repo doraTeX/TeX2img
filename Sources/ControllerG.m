@@ -93,6 +93,8 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSButton *deleteTmpFileCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *toClipboardCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *embedSourceCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *autoPasteCheckBox;
+@property (nonatomic, strong) IBOutlet NSPopUpButton *autoPasteDestinationPopUpButton;
 @property (nonatomic, strong) IBOutlet NSButton *embedInIllustratorCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *ungroupCheckBox;
 @property (nonatomic, strong) IBOutlet NSWindow *preferenceWindow;
@@ -203,6 +205,8 @@ typedef enum {
 @synthesize deleteTmpFileCheckBox;
 @synthesize toClipboardCheckBox;
 @synthesize embedSourceCheckBox;
+@synthesize autoPasteCheckBox;
+@synthesize autoPasteDestinationPopUpButton;
 @synthesize embedInIllustratorCheckBox;
 @synthesize ungroupCheckBox;
 @synthesize preferenceWindow;
@@ -600,6 +604,14 @@ typedef enum {
     }
 
     toClipboardCheckBox.state = [aProfile integerForKey:CopyToClipboardKey];
+
+    autoPasteCheckBox.state = [aProfile integerForKey:AutoPasteKey];
+    
+    AutoPasteDestination autoPasteDestionation = [aProfile integerForKey:AutoPasteDestinationKey];
+    if (autoPasteDestionation == 0) {
+        autoPasteDestionation = apWord;
+    }
+    [autoPasteDestinationPopUpButton selectItemWithTag:autoPasteDestionation];
     
 	embedInIllustratorCheckBox.state = [aProfile integerForKey:EmbedInIllustratorKey];
 	ungroupCheckBox.state = [aProfile integerForKey:UngroupKey];
@@ -800,6 +812,8 @@ typedef enum {
         
         currentProfile[EmbedSourceKey] = @(embedSourceCheckBox.state);
         currentProfile[CopyToClipboardKey] = @(toClipboardCheckBox.state);
+        currentProfile[AutoPasteKey] = @(autoPasteCheckBox.state);
+        currentProfile[AutoPasteDestinationKey] = @(autoPasteDestinationPopUpButton.selectedTag);
         currentProfile[EmbedInIllustratorKey] = @(embedInIllustratorCheckBox.state);
         currentProfile[UngroupKey] = @(ungroupCheckBox.state);
         
@@ -2068,6 +2082,10 @@ typedef enum {
     [output appendFormat:@"Delete temporary files: %@\n", [aProfile boolForKey:DeleteTmpFileKey] ? ENABLED : DISABLED];
     [output appendFormat:@"Embed the source in generated files: %@\n", [aProfile boolForKey:EmbedSourceKey] ? ENABLED : DISABLED];
     [output appendFormat:@"Copy generated files to the clipboard: %@\n", [aProfile boolForKey:CopyToClipboardKey] ? ENABLED : DISABLED];
+    
+    [output appendFormat:@"Paste generated files into %@: %@\n",
+     autoPasteDestinationPopUpButton.selectedItem.title,
+     [aProfile boolForKey:AutoPasteKey] ? ENABLED : DISABLED];
     
     BOOL embedInIllustrator = [aProfile boolForKey:EmbedInIllustratorKey];
     

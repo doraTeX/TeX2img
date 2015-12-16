@@ -11,6 +11,7 @@
 - (NSString*)argumentsString;
 - (NSString*)stringByAppendingStringSeparetedBySpace:(NSString*)string;
 - (NSUInteger)numberOfComposedCharacters;
+- (NSString*)pathStringWithHFSStyle;
 + (NSString*)stringWithUTF32Char:(UTF32Char)character;
 + (NSString*)stringWithAutoEncodingDetectionOfData:(NSData*)data detectedEncoding:(NSStringEncoding*)encoding;
 @end
