@@ -1495,76 +1495,96 @@ intermediateOutlinedFileName:tempEpsFileName
              toEMF:(NSString*)emfName
               page:(NSUInteger)page
 {
-    NSString *croppedPdfFileName = [tempFileBaseName stringByAppendingString:@"-crop.pdf"];
-    NSString *trimmedPdfFileName = [tempFileBaseName stringByAppendingString:@"-trim.pdf"];
-    NSString *epsFileName = [tempFileBaseName stringByAppendingPathExtension:@"eps"];
-
-    NSInteger lowResolution = resolutionLevel*((NSInteger)RESOLUTION_SCALE)*2*72;
-    NSInteger resolution = speedPriorityMode ? lowResolution : 20016;
-    
-    // まずはpdfcrop類似処理で余白あり・テキスト保持・単一ページPDFを切り出す
-    [self pdfcrop:pdfFilePath
-   outputFileName:[workingDirectory stringByAppendingPathComponent:croppedPdfFileName]
-             page:page
-        addMargin:YES
-         useCache:NO
-   fillBackground:!transparentFlag];
-    [controller exitCurrentThreadIfTaskKilled];
-
-    NSMutableArray<NSString*> *arguments = [NSMutableArray<NSString*> arrayWithArray:@[@"-dNOPAUSE",
-                                                                                       @"-dBATCH",
-                                                                                       @"-dAutoRotatePages=/None",
-                                                                                       [NSString stringWithFormat:@"-r%ld", resolution],
-                                                                                       ]];
-    BOOL shouldUseEps2WriteDevice = [self shouldUseEps2WriteDevice];
-
-    if (shouldUseEps2WriteDevice) {
+    if ([self shouldUseEps2WriteDevice]) { // gs 9.15 以上の場合
+        NSString *croppedPdfFileName = [tempFileBaseName stringByAppendingString:@"-crop.pdf"];
+        NSString *trimmedPdfFileName = [tempFileBaseName stringByAppendingString:@"-trim.pdf"];
+        NSString *epsFileName = [tempFileBaseName stringByAppendingPathExtension:@"eps"];
+        
+        NSInteger lowResolution = resolutionLevel*((NSInteger)RESOLUTION_SCALE)*2*72;
+        NSInteger resolution = speedPriorityMode ? lowResolution : 20016;
+        
+        // まずはpdfcrop類似処理で余白あり・テキスト保持・単一ページPDFを切り出す
+        [self pdfcrop:pdfFilePath
+       outputFileName:[workingDirectory stringByAppendingPathComponent:croppedPdfFileName]
+                 page:page
+            addMargin:YES
+             useCache:NO
+       fillBackground:!transparentFlag];
+        [controller exitCurrentThreadIfTaskKilled];
+        
+        NSMutableArray<NSString*> *arguments = [NSMutableArray<NSString*> arrayWithArray:@[@"-dNOPAUSE",
+                                                                                           @"-dBATCH",
+                                                                                           @"-dAutoRotatePages=/None",
+                                                                                           [NSString stringWithFormat:@"-r%ld", resolution],
+                                                                                           ]];
         [arguments addObject:@"-sDEVICE=pdfwrite"];
         [arguments addObject:@"-dNoOutputFonts"];
         [arguments addObject:[NSString stringWithFormat:@"-sOutputFile=%@", trimmedPdfFileName]];
-    } else { // gs 9.15 未満の場合は epswrite を適用
-        [arguments addObject:@"-sDEVICE=epswrite"];
-        [arguments addObject:@"-dNOCACHE"];
-        [arguments addObject:[NSString stringWithFormat:@"-sOutputFile=%@", epsFileName]];
-    }
-
-    [arguments addObject:@"-f"];
-    [arguments addObject:croppedPdfFileName];
- 
-    BOOL status = [controller execCommand:gsPath atDirectory:workingDirectory withArguments:arguments quiet:quietFlag];
-
-    if (!status) {
-        [controller showExecError:@"Ghostscript"];
-        return NO;
-    }
-
-    if (shouldUseEps2WriteDevice) { // gs 9.15 未満の場合は pdfwrite で生成した PDF を eps に変換
-        [self pdf2plainTextEps:trimmedPdfFileName outputFileName:epsFileName page:1];
-    } else { // gs 9.15 未満の場合は epswrite で生成した EPS をいじる
-        if ([self isEmptyPage:pdfFilePath page:page]) {
-            [self replaceEpsBBoxWithEmptyBBox:epsFileName];
-        }
         
-        if (keepPageSizeFlag) {
-            status = [self replaceEpsBBox:epsFileName withPageBoxOfPdf:pdfFilePath.lastPathComponent page:page];
-        } else {
-            // 生成したEPSのBBox情報をオリジナルのPDFの gs -sDEVICE=bbox の出力結果で置換する
-            status = [self replaceEpsBBox:epsFileName withBBoxOfPdf:pdfFilePath.lastPathComponent page:page];
-        }
+        [arguments addObject:@"-f"];
+        [arguments addObject:croppedPdfFileName];
+        
+        BOOL status = [controller execCommand:gsPath atDirectory:workingDirectory withArguments:arguments quiet:quietFlag];
+        
         if (!status) {
+            [controller showExecError:@"Ghostscript"];
             return NO;
         }
         
-        if (transparentFlag && (topMargin + bottomMargin + leftMargin + rightMargin > 0)) {
-            [self enlargeBB:epsFileName];
+        [self pdf2plainTextEps:trimmedPdfFileName outputFileName:epsFileName page:1];
+        
+        // EPSを修正
+        [self modifyEpsForEmf:[workingDirectory stringByAppendingPathComponent:epsFileName]];
+        
+        // 最後にEPSを eps2emf で処理
+        [self eps2emf:epsFileName outputFileName:emfName];
+        
+    } else { // gs 9.15 未満の場合
+        NSString *baseName = [tempFileBaseName pathStringByAppendingPageNumber:page];
+        NSString *tempEpsFileName = [baseName stringByAppendingPathExtension:@"eps"];
+        NSString *trimmedPdfFileName = [tempFileBaseName stringByAppendingString:@"-trim.pdf"];
+        NSString *epsName = [baseName stringByAppendingString:@"-pdftops.eps"];
+        NSString *pdfName = [baseName stringByAppendingString:@"-pdftops.pdf"];
+        
+        // まずはパターンのアウトライン化をするために pdftops で EPS に変換
+        if (![self pdf2plainTextEps:pdfFilePath outputFileName:epsName page:page]) {
+            return NO;
         }
+        
+        // BBを書き換え
+        [self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page];
+        
+        // EPSを修正
+        [self modifyEpsForEmf:[workingDirectory stringByAppendingPathComponent:epsName]];
+        
+        // 再びPDFに戻す
+        if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
+            return NO;
+        }
+        
+        // pdfcrop類似処理で余白付与＋背景塗り
+        [self pdfcrop:pdfName
+       outputFileName:trimmedPdfFileName
+                 page:1
+            addMargin:YES
+             useCache:NO
+       fillBackground:YES];
+        
+        // PDF内のフォントをアウトライン化
+        plainTextFlag = NO;
+        if (![self outlinePDF:trimmedPdfFileName
+ intermediateOutlinedFileName:tempEpsFileName
+               outputFileName:tempEpsFileName
+                         page:1
+                    addMargin:NO
+                     useCache:NO
+               fillBackground:NO]) {
+            return NO;
+        }
+        
+        // 最後にEPSを eps2emf で処理
+        [self eps2emf:tempEpsFileName outputFileName:emfName];
     }
-    
-    // EPSを修正
-    [self modifyEpsForEmf:[workingDirectory stringByAppendingPathComponent:epsFileName]];
-
-    // 最後にEPSを eps2emf で処理
-    [self eps2emf:epsFileName outputFileName:emfName];
 
     return YES;
 }
