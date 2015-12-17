@@ -1296,14 +1296,28 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 useCache:useCache
           fillBackground:YES];
     } else if ([@"svg" isEqualToString:extension]) { // アウトライン化SVGの場合
-        [self outlinePDF:pdfFileName
+        NSString *epsName = [tempFileBaseName stringByAppendingString:@"-pdftops.eps"];
+        NSString *pdfName = [tempFileBaseName stringByAppendingString:@"-pdftops.pdf"];
+        
+        // まずはパターンのアウトライン化をするために pdftops で EPS に変換
+        if (![self pdf2plainTextEps:pdfFileName outputFileName:epsName page:1]) {
+            return NO;
+        }
+        
+        // 再びPDFに戻す
+        if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
+            return NO;
+        }
+
+        // PDF内のフォントをアウトライン化
+        [self outlinePDF:pdfName
 intermediateOutlinedFileName:intermediateOutlinedFileName
           outputFileName:outlinedPdfFileName
                     page:page
                addMargin:YES
                 useCache:NO
           fillBackground:YES];
-        
+
         // 生成した単一ページアウトライン化PDFを mudraw にかけてSVG生成
         [self pdf2svg:outlinedPdfFileName
        outputFileName:outputFileName
@@ -2228,6 +2242,8 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-outline.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.eps", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-trim.pdf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdftops.pdf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdftops.eps", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-00.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-01.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-out.%@", basePath, outputFilePath.pathExtension] error:nil];
