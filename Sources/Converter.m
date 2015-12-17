@@ -1462,6 +1462,9 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         return NO;
     }
     
+    // BBを書き換え
+    [self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page];
+    
     // 再びPDFに戻す
     if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
         return NO;
