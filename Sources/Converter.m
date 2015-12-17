@@ -1296,8 +1296,8 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 useCache:useCache
           fillBackground:YES];
     } else if ([@"svg" isEqualToString:extension]) { // アウトライン化SVGの場合
-        NSString *epsName = [tempFileBaseName stringByAppendingString:@"-pdftops.eps"];
-        NSString *pdfName = [tempFileBaseName stringByAppendingString:@"-pdftops.pdf"];
+        NSString *epsName = [intermediateOutlinedFileName.stringByDeletingPathExtension stringByAppendingString:@"-pdftops.eps"];
+        NSString *pdfName = [intermediateOutlinedFileName.stringByDeletingPathExtension stringByAppendingString:@"-pdftops.pdf"];
         
         // まずはパターンのアウトライン化をするために pdftops で EPS に変換
         if (![self pdf2plainTextEps:pdfFileName outputFileName:epsName page:1]) {
@@ -2258,6 +2258,8 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop-%ld.pdf", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-trim.pdf", basePath, i] error:nil];
+            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-pdftops.eps", basePath, i] error:nil];
+            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-pdftops.pdf", basePath, i] error:nil];
         }
     }
 }
