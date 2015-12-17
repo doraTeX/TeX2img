@@ -1,7 +1,7 @@
 \documentclass[dvipdfmx]{jsarticle}
 \usepackage{tikz}
 \pagestyle{empty}
-\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shadows.blur,patterns}
 \begin{document}
 ~
 \newpage
@@ -28,6 +28,20 @@
 破線のテストです。
 \begin{tikzpicture}
 \draw[dashed](0,0)--(1,0);
+\end{tikzpicture}
+\newpage
+
+$
+\left( \int _0 ^\infty \frac{\sin x}{\sqrt{x}} dx \right) ^2
+= \sum _{k=0} ^\infty \frac{(2k)!}{2^{2k} (k!)^2} \frac{1}{2k+1}
+= \prod _{k=1} ^\infty \frac{4 k^2}{4 k^2 - 1}
+= \frac{\pi}{2}
+$
+
+パターンテストです。
+
+\begin{tikzpicture}
+\filldraw[pattern = north east lines] (0,0) rectangle (5,5);
 \end{tikzpicture}
 
 \end{document}
