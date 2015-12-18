@@ -37,7 +37,10 @@
     NSString *dir = self.stringByDeletingLastPathComponent;
     NSString *basename = self.lastPathComponent.stringByDeletingPathExtension;
     NSString *ext = self.pathExtension;
-    return [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-%lu.%@", basename, page, ext]];
+    return [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-%lu%@",
+                                                basename,
+                                                page,
+                                                [ext isEqualToString:@""] ? @"" : [@"." stringByAppendingString:ext]]];
 }
 
 - (NSString*)stringByAppendingStringSeparetedBySpace:(NSString*)string

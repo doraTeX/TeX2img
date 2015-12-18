@@ -941,7 +941,11 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     NSString *gsPath = getPath(gs.programPath);
     NSString *epstopdfPath = getPath(@"epstopdf");
     NSString *mudrawPath = getPath(@"mudraw");
-    NSString *pdftopsPath = getPath(@"pdftops");
+    NSString *pdftopsPath = getPath(@"xpdf-pdftops");
+    if (!pdftopsPath) {
+        pdftopsPath = getPath(@"pdftops");
+    }
+    
     NSString *eps2emfPath = getPath(@"eps2emf");
     
     if (!latexPath) {
