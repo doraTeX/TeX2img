@@ -49,7 +49,7 @@
 @property (nonatomic, assign) CGPDFBox pageBoxType;
 @property (nonatomic, assign) float delay;
 @property (nonatomic, assign) NSInteger loopCount;
-@property (nonatomic, copy) NSNumber *useEps2WriteDeviceFlag; // nilable BOOL として使用
+@property (nonatomic, copy) NSNumber *usingNewGsFlag; // nilable BOOL として使用
 @property (nonatomic, copy) NSMutableArray<NSNumber*> *emptyPageFlags;
 @property (nonatomic, copy) NSMutableArray<NSNumber*> *whitePageFlags;
 @property (nonatomic, copy) NSMutableDictionary<NSString*,NSString*> *bboxDictionary;
@@ -90,7 +90,7 @@
 @synthesize pageBoxType;
 @synthesize delay;
 @synthesize loopCount;
-@synthesize useEps2WriteDeviceFlag;
+@synthesize usingNewGsFlag;
 @synthesize emptyPageFlags;
 @synthesize whitePageFlags;
 @synthesize bboxDictionary;
@@ -155,7 +155,7 @@
             break;
     }
 
-    useEps2WriteDeviceFlag = nil;
+    usingNewGsFlag = nil;
     additionalInputPath = nil;
     pdfInputMode = NO;
     psInputMode = NO;
@@ -535,10 +535,10 @@
     
 }
 
-- (BOOL)shouldUseEps2WriteDevice
+- (BOOL)isUsingNewGS
 {
-    if (useEps2WriteDeviceFlag) {
-        return useEps2WriteDeviceFlag.boolValue;
+    if (usingNewGsFlag) {
+        return usingNewGsFlag.boolValue;
     }
     
     BOOL result = YES;
@@ -567,7 +567,7 @@
         result = NO;
     }
     
-    useEps2WriteDeviceFlag = @(result);
+    usingNewGsFlag = @(result);
     
     return result;
 }
@@ -656,9 +656,9 @@
                                                                                        [NSString stringWithFormat:@"-dLastPage=%lu", page],
                                                                                        ]];
     
-    BOOL shouldUseEps2WriteDevice = [self shouldUseEps2WriteDevice];
+    BOOL isUsingNewGS = [self isUsingNewGS];
     
-    if (shouldUseEps2WriteDevice) {
+    if (isUsingNewGS) {
         [arguments addObject:@"-sDEVICE=eps2write"];
         [arguments addObject:@"-dNoOutputFonts"];
         [arguments addObject:@"-dCompressPages=true"];
@@ -1161,7 +1161,7 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
     NSString *trimFileName = [NSString stringWithFormat:@"%@-trim.pdf", tempFileBaseName];
 
     if ([@"eps" isEqualToString:extension]) {
-        if ([self shouldUseEps2WriteDevice] && plainTextFlag) { // pdftops 経由の場合
+        if ([self isUsingNewGS] && plainTextFlag) { // pdftops 経由の場合
             [self pdfcrop:pdfFileName
            outputFileName:trimFileName
                      page:0
@@ -1203,7 +1203,7 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
                  useCache:useCache
            fillBackground:NO];
         } else {
-            if ([self shouldUseEps2WriteDevice]) { // Ghostscript 9.15 以降の場合は，-sDEVICE=pdfwrite -dNoOutputFonts によって直接アウトライン化PDFを作成する
+            if ([self isUsingNewGS]) { // Ghostscript 9.15 以降の場合は，-sDEVICE=pdfwrite -dNoOutputFonts によって直接アウトライン化PDFを作成する
                 [self pdfcrop:pdfFileName
                outputFileName:trimFileName
                          page:page
@@ -1240,7 +1240,7 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
 }
 
 // EPSのパスのアウトラインをとる
-- (BOOL)modifyEpsForEmf:(NSString*)epsName
+- (BOOL)modifyEpsForOutliningPaths:(NSString*)epsName
 {
     NSData *epsData = [NSData dataWithContentsOfFile:epsName];
     if (!epsData) {
@@ -1438,42 +1438,107 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
               page:(NSUInteger)page
 {
     NSString *baseName = [tempFileBaseName pathStringByAppendingPageNumber:page];
+    NSString *outlinedPdfFileName = [baseName stringByAppendingString:@"-outline.pdf"];
+    NSString *croppedPdfFileName = [baseName stringByAppendingString:@"-crop.pdf"];
     NSString *trimmedPdfFileName = [baseName stringByAppendingString:@"-trim.pdf"];
     NSString *tempEpsFileName = [baseName stringByAppendingPathExtension:@"eps"];
     
     NSString *epsName = [baseName stringByAppendingString:@"-pdftops.eps"];
     NSString *pdfName = [baseName stringByAppendingString:@"-pdftops.pdf"];
     
-    // まずはパターンのアウトライン化をするために pdftops で EPS に変換
-    if (![self pdf2plainTextEps:pdfFilePath outputFileName:epsName page:page]) {
-        return NO;
-    }
-    
-    // BBを書き換え
-    [self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page];
-    
-    // 再びPDFに戻す
-    if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
-        return NO;
-    }
-    
-    // PDF内のフォントをアウトライン化
-    if (![self outlinePDF:pdfName
-intermediateOutlinedFileName:tempEpsFileName
-      outputFileName:trimmedPdfFileName
-                page:1
-           addMargin:YES
-            useCache:NO
+    if ([self isUsingNewGS]) {
+        // まずは1ページごとに砕く
+        if (![self pdfcrop:pdfFilePath
+            outputFileName:croppedPdfFileName
+                      page:page
+                 addMargin:NO
+                  useCache:NO
+            fillBackground:NO]) {
+            return NO;
+        }
+
+        // 直ちにPDFロンダリング
+        [self launderPDF:croppedPdfFileName];
+
+        // PDF内のフォントをアウトライン化
+        if (![self outlinePDF:croppedPdfFileName
+ intermediateOutlinedFileName:outlinedPdfFileName
+               outputFileName:outlinedPdfFileName
+                         page:1
+                    addMargin:NO
+                     useCache:NO
+               fillBackground:NO]) {
+            return NO;
+        }
+
+        // パターンのアウトライン化をするために pdftops で EPS に変換
+        if (![self pdf2plainTextEps:outlinedPdfFileName outputFileName:epsName page:1]) {
+            return NO;
+        }
+        
+        // BBを書き換え
+        [self replaceEpsBBox:epsName withBBoxOfPdf:outlinedPdfFileName page:page];
+        
+        // パスのアウトライン化
+        [self modifyEpsForOutliningPaths:epsName]; // これを入れると Illustrator でのパス・破線の見え方は改善するが，パターンのブラウザ上での表示が悪化する……
+        
+        // 再びPDFに戻す
+        if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
+            return NO;
+        }
+        
+        // 余白付与＋背景塗り
+        if (![self pdfcrop:pdfName
+            outputFileName:trimmedPdfFileName
+                      page:1
+                 addMargin:YES
+                  useCache:NO
             fillBackground:YES]) {
-        return NO;
+            return NO;
+        }
+        
+        // 生成した単一ページアウトライン化PDFを mudraw にかけてSVG生成
+        [self pdf2svg:trimmedPdfFileName
+       outputFileName:svgFilePath
+                 page:1
+        skipEmptyPage:NO];
+        [controller exitCurrentThreadIfTaskKilled];
+
+    } else {
+        // まずはパターンのアウトライン化をするために pdftops で EPS に変換
+        if (![self pdf2plainTextEps:pdfFilePath outputFileName:epsName page:page]) {
+            return NO;
+        }
+        
+        // BBを書き換え
+        [self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page];
+        
+        // パスのアウトライン化
+        //[self modifyEpsForOutliningPaths:epsName]; // これを入れると Illustrator でのパス・破線の見え方は改善するが，パターンのブラウザ上での表示が悪化する……
+        
+        // 再びPDFに戻す
+        if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
+            return NO;
+        }
+        
+        // PDF内のフォントをアウトライン化
+        if (![self outlinePDF:pdfName
+ intermediateOutlinedFileName:tempEpsFileName
+               outputFileName:trimmedPdfFileName
+                         page:1
+                    addMargin:YES
+                     useCache:NO
+               fillBackground:YES]) {
+            return NO;
+        }
+        
+        // 生成した単一ページアウトライン化PDFを mudraw にかけてSVG生成
+        [self pdf2svg:trimmedPdfFileName
+       outputFileName:svgFilePath
+                 page:1
+        skipEmptyPage:NO];
+        [controller exitCurrentThreadIfTaskKilled];
     }
-    
-    // 生成した単一ページアウトライン化PDFを mudraw にかけてSVG生成
-    [self pdf2svg:trimmedPdfFileName
-   outputFileName:svgFilePath
-             page:1
-    skipEmptyPage:NO];
-    [controller exitCurrentThreadIfTaskKilled];
 
     return YES;
 }
@@ -1482,7 +1547,7 @@ intermediateOutlinedFileName:tempEpsFileName
              toEMF:(NSString*)emfName
               page:(NSUInteger)page
 {
-    if ([self shouldUseEps2WriteDevice]) { // gs 9.15 以上の場合
+    if ([self isUsingNewGS]) { // gs 9.15 以上の場合
         NSString *croppedPdfFileName = [tempFileBaseName stringByAppendingString:@"-crop.pdf"];
         NSString *trimmedPdfFileName = [tempFileBaseName stringByAppendingString:@"-trim.pdf"];
         NSString *epsFileName = [tempFileBaseName stringByAppendingPathExtension:@"eps"];
@@ -1523,7 +1588,7 @@ intermediateOutlinedFileName:tempEpsFileName
         [self pdf2plainTextEps:trimmedPdfFileName outputFileName:epsFileName page:1];
         
         // EPSを修正（パスのアウトライン化）
-        [self modifyEpsForEmf:[workingDirectory stringByAppendingPathComponent:epsFileName]];
+        [self modifyEpsForOutliningPaths:[workingDirectory stringByAppendingPathComponent:epsFileName]];
         
         // 最後にEPSを eps2emf で処理
         [self eps2emf:epsFileName outputFileName:emfName];
@@ -1544,7 +1609,7 @@ intermediateOutlinedFileName:tempEpsFileName
         [self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page];
         
         // EPSを修正（パスのアウトライン化）
-        [self modifyEpsForEmf:[workingDirectory stringByAppendingPathComponent:epsName]];
+        [self modifyEpsForOutliningPaths:[workingDirectory stringByAppendingPathComponent:epsName]];
         
         // 再びPDFに戻す
         if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
@@ -1829,7 +1894,7 @@ intermediateOutlinedFileName:tempEpsFileName
                 }
             } else { // EMF/SVG以外の透過ベクター形式，またはビットマップ形式の場合
                 // 透過PDFを pdfwrite 経由または epswrite 経由で透過ベクター形式またはビットマップ形式に変換する
-                if ([self shouldUseEps2WriteDevice]) {
+                if ([self isUsingNewGS]) {
                     if ([@"eps" isEqualToString:extension]) { // eps2write による出力時には，ページごとにばらしてPDFロンダリングする
                         for (NSUInteger i=1; i<=pageCount; i++) {
                             if (emptyPageFlags[i-1].boolValue) {
@@ -2292,6 +2357,8 @@ intermediateOutlinedFileName:tempEpsFileName
             }
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop-%ld.pdf", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps", basePath, i] error:nil];
+            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-outline.pdf", basePath, i] error:nil];
+            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-crop.pdf", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-trim.pdf", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-pdftops.eps", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-pdftops.pdf", basePath, i] error:nil];
