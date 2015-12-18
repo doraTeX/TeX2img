@@ -1465,6 +1465,9 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     // BBを書き換え
     [self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page];
     
+    // パスのアウトライン化
+    //[self modifyEpsForEmf:epsName]; // これを入れると Illustrator でのパス・破線の見え方は改善するが，パターンのブラウザ上での表示が悪化する……
+    
     // 再びPDFに戻す
     if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
         return NO;
