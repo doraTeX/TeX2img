@@ -1511,18 +1511,19 @@ intermediateOutlinedFileName:tempEpsFileName
              useCache:NO
        fillBackground:!transparentFlag];
         [controller exitCurrentThreadIfTaskKilled];
-        
-        NSMutableArray<NSString*> *arguments = [NSMutableArray<NSString*> arrayWithArray:@[@"-dNOPAUSE",
-                                                                                           @"-dBATCH",
-                                                                                           @"-dAutoRotatePages=/None",
-                                                                                           [NSString stringWithFormat:@"-r%ld", resolution],
-                                                                                           ]];
-        [arguments addObject:@"-sDEVICE=pdfwrite"];
-        [arguments addObject:@"-dNoOutputFonts"];
-        [arguments addObject:[NSString stringWithFormat:@"-sOutputFile=%@", trimmedPdfFileName]];
-        
-        [arguments addObject:@"-f"];
-        [arguments addObject:croppedPdfFileName];
+
+        [self launderPDF:croppedPdfFileName];
+
+        // gs の pdfwrite でアウトライン化PDFに変換
+        NSArray<NSString*> *arguments = @[@"-dNOPAUSE",
+                                          @"-dBATCH",
+                                          @"-dAutoRotatePages=/None",
+                                          @"-sDEVICE=pdfwrite",
+                                          @"-dNoOutputFonts",
+                                          [NSString stringWithFormat:@"-r%ld", resolution],
+                                          [NSString stringWithFormat:@"-sOutputFile=%@", trimmedPdfFileName],
+                                          @"-f",
+                                          croppedPdfFileName];
         
         BOOL status = [controller execCommand:gsPath atDirectory:workingDirectory withArguments:arguments quiet:quietFlag];
         
@@ -1531,9 +1532,10 @@ intermediateOutlinedFileName:tempEpsFileName
             return NO;
         }
         
+        // pdftops でプレーンテキストEPS (PS Level 1) に変換することでパターンをアウトライン化
         [self pdf2plainTextEps:trimmedPdfFileName outputFileName:epsFileName page:1];
         
-        // EPSを修正
+        // EPSを修正（パスのアウトライン化）
         [self modifyEpsForEmf:[workingDirectory stringByAppendingPathComponent:epsFileName]];
         
         // 最後にEPSを eps2emf で処理
@@ -1546,7 +1548,7 @@ intermediateOutlinedFileName:tempEpsFileName
         NSString *epsName = [baseName stringByAppendingString:@"-pdftops.eps"];
         NSString *pdfName = [baseName stringByAppendingString:@"-pdftops.pdf"];
         
-        // まずはパターンのアウトライン化をするために pdftops で EPS に変換
+        // まずはパターンのアウトライン化をするために pdftops でプレーンテキストEPS (PS Level 1) に変換
         if (![self pdf2plainTextEps:pdfFilePath outputFileName:epsName page:page]) {
             return NO;
         }
@@ -1554,7 +1556,7 @@ intermediateOutlinedFileName:tempEpsFileName
         // BBを書き換え
         [self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page];
         
-        // EPSを修正
+        // EPSを修正（パスのアウトライン化）
         [self modifyEpsForEmf:[workingDirectory stringByAppendingPathComponent:epsName]];
         
         // 再びPDFに戻す
@@ -1570,7 +1572,7 @@ intermediateOutlinedFileName:tempEpsFileName
              useCache:NO
        fillBackground:YES];
         
-        // PDF内のフォントをアウトライン化
+        // gs の epswrite でPDF内のフォントをアウトライン化
         plainTextFlag = NO;
         if (![self outlinePDF:trimmedPdfFileName
  intermediateOutlinedFileName:tempEpsFileName
