@@ -1055,7 +1055,7 @@
         
         // id の定義にプレフックスを付ける
         NSString *idPrefix = [NSString stringWithFormat:@"%@-%ld-",
-                              destPath.lastPathComponent.stringByDeletingPathExtension,
+                              [destPath.lastPathComponent.stringByDeletingPathExtension stringByReplacingOccurrencesOfString:@" " withString:@"_"],
                               idx];
         
         [svg replaceOccurrencesOfString:@" id=\""
