@@ -1460,7 +1460,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     NSString *pdfName = [baseName stringByAppendingString:@"-pdftops.pdf"];
     
     if ([self isUsingNewGS]) {
-        // まずは1ページごとに砕く
+        // まずはpdfcrop類似処理で1ページごとに砕く
         if (![self pdfcrop:pdfFilePath
             outputFileName:croppedPdfFileName
                       page:page
@@ -1470,10 +1470,10 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
             return NO;
         }
 
-        // 直ちにPDFロンダリング
+        // 直ちにQuartzでPDFロンダリング
         [self launderPDF:croppedPdfFileName];
 
-        // PDF内のフォントをアウトライン化
+        // gs pdfwrite でPDF内のフォントをアウトライン化
         if (![self outlinePDF:croppedPdfFileName
  intermediateOutlinedFileName:outlinedPdfFileName
                outputFileName:outlinedPdfFileName
@@ -1490,17 +1490,17 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         }
         
         // BBを書き換え
-        [self replaceEpsBBox:epsName withBBoxOfPdf:outlinedPdfFileName page:page];
+        [self replaceEpsBBox:epsName withBBoxOfPdf:outlinedPdfFileName page:1];
         
-        // パスのアウトライン化
-        [self modifyEpsForOutliningPaths:epsName]; // これを入れると Illustrator でのパス・破線の見え方は改善するが，パターンのブラウザ上での表示が悪化する……
+        // パスのアウトライン化を行うための stroke 再定義
+        [self modifyEpsForOutliningPaths:epsName];
         
         // 再びPDFに戻す
         if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
             return NO;
         }
         
-        // 余白付与＋背景塗り
+        // pdfcrop類似処理で余白付与＋Quartzで背景塗り
         if (![self pdfcrop:pdfName
             outputFileName:trimmedPdfFileName
                       page:1
@@ -1526,7 +1526,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         // BBを書き換え
         [self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page];
         
-        // パスのアウトライン化
+        // パスのアウトライン化を行うための stroke 再定義
         //[self modifyEpsForOutliningPaths:epsName]; // これを入れると Illustrator でのパス・破線の見え方は改善するが，パターンのブラウザ上での表示が悪化する……
         
         // 再びPDFに戻す
