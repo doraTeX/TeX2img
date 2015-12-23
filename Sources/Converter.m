@@ -1656,6 +1656,16 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     return YES;
 }
 
+- (BOOL)gzipSVG:(NSString*)svgPath toSVGZ:(NSString*)svgzPath
+{
+    return [controller execCommand:@"/usr/bin/gzip"
+                       atDirectory:workingDirectory
+                     withArguments:@[@"-cfq9",
+                                     svgPath.stringByQuotingWithDoubleQuotations,
+                                     [@"> " stringByAppendingString:svgzPath.stringByQuotingWithDoubleQuotations]]
+                                quiet:quietFlag];
+}
+
 - (BOOL)compileAndConvert
 {
 	NSString *texFilePath = [NSString stringWithFormat:@"%@.tex", [workingDirectory stringByAppendingPathComponent:tempFileBaseName]];
@@ -1667,6 +1677,11 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 	NSString *outputEpsFileName = [NSString stringWithFormat:@"%@.eps", tempFileBaseName];
 	NSString *outputFileName = outputFilePath.lastPathComponent;
 	NSString *extension = outputFilePath.pathExtension.lowercaseString;
+    
+    if ([@"svgz" isEqualToString:extension]) {
+        outputFileName = [outputFileName.stringByDeletingPathExtension stringByAppendingPathExtension:@"svg"];
+    }
+    
     NSDate *texDate, *dviDate, *psDate, *pdfDate;
     BOOL success = NO, compilationSuceeded = NO, requireDviDriver = NO, requireGS = NO;
 
@@ -1825,7 +1840,9 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 return success;
             }
         }
-    } else if ([@"svg" isEqualToString:extension] && leaveTextFlag && !(mergeOutputsFlag && (pageCount - emptyPageFlags.indexesOfTrueValue.count > 1))) { // 最終出力がテキスト保持 SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
+    } else if (([@"svg" isEqualToString:extension] || [@"svgz" isEqualToString:extension])
+               && leaveTextFlag
+               && !(mergeOutputsFlag && (pageCount - emptyPageFlags.indexesOfTrueValue.count > 1))) { // 最終出力がテキスト保持 SVG の場合，pdfcrop類似処理をかけてから1ページずつ mudraw にかける
         if (transparentFlag) { // 透過SVG生成の場合
             // まずは全ページ一括で，pdfcrop類似処理でクロップ＋余白付与
             [self pdfcrop:pdfFilePath
@@ -1892,7 +1909,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                         return success;
                     }
                 }
-            } else if ([@"svg" isEqualToString:extension]) {
+            } else if ([@"svg" isEqualToString:extension] || [@"svgz" isEqualToString:extension]) {
                 for (NSUInteger i=1; i<=pageCount; i++) {
                     if (emptyPageFlags[i-1].boolValue) {
                         continue;
@@ -2052,7 +2069,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                         }
                     }
                 }
-            } else if ([@"svg" isEqualToString:extension]) { // 背景塗りのあるアウトライン化SVG/アニメーションSVG生成の場合
+            } else if ([@"svg" isEqualToString:extension] || [@"svgz" isEqualToString:extension]) { // 背景塗りのあるアウトライン化SVG/アニメーションSVG生成の場合
                 for (NSUInteger i=1; i<=pageCount; i++) {
                     if (emptyPageFlags[i-1].boolValue) {
                         continue;
@@ -2144,11 +2161,23 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 }
             }
 
-            if ([@"svg" isEqualToString:extension]) {
+            if ([@"svg" isEqualToString:extension] || [@"svgz" isEqualToString:extension]) {
                 if (outputFiles.count > 1) { // アニメーションSVGの生成
-                    success = [self generateAnimatedSVGFrom:outputFiles toPath:outputFilePath];
+                    if ([@"svgz" isEqualToString:extension]) {
+                        NSString *newSvgPath = [workingDirectory stringByAppendingPathComponent:[tempFileBaseName stringByAppendingString:@"-merge.svg"]];
+                        success = [self generateAnimatedSVGFrom:outputFiles toPath:newSvgPath];
+                        if (success) {
+                            success = [self gzipSVG:newSvgPath toSVGZ:outputFilePath];
+                        }
+                    } else {
+                        success = [self generateAnimatedSVGFrom:outputFiles toPath:outputFilePath];
+                    }
                 } else { // 結局1つしかSVGが生成しなかった場合はあえてマージしない
-                    success = [self copyTargetFrom:outputFiles[0] toPath:outputFilePath];
+                    if ([@"svgz" isEqualToString:extension]) {
+                        success = [self gzipSVG:outputFiles[0] toSVGZ:outputFilePath];
+                    } else {
+                        success = [self copyTargetFrom:outputFiles[0] toPath:outputFilePath];
+                    }
                 }
                 if (!success) {
                     return NO;
@@ -2177,8 +2206,13 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 NSString *destPath = [outputFilePath pathStringByAppendingPageNumber:i];
                 [destURLs addObject:[NSURL fileURLWithPath:destPath]];
                 
-                success = [self copyTargetFrom:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]]
-                                        toPath:destPath];
+                NSString *origPath = [workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]];
+                if ([@"svgz" isEqualToString:extension]) {
+                    success = [self gzipSVG:origPath toSVGZ:destPath];
+                } else {
+                    success = [self copyTargetFrom:origPath toPath:destPath];
+                }
+
                 if (success) {
                     [self embedSource:texFilePath intoFile:destPath];
                 } else {
@@ -2254,11 +2288,23 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         NSString *previewApp;
         if ([@"svg" isEqualToString:extension] || ([@"gif" isEqualToString:extension] && mergeOutputsFlag && (generatedPageCount > 1))) {
             previewApp = @"Safari";
+        } else if ([@"svgz" isEqualToString:extension]) {
+            if ([fileManager fileExistsAtPath:@"/Applications/Google Chrome.app"]) {
+                previewApp = @"Google Chrome";
+            } else {
+                previewApp = @"qlmanage";
+            }
         } else {
             previewApp = @"Preview";
         }
-            
-        [controller previewFiles:generatedFiles withApplication:previewApp];
+        
+        if ([@"qlmanage" isEqualToString:previewApp]) {
+            [generatedFiles enumerateObjectsUsingBlock:^(NSString * _Nonnull path, NSUInteger idx, BOOL * _Nonnull stop) {
+                system([NSString stringWithFormat:@"/usr/bin/qlmanage -p %@ &", path.stringByQuotingWithDoubleQuotations].UTF8String);
+            }];
+        } else {
+            [controller previewFiles:generatedFiles withApplication:previewApp];
+        }
     }
 
     // 自動ペースト
