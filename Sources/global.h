@@ -17,11 +17,11 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define MAX_LEN 2048
 #define BASH_PATH @"/bin/bash"
 
-#define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"emf"])
-#define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"emf", @"tex"])
+#define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"svgz", @"emf"])
+#define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"svgz", @"emf", @"tex"])
 #define InputExtensionsArray (@[@"tex", @"pdf", @"ps", @"eps"])
 #define BitmapExtensionsArray (@[@"png", @"jpg", @"gif", @"tiff", @"bmp"])
-#define MergeableExtensionsArray (@[@"pdf", @"tiff", @"gif", @"svg"])
+#define MergeableExtensionsArray (@[@"pdf", @"tiff", @"gif", @"svg", @"svgz"])
 
 #define ProfileNamesKey @"profileNames"
 #define ProfilesKey @"profiles"

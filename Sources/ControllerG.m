@@ -2071,7 +2071,7 @@ typedef enum {
     if ([ext isEqualToString:@"eps"]) {
         [output appendFormat:@"Plain text EPS: %@\n", [aProfile boolForKey:PlainTextKey] ? ENABLED : DISABLED];
     }
-    if ([ext isEqualToString:@"svg"]) {
+    if ([ext isEqualToString:@"svg"] || [ext isEqualToString:@"svgz"]) {
         [output appendFormat:@"Delete width and height attributes of SVG: %@\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? ENABLED : DISABLED];
     }
     

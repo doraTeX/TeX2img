@@ -199,7 +199,7 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     if ([ext isEqualToString:@"eps"]) {
         printf("Plain text EPS: %s\n", [aProfile boolForKey:PlainTextKey] ? ENABLED : DISABLED);
     }
-    if ([ext isEqualToString:@"svg"]) {
+    if ([ext isEqualToString:@"svg"] || [ext isEqualToString:@"svgz"]) {
         printf("Delete width and height attributes of SVG: %s\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? ENABLED : DISABLED);
     }
     printf("Ignore nonfatal errors: %s\n", [aProfile boolForKey:IgnoreErrorKey] ? ENABLED : DISABLED);
