@@ -1666,7 +1666,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 	NSString *extension = outputFilePath.pathExtension.lowercaseString;
     
     if ([@"svgz" isEqualToString:extension]) {
-        outputFileName = [outputFileName.stringByDeletingPathExtension stringByAppendingPathExtension:@"svg"];
+        outputFileName = [outputFileName stringByReplacingPathExtension:@"svg"];
     }
     
     NSDate *texDate, *dviDate, *psDate, *pdfDate;
@@ -2377,6 +2377,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     if (deleteTmpFileFlag) {
         NSString *outputFileName = outputFilePath.lastPathComponent;
         NSString *basePath = [workingDirectory stringByAppendingPathComponent:tempFileBaseName];
+        NSString *extension = outputFilePath.pathExtension.lowercaseString;
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.tex", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.dvi", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.log", basePath] error:nil];
@@ -2392,7 +2393,14 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdftops.eps", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-00.pdf", basePath] error:nil];
         [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-pdfcrop-01.pdf", basePath] error:nil];
-        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-out.%@", basePath, outputFilePath.pathExtension] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-out.%@", basePath, extension] error:nil];
+
+        if ([@"svgz" isEqualToString:extension]) {
+            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-out.svg", basePath] error:nil];
+            [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-merge.svg", basePath] error:nil];
+            [fileManager removeItemAtPath:[workingDirectory stringByAppendingPathComponent:[outputFileName stringByReplacingPathExtension:@"svg"]]
+                                    error:nil];
+        }
         
         NSString *outputDir = outputFilePath.stringByDeletingLastPathComponent;
         for (NSUInteger i=1; i<=pageCount; i++) {
@@ -2401,6 +2409,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
             } else if ([MergeableExtensionsArray containsObject:outputFilePath.pathExtension] && mergeOutputsFlag && (i>=2)) {
                 [fileManager removeItemAtPath:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
             }
+            
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-crop-%ld.pdf", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld.eps", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-outline.pdf", basePath, i] error:nil];
@@ -2408,6 +2417,11 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-trim.pdf", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-pdftops.eps", basePath, i] error:nil];
             [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-%ld-pdftops.pdf", basePath, i] error:nil];
+
+            if ([@"svgz" isEqualToString:extension]) {
+                [fileManager removeItemAtPath:[[workingDirectory stringByAppendingPathComponent:[outputFileName stringByReplacingPathExtension:@"svg"]] pathStringByAppendingPageNumber:i]
+                                        error:nil];
+            }
         }
     }
 }

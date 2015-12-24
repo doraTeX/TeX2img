@@ -9,6 +9,7 @@
 - (NSString*)programPath;
 - (NSString*)programName;
 - (NSString*)argumentsString;
+- (NSString*)stringByReplacingPathExtension:(NSString*)extension;
 - (NSString*)stringByAppendingStringSeparetedBySpace:(NSString*)string;
 - (NSUInteger)numberOfComposedCharacters;
 - (NSString*)pathStringWithHFSStyle;
