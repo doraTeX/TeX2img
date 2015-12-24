@@ -43,6 +43,11 @@
                                                 [ext isEqualToString:@""] ? @"" : [@"." stringByAppendingString:ext]]];
 }
 
+- (NSString*)stringByReplacingPathExtension:(NSString*)extension
+{
+    return [self.stringByDeletingPathExtension stringByAppendingPathExtension:extension];
+}
+
 - (NSString*)stringByAppendingStringSeparetedBySpace:(NSString*)string
 {
     return [string isEqualToString:@""] ? self : [NSString stringWithFormat:@"%@ %@", self, string];
