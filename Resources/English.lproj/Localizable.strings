@@ -28,7 +28,7 @@
 "setPathMsg2" = "(editable in Preferences)";
 "autoDetectionResult" = "Auto Detection Result";
 "setPathMsg3" = "";
-"extensionErrMsg" = "The extention must be eps/pdf/jpg/png/gif/tiff/bmp/svg.";
+"extensionErrMsg" = "The extention must be eps/pdf/svg/svgz/emf/jpg/png/gif/tiff/bmp.";
 "emptyProfileNameErrMsg" = "Enter the name of the new profile.";
 "profileOverwriteMsg" = "A profile of the same name already exists. Do you want to replace it?";
 "overwriteContentsWarningMsg" = "Current contents including preamble will be replaced.\nDo you really want to continue?";
