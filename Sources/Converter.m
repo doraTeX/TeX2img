@@ -1443,86 +1443,63 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     NSString *trimmedPdfFileName = [baseName stringByAppendingString:@"-trim.pdf"];
     NSString *tempEpsFileName = [baseName stringByAppendingPathExtension:@"eps"];
     
-    NSString *epsName = [baseName stringByAppendingString:@"-pdftops.eps"];
-    NSString *pdfName = [baseName stringByAppendingString:@"-pdftops.pdf"];
-    
     if ([self isUsingNewGS]) {
         // まずはpdfcrop類似処理で1ページごとに砕く
         if (![self pdfcrop:pdfFilePath
             outputFileName:croppedPdfFileName
                       page:page
-                 addMargin:NO
-                  useCache:NO
+                 addMargin:YES
+                  useCache:YES
             fillBackground:NO]) {
             return NO;
         }
 
         // 直ちにQuartzでPDFロンダリング
         [self launderPDF:croppedPdfFileName];
+        
+        
+        // 既にトリミング＋余白付与はしているので，次のアウトライン化段階ではページサイズ維持
+        BOOL originalKeppPageSizeFlag = keepPageSizeFlag;
+        keepPageSizeFlag = YES;
 
-        // gs pdfwrite でPDF内のフォントをアウトライン化
+        // gs pdfwrite でPDF内のフォントをアウトライン化＋Quartzで背景塗り
         if (![self outlinePDF:croppedPdfFileName
  intermediateOutlinedFileName:outlinedPdfFileName
                outputFileName:outlinedPdfFileName
                          page:1
                     addMargin:NO
                      useCache:NO
-               fillBackground:NO]) {
-            return NO;
-        }
-
-        // パターンのアウトライン化をするために pdftops で EPS に変換
-        if (![self pdf2plainTextEps:outlinedPdfFileName outputFileName:epsName page:1]) {
+               fillBackground:YES]) {
+            keepPageSizeFlag = originalKeppPageSizeFlag;
             return NO;
         }
         
-        // BBを書き換え
-        [self replaceEpsBBox:epsName withBBoxOfPdf:outlinedPdfFileName page:1];
-        
-        // パスのアウトライン化を行うための stroke 再定義
-        [self modifyEpsForOutliningPaths:epsName];
-        
-        // 再びPDFに戻す
-        if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
-            return NO;
-        }
-        
-        // pdfcrop類似処理で余白付与＋Quartzで背景塗り
-        if (![self pdfcrop:pdfName
-            outputFileName:trimmedPdfFileName
-                      page:1
-                 addMargin:YES
-                  useCache:NO
-            fillBackground:YES]) {
-            return NO;
-        }
+        keepPageSizeFlag = originalKeppPageSizeFlag;
         
         // 生成した単一ページアウトライン化PDFを mudraw にかけてSVG生成
-        [self pdf2svg:trimmedPdfFileName
+        [self pdf2svg:outlinedPdfFileName
        outputFileName:svgFilePath
                  page:1
         skipEmptyPage:NO];
         [controller exitCurrentThreadIfTaskKilled];
 
     } else {
-        // まずはパターンのアウトライン化をするために pdftops で EPS に変換
-        if (![self pdf2plainTextEps:pdfFilePath outputFileName:epsName page:page]) {
+        // まずはpdfcrop類似処理で1ページごとに砕く
+        if (![self pdfcrop:pdfFilePath
+            outputFileName:croppedPdfFileName
+                      page:page
+                 addMargin:NO
+                  useCache:YES
+            fillBackground:NO]) {
             return NO;
         }
         
-        // BBを書き換え
-        [self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page];
+        // 直ちにQuartzでPDFロンダリング
+        [self launderPDF:croppedPdfFileName];
         
-        // パスのアウトライン化を行うための stroke 再定義
-        //[self modifyEpsForOutliningPaths:epsName]; // これを入れると Illustrator でのパス・破線の見え方は改善するが，パターンのブラウザ上での表示が悪化する……
-        
-        // 再びPDFに戻す
-        if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
-            return NO;
-        }
-        
+
         // PDF内のフォントをアウトライン化
-        if (![self outlinePDF:pdfName
+        if (![self outlinePDF:croppedPdfFileName
  intermediateOutlinedFileName:tempEpsFileName
                outputFileName:trimmedPdfFileName
                          page:1
@@ -1531,7 +1508,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                fillBackground:YES]) {
             return NO;
         }
-        
+
         // 生成した単一ページアウトライン化PDFを mudraw にかけてSVG生成
         [self pdf2svg:trimmedPdfFileName
        outputFileName:svgFilePath
