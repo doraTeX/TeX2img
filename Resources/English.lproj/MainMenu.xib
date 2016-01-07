@@ -446,7 +446,6 @@ DQ
                         </view>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <font key="titleFont" metaFont="smallSystem"/>
                     </box>
                     <button verticalHuggingPriority="750" id="699">
                         <rect key="frame" x="8" y="12" width="189" height="32"/>
@@ -544,7 +543,6 @@ DQ
                         </view>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <font key="titleFont" metaFont="smallSystem"/>
                     </box>
                 </subviews>
             </view>
@@ -718,28 +716,28 @@ DQ
         </window>
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="517">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <rect key="contentRect" x="208" y="461" width="480" height="462"/>
+            <rect key="contentRect" x="208" y="461" width="532" height="462"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
-            <value key="minSize" type="size" width="480" height="408"/>
+            <value key="minSize" type="size" width="532" height="408"/>
             <view key="contentView" id="518">
-                <rect key="frame" x="0.0" y="0.0" width="480" height="462"/>
+                <rect key="frame" x="0.0" y="0.0" width="532" height="462"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <tabView id="580">
-                        <rect key="frame" x="13" y="5" width="454" height="451"/>
+                        <rect key="frame" x="13" y="5" width="506" height="451"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
                             <tabViewItem label="Output" identifier="1" id="582">
                                 <view key="view" id="583">
-                                    <rect key="frame" x="10" y="33" width="434" height="405"/>
+                                    <rect key="frame" x="10" y="33" width="486" height="405"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <box autoresizesSubviews="NO" title="Common Settings" borderType="line" id="Lnu-lE-4jg">
-                                            <rect key="frame" x="6" y="194" width="417" height="211"/>
+                                            <rect key="frame" x="6" y="194" width="469" height="211"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="PaA-nJ-qoZ">
-                                                <rect key="frame" x="1" y="1" width="415" height="195"/>
+                                                <rect key="frame" x="1" y="1" width="467" height="195"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="MDY-UQ-izF">
@@ -990,16 +988,16 @@ DQ
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
                                         <box autoresizesSubviews="NO" title="Settings peculiar to image formats" borderType="line" id="635">
-                                            <rect key="frame" x="6" y="24" width="417" height="166"/>
+                                            <rect key="frame" x="6" y="24" width="469" height="166"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="fBj-ag-F1d">
-                                                <rect key="frame" x="1" y="1" width="415" height="150"/>
+                                                <rect key="frame" x="1" y="1" width="467" height="150"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button id="521">
-                                                        <rect key="frame" x="16" y="120" width="425" height="18"/>
+                                                        <rect key="frame" x="16" y="120" width="453" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Transparent background (EPS/PDF/SVG/EMF/PNG/TIFF/GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
+                                                        <buttonCell key="cell" type="check" title="Transparent background (EPS/PDF/SVG/SVGZ/EMF/PNG/TIFF/GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -1007,23 +1005,23 @@ DQ
                                                     <button id="636">
                                                         <rect key="frame" x="16" y="93" width="336" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Keep original text information (PDF/SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="637">
+                                                        <buttonCell key="cell" type="check" title="Keep original text information (PDF/SVG/SVGZ)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="637">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                     </button>
                                                     <button id="H7g-7q-uFe">
-                                                        <rect key="frame" x="16" y="39" width="336" height="18"/>
+                                                        <rect key="frame" x="16" y="39" width="404" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Remove &quot;width&quot; and &quot;height&quot; attributes (SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ss8-Tf-CTS">
+                                                        <buttonCell key="cell" type="check" title="Remove &quot;width&quot; and &quot;height&quot; attributes (SVG/SVGZ)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ss8-Tf-CTS">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                     </button>
                                                     <button id="DdC-a2-cPr">
-                                                        <rect key="frame" x="16" y="66" width="373" height="18"/>
+                                                        <rect key="frame" x="16" y="66" width="442" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Output as a single file or animation (PDF/TIFF/GIF/SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="bvP-V3-8he">
+                                                        <buttonCell key="cell" type="check" title="Output as a single file or animation (PDF/TIFF/GIF/SVG/SVGZ)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="bvP-V3-8he">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -1046,14 +1044,14 @@ DQ
                             </tabViewItem>
                             <tabViewItem label="Animation" identifier="2" id="GvH-Mj-CFZ">
                                 <view key="view" id="T8b-lR-pxM">
-                                    <rect key="frame" x="10" y="33" width="434" height="405"/>
+                                    <rect key="frame" x="10" y="33" width="486" height="405"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <box autoresizesSubviews="NO" title="GIF / SVG Animation Settings" borderType="line" id="hAm-4h-T6Q">
-                                            <rect key="frame" x="6" y="313" width="417" height="92"/>
+                                            <rect key="frame" x="6" y="313" width="469" height="92"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="A94-7N-WMs">
-                                                <rect key="frame" x="1" y="1" width="415" height="76"/>
+                                                <rect key="frame" x="1" y="1" width="467" height="76"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="IVJ-ea-5Xw">
@@ -1782,7 +1780,7 @@ DQ
                     </tabView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="105" y="1052"/>
+            <point key="canvasLocation" x="131" y="1052"/>
         </window>
         <window title="Save / Load Profiles" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="670" userLabel="Window (ProfileWindow)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>

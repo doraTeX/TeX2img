@@ -500,7 +500,6 @@ DQ
                         </view>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <font key="titleFont" metaFont="smallSystem"/>
                     </box>
                     <box autoresizesSubviews="NO" title="出力画像ファイル名（拡張子：.eps / .pdf / .svg / .svgz / .emf / .jpg / .png / .gif / .tiff / .bmp）" borderType="line" id="460">
                         <rect key="frame" x="11" y="56" width="520" height="59"/>
@@ -533,7 +532,6 @@ DQ
                         </view>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <font key="titleFont" metaFont="smallSystem"/>
                     </box>
                     <button verticalHuggingPriority="750" id="707">
                         <rect key="frame" x="8" y="12" width="189" height="32"/>
@@ -908,7 +906,7 @@ DQ
                                                     <button id="646">
                                                         <rect key="frame" x="18" y="85" width="266" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="テキストを保持する (PDF/SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="647">
+                                                        <buttonCell key="cell" type="check" title="テキストを保持する (PDF/SVG/SVGZ)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="647">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -916,23 +914,23 @@ DQ
                                                     <button id="521">
                                                         <rect key="frame" x="18" y="108" width="386" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="背景色を透過させる (EPS/PDF/SVG/EMF/PNG/TIFF/GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
+                                                        <buttonCell key="cell" type="check" title="背景を透過 (EPS/PDF/SVG/SVGZ/EMF/PNG/TIFF/GIF)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="522">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                     </button>
                                                     <button id="afr-f7-ZEX">
-                                                        <rect key="frame" x="18" y="39" width="220" height="18"/>
+                                                        <rect key="frame" x="18" y="39" width="266" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="寸法情報を削除する (SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="z5p-3V-PLU">
+                                                        <buttonCell key="cell" type="check" title="寸法情報を削除する (SVG/SVGZ)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="z5p-3V-PLU">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                     </button>
                                                     <button id="gEE-o1-8T3">
-                                                        <rect key="frame" x="18" y="62" width="371" height="18"/>
+                                                        <rect key="frame" x="18" y="62" width="398" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="単一ファイルまたはアニメを生成 (PDF/TIFF/GIF/SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="9TQ-YH-p3i">
+                                                        <buttonCell key="cell" type="check" title="単一ファイルまたはアニメを生成 (PDF/TIFF/GIF/SVG/SVGZ)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="9TQ-YH-p3i">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
