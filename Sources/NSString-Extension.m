@@ -107,16 +107,14 @@
     return count;
 }
 
-- (NSString*)unicodeName
+- (UTF32Char)utf32char
 {
-    NSMutableString *mutableUnicodeName = [self mutableCopy];
-    CFStringTransform((__bridge CFMutableStringRef)mutableUnicodeName, NULL, CFSTR("Any-Name"), NO);
-    
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\{(.+?)\\}" options:0 error:nil];
-    NSTextCheckingResult *firstMatch = [regex firstMatchInString:mutableUnicodeName
-                                                         options:0
-                                                           range:NSMakeRange(0, mutableUnicodeName.length)];
-    return [mutableUnicodeName substringWithRange:[firstMatch rangeAtIndex:1]];
+    UTF32Char outputChar;
+    if ([self getBytes:&outputChar maxLength:4 usedLength:NULL encoding:NSUTF32LittleEndianStringEncoding options:0 range:NSMakeRange(0, 1) remainingRange:NULL]) {
+        outputChar = NSSwapLittleIntToHost(outputChar); // swap back to host endian
+        // outputChar now has the first UTF32 character
+    }
+    return outputChar;
 }
 
 - (NSString*)pathStringWithHFSStyle

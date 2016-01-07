@@ -2,7 +2,7 @@
 #import "TeXTextView.h"
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
-#import "NSString-Normalization.h"
+#import "NSString-Unicode.h"
 #import "NSMutableString-Extension.h"
 #import "MyLayoutManager.h"
 #import "MyGlyphPopoverController.h"

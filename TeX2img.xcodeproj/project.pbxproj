@@ -23,7 +23,7 @@
 		346DA57C1B705F6800B51BD7 /* NSArray-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */; };
 		346DA57F1B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57E1B70605100B51BD7 /* NSIndexSet-Extension.m */; };
 		346DA5801B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57E1B70605100B51BD7 /* NSIndexSet-Extension.m */; };
-		347314FB1B89CFDC00F285A3 /* NSString-Normalization.m in Sources */ = {isa = PBXBuildFile; fileRef = 347314FA1B89CFDC00F285A3 /* NSString-Normalization.m */; };
+		347314FB1B89CFDC00F285A3 /* NSString-Unicode.m in Sources */ = {isa = PBXBuildFile; fileRef = 347314FA1B89CFDC00F285A3 /* NSString-Unicode.m */; };
 		34821EC810282CF9008DEB1F /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34821EC710282CF9008DEB1F /* ProfileController.m */; };
 		348507F8125AC21E0058A26B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; };
 		34850828125AC9E30058A26B /* Sparkle.framework in フレームワークをコピー */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -34,6 +34,7 @@
 		348CA6DD1A957BC90070B079 /* NSDate-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348CA6DB1A957BC90070B079 /* NSDate-Extension.m */; };
 		348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */; };
 		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
+		348E08831C3DE76F004CFB4B /* UnicodeBlocks.strings in Resources */ = {isa = PBXBuildFile; fileRef = 348E08811C3DE76F004CFB4B /* UnicodeBlocks.strings */; };
 		348F29601B848C11009AA3CF /* NSPipe-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348F295F1B848C11009AA3CF /* NSPipe-Extension.m */; };
 		348F29611B848C68009AA3CF /* NSPipe-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348F295F1B848C11009AA3CF /* NSPipe-Extension.m */; };
 		349276B01BFA19FB00C0BD99 /* NSColor-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.m */; };
@@ -112,8 +113,8 @@
 		346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Extension.m"; sourceTree = "<group>"; };
 		346DA57D1B70605100B51BD7 /* NSIndexSet-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet-Extension.h"; sourceTree = "<group>"; };
 		346DA57E1B70605100B51BD7 /* NSIndexSet-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet-Extension.m"; sourceTree = "<group>"; };
-		347314F91B89CFDC00F285A3 /* NSString-Normalization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Normalization.h"; sourceTree = "<group>"; };
-		347314FA1B89CFDC00F285A3 /* NSString-Normalization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Normalization.m"; sourceTree = "<group>"; };
+		347314F91B89CFDC00F285A3 /* NSString-Unicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Unicode.h"; sourceTree = "<group>"; };
+		347314FA1B89CFDC00F285A3 /* NSString-Unicode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Unicode.m"; sourceTree = "<group>"; };
 		34821EC610282CF9008DEB1F /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
 		34821EC710282CF9008DEB1F /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
 		348507F7125AC21E0058A26B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
@@ -128,6 +129,7 @@
 		348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-CommandCompletion.m"; sourceTree = "<group>"; };
 		348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-Colorize.m"; sourceTree = "<group>"; };
 		348D72A1125A57B8003AF902 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
+		348E08821C3DE76F004CFB4B /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/UnicodeBlocks.strings; sourceTree = "<group>"; };
 		348F295E1B848C11009AA3CF /* NSPipe-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPipe-Extension.h"; sourceTree = "<group>"; };
 		348F295F1B848C11009AA3CF /* NSPipe-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPipe-Extension.m"; sourceTree = "<group>"; };
 		349564B71ABFF3D1004B9C1D /* Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utility.m; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 				3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */,
 				3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */,
 				CE4A31F00E5036500095D4FC /* Localizable.strings */,
+				348E08811C3DE76F004CFB4B /* UnicodeBlocks.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -369,8 +372,8 @@
 				34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */,
 				34D41D1C17A6BE2C00997795 /* NSString-Extension.h */,
 				34D41D1D17A6BE2C00997795 /* NSString-Extension.m */,
-				347314F91B89CFDC00F285A3 /* NSString-Normalization.h */,
-				347314FA1B89CFDC00F285A3 /* NSString-Normalization.m */,
+				347314F91B89CFDC00F285A3 /* NSString-Unicode.h */,
+				347314FA1B89CFDC00F285A3 /* NSString-Unicode.m */,
 				7025539710353D33000D6D05 /* NSMutableString-Extension.h */,
 				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
 				3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */,
@@ -483,6 +486,7 @@
 				342C6196101E637F00E29FEB /* epstopdf in Resources */,
 				3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */,
 				34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */,
+				348E08831C3DE76F004CFB4B /* UnicodeBlocks.strings in Resources */,
 				346225661AB558AB00F632AD /* mupdf in Resources */,
 				343E47A81BED59DB00F892A5 /* eps2emf in Resources */,
 				34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */,
@@ -572,7 +576,7 @@
 				34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */,
 				34BFF6D71B9F1FF900E8DE77 /* PDFPageBox.m in Sources */,
 				346DA57F1B70605100B51BD7 /* NSIndexSet-Extension.m in Sources */,
-				347314FB1B89CFDC00F285A3 /* NSString-Normalization.m in Sources */,
+				347314FB1B89CFDC00F285A3 /* NSString-Unicode.m in Sources */,
 				3453398E1B93D5830027CBE7 /* NSPopover-Extension.m in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
 				348F29601B848C11009AA3CF /* NSPipe-Extension.m in Sources */,
@@ -611,6 +615,14 @@
 				3424A8DF0E4F2C3B003C9F96 /* Japanese */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		348E08811C3DE76F004CFB4B /* UnicodeBlocks.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				348E08821C3DE76F004CFB4B /* Japanese */,
+			);
+			name = UnicodeBlocks.strings;
 			sourceTree = "<group>";
 		};
 		CE4A31F00E5036500095D4FC /* Localizable.strings */ = {

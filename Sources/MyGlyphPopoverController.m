@@ -33,6 +33,7 @@
 
 #import "MyGlyphPopoverController.h"
 #import "NSString-Extension.h"
+#import "NSString-Unicode.h"
 #import "UtilityG.h"
 
 // variation Selectors
@@ -45,6 +46,7 @@ static const UTF32Char kType3EmojiModifierChar = 0x1F3FC;  // Emoji Modifier Fit
 static const UTF32Char kType4EmojiModifierChar = 0x1F3FD;  // Emoji Modifier Fitzpatrick type-4
 static const UTF32Char kType5EmojiModifierChar = 0x1F3FE;  // Emoji Modifier Fitzpatrick type-5
 static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fitzpatrick type-6
+
 
 //////////////////////////////////////////////////////////////////////////////
 #pragma mark - subclass for private use
@@ -89,7 +91,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
 - (NSUInteger)lineBreakBeforeIndex:(NSUInteger)index withinRange:(NSRange)aRange
 {
     NSUInteger breakIndex = [super lineBreakBeforeIndex:index withinRange:aRange];
-    if (breakIndex >= 2 && [self.string characterAtIndex:breakIndex] == '+'){
+    if ((breakIndex >= 2) && ([self.string characterAtIndex:breakIndex] == '+')){
         return breakIndex-2;
     } else {
         return breakIndex;
@@ -100,20 +102,21 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
 
 //////////////////////////////////////////////////////////////////////////////
 
-@interface MyGlyphPopoverController (){
-    IBOutlet NSTextView *unicodesTextView;
-}
+@interface MyGlyphPopoverController ()
 
 @property (nonatomic, copy) NSString *glyph;
 @property (nonatomic, copy) NSString *unicodeName;
+@property (nonatomic, copy) NSString *unicodeBlockName;
 @property (nonatomic, copy) NSString *unicode;
-
+@property (nonatomic, strong) IBOutlet NSTextView *unicodesTextView;
+@property (nonatomic, strong) IBOutlet NSTextField *unicodeBlockNameField;
 @end
 
 
 #pragma mark -
 
 @implementation MyGlyphPopoverController
+@synthesize unicodesTextView;
 
 #pragma mark Public Methods
 
@@ -187,7 +190,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
             } else if (lastChar == kTextSequenceChar) {
                 variationSelectorAdditional = @"Text Style";
                 multiCodePoints = NO;
-            } else if ((lastChar >= 0x180B && lastChar <= 0x180D) || (lastChar >= 0xFE00 && lastChar <= 0xFE0D)) {
+            } else if (((lastChar >= 0x180B) && (lastChar <= 0x180D)) || ((lastChar >= 0xFE00) && (lastChar <= 0xFE0D))) {
                 variationSelectorAdditional = @"Variant";
                 multiCodePoints = NO;
             } else {
@@ -218,7 +221,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
                             multiCodePoints = NO;
                             break;
                         default:
-                            if (pair >= 0xE0100 && pair <= 0xE01EF) {
+                            if ((pair >= 0xE0100) && (pair <= 0xE01EF)) {
                                 variationSelectorAdditional = @"Variant";
                                 multiCodePoints = NO;
                             }
@@ -266,21 +269,34 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
             }
         } else {
             // unicode character name
-            self.unicodeName = character.unicodeName;
+            unichar theChar = [character characterAtIndex:0];
+            
+            if ((self.unicodeName = [NSString controlCharacterNameWithCharacter:theChar])) {
+                self.glyph = @"";
+            } else {
+                self.unicodeName = character.unicodeName;
+            }
             
             if (variationSelectorAdditional) {
                 self.unicodeName = [NSString stringWithFormat:@"%@ (%@)", self.unicodeName, localizedString(variationSelectorAdditional)];
             }
+            
+            self.unicodeBlockName = character.localizedBlockName;
         }
     }
     return self;
 }
 
+- (void)loadView
+{
+    [super loadView];
+    
+    if (!self.unicodeBlockName) {
+        [self.unicodeBlockNameField removeFromSuperviewWithoutNeedingDisplay];
+    }
+}
 
-// ------------------------------------------------------
-/// display popover
 - (void)showPopoverRelativeToRect:(NSRect)positioningRect ofView:(NSView*)parentView
-// ------------------------------------------------------
 {
     NSPopover *popover = [NSPopover new];
     popover.contentViewController = self;
