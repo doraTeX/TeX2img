@@ -476,7 +476,6 @@ DQ
                         </view>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <font key="titleFont" metaFont="smallSystem"/>
                     </box>
                     <button verticalHuggingPriority="750" id="699">
                         <rect key="frame" x="8" y="12" width="189" height="32"/>
@@ -574,7 +573,6 @@ DQ
                         </view>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <font key="titleFont" metaFont="smallSystem"/>
                     </box>
                 </subviews>
             </view>
@@ -1075,7 +1073,7 @@ DQ
                                                     <button id="636">
                                                         <rect key="frame" x="18" y="91" width="336" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Keep original text information (PDF/SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="637">
+                                                        <buttonCell key="cell" type="check" title="Keep original text information (PDF/SVG/SVGZ)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="637">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -1083,15 +1081,15 @@ DQ
                                                     <button id="H7g-7q-uFe">
                                                         <rect key="frame" x="18" y="41" width="336" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Remove &quot;width&quot; and &quot;height&quot; attributes (SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ss8-Tf-CTS">
+                                                        <buttonCell key="cell" type="check" title="Remove &quot;width&quot; and &quot;height&quot; attributes (SVG/SVGZ)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ss8-Tf-CTS">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                     </button>
                                                     <button id="iH4-6u-aJA">
-                                                        <rect key="frame" x="18" y="66" width="384" height="18"/>
+                                                        <rect key="frame" x="18" y="66" width="399" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Output as a single file or animation (PDF/TIFF/GIF/SVG)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="prq-A2-uxS">
+                                                        <buttonCell key="cell" type="check" title="Make a single file or animation (PDF/TIFF/GIF/SVG/SVGZ)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="prq-A2-uxS">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>

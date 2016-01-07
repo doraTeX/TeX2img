@@ -30,7 +30,7 @@ void usage()
     printf("Arguments:\n");
     printf("  InputFile  : path of a TeX source or PDF/PS/EPS file\n");
     printf("  OutputFile : path of an output file\n");
-    printf("               (*extension: eps/pdf/svg/emf/jpg/png/gif/tiff/bmp)\n");
+    printf("               (*extension: eps/pdf/svg/svgz/emf/jpg/png/gif/tiff/bmp)\n");
     printf("\n");
     printf("Conversion Settings:\n");
     printf("  --latex      COMPILER      : set the LaTeX compiler (default: platex)\n");
@@ -62,7 +62,7 @@ void usage()
     printf("  --right-margin   MARGIN    : set the right margin  (default: 0)\n");
     printf("  --bottom-margin  MARGIN    : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT                : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
-    printf("                               (*bp is always used for EPS/PDF/SVG/EMF)\n");
+    printf("                               (*bp is always used for EPS/PDF/SVG/SVGZ/EMF)\n");
     printf("  --[no-]keep-page-size      : disable/enable keeping the original page size (default: disabled)\n");
     printf("  --pagebox BOX              : select the page box type used as the page size (media|crop|bleed|trim|art) (default: crop)\n");
     printf("  --[no-]transparent         : disable/enable transparent (if possible) (default: enabled)\n");
@@ -74,12 +74,12 @@ void usage()
     printf("      \"255 0 255\" : RGB integers (0..255)\n");
     printf("\n");
     printf("Image Settings (peculiar to image formats):\n");
-    printf("  --[no-]with-text           : disable/enable text-embedded PDF/SVG (default: disabled)\n");
+    printf("  --[no-]with-text           : disable/enable text-embedded PDF/SVG/SVGZ (default: disabled)\n");
     printf("  --[no-]plain-text          : disable/enable outputting EPS as a plain text (default: disabled)\n");
-    printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or an animation GIF/SVG (default: disabled)\n");
-    printf("  --animation-delay TIME     : set the delay time (sec) of an animated GIF/SVG (default: 1)\n");
-    printf("  --animation-loop  NUMBER   : set the number of times to repeat an animated GIF/SVG (default: 0 (infinity))\n");
-    printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG (default: disabled)\n");
+    printf("  --[no-]merge-output-files  : disable/enable merging products as a single file (PDF/TIFF) or an animation GIF/SVG/SVGZ (default: disabled)\n");
+    printf("  --animation-delay TIME     : set the delay time (sec) of an animated GIF/SVG/SVGZ (default: 1)\n");
+    printf("  --animation-loop  NUMBER   : set the number of times to repeat an animated GIF/SVG/SVGZ (default: 0 (infinity))\n");
+    printf("  --[no-]delete-display-size : disable/enable deleting width and height attributes of SVG/SVGZ (default: disabled)\n");
     printf("\n");
     printf("Behavior After Compiling:\n");
     printf("  --[no-]preview             : disable/enable opening products (default: disabled)\n");
