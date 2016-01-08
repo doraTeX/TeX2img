@@ -18,30 +18,26 @@
 
 \newpage
 
-
-\[
-\left( \int _0 ^\infty \frac{\sin x}{\sqrt{x}} dx \right) ^2
-= \sum _{k=0} ^\infty \frac{(2k)!}{2^{2k} (k!)^2} \frac{1}{2k+1}
-= \prod _{k=1} ^\infty \frac{4 k^2}{4 k^2 - 1}
-= \frac{\pi}{2}
-\]
-破線のテストです。
-\begin{tikzpicture}
-\draw[dashed](0,0)--(1,0);
+\[ 
+\left( \int _0 ^\infty \frac{\sin x}{\sqrt{x}} dx \right) ^2 
+= \sum _{k=0} ^\infty \frac{(2k)!}{2^{2k} (k!)^2} \frac{1}{2k+1} 
+= \prod _{k=1} ^\infty \frac{4 k^2}{4 k^2 - 1} 
+= \frac{\pi}{2} 
+\] 
+破線のテストです。 
+\begin{tikzpicture} % 破線
+\draw[dashed](0,0)--(1,0); 
 \end{tikzpicture}
+
 \newpage
 
-$
-\left( \int _0 ^\infty \frac{\sin x}{\sqrt{x}} dx \right) ^2
-= \sum _{k=0} ^\infty \frac{(2k)!}{2^{2k} (k!)^2} \frac{1}{2k+1}
-= \prod _{k=1} ^\infty \frac{4 k^2}{4 k^2 - 1}
-= \frac{\pi}{2}
-$
-
-パターンテストです。
-
-\begin{tikzpicture}
+\begin{tikzpicture} % 斜線パターン
 \filldraw[pattern = north east lines] (0,0) rectangle (5,5);
+\end{tikzpicture}
+\begin{tikzpicture} % 赤煉瓦に白漆喰
+\def\mypath{(0,0) -- +(0,1) arc (180:0:1.5cm) -- +(0,-1)}
+\fill[red] \mypath;
+\pattern[pattern color=white,pattern=bricks] \mypath;
 \end{tikzpicture}
 
 \end{document}
