@@ -43,20 +43,20 @@
 \begin{tikzpicture}[x=1.3cm,y=1.3cm,align=center,>={Stealth[scale=1.6]}]
 \node[input node] (TeX) at (0,0) {\TeX};
 \node[relay node] (DVI) at ($(TeX) + (0,-2)$) {DVI};
-\draw[->] (TeX) --  node[left] {((u)p)\LaTeX} (DVI) ;
+\draw[->] (TeX) -- node[left] {((u)p)\LaTeX} (DVI) ;
 
 \node[input node] (PS) at ($(DVI) + (-2,0)$) {PS};
-\draw[->] (DVI) --  node[above] {dvips} (PS) ;
+\draw[->] (DVI) -- node[above] {dvips} (PS) ;
 
 \node[input node] (PDF) at ($(TeX) + (0,-4)$) {PDF};
-\draw[->] (DVI) --  node[right] {dvipdfmx} (PDF) ;
-\draw[->] (PS) --  node[left] {Ghostscript} (PDF) ;
+\draw[->] (DVI) -- node[right] {dvipdfmx} (PDF) ;
+\draw[->] (PS) -- node[left] {Ghostscript} (PDF) ;
 
 \node[input node] (EPS) at ($(PDF) + (-4,0)$) {EPS};
-\draw[->] (EPS) --  node[above] {Ghostscript} (PDF) ;
+\draw[->] (EPS) -- node[above] {Ghostscript} (PDF) ;
 \coordinate (right above of PDF) at ($(PDF.north east) + (1,-0.1)$);
 \coordinate (right below of PDF) at ($(PDF.south east) + (0, 0.1)$);
-\draw[->] (TeX) --  (TeX -| right above of PDF) to [bend left=90]  node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} (right above of PDF) to (PDF.north east |- right above of PDF) ;
+\draw[->] (TeX) -- (TeX -| right above of PDF) to [bend left=90] node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} (right above of PDF) to (PDF.north east |- right above of PDF) ;
 
 
 \node[relay node] (PDF with text without margin) at ($(PDF) + (-16,-3)$) {テキスト保持PDF\\（余白なし・透過）};
@@ -102,7 +102,7 @@
 
 \node[relay node] (Single page PDF) at ($(PDF) + (6,0)$) {単一ページPDF\\（余白なし・透過）};
 \draw[->] (PDF) -- node[below] {pdf\TeX でクロップ} (Single page PDF);
-\path[->] (Single page PDF) edge  [loop above,out=135,in=45,distance=50] node[above,yshift=2pt] {Quartz APIで再保存} (Single page PDF);
+\path[->] (Single page PDF) edge [loop above,out=135,in=45,distance=50] node[above,yshift=2pt] {Quartz APIで再保存} (Single page PDF);
 
 \node[output node] (EPS without margin) at ($(Single page PDF) + (5,0)$) {バイナリ形式EPS\\（余白なし・透過）};
 \draw[->] (Single page PDF) -- node[below] {Ghostscript\textsuperscript{*1}} (EPS without margin);
@@ -111,7 +111,7 @@
 \draw[->] (EPS without margin) -- node[below] {BB編集} (EPS with margin);
 
 \node[output node] (Outlined PDF with margin) at ($(PDF with text) + (-7,0)$) {アウトライン化PDF};
-\path[->] (Outlined PDF with margin) edge  [loop above,out=135,in=45,distance=50] node[above] {Quartz API で背景塗り} (Outlined PDF with margin);
+\path[->] (Outlined PDF with margin) edge [loop above,out=135,in=45,distance=50] node[above] {Quartz API で背景塗り} (Outlined PDF with margin);
 \draw[->] (PDF with text) -- node[above,midway,xshift=4pt]{Ghostscript\textsuperscript{*2}} (Outlined PDF with margin); 
 
 \node[output node] (EPS2) at ($(Outlined PDF with margin) + (4,-2)$) {テキスト形式EPS};
@@ -174,19 +174,19 @@
 \begin{tikzpicture}[x=1.3cm,y=1.3cm,align=center,>={Stealth[scale=1.6]}]
 \node[input node] (TeX) at (0,0) {\TeX};
 \node[relay node] (DVI) at ($(TeX) + (0,-2)$) {DVI};
-\draw[->] (TeX) --  node[left] {((u)p)\LaTeX} (DVI) ;
+\draw[->] (TeX) -- node[left] {((u)p)\LaTeX} (DVI) ;
 
 \node[input node] (PS) at ($(DVI) + (-2,0)$) {PS};
-\draw[->] (DVI) --  node[above] {dvips} (PS) ;
+\draw[->] (DVI) -- node[above] {dvips} (PS) ;
 
 \node[input node] (PDF) at ($(TeX) + (0,-4)$) {PDF};
-\draw[->] (DVI) --  node[right] {dvipdfmx} (PDF) ;
-\draw[->] (PS) --  node[left] {Ghostscript} (PDF) ;
+\draw[->] (DVI) -- node[right] {dvipdfmx} (PDF) ;
+\draw[->] (PS) -- node[left] {Ghostscript} (PDF) ;
 
 \node[input node] (EPS) at ($(PDF) + (-4,0)$) {EPS};
-\draw[->] (EPS) --  node[above] {Ghostscript} (PDF) ;
+\draw[->] (EPS) -- node[above] {Ghostscript} (PDF) ;
 \coordinate (right above of PDF) at ($(PDF.north east) + (1,-0.1)$);
-\draw[->] (TeX) --  (TeX -| right above of PDF) to [bend left=90]  node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} (right above of PDF) to (PDF.north east |- right above of PDF) ;
+\draw[->] (TeX) -- (TeX -| right above of PDF) to [bend left=90] node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} (right above of PDF) to (PDF.north east |- right above of PDF) ;
 
 
 \node[relay node] (PDF with text without margin) at ($(PDF) + (-14,-3)$) {テキスト保持PDF\\（余白なし・透過）};
@@ -229,27 +229,27 @@
 
 \node[relay node] (PDF2 for EMF) at ($(PDF for EMF) + (0,-1.7)$) {テキスト保持PDF};
 \draw[->] (PDF for EMF) -- node[left,align=right] {pdf\TeX でクロップ\\＋余白付与} (PDF2 for EMF);
-\path[->] ($(PDF2 for EMF.north east) + (-6pt,0pt)$) edge  [loop right,out=90,in=0,distance=35] node[right,xshift=-25pt,yshift=14pt] {Quartz APIで背景塗り} ($(PDF2 for EMF.north east) + (0pt,-6pt)$);
+\path[->] ($(PDF2 for EMF.north east) + (-6pt,0pt)$) edge [loop right,out=90,in=0,distance=35] node[right,xshift=-25pt,yshift=14pt] {Quartz APIで背景塗り} ($(PDF2 for EMF.north east) + (0pt,-6pt)$);
 
 
 
 \node[relay node] (EPS2 for EMF) at ($(PDF2 for EMF) + (0,-1.7)$) {EPS};
 \draw[->] (PDF2 for EMF) -- node[left] {Ghostscript\textsuperscript{*1}} (EPS2 for EMF);
 
-\node[relay node] (EMF) at ($(EPS2 for EMF) + (0,-1.7)$) {EMF};
+\node[output node] (EMF) at ($(EPS2 for EMF) + (0,-1.7)$) {EMF};
 \draw[->] (EPS2 for EMF) -- node[left,align=right] {eps2emf\\（改造版pstoedit）} (EMF);
 
 \node[output node] (EPS without margin) at ($(Filled PDF with text) + (12,0)$) {EPS\\（余白なし・透過）};
 
 \node[relay node] (PDF with text 2) at ($(EPS without margin) + (0,3)$) {テキスト保持PDF\\（余白なし・透過・単一ページ）};
-\path[->] ($(PDF with text 2.north east) + (-6pt,0pt)$) edge  [loop right,out=90,in=0,distance=35] node[above,yshift=2pt] {Quartz APIで再保存} ($(PDF with text 2.north east) + (0pt,-6pt)$);
+\path[->] ($(PDF with text 2.north east) + (-6pt,0pt)$) edge [loop right,out=90,in=0,distance=35] node[above,yshift=2pt] {Quartz APIで再保存} ($(PDF with text 2.north east) + (0pt,-6pt)$);
 \draw[->] (PDF) -- node[below] {pdf\TeX でクロップ} (PDF with text 2);
 \draw[->] (PDF with text 2) -- node[left] {Ghostscript\textsuperscript{*1}} (EPS without margin);
 
 \node[output node] (Outlined PDF without margin) at ($(EPS without margin) + (6,0)$) {アウトライン化PDF};
 \draw[->] (EPS without margin) -- node[above] {epstopdf\textsuperscript{*2}} (Outlined PDF without margin);
-\path[->] ($(Outlined PDF without margin.north east) + (-6pt,0pt)$) edge  [loop right,out=90,in=0,distance=35] node[right,xshift=2pt,yshift=2pt] {pdf\TeX で余白付与} ($(Outlined PDF without margin.north east) + (0pt,-6pt)$);
-\path[->] ($(Outlined PDF without margin.south east) + (0pt,6pt)$) edge  [loop right,out=0,in=-90,distance=35] node[right,xshift=2pt,yshift=-2pt] {Quartz APIで背景塗り} ($(Outlined PDF without margin.south east) + (-6pt,0pt)$);
+\path[->] ($(Outlined PDF without margin.north east) + (-6pt,0pt)$) edge [loop right,out=90,in=0,distance=35] node[right,xshift=2pt,yshift=2pt] {pdf\TeX で余白付与} ($(Outlined PDF without margin.north east) + (0pt,-6pt)$);
+\path[->] ($(Outlined PDF without margin.south east) + (0pt,6pt)$) edge [loop right,out=0,in=-90,distance=35] node[right,xshift=2pt,yshift=-2pt] {Quartz APIで背景塗り} ($(Outlined PDF without margin.south east) + (-6pt,0pt)$);
 
 \node[output node] (Multipage Outlined PDF) at ($(Outlined PDF without margin) + (-2,-2.5)$) {マルチページ\\アウトライン化PDF};
 \draw[->] (Outlined PDF without margin) -- node[left] {Quartz API} (Multipage Outlined PDF);
