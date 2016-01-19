@@ -96,7 +96,7 @@
 
 - (BOOL)pdftopsExists;
 {
-    if (!checkWhich(@"pdftops")) {
+    if (!checkWhich(@"xpdf-pdftops") && !checkWhich(@"pdftops")) {
         [self showNotFoundError:@"pdftops"];
         return NO;
     }
