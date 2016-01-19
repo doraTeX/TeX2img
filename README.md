@@ -21,7 +21,7 @@
 
 出力した画像ファイルは Word / Excel / PowerPoint や，Illustrator / InDesign などに貼り付けて利用することができます。
 
-その他詳細は[公式配布サイト](http://island.geocities.jp/loveinequality/)，[TeX Wiki](http://oku.edu.mie-u.ac.jp/~okumura/texwiki/?TeX2img) および [TeX2img FAQ](http://oku.edu.mie-u.ac.jp/~okumura/texwiki/?TeX2img%20FAQ) 参照。
+その他詳細は[公式配布サイト](http://island.geocities.jp/loveinequality/)，[TeX Wiki](https://texwiki.texjp.org/?TeX2img) および [TeX2img FAQ](https://texwiki.texjp.org/?TeX2img%20FAQ) 参照。
 
 ## Links
 - [Mac版の配布サイト](http://island.geocities.jp/loveinequality/)
