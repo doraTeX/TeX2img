@@ -432,7 +432,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/ruby;
-			shellScript = "require 'pathname'\nVER = `cat Resources/Info.plist |tr -d '\\012'| perl -e \"while(<>){if (\\\\$_ =~ /CFBundleVersion\\\\<\\\\/key\\\\>\\\\t\\\\<string\\\\>(.+?)\\<\\\\/string\\\\>/) {print \\\\$1;}}\"`\nBUILT_PRODUCTS_DIR = ENV['BUILT_PRODUCTS_DIR']\nPRODUCT_NAME = ENV['PRODUCT_NAME']\nDMG = \"#{BUILT_PRODUCTS_DIR}/#{PRODUCT_NAME}_#{VER}.dmg\"\nOUTPUT = \"#{BUILT_PRODUCTS_DIR}/deploy.sh\"\n\nscript = <<EOS\n#!/bin/bash\nhdiutil create -ov -srcfolder \"#{BUILT_PRODUCTS_DIR}/#{PRODUCT_NAME}.app\" -fs HFS+ -format UDZO -imagekey zlib-level=9 -volname \"#{PRODUCT_NAME}\" \"#{DMG}\"\n\nif ! [ $? -eq 0 ]; then\n    echo ERROR\n    exit 1\nfi\nEOS\n\nopen(OUTPUT, \"w\"){|f| f.write script}\nsystem(\"chmod +x #{OUTPUT}\")\n";
+			shellScript = "# coding: utf-8\nEncoding.default_external = 'utf-8'\nEncoding.default_internal = 'utf-8'\n\nVER = `cat Resources/Info.plist |tr -d '\\012'| perl -e \"while(<>){if (\\\\$_ =~ /CFBundleVersion\\\\<\\\\/key\\\\>\\\\t\\\\<string\\\\>(.+?)\\<\\\\/string\\\\>/) {print \\\\$1;}}\"`\nBUILT_PRODUCTS_DIR = ENV['BUILT_PRODUCTS_DIR']\nPRODUCT_NAME = ENV['PRODUCT_NAME']\nDMG = \"#{BUILT_PRODUCTS_DIR}/#{PRODUCT_NAME}_#{VER}.dmg\"\nOUTPUT = \"#{BUILT_PRODUCTS_DIR}/deploy.sh\"\n\nscript = <<EOS\n#!/bin/bash\nhdiutil create -ov -srcfolder \"#{BUILT_PRODUCTS_DIR}/#{PRODUCT_NAME}.app\" -fs HFS+ -format UDZO -imagekey zlib-level=9 -volname \"#{PRODUCT_NAME}\" \"#{DMG}\"\n\nif ! [ $? -eq 0 ]; then\n    echo ERROR\n    exit 1\nfi\nEOS\n\nopen(OUTPUT, \"w\"){|f| f.write script}\nsystem(\"chmod +x #{OUTPUT}\")\n";
 		};
 		34A517301B8CBB790028FA5F /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
