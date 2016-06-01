@@ -16,11 +16,11 @@
 "inputFileNotFoundErrorMsg" = "Input file does not exist.\n%@";
 "inputFileTypeErrorMsg" = "Input file type is invalid.\nThe extension must be tex/pdf/ps.\n%@";
 "fileFormatErrorMsg" = "Invalid file format.\n%@";
-"fileGenerationErrorMsg" = "%@ cannot be created so generation has been aborted.\nCheck permission.";
+"fileGenerationErrorMsg" = "%@ could not be created. Generation has been aborted.";
 "execErrorMsg" = "%@ cannot be executed.\nCheck errors in the source code.";
 "formatErrorMsg" = "The value of \"%@\" in the Preferences pane is invalid.";
 "cannotOverwriteErrorMsg" = "%@ cannot be overwritten.";
-"cannotCreateDirectoryErrorMsg" = "%@ cannnot be created as a folder.";
+"cannotCreateDirectoryErrorMsg" = "%@ cannot be created as a folder.";
 "compileErrorMsg" = "A TeX compile error occurred.\nCheck errors in the source code.\nIf there are no errors in the source, check encodings in Preferences.";
 "imageSizeErrorMsg" = "An image format error occurred.\nThe image size may be too large.\nTry lower the resolution level.";
 "initSettingsMsg" = "Initial Settings";

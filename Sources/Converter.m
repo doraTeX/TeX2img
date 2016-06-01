@@ -416,6 +416,7 @@
         for (NSString *line in [bboxOutput componentsSeparatedByString:@"\n"]) {
             if ((line.length >= 5) && [[line substringWithRange:NSMakeRange(0, 5)] isEqualToString:@"Page "]) { // "Page "から始まる行について
                 currentPage = [line substringFromIndex:5].integerValue;
+                success = YES;
                 continue;
             }
             if ((line.length >= 14) && [[line substringWithRange:NSMakeRange(0, 14)] isEqualToString:@"%%BoundingBox:"]) { // "%%BoundingBox:"から始まる行について
@@ -426,6 +427,12 @@
                 bboxDictionary[[NSString stringWithFormat:@"%@-%ld-1", pdfPath.lastPathComponent, currentPage]] = [line stringByAppendingString:@"\n"];
                 continue;
             }
+        }
+
+        if (!success) {
+            [controller showExecError:@"Ghostscript"];
+            [fileManager removeItemAtPath:bboxFilePath error:nil];
+            return nil;
         }
     }
     
@@ -458,6 +465,11 @@
                                                                   hires:NO
                                                               addHeader:YES] :
         [self bboxStringOfPdf:pdfPath page:page hires:NO];
+    
+    if (!bbStr) {
+        return nil;
+    }
+    
     // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiResのBBoxを使うのが得策。
     
     return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin=-#1bp\\relax\\pdfvorigin=#2bp\\relax\\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight=\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight\\relax\\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
@@ -493,10 +505,18 @@
     NSMutableString *cropTeX = [NSMutableString stringWithString:@"\\pdfoutput=1"];
 
     if (page > 0) {
-        [cropTeX appendString:[self buildCropTeXSource:pdfPath page:page addMargin:addMargin]];
+        NSString *cropTeXsource = [self buildCropTeXSource:pdfPath page:page addMargin:addMargin];
+        if (!cropTeXsource) {
+            return NO;
+        }
+        [cropTeX appendString:cropTeXsource];
     } else {
         for (NSUInteger i=1; i<=totalPages; i++) {
-            [cropTeX appendString:[self buildCropTeXSource:pdfPath page:i addMargin:addMargin]];
+            NSString *cropTeXsource = [self buildCropTeXSource:pdfPath page:i addMargin:addMargin];
+            if (!cropTeXsource) {
+                return NO;
+            }
+            [cropTeX appendString:cropTeXsource];
         }
     }
     [cropTeX appendString:@"\\end"];
@@ -851,12 +871,21 @@
     } else {
         cropPdfFilePath = pdfFilePath;
     }
-	
-    [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: PDF → %@ (Page %ld)\n", extension.uppercaseString, page] quiet:quietFlag];
-     
+    
 	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
 	NSData *pageData = [[PDFDocument documentWithFilePath:cropPdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
-	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
+    if (!pageData) {
+        [controller showFileGenerationError:cropPdfFilePath];
+        return NO;
+    }
+
+    NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
+    if (!pdfImageRep) {
+        [controller showFileGenerationError:cropPdfFilePath];
+        return NO;
+    }
+
+    [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: PDF → %@ (Page %ld)\n", extension.uppercaseString, page] quiet:quietFlag];
 
 	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
     NSRect rect = pdfImageRep.bounds;
@@ -877,6 +906,10 @@
     
 	NSSize size = NSMakeSize((NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin,
                              (NSInteger)(height * resolutionLevel) + thisTopMargin + thisBottomMargin);
+    
+    if (!(size.height > 0 && size.width > 0)) {
+        return NO;
+    }
 	
 	NSImage *image = [[NSImage alloc] initWithSize:size];
 	[image lockFocus];
