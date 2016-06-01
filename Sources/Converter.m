@@ -878,12 +878,21 @@
     } else {
         cropPdfFilePath = pdfFilePath;
     }
-	
-    [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: PDF → %@ (Page %ld)\n", extension.uppercaseString, page] quiet:quietFlag];
-     
+    
 	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
 	NSData *pageData = [[PDFDocument documentWithFilePath:cropPdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
-	NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
+    if (!pageData) {
+        [controller showFileGenerationError:cropPdfFilePath];
+        return NO;
+    }
+
+    NSPDFImageRep *pdfImageRep = [[NSPDFImageRep alloc] initWithData:pageData];
+    if (!pdfImageRep) {
+        [controller showFileGenerationError:cropPdfFilePath];
+        return NO;
+    }
+
+    [controller appendOutputAndScroll:[NSString stringWithFormat:@"TeX2img: PDF → %@ (Page %ld)\n", extension.uppercaseString, page] quiet:quietFlag];
 
 	// 新しい NSImage オブジェクトを作成し，その中に NSPDFImageRep オブジェクトの中身を描画
     NSRect rect = pdfImageRep.bounds;
@@ -910,6 +919,10 @@
     
 	NSSize size = NSMakeSize((NSInteger)(width * resolutionLevel) + thisLeftMargin + thisRightMargin,
                              (NSInteger)(height * resolutionLevel) + thisTopMargin + thisBottomMargin);
+    
+    if (!(size.height > 0 && size.width > 0)) {
+        return NO;
+    }
 	
 	NSImage *image = [[NSImage alloc] initWithSize:size];
 	[image lockFocus];
