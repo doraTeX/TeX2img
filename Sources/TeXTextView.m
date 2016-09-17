@@ -87,8 +87,7 @@
 
 - (BOOL)validateMenuItem:(NSMenuItem*)menuItem
 {
-    if ((menuItem.action == @selector(normalizeSelectedString:)) ||
-        (menuItem.action == @selector(showCharacterInfo:))){
+    if (menuItem.action == @selector(normalizeSelectedString:)){
         return (self.selectedRange.length > 0);
     }
     

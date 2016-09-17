@@ -126,7 +126,7 @@
     *encoding = 0;
     
     CFStringEncodings const StringEncodingList[] = {
-        kCFStringEncodingUTF8, // Unicode (UTF-8)
+        (CFStringEncodings)kCFStringEncodingUTF8, // Unicode (UTF-8)
         kCFStringEncodingInvalidId, // ----------
         
         kCFStringEncodingShiftJIS, // Japanese (Shift JIS)
@@ -137,11 +137,11 @@
         kCFStringEncodingISO_2022_JP, // Japanese (ISO 2022-JP)
         kCFStringEncodingInvalidId, // ----------
         
-        kCFStringEncodingUnicode, // Unicode (UTF-16), kCFStringEncodingUTF16(in 10.4)
+        (CFStringEncodings)kCFStringEncodingUnicode, // Unicode (UTF-16), kCFStringEncodingUTF16(in 10.4)
         kCFStringEncodingInvalidId, // ----------
         
-        kCFStringEncodingMacRoman, // Western (Mac OS Roman)
-        kCFStringEncodingWindowsLatin1, // Western (Windows Latin 1)
+        (CFStringEncodings)kCFStringEncodingMacRoman, // Western (Mac OS Roman)
+        (CFStringEncodings)kCFStringEncodingWindowsLatin1, // Western (Windows Latin 1)
         kCFStringEncodingInvalidId, // ----------
         
         kCFStringEncodingGB_18030_2000,  // Chinese (GB18030)
@@ -172,24 +172,24 @@
         kCFStringEncodingMacIcelandic, // Icelandic (Mac OS)
         kCFStringEncodingInvalidId, // ----------
         
-        kCFStringEncodingISOLatin1, // Western (ISO Latin 1)
+        (CFStringEncodings)kCFStringEncodingISOLatin1, // Western (ISO Latin 1)
         kCFStringEncodingISOLatin2, // Central European (ISO Latin 2)
         kCFStringEncodingISOLatin3, // Western (ISO Latin 3)
         kCFStringEncodingISOLatin4, // Central European (ISO Latin 4)
         kCFStringEncodingISOLatin5, // Turkish (ISO Latin 5)
         kCFStringEncodingDOSLatinUS, // Latin-US (DOS)
         kCFStringEncodingWindowsLatin2, // Central European (Windows Latin 2)
-        kCFStringEncodingNextStepLatin, // Western (NextStep)
-        kCFStringEncodingASCII,  // Western (ASCII)
-        kCFStringEncodingNonLossyASCII, // Non-lossy ASCII
+        (CFStringEncodings)kCFStringEncodingNextStepLatin, // Western (NextStep)
+        (CFStringEncodings)kCFStringEncodingASCII,  // Western (ASCII)
+        (CFStringEncodings)kCFStringEncodingNonLossyASCII, // Non-lossy ASCII
         kCFStringEncodingInvalidId, // ----------
         
         // Encodings available 10.4 and later (CotEditor added in 0.8.0)
-        kCFStringEncodingUTF16BE, // Unicode (UTF-16BE)
-        kCFStringEncodingUTF16LE, // Unicode (UTF-16LE)
-        kCFStringEncodingUTF32, // Unicode (UTF-32)
-        kCFStringEncodingUTF32BE, // Unicode (UTF-32BE)
-        kCFStringEncodingUTF32LE, // Unicode (UTF-16LE)
+        (CFStringEncodings)kCFStringEncodingUTF16BE, // Unicode (UTF-16BE)
+        (CFStringEncodings)kCFStringEncodingUTF16LE, // Unicode (UTF-16LE)
+        (CFStringEncodings)kCFStringEncodingUTF32, // Unicode (UTF-32)
+        (CFStringEncodings)kCFStringEncodingUTF32BE, // Unicode (UTF-32BE)
+        (CFStringEncodings)kCFStringEncodingUTF32LE, // Unicode (UTF-16LE)
     };
     NSUInteger const kSizeOfCFStringEncodingList = sizeof(StringEncodingList)/sizeof(CFStringEncodings);
     
