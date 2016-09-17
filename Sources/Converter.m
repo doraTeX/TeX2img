@@ -502,7 +502,7 @@
     }
     
     NSUInteger totalPages = doc.pageCount;
-    NSMutableString *cropTeX = [NSMutableString stringWithString:@"\\pdfoutput=1"];
+    NSMutableString *cropTeX = [NSMutableString stringWithFormat:@"\\pdfoutput=1\n\\pdfminorversion=%d\n", doc.minorVersion];
 
     if (page > 0) {
         NSString *cropTeXsource = [self buildCropTeXSource:pdfPath page:page addMargin:addMargin];
