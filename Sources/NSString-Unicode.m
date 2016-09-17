@@ -169,7 +169,7 @@
     }
     
     const char *utf8_src = self.UTF8String;
-    size_t length = strlen(utf8_src) * FACTOR;
+    int length = (int)(strlen(utf8_src) * FACTOR);
     
     UChar *utf16_src = (UChar*)malloc(sizeof(UChar) * length);
     u_strFromUTF8(utf16_src, length, NULL, utf8_src, -1, &error);

@@ -130,7 +130,7 @@
     deleteTmpFileFlag = [aProfile boolForKey:DeleteTmpFileKey];
     copyToClipboard = [aProfile boolForKey:CopyToClipboardKey];
     autoPasteFlag = [aProfile boolForKey:AutoPasteKey];
-    autoPasteDestination = [aProfile integerForKey:AutoPasteDestinationKey];
+    autoPasteDestination = (AutoPasteDestination)[aProfile integerForKey:AutoPasteDestinationKey];
     embedInIllustratorFlag = [aProfile boolForKey:EmbedInIllustratorKey];
     ungroupFlag = [aProfile boolForKey:UngroupKey];
     ignoreErrorsFlag = [aProfile boolForKey:IgnoreErrorKey];
@@ -140,7 +140,7 @@
     useBP = ([aProfile integerForKey:UnitKey] == BP_UNIT_TAG);
     speedPriorityMode = ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG);
     embedSource = [aProfile boolForKey:EmbedSourceKey];
-    pageBoxType = [aProfile integerForKey:PageBoxKey];
+    pageBoxType = (CGPDFBox)[aProfile integerForKey:PageBoxKey];
     delay = [aProfile floatForKey:DelayKey];
     loopCount = [aProfile integerForKey:LoopCountKey];
     fillColor = [aProfile colorForKey:FillColorKey];
@@ -239,7 +239,7 @@
         mstr = [self substituteUTF:mstr];
     }
 	
-	UInt32 enc;
+	unsigned long enc;
 	if ([encoding isEqualToString:PTEX_ENCODING_SJIS]) {
 		enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingDOSJapanese);
 	} else if ([encoding isEqualToString:PTEX_ENCODING_EUC]) {
@@ -1046,7 +1046,7 @@
             CGImageDestinationAddImage(destination, rep.CGImage, (__bridge CFDictionaryRef)frameProperties);
         } else {
             success = NO;
-            stop = YES;
+            *stop = YES;
         }
     }];
     

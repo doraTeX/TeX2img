@@ -294,7 +294,7 @@ static NSString *endcommentString = @"›";
 			self.selectedRange = NSMakeRange(replaceLocation, newString.length);
 			[self display];
 			NSDate *myDate = [NSDate date];
-			while (myDate.timeIntervalSinceNow > - 0.050) ;
+            while (myDate.timeIntervalSinceNow > - 0.050) {} // empty loop
 			// set the insertion point
             if (insRange.location != NSNotFound) { // position of #INS#
 				textLocation = replaceLocation + insRange.location;

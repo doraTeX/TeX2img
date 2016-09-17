@@ -178,7 +178,7 @@ typedef enum {
 @property (atomic, strong) Converter *converter;
 @property (atomic, strong) NSTask *runningTask;
 @property (atomic, strong) NSPipe *outputPipe;
-@property (atomic, assign) BOOL *taskKilled;
+@property (atomic, assign) BOOL taskKilled;
 
 @end
 
@@ -678,7 +678,7 @@ typedef enum {
 
     autoPasteCheckBox.state = [aProfile integerForKey:AutoPasteKey];
     
-    AutoPasteDestination autoPasteDestionation = [aProfile integerForKey:AutoPasteDestinationKey];
+    AutoPasteDestination autoPasteDestionation = (AutoPasteDestination)[aProfile integerForKey:AutoPasteDestinationKey];
     if (autoPasteDestionation == 0) {
         autoPasteDestionation = apWord;
     }
@@ -939,7 +939,7 @@ typedef enum {
         inputSourceFileTextField.stringValue = inputSourceFilePath;
     }
     
-    InputMethod inputMethod = [aProfile integerForKey:InputMethodKey];
+    InputMethod inputMethod = (InputMethod)[aProfile integerForKey:InputMethodKey];
     switch (inputMethod) {
         case DIRECT:
             [self sourceSettingChanged:directInputButton];
