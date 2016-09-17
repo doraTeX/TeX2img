@@ -254,7 +254,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     
     options = (struct option*)malloc(sizeof(struct option) * OPTION_NUM);
     
-    NSUInteger i = 0;
+    int i = 0;
     options[i].name = "resolution";
     options[i].has_arg = required_argument;
     options[i].flag = NULL;
