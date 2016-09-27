@@ -1228,6 +1228,10 @@
     [str replaceAllOccurrencesOfString:@"❀" withString:@"\\ajWhiteFlorette " addingPercentForEndOfLine:NO];
     [str replaceAllOccurrencesOfString:@"✿" withString:@"\\ajBlackFlorette " addingPercentForEndOfLine:NO];
     
+    [str replaceAllOccurrencesOfString:@"髙" withString:@"\\ajHashigoTaka " addingPercentForEndOfLine:NO];
+    [str replaceAllOccurrencesOfString:@"𠮷" withString:@"\\ajTsuchiYoshi " addingPercentForEndOfLine:NO];
+    [str replaceAllOccurrencesOfString:@"﨑" withString:@"\\ajTatsuSaki " addingPercentForEndOfLine:NO];
+    [str replaceAllOccurrencesOfString:@"濵" withString:@"\\ajMayuHama " addingPercentForEndOfLine:NO];
     return str;
 }
 
@@ -1541,6 +1545,11 @@
     [str replaceAllOccurrencesOfPattern:@"\\\\ajBlackSesame\\s*" withString:@"﹅"];
     [str replaceAllOccurrencesOfPattern:@"\\\\ajWhiteFlorette\\s*" withString:@"❀"];
     [str replaceAllOccurrencesOfPattern:@"\\\\ajBlackFlorette\\s*" withString:@"✿"];
+
+    [str replaceAllOccurrencesOfPattern:@"\\\\ajHashigoTaka\\s*" withString:@"髙"];
+    [str replaceAllOccurrencesOfPattern:@"\\\\ajTsuchiYoshi\\s*" withString:@"𠮷"];
+    [str replaceAllOccurrencesOfPattern:@"\\\\ajTatsuSaki\\s*" withString:@"﨑"];
+    [str replaceAllOccurrencesOfPattern:@"\\\\ajMayuHama\\s*" withString:@"濵"];
 
     return str;
 }
