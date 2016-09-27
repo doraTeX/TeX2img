@@ -250,10 +250,10 @@
     }
 }
 
-- (void)insertText:(id)aString
+- (void)insertText:(id)aString replacementRange:(NSRange)replacementRange
 {
     if (![aString isKindOfClass:NSString.class]) {
-        [super insertText:aString];
+        [super insertText:aString replacementRange:replacementRange];
         return;
     }
 
@@ -262,7 +262,7 @@
     unichar texChar = 0x5c;
     
     if ([theString isEqualToString:@"¥"] && [currentProfile boolForKey:ConvertYenMarkKey]) {
-        [super insertText:@"\\"];
+        [super insertText:@"\\" replacementRange:replacementRange];
     } else {
         if (theString.length == 1 && [currentProfile boolForKey:AutoCompleteKey] && autocompletionDictionary) {
             if ([theString characterAtIndex:0] >= 128 ||
@@ -279,13 +279,13 @@
             }
         }
         
-        [super insertText:aString];
+        [super insertText:aString replacementRange:replacementRange];
     }
     [self colorizeText];
 }
 
 - (void)insertTextWithIndicator:(id)aString {
-    [self insertText:aString];
+    [self insertText:aString replacementRange:self.selectedRange];
     
     if (![aString isKindOfClass:NSString.class]) {
         return;
