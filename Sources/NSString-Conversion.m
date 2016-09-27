@@ -251,7 +251,10 @@
     src = @"\\ajKuroMaru{0}";
     dest = [NSString stringWithFormat:@"%C", (unichar)0x24FF];
     [str replaceAllOccurrencesOfString:src withString:dest addingPercentForEndOfLine:NO];
-    
+
+    src = @"\\ajKuroMaru0";
+    [str replaceAllOccurrencesOfString:src withString:dest addingPercentForEndOfLine:NO];
+
     for (int i=1; i<=10; i++) {
         src = [NSString stringWithFormat:@"\\ajKuroMaru{%d}", i];
         dest = [NSString stringWithFormat:@"%C", (unichar)(0x2776 + i - 1)];
@@ -347,7 +350,13 @@
         NSString *dest = [NSString stringWithFormat:@"%C", (unichar)(0x24D0 + i - 1)];
         [str replaceAllOccurrencesOfString:src withString:dest addingPercentForEndOfLine:NO];
     }
-    
+
+    for (int i=1; i<=9; i++) {
+        NSString *src = [NSString stringWithFormat:@"\\ajMarualph%d", i];
+        NSString *dest = [NSString stringWithFormat:@"%C", (unichar)(0x24D0 + i - 1)];
+        [str replaceAllOccurrencesOfString:src withString:dest addingPercentForEndOfLine:NO];
+    }
+
     return str;
 }
 
