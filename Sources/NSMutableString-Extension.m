@@ -34,6 +34,25 @@
     }
 }
 
+- (void)replaceAllOccurrencesOfPattern:(NSString*)pattern usingBlock:(NSString* (^)(NSString*, NSArray<NSString*>*))replace
+{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
+    
+    NSArray<NSTextCheckingResult*> *matches = [regex matchesInString:self options:0 range:NSMakeRange(0, self.length)];
+    
+    NSEnumerator<NSTextCheckingResult*> *enumerator = matches.reverseObjectEnumerator;
+    NSTextCheckingResult *match;
+    
+    while ((match = [enumerator nextObject])) {
+        NSRange range = match.range;
+        NSMutableArray<NSString*> *groups = [NSMutableArray<NSString*> array];
+        for (NSUInteger i=1; i<match.numberOfRanges; i++) {
+            [groups addObject:[self substringWithRange:[match rangeAtIndex:i]]];
+        }
+        [self replaceCharactersInRange:range withString:replace([self substringWithRange:range], groups)];
+    }
+}
+
 - (void)replaceAllOccurrencesOfString:(NSString*)target withString:(NSString*)replacement addingPercentForEndOfLine:(BOOL)addingPercent
 {
     if (addingPercent) {

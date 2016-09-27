@@ -8,6 +8,7 @@
 #import "NSArray-Extension.h"
 #import "NSIndexSet-Extension.h"
 #import "NSString-Extension.h"
+#import "NSString-Conversion.h"
 #import "NSDictionary-Extension.h"
 #import "NSMutableString-Extension.h"
 #import "NSDate-Extension.h"
@@ -189,39 +190,7 @@
 // JIS X 0208 外の文字を \UTF に置き換える
 - (NSMutableString*)substituteUTF:(NSString*)dataString
 {
-	NSMutableString *utfString, *newString = [NSMutableString string];
-	unichar texChar = 0x5c;
-	NSRange charRange;
-	NSString *subString;
-	NSUInteger startl, endl, end;
-	
-	charRange = NSMakeRange(0,1);
-	endl = 0;
-	while (charRange.location < dataString.length) {
-		if (charRange.location == endl) {
-			[dataString getLineStart:&startl end:&endl contentsEnd:&end forRange:charRange];
-		}
-		charRange = [dataString rangeOfComposedCharacterSequenceAtIndex:charRange.location];
-		subString = [dataString substringWithRange: charRange];
-		
-		if (![subString canBeConvertedToEncoding:CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP)]) {
-			if ([subString characterAtIndex:0] == 0x2015) {
-				utfString = [NSMutableString stringWithFormat:@"%C", 0x2014];
-			} else {
-				utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}", texChar, [subString characterAtIndex:0]];
-			}
-			if ((charRange.location + charRange.length) == end) {
-				[utfString appendString:@"%"];
-			}
-			[newString appendString:utfString];
-		} else {
-			[newString appendString:subString];
-		}
-		charRange.location += charRange.length;
-		charRange.length = 1;
-	}
-	
-	return newString;
+    return [NSMutableString stringWithString:dataString.stringByReplacingUnicodeCharactersWithUTF];
 }
 
 

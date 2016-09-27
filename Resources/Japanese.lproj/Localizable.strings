@@ -62,6 +62,7 @@
 "Skin Tone VI" = "スキントーン VI";
 "Unicode Normalization" = "Unicode 正規化";
 "Auto Completion" = "オートコンプリート";
+"Do you apply it to the entire document?" = "文書全体に対して適用しますか？";
 "Character Type Conversion" = "文字種一括変換";
 "Hiragana to Katakana" = "ひらがな → カタカナ";
 "Katakana to Hiragana" = "カタカナ → ひらがな";
@@ -71,5 +72,6 @@
 "Halfwidth Alphabets to Fullwidth Alphabets" = "半角英字 → 全角英字";
 "Unicode Characters to AJ Macros" = "Unicode文字 → ajmacros";
 "AJ Macros to Unicode Characters" = "ajmacros → Unicode文字";
-"Do you apply it to the entire document?" = "文書全体に対して適用しますか？";
+"Unicode Characters to UTF" = "Unicode文字 → \\UTF / \\CID";
+"UTF to Unicode Characters" = "\\UTF → Unicode文字";
 

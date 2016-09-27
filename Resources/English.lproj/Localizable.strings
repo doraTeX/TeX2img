@@ -62,6 +62,7 @@
 "Skin Tone VI" = "Dark";
 "Unicode Normalization" = "Unicode Normalization";
 "Auto Completion" = "Auto Completion";
+"Do you apply it to the entire document?" = "Do you apply it to the entire document?";
 "Character Type Conversion" = "Character Type Conversion";
 "Hiragana to Katakana" = "Hiragana → Katakana";
 "Katakana to Hiragana" = "Katakana → Hiragana";
@@ -71,5 +72,6 @@
 "Halfwidth Alphabets to Fullwidth Alphabets" = "Halfwidth Alphabets → Fullwidth Alphabets";
 "Unicode Characters to AJ Macros" = "Unicode Characters → AJ Macros";
 "AJ Macros to Unicode Characters" = "AJ Macros → Unicode Characters";
-"Do you apply it to the entire document?" = "Do you apply it to the entire document?";
+"Unicode Characters to UTF" = "Unicode Characters → \\UTF / \\CID";
+"UTF to Unicode Characters" = "\\UTF → Unicode Characters";
 

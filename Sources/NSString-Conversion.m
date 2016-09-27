@@ -3,6 +3,70 @@
 
 @implementation NSString (Conversion)
 
+// JIS X 0208 外の文字を \UTF / \CID に置き換える
+-(NSString*)stringByReplacingUnicodeCharactersWithUTF
+{
+    NSMutableString *utfString;
+    NSMutableString *newString = [NSMutableString string];
+    unichar texChar = 0x5c;
+    NSRange charRange = NSMakeRange(0,1);
+    NSUInteger startl, endl = 0, end;
+    
+    while (charRange.location < self.length) {
+        if (charRange.location == endl) {
+            [self getLineStart:&startl end:&endl contentsEnd:&end forRange:charRange];
+        }
+        charRange = [self rangeOfComposedCharacterSequenceAtIndex:charRange.location];
+        NSString *subString = [self substringWithRange:charRange];
+        
+        if (![subString canBeConvertedToEncoding:CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISO_2022_JP)]) {
+            NSTextView *textView = [NSTextView new];
+            [textView.textStorage setAttributedString:[[NSAttributedString alloc] initWithString:subString]];
+
+            NSRange aCIDRange;
+            NSGlyphInfo *aGlyph = [textView.textStorage attribute:NSGlyphInfoAttributeName
+                                                          atIndex:0
+                                                   effectiveRange:&aCIDRange];
+            if (aGlyph) {
+                utfString = [NSMutableString stringWithFormat:@"%CCID{%ld}", texChar, aGlyph.characterIdentifier];
+            } else if (charRange.length > 1) {
+                NSLayoutManager *aLayout = textView.layoutManager;
+                utfString = [NSMutableString stringWithFormat:@"%CCID{%d}", texChar, [aLayout glyphAtIndex:0]];
+            } else if ([subString characterAtIndex:0] == 0x2015) {
+                utfString = [NSMutableString stringWithFormat:@"%C", 0x2014];
+            } else {
+                utfString = [NSMutableString stringWithFormat:@"%CUTF{%04X}", texChar, [subString characterAtIndex:0]];
+            }
+            if (((charRange.location + charRange.length) == end) && ((charRange.location + charRange.length) < self.length)) {
+                [utfString appendString:@"%"];
+            }
+            [newString appendString:utfString];
+        } else {
+            [newString appendString:subString];
+        }
+        charRange.location += charRange.length;
+        charRange.length = 1;
+    }
+    
+    return newString;
+}
+
+// \UTF{xxxx} → Unicode文字
+-(NSString*)stringByReplacingUTFWithUnicodeCharacters
+{
+    NSMutableString *str = [NSMutableString stringWithString:self];
+    
+    [str replaceAllOccurrencesOfPattern:@"\\\\UTF\\{([0-9A-Fa-z]{4})\\}" usingBlock:^NSString*(NSString *match, NSArray<NSString*> *groups) {
+        int u, d;
+        if (sscanf(groups[0].UTF8String, "%02X%02X", &u, &d) != 2) {
+            return match;
+        }
+        return [NSString stringWithFormat: @"%C", (unichar)(256*u + d)];
+    }];
+    
+    return str;
+}
+
 // あ → ア
 -(NSString*)stringByReplacingHiraganaWithKatakana
 {
@@ -28,7 +92,7 @@
 }
 
 // 1 → １
--(NSString*)stringByReplacingHankakuSujiWithZenkakuSuji
+-(NSString*)stringByReplacingHalfwidthDigitsWithFullwidthDigits
 {
     NSMutableString *str = [NSMutableString stringWithString:self];
     for (int i=0; i<=9; i++) {
@@ -40,7 +104,7 @@
 }
 
 // １ → 1
--(NSString*)stringByReplacingZenkakuSujiWithHankakuSuji
+-(NSString*)stringByReplacingFullwidthDigitsWithHalfwidthDigits
 {
     NSMutableString *str = [NSMutableString stringWithString:self];
     for (int i=0; i<=9; i++) {
@@ -52,7 +116,7 @@
 }
 
 // A → Ａ, a → ａ
--(NSString*)stringByReplacingHankakuAlphWithZenkakuAlph
+-(NSString*)stringByReplacingHalfwidthAlphabetsWithFullwidthAlphabets
 {
     NSMutableString *str = [NSMutableString stringWithString:self];
     
@@ -74,7 +138,7 @@
 }
 
 // Ａ → A, ａ → a
--(NSString*)stringByReplacingZenkakuAlphWithHankakuAlph
+-(NSString*)stringByReplacingFullwidthAlphabetsWithHalfwidthAlphabets
 {
     NSMutableString *str = [NSMutableString stringWithString:self];
     

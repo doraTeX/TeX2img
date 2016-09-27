@@ -1,17 +1,22 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (Conversion)
+
+// JIS X 0208 外の文字を \UTF に置き換える
+-(NSString*)stringByReplacingUnicodeCharactersWithUTF;
+-(NSString*)stringByReplacingUTFWithUnicodeCharacters;
+
 // あ ⇄ ア
 -(NSString*)stringByReplacingHiraganaWithKatakana;
 -(NSString*)stringByReplacingKatakanaWithHiragana;
 
 // １ ⇄ 1
--(NSString*)stringByReplacingHankakuSujiWithZenkakuSuji;
--(NSString*)stringByReplacingZenkakuSujiWithHankakuSuji;
+-(NSString*)stringByReplacingHalfwidthDigitsWithFullwidthDigits;
+-(NSString*)stringByReplacingFullwidthDigitsWithHalfwidthDigits;
 
 // Ａ ⇄ A, ａ ⇄ a
--(NSString*)stringByReplacingHankakuAlphWithZenkakuAlph;
--(NSString*)stringByReplacingZenkakuAlphWithHankakuAlph;
+-(NSString*)stringByReplacingHalfwidthAlphabetsWithFullwidthAlphabets;
+-(NSString*)stringByReplacingFullwidthAlphabetsWithHalfwidthAlphabets;
 
 // Unicode文字 ⇄ ajmacros
 -(NSString*)stringByReplacingUnicodeCharactersWithAjMacros;

@@ -356,6 +356,19 @@
                                                 <action selector="convertCharacterType:" target="-1" id="Xsp-eJ-dSH"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="npB-XO-IRt"/>
+                                        <menuItem title="Unicode文字 → \UTF / \CID" tag="9" id="eq5-iU-vGW">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="convertCharacterType:" target="-1" id="VVz-IA-dt7"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="\UTF → Unicode文字" tag="10" id="m3f-D3-tgm">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="convertCharacterType:" target="-1" id="81I-pG-NAr"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

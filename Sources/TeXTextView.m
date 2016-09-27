@@ -104,7 +104,9 @@
            @[@(FullwidthAlphabetsToHalfwidthAlphabets_Tag), localizedString(@"Fullwidth Alphabets to Halfwidth Alphabets")],
            @[@(HalfwidthAlphabetsToFullwidthAlphabets_Tag), localizedString(@"Halfwidth Alphabets to Fullwidth Alphabets")],
            @[@(UnicodeCharactersToAJMacros_Tag), localizedString(@"Unicode Characters to AJ Macros")],
-           @[@(AJMacrosToUnicodeCharacters_Tag), localizedString(@"AJ Macros to Unicode Characters")]
+           @[@(AJMacrosToUnicodeCharacters_Tag), localizedString(@"AJ Macros to Unicode Characters")],
+           @[@(UnicodeCharactersToUTF_Tag), localizedString(@"Unicode Characters to UTF")],
+           @[@(UTFToUnicodeCharacters_Tag), localizedString(@"UTF to Unicode Characters")]
            ] enumerateObjectsUsingBlock:^(NSArray *pair, NSUInteger idx, BOOL *stop) {
                NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:(NSString*)(pair[1]) action:@selector(convertCharacterType:) keyEquivalent:@""];
                menuItem.tag = [pair[0] integerValue];
@@ -685,19 +687,19 @@
             undoKey = localizedString(@"Katakana to Hiragana");
             break;
         case FullwidthDigitsToHalfwidthDigits_Tag:
-            newString = selectedString.stringByReplacingZenkakuSujiWithHankakuSuji;
+            newString = selectedString.stringByReplacingFullwidthDigitsWithHalfwidthDigits;
             undoKey = localizedString(@"Fullwidth Digits to Halfwidth Digits");
             break;
         case HalfwidthDigitsToFullwidthDigits_Tag:
-            newString = selectedString.stringByReplacingHankakuSujiWithZenkakuSuji;
+            newString = selectedString.stringByReplacingHalfwidthDigitsWithFullwidthDigits;
             undoKey = localizedString(@"Halfwidth Digits to Fullwidth Digits");
             break;
         case FullwidthAlphabetsToHalfwidthAlphabets_Tag:
-            newString = selectedString.stringByReplacingZenkakuAlphWithHankakuAlph;
+            newString = selectedString.stringByReplacingFullwidthAlphabetsWithHalfwidthAlphabets;
             undoKey = localizedString(@"Fullwidth Alphabets to Halfwidth Alphabets");
             break;
         case HalfwidthAlphabetsToFullwidthAlphabets_Tag:
-            newString = selectedString.stringByReplacingHankakuAlphWithZenkakuAlph;
+            newString = selectedString.stringByReplacingHalfwidthAlphabetsWithFullwidthAlphabets;
             undoKey = localizedString(@"Halfwidth Alphabets to Fullwidth Alphabets");
             break;
         case UnicodeCharactersToAJMacros_Tag:
@@ -707,6 +709,14 @@
         case AJMacrosToUnicodeCharacters_Tag:
             newString = selectedString.stringByReplacingAjMacrosWithUnicodeCharacters;
             undoKey = localizedString(@"AJ Macros to Unicode Characters");
+            break;
+        case UnicodeCharactersToUTF_Tag:
+            newString = selectedString.stringByReplacingUnicodeCharactersWithUTF;
+            undoKey = localizedString(@"Unicode Characters to UTF");
+            break;
+        case UTFToUnicodeCharacters_Tag:
+            newString = selectedString.stringByReplacingUTFWithUnicodeCharacters;
+            undoKey = localizedString(@"UTF to Unicode Characters");
             break;
         default:
             newString = selectedString;
