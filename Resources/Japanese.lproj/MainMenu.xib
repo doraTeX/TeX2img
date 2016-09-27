@@ -363,7 +363,7 @@
                                                 <action selector="convertCharacterType:" target="-1" id="VVz-IA-dt7"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="\UTF → Unicode文字" tag="10" id="m3f-D3-tgm">
+                                        <menuItem title="\UTF / \CID → Unicode文字" tag="10" id="m3f-D3-tgm">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="convertCharacterType:" target="-1" id="81I-pG-NAr"/>

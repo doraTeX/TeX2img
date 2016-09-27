@@ -73,5 +73,5 @@
 "Unicode Characters to AJ Macros" = "Unicode Characters → AJ Macros";
 "AJ Macros to Unicode Characters" = "AJ Macros → Unicode Characters";
 "Unicode Characters to UTF" = "Unicode Characters → \\UTF / \\CID";
-"UTF to Unicode Characters" = "\\UTF → Unicode Characters";
+"UTF to Unicode Characters" = "\\UTF / \\CID → Unicode Characters";
 

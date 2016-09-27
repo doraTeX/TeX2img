@@ -363,7 +363,7 @@
                                                 <action selector="convertCharacterType:" target="-1" id="GoE-hQ-PFa"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="\UTF → Unicode Characters" tag="10" id="MBg-HB-dcC">
+                                        <menuItem title="\UTF / \CID → Unicode Characters" tag="10" id="MBg-HB-dcC">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="convertCharacterType:" target="-1" id="wjt-qk-iWG"/>
