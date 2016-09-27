@@ -62,3 +62,14 @@
 "Skin Tone VI" = "Dark";
 "Unicode Normalization" = "Unicode Normalization";
 "Auto Completion" = "Auto Completion";
+"Character Type Conversion" = "Character Type Conversion";
+"Hiragana to Katakana" = "Hiragana → Katakana";
+"Katakana to Hiragana" = "Katakana → Hiragana";
+"Fullwidth Digits to Halfwidth Digits" = "Fullwidth Digits → Halfwidth Digits";
+"Halfwidth Digits to Fullwidth Digits" = "Halfwidth Digits → Fullwidth Digits";
+"Fullwidth Alphabets to Halfwidth Alphabets" = "Fullwidth Alphabets → Halfwidth Alphabets";
+"Halfwidth Alphabets to Fullwidth Alphabets" = "Halfwidth Alphabets → Fullwidth Alphabets";
+"Unicode Characters to AJ Macros" = "Unicode Characters → AJ Macros";
+"AJ Macros to Unicode Characters" = "AJ Macros → Unicode Characters";
+"Do you apply it to the entire document?" = "Do you apply it to the entire document?";
+

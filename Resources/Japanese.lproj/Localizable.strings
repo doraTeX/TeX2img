@@ -62,3 +62,14 @@
 "Skin Tone VI" = "スキントーン VI";
 "Unicode Normalization" = "Unicode 正規化";
 "Auto Completion" = "オートコンプリート";
+"Character Type Conversion" = "文字種一括変換";
+"Hiragana to Katakana" = "ひらがな → カタカナ";
+"Katakana to Hiragana" = "カタカナ → ひらがな";
+"Fullwidth Digits to Halfwidth Digits" = "全角数字 → 半角数字";
+"Halfwidth Digits to Fullwidth Digits" = "半角数字 → 全角数字";
+"Fullwidth Alphabets to Halfwidth Alphabets" = "全角英字 → 半角英字";
+"Halfwidth Alphabets to Fullwidth Alphabets" = "半角英字 → 全角英字";
+"Unicode Characters to AJ Macros" = "Unicode文字 → ajmacros";
+"AJ Macros to Unicode Characters" = "ajmacros → Unicode文字";
+"Do you apply it to the entire document?" = "文書全体に対して適用しますか？";
+

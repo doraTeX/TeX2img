@@ -3,6 +3,7 @@
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
 #import "NSString-Unicode.h"
+#import "NSString-Conversion.h"
 #import "NSMutableString-Extension.h"
 #import "MyLayoutManager.h"
 #import "MyGlyphPopoverController.h"
@@ -60,6 +61,7 @@
         return [menuItem.title isEqualToString:@""];
     }];
     
+    
     // 「Unicode 正規化」メニュー
     if ([aMenu indexOfItemWithTitle:localizedString(@"Unicode Normalization")] == -1) {
         NSMenu *submenu = [NSMenu new];
@@ -87,6 +89,36 @@
     // 「文字情報」メニュー
     if ([aMenu indexOfItemWithTitle:localizedString(@"Character Info")] == -1) {
         [aMenu insertItemWithTitle:localizedString(@"Character Info") action:@selector(showCharacterInfo:) keyEquivalent:@"" atIndex:index];
+    }
+
+    // 「文字種一括置換」メニュー
+    if ([aMenu indexOfItemWithTitle:localizedString(@"Character Type Conversion")] == -1) {
+        NSMenu *submenu = [NSMenu new];
+        submenu.autoenablesItems = YES;
+        
+        [@[
+           @[@(HiraganaToKatakana_Tag), localizedString(@"Hiragana to Katakana")],
+           @[@(KatakanaToHiragana_Tag), localizedString(@"Katakana to Hiragana")],
+           @[@(FullwidthDigitsToHalfwidthDigits_Tag), localizedString(@"Fullwidth Digits to Halfwidth Digits" )],
+           @[@(HalfwidthDigitsToFullwidthDigits_Tag), localizedString(@"Halfwidth Digits to Fullwidth Digits")],
+           @[@(FullwidthAlphabetsToHalfwidthAlphabets_Tag), localizedString(@"Fullwidth Alphabets to Halfwidth Alphabets")],
+           @[@(HalfwidthAlphabetsToFullwidthAlphabets_Tag), localizedString(@"Halfwidth Alphabets to Fullwidth Alphabets")],
+           @[@(UnicodeCharactersToAJMacros_Tag), localizedString(@"Unicode Characters to AJ Macros")],
+           @[@(AJMacrosToUnicodeCharacters_Tag), localizedString(@"AJ Macros to Unicode Characters")]
+           ] enumerateObjectsUsingBlock:^(NSArray *pair, NSUInteger idx, BOOL *stop) {
+               NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:(NSString*)(pair[1]) action:@selector(convertCharacterType:) keyEquivalent:@""];
+               menuItem.tag = [pair[0] integerValue];
+               [submenu addItem:menuItem];
+               
+               // 2つごとにセパレータを追加
+               if (idx % 2 == 1) {
+                   [submenu addItem:NSMenuItem.separatorItem];
+               }
+           }];
+        
+        NSMenuItem *itemWithSubmenu = [[NSMenuItem alloc] initWithTitle:localizedString(@"Character Type Conversion") action:nil keyEquivalent:@""];
+        itemWithSubmenu.submenu = submenu;
+        [aMenu insertItem:itemWithSubmenu atIndex:index];
     }
 
     // セパレータを追加
@@ -624,6 +656,75 @@
     
     [popoverController showPopoverRelativeToRect:selectedRect ofView:self];
     [self showFindIndicatorForRange:selectedRange];
+}
+
+- (IBAction)convertCharacterType:(id)sender
+{
+    NSRange selectedRange = self.selectedRange;
+    
+    if (selectedRange.length <= 0) {
+        if (runConfirmPanel(localizedString(@"Do you apply it to the entire document?"))) {
+            [self selectAll:self];
+            selectedRange = self.selectedRange;
+        } else {
+            return;
+        }
+    }
+
+    NSString *selectedString = [self.string substringWithRange:selectedRange];
+    
+    NSString *newString;
+    NSString *undoKey;
+
+    switch ([sender tag]) {
+        case HiraganaToKatakana_Tag:
+            newString = selectedString.stringByReplacingHiraganaWithKatakana;
+            undoKey = localizedString(@"Hiragana to Katakana");
+            break;
+        case KatakanaToHiragana_Tag:
+            newString = selectedString.stringByReplacingKatakanaWithHiragana;
+            undoKey = localizedString(@"Katakana to Hiragana");
+            break;
+        case FullwidthDigitsToHalfwidthDigits_Tag:
+            newString = selectedString.stringByReplacingZenkakuSujiWithHankakuSuji;
+            undoKey = localizedString(@"Fullwidth Digits to Halfwidth Digits");
+            break;
+        case HalfwidthDigitsToFullwidthDigits_Tag:
+            newString = selectedString.stringByReplacingHankakuSujiWithZenkakuSuji;
+            undoKey = localizedString(@"Halfwidth Digits to Fullwidth Digits");
+            break;
+        case FullwidthAlphabetsToHalfwidthAlphabets_Tag:
+            newString = selectedString.stringByReplacingZenkakuAlphWithHankakuAlph;
+            undoKey = localizedString(@"Fullwidth Alphabets to Halfwidth Alphabets");
+            break;
+        case HalfwidthAlphabetsToFullwidthAlphabets_Tag:
+            newString = selectedString.stringByReplacingHankakuAlphWithZenkakuAlph;
+            undoKey = localizedString(@"Halfwidth Alphabets to Fullwidth Alphabets");
+            break;
+        case UnicodeCharactersToAJMacros_Tag:
+            newString = selectedString.stringByReplacingUnicodeCharactersWithAjMacros;
+            undoKey = localizedString(@"Unicode Characters to AJ Macros");
+            break;
+        case AJMacrosToUnicodeCharacters_Tag:
+            newString = selectedString.stringByReplacingAjMacrosWithUnicodeCharacters;
+            undoKey = localizedString(@"AJ Macros to Unicode Characters");
+            break;
+        default:
+            newString = selectedString;
+            break;
+    }
+    
+    if (undoKey) {
+        [self replaceCharactersInRange:selectedRange withString:newString];
+        [self registerUndoWithString:selectedString
+                            location:selectedRange.location
+                              length:newString.length
+                                 key:undoKey];
+        self.undoManager.actionName = undoKey;
+        self.selectedRange = NSMakeRange(selectedRange.location, newString.length);
+    } else {
+        NSBeep();
+    }
 }
 
 - (IBAction)normalizeSelectedString:(id)sender

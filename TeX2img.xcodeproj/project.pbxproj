@@ -57,6 +57,7 @@
 		34D2A63E1AB9BC0F0040B4A5 /* UtilityC.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D2A63D1AB9BC0F0040B4A5 /* UtilityC.m */; };
 		34D41D1E17A6BE2C00997795 /* NSString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D41D1D17A6BE2C00997795 /* NSString-Extension.m */; };
 		34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D41D1D17A6BE2C00997795 /* NSString-Extension.m */; };
+		34DBA5841D9A4F3A00951297 /* NSString-Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 34DBA5831D9A4F3A00951297 /* NSString-Conversion.m */; };
 		70254EF010353485000D6D05 /* TeXTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70254EEF10353485000D6D05 /* TeXTextView.m */; };
 		7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7025539810353D33000D6D05 /* NSMutableString-Extension.m */; };
 		7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */; };
@@ -156,6 +157,8 @@
 		34D2A63F1AB9BC260040B4A5 /* UtilityC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityC.h; sourceTree = "<group>"; };
 		34D41D1C17A6BE2C00997795 /* NSString-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Extension.h"; sourceTree = "<group>"; };
 		34D41D1D17A6BE2C00997795 /* NSString-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Extension.m"; sourceTree = "<group>"; };
+		34DBA5821D9A4F3A00951297 /* NSString-Conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Conversion.h"; sourceTree = "<group>"; };
+		34DBA5831D9A4F3A00951297 /* NSString-Conversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Conversion.m"; sourceTree = "<group>"; };
 		34F5F5A11B8BF404002F194B /* localpointer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = localpointer.h; sourceTree = "<group>"; };
 		34F5F5A21B8BF404002F194B /* platform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 		34F5F5A31B8BF404002F194B /* ptypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ptypes.h; sourceTree = "<group>"; };
@@ -374,6 +377,8 @@
 				34D41D1D17A6BE2C00997795 /* NSString-Extension.m */,
 				347314F91B89CFDC00F285A3 /* NSString-Unicode.h */,
 				347314FA1B89CFDC00F285A3 /* NSString-Unicode.m */,
+				34DBA5821D9A4F3A00951297 /* NSString-Conversion.h */,
+				34DBA5831D9A4F3A00951297 /* NSString-Conversion.m */,
 				7025539710353D33000D6D05 /* NSMutableString-Extension.h */,
 				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
 				3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */,
@@ -584,6 +589,7 @@
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
 				348F29601B848C11009AA3CF /* NSPipe-Extension.m in Sources */,
 				34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */,
+				34DBA5841D9A4F3A00951297 /* NSString-Conversion.m in Sources */,
 				34821EC810282CF9008DEB1F /* ProfileController.m in Sources */,
 				349564B81ABFF3D1004B9C1D /* Utility.m in Sources */,
 				348BBF961B795AB900EDE00C /* NSColor-Extension.m in Sources */,

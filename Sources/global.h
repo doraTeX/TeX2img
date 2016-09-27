@@ -158,6 +158,15 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define NFKD_Tag 6
 #define NFKC_CF_Tag 7
 
+#define HiraganaToKatakana_Tag 1
+#define KatakanaToHiragana_Tag 2
+#define FullwidthDigitsToHalfwidthDigits_Tag 3
+#define HalfwidthDigitsToFullwidthDigits_Tag 4
+#define FullwidthAlphabetsToHalfwidthAlphabets_Tag 5
+#define HalfwidthAlphabetsToFullwidthAlphabets_Tag 6
+#define UnicodeCharactersToAJMacros_Tag 7
+#define AJMacrosToUnicodeCharacters_Tag 8
+
 #define TeXtoDVItoPDF 1
 #define TeXtoPDF 2
 
