@@ -127,8 +127,7 @@
 
 - (BOOL)validateMenuItem:(NSMenuItem*)menuItem
 {
-    if ((menuItem.action == @selector(normalizeSelectedString:)) ||
-        (menuItem.action == @selector(showCharacterInfo:))){
+    if (menuItem.action == @selector(showCharacterInfo:)) {
         return (self.selectedRange.length > 0);
     }
     
@@ -732,8 +731,12 @@
     NSRange selectedRange = self.selectedRange;
     
     if (selectedRange.length <= 0) {
-        NSBeep();
-        return;
+        if (runConfirmPanel(localizedString(@"Do you apply it to the entire document?"))) {
+            [self selectAll:self];
+            selectedRange = self.selectedRange;
+        } else {
+            return;
+        }
     }
     
     NSString *selectedString = [self.string substringWithRange:selectedRange];
