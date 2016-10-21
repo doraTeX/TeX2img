@@ -996,7 +996,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 break;
             case (OPTION_NUM - 2): // --version
                 version();
-                exit(1);
+                exit(0);
                 break;
             case (OPTION_NUM - 1): // --help
                 usage();
