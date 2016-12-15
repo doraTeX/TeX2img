@@ -11,7 +11,7 @@
 #import "NSColor-Extension.h"
 
 #define OPTION_NUM 53
-#define VERSION "2.1.6"
+#define VERSION "2.1.7"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
