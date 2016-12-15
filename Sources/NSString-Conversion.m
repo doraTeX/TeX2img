@@ -17035,5 +17035,24 @@
     return str;
 }
 
+// 全角引用符 → 半角引用符
+-(NSString*)stringByReplacingFullwidthQuotesWithHalfwidthQuotes
+{
+    NSMutableString *str = [NSMutableString stringWithString:self];
+    
+    [str replaceAllOccurrencesOfString:@"‘“" withString:@"`\\,``" addingPercentForEndOfLine:NO];
+    [str replaceAllOccurrencesOfString:@"”’" withString:@"''\\,'" addingPercentForEndOfLine:NO];
+    
+    [str replaceAllOccurrencesOfString:@"“‘" withString:@"``\\,`" addingPercentForEndOfLine:NO];
+    [str replaceAllOccurrencesOfString:@"’”" withString:@"'\\,''" addingPercentForEndOfLine:NO];
+    
+    [str replaceAllOccurrencesOfString:@"‘" withString:@"`" addingPercentForEndOfLine:NO];
+    [str replaceAllOccurrencesOfString:@"’" withString:@"'" addingPercentForEndOfLine:NO];
+    
+    [str replaceAllOccurrencesOfString:@"“" withString:@"``" addingPercentForEndOfLine:NO];
+    [str replaceAllOccurrencesOfString:@"”" withString:@"''" addingPercentForEndOfLine:NO];
+    
+    return str;
+}
 
 @end

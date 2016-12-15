@@ -168,6 +168,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define AJMacrosToUnicodeCharacters_Tag 8
 #define UnicodeCharactersToUTF_Tag 9
 #define UTFToUnicodeCharacters_Tag 10
+#define FullwidthQuotesToHalfwidthQuotes_Tag 11
 
 #define TeXtoDVItoPDF 1
 #define TeXtoPDF 2

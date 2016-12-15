@@ -94,5 +94,8 @@
 -(NSString*)stringByReplacingLigWithAjLig;
 -(NSString*)stringByReplacingAjLigWithLig;
 
+// 全角引用符 → 半角引用符
+-(NSString*)stringByReplacingFullwidthQuotesWithHalfwidthQuotes;
+
 @end
 

@@ -74,4 +74,5 @@
 "AJ Macros to Unicode Characters" = "ajmacros → Unicode文字";
 "Unicode Characters to UTF" = "Unicode文字 → \\UTF / \\CID";
 "UTF to Unicode Characters" = "\\UTF / \\CID → Unicode文字";
+"Fullwidth Quotes to Halfwidth Quotes" = "全角引用符 → 半角引用符";
 

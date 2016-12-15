@@ -106,7 +106,8 @@
            @[@(UnicodeCharactersToAJMacros_Tag), localizedString(@"Unicode Characters to AJ Macros")],
            @[@(AJMacrosToUnicodeCharacters_Tag), localizedString(@"AJ Macros to Unicode Characters")],
            @[@(UnicodeCharactersToUTF_Tag), localizedString(@"Unicode Characters to UTF")],
-           @[@(UTFToUnicodeCharacters_Tag), localizedString(@"UTF to Unicode Characters")]
+           @[@(UTFToUnicodeCharacters_Tag), localizedString(@"UTF to Unicode Characters")],
+           @[@(FullwidthQuotesToHalfwidthQuotes_Tag), localizedString(@"Fullwidth Quotes to Halfwidth Quotes")]
            ] enumerateObjectsUsingBlock:^(NSArray *pair, NSUInteger idx, BOOL *stop) {
                NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:(NSString*)(pair[1]) action:@selector(convertCharacterType:) keyEquivalent:@""];
                menuItem.tag = [pair[0] integerValue];
@@ -717,6 +718,10 @@
         case UTFToUnicodeCharacters_Tag:
             newString = selectedString.stringByReplacingUTFWithUnicodeCharacters;
             undoKey = localizedString(@"UTF to Unicode Characters");
+            break;
+        case FullwidthQuotesToHalfwidthQuotes_Tag:
+            newString = selectedString.stringByReplacingFullwidthQuotesWithHalfwidthQuotes;
+            undoKey = localizedString(@"Fullwidth Quotes to Halfwidth Quotes");
             break;
         default:
             newString = selectedString;
