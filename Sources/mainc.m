@@ -43,7 +43,7 @@ void usage()
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
     printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
     printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
-    printf("  --[no-]utf-export          : disable/enable substitution of \\UTF{xxxx} for non-JIS X 0208 characters (default: disabled)\n");
+    printf("  --[no-]utf-export          : disable/enable substitution of \\UTF / \\CID for non-JIS X 0208 characters (default: disabled)\n");
     printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
     printf("  --workingdir DIR           : set the working directory (tmp|file|current) (default: tmp)\n");
     printf("   *DIR values:\n");
@@ -211,7 +211,7 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
         printf("Delete width and height attributes of SVG: %s\n", [aProfile boolForKey:DeleteDisplaySizeKey] ? ENABLED : DISABLED);
     }
     printf("Ignore nonfatal errors: %s\n", [aProfile boolForKey:IgnoreErrorKey] ? ENABLED : DISABLED);
-    printf("Substitute \\UTF{xxxx} for non-JIS X 0208 characters: %s\n", [aProfile boolForKey:UtfExportKey] ? ENABLED : DISABLED);
+    printf("Substitute \\UTF / \\CID for non-JIS X 0208 characters: %s\n", [aProfile boolForKey:UtfExportKey] ? ENABLED : DISABLED);
     printf("Conversion mode: %s priority mode\n", ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG) ? "speed" : "quality" );
     printf("Preview generated files: %s\n", [aProfile boolForKey:PreviewKey] ? ENABLED : DISABLED);
     printf("Delete temporary files: %s\n", [aProfile boolForKey:DeleteTmpFileKey] ? ENABLED : DISABLED);
