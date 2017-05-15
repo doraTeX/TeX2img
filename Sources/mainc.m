@@ -10,7 +10,7 @@
 #import "NSDictionary-Extension.h"
 
 #define OPTION_NUM 52
-#define VERSION "1.11.6"
+#define VERSION "1.11.8"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -890,7 +890,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                 break;
             case (OPTION_NUM - 2): // --version
                 version();
-                exit(1);
+                exit(0);
                 break;
             case (OPTION_NUM - 1): // --help
                 usage();
