@@ -16476,7 +16476,7 @@
     [str replaceAllOccurrencesOfString:@"㌢" withString:@"\\ajLig{センチ}" addingPercentForEndOfLine:YES];
     [str replaceAllOccurrencesOfString:@"㍍" withString:@"\\ajLig{メートル}" addingPercentForEndOfLine:YES];
     [str replaceAllOccurrencesOfString:@"㌘" withString:@"\\ajLig{グラム}" addingPercentForEndOfLine:YES];
-    [str replaceAllOccurrencesOfString:@"トン" withString:@"\\ajLig{}" addingPercentForEndOfLine:YES];
+    [str replaceAllOccurrencesOfString:@"㌧" withString:@"\\ajLig{トン}" addingPercentForEndOfLine:YES];
     [str replaceAllOccurrencesOfString:@"㌃" withString:@"\\ajLig{アール}" addingPercentForEndOfLine:YES];
     [str replaceAllOccurrencesOfString:@"㌶" withString:@"\\ajLig{ヘクタール}" addingPercentForEndOfLine:YES];
     [str replaceAllOccurrencesOfString:@"㍑" withString:@"\\ajLig{リットル}" addingPercentForEndOfLine:YES];
@@ -16730,7 +16730,7 @@
     [str replaceAllOccurrencesOfString:@"\\ajLig{センチ}" withString:@"㌢" addingPercentForEndOfLine:NO];
     [str replaceAllOccurrencesOfString:@"\\ajLig{メートル}" withString:@"㍍" addingPercentForEndOfLine:NO];
     [str replaceAllOccurrencesOfString:@"\\ajLig{グラム}" withString:@"㌘" addingPercentForEndOfLine:NO];
-    [str replaceAllOccurrencesOfString:@"\\ajLig{}" withString:@"トン" addingPercentForEndOfLine:NO];
+    [str replaceAllOccurrencesOfString:@"\\ajLig{トン}" withString:@"㌧" addingPercentForEndOfLine:NO];
     [str replaceAllOccurrencesOfString:@"\\ajLig{アール}" withString:@"㌃" addingPercentForEndOfLine:NO];
     [str replaceAllOccurrencesOfString:@"\\ajLig{ヘクタール}" withString:@"㌶" addingPercentForEndOfLine:NO];
     [str replaceAllOccurrencesOfString:@"\\ajLig{リットル}" withString:@"㍑" addingPercentForEndOfLine:NO];
