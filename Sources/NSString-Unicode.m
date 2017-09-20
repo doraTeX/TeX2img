@@ -90,7 +90,8 @@
 
 - (NSString*)blockName
 {
-    int32_t prop = u_getIntPropertyValue([self utf32char], UCHAR_BLOCK);
+    UTF32Char utf32char = [self utf32char];
+    int32_t prop = u_getIntPropertyValue(utf32char, UCHAR_BLOCK);
     const char *blockNameChars = u_getPropertyValueName(UCHAR_BLOCK, prop, U_LONG_PROPERTY_NAME);
     
     return [@(blockNameChars) stringByReplacingOccurrencesOfString:@"_" withString:@" "];  // sanitize

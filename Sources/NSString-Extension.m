@@ -109,8 +109,9 @@
 
 - (UTF32Char)utf32char
 {
-    UTF32Char outputChar;
-    if ([self getBytes:&outputChar maxLength:4 usedLength:NULL encoding:NSUTF32LittleEndianStringEncoding options:0 range:NSMakeRange(0, 1) remainingRange:NULL]) {
+    UTF32Char outputChar = 0;
+    BOOL success = [self getBytes:&outputChar maxLength:sizeof(UTF32Char) usedLength:NULL encoding:NSUTF32LittleEndianStringEncoding options:0 range:NSMakeRange(0, self.length) remainingRange:NULL];
+    if (success) {
         outputChar = NSSwapLittleIntToHost(outputChar); // swap back to host endian
         // outputChar now has the first UTF32 character
     }
