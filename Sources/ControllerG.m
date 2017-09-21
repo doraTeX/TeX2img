@@ -2262,7 +2262,7 @@ typedef enum {
     [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
 }
 
-- (void)searchProgramsLogic:(NSDictionary<NSString*,NSString*>*)parameters
+- (void)searchProgramsLogic:(NSDictionary<NSString*,id>*)parameters
 {
     NSString *latexPath;
     NSString *dviDriverPath;
@@ -2299,14 +2299,14 @@ typedef enum {
     
     [self performSelectorOnMainThread:@selector(showAutoDetectionResult:)
                            withObject:@{
-                                        @"Title": parameters[@"Title"],
-                                        @"Msg1": parameters[@"Msg1"],
-                                        @"Msg2": parameters[@"Msg2"],
+                                        @"Title": (NSString*)(parameters[@"Title"]),
+                                        @"Msg1": (NSString*)(parameters[@"Msg1"]),
+                                        @"Msg2": (NSString*)(parameters[@"Msg2"]),
                                         LatexPathKey: [latexPath isEqualToString:@""] ? @"LaTeX: Not Found" : latexPath,
                                         DviDriverPathKey: [dviDriverPath isEqualToString:@""] ? @"DVI Driver: Not Found" : dviDriverPath,
                                         GsPathKey: [gsPath isEqualToString:@""] ? @"Ghostscript: Not Found" : gsPath
                                         }
-                        waitUntilDone:[parameters[@"waitUntilDone"] boolValue]];
+                        waitUntilDone:[(NSNumber*)(parameters[@"waitUntilDone"]) boolValue]];
 }
 
 - (IBAction)searchPrograms:(id)sender
