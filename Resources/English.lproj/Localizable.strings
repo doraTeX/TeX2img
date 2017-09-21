@@ -49,7 +49,7 @@
 "Generate" = "Generate";
 "Abort" = "Abort";
 "Close Current Environment" = "Close Current Environment";
-"Base: %@ (%@: %@) <combining character sequence consisting of %d characters>" = "Base: %@ (%@: %@) <combining character sequence consisting of %d characters>";
+"Base: %@ (%@ %@) <combining character sequence consisting of %d characters>" = "Base: %@ (%@ %@) <combining character sequence consisting of %d characters>";
 "%d letters, %d words, %d lines" = "%d letters, %d words, %d lines";
 "Emoji Style" = "Emoji Style";
 "Text Style" = "Text Style";

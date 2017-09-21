@@ -34,6 +34,7 @@
 #import "MyGlyphPopoverController.h"
 #import "NSString-Extension.h"
 #import "NSString-Unicode.h"
+#import "NSArray-Extension.h"
 #import "UtilityG.h"
 
 // variation Selectors
@@ -100,6 +101,67 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
 @end
 #pragma mark -
 
+
+//////////////////////////////////////////////////////////////////////////////
+@interface UnicodeInfo : NSObject
+-(instancetype)initWithUnichar:(unichar)_unicodePoint;
+-(instancetype)initWithHighSurrogate:(unichar)_highSurrogate lowSurrogate:(unichar)_lowSurrogate;
+-(NSString*)stringExpression;
+-(NSString*)stringExpressionWithSurrogatePairInfomation;
+-(NSString*)stringExpressionWithUnicodeName;
+@property UTF32Char unicodeChar;
+@property NSString *unicodeString;
+@property BOOL surrogate;
+@property unichar highSurrogate;
+@property unichar lowSurrogate;
+@end
+
+@implementation UnicodeInfo
+-(instancetype)initWithUnichar:(unichar)unicodePoint
+{
+    self = [super init];
+    _unicodeChar = unicodePoint;
+    _unicodeString = [NSString stringWithUTF32Char:unicodePoint];
+    _surrogate = NO;
+    _highSurrogate = 0;
+    _lowSurrogate = 0;
+    
+    return self;
+}
+
+-(instancetype)initWithHighSurrogate:(unichar)highSurrogate lowSurrogate:(unichar)lowSurrogate
+{
+    self = [super init];
+    _surrogate = YES;
+    _highSurrogate = highSurrogate;
+    _lowSurrogate = lowSurrogate;
+    _unicodeChar = CFStringGetLongCharacterForSurrogatePair(highSurrogate, lowSurrogate);
+    _unicodeString = [NSString stringWithUTF32Char:_unicodeChar];
+
+    return self;
+}
+
+-(NSString*)stringExpression
+{
+	return [NSString stringWithFormat:@"U+%04X", _unicodeChar];
+}
+
+-(NSString*)stringExpressionWithSurrogatePairInfomation
+{
+    if (_surrogate) {
+        return [NSString stringWithFormat:@"U+%04X (U+%04X U+%04X)", _unicodeChar, _highSurrogate, _lowSurrogate];
+    } else {
+        return [NSString stringWithFormat:@"U+%04X", _unicodeChar];
+    }
+}
+
+-(NSString*)stringExpressionWithUnicodeName
+{
+    return [NSString stringWithFormat:@"%@ %@", [self stringExpressionWithSurrogatePairInfomation], _unicodeString.unicodeName];
+}
+
+@end
+
 //////////////////////////////////////////////////////////////////////////////
 
 @interface MyGlyphPopoverController ()
@@ -149,38 +211,34 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
         NSUInteger length = character.length;
         
         // unicode hex
-        NSString *unicode;
-        NSMutableArray<NSString*> *unicodes = [NSMutableArray<NSString*> array];
-        
+        NSMutableArray<UnicodeInfo*> *unicodes = [NSMutableArray<UnicodeInfo*> array];
+
         for (NSUInteger i = 0; i < length; i++) {
             unichar theChar = [character characterAtIndex:i];
             unichar nextChar = (length > i+1) ? [character characterAtIndex:i+1] : 0;
-            
+            UnicodeInfo *unicodeInfo;
             if (CFStringIsSurrogateHighCharacter(theChar) && CFStringIsSurrogateLowCharacter(nextChar)) {
-                UTF32Char pair = CFStringGetLongCharacterForSurrogatePair(theChar, nextChar);
-                unicode = [NSString stringWithFormat:@"U+%04tX (U+%04X U+%04X)", pair, theChar, nextChar];
+                unicodeInfo = [[UnicodeInfo alloc] initWithHighSurrogate:theChar lowSurrogate:nextChar];
                 if (!firstChar) {
-                    firstChar = [NSString stringWithUTF32Char:pair];
+                    firstChar = [unicodeInfo unicodeString];
                 }
                 i++;
             } else {
-                unicode = [NSString stringWithFormat:@"U+%04X", theChar];
+                unicodeInfo = [[UnicodeInfo alloc] initWithUnichar:theChar];
                 if (!firstChar) {
                     firstChar = [NSString stringWithUTF32Char:theChar];
                 }
             }
-            
-            [unicodes addObject:unicode];
+
             if (!firstCode) {
-                firstCode = unicode;
+                firstCode = unicodeInfo.stringExpression;
             }
+
+            [unicodes addObject:unicodeInfo];
         }
         
-        NSString *unicodeLabel = [unicodes componentsJoinedByString:@"  "];
-        self.unicode = unicodeLabel;
-        
         BOOL multiCodePoints = (unicodes.count > 1);
-        
+
         NSString *variationSelectorAdditional;
         if (unicodes.count == 2) {
             unichar lastChar = [character characterAtIndex:length-1];
@@ -234,9 +292,17 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
         
         if (multiCodePoints) {
             if (singleLetter) {
-                self.unicodeName = [NSString stringWithFormat:localizedString(@"Base: %@ (%@: %@) <combining character sequence consisting of %d characters>"),
+                self.unicode = [(NSArray<NSString*>*)[unicodes mapUsingBlock:^NSString*(UnicodeInfo *unicodeInfo) {
+                    return [unicodeInfo stringExpressionWithUnicodeName];
+                }] componentsJoinedByString:@"\n"];
+                self.unicodeName = [NSString stringWithFormat:localizedString(@"Base: %@ (%@ %@) <combining character sequence consisting of %d characters>"),
                                     firstChar, firstCode, firstChar.unicodeName, unicodes.count];
+                self.unicodeBlockName = firstChar.localizedBlockName;
             } else {
+                self.unicode = [(NSArray<NSString*>*)[unicodes mapUsingBlock:^NSString*(UnicodeInfo *unicodeInfo) {
+                    return [unicodeInfo stringExpressionWithSurrogatePairInfomation];
+                }] componentsJoinedByString:@"  "];
+
                 // display the number of letters, words, lines
                 NSInteger numberOfWords = [NSSpellChecker.sharedSpellChecker countWordsInString:character language:nil];
                 if (numberOfWords == -1) {
@@ -281,6 +347,13 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
                 self.unicodeName = [NSString stringWithFormat:@"%@ (%@)", self.unicodeName, localizedString(variationSelectorAdditional)];
             }
             
+            if (unicodes.count > 1) {
+                self.unicode = [(NSArray<NSString*>*)[unicodes mapUsingBlock:^NSString*(UnicodeInfo *unicodeInfo) {
+                    return [unicodeInfo stringExpressionWithUnicodeName];
+                }] componentsJoinedByString:@"\n"];
+            } else {
+                self.unicode = [unicodes[0] stringExpressionWithSurrogatePairInfomation];
+            }
             self.unicodeBlockName = character.localizedBlockName;
         }
     }

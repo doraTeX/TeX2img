@@ -49,7 +49,7 @@
 "Generate" = "画像生成";
 "Abort" = "中断";
 "Close Current Environment" = "現在の環境を閉じる";
-"Base: %@ (%@: %@) <combining character sequence consisting of %d characters>" = "%@ (%@: %@) を基底文字とする %d 字からなる結合文字列";
+"Base: %@ (%@ %@) <combining character sequence consisting of %d characters>" = "%@ (%@ %@) を基底文字とする %d 字からなる結合文字列";
 "%d letters, %d words, %d lines" = "%d文字，%d単語，%d行";
 "Emoji Style" = "絵文字スタイル";
 "Text Style" = "テキストスタイル";
