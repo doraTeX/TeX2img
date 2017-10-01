@@ -10,8 +10,8 @@
 #import "NSDictionary-Extension.h"
 #import "NSColor-Extension.h"
 
-#define OPTION_NUM 53
-#define VERSION "2.1.9"
+#define OPTION_NUM 54
+#define VERSION "2.2.0"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
@@ -41,7 +41,6 @@ void usage()
     printf("  --dvidriver  DRIVER        : set the DVI driver    (default: dvipdfmx)\n");
     printf("   *synonym: --dviware, --dvipdfmx\n");
     printf("  --gs         GS            : set ghostscript (default: gs)\n");
-    printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
     printf("  --[no-]ignore-errors       : disable/enable ignoring nonfatal errors (default: disabled)\n");
     printf("  --[no-]utf-export          : disable/enable substitution of \\UTF / \\CID for non-JIS X 0208 characters (default: disabled)\n");
     printf("  --[no-]quick               : disable/enable speed priority mode (default: disabled)\n");
@@ -52,6 +51,8 @@ void usage()
     printf("      current        : Current directory\n");
     printf("\n");
     printf("Image Settings:\n");
+    printf("  --resolution RESOLUTION    : set the resolution level (default: 15)\n");
+    printf("  --dpi        DPI           : set the DPI value for bitmap images (default: 72)\n");
     printf("  --margins    \"VALUE\"       : set the margins (default: \"0 0 0 0\")\n");
     printf("   *VALUE format:\n");
     printf("      a single value : used for all margins\n");
@@ -187,7 +188,8 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     printf("\n");
 
     printf("Resolution level: %f\n", [aProfile floatForKey:ResolutionKey]);
-    
+    printf("DPI: %ld\n", [aProfile integerForKey:DPIKey]);
+
     NSString *ext = outputFilePath.pathExtension;
     NSString *unit = (([aProfile integerForKey:UnitKey] == PX_UNIT_TAG) &&
                       ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"])) ?
@@ -225,6 +227,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     NSApplicationLoad(); // PDFKit を使ったときに _NXCreateWindow: error setting window property のエラーを防ぐため
     
     float resolutoinLevel = 15;
+    NSInteger dpi = 72;
     NSInteger numberOfCompilation = -1;
     NSInteger leftMargin = 0;
     NSInteger rightMargin = 0;
@@ -265,6 +268,12 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     
     int i = 0;
     options[i].name = "resolution";
+    options[i].has_arg = required_argument;
+    options[i].flag = NULL;
+    options[i].val = i+1;
+    
+    i++;
+    options[i].name = "dpi";
     options[i].has_arg = required_argument;
     options[i].flag = NULL;
     options[i].val = i+1;
@@ -599,7 +608,15 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 2: // --left-margin
+            case 2: // --dpi
+                if (optarg) {
+                    dpi = strtoi(optarg);
+                } else {
+                    printf("error: --left-margin is invalid.\n");
+                    exit(1);
+                }
+                break;
+            case 3: // --left-margin
                 if (optarg) {
                     leftMargin = strtoi(optarg);
                 } else {
@@ -607,7 +624,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 3: // --right-margin
+            case 4: // --right-margin
                 if (optarg) {
                     rightMargin = strtoi(optarg);
                 } else {
@@ -615,7 +632,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 4: // --top-margin
+            case 5: // --top-margin
                 if (optarg) {
                     topMargin = strtoi(optarg);
                 } else {
@@ -623,7 +640,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 5: // --bottom-margin
+            case 6: // --bottom-margin
                 if (optarg) {
                     bottomMargin = strtoi(optarg);
                 } else {
@@ -631,37 +648,37 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 6: // --with-text
+            case 7: // --with-text
                 textPdfFlag = YES;
                 break;
-            case 7: // --no-with-text
+            case 8: // --no-with-text
                 textPdfFlag = NO;
                 break;
-            case 8: // --transparent
+            case 9: // --transparent
                 transparentFlag = YES;
                 break;
-            case 9: // --no-transparent
+            case 10: // --no-transparent
                 transparentFlag = NO;
                 break;
-            case 10: // --delete-tmpfiles
+            case 11: // --delete-tmpfiles
                 deleteTmpFileFlag = YES;
                 break;
-            case 11: // --no-delete-tmpfiles
+            case 12: // --no-delete-tmpfiles
                 deleteTmpFileFlag = NO;
                 break;
-            case 12: // --ignore-errors
+            case 13: // --ignore-errors
                 ignoreErrorFlag = YES;
                 break;
-            case 13: // --no-ignore-errors
+            case 14: // --no-ignore-errors
                 ignoreErrorFlag = NO;
                 break;
-            case 14: // --utf-export
+            case 15: // --utf-export
                 utfExportFlag = YES;
                 break;
-            case 15: // --no-utf-export
+            case 16: // --no-utf-export
                 utfExportFlag = NO;
                 break;
-            case 16: // --kanji
+            case 17: // --kanji
                 if (optarg) {
                     encoding = @(optarg);
                     if ([encoding isEqualToString:@"no"]) {
@@ -678,13 +695,13 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 17: // --quiet
+            case 18: // --quiet
                 quietFlag = YES;
                 break;
-            case 18: // --no-quiet
+            case 19: // --no-quiet
                 quietFlag = NO;
                 break;
-            case 19: // --unit
+            case 20: // --unit
                 if (optarg) {
                     NSString *unitString = @(optarg);
                     if ([unitString isEqualToString:@"px"]) {
@@ -700,13 +717,13 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 20: // --quick
+            case 21: // --quick
                 quickFlag = YES;
                 break;
-            case 21: // --no-quick
+            case 22: // --no-quick
                 quickFlag = NO;
                 break;
-            case 22: // --num
+            case 23: // --num
                 if (optarg) {
                     numberOfCompilation = strtoi(optarg);
                 } else {
@@ -714,19 +731,19 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 23: // --guess-compile
+            case 24: // --guess-compile
                 guessFlag = YES;
                 break;
-            case 24: // --no-guess-compile
+            case 25: // --no-guess-compile
                 guessFlag = NO;
                 break;
-            case 25: // --preview
+            case 26: // --preview
                 previewFlag = YES;
                 break;
-            case 26: // --no-preview
+            case 27: // --no-preview
                 previewFlag = NO;
                 break;
-            case 27: // --gs
+            case 28: // --gs
                 if (optarg) {
                     gs = @(optarg);
                 } else {
@@ -734,25 +751,25 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 28: // --embed-source
+            case 29: // --embed-source
                 embedSourceFlag = YES;
                 break;
-            case 29: // --no-embed-source
+            case 30: // --no-embed-source
                 embedSourceFlag = NO;
                 break;
-            case 30: // --delete-display-size
+            case 31: // --delete-display-size
                 deleteDisplaySizeFlag = YES;
                 break;
-            case 31: // --no-delete-display-size
+            case 32: // --no-delete-display-size
                 deleteDisplaySizeFlag = NO;
                 break;
-            case 32: // --copy-to-clipboard
+            case 33: // --copy-to-clipboard
                 copyToClipboardFlag = YES;
                 break;
-            case 33: // --no-copy-to-clipboard
+            case 34: // --no-copy-to-clipboard
                 copyToClipboardFlag = NO;
                 break;
-            case 34: // --latex
+            case 35: // --latex
                 if (optarg) {
                     latex = @(optarg);
                 } else {
@@ -760,7 +777,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 35: // --compiler (synonym for --latex)
+            case 36: // --compiler (synonym for --latex)
                 if (optarg) {
                     latex = @(optarg);
                 } else {
@@ -768,7 +785,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 36: // --dvidriver
+            case 37: // --dvidriver
                 if (optarg) {
                     dviDriver = @(optarg);
                 } else {
@@ -776,7 +793,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 37: // --dviware (synonym for --dvidriver)
+            case 38: // --dviware (synonym for --dvidriver)
                 if (optarg) {
                     dviDriver = @(optarg);
                 } else {
@@ -784,7 +801,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 38: // --dvipdfmx (synonym for --dvidriver)
+            case 39: // --dvipdfmx (synonym for --dvidriver)
                 if (optarg) {
                     dviDriver = @(optarg);
                 } else {
@@ -792,19 +809,19 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 39: // --merge-output-files
+            case 40: // --merge-output-files
                 mergeFlag = YES;
                 break;
-            case 40: // --no-merge-output-files
+            case 41: // --no-merge-output-files
                 mergeFlag = NO;
                 break;
-            case 41: // --keep-page-size
+            case 42: // --keep-page-size
                 keepPageSizeFlag = YES;
                 break;
-            case 42: // --no-keep-page-size
+            case 43: // --no-keep-page-size
                 keepPageSizeFlag = NO;
                 break;
-            case 43: // --pagebox
+            case 44: // --pagebox
                 if (optarg) {
                     NSString *pageboxString = @(optarg);
                     if ([pageboxString isEqualToString:@"media"]) {
@@ -826,7 +843,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 44: // --animation-delay
+            case 45: // --animation-delay
                 if (optarg) {
                     delay = strtof(optarg, NULL);
                 } else {
@@ -838,7 +855,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 45: // --animation-loop
+            case 46: // --animation-loop
                 if (optarg) {
                     loopCount = strtoi(optarg);
                 } else {
@@ -850,7 +867,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 46: // --margins
+            case 47: // --margins
                 if (optarg) {
                     NSString *marginsString = @(optarg);
                     NSMutableArray<NSString*> *marginsArray = [NSMutableArray<NSString*> arrayWithArray:[marginsString componentsSeparatedByCharactersInSet:NSCharacterSet.whitespaceCharacterSet]];
@@ -879,13 +896,13 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 47: // --plain-text
+            case 48: // --plain-text
                 plainTextFlag = YES;
                 break;
-            case 48: // --no-plain-text
+            case 49: // --no-plain-text
                 plainTextFlag = NO;
                 break;
-            case 49: // --workingdir
+            case 50: // --workingdir
                 if (optarg) {
                     NSString *pageboxString = @(optarg);
                     if ([pageboxString isEqualToString:@"tmp"]) {
@@ -903,7 +920,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 50: // --background-color
+            case 51: // --background-color
                 transparentFlag = NO;
                 if (optarg) {
                     NSString *bgcolorString = @(optarg);
@@ -1096,6 +1113,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     aProfile[EncodingKey] = encoding;
     aProfile[NumberOfCompilationKey] = @(numberOfCompilation);
     aProfile[ResolutionKey] = @(resolutoinLevel);
+    aProfile[DPIKey] = @(dpi);
     aProfile[LeftMarginKey] = @(leftMargin);
     aProfile[RightMarginKey] = @(rightMargin);
     aProfile[TopMarginKey] = @(topMargin);

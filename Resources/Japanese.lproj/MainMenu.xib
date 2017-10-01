@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16D30a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13196" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13196"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -536,9 +536,9 @@ DQ
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="QOI-Xa-K0n">
                                         <rect key="frame" x="1" y="1" width="497" height="131"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <textView importsGraphics="NO" richText="NO" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="466" customClass="TeXTextView">
+                                            <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="466" customClass="TeXTextView">
                                                 <rect key="frame" x="0.0" y="0.0" width="497" height="131"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -583,7 +583,7 @@ DQ
                                         <action selector="sourceSettingChanged:" target="450" id="XHs-Ws-ajC"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" id="Kxp-Ue-6HR">
+                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="Kxp-Ue-6HR">
                                     <rect key="frame" x="11" y="12" width="424" height="22"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="kvz-yT-zbG">
@@ -613,7 +613,7 @@ DQ
                             <rect key="frame" x="1" y="1" width="518" height="43"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" id="461">
+                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="461">
                                     <rect key="frame" x="11" y="12" width="424" height="22"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="462">
@@ -666,9 +666,9 @@ DQ
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="mH3-Qk-1Wm">
                             <rect key="frame" x="1" y="1" width="327" height="333"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textView importsGraphics="NO" richText="NO" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="485" customClass="TeXTextView">
+                                <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="485" customClass="TeXTextView">
                                     <rect key="frame" x="0.0" y="0.0" width="327" height="333"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -749,7 +749,7 @@ DQ
                                                 <rect key="frame" x="1" y="1" width="438" height="236"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" id="543">
+                                                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="543">
                                                         <rect key="frame" x="63" y="146" width="30" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="左：" id="544">
@@ -758,7 +758,7 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="553">
+                                                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="553">
                                                         <rect key="frame" x="250" y="146" width="30" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="右：" id="554">
@@ -767,7 +767,7 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="567">
+                                                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="567">
                                                         <rect key="frame" x="157" y="117" width="30" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="下：" id="568">
@@ -776,7 +776,7 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="TKH-om-Hl9">
+                                                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="TKH-om-Hl9">
                                                         <rect key="frame" x="16" y="85" width="82" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="余白の単位：" id="fVy-Pu-pck">
@@ -810,7 +810,7 @@ DQ
                                                             </column>
                                                         </cells>
                                                     </matrix>
-                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="A8Q-v6-iNx">
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="A8Q-v6-iNx">
                                                         <rect key="frame" x="198" y="82" width="216" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="（ベクター画像では bp (big point) 固定）" id="9sU-Pg-yh4">
@@ -827,7 +827,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="3w6-gZ-0C2" id="Kou-PS-ayW"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField toolTip="左余白" verticalHuggingPriority="750" id="3w6-gZ-0C2">
+                                                    <textField toolTip="左余白" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="3w6-gZ-0C2">
                                                         <rect key="frame" x="96" y="143" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="Zbp-5p-2lz">
@@ -851,7 +851,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="q9k-73-hkC" id="aRe-8Q-fch"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField toolTip="上余白" verticalHuggingPriority="750" id="q9k-73-hkC">
+                                                    <textField toolTip="上余白" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="q9k-73-hkC">
                                                         <rect key="frame" x="191" y="172" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="Ky6-sX-ghH">
@@ -867,7 +867,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="hXd-HE-RI4" id="Dob-KG-yEG"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="560">
+                                                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="560">
                                                         <rect key="frame" x="157" y="175" width="30" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="上：" id="561">
@@ -884,7 +884,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="uIM-0H-NKi" id="Gug-nD-pzm"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField toolTip="右余白" verticalHuggingPriority="750" id="uIM-0H-NKi">
+                                                    <textField toolTip="右余白" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="uIM-0H-NKi">
                                                         <rect key="frame" x="279" y="143" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="ZqG-xh-lce">
@@ -908,7 +908,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="duD-Zk-r37" id="SIU-ud-lHR"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField toolTip="下余白" verticalHuggingPriority="750" id="duD-Zk-r37">
+                                                    <textField toolTip="下余白" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="duD-Zk-r37">
                                                         <rect key="frame" x="191" y="114" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="tai-yb-g0G">
@@ -924,7 +924,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="xtd-D8-9J6" id="gUh-Fc-ERs"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="6nk-Gi-qQO">
+                                                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="6nk-Gi-qQO">
                                                         <rect key="frame" x="18" y="146" width="41" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="余白" id="wgW-93-evQ">
@@ -952,7 +952,7 @@ DQ
                                                             <action selector="showPageBoxSettingPopover:" target="450" id="KfL-6f-IS2"/>
                                                         </connections>
                                                     </button>
-                                                    <textField verticalHuggingPriority="750" id="In7-CS-F2J">
+                                                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="In7-CS-F2J">
                                                         <rect key="frame" x="18" y="209" width="145" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="解像度レベル (1～100)：" id="vNp-fU-H6J">
@@ -969,7 +969,7 @@ DQ
                                                             <action selector="takeFloatValueFrom:" target="Vlv-Cz-5Tf" id="kkh-H6-4g0"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField toolTip="解像度レベル" verticalHuggingPriority="750" id="Vlv-Cz-5Tf">
+                                                    <textField toolTip="解像度レベル" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="Vlv-Cz-5Tf">
                                                         <rect key="frame" x="169" y="206" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="5" drawsBackground="YES" id="MRz-hS-WiB">
@@ -985,7 +985,7 @@ DQ
                                                             </connections>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Gqh-Db-Ox9">
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="Gqh-Db-Ox9">
                                                         <rect key="frame" x="18" y="19" width="53" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="背景色：" id="O4N-bC-RnA">
@@ -1010,6 +1010,48 @@ DQ
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                     </button>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="YES" id="F2U-X0-hpN">
+                                                        <rect key="frame" x="262" y="209" width="65" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="dpi値：" id="VUy-kQ-Kgr">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="Xsi-cH-r8L">
+                                                        <rect key="frame" x="380" y="203" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="10000" doubleValue="72" id="PrH-IY-EYd"/>
+                                                        <connections>
+                                                            <action selector="takeFloatValueFrom:" target="npz-lQ-SYx" id="z2G-vH-XHU"/>
+                                                        </connections>
+                                                    </stepper>
+                                                    <textField toolTip="dpi" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="YES" id="npz-lQ-SYx">
+                                                        <rect key="frame" x="333" y="206" width="47" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="72" drawsBackground="YES" id="P0O-Q8-cvQ">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="vz6-5Z-ScK">
+                                                                <real key="minimum" value="1"/>
+                                                                <real key="maximum" value="10000"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <action selector="takeFloatValueFrom:" target="Xsi-cH-r8L" id="K9Q-fI-ieM"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="YES" id="R6Z-o5-N8m">
+                                                        <rect key="frame" x="296" y="184" width="216" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="（ビットマップ画像の場合）" id="OuN-I3-KoO">
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
                                                 </subviews>
                                             </view>
                                             <font key="titleFont" metaFont="system"/>
@@ -1076,7 +1118,7 @@ DQ
                                     <rect key="frame" x="10" y="33" width="452" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textField verticalHuggingPriority="750" id="597">
+                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="597">
                                             <rect key="frame" x="95" y="368" width="340" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="598">
@@ -1085,7 +1127,7 @@ DQ
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" id="600">
+                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="600">
                                             <rect key="frame" x="95" y="338" width="340" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="601">
@@ -1094,7 +1136,7 @@ DQ
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" id="603">
+                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="603">
                                             <rect key="frame" x="13" y="310" width="76" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Ghostscript" id="606">
@@ -1103,7 +1145,7 @@ DQ
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" id="604">
+                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="604">
                                             <rect key="frame" x="95" y="308" width="340" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="605">
@@ -1128,7 +1170,7 @@ DQ
                                                 <action selector="takeIntValueFrom:" target="qJq-qV-HLt" id="4aI-kR-3fE"/>
                                             </connections>
                                         </stepper>
-                                        <textField toolTip="コンパイル回数" verticalHuggingPriority="750" id="qJq-qV-HLt">
+                                        <textField toolTip="コンパイル回数" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="qJq-qV-HLt">
                                             <rect key="frame" x="194" y="246" width="47" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="3" drawsBackground="YES" id="5Jh-J3-UCx">
@@ -1160,7 +1202,7 @@ DQ
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
-                                        <textField verticalHuggingPriority="750" id="bEk-zp-Lf1">
+                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="bEk-zp-Lf1">
                                             <rect key="frame" x="13" y="141" width="95" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="文字コード指定" id="WAa-1J-cUd">
@@ -1222,7 +1264,7 @@ DQ
                                             </view>
                                             <font key="titleFont" size="12" name=".AppleSystemUIFont"/>
                                         </box>
-                                        <textField verticalHuggingPriority="750" id="595">
+                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="595">
                                             <rect key="frame" x="47" y="371" width="42" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="LaTeX" id="596">
@@ -1253,7 +1295,7 @@ DQ
                                                 <action selector="showAutoDetectionTargetSettingPopover:" target="450" id="e09-Mr-LdI"/>
                                             </connections>
                                         </button>
-                                        <textField verticalHuggingPriority="750" id="599">
+                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="599">
                                             <rect key="frame" x="23" y="340" width="66" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="DVI Driver" id="602">
@@ -1270,7 +1312,7 @@ DQ
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
-                                        <textField verticalHuggingPriority="750" id="FC5-GE-HNZ">
+                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="FC5-GE-HNZ">
                                             <rect key="frame" x="15" y="249" width="173" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="コンパイルの（最大）回数：" id="WmO-jJ-pYZ">
@@ -1404,7 +1446,7 @@ DQ
                                                 <rect key="frame" x="1" y="1" width="271" height="96"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="aHu-v1-wTJ">
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="aHu-v1-wTJ">
                                                         <rect key="frame" x="9" y="67" width="43" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="タブ幅" id="etH-G4-dbS">
@@ -1413,7 +1455,7 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField toolTip="タブ幅" verticalHuggingPriority="750" id="CxL-HX-LxM">
+                                                    <textField toolTip="タブ幅" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="CxL-HX-LxM">
                                                         <rect key="frame" x="58" y="64" width="33" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="4" drawsBackground="YES" id="zAf-0d-j0b">
@@ -1429,7 +1471,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="KVM-Fv-X4T" id="mcU-F7-MKf"/>
                                                         </connections>
                                                     </textField>
-                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="UfO-wD-pSG">
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="UfO-wD-pSG">
                                                         <rect key="frame" x="64" y="41" width="195" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Font" id="3Oc-2Z-ijP">
@@ -1634,7 +1676,7 @@ DQ
                                                 <action selector="loadDefaultColors:" target="450" id="0lP-HG-ImS"/>
                                             </connections>
                                         </button>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="aDA-aZ-Y6D">
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="aDA-aZ-Y6D">
                                             <rect key="frame" x="160" y="370" width="30" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="文字" id="WY7-cE-ieA">
@@ -1643,7 +1685,7 @@ DQ
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="icN-Ln-3Bx">
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="icN-Ln-3Bx">
                                             <rect key="frame" x="160" y="339" width="30" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="背景" id="DWN-VM-Bnn">
@@ -1652,7 +1694,7 @@ DQ
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="42r-67-98t">
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="42r-67-98t">
                                             <rect key="frame" x="134" y="308" width="56" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="カーソル" id="n8E-Uq-lwT">
@@ -1661,7 +1703,7 @@ DQ
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="nXq-YJ-QVm">
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="nXq-YJ-QVm">
                                             <rect key="frame" x="142" y="277" width="48" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="{ } と $" id="g1a-rX-NDu">
@@ -1670,7 +1712,7 @@ DQ
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="41t-ra-oMS">
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="41t-ra-oMS">
                                             <rect key="frame" x="116" y="215" width="74" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="\command" id="GET-WR-4bL">
@@ -1679,7 +1721,7 @@ DQ
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="x43-ql-KM8">
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="x43-ql-KM8">
                                             <rect key="frame" x="59" y="153" width="131" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="{強調表示された括弧}" id="cDj-hY-zFx">
@@ -1688,7 +1730,7 @@ DQ
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="a83-KB-aKI">
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="a83-KB-aKI">
                                             <rect key="frame" x="7" y="122" width="183" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="{強調表示された括弧内の背景}" id="o5z-jD-XIo">
@@ -1697,7 +1739,7 @@ DQ
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="zib-Y9-Syg">
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="zib-Y9-Syg">
                                             <rect key="frame" x="57" y="184" width="133" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="不可視文字" id="b74-6f-dN3">
@@ -1778,7 +1820,7 @@ DQ
                                                 <action selector="colorSettingChanged:" target="450" id="Qt7-cS-0qH"/>
                                             </connections>
                                         </colorWell>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="zc7-Fv-zRy">
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="zc7-Fv-zRy">
                                             <rect key="frame" x="4" y="91" width="186" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="括弧不一致で点滅している背景" id="myR-76-IeO">
@@ -1795,7 +1837,7 @@ DQ
                                                 <action selector="colorSettingChanged:" target="450" id="xAf-Hd-6EX"/>
                                             </connections>
                                         </colorWell>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="5Nr-cj-FO2">
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="5Nr-cj-FO2">
                                             <rect key="frame" x="104" y="246" width="86" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="% コメント" id="pZg-Zd-fIa">
@@ -1933,7 +1975,7 @@ DQ
                     </tabView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-446" y="95.5"/>
+            <point key="canvasLocation" x="-588" y="48.5"/>
         </window>
         <window title="設定の保存・読み込み" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="672" userLabel="Window (設定の保存・読み込み)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -1944,7 +1986,7 @@ DQ
                 <rect key="frame" x="0.0" y="0.0" width="468" height="239"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="674">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="674">
                         <rect key="frame" x="17" y="211" width="216" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="現在の設定に名前を付けて保存：" id="675">
@@ -1953,7 +1995,7 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="676">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="676">
                         <rect key="frame" x="20" y="181" width="407" height="22"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="677">
@@ -2019,7 +2061,7 @@ DQ
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <textField verticalHuggingPriority="750" id="689">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="689">
                         <rect key="frame" x="17" y="154" width="159" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="保存されている設定：" id="690">
@@ -2072,7 +2114,7 @@ DQ
                         <rect key="frame" x="1" y="1" width="391" height="335"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textView editable="NO" importsGraphics="NO" richText="NO" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="476">
+                            <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="476">
                                 <rect key="frame" x="0.0" y="0.0" width="391" height="335"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -2128,6 +2170,8 @@ DQ
                 <outlet property="deleteDisplaySizeCheckBox" destination="afr-f7-ZEX" id="oSG-fY-bJT"/>
                 <outlet property="deleteTmpFileCheckBox" destination="591" id="594"/>
                 <outlet property="directInputButton" destination="TFq-OD-TeI" id="hA5-5h-RAw"/>
+                <outlet property="dpiStepper" destination="Xsi-cH-r8L" id="Nl2-HI-Ppa"/>
+                <outlet property="dpiTextField" destination="npz-lQ-SYx" id="jUB-nf-wuC"/>
                 <outlet property="dviDriverPathTextField" destination="600" id="fPT-Qp-KrP"/>
                 <outlet property="embedInIllustratorCheckBox" destination="877" id="881"/>
                 <outlet property="embedSourceCheckBox" destination="Bld-79-KdN" id="fcB-Wi-hye"/>
@@ -2255,7 +2299,7 @@ DQ
                             <action selector="insertColorCommand:" target="450" id="Iiz-iN-ytZ"/>
                         </connections>
                     </button>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="cov-ht-7TE">
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="cov-ht-7TE">
                         <rect key="frame" x="464" y="59" width="17" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="色" id="GUn-yc-sof">
@@ -2264,7 +2308,7 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="ece-oe-9xN">
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="ece-oe-9xN">
                         <rect key="frame" x="20" y="19" width="431" height="22"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="qcj-uU-u7r">
@@ -2331,7 +2375,7 @@ DQ
             <rect key="frame" x="0.0" y="0.0" width="209" height="222"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="KNP-Hq-CXj">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="KNP-Hq-CXj">
                     <rect key="frame" x="18" y="186" width="95" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="自動判定対象：" id="Uyt-Bu-b55">
@@ -2643,7 +2687,7 @@ DQ
                         </column>
                     </cells>
                 </matrix>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="tFr-bj-U5w">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="tFr-bj-U5w">
                     <rect key="frame" x="11" y="141" width="95" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="採用ボックス：" id="1Zl-7b-lAX">
@@ -2669,7 +2713,7 @@ DQ
             <rect key="frame" x="0.0" y="0.0" width="283" height="112"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="ola-ET-Lo1">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="ola-ET-Lo1">
                     <rect key="frame" x="31" y="48" width="168" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="フレーム間のディレイ(秒)：" id="dgh-c6-tTk">
@@ -2678,7 +2722,7 @@ DQ
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="P3X-h8-LuO">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="P3X-h8-LuO">
                     <rect key="frame" x="18" y="75" width="259" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="アニメーション GIF / SVG (SMIL) の設定：" id="2TL-GA-dTV">
@@ -2696,7 +2740,7 @@ DQ
                         </connections>
                     </stepperCell>
                 </stepper>
-                <textField toolTip="コンパイル回数" verticalHuggingPriority="750" id="z7U-r1-96O">
+                <textField toolTip="コンパイル回数" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="z7U-r1-96O">
                     <rect key="frame" x="200" y="45" width="47" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" drawsBackground="YES" id="R5b-05-3uh">
@@ -2712,7 +2756,7 @@ DQ
                         <action selector="takeFloatValueFrom:" target="Q2q-zf-nqJ" id="qis-XN-Km2"/>
                     </connections>
                 </textField>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="fZi-fF-QKr">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="fZi-fF-QKr">
                     <rect key="frame" x="62" y="18" width="137" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="ループ回数 (0=無限)：" id="C7M-m9-4Ur">
@@ -2729,7 +2773,7 @@ DQ
                         <action selector="takeIntValueFrom:" target="V9C-Oh-Xce" id="jEt-b3-Hec"/>
                     </connections>
                 </stepper>
-                <textField toolTip="コンパイル回数" verticalHuggingPriority="750" id="V9C-Oh-Xce">
+                <textField toolTip="コンパイル回数" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" id="V9C-Oh-Xce">
                     <rect key="frame" x="200" y="15" width="47" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="O15-X7-nMh">

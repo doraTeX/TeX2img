@@ -25,6 +25,7 @@
 @property (nonatomic, copy) NSString *outputFilePath;
 @property (nonatomic, copy) NSString *preambleStr;
 @property (nonatomic, assign) float resolutionLevel;
+@property (nonatomic, assign) NSInteger dpi;
 @property (nonatomic, assign) BOOL guessCompilation;
 @property (nonatomic, assign) NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
 @property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, autoPasteFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
@@ -66,6 +67,7 @@
 @synthesize outputFilePath;
 @synthesize preambleStr;
 @synthesize resolutionLevel;
+@synthesize dpi;
 @synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
 @synthesize leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, autoPasteFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
@@ -117,6 +119,7 @@
     
     encoding = [aProfile stringForKey:EncodingKey];
     resolutionLevel = [aProfile floatForKey:ResolutionKey] / RESOLUTION_SCALE;
+    dpi = [aProfile integerForKey:DPIKey];
     leftMargin = [aProfile integerForKey:LeftMarginKey];
     rightMargin = [aProfile integerForKey:RightMarginKey];
     topMargin = [aProfile integerForKey:TopMarginKey];
@@ -902,7 +905,6 @@
 	// NSImage を TIFF 形式の NSBitmapImageRep に変換する
 	NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithData:image.TIFFRepresentation];
 
-    NSInteger dpi = 600;
     // 指定のビットマップ形式に変換
     NSData *outputData;
 	if ([@"jpg" isEqualToString:extension]) {

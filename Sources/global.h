@@ -55,6 +55,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define GuessCompilationKey @"guessCompilation"
 #define NumberOfCompilationKey @"numberOfCompilation"
 #define ResolutionKey @"resolution"
+#define DPIKey @"dpi"
 #define LeftMarginKey @"leftMargin"
 #define RightMarginKey @"rightMargin"
 #define TopMarginKey @"topMargin"

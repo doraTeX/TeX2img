@@ -101,12 +101,14 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSWindow *preferenceWindow;
 
 @property (nonatomic, strong) IBOutlet NSTextField *resolutionTextField;
+@property (nonatomic, strong) IBOutlet NSTextField *dpiTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *leftMarginTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *rightMarginTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *topMarginTextField;
 @property (nonatomic, strong) IBOutlet NSTextField *bottomMarginTextField;
 
 @property (nonatomic, strong) IBOutlet NSStepper *resolutionStepper;
+@property (nonatomic, strong) IBOutlet NSStepper *dpiStepper;
 @property (nonatomic, strong) IBOutlet NSStepper *leftMarginStepper;
 @property (nonatomic, strong) IBOutlet NSStepper *rightMarginStepper;
 @property (nonatomic, strong) IBOutlet NSStepper *topMarginStepper;
@@ -248,12 +250,14 @@ typedef enum {
 @synthesize preferenceWindow;
 
 @synthesize resolutionTextField;
+@synthesize dpiTextField;
 @synthesize leftMarginTextField;
 @synthesize rightMarginTextField;
 @synthesize topMarginTextField;
 @synthesize bottomMarginTextField;
 
 @synthesize resolutionStepper;
+@synthesize dpiStepper;
 @synthesize leftMarginStepper;
 @synthesize rightMarginStepper;
 @synthesize topMarginStepper;
@@ -851,12 +855,14 @@ typedef enum {
 	[self loadStringSettingForTextField:gsPathTextField fromProfile:aProfile forKey:GsPathKey];
 	
 	[self loadNumberSettingForTextField:resolutionTextField fromProfile:aProfile forKey:ResolutionKey];
+    [self loadNumberSettingForTextField:dpiTextField fromProfile:aProfile forKey:DPIKey];
     [self loadNumberSettingForTextField:leftMarginTextField fromProfile:aProfile forKey:LeftMarginKey];
     [self loadNumberSettingForTextField:rightMarginTextField fromProfile:aProfile forKey:RightMarginKey];
     [self loadNumberSettingForTextField:topMarginTextField fromProfile:aProfile forKey:TopMarginKey];
     [self loadNumberSettingForTextField:bottomMarginTextField fromProfile:aProfile forKey:BottomMarginKey];
     
     [resolutionStepper takeFloatValueFrom:resolutionTextField];
+    [dpiStepper takeFloatValueFrom:dpiTextField];
     [leftMarginStepper takeIntValueFrom:leftMarginTextField];
     [rightMarginStepper takeIntValueFrom:rightMarginTextField];
     [topMarginStepper takeIntValueFrom:topMarginTextField];
@@ -1028,6 +1034,7 @@ typedef enum {
         currentProfile[NumberOfCompilationKey] = @(numberOfCompilationTextField.integerValue);
         
         currentProfile[ResolutionKey] = @(resolutionTextField.floatValue);
+        currentProfile[DPIKey] = @(dpiTextField.floatValue);
         currentProfile[LeftMarginKey] = @(leftMarginTextField.integerValue);
         currentProfile[RightMarginKey] = @(rightMarginTextField.integerValue);
         currentProfile[TopMarginKey] = @(topMarginTextField.integerValue);
@@ -1421,6 +1428,10 @@ typedef enum {
     
     // 数値を記入した NSTextField の値を変更したときに直ちに関連づけられたステッパーに反映されるように
     // ただし，resolutionTextField は，小数点値を反映させるために対象外としている
+    [aCenter addObserver:self
+                selector:@selector(refreshRelatedStepperValue:)
+                    name:NSControlTextDidChangeNotification
+                  object:dpiTextField];
     [aCenter addObserver:self
                 selector:@selector(refreshRelatedStepperValue:)
                     name:NSControlTextDidChangeNotification
@@ -2391,7 +2402,8 @@ typedef enum {
     [output appendString:@"\n"];
 
     [output appendFormat:@"Resolution level: %.1f\n", [aProfile floatForKey:ResolutionKey]];
-    
+    [output appendFormat:@"DPI: %ld\n", [aProfile integerForKey:DPIKey]];
+
     NSString *ext = outputFilePath.pathExtension;
     NSString *unit = (([aProfile integerForKey:UnitKey] == PX_UNIT_TAG) &&
                       ([ext isEqualToString:@"png"] || [ext isEqualToString:@"gif"] || [ext isEqualToString:@"tiff"])) ?
@@ -2487,7 +2499,7 @@ typedef enum {
     // 余白設定・解像度設定などの数値の妥当性チェック
     __block BOOL valid = YES;
 
-    [@[leftMarginTextField, rightMarginTextField, topMarginTextField, bottomMarginTextField, resolutionTextField, numberOfCompilationTextField, tabWidthTextField] enumerateObjectsUsingBlock:^(NSTextField *label, NSUInteger idx, BOOL *stop) {
+    [@[leftMarginTextField, rightMarginTextField, topMarginTextField, bottomMarginTextField, resolutionTextField, dpiTextField,  numberOfCompilationTextField, tabWidthTextField] enumerateObjectsUsingBlock:^(NSTextField *label, NSUInteger idx, BOOL *stop) {
         NSNumber *value = [(NSNumberFormatter*)(label.formatter) numberFromString:label.stringValue];
         if (value) {
             // 中途半端に入力されている数値を確定させる
