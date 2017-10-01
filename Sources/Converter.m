@@ -11,6 +11,7 @@
 #import "NSString-Conversion.h"
 #import "NSDictionary-Extension.h"
 #import "NSMutableString-Extension.h"
+#import "NSBitmapImageRep-Extension.h"
 #import "NSDate-Extension.h"
 #import "NSPipe-Extension.h"
 #import "PDFDocument-Extension.h"
@@ -900,32 +901,32 @@
 	
 	// NSImage を TIFF 形式の NSBitmapImageRep に変換する
 	NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithData:image.TIFFRepresentation];
-    
-	// 指定のビットマップ形式に変換
+
+    NSInteger dpi = 600;
+    // 指定のビットマップ形式に変換
     NSData *outputData;
 	if ([@"jpg" isEqualToString:extension]) {
 		imageRep = [self fillBackground:imageRep];
-        NSDictionary<NSString*,id> *prop = @{NSImageCompressionFactor: @1.0f};
-		outputData = [imageRep representationUsingType:NSJPEGFileType properties:prop];
+        outputData = [imageRep representationUsingType:kUTTypeJPEG usingDPI:dpi];
 	} else if ([@"png" isEqualToString:extension]) {
 		if (!transparentFlag) {
 			imageRep = [self fillBackground:imageRep];
 		}
-        outputData = [imageRep representationUsingType:NSPNGFileType properties:@{}];
+        outputData = [imageRep representationUsingType:kUTTypePNG usingDPI:dpi];
     } else if ([@"gif" isEqualToString:extension]) {
         if (!transparentFlag) {
             imageRep = [self fillBackground:imageRep];
         }
         outputData = [self GIF89aDataFromGIF87aData:[imageRep representationUsingType:NSGIFFileType properties:@{}]];
+        //outputData = [self GIF89aDataFromGIF87aData:[imageRep representationUsingType:kUTTypeGIF usingDPI:dpi]];
     } else if ([@"tiff" isEqualToString:extension]) {
         if (!transparentFlag) {
             imageRep = [self fillBackground:imageRep];
         }
-        NSDictionary<NSString*,id> *prop = @{NSImageCompressionFactor: @1.0f};
-        outputData = [imageRep representationUsingType:NSTIFFFileType properties:prop];
+        outputData = [imageRep representationUsingType:kUTTypeTIFF usingDPI:dpi];
     } else if ([@"bmp" isEqualToString:extension]) {
         imageRep = [self fillBackground:imageRep];
-        outputData = [imageRep representationUsingType:NSBMPFileType properties:@{}];
+        outputData = [imageRep representationUsingType:kUTTypeBMP usingDPI:dpi];
     }
     NSString *outputPath = [workingDirectory stringByAppendingPathComponent:outputFileName];
 	[outputData writeToFile:outputPath atomically:YES];

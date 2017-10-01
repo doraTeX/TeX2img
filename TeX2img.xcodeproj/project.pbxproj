@@ -13,6 +13,8 @@
 		342C6196101E637F00E29FEB /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 342C6194101E637F00E29FEB /* epstopdf */; };
 		3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
 		343E47A81BED59DB00F892A5 /* eps2emf in Resources */ = {isa = PBXBuildFile; fileRef = 343E47A71BED59DB00F892A5 /* eps2emf */; };
+		344409D91F80FF100020EDC7 /* NSBitmapImageRep-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 344409D81F80FF100020EDC7 /* NSBitmapImageRep-Extension.m */; };
+		344409DA1F80FF100020EDC7 /* NSBitmapImageRep-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 344409D81F80FF100020EDC7 /* NSBitmapImageRep-Extension.m */; };
 		34522C121BAC550800DE1B86 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 34522C111BAC550800DE1B86 /* libicucore.tbd */; };
 		3453398E1B93D5830027CBE7 /* NSPopover-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3453398D1B93D5830027CBE7 /* NSPopover-Extension.m */; };
 		345339911B93DDD10027CBE7 /* NSMatrix-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 345339901B93DDD10027CBE7 /* NSMatrix-Extension.m */; };
@@ -103,6 +105,8 @@
 		3424A8E20E4F2DC1003C9F96 /* ControllerG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerG.m; sourceTree = "<group>"; };
 		342C6194101E637F00E29FEB /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
 		343E47A71BED59DB00F892A5 /* eps2emf */ = {isa = PBXFileReference; lastKnownFileType = folder; path = eps2emf; sourceTree = "<group>"; };
+		344409D71F80FF100020EDC7 /* NSBitmapImageRep-Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSBitmapImageRep-Extension.h"; sourceTree = "<group>"; };
+		344409D81F80FF100020EDC7 /* NSBitmapImageRep-Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBitmapImageRep-Extension.m"; sourceTree = "<group>"; };
 		34522C111BAC550800DE1B86 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		3453398C1B93D5830027CBE7 /* NSPopover-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPopover-Extension.h"; sourceTree = "<group>"; };
 		3453398D1B93D5830027CBE7 /* NSPopover-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPopover-Extension.m"; sourceTree = "<group>"; };
@@ -383,6 +387,8 @@
 				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
 				3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */,
 				3408053C1A96E6B50067AA56 /* NSFileManager-Extension.m */,
+				344409D71F80FF100020EDC7 /* NSBitmapImageRep-Extension.h */,
+				344409D81F80FF100020EDC7 /* NSBitmapImageRep-Extension.m */,
 				348CA6DA1A957BC90070B079 /* NSDate-Extension.h */,
 				348CA6DB1A957BC90070B079 /* NSDate-Extension.m */,
 				348BBF941B795AB900EDE00C /* NSColor-Extension.h */,
@@ -568,6 +574,7 @@
 				705DC7A70F1197E90052AFA5 /* mainc.m in Sources */,
 				34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */,
 				3468197D1C06A78800641CBF /* NSMutableString-Extension.m in Sources */,
+				344409DA1F80FF100020EDC7 /* NSBitmapImageRep-Extension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,6 +602,7 @@
 				349564B81ABFF3D1004B9C1D /* Utility.m in Sources */,
 				348BBF961B795AB900EDE00C /* NSColor-Extension.m in Sources */,
 				349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */,
+				344409D91F80FF100020EDC7 /* NSBitmapImageRep-Extension.m in Sources */,
 				346DA57B1B705F6800B51BD7 /* NSArray-Extension.m in Sources */,
 				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,
 				7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */,
