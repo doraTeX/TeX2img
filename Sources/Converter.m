@@ -1006,6 +1006,7 @@
     
     __block CFMutableDataRef gifData = CFDataCreateMutable(kCFAllocatorDefault, 0);
     CGImageDestinationRef destination = CGImageDestinationCreateWithData(gifData, kUTTypeGIF, sourcePaths.count, NULL);
+    CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)gifProperties);
 
     __block BOOL success = YES;
     
@@ -1020,7 +1021,6 @@
     }];
     
     if (success) {
-        CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)gifProperties);
         CGImageDestinationFinalize(destination);
     
         NSData *animatedData = [NSData dataWithData:(NSData*)CFBridgingRelease(gifData)];
