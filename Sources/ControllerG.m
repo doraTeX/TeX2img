@@ -1856,9 +1856,9 @@ typedef enum {
     [savePanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
             NSString *outputPath = savePanel.URL.path;
-            lastSavedPath = outputPath;
-            NSString *preamble = preambleTextView.textStorage.mutableString;
-            NSString *body = sourceTextView.textStorage.mutableString;
+            self.lastSavedPath = outputPath;
+            NSString *preamble = self.preambleTextView.textStorage.mutableString;
+            NSString *body = self.sourceTextView.textStorage.mutableString;
             NSString *contents = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}\n", preamble, body];
             NSStringEncoding encoding = [self stringEncodingFromEncodingOption:[[self currentProfile] stringForKey:EncodingKey]];
             
@@ -2146,7 +2146,7 @@ typedef enum {
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
-            inputSourceFileTextField.stringValue = openPanel.URL.path;
+            self.inputSourceFileTextField.stringValue = openPanel.URL.path;
         }
     }];
     
@@ -2165,7 +2165,7 @@ typedef enum {
     
     [savePanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
-            outputFileTextField.stringValue = savePanel.URL.path;
+            self.outputFileTextField.stringValue = savePanel.URL.path;
         }
     }];
 }

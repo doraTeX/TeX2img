@@ -2325,7 +2325,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         
         [generatedFiles enumerateObjectsUsingBlock:^(NSString *filePath, NSUInteger idx, BOOL *stop) {
             [script appendFormat:@"embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath];
-            if (ungroupFlag) {
+            if (self.ungroupFlag) {
                 [script appendString:@"move page items of selection of current document to end of current document\n"];
             }
         }];
