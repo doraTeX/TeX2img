@@ -1,9 +1,17 @@
 #import "MyLayoutManager.h"
 #import "NSDictionary-Extension.h"
 #import "NSColor-Extension.h"
+#import "MyATSTypesetter.h"
 
 @implementation MyLayoutManager
 @synthesize controller;
+
+- (instancetype)init
+{
+    self = [super init];
+    self.typesetter = [MyATSTypesetter new];
+    return self;
+}
 
 - (NSPoint)pointToDrawGlyphAtIndex:(NSUInteger)inGlyphIndex adjust:(NSSize)inSize
 {
@@ -39,7 +47,9 @@
                                                NSForegroundColorAttributeName: theColor
                                                };
 	
-	for (theGlyphIndex = inGlyphRange.location; theGlyphIndex < theLengthToRedraw; theGlyphIndex++) {
+    NSString *replacementCharacter = [NSString stringWithFormat:@"%C", 0xFFFD]; // Replacement Character
+
+    for (theGlyphIndex = inGlyphRange.location; theGlyphIndex < theLengthToRedraw; theGlyphIndex++) {
 		theCharIndex = [self characterIndexForGlyphAtIndex:theGlyphIndex];
 		theCharacter = [theCompleteStr characterAtIndex:theCharIndex];
 		
@@ -55,9 +65,24 @@
 		} else if (theCharacter == ' ' && [currentProfile boolForKey:ShowSpaceCharacterKey]) {
 			thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
 			[controller.spaceCharacter drawAtPoint:thePointToDraw withAttributes:attributes];
-		}
+        } else if ((theCharacter >= 0x0000 && theCharacter <= 0x0008) || (theCharacter >= 0x000B && theCharacter <= 0x001F)) { // other control characters
+            thePointToDraw = [self pointToDrawGlyphAtIndex:theGlyphIndex adjust:theSize];
+            [replacementCharacter drawAtPoint:thePointToDraw withAttributes:attributes];
+        }
 	}
 	[super drawGlyphsForGlyphRange:inGlyphRange atPoint:inContainerOrigin];
+}
+
+-(CGFloat)replacementGlyphWidth
+{
+    NSFont *textFont = self.textStorage.font;
+    NSFont *font = [NSFont fontWithName:@"Lucida Grande" size:textFont.pointSize];
+    if (!font) {
+        font = textFont;
+    }
+    NSGlyph glyph = [font glyphWithName:@"replacement"];
+    NSRect rect = [font boundingRectForGlyph:glyph];
+    return rect.size.width;
 }
 
 @end
