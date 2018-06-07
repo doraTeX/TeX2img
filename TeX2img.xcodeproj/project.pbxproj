@@ -64,7 +64,6 @@
 		34DBA5841D9A4F3A00951297 /* NSString-Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 34DBA5831D9A4F3A00951297 /* NSString-Conversion.m */; };
 		70254EF010353485000D6D05 /* TeXTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70254EEF10353485000D6D05 /* TeXTextView.m */; };
 		7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7025539810353D33000D6D05 /* NSMutableString-Extension.m */; };
-		7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */; };
 		705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC3550F10E4670052AFA5 /* ControllerC.m */; };
 		705DC7A60F1197E90052AFA5 /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
 		705DC7A70F1197E90052AFA5 /* mainc.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC2BB0F10E0B00052AFA5 /* mainc.m */; };
@@ -191,7 +190,6 @@
 		70254EEF10353485000D6D05 /* TeXTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeXTextView.m; sourceTree = "<group>"; };
 		7025539710353D33000D6D05 /* NSMutableString-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableString-Extension.h"; sourceTree = "<group>"; };
 		7025539810353D33000D6D05 /* NSMutableString-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableString-Extension.m"; sourceTree = "<group>"; };
-		7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = TeX2imgIcon.icns; sourceTree = "<group>"; };
 		705DC2BB0F10E0B00052AFA5 /* mainc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mainc.m; sourceTree = "<group>"; };
 		705DC3540F10E4670052AFA5 /* ControllerC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerC.h; sourceTree = "<group>"; };
 		705DC3550F10E4670052AFA5 /* ControllerC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerC.m; sourceTree = "<group>"; };
@@ -327,7 +325,6 @@
 				34CCBB061A964E8A0061842E /* Templates */,
 				34670DD5125B7AC3002308EF /* dsa_pub.pem */,
 				342C6194101E637F00E29FEB /* epstopdf */,
-				7048DB790E533B5400BC6DA3 /* TeX2imgIcon.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
@@ -506,7 +503,6 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				CE4A31F10E5036500095D4FC /* Localizable.strings in Resources */,
-				7048DB7A0E533B5400BC6DA3 /* TeX2imgIcon.icns in Resources */,
 				342C6196101E637F00E29FEB /* epstopdf in Resources */,
 				3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */,
 				34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */,
