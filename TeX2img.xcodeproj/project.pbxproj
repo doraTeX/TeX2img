@@ -533,7 +533,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/Contents/Resources/pdftops\"\nln -sf pdftops xpdf-pdftops\nchmod +x xpdf-pdftops";
+			shellScript = "cd \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/Contents/Resources/pdftops\"\nln -sf pdftops xpdf-pdftops\nchmod +x xpdf-pdftops\n";
 		};
 		34670E17125B7F6F002308EF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
