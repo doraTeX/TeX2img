@@ -157,32 +157,42 @@
     BOOL copyAsRichText = [profile boolForKey:RichTextKey];
     
     if (copyAsRichText) {
-        NSMutableAttributedString *str = [NSMutableAttributedString new];
-        [str setAttributedString:[self.textStorage attributedSubstringFromRange:self.selectedRange]];
-        
         NSColor *foregroundColor = [profile colorForKey:ForegroundColorKey];
         NSColor *backgroundColor = [profile colorForKey:BackgroundColorKey];
         
-        NSRange entireRange = NSMakeRange(0, str.length);
-        NSRange range;
-        NSInteger location = 0;
-        while (location < str.length) {
+        NSMutableAttributedString *destStr = [NSMutableAttributedString new]; // コピー先文字列
+        NSRange selectedRange = self.selectedRange;
+        [destStr setAttributedString:[self.textStorage attributedSubstringFromRange:selectedRange]]; // 選択範囲を抽出して destStr にセット
+        NSUInteger entireDestLength = destStr.length;
+        
+        NSRange entireSrcRange = NSMakeRange(0, self.textStorage.length);
+        NSRange srcRange;
+        NSInteger srcLocation = selectedRange.location; // 元テキストの選択範囲開始位置から属性サーチを開始
+        NSInteger destLocation = 0;
+        
+        while (destLocation < entireDestLength) {
             NSColor *fgColor = (NSColor*)[self.layoutManager temporaryAttribute:NSForegroundColorAttributeName
-                                                               atCharacterIndex:location
-                                                          longestEffectiveRange:&range
-                                                                        inRange:entireRange];
+                                                               atCharacterIndex:srcLocation
+                                                          longestEffectiveRange:&srcRange
+                                                                        inRange:entireSrcRange]; // temporaryAttribute を取得
+            srcRange = NSMakeRange(srcLocation, srcRange.length - (srcLocation - srcRange.location)); // srcRange.location が選択範囲より前から始まってしまう場合は範囲の開始位置を調整
+            
             if (!fgColor) { // 特殊文字でない場合は temporaryAttribute がないのでデフォルトの前面色を適用
                 fgColor = foregroundColor;
             }
             
             NSDictionary *attr = @{NSForegroundColorAttributeName: fgColor,
                                    NSBackgroundColorAttributeName: backgroundColor};
-            [str addAttributes:attr range:range];
-            location += range.length;
+            
+            NSUInteger length = srcRange.length;
+            NSRange destRange = NSMakeRange(destLocation, MIN(length, entireDestLength - destLocation)); // srcRange の末尾が選択範囲より後ろにはみ出す場合は範囲の終了位置を調整
+            [destStr addAttributes:attr range:destRange]; // 取得した temporaryAttribute を destStr にかぶせる
+            srcLocation += length;
+            destLocation += length;
         }
         
-        NSData *rtfData = [str RTFFromRange:NSMakeRange(0, str.length)
-                         documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFTextDocumentType}];
+        NSData *rtfData = [destStr RTFFromRange:NSMakeRange(0, destStr.length)
+                             documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFTextDocumentType}];
         
         NSPasteboard *pboard = NSPasteboard.generalPasteboard;
         [pboard declareTypes:@[NSPasteboardTypeRTF] owner:nil];
