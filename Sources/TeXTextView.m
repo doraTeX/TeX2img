@@ -150,6 +150,50 @@
     }
 }
 
+- (void)copy:(id)sender
+{
+    Profile *profile = [controller currentProfile];
+    
+    BOOL copyAsRichText = [profile boolForKey:RichTextKey];
+    
+    if (copyAsRichText) {
+        NSMutableAttributedString *str = [NSMutableAttributedString new];
+        [str setAttributedString:[self.textStorage attributedSubstringFromRange:self.selectedRange]];
+        
+        NSColor *foregroundColor = [profile colorForKey:ForegroundColorKey];
+        NSColor *backgroundColor = [profile colorForKey:BackgroundColorKey];
+        
+        NSRange entireRange = NSMakeRange(0, str.length);
+        NSRange range;
+        NSInteger location = 0;
+        while (location < str.length) {
+            NSColor *fgColor = (NSColor*)[self.layoutManager temporaryAttribute:NSForegroundColorAttributeName
+                                                               atCharacterIndex:location
+                                                          longestEffectiveRange:&range
+                                                                        inRange:entireRange];
+            if (!fgColor) { // 特殊文字でない場合は temporaryAttribute がないのでデフォルトの前面色を適用
+                fgColor = foregroundColor;
+            }
+            
+            NSDictionary *attr = @{NSForegroundColorAttributeName: fgColor,
+                                   NSBackgroundColorAttributeName: backgroundColor};
+            [str addAttributes:attr range:range];
+            location += range.length;
+        }
+        
+        NSData *rtfData = [str RTFFromRange:NSMakeRange(0, str.length)
+                         documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFTextDocumentType}];
+        
+        NSPasteboard *pboard = NSPasteboard.generalPasteboard;
+        [pboard declareTypes:@[NSPasteboardTypeRTF] owner:nil];
+        [pboard clearContents];
+        [pboard setData:rtfData forType:NSPasteboardTypeRTF];
+    } else {
+        [super copy:sender];
+    }
+}
+
+
 - (void)changeFont:(id)sender
 {
     [super changeFont:sender];

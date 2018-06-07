@@ -44,6 +44,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSWindow *preambleWindow;
 @property (nonatomic, strong) IBOutlet TeXTextView *preambleTextView;
 @property (nonatomic, strong) IBOutlet NSMenuItem *convertYenMarkMenuItem;
+@property (nonatomic, strong) IBOutlet NSMenuItem *richTextMenuItem;
 @property (nonatomic, strong) IBOutlet NSMenuItem *outputDrawerMenuItem;
 @property (nonatomic, strong) IBOutlet NSMenuItem *preambleWindowMenuItem;
 @property (nonatomic, strong) IBOutlet NSMenuItem *generateMenuItem;
@@ -193,6 +194,7 @@ typedef enum {
 @synthesize preambleWindow;
 @synthesize preambleTextView;
 @synthesize convertYenMarkMenuItem;
+@synthesize richTextMenuItem;
 @synthesize outputDrawerMenuItem;
 @synthesize preambleWindowMenuItem;
 @synthesize generateMenuItem;
@@ -703,7 +705,8 @@ typedef enum {
     workInInputFileDirectoryCheckBox.state = ([aProfile integerForKey:WorkingDirectoryTypeKey] == WorkingDirectoryFile) ? NSOnState : NSOffState;
 	
 	convertYenMarkMenuItem.state = [aProfile boolForKey:ConvertYenMarkKey];
-	
+    richTextMenuItem.state = [aProfile boolForKey:RichTextKey];
+
 	flashInMovingCheckBox.state = [aProfile boolForKey:FlashInMovingKey];
 
 	highlightContentCheckBox.state = [aProfile boolForKey:HighlightContentKey];
@@ -1065,6 +1068,7 @@ typedef enum {
         currentProfile[LoopCountKey] = @(loopCountTextField.integerValue);
 
         currentProfile[ConvertYenMarkKey] = @(convertYenMarkMenuItem.state);
+        currentProfile[RichTextKey] = @(richTextMenuItem.state);
         currentProfile[FlashInMovingKey] = @(flashInMovingCheckBox.state);
         currentProfile[HighlightContentKey] = @(highlightContentCheckBox.state);
         currentProfile[BeepKey] = @(beepCheckBox.state);

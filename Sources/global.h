@@ -93,6 +93,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define ColorPalleteColorKey @"colorPalleteColor"
 
 #define ConvertYenMarkKey @"convertYenMark"
+#define RichTextKey @"copyAsRichText"
 #define FlashInMovingKey @"flashInMoving"
 #define HighlightContentKey @"highlightContent"
 #define BeepKey @"beep"
