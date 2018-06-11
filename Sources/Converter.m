@@ -1375,26 +1375,21 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     if (!embedSource || ![fileManager fileExistsAtPath:texFilePath isDirectory:&isDir] || isDir) {
         return;
     }
-    
-    const char *target = filePath.fileSystemRepresentation;
-   
-    // ソース情報を UTF8 で EA に保存
+
+    // ソースを取得
     NSData *data = [NSData dataWithContentsOfFile:texFilePath];
     if (!data) {
         return;
     }
     
+    // ソース情報を UTF8 文字列に変換
     NSStringEncoding detectedEncoding;
     NSString *contents = [NSString stringWithAutoEncodingDetectionOfData:data detectedEncoding:&detectedEncoding];
     if (!contents) {
         return;
     }
     
-    const char *val = contents.UTF8String;
-    
-    setxattr(target, EA_Key, val, strlen(val), 0, 0);
-    
-    // PDF のアノテーション情報にも保存
+    // PDF の場合はアノテーション情報にソースを保存
     NSString *extension = filePath.pathExtension.lowercaseString;
     if ([@"pdf" isEqualToString:extension]) {
         PDFDocument *doc = [PDFDocument documentWithFilePath:filePath];
@@ -1417,6 +1412,11 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         
         [doc writeToFile:filePath];
     }
+
+    // ソース情報を UTF8 で EA に保存（APFSの場合この後ファイルを書き換えるとEAが破損するので注意）
+    const char *target = filePath.fileSystemRepresentation;
+    const char *val = contents.UTF8String;
+    setxattr(target, EA_Key, val, strlen(val), 0, 0);
 }
 
 - (NSDate*)fileModificationDateAtPath:(NSString*)filePath
