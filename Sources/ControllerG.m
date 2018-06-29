@@ -50,6 +50,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSMenuItem *generateMenuItem;
 @property (nonatomic, strong) IBOutlet NSMenuItem *abortMenuItem;
 @property (nonatomic, strong) IBOutlet NSMenuItem *autoCompleteMenuItem;
+@property (nonatomic, strong) IBOutlet NSMenuItem *autoIndentMenuItem;
 
 @property (nonatomic, strong) IBOutlet NSButton *flashInMovingCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *highlightContentCheckBox;
@@ -208,6 +209,7 @@ typedef enum {
 @synthesize checkSquareCheckBox;
 @synthesize checkParenCheckBox;
 @synthesize autoCompleteMenuItem;
+@synthesize autoIndentMenuItem;
 @synthesize showTabCharacterCheckBox;
 @synthesize showSpaceCharacterCheckBox;
 @synthesize showNewLineCharacterCheckBox;
@@ -830,6 +832,7 @@ typedef enum {
     }
 
 	autoCompleteMenuItem.state = [aProfile boolForKey:AutoCompleteKey];
+    autoIndentMenuItem.state = [aProfile boolForKey:AutoIndentKey];
 	showTabCharacterCheckBox.state = [aProfile boolForKey:ShowTabCharacterKey];
 	showSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowSpaceCharacterKey];
 	showFullwidthSpaceCharacterCheckBox.state = [aProfile boolForKey:ShowFullwidthSpaceCharacterKey];
@@ -1078,6 +1081,7 @@ typedef enum {
         currentProfile[CheckSquareBracketKey] = @(checkSquareCheckBox.state);
         currentProfile[CheckParenKey] = @(checkParenCheckBox.state);
         currentProfile[AutoCompleteKey] = @(autoCompleteMenuItem.state);
+        currentProfile[AutoIndentKey] = @(autoIndentMenuItem.state);
         currentProfile[ShowTabCharacterKey] = @(showTabCharacterCheckBox.state);
         currentProfile[ShowSpaceCharacterKey] = @(showSpaceCharacterCheckBox.state);
         currentProfile[ShowFullwidthSpaceCharacterKey] = @(showFullwidthSpaceCharacterCheckBox.state);

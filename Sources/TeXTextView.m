@@ -861,6 +861,25 @@
     }
 }
 
+#pragma mark - 自動インデント
+- (void)insertNewline:(id)sender
+{
+    BOOL autoIndent = [controller.currentProfile boolForKey:AutoIndentKey];
+    
+    if (autoIndent) {
+        NSRange selectedRange = self.selectedRange;
+        NSString *stringToCurrentLocation = [@"\n" stringByAppendingString:[self.textStorage.string substringToIndex:selectedRange.location]];
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\n([ \t]*)[^\\n]*$" options:0 error:nil];
+        NSTextCheckingResult *match = [regex firstMatchInString:stringToCurrentLocation options:0 range:NSMakeRange(0, stringToCurrentLocation.length)];
+        NSString *indentString = [stringToCurrentLocation substringWithRange:[match rangeAtIndex:1]];
+        [super insertNewline:sender];
+        [self insertText:indentString replacementRange:self.selectedRange];
+    } else {
+        [super insertNewline:sender];
+    }
+    
+}
+
 #pragma mark - ダブルクリック時の挙動
 - (NSRange)selectionRangeForProposedRange:(NSRange)proposedSelRange granularity:(NSSelectionGranularity)granularity
 {

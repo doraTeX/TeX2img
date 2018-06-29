@@ -103,6 +103,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define CheckSquareBracketKey @"checkSquareBracket"
 #define CheckParenKey @"checkParen"
 #define AutoCompleteKey @"autoComplete"
+#define AutoIndentKey @"autoIndent"
 #define ShowTabCharacterKey @"showTabCharacter"
 #define ShowSpaceCharacterKey @"showSpaceCharacter"
 #define ShowFullwidthSpaceCharacterKey @"showFullwidthSpaceCharacter"
