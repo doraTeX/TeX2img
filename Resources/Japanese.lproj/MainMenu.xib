@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14269.12" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14269.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -429,6 +430,12 @@
                                 </menu>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="Pxc-2v-6nr"/>
+                            <menuItem title="自動インデント" state="on" id="yEx-mS-HPD">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="toggleMenuItem:" target="450" id="RlQ-o3-Jdf"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="オートコンプリート" state="on" id="844">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
@@ -542,7 +549,7 @@ DQ
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" drawsBackground="NO" id="QOI-Xa-K0n">
                                         <rect key="frame" x="1" y="1" width="497" height="131"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="466" customClass="TeXTextView">
                                                 <rect key="frame" x="0.0" y="0.0" width="497" height="131"/>
@@ -672,7 +679,7 @@ DQ
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" id="mH3-Qk-1Wm">
                             <rect key="frame" x="1" y="1" width="327" height="333"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="485" customClass="TeXTextView">
                                     <rect key="frame" x="0.0" y="0.0" width="327" height="333"/>
@@ -2149,6 +2156,7 @@ DQ
                 <outlet property="autoCompleteMenuItem" destination="844" id="846"/>
                 <outlet property="autoDetectionTargetMatrix" destination="KXu-Vc-HGZ" id="AjK-HW-L8g"/>
                 <outlet property="autoDetectionTargetSettingViewController" destination="br2-Wx-T7e" id="gcD-s8-yoH"/>
+                <outlet property="autoIndentMenuItem" destination="yEx-mS-HPD" id="3xo-4T-JPL"/>
                 <outlet property="autoPasteCheckBox" destination="btX-o8-qUO" id="s7N-HE-rm8"/>
                 <outlet property="autoPasteDestinationPopUpButton" destination="hv6-A1-dhl" id="bqF-Ut-Hkz"/>
                 <outlet property="backgroundColorWell" destination="eYk-0N-5fl" id="glu-Np-Ift"/>
