@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14269.12" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14269.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -429,16 +430,22 @@
                                 </menu>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="Ntg-LY-q3r"/>
-                            <menuItem title="Replace Inserted ¥ with \" state="on" id="730">
+                            <menuItem title="Auto Indent" state="on" id="fgy-e5-Iid">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="toggleMenuItem:" target="450" id="732"/>
+                                    <action selector="toggleMenuItem:" target="450" id="pDe-1e-XrG"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Auto Complete" state="on" id="821">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="toggleMenuItem:" target="450" id="822"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Replace Inserted ¥ with \" state="on" id="730">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="toggleMenuItem:" target="450" id="732"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Copy as Rich Text" id="Nwx-d1-iXG">
@@ -505,6 +512,7 @@
                     </menu>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="-936" y="71"/>
         </menu>
         <window title="TeX2img" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371" userLabel="Window (TeX2img)">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -582,7 +590,7 @@ DQ
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" drawsBackground="NO" id="Klh-CA-JmC">
                                         <rect key="frame" x="1" y="1" width="497" height="131"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="aKZ-WF-zY9" customClass="TeXTextView">
                                                 <rect key="frame" x="0.0" y="0.0" width="497" height="131"/>
@@ -654,6 +662,7 @@ DQ
                     </box>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="-335" y="558"/>
         </window>
         <customObject id="420" customClass="NSFontManager"/>
         <customObject id="450" customClass="ControllerG">
@@ -663,6 +672,7 @@ DQ
                 <outlet property="autoCompleteMenuItem" destination="821" id="823"/>
                 <outlet property="autoDetectionTargetMatrix" destination="Mq1-2m-JBY" id="6lj-zC-ODM"/>
                 <outlet property="autoDetectionTargetSettingViewController" destination="1pU-9A-d56" id="ZcJ-rM-Jj0"/>
+                <outlet property="autoIndentMenuItem" destination="fgy-e5-Iid" id="Yhe-ZZ-rmM"/>
                 <outlet property="autoPasteCheckBox" destination="Tjs-0a-g6N" id="uKc-Wj-VIU"/>
                 <outlet property="autoPasteDestinationPopUpButton" destination="kQZ-Cr-Y1i" id="It2-C1-Uwg"/>
                 <outlet property="backgroundColorWell" destination="9ev-FH-pU2" id="g9U-5N-q9k"/>
@@ -792,7 +802,7 @@ DQ
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" id="8Z0-Bu-JNJ">
                             <rect key="frame" x="1" y="1" width="327" height="330"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="485" customClass="TeXTextView">
                                     <rect key="frame" x="0.0" y="0.0" width="327" height="330"/>
@@ -2169,7 +2179,7 @@ DQ
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Cyy-6j-Hc7">
                             <rect key="frame" x="1" y="1" width="405" height="95"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" id="682">
                                     <rect key="frame" x="0.0" y="0.0" width="405" height="95"/>
@@ -2240,6 +2250,7 @@ DQ
                     </button>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="375" y="223"/>
         </window>
         <customObject id="671" userLabel="ProfileController" customClass="ProfileController">
             <connections>
