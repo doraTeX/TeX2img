@@ -497,7 +497,23 @@
     [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
     [cropTeX writeToFile:cropTeXSourcePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
 
+    // pdfTeX のサーチ
+    BOOL pdfTeXFound = NO;
     NSString *pdfTeXPath = [latexPath.programPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
+    
+    if ([fileManager fileExistsAtPath:pdfTeXPath]) {
+        pdfTeXFound = YES;
+    } else {
+        pdfTeXPath = [dviDriverPath.programPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
+        if ([fileManager fileExistsAtPath:pdfTeXPath]) {
+            pdfTeXFound = YES;
+        }
+    }
+    
+    if (!pdfTeXFound) {
+        [controller showNotFoundError:@"pdfTeX"];
+        return NO;
+    }
     
     [controller appendOutputAndScroll:@"TeX2img: Adjusting the bounding box using pdfTeX...\n\n" quiet:quietFlag];
     
