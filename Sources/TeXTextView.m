@@ -867,17 +867,21 @@
     BOOL autoIndent = [controller.currentProfile boolForKey:AutoIndentKey];
     
     if (autoIndent) {
-        NSRange selectedRange = self.selectedRange;
-        NSString *stringToCurrentLocation = [@"\n" stringByAppendingString:[self.textStorage.string substringToIndex:selectedRange.location]];
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\n([ \t]*)[^\\n]*$" options:0 error:nil];
-        NSTextCheckingResult *match = [regex firstMatchInString:stringToCurrentLocation options:0 range:NSMakeRange(0, stringToCurrentLocation.length)];
-        NSString *indentString = [stringToCurrentLocation substringWithRange:[match rangeAtIndex:1]];
+        NSString *indentString = [self indentStringForCurrentLocation];
         [super insertNewline:sender];
         [self insertText:indentString replacementRange:self.selectedRange];
     } else {
         [super insertNewline:sender];
     }
-    
+}
+
+- (NSString*)indentStringForCurrentLocation
+{
+    NSRange selectedRange = self.selectedRange;
+    NSString *stringToCurrentLocation = [@"\n" stringByAppendingString:[self.textStorage.string substringToIndex:selectedRange.location]];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\n([ \t]*)[^\\n]*$" options:0 error:nil];
+    NSTextCheckingResult *match = [regex firstMatchInString:stringToCurrentLocation options:0 range:NSMakeRange(0, stringToCurrentLocation.length)];
+    return [stringToCurrentLocation substringWithRange:[match rangeAtIndex:1]];
 }
 
 #pragma mark - ダブルクリック時の挙動

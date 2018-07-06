@@ -135,8 +135,7 @@ static NSString *endcommentString = @"›";
 				latexSpecial = YES;
 				latexString = [textString substringWithRange:
 							   NSMakeRange(foundRange.location, selectedLocation-foundRange.location)];
-				 // extend life time
-			}
+            }
         } else {
 			latexSpecial = NO;
         }
@@ -262,15 +261,16 @@ static NSString *endcommentString = @"›";
 			}
 		} else { // LaTeX Special -- just add \end and copy of {...}
 			foundCandidate = YES;
+            NSString *indentString = [self indentStringForCurrentLocation];
 			if (!wasCompleted) {
 				originalString = @"";
 				replaceLocation = selectedLocation;
-				newString = [NSMutableString stringWithFormat:@"\n%Cend%@\n", texChar, latexString];
+				newString = [NSMutableString stringWithFormat:@"\n%@%Cend%@\n", indentString, texChar, latexString];
 				insRange.location = 0;
 				completionListLocation = NSNotFound; // just to remember that it wasn't completed
 			} else {
 				// reuse the current string
-				newString = [NSMutableString stringWithFormat:@"%@\n%Cend%@\n", currentString, texChar, latexString];
+				newString = [NSMutableString stringWithFormat:@"%@\n%@%Cend%@\n", currentString, indentString, texChar, latexString];
 				insRange.location = currentString.length;
 			}
 		}

@@ -26,6 +26,7 @@
 - (void)insertTextWithIndicator:(id)aString;
 - (void)fixupTabs;
 - (void)refreshWordWrap;
+- (NSString*)indentStringForCurrentLocation;
 @property (nonatomic, assign) id<DnDDelegate> dropDelegate;
 @end
 
