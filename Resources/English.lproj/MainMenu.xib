@@ -436,8 +436,8 @@
                                     <action selector="toggleMenuItem:" target="450" id="KwE-LX-1hE"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Auto Complete" state="on" id="821">
-                                <modifierMask key="keyEquivalentModifierMask"/>
+                            <menuItem title="Auto Complete" state="on" keyEquivalent="A" id="821">
+                                <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                 <connections>
                                     <action selector="toggleMenuItem:" target="450" id="822"/>
                                 </connections>
