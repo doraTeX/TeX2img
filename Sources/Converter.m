@@ -848,7 +848,7 @@
 	NSString *extension = outputFileName.pathExtension.lowercaseString;
     NSString *cropPdfFilePath = [workingDirectory stringByAppendingPathComponent:[tempFileBaseName stringByAppendingString:@"-image.pdf"]];
     
-    if ([self willEmptyPageBeCreated:pdfFilePath page:page]) {
+    if (crop && [self willEmptyPageBeCreated:pdfFilePath page:page]) {
         return YES;
     }
 
