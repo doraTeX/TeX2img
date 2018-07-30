@@ -183,6 +183,7 @@ typedef enum {
 @property (atomic, strong) NSTask *runningTask;
 @property (atomic, strong) NSPipe *outputPipe;
 @property (atomic, assign) BOOL taskKilled;
+@property (atomic, assign) NSFont *sourceFont;
 
 @end
 
@@ -336,6 +337,7 @@ typedef enum {
 @synthesize runningTask;
 @synthesize outputPipe;
 @synthesize taskKilled;
+@synthesize sourceFont;
 
 
 #pragma mark - OutputController プロトコルの実装
@@ -398,7 +400,7 @@ typedef enum {
 {
     [outputTextView.textStorage.mutableString appendString:str];
     [outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
-    outputTextView.font = sourceTextView.font;
+    outputTextView.font = sourceFont;
 }
 
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet
@@ -928,6 +930,7 @@ typedef enum {
     
     NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
     if (aFont) {
+        sourceFont = aFont;
         sourceTextView.font = aFont;
         preambleTextView.font = aFont;
         outputTextView.font = aFont;
@@ -943,7 +946,7 @@ typedef enum {
     [preambleTextView refreshWordWrap];
     
     // 不可視文字表示の選択肢のフォントを更新
-    NSFont *displayFont = [NSFont fontWithName:sourceTextView.font.fontName size:spaceCharacterKindButton.font.pointSize];
+    NSFont *displayFont = [NSFont fontWithName:sourceFont.fontName size:spaceCharacterKindButton.font.pointSize];
     [self setInvisibleCharacterFont:displayFont];
     
     NSString *inputSourceFilePath = [aProfile stringForKey:InputSourceFilePathKey];
@@ -1086,8 +1089,8 @@ typedef enum {
         currentProfile[ShowSpaceCharacterKey] = @(showSpaceCharacterCheckBox.state);
         currentProfile[ShowFullwidthSpaceCharacterKey] = @(showFullwidthSpaceCharacterCheckBox.state);
         currentProfile[ShowNewLineCharacterKey] = @(showNewLineCharacterCheckBox.state);
-        currentProfile[SourceFontNameKey] = sourceTextView.font.fontName;
-        currentProfile[SourceFontSizeKey] = @(sourceTextView.font.pointSize);
+        currentProfile[SourceFontNameKey] = sourceFont.fontName;
+        currentProfile[SourceFontSizeKey] = @(sourceFont.pointSize);
         
         currentProfile[PreambleKey] = [NSString stringWithString:preambleTextView.textStorage.string]; // stringWithString は必須
         
@@ -1570,6 +1573,7 @@ typedef enum {
 {
     NSFont *defaultFont = [NSFont fontWithName:@"Osaka-Mono" size:13];
     if (defaultFont) {
+        sourceFont = defaultFont;
         sourceTextView.font = defaultFont;
         preambleTextView.font = defaultFont;
         [self setupFontTextField:defaultFont];
@@ -2260,7 +2264,7 @@ typedef enum {
     fontMgr.action = @selector(changeFont:);
     
     NSFontPanel *panel = [fontMgr fontPanel:YES];
-    [panel setPanelFont:sourceTextView.font isMultiple:NO];
+    [panel setPanelFont:sourceFont isMultiple:NO];
     [panel makeKeyAndOrderFront:self];
     panel.enabled = YES;
 }
@@ -2269,6 +2273,7 @@ typedef enum {
 {
     NSFont *font = NSFontManager.sharedFontManager.selectedFont;
     [self setupFontTextField:font];
+    sourceFont = font;
     sourceTextView.font = font;
     preambleTextView.font = font;
     outputTextView.font = font;
