@@ -368,6 +368,8 @@
                                  withArguments:@[@"-dBATCH",
                                                  @"-dNOPAUSE",
                                                  @"-sDEVICE=bbox",
+                                                 @"-c '<< /WhiteIsOpaque true >> setpagedevice'",
+                                                 @"-f",
                                                  pdfPath.lastPathComponent.stringByQuotingWithDoubleQuotations,
                                                  [@"> " stringByAppendingString:bboxFileName],
                                                  ]
