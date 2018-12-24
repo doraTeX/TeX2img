@@ -396,9 +396,29 @@ typedef enum {
 	[mainWindow makeKeyAndOrderFront:nil];
 }
 
+- (void)refreshTextView:(NSTextView*)textView
+        foregroundColor:(NSColor*)foregroundColor
+        backgroundColor:(NSColor*)backgroundColor
+{
+    textView.textColor = foregroundColor;
+    textView.backgroundColor = backgroundColor;
+
+    NSRange entireRange = NSMakeRange(0, textView.string.length);
+    [textView.textStorage setAttributes:@{NSForegroundColorAttributeName: foregroundColor,
+                                          NSBackgroundColorAttributeName: backgroundColor }
+                                  range:entireRange];
+}
+
 - (void)appendOutputAndScrollOnMainThread:(NSString*)str
 {
     [outputTextView.textStorage.mutableString appendString:str];
+    
+    Profile *currentProfile = [self currentProfile];
+
+    [self refreshTextView:outputTextView
+          foregroundColor:[currentProfile colorForKey:ForegroundColorKey]
+          backgroundColor:[currentProfile colorForKey:BackgroundColorKey]];
+
     [outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
     outputTextView.font = sourceFont;
 }
@@ -945,6 +965,10 @@ typedef enum {
     [preambleTextView fixupTabs];
     [preambleTextView refreshWordWrap];
     
+    [self refreshTextView:outputTextView
+          foregroundColor:[aProfile colorForKey:ForegroundColorKey]
+          backgroundColor:[aProfile colorForKey:BackgroundColorKey]];
+
     // 不可視文字表示の選択肢のフォントを更新
     NSFont *displayFont = [NSFont fontWithName:sourceFont.fontName size:spaceCharacterKindButton.font.pointSize];
     [self setInvisibleCharacterFont:displayFont];
@@ -2292,6 +2316,11 @@ typedef enum {
 
     [sourceTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
     [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
+    
+    [self refreshTextView:outputTextView
+          foregroundColor:foregroundColorWell.color
+          backgroundColor:backgroundColorWell.color];
+    outputTextView.font = sourceFont;
 }
 
 - (void)searchProgramsLogic:(NSDictionary<NSString*,id>*)parameters
