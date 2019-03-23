@@ -24,12 +24,12 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>island.geocities.jp</key>
+			<key>tex2img.tech</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSIncludeSubdomains</key>
-				<true/>
+				<false/>
+				<key>NSIncludesSubdomains</key>
+				<false/>
 			</dict>
 		</dict>
 	</dict>
@@ -40,7 +40,7 @@
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>http://island.geocities.jp/loveinequality/TeX2img_Appcast.xml</string>
+	<string>https://tex2img.tech/TeX2img_Appcast.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>SUShowReleaseNotes</key>
