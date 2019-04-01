@@ -6,6 +6,29 @@
 	<string>For embedding products into Adobe Illustrator</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>eps</string>
+				<string>png</string>
+				<string>jpg</string>
+				<string>gif</string>
+				<string>tiff</string>
+				<string>bmp</string>
+				<string>pdf</string>
+				<string>svg</string>
+				<string>svgz</string>
+				<string>emf</string>
+				<string>tex</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Import Extensions</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>

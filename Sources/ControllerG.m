@@ -1812,11 +1812,12 @@ typedef enum {
     return contents;
 }
 
-- (BOOL)importSourceFromFilePathOrPDFDocument:(id)input
+- (BOOL)importSourceFromFilePathOrPDFDocument:(id)input skipConfirm:(BOOL)skipConfirm
 {
     [NSApp activateIgnoringOtherApps:YES];
     
     NSString *contents = nil;
+    NSString *outputFilePath = nil;
     
     if ([input isKindOfClass:NSString.class]) { // ファイルパスが指定されたインポート
         NSString *inputPath = (NSString*)input;
@@ -1837,6 +1838,7 @@ typedef enum {
                         runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
                         return NO;
                     }
+                    outputFilePath = inputPath;
                 } else {
                     runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
                     return NO;
@@ -1846,6 +1848,7 @@ typedef enum {
                 getxattr(inputPath.UTF8String, EA_Key, buffer, bufferLength, 0, 0);
                 contents = [[NSString alloc] initWithBytes:buffer length:bufferLength encoding:NSUTF8StringEncoding];
                 free(buffer);
+                outputFilePath = inputPath;
             }
         }
     } else if ([input isKindOfClass:PDFDocument.class]) { // PDFからのインポート
@@ -1860,8 +1863,11 @@ typedef enum {
     }
     
     if (contents) {
-        if (runConfirmPanel(localizedString(@"overwriteContentsWarningMsg"))) {
+        if (skipConfirm || runConfirmPanel(localizedString(@"overwriteContentsWarningMsg"))) {
             [self placeImportedSource:contents];
+            if (outputFilePath) {
+                outputFileTextField.stringValue = outputFilePath;
+            }
         }
     } else {
         runErrorPanel(localizedString(@"cannotReadErrorMsg"), [input description]);
@@ -1880,7 +1886,7 @@ typedef enum {
     
     [openPanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
-            [self importSourceFromFilePathOrPDFDocument:openPanel.URL.path];
+            [self importSourceFromFilePathOrPDFDocument:openPanel.URL.path skipConfirm:NO];
         }
     }];
 }
@@ -1917,7 +1923,7 @@ typedef enum {
 
 - (void)textViewDroppedFile:(id)file;
 {
-    [self importSourceFromFilePathOrPDFDocument:file];
+    [self importSourceFromFilePathOrPDFDocument:file skipConfirm:NO];
 }
 
 

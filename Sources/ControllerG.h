@@ -21,7 +21,7 @@ typedef enum  {
 - (NSString*)fullwidthSpaceCharacter;
 - (NSString*)returnCharacter;
 - (NSString*)tabCharacter;
-- (BOOL)importSourceFromFilePathOrPDFDocument:(id)input;
+- (BOOL)importSourceFromFilePathOrPDFDocument:(id)input skipConfirm:(BOOL)skipConfirm;
 @property (nonatomic, strong) IBOutlet TeXTextView *sourceTextView;
 @property (nonatomic, copy) NSMutableString *commandCompletionList;
 @end
