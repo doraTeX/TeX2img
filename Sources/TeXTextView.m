@@ -421,7 +421,7 @@
             return NO;
         }
 
-        return [controller importSourceFromFilePathOrPDFDocument:doc];
+        return [controller importSourceFromFilePathOrPDFDocument:doc skipConfirm:NO];
     } else {
         return [super readSelectionFromPasteboard:pboard type:type];
     }
