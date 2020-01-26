@@ -57,7 +57,7 @@
 		</dict>
 	</dict>
 	<key>NSAppleEventsUsageDescription</key>
-	<string>For embedding products into Adobe Illustrator</string>
+	<string>For embedding produced graphics into other applications (Word, PowerPoint, Illustrator, etc.)</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
