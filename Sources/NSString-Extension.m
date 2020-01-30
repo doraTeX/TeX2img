@@ -220,7 +220,7 @@
     
     if (!string) {
         for (NSUInteger i=0; i<kSizeOfCFStringEncodingList; i++) {
-            *encoding = CFStringConvertEncodingToNSStringEncoding(StringEncodingList[i]);
+            *encoding = CFStringConvertEncodingToNSStringEncoding((CFStringEncoding)StringEncodingList[i]);
             if ((*encoding == NSISO2022JPStringEncoding) && shouldSkipISO2022JP) {
                 break;
             } else if ((*encoding == NSUTF8StringEncoding) && shouldSkipUTF8) {
