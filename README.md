@@ -25,6 +25,6 @@
 
 ## Links
 - [macOS版の配布サイト](https://tex2img.tech/)
-- [Windows版の配布サイト](http://www.math.sci.hokudai.ac.jp/~abenori/soft/#TEX2IMG)
+- [Windows版の配布サイト](https://www.ms.u-tokyo.ac.jp/~abenori/soft/index.html#TEX2IMG)
 - [Windows版のソース](https://github.com/abenori/TeX2img)
 
