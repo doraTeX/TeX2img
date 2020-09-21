@@ -21,10 +21,10 @@
 
 出力した画像ファイルは Word / Excel / PowerPoint や，Illustrator / InDesign などに貼り付けて利用することができます。
 
-その他詳細は[公式配布サイト](http://island.geocities.jp/loveinequality/)，[TeX Wiki](https://texwiki.texjp.org/?TeX2img) および [TeX2img FAQ](https://texwiki.texjp.org/?TeX2img%20FAQ) 参照。
+その他詳細は[公式配布サイト](https://tex2img.tech/)，[TeX Wiki](https://texwiki.texjp.org/?TeX2img) および [TeX2img FAQ](https://texwiki.texjp.org/?TeX2img%20FAQ) 参照。
 
 ## Links
-- [macOS版の配布サイト](http://island.geocities.jp/loveinequality/)
-- [Windows版の配布サイト](http://www.math.sci.hokudai.ac.jp/~abenori/soft/#TEX2IMG)
+- [macOS版の配布サイト](https://tex2img.tech/)
+- [Windows版の配布サイト](https://www.ms.u-tokyo.ac.jp/~abenori/soft/index.html#TEX2IMG)
 - [Windows版のソース](https://github.com/abenori/TeX2img)
 
