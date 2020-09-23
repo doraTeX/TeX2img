@@ -2413,7 +2413,7 @@ typedef enum {
     abortMenuItem.enabled = NO;
     taskKilled = NO;
     
-    if (sendNotificationCheckBox.state == NSOnState) {
+    if ([[self currentProfile] boolForKey:SendNotificationKey]) {
         ExitStatus exitStatus = (ExitStatus)(status.intValue);
         [self sendUserNotificationWithStatus:exitStatus];
     }
