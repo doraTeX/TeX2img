@@ -116,9 +116,6 @@
 \node[output node] (EPS2) at ($(Outlined PDF with margin) + (4,-2)$) {テキスト形式EPS};
 \draw[->] (Outlined PDF with margin) -- node[right,yshift=4pt] {pdftops} (EPS2);
 
-\node[output node] (EMF) at ($(EPS2) + (0,-2)$) {EMF};
-\draw[->] (EPS2) -- node[left,align=right] {eps2emf\textsuperscript{*3}\\（改造版pstoedit）} (EMF);
-
 \node[output node] (Multipage Outlined PDF) at ($(Outlined PDF with margin) + (0,-4)$) {マルチページ\\アウトライン化PDF};
 \draw[->] (Outlined PDF with margin) -- node[right] {Quartz API} (Multipage Outlined PDF);
 
@@ -143,7 +140,6 @@
 \item\relax[*2]のGhostscirpt実行においては，pdfwriteデバイスが用いられる。
 \item\relax[*1]および[*2]のGhostscirpt実行における \texttt{-r} オプションの値は，画質優先モードでは20016固定，速度優先モードでは解像度レベル設定に従う。
 \item\relax[*1]のGhostscript実行においては，出力されるEPSのBoundingBox値が誤っている場合がある。そこで，eps2writeで生成されたEPSに対しては，Ghostscriptのbboxデバイスで取得されるBoundingBox値によって常に上書きするようにしている。
-\item\relax[*3]のeps2emf実行前に，パスのアウトライン化を行うように生成EPSを加工しておく。
 \item 「元のページサイズを維持」がONの場合，[*1]のGhostscript実行においては，出力されるEPSのBB値を，変換前のPDFの指定されたPageBoxの値で上書きする。
 \item 「元のページサイズを維持」がONの場合，「Quartz APIでクロップ」の過程では，変換前のPDFの指定されたPageBox（余白付与の場合はそれに余白を加えたもの）をMediaBoxにしたPDF（左下が原点，他のBoxは非明示）を生成する。
 \item\relax[*1]で用いられるGhostscriptのeps2writeデバイスは，\TikZ のshadowsライブラリを用いた場合など，特定の種類の図は苦手としている。[*1]においてeps2writeデバイスでEPSに変換すると，ぼやけたビットマップ画像にされてしまう。
@@ -188,7 +184,7 @@
 \draw[->] (TeX) -- (TeX -| right above of PDF) to [bend left=90] node[right] {pdf\LaTeX\\\XeLaTeX\\\LuaLaTeX} (right above of PDF) to (PDF.north east |- right above of PDF) ;
 
 
-\node[relay node] (PDF with text without margin) at ($(PDF) + (-14,-3)$) {テキスト保持PDF\\（余白なし・透過）};
+\node[relay node] (PDF with text without margin) at ($(PDF) + (-10,-3)$) {テキスト保持PDF\\（余白なし・透過）};
 \draw[speed priority] (PDF) -- node[left,xshift=-5pt,yshift=9pt] {Quartz APIで\\クロップ} (PDF with text without margin);
 
 \node[output node] (Bitmap) at ($(PDF with text without margin) + (0,-2)$) {ビットマップ画像\\（速度優先）};
@@ -201,7 +197,7 @@
 \draw[speed priority] (Bitmap) -- node[right] {Quartz API} (Animation GIF);
 
 
-\node[output node] (PDF with text) at ($(PDF) + (-10,-3)$) {テキスト保持PDF\\（余白あり・透過）};
+\node[output node] (PDF with text) at ($(PDF) + (-4,-3)$) {テキスト保持PDF\\（余白あり・透過）};
 \draw[->] (PDF) -- node[right,align=left,xshift=15pt,yshift=-3pt] {Quartz APIでクロップ\\＋余白付与} (PDF with text.north east);
 
 \node[output node] (Multipage PDF with text) at ($(PDF with text) + (0,-4)$) {マルチページ\\テキスト保持PDF\\（透過）};
@@ -220,25 +216,7 @@
 \node[output node] (Filled SVG) at ($(Filled PDF with text) + (-2,-2)$) {テキスト保持\\SVG（非透過）};
 \draw[->] (Filled PDF with text) -- node[left,xshift=5pt,yshift=8pt] {mudraw} (Filled SVG);
 
-\node[relay node] (EPS for EMF) at ($(PDF) + (0,-2)$) {テキスト形式EPS};
-\draw[->] (PDF) -- node[right] {pdftops} (EPS for EMF);
-
-\node[relay node] (PDF for EMF) at ($(EPS for EMF) + (3.5,0)$) {PDF};
-\draw[->] (EPS for EMF) -- node[above] {epstopdf\textsuperscript{*3}} (PDF for EMF);
-
-\node[relay node] (PDF2 for EMF) at ($(PDF for EMF) + (0,-1.7)$) {テキスト保持PDF};
-\draw[->] (PDF for EMF) -- node[left,align=right] {Quartz APIでクロップ\\＋余白付与} (PDF2 for EMF);
-\path[->] ($(PDF2 for EMF.north east) + (-6pt,0pt)$) edge [loop right,out=90,in=0,distance=35] node[right,xshift=-25pt,yshift=14pt] {Quartz APIで背景塗り} ($(PDF2 for EMF.north east) + (0pt,-6pt)$);
-
-
-
-\node[relay node] (EPS2 for EMF) at ($(PDF2 for EMF) + (0,-1.7)$) {EPS};
-\draw[->] (PDF2 for EMF) -- node[left] {Ghostscript\textsuperscript{*1}} (EPS2 for EMF);
-
-\node[output node] (EMF) at ($(EPS2 for EMF) + (0,-1.7)$) {EMF};
-\draw[->] (EPS2 for EMF) -- node[left,align=right] {eps2emf\\（改造版pstoedit）} (EMF);
-
-\node[output node] (EPS without margin) at ($(Filled PDF with text) + (12,0)$) {EPS\\（余白なし・透過）};
+\node[output node] (EPS without margin) at ($(Filled PDF with text) + (8,0)$) {EPS\\（余白なし・透過）};
 
 \node[relay node] (PDF with text 2) at ($(EPS without margin) + (0,3)$) {テキスト保持PDF\\（余白なし・透過・単一ページ）};
 \draw[->] (PDF) -- node[below] {Quartz APIでクロップ} (PDF with text 2);
