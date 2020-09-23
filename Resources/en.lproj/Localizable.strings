@@ -49,8 +49,8 @@
 "Generate" = "Generate";
 "Abort" = "Abort";
 "Close Current Environment" = "Close Current Environment";
-"Base: %@ (%@ %@) <combining character sequence consisting of %d characters>" = "Base: %@ (%@ %@) <combining character sequence consisting of %d characters>";
-"%d letters, %d words, %d lines" = "%d letters, %d words, %d lines";
+"Base: %@ (%@ %@) <combining character sequence consisting of %lu characters>" = "Base: %@ (%@ %@) <combining character sequence consisting of %lu characters>";
+"%lu letters, %lu words, %lu lines" = "%lu letters, %lu words, %lu lines";
 "Emoji Style" = "Emoji Style";
 "Text Style" = "Text Style";
 "Character Info" = "Character Info";
