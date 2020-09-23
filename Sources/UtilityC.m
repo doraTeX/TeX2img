@@ -10,7 +10,6 @@ NSString* additionalSearchPath()
     [GUI_PATHS enumerateObjectsUsingBlock:^(id  _Nonnull guiPath, NSUInteger idx, BOOL * _Nonnull stop) {
         [results addObject:[guiPath stringByAppendingPathComponent:[resourcesDir stringByAppendingPathComponent:@"mupdf"]]];
         [results addObject:[guiPath stringByAppendingPathComponent:[resourcesDir stringByAppendingPathComponent:@"pdftops"]]];
-        [results addObject:[guiPath stringByAppendingPathComponent:[resourcesDir stringByAppendingPathComponent:@"eps2emf"]]];
     }];
      
     return [results componentsJoinedByString:@":"];

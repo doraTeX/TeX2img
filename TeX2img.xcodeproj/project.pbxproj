@@ -12,7 +12,6 @@
 		3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */ = {isa = PBXBuildFile; fileRef = 3424A8E20E4F2DC1003C9F96 /* ControllerG.m */; };
 		342C6196101E637F00E29FEB /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 342C6194101E637F00E29FEB /* epstopdf */; };
 		3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
-		343E47A81BED59DB00F892A5 /* eps2emf in Resources */ = {isa = PBXBuildFile; fileRef = 343E47A71BED59DB00F892A5 /* eps2emf */; };
 		344409D91F80FF100020EDC7 /* NSBitmapImageRep-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 344409D81F80FF100020EDC7 /* NSBitmapImageRep-Extension.m */; };
 		344409DA1F80FF100020EDC7 /* NSBitmapImageRep-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 344409D81F80FF100020EDC7 /* NSBitmapImageRep-Extension.m */; };
 		34522C121BAC550800DE1B86 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 34522C111BAC550800DE1B86 /* libicucore.tbd */; };
@@ -113,7 +112,6 @@
 		343A66DB2249CAB50026CFA3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/UnicodeBlocks.strings; sourceTree = "<group>"; };
 		343A66DC2249CABC0026CFA3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		343A66DD2249CABC0026CFA3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		343E47A71BED59DB00F892A5 /* eps2emf */ = {isa = PBXFileReference; lastKnownFileType = folder; path = eps2emf; sourceTree = "<group>"; };
 		344409D71F80FF100020EDC7 /* NSBitmapImageRep-Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSBitmapImageRep-Extension.h"; sourceTree = "<group>"; };
 		344409D81F80FF100020EDC7 /* NSBitmapImageRep-Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBitmapImageRep-Extension.m"; sourceTree = "<group>"; };
 		34522C111BAC550800DE1B86 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
@@ -338,7 +336,6 @@
 			isa = PBXGroup;
 			children = (
 				34B5E70320995B2F0071BBE9 /* Images.xcassets */,
-				343E47A71BED59DB00F892A5 /* eps2emf */,
 				34BF70F91BD1C6FC00AB76A9 /* pdftops */,
 				346225651AB558AB00F632AD /* mupdf */,
 				34CCBB061A964E8A0061842E /* Templates */,
@@ -532,7 +529,6 @@
 				348E08831C3DE76F004CFB4B /* UnicodeBlocks.strings in Resources */,
 				34B5E70420995B2F0071BBE9 /* Images.xcassets in Resources */,
 				346225661AB558AB00F632AD /* mupdf in Resources */,
-				343E47A81BED59DB00F892A5 /* eps2emf in Resources */,
 				34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */,
 				3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */,
 			);

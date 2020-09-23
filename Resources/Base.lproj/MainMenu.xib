@@ -546,7 +546,7 @@ DQ
                             <action selector="generate:" target="450" id="456"/>
                         </connections>
                     </button>
-                    <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Output File Path (extention: .eps / .pdf / .svg / .svgz / .emf / .jpg / .png / .gif / .tiff / .bmp )" translatesAutoresizingMaskIntoConstraints="NO" id="460">
+                    <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Output File Path (extention: .eps / .pdf / .svg / .svgz / .jpg / .png / .gif / .tiff / .bmp )" translatesAutoresizingMaskIntoConstraints="NO" id="460">
                         <rect key="frame" x="11" y="56" width="520" height="59"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                         <view key="contentView" id="wyX-XT-n5u">
@@ -588,7 +588,6 @@ DQ
                                                 <menuItem title="PDF" id="13t-lq-oyo"/>
                                                 <menuItem title="SVG" id="89G-R8-hft"/>
                                                 <menuItem title="SVGZ" id="9Qx-sZ-0C3"/>
-                                                <menuItem title="EMF" id="jIm-BS-Llp"/>
                                                 <menuItem title="JPG" id="3cY-aW-mFi"/>
                                                 <menuItem title="PNG" id="jah-3o-Cu4"/>
                                                 <menuItem title="GIF" id="LtJ-fR-VL7"/>

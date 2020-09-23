@@ -105,16 +105,6 @@
     return YES;
 }
 
-- (BOOL)eps2emfExists;
-{
-    if (!checkWhich(@"eps2emf")) {
-        printStdErr("tex2img: [Error] Place GUI app (TeX2img.app) in /Applications.\n");
-        return NO;
-    }
-    
-    return YES;
-}
-
 - (void)showNotFoundError:(NSString*)aPath
 {
     printStdErr("tex2img: [Error] Command \"%s\" cannot be found.\nCheck the environment variable $PATH.\n", aPath.UTF8String);

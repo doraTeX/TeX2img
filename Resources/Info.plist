@@ -18,7 +18,6 @@
 				<string>pdf</string>
 				<string>svg</string>
 				<string>svgz</string>
-				<string>emf</string>
 				<string>tex</string>
 			</array>
 			<key>CFBundleTypeName</key>

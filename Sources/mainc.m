@@ -30,7 +30,7 @@ void usage()
     printf("Arguments:\n");
     printf("  InputFile  : path of a TeX source or PDF/PS/EPS file\n");
     printf("  OutputFile : path of an output file\n");
-    printf("               (*extension: eps/pdf/svg/svgz/emf/jpg/png/gif/tiff/bmp)\n");
+    printf("               (*extension: eps/pdf/svg/svgz/jpg/png/gif/tiff/bmp)\n");
     printf("\n");
     printf("Conversion Settings:\n");
     printf("  --latex      COMPILER      : set the LaTeX compiler (default: platex)\n");
@@ -63,7 +63,7 @@ void usage()
     printf("  --right-margin   MARGIN    : set the right margin  (default: 0)\n");
     printf("  --bottom-margin  MARGIN    : set the bottom margin (default: 0)\n");
     printf("  --unit UNIT                : set the unit of margins to \"px\" or \"bp\" (default: px)\n");
-    printf("                               (*bp is always used for EPS/PDF/SVG/SVGZ/EMF)\n");
+    printf("                               (*bp is always used for EPS/PDF/SVG/SVGZ)\n");
     printf("  --[no-]keep-page-size      : disable/enable keeping the original page size (default: disabled)\n");
     printf("  --pagebox BOX              : select the page box type used as the page size (media|crop|bleed|trim|art) (default: crop)\n");
     printf("  --[no-]transparent         : disable/enable transparent (if possible) (default: enabled)\n");
@@ -168,9 +168,6 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     NSString *pdftopsPath = getPath([aProfile stringForKey:PdftopsPathKey]);
     printf("pdftops: %s\n", pdftopsPath ? pdftopsPath.UTF8String : "NOT FOUND");
     
-    NSString *eps2emfPath = getPath([aProfile stringForKey:Eps2emfPathKey]);
-    printf("eps2emf: %s\n", eps2emfPath ? eps2emfPath.UTF8String : "NOT FOUND");
-
     printf("Working directory: ");
     switch ([aProfile integerForKey:WorkingDirectoryTypeKey]) {
         case WorkingDirectoryTmp:
@@ -1069,8 +1066,6 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
         pdftopsPath = getPath(@"pdftops");
     }
     
-    NSString *eps2emfPath = getPath(@"eps2emf");
-    
     if (!latexPath) {
         [controller showNotFoundError:latex.programName];
         suggestLatexOption();
@@ -1096,10 +1091,6 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
         pdftopsPath = @"pdftops";
     }
     
-    if (!eps2emfPath) {
-        eps2emfPath = @"eps2emf";
-    }
-    
     MutableProfile *aProfile = [MutableProfile dictionary];
     
     aProfile[LatexPathKey] = [latexPath stringByAppendingStringSeparetedBySpace:latex.argumentsString];
@@ -1108,7 +1099,6 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     aProfile[EpstopdfPathKey] = epstopdfPath;
     aProfile[MudrawPathKey] = mudrawPath;
     aProfile[PdftopsPathKey] = pdftopsPath;
-    aProfile[Eps2emfPathKey] = eps2emfPath;
     aProfile[OutputFileKey] = outputFilePath;
     aProfile[EncodingKey] = encoding;
     aProfile[NumberOfCompilationKey] = @(numberOfCompilation);

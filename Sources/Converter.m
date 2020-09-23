@@ -40,7 +40,6 @@
 @property (nonatomic, copy) NSString *epstopdfPath;
 @property (nonatomic, copy) NSString *mudrawPath;
 @property (nonatomic, copy) NSString *pdftopsPath;
-@property (nonatomic, copy) NSString *eps2emfPath;
 @property (nonatomic, assign) NSUInteger pageCount;
 @property (nonatomic, assign) BOOL useBP;
 @property (nonatomic, assign) BOOL speedPriorityMode;
@@ -81,7 +80,6 @@
 @synthesize epstopdfPath;
 @synthesize mudrawPath;
 @synthesize pdftopsPath;
-@synthesize eps2emfPath;
 @synthesize pageCount;
 @synthesize useBP;
 @synthesize speedPriorityMode;
@@ -110,7 +108,6 @@
     epstopdfPath = [aProfile stringForKey:EpstopdfPathKey];
     mudrawPath = [aProfile stringForKey:MudrawPathKey];
     pdftopsPath = [aProfile stringForKey:PdftopsPathKey];
-    eps2emfPath = [aProfile stringForKey:Eps2emfPathKey];
     guessCompilation = [aProfile boolForKey:GuessCompilationKey];
     numberOfCompilation = [aProfile integerForKey:NumberOfCompilationKey];
     
@@ -665,25 +662,6 @@
                           error:nil];
  
     return YES;
-}
-
-- (BOOL)eps2emf:(NSString*)epsName
- outputFileName:(NSString*)emfName
-{
-    if (![controller eps2emfExists]) {
-        return NO;
-    }
-    
-    NSMutableString *cmdline = self.preliminaryCommandsForEnvironmentVariables;
-    [cmdline appendFormat:@"%@", eps2emfPath.stringByQuotingWithDoubleQuotations];
-    
-    NSArray<NSString*> *arguments = @[epsName.stringByQuotingWithDoubleQuotations, emfName.stringByQuotingWithDoubleQuotations];
-    
-    BOOL success = [controller execCommand:cmdline
-                               atDirectory:workingDirectory
-                             withArguments:arguments
-                                     quiet:quietFlag];
-    return success;
 }
 
 
@@ -1450,115 +1428,6 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     return YES;
 }
 
-- (BOOL)convertPDF:(NSString*)pdfFilePath
-             toEMF:(NSString*)emfName
-              page:(NSUInteger)page
-{
-    if ([self isUsingNewGS]) { // gs 9.15 以上の場合
-        NSString *croppedPdfFileName = [tempFileBaseName stringByAppendingString:@"-crop.pdf"];
-        NSString *trimmedPdfFileName = [tempFileBaseName stringByAppendingString:@"-trim.pdf"];
-        NSString *epsFileName = [tempFileBaseName stringByAppendingPathExtension:@"eps"];
-        
-        NSInteger lowResolution = resolutionLevel*((NSInteger)RESOLUTION_SCALE)*2*72;
-        NSInteger resolution = speedPriorityMode ? lowResolution : 20016;
-        
-        // まずはpdfcrop類似処理で余白あり・テキスト保持・単一ページPDFを切り出す
-        [self pdfcrop:pdfFilePath
-       outputFileName:[workingDirectory stringByAppendingPathComponent:croppedPdfFileName]
-                 page:page
-            addMargin:YES
-             useCache:NO
-       fillBackground:!transparentFlag];
-        [controller exitCurrentThreadIfTaskKilled];
-
-        // gs の pdfwrite でアウトライン化PDFに変換
-        NSArray<NSString*> *arguments = @[@"-dNOPAUSE",
-                                          @"-dBATCH",
-                                          @"-dAutoRotatePages=/None",
-                                          @"-sDEVICE=pdfwrite",
-                                          @"-dNoOutputFonts",
-                                          [NSString stringWithFormat:@"-r%ld", resolution],
-                                          [NSString stringWithFormat:@"-sOutputFile=%@", trimmedPdfFileName],
-                                          @"-f",
-                                          croppedPdfFileName];
-        
-        BOOL status = [controller execCommand:gsPath atDirectory:workingDirectory withArguments:arguments quiet:quietFlag];
-        
-        if (!status) {
-            [controller showExecError:@"Ghostscript"];
-            return NO;
-        }
-        
-        // pdftops でプレーンテキストEPS (PS Level 1) に変換することでパターンをアウトライン化
-        if (![self pdf2plainTextEps:trimmedPdfFileName outputFileName:epsFileName page:1]) {
-            return NO;
-        }
-        
-        // EPSを修正（パスのアウトライン化）
-        if (![self modifyEpsForOutliningPaths:[workingDirectory stringByAppendingPathComponent:epsFileName]]) {
-            return NO;
-        }
-        
-        // 最後にEPSを eps2emf で処理
-        if (![self eps2emf:epsFileName outputFileName:emfName]) {
-            return NO;
-        }
-        
-    } else { // gs 9.15 未満の場合
-        NSString *baseName = [tempFileBaseName pathStringByAppendingPageNumber:page];
-        NSString *tempEpsFileName = [baseName stringByAppendingPathExtension:@"eps"];
-        NSString *trimmedPdfFileName = [tempFileBaseName stringByAppendingString:@"-trim.pdf"];
-        NSString *epsName = [baseName stringByAppendingString:@"-pdftops.eps"];
-        NSString *pdfName = [baseName stringByAppendingString:@"-pdftops.pdf"];
-        
-        // まずはパターンのアウトライン化をするために pdftops でプレーンテキストEPS (PS Level 1) に変換
-        if (![self pdf2plainTextEps:pdfFilePath outputFileName:epsName page:page]) {
-            return NO;
-        }
-        
-        // BBを書き換え
-        if (![self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page]) {
-            return NO;
-        }
-        
-        // EPSを修正（パスのアウトライン化）
-        if (![self modifyEpsForOutliningPaths:[workingDirectory stringByAppendingPathComponent:epsName]]) {
-            return NO;
-        }
-        
-        // 再びPDFに戻す
-        if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
-            return NO;
-        }
-        
-        // pdfcrop類似処理で余白付与＋背景塗り
-        [self pdfcrop:pdfName
-       outputFileName:trimmedPdfFileName
-                 page:1
-            addMargin:YES
-             useCache:NO
-       fillBackground:YES];
-        
-        // gs の epswrite でPDF内のフォントをアウトライン化
-        plainTextFlag = NO;
-        if (![self outlinePDF:trimmedPdfFileName
- intermediateOutlinedFileName:tempEpsFileName
-               outputFileName:tempEpsFileName
-                         page:1
-                    addMargin:NO
-                     useCache:NO
-               fillBackground:NO]) {
-            return NO;
-        }
-        
-        // 最後にEPSを eps2emf で処理
-        if (![self eps2emf:tempEpsFileName outputFileName:emfName]) {
-            return NO;
-        }
-    }
-
-    return YES;
-}
 
 - (BOOL)gzipSVG:(NSString*)svgPath toSVGZ:(NSString*)svgzPath
 {
@@ -1798,22 +1667,9 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 }
             }
         }
-	} else { // ghostscript を用いたアウトライン化を行う形式(EPS/outlined-PDF/ビットマップ形式(画質優先)/EMF/アウトライン化SVG/アニメーションSVG)の場合
+	} else { // ghostscript を用いたアウトライン化を行う形式(EPS/outlined-PDF/ビットマップ形式(画質優先)/アウトライン化SVG/アニメーションSVG)の場合
         if (transparentFlag || [BitmapExtensionsArray containsObject:extension]) { // 透過ベクター形式，またはビットマップ形式の場合
-            if ([@"emf" isEqualToString:extension]) {
-                for (NSUInteger i=1; i<=pageCount; i++) {
-                    if (emptyPageFlags[i-1].boolValue) {
-                        continue;
-                    }
-                    success = [self convertPDF:pdfFileName
-                                         toEMF:[outputFileName pathStringByAppendingPageNumber:i]
-                                          page:i];
-                    [controller exitCurrentThreadIfTaskKilled];
-                    if (!success) {
-                        return success;
-                    }
-                }
-            } else if ([@"svg" isEqualToString:extension] || [@"svgz" isEqualToString:extension]) {
+            if ([@"svg" isEqualToString:extension] || [@"svgz" isEqualToString:extension]) {
                 for (NSUInteger i=1; i<=pageCount; i++) {
                     if (emptyPageFlags[i-1].boolValue) {
                         continue;
@@ -1826,7 +1682,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                         return success;
                     }
                 }
-            } else { // EMF/SVG以外の透過ベクター形式，またはビットマップ形式の場合
+            } else { // SVG以外の透過ベクター形式，またはビットマップ形式の場合
                 // 透過PDFを pdfwrite 経由または epswrite 経由で透過ベクター形式またはビットマップ形式に変換する
                 if ([self isUsingNewGS]) {
                     if ([@"eps" isEqualToString:extension]) { // eps2write による出力時には，ページごとにばらしてPDFロンダリングする
@@ -1857,7 +1713,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                                 return success;
                             }
                         }
-                    } else { // Ghostscript 9.15 以上を利用していて，EMF/EPS以外の透過ベクター形式，またはビットマップ形式を出力する場合
+                    } else { // Ghostscript 9.15 以上を利用していて，EPS以外の透過ベクター形式，またはビットマップ形式を出力する場合
                         for (NSUInteger i=1; i<=pageCount; i++) {
                             success = [self convertPDF:pdfFileName
                           intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
@@ -1976,19 +1832,6 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                     }
                     success = [self convertPDF:pdfFileName
                                  toOutlinedSVG:[outputFileName pathStringByAppendingPageNumber:i]
-                                          page:i];
-                    [controller exitCurrentThreadIfTaskKilled];
-                    if (!success) {
-                        return success;
-                    }
-                }
-            } else if ([@"emf" isEqualToString:extension]) { // 背景塗りのあるEMF生成の場合
-                for (NSUInteger i=1; i<=pageCount; i++) {
-                    if (emptyPageFlags[i-1].boolValue) {
-                        continue;
-                    }
-                    success = [self convertPDF:pdfFileName
-                                         toEMF:[outputFileName pathStringByAppendingPageNumber:i]
                                           page:i];
                     [controller exitCurrentThreadIfTaskKilled];
                     if (!success) {
@@ -2184,7 +2027,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     }
     
     // プレビュー処理
-    if (status && previewFlag && ![@"emf" isEqualToString:extension]) {
+    if (status && previewFlag) {
         NSString *previewApp;
         if ([@"svg" isEqualToString:extension] || ([@"gif" isEqualToString:extension] && mergeOutputsFlag && (generatedPageCount > 1))) {
             if (@available(macOS 10.15, *)) {

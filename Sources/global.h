@@ -18,8 +18,8 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define MAX_LEN 2048
 #define BASH_PATH @"/bin/bash"
 
-#define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"svgz", @"emf"])
-#define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"svgz", @"emf", @"tex"])
+#define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"svgz"])
+#define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"svgz", @"tex"])
 #define InputExtensionsArray (@[@"tex", @"pdf", @"ps", @"eps"])
 #define BitmapExtensionsArray (@[@"png", @"jpg", @"gif", @"tiff", @"bmp"])
 #define MergeableExtensionsArray (@[@"pdf", @"tiff", @"gif", @"svg", @"svgz"])
@@ -119,7 +119,6 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define EpstopdfPathKey @"epstopdfPath"
 #define MudrawPathKey @"mudrawPath"
 #define PdftopsPathKey @"pdftopsPath"
-#define Eps2emfPathKey @"eps2emfPath"
 #define QuietKey @"quiet"
 
 #define AutoDetectionTargetKey @"autoDetectionTarget"
