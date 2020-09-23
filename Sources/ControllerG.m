@@ -93,6 +93,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSButton *mergeOutputsCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *keepPageSizeCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *showOutputDrawerCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *sendNotificationCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *previewCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *deleteTmpFileCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *toClipboardCheckBox;
@@ -245,6 +246,7 @@ typedef enum {
 @synthesize mergeOutputsCheckBox;
 @synthesize keepPageSizeCheckBox;
 @synthesize showOutputDrawerCheckBox;
+@synthesize sendNotificationCheckBox;
 @synthesize previewCheckBox;
 @synthesize deleteTmpFileCheckBox;
 @synthesize toClipboardCheckBox;
@@ -696,6 +698,7 @@ typedef enum {
 	[self loadStringSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
 	
 	showOutputDrawerCheckBox.state = [aProfile integerForKey:ShowOutputDrawerKey];
+    sendNotificationCheckBox.state = [aProfile integerForKey:SendNotificationKey];
 	previewCheckBox.state = [aProfile integerForKey:PreviewKey];
 	deleteTmpFileCheckBox.state = [aProfile integerForKey:DeleteTmpFileKey];
 
@@ -1042,6 +1045,7 @@ typedef enum {
         currentProfile[OutputFileKey] = outputFileTextField.stringValue;
         
         currentProfile[ShowOutputDrawerKey] = @(showOutputDrawerCheckBox.state);
+        currentProfile[SendNotificationKey] = @(sendNotificationCheckBox.state);
         currentProfile[PreviewKey] = @(previewCheckBox.state);
         currentProfile[DeleteTmpFileKey] = @(deleteTmpFileCheckBox.state);
         
@@ -2409,9 +2413,10 @@ typedef enum {
     abortMenuItem.enabled = NO;
     taskKilled = NO;
     
-    ExitStatus exitStatus = (ExitStatus)(status.intValue);
-    [self sendUserNotificationWithStatus:exitStatus];
-    
+    if (sendNotificationCheckBox.state == NSOnState) {
+        ExitStatus exitStatus = (ExitStatus)(status.intValue);
+        [self sendUserNotificationWithStatus:exitStatus];
+    }
 }
 
 - (void)generationDidFinishOnMainThread:(NSNumber*)status
@@ -2498,10 +2503,11 @@ typedef enum {
     [output appendFormat:@"Ignore nonfatal errors: %@\n", [aProfile boolForKey:IgnoreErrorKey] ? ENABLED : DISABLED];
     [output appendFormat:@"Substitute \\UTF / \\CID for non-JIS X 0208 characters: %@\n", [aProfile boolForKey:UtfExportKey] ? ENABLED : DISABLED];
     [output appendFormat:@"Conversion mode: %@ priority mode\n", ([aProfile integerForKey:PriorityKey] == SPEED_PRIORITY_TAG) ? @"speed" : @"quality"];
+    [output appendFormat:@"Send notification: %@\n", [aProfile boolForKey:SendNotificationKey] ? ENABLED : DISABLED];
     [output appendFormat:@"Preview generated files: %@\n", [aProfile boolForKey:PreviewKey] ? ENABLED : DISABLED];
     [output appendFormat:@"Delete temporary files: %@\n", [aProfile boolForKey:DeleteTmpFileKey] ? ENABLED : DISABLED];
-    [output appendFormat:@"Embed the source in generated files: %@\n", [aProfile boolForKey:EmbedSourceKey] ? ENABLED : DISABLED];
-    [output appendFormat:@"Copy generated files to the clipboard: %@\n", [aProfile boolForKey:CopyToClipboardKey] ? ENABLED : DISABLED];
+    [output appendFormat:@"Embed source into generated files: %@\n", [aProfile boolForKey:EmbedSourceKey] ? ENABLED : DISABLED];
+    [output appendFormat:@"Copy generated files to clipboard: %@\n", [aProfile boolForKey:CopyToClipboardKey] ? ENABLED : DISABLED];
     
     [output appendFormat:@"Paste generated files into %@: %@\n",
      autoPasteDestinationPopUpButton.selectedItem.title,

@@ -4,9 +4,9 @@ import UserNotifications
 
 extension ControllerG {
     @objc func sendUserNotification(status: ExitStatus) {
-        let body = (self.currentProfile()["outputFile"] as! NSString).lastPathComponent
-
         let title: String
+        let body = (self.currentProfile()["outputFile"] as! NSString).lastPathComponent
+        
         switch status {
         case .failed:
             title = NSLocalizedString("Failed", comment: "")
@@ -36,7 +36,6 @@ extension ControllerG {
     }
     
     public func userNotificationCenter(_ center: NSUserNotificationCenter, shouldPresent notification: NSUserNotification) -> Bool {
-        
         return true
     }
 }
@@ -46,7 +45,6 @@ extension ControllerG {
 @available(macOS 10.14, *)
 extension ControllerG {
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        
         completionHandler([.sound, .alert, .badge])
     }
 }

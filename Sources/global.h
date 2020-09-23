@@ -34,6 +34,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define OutputFileKey @"outputFile"
 #define ShowOutputDrawerKey @"showOutputDrawer"
 #define ThreadingKey @"threading"
+#define SendNotificationKey @"sendNotification"
 #define PreviewKey @"preview"
 #define DeleteTmpFileKey @"deleteTmpFile"
 #define CopyToClipboardKey @"copyToClipboard"
