@@ -1370,26 +1370,6 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     }
 }
 
-// 単一ページのPDFを Quartz API で開いて保存し直す。
-// これによって余計な /Transparency が消え，eps(2)write で処理しやすくなる。
-// https://github.com/doraTeX/TeX2img/issues/70#issuecomment-162500813
-- (void)launderPDF:(NSString*)path
-{
-    PDFDocument *doc = [PDFDocument documentWithFilePath:path];
-    
-    CGPDFPageRef pdfPageRef = [doc pageAtIndex:0].pageRef;
-    const CGRect mediaBoxRect = CGPDFPageGetBoxRect(pdfPageRef, kCGPDFMediaBox);
-    
-    CGContextRef contextRef = CGPDFContextCreateWithURL((CFURLRef)[NSURL fileURLWithPath:path], &mediaBoxRect, NULL);
-    
-    CGPDFContextBeginPage(contextRef, NULL);
-    CGContextSaveGState(contextRef);
-    CGContextDrawPDFPage(contextRef, pdfPageRef);
-    CGContextRestoreGState(contextRef);
-    CGPDFContextEndPage(contextRef);
-    
-    CGContextRelease(contextRef);
-}
 
 - (BOOL)convertPDF:(NSString*)pdfFilePath
      toOutlinedSVG:(NSString*)svgFilePath
@@ -1411,10 +1391,6 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
             fillBackground:NO]) {
             return NO;
         }
-
-        // 直ちにQuartzでPDFロンダリング
-        [self launderPDF:croppedPdfFileName];
-        
         
         // 既にトリミング＋余白付与はしているので，次のアウトライン化段階ではページサイズ維持
         BOOL originalKeppPageSizeFlag = keepPageSizeFlag;
@@ -1451,10 +1427,6 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
             fillBackground:NO]) {
             return NO;
         }
-        
-        // 直ちにQuartzでPDFロンダリング
-        [self launderPDF:croppedPdfFileName];
-        
 
         // PDF内のフォントをアウトライン化
         if (![self outlinePDF:croppedPdfFileName
@@ -1498,8 +1470,6 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
              useCache:NO
        fillBackground:!transparentFlag];
         [controller exitCurrentThreadIfTaskKilled];
-
-        [self launderPDF:croppedPdfFileName];
 
         // gs の pdfwrite でアウトライン化PDFに変換
         NSArray<NSString*> *arguments = @[@"-dNOPAUSE",
@@ -1863,8 +1833,6 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                            fillBackground:NO];
                             [controller exitCurrentThreadIfTaskKilled];
                             
-                            [self launderPDF:croppedFile];
-                            
                             // 次に単一ページのテキスト保持PDFを透過ベクター形式またはビットマップ形式に変換する
                             success = [self convertPDF:croppedFile.lastPathComponent
                           intermediateOutlinedFileName:[outputEpsFileName pathStringByAppendingPageNumber:i]
@@ -1906,8 +1874,6 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                              useCache:NO
                        fillBackground:NO];
                         [controller exitCurrentThreadIfTaskKilled];
-                        
-                        [self launderPDF:croppedFile];
                         
                         // 次に単一ページのテキスト保持PDFを透過ベクター形式またはビットマップ形式に変換する
                         success = [self convertPDF:croppedFile.lastPathComponent
