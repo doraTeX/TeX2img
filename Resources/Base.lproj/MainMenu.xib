@@ -1636,7 +1636,7 @@ DQ
                                                         </connections>
                                                     </stepper>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="H1k-tV-Nig">
-                                                        <rect key="frame" x="52" y="41" width="260" height="17"/>
+                                                        <rect key="frame" x="66" y="41" width="215" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Font" id="yx9-Z0-QOx">
                                                             <font key="font" metaFont="system"/>
@@ -1645,7 +1645,7 @@ DQ
                                                         </textFieldCell>
                                                     </textField>
                                                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nBY-hr-otx">
-                                                        <rect key="frame" x="12" y="38" width="34" height="22"/>
+                                                        <rect key="frame" x="12" y="38" width="38" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="square" title="Font" bezelStyle="shadowlessSquare" imagePosition="left" alignment="center" borderStyle="border" inset="2" id="l2z-eQ-qMa">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
