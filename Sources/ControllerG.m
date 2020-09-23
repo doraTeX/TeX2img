@@ -102,6 +102,9 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSPopUpButton *autoPasteDestinationPopUpButton;
 @property (nonatomic, strong) IBOutlet NSButton *embedInIllustratorCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *ungroupCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *keepPageSizeAdvancedButton;
+@property (nonatomic, strong) IBOutlet NSButton *mergeOutputAdvancedButton;
+
 @property (nonatomic, strong) IBOutlet NSWindow *preferenceWindow;
 
 @property (nonatomic, strong) IBOutlet NSTextField *resolutionTextField;
@@ -1603,6 +1606,7 @@ typedef enum {
         [self restoreDefaultTemplatesLogic];
     }
     
+    [self preferencesChanged:nil];
 }
 
 - (void)loadDefaultFont
@@ -2299,6 +2303,22 @@ typedef enum {
 	[[NSApp keyWindow] close];
 }
 
+- (IBAction)preferencesChanged:(id)sender
+{
+    _keepPageSizeAdvancedButton.enabled = (keepPageSizeCheckBox.state == NSOnState);
+    _mergeOutputAdvancedButton.enabled = (mergeOutputsCheckBox.state == NSOnState);
+    
+    if (toClipboardCheckBox.state == NSOnState) {
+        autoPasteCheckBox.enabled = YES;
+        autoPasteDestinationPopUpButton.enabled = (autoPasteCheckBox.state == NSOnState);
+    } else {
+        autoPasteCheckBox.enabled = NO;
+        autoPasteDestinationPopUpButton.enabled = NO;
+    }
+    
+    ungroupCheckBox.enabled = (embedInIllustratorCheckBox.state == NSOnState);
+}
+
 - (IBAction)showFontPanelOfSource:(id)sender
 {
     NSFontManager *fontMgr = NSFontManager.sharedFontManager;
@@ -2633,7 +2653,7 @@ typedef enum {
     [NSPopover showPopoverWithViewController:pageBoxSettingViewController
                              atRightOfButton:(NSButton*)sender
                                       ofView:preferenceWindow.contentView
-                                     offsetX:31
+                                     offsetX:32
                                            Y:preferenceWindow.frame.size.height - (isJapaneseLanguage() ? 313 : 300)]; // Japanese.lproj と English.lproj の MainMenu.xib の違いに対応
 }
 
@@ -2642,8 +2662,8 @@ typedef enum {
     [NSPopover showPopoverWithViewController:animationParameterSettingViewController
                              atRightOfButton:(NSButton*)sender
                                       ofView:preferenceWindow.contentView
-                                     offsetX:31
-                                           Y:preferenceWindow.frame.size.height - 447];
+                                     offsetX:32
+                                           Y:preferenceWindow.frame.size.height - 446];
 }
 
 #pragma mark - 不可視文字表示の種別設定

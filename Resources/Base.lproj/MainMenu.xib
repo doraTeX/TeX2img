@@ -741,6 +741,7 @@ DQ
                 <outlet property="inputSourceFileTextField" destination="cz9-Hs-JtF" id="2fT-96-ciu"/>
                 <outlet property="invisibleCharacterBox" destination="Ch8-g0-Xrf" id="aZz-b0-fyq"/>
                 <outlet property="invisibleColorWell" destination="NvZ-em-Cp7" id="7XC-mV-eKv"/>
+                <outlet property="keepPageSizeAdvancedButton" destination="TXH-b0-ngz" id="9r4-Md-7DB"/>
                 <outlet property="keepPageSizeCheckBox" destination="D8e-2J-8mb" id="P96-Ns-Esn"/>
                 <outlet property="latexPathTextField" destination="597" id="4Yg-1y-ORR"/>
                 <outlet property="leftMarginStepper" destination="2Zy-OC-OqQ" id="LQN-ca-U7j"/>
@@ -749,6 +750,7 @@ DQ
                 <outlet property="loopCountTextField" destination="E6a-5a-PB7" id="18y-VK-vm9"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
                 <outlet property="makeatletterEnabledCheckBox" destination="e5G-Bl-d2N" id="5NG-sb-Ufr"/>
+                <outlet property="mergeOutputAdvancedButton" destination="Wcc-by-C2o" id="ssH-t3-XPa"/>
                 <outlet property="mergeOutputsCheckBox" destination="iH4-6u-aJA" id="pj3-BG-N76"/>
                 <outlet property="numberOfCompilationStepper" destination="X9l-Yh-wIQ" id="Qvp-0d-gZn"/>
                 <outlet property="numberOfCompilationTextField" destination="dpd-O4-qxE" id="KWX-AS-ogm"/>
@@ -1107,6 +1109,9 @@ DQ
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
+                                                        <connections>
+                                                            <action selector="preferencesChanged:" target="450" id="flg-fV-gds"/>
+                                                        </connections>
                                                     </button>
                                                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TXH-b0-ngz">
                                                         <rect key="frame" x="225" y="46" width="75" height="17"/>
@@ -1237,6 +1242,9 @@ DQ
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
+                                                        <connections>
+                                                            <action selector="preferencesChanged:" target="450" id="Hx9-Lr-YK2"/>
+                                                        </connections>
                                                     </button>
                                                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J3E-2Y-JTm">
                                                         <rect key="frame" x="18" y="14" width="310" height="18"/>
@@ -2013,7 +2021,7 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="After Compiling" identifier="5" id="587">
+                            <tabViewItem label="After Compilation" identifier="5" id="587">
                                 <view key="view" id="588">
                                     <rect key="frame" x="10" y="33" width="509" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2032,7 +2040,7 @@ DQ
                                         <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="589">
                                             <rect key="frame" x="13" y="330" width="204" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Preview after compilation" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="590">
+                                            <buttonCell key="cell" type="check" title="Show preview automatically" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="590">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -2048,7 +2056,7 @@ DQ
                                         <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="591">
                                             <rect key="frame" x="13" y="310" width="377" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Delete temporary files after compilation (Recommended)" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="592">
+                                            <buttonCell key="cell" type="check" title="Delete temporary files" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="592">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -2078,6 +2086,9 @@ DQ
                                             <buttonCell key="cell" type="check" title="Copy generated files to clipboard" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="SeJ-kw-hSM">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
+                                                <connections>
+                                                    <action selector="preferencesChanged:" target="450" id="cZ8-5C-Sy4"/>
+                                                </connections>
                                             </buttonCell>
                                         </button>
                                         <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="857">
@@ -2086,6 +2097,9 @@ DQ
                                             <buttonCell key="cell" type="check" title="Embed generated files in an Adobe Illustrator document" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="858">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
+                                                <connections>
+                                                    <action selector="preferencesChanged:" target="450" id="Jc3-qa-I0s"/>
+                                                </connections>
                                             </buttonCell>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="THC-Jn-kRE">
@@ -2112,6 +2126,9 @@ DQ
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <connections>
+                                                <action selector="preferencesChanged:" target="450" id="2bD-r3-YcF"/>
+                                            </connections>
                                         </button>
                                         <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kQZ-Cr-Y1i">
                                             <rect key="frame" x="119" y="195" width="191" height="26"/>
@@ -2142,7 +2159,7 @@ DQ
                                         <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="650">
                                             <rect key="frame" x="13" y="370" width="351" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Show output view automatically after compilation" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="651">
+                                            <buttonCell key="cell" type="check" title="Show output view automatically" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="651">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
