@@ -46,6 +46,8 @@
 		349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349927381B786546009BD5F1 /* MyGlyphPopoverController.m */; };
 		3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */; };
 		3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */; };
+		34A5C63B251B170B00FCF7BA /* Converter-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */; };
+		34A5C63C251B170B00FCF7BA /* Converter-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */; };
 		34B5E70420995B2F0071BBE9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34B5E70320995B2F0071BBE9 /* Images.xcassets */; };
 		34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */ = {isa = PBXBuildFile; fileRef = 34BF70F91BD1C6FC00AB76A9 /* pdftops */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
@@ -150,6 +152,9 @@
 		349927381B786546009BD5F1 /* MyGlyphPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyGlyphPopoverController.m; sourceTree = "<group>"; };
 		3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverMulti.xib; sourceTree = "<group>"; };
 		3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverSingle.xib; sourceTree = "<group>"; };
+		34A5C638251B170A00FCF7BA /* Bridging-Header-G.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header-G.h"; sourceTree = "<group>"; };
+		34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Converter-Extension.swift"; sourceTree = "<group>"; };
+		34A5C641251B17E400FCF7BA /* Bridging-Header-C.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header-C.h"; sourceTree = "<group>"; };
 		34B5E70320995B2F0071BBE9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TeX2img/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		34BF70F91BD1C6FC00AB76A9 /* pdftops */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pdftops; sourceTree = "<group>"; };
 		34BF870A12AC10D20099654C /* MyLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyLayoutManager.h; sourceTree = "<group>"; };
@@ -247,6 +252,7 @@
 				34BFF6D61B9F1FF900E8DE77 /* PDFPageBox.m */,
 				348BB5170F08C3850063003D /* Converter.h */,
 				348BB5180F08C3850063003D /* Converter.m */,
+				34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */,
 				3424A8E10E4F2DC1003C9F96 /* ControllerG.h */,
 				3424A8E20E4F2DC1003C9F96 /* ControllerG.m */,
 				705DC3540F10E4670052AFA5 /* ControllerC.h */,
@@ -316,6 +322,8 @@
 				32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				705DC2BB0F10E0B00052AFA5 /* mainc.m */,
+				34A5C638251B170A00FCF7BA /* Bridging-Header-G.h */,
+				34A5C641251B17E400FCF7BA /* Bridging-Header-C.h */,
 			);
 			name = "Other Sources";
 			path = Sources;
@@ -473,10 +481,12 @@
 				TargetAttributes = {
 					705DC7A00F1197DC0052AFA5 = {
 						DevelopmentTeam = 86GWZ48925;
+						LastSwiftMigration = 1220;
 						ProvisioningStyle = Manual;
 					};
 					8D1107260486CEB800E47090 = {
 						DevelopmentTeam = 86GWZ48925;
+						LastSwiftMigration = 1220;
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -584,6 +594,7 @@
 				34BFF6D81B9F1FF900E8DE77 /* PDFPageBox.m in Sources */,
 				346DA57C1B705F6800B51BD7 /* NSArray-Extension.m in Sources */,
 				348CA6DD1A957BC90070B079 /* NSDate-Extension.m in Sources */,
+				34A5C63C251B170B00FCF7BA /* Converter-Extension.swift in Sources */,
 				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,
 				705DC7A70F1197E90052AFA5 /* mainc.m in Sources */,
 				34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */,
@@ -618,6 +629,7 @@
 				348BBF961B795AB900EDE00C /* NSColor-Extension.m in Sources */,
 				349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */,
 				344409D91F80FF100020EDC7 /* NSBitmapImageRep-Extension.m in Sources */,
+				34A5C63B251B170B00FCF7BA /* Converter-Extension.swift in Sources */,
 				346DA57B1B705F6800B51BD7 /* NSArray-Extension.m in Sources */,
 				CEB04B28225226FB005EED2C /* AppDelegate.m in Sources */,
 				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,
@@ -675,6 +687,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
@@ -687,6 +700,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INSTALL_PATH = /usr/local/bin;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -695,6 +709,9 @@
 				);
 				PRODUCT_NAME = tex2img;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Bridging-Header-C.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -702,6 +719,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
@@ -713,6 +731,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INSTALL_PATH = /usr/local/bin;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -721,6 +740,8 @@
 				);
 				PRODUCT_NAME = tex2img;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Bridging-Header-C.h";
+				SWIFT_VERSION = 5.0;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -730,6 +751,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = Resources/TeX2img.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
@@ -750,6 +772,7 @@
 				GCC_PREFIX_HEADER = Sources/TeX2img_Prefix.pch;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_CFLAGS = "-DU_DISABLE_RENAMING=1";
@@ -758,6 +781,9 @@
 				PRODUCT_NAME = TeX2img;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Bridging-Header-G.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -766,6 +792,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = Resources/TeX2img.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
@@ -784,6 +811,7 @@
 				GCC_PREFIX_HEADER = Sources/TeX2img_Prefix.pch;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_CFLAGS = "-DU_DISABLE_RENAMING=1";
@@ -792,6 +820,8 @@
 				PRODUCT_NAME = TeX2img;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Bridging-Header-G.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
