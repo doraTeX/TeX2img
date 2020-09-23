@@ -393,7 +393,7 @@ typedef enum {
 
 - (void)showMainWindow
 {
-	[mainWindow makeKeyAndOrderFront:nil];
+    [mainWindow performSelectorOnMainThread:@selector(makeKeyAndOrderFront:) withObject:nil waitUntilDone:NO];
 }
 
 - (void)refreshTextView:(NSTextView*)textView
