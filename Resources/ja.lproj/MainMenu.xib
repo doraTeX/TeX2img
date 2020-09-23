@@ -554,7 +554,7 @@ DQ
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" drawsBackground="NO" id="QOI-Xa-K0n">
                                         <rect key="frame" x="1" y="1" width="493" height="129"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="466" customClass="TeXTextView">
                                                 <rect key="frame" x="0.0" y="0.0" width="497" height="129"/>
@@ -632,13 +632,16 @@ DQ
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="461">
-                                    <rect key="frame" x="11" y="10" width="420" height="22"/>
+                                    <rect key="frame" x="11" y="10" width="343" height="22"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="462">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
+                                    <connections>
+                                        <action selector="outputFilePathChanged:" target="450" id="f4X-Wg-7wn"/>
+                                    </connections>
                                 </textField>
                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="626">
                                     <rect key="frame" x="433" y="3" width="79" height="32"/>
@@ -651,6 +654,31 @@ DQ
                                         <action selector="showSavePanel:" target="450" id="628"/>
                                     </connections>
                                 </button>
+                                <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CGu-Kq-aGw">
+                                    <rect key="frame" x="360" y="7" width="77" height="25"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                    <popUpButtonCell key="cell" type="push" title="EPS" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="4mm-fy-0bX" id="dUL-gq-ytC">
+                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="menu"/>
+                                        <menu key="menu" id="HNz-yR-atO">
+                                            <items>
+                                                <menuItem title="EPS" state="on" id="4mm-fy-0bX"/>
+                                                <menuItem title="PDF" id="s7C-Eo-wV1"/>
+                                                <menuItem title="SVG" id="vu1-Tt-gwy"/>
+                                                <menuItem title="SVGZ" id="UFA-5c-4W8"/>
+                                                <menuItem title="EMF" id="56i-Rc-7sT"/>
+                                                <menuItem title="JPG" id="Rgr-AY-aCv"/>
+                                                <menuItem title="PNG" id="a7G-HD-JcN"/>
+                                                <menuItem title="GIF" id="CKI-ne-xG4"/>
+                                                <menuItem title="TIFF" id="lZB-0i-cIr"/>
+                                                <menuItem title="BMP" id="HX9-Df-R5G"/>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                    <connections>
+                                        <action selector="extensionPopUpButtonChanged:" target="450" id="Aay-yZ-Clb"/>
+                                    </connections>
+                                </popUpButton>
                             </subviews>
                         </view>
                     </box>
@@ -667,7 +695,7 @@ DQ
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-221" y="757"/>
+            <point key="canvasLocation" x="-221" y="756.5"/>
         </window>
         <customObject id="420" customClass="NSFontManager"/>
         <window title="プリアンブル部" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="480">
@@ -1471,10 +1499,10 @@ DQ
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aHu-v1-wTJ">
-                                                        <rect key="frame" x="9" y="66" width="43" height="17"/>
+                                                        <rect key="frame" x="9" y="66" width="41" height="16"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="タブ幅" id="etH-G4-dbS">
-                                                            <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                            <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
@@ -1690,11 +1718,11 @@ DQ
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wt2-ec-htK">
-                                            <rect key="frame" x="15" y="48" width="235" height="32"/>
+                                            <rect key="frame" x="23" y="48" width="221" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="ライトモードのデフォルトに戻す" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="uWc-c0-f6S">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
                                                 <action selector="loadDefaultColors:" target="450" id="0lP-HG-ImS"/>
@@ -1882,11 +1910,11 @@ DQ
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fwE-tk-d03">
-                                            <rect key="frame" x="16" y="15" width="234" height="32"/>
+                                            <rect key="frame" x="23" y="15" width="221" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="ダークモードのデフォルトに戻す" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jXG-yq-7hJ">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" size="13" name="HiraKakuProN-W3"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
                                                 <action selector="loadDefaultColors:" target="450" id="YjK-Ty-lfV"/>
@@ -2231,6 +2259,7 @@ DQ
                 <outlet property="embedSourceCheckBox" destination="Bld-79-KdN" id="fcB-Wi-hye"/>
                 <outlet property="enclosedContentBackgroundColorWell" destination="Qkx-sU-Fa1" id="3pf-OO-73c"/>
                 <outlet property="encodingPopUpButton" destination="SEX-u4-2gO" id="9ZB-Jt-h0v"/>
+                <outlet property="extensionPopupButton" destination="CGu-Kq-aGw" id="mKz-QE-2c2"/>
                 <outlet property="fillColorWell" destination="DXG-iX-6XI" id="qHw-MT-VzP"/>
                 <outlet property="flashBackgroundCheckBox" destination="KWP-Tu-qp2" id="QJB-80-Aeu"/>
                 <outlet property="flashInMovingCheckBox" destination="pL6-0n-Zv5" id="VGF-Ti-v8p"/>

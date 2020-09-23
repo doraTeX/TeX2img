@@ -40,6 +40,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSDrawer *outputDrawer;
 @property (nonatomic, strong) IBOutlet NSTextView *outputTextView;
 @property (nonatomic, strong) IBOutlet NSTextField *outputFileTextField;
+@property (nonatomic, strong) IBOutlet NSPopUpButton *extensionPopupButton;
 @property (nonatomic, strong) IBOutlet NSPopUpButton *templatePopupButton;
 
 @property (nonatomic, strong) IBOutlet NSWindow *preambleWindow;
@@ -1516,7 +1517,13 @@ typedef enum {
                 selector:@selector(refreshTextView:)
                     name:NSControlTextDidChangeNotification
                   object:tabWidthTextField];
-	
+
+    // 出力ファイルパスの変更
+    [aCenter addObserver:self
+                selector:@selector(outputFilePathChanged:)
+                    name:NSControlTextDidChangeNotification
+                  object:outputFileTextField];
+
 	// デフォルトのアウトプットファイルのパスをセット
 	outputFileTextField.stringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
     
@@ -1607,6 +1614,7 @@ typedef enum {
     }
     
     [self preferencesChanged:nil];
+    [self outputFilePathChanged:nil];
 }
 
 - (void)loadDefaultFont
@@ -2664,6 +2672,16 @@ typedef enum {
                                       ofView:preferenceWindow.contentView
                                      offsetX:32
                                            Y:preferenceWindow.frame.size.height - 446];
+}
+
+- (IBAction)extensionPopUpButtonChanged:(NSPopUpButton*)sender
+{
+    outputFileTextField.stringValue = [outputFileTextField.stringValue.stringByDeletingPathExtension stringByAppendingPathExtension:sender.selectedItem.title.lowercaseString];
+}
+
+- (IBAction)outputFilePathChanged:(id)sender
+{
+    [_extensionPopupButton selectItemWithTitle:outputFileTextField.stringValue.lastPathComponent.pathExtension.uppercaseString];
 }
 
 #pragma mark - 不可視文字表示の種別設定

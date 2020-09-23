@@ -554,13 +554,16 @@ DQ
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="461">
-                                    <rect key="frame" x="9" y="10" width="404" height="22"/>
+                                    <rect key="frame" x="9" y="10" width="324" height="22"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="462">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
+                                    <connections>
+                                        <action selector="outputFilePathChanged:" target="450" id="LoG-f4-AcP"/>
+                                    </connections>
                                 </textField>
                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="626">
                                     <rect key="frame" x="415" y="3" width="98" height="32"/>
@@ -573,6 +576,31 @@ DQ
                                         <action selector="showSavePanel:" target="450" id="628"/>
                                     </connections>
                                 </button>
+                                <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a3r-pk-4kt">
+                                    <rect key="frame" x="339" y="7" width="77" height="25"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                    <popUpButtonCell key="cell" type="push" title="EPS" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="d7o-H4-bav" id="epq-yb-gcm">
+                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="menu"/>
+                                        <menu key="menu" id="ZQa-Mv-g0X">
+                                            <items>
+                                                <menuItem title="EPS" state="on" id="d7o-H4-bav"/>
+                                                <menuItem title="PDF" id="13t-lq-oyo"/>
+                                                <menuItem title="SVG" id="89G-R8-hft"/>
+                                                <menuItem title="SVGZ" id="9Qx-sZ-0C3"/>
+                                                <menuItem title="EMF" id="jIm-BS-Llp"/>
+                                                <menuItem title="JPG" id="3cY-aW-mFi"/>
+                                                <menuItem title="PNG" id="jah-3o-Cu4"/>
+                                                <menuItem title="GIF" id="LtJ-fR-VL7"/>
+                                                <menuItem title="TIFF" id="K7N-8M-HZz"/>
+                                                <menuItem title="BMP" id="9Eb-Bl-aJ0"/>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                    <connections>
+                                        <action selector="extensionPopUpButtonChanged:" target="450" id="Szy-Ba-5Yo"/>
+                                    </connections>
+                                </popUpButton>
                             </subviews>
                         </view>
                     </box>
@@ -671,7 +699,7 @@ DQ
                     </box>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-224" y="471"/>
+            <point key="canvasLocation" x="-224" y="470.5"/>
         </window>
         <customObject id="sHM-Z6-Bnt" customClass="AppDelegate">
             <connections>
@@ -721,6 +749,7 @@ DQ
                 <outlet property="embedSourceCheckBox" destination="On1-La-dwy" id="VMh-uZ-oVY"/>
                 <outlet property="enclosedContentBackgroundColorWell" destination="mfZ-Hg-uIe" id="i7E-Dl-ef9"/>
                 <outlet property="encodingPopUpButton" destination="Gzh-vl-KcH" id="XMi-XA-snF"/>
+                <outlet property="extensionPopupButton" destination="a3r-pk-4kt" id="M5O-4O-Tx1"/>
                 <outlet property="fillColorWell" destination="OVS-E9-YmS" id="79h-j4-b18"/>
                 <outlet property="flashBackgroundCheckBox" destination="cqv-iM-ddW" id="6rE-vK-8l3"/>
                 <outlet property="flashInMovingCheckBox" destination="Bh6-7t-qwa" id="ZIU-pC-csp"/>
