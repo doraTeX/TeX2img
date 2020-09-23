@@ -837,7 +837,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				VALID_ARCHS = x86_64;
+				VALID_ARCHS = "arm64 arm64e i386 x86_64";
 			};
 			name = Debug;
 		};
@@ -881,7 +881,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				VALID_ARCHS = x86_64;
+				VALID_ARCHS = "arm64 arm64e i386 x86_64";
 			};
 			name = Release;
 		};
