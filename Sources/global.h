@@ -1,7 +1,8 @@
 #ifndef TeX2img_global_h
 #define TeX2img_global_h
 
-typedef enum  {
+#import "typedef.h"
+typedef enum {
 	apWord = 1,
     apPowerPoint = 2,
     apPages = 3,

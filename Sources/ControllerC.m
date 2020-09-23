@@ -220,7 +220,7 @@
     }];
 }
 
-- (void)generationDidFinish
+- (void)generationDidFinish:(ExitStatus)status
 {
     
 }

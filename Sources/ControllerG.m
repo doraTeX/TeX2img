@@ -1,6 +1,7 @@
 #import <Quartz/Quartz.h>
 #import <sys/xattr.h>
 #import "ControllerG.h"
+#import "TeX2img-Swift.h"
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
@@ -350,7 +351,7 @@ typedef enum {
     }
     
     if (NSThread.currentThread.isCancelled) {
-        [self generationDidFinish];
+        [self generationDidFinish:ExitStatusAborted];
         [NSThread exit];
     }
 }
@@ -1401,6 +1402,13 @@ typedef enum {
 
     lastColorDict = [NSMutableDictionary<NSString*,NSColor*> dictionary];
 
+    // 通知の設定
+    if (@available(macOS 10.14, *)) {
+        [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+    } else {
+        [NSUserNotificationCenter defaultUserNotificationCenter].delegate = self;
+    }
+    
 	// ノティフィケーションの設定
 	NSNotificationCenter *aCenter = NSNotificationCenter.defaultCenter;
 	
@@ -2392,7 +2400,7 @@ typedef enum {
     [self adoptPreambleTemplate:templatePath];
 }
 
-- (void)generationDidFinishOnMainThreadAfterDelay
+- (void)generationDidFinishOnMainThreadAfterDelay:(NSNumber*)status
 {
     [converter deleteTemporaryFiles]; // スレッドが中断されたときにも確実に中間ファイルを削除するように
     generateButton.title = localizedString(@"Generate");
@@ -2400,16 +2408,20 @@ typedef enum {
     generateMenuItem.enabled = YES;
     abortMenuItem.enabled = NO;
     taskKilled = NO;
+    
+    ExitStatus exitStatus = (ExitStatus)(status.intValue);
+    [self sendUserNotificationWithStatus:exitStatus];
+    
 }
 
-- (void)generationDidFinishOnMainThread
+- (void)generationDidFinishOnMainThread:(NSNumber*)status
 {
-    [self performSelector:@selector(generationDidFinishOnMainThreadAfterDelay) withObject:nil afterDelay:0.3];
+    [self performSelector:@selector(generationDidFinishOnMainThreadAfterDelay:) withObject:status afterDelay:0.3];
 }
 
-- (void)generationDidFinish
+- (void)generationDidFinish:(ExitStatus)status
 {
-    [self performSelectorOnMainThread:@selector(generationDidFinishOnMainThread) withObject:nil waitUntilDone:YES];
+    [self performSelectorOnMainThread:@selector(generationDidFinishOnMainThread:) withObject:@(status) waitUntilDone:YES];
 }
 
 - (void)printCurrentStatus:(Profile*)aProfile
@@ -2537,11 +2549,11 @@ typedef enum {
                     [NSThread detachNewThreadSelector:@selector(compileAndConvertWithInputPath:) toTarget:converter withObject:inputSourceFilePath];
                 } else {
                     runErrorPanel(localizedString(@"inputFileTypeErrorMsg"), inputSourceFilePath);
-                    [self generationDidFinish];
+                    [self generationDidFinish:ExitStatusFailed];
                 }
             } else {
                 runErrorPanel(localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath);
-                [self generationDidFinish];
+                [self generationDidFinish:ExitStatusFailed];
             }
             break;
         default:
@@ -2597,7 +2609,7 @@ typedef enum {
     if (runningTask && runningTask.isRunning) {
         [runningTask terminate];
         runningTask = nil;
-        [self generationDidFinish];
+        [self generationDidFinish:ExitStatusAborted];
     }
 }
 

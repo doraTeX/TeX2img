@@ -1,7 +1,7 @@
 #import <Quartz/Quartz.h>
 #import <sys/xattr.h>
-#import "Utility.h"
 #import "TeX2img-Swift.h"
+#import "Utility.h"
 
 #define RESOLUTION_SCALE 5.0
 #define EMPTY_BBOX @"%%BoundingBox: 0 0 0 0\n"
@@ -185,7 +185,7 @@
     [NSThread.currentThread cancel];
     if (NSThread.currentThread.isCancelled) {
         [self deleteTemporaryFiles];
-        [controller generationDidFinish];
+        [controller generationDidFinish:ExitStatusAborted];
         [NSThread exit];
     }
 }
@@ -2166,7 +2166,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 {
 	// 最初にプログラムの存在確認と出力ファイル形式確認
 	if (![controller latexExistsAtPath:latexPath.programPath dviDriverPath:dviDriverPath.programPath gsPath:gsPath.programPath]) {
-        [controller generationDidFinish];
+        [controller generationDidFinish:ExitStatusFailed];
 		return NO;
 	}
 	
@@ -2174,7 +2174,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 
     if (![TargetExtensionsArray containsObject:extension]) {
 		[controller showExtensionError];
-        [controller generationDidFinish];
+        [controller generationDidFinish:ExitStatusFailed];
 		return NO;
 	}
     
@@ -2309,7 +2309,9 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     
     // 後処理
     [self deleteTemporaryFiles];
-    [controller generationDidFinish]; // GUI版の場合はここでも deleteTemporaryFiles が呼び出されるが，CUI版では呼び出されないので二重呼び出しは仕方ない
+    
+    ExitStatus exitStatus = status ? ExitStatusSucceeded : ExitStatusFailed;
+    [controller generationDidFinish:exitStatus]; // GUI版の場合はここでも deleteTemporaryFiles が呼び出されるが，CUI版では呼び出されないので二重呼び出しは仕方ない
     
 	return status;
 }
@@ -2376,7 +2378,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 	
 	if (![self writeStringWithYenBackslashConverting:texSourceStr toFile:tempTeXFilePath]) {
 		[controller showFileGenerationError:tempTeXFilePath];
-        [controller generationDidFinish];
+        [controller generationDidFinish:ExitStatusFailed];
 		return NO;
 	}
 	
@@ -2403,7 +2405,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 
         if ([fileManager fileExistsAtPath:sourcePath isDirectory:&isDir] && isDir) {
             [controller showFileFormatError:sourcePath];
-            [controller generationDidFinish];
+            [controller generationDidFinish:ExitStatusFailed];
             return NO;
         }
         
@@ -2416,28 +2418,28 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
             // PDFの書式チェック
             if (![PDFDocument documentWithFilePath:sourcePath]) {
                 [controller showFileFormatError:sourcePath];
-                [controller generationDidFinish];
+                [controller generationDidFinish:ExitStatusFailed];
                 return NO;
             }
             
             NSString *tempPdfFilePath = [basePath stringByAppendingPathExtension:@"pdf"];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPdfFilePath error:nil]) {
                 [controller showFileGenerationError:tempPdfFilePath];
-                [controller generationDidFinish];
+                [controller generationDidFinish:ExitStatusFailed];
                 return NO;
             }
         } else if (psInputMode) {
             NSString *tempPsFilePath = [basePath stringByAppendingPathExtension:@"ps"];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempPsFilePath error:nil]) {
                 [controller showFileGenerationError:tempPsFilePath];
-                [controller generationDidFinish];
+                [controller generationDidFinish:ExitStatusFailed];
                 return NO;
             }
         } else {
             NSString *tempTeXFilePath = [basePath stringByAppendingPathExtension:@"tex"];
             if (![fileManager copyItemAtPath:sourcePath toPath:tempTeXFilePath error:nil]) {
                 [controller showFileGenerationError:tempTeXFilePath];
-                [controller generationDidFinish];
+                [controller generationDidFinish:ExitStatusFailed];
                 return NO;
             }
         }

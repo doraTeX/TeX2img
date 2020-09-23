@@ -92,14 +92,14 @@ void usage()
     printf("  --[no-]quiet               : disable/enable quiet mode (default: disabled)\n");
     printf("  --version                  : display version info\n");
     printf("  --help                     : display this message\n");
-    exit(1);
+    exit(ExitStatusFailed);
 }
 
 NSInteger strtoi(const char * _Nullable str)
 {
     if (str == NULL) {
         printStdErr("error : Not a number.\n");
-        exit(1);
+        exit(ExitStatusFailed);
     }
     
     char *endptr;
@@ -111,12 +111,12 @@ NSInteger strtoi(const char * _Nullable str)
     if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
         || (errno != 0 && val == 0)) {
         printStdErr("error : %s cannot be converted to a number.\n", str);
-        exit(1);
+        exit(ExitStatusFailed);
     }
     
     if (*endptr != '\0') {
         printStdErr("error : %s is not a number.\n", str);
-        exit(1);
+        exit(ExitStatusFailed);
     }
     
     return (NSInteger)val;
@@ -605,7 +605,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     resolutoinLevel = strtof(optarg, NULL);
                 } else {
                     printf("error: --resolution is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 2: // --dpi
@@ -613,7 +613,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     dpi = strtoi(optarg);
                 } else {
                     printf("error: --left-margin is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 3: // --left-margin
@@ -621,7 +621,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     leftMargin = strtoi(optarg);
                 } else {
                     printf("error: --left-margin is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 4: // --right-margin
@@ -629,7 +629,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     rightMargin = strtoi(optarg);
                 } else {
                     printf("error: --right-margin is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 5: // --top-margin
@@ -637,7 +637,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     topMargin = strtoi(optarg);
                 } else {
                     printf("error: --top-margin is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 6: // --bottom-margin
@@ -645,7 +645,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     bottomMargin = strtoi(optarg);
                 } else {
                     printf("error: --bottom-margin is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 7: // --with-text
@@ -688,11 +688,11 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                                && ![encoding isEqualToString:PTEX_ENCODING_JIS]
                                && ![encoding isEqualToString:PTEX_ENCODING_EUC]) {
                         printf("error: --kanji is invalid. It must be no/utf8/sjis/jis/euc.\n");
-                        exit(1);
+                        exit(ExitStatusFailed);
                     }
                 } else {
                     printf("error: --kanji is invalid. It must be no/utf8/sjis/jis/euc.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 18: // --quiet
@@ -710,11 +710,11 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                         unitTag = @(BP_UNIT_TAG);
                     } else {
                         printf("error: --unit is invalid. It must be \"px\" or \"bp\".\n");
-                        exit(1);
+                        exit(ExitStatusFailed);
                     }
                 } else {
                     printf("error: --unit is invalid. It must be \"px\" or \"bp\".\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 21: // --quick
@@ -728,7 +728,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     numberOfCompilation = strtoi(optarg);
                 } else {
                     printf("error: --num is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 24: // --guess-compile
@@ -748,7 +748,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     gs = @(optarg);
                 } else {
                     printf("error: --gs is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 29: // --embed-source
@@ -774,7 +774,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     latex = @(optarg);
                 } else {
                     printf("error: --latex is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 36: // --compiler (synonym for --latex)
@@ -782,7 +782,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     latex = @(optarg);
                 } else {
                     printf("error: --compiler is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 37: // --dvidriver
@@ -790,7 +790,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     dviDriver = @(optarg);
                 } else {
                     printf("error: --dvidriver is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 38: // --dviware (synonym for --dvidriver)
@@ -798,7 +798,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     dviDriver = @(optarg);
                 } else {
                     printf("error: --dviware is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 39: // --dvipdfmx (synonym for --dvidriver)
@@ -806,7 +806,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     dviDriver = @(optarg);
                 } else {
                     printf("error: --dvipdfmx is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 40: // --merge-output-files
@@ -836,11 +836,11 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                         pageBoxType = kCGPDFArtBox;
                     } else {
                         printf("error: --pagebox is invalid. It must be media/crop/bleed/trim/art.\n");
-                        exit(1);
+                        exit(ExitStatusFailed);
                     }
                 } else {
                     printf("error: --pagebox is invalid. It must be media/crop/bleed/trim/art.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 45: // --animation-delay
@@ -848,11 +848,11 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     delay = strtof(optarg, NULL);
                 } else {
                     printf("error: --animation-delay is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 if (delay < 0) {
                     printf("error: --animation-delay is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 46: // --animation-loop
@@ -860,11 +860,11 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                     loopCount = strtoi(optarg);
                 } else {
                     printf("error: --animation-loop is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 if (loopCount < 0) {
                     printf("error: --animation-loop is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 47: // --margins
@@ -888,12 +888,12 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                             break;
                         default:
                             printf("error: The number of \"--margins\" values must be 1, 2 or 4.\n");
-                            exit(1);
+                            exit(ExitStatusFailed);
                             break;
                     }
                 } else {
                     printf("error: --margins is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 48: // --plain-text
@@ -913,11 +913,11 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                         workingDirectoryType = WorkingDirectoryCurrent;
                     } else {
                         printf("error: --workingdir is invalid. It must be tmp/file/current.\n");
-                        exit(1);
+                        exit(ExitStatusFailed);
                     }
                 } else {
                     printf("error: --workingdir is invalid. It must be tmp/file/current.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case 51: // --background-color
@@ -966,7 +966,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                                 fillColor = [NSColor colorWithCSSName:colorValue];
                                 if (!fillColor) {
                                     printf("error: --background-color is invalid.\n");
-                                    exit(1);
+                                    exit(ExitStatusFailed);
                                 }
                             }
                         }
@@ -988,7 +988,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                                 
                                 if (!((r <= 255) && (g <= 255) && (b <=255))) {
                                     printf("error: --background-color is invalid. Each RGB value must be less than 256.\n");
-                                    exit(1);
+                                    exit(ExitStatusFailed);
                                 }
                                 
                                 fillColor = [NSColor colorWithDeviceRed:r/255.0
@@ -997,23 +997,23 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                                                                   alpha:1.0];
                             } else {
                                 printf("error: --background-color is invalid.\n");
-                                exit(1);
+                                exit(ExitStatusFailed);
                             }
                         }
                             break;
                         default:
                             printf("error: The number of --background-color values must be 1 or 3.\n");
-                            exit(1);
+                            exit(ExitStatusFailed);
                             break;
                     }
                 } else {
                     printf("error: --background-color is invalid.\n");
-                    exit(1);
+                    exit(ExitStatusFailed);
                 }
                 break;
             case (OPTION_NUM - 2): // --version
                 version();
-                exit(0);
+                exit(ExitStatusSucceeded);
                 break;
             case (OPTION_NUM - 1): // --help
                 usage();
@@ -1039,16 +1039,16 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     }
     if (![NSFileManager.defaultManager fileExistsAtPath:inputFilePath]) {
         printStdErr("tex2img : No such file or directory - %s\n", inputFilePath.UTF8String);
-        exit(1);
+        exit(ExitStatusFailed);
     }
     if (![InputExtensionsArray containsObject:inputFilePath.pathExtension]) {
         printStdErr("tex2img : Invalid input file type - %s\n", inputFilePath.UTF8String);
-        exit(1);
+        exit(ExitStatusFailed);
     }
     
     if (!((leftMargin >= 0) && (rightMargin >= 0) && (topMargin >= 0) && (bottomMargin >= 0))) {
         printStdErr("tex2img : Margins must not be negative.\n");
-        exit(1);
+        exit(ExitStatusFailed);
     }
     
     // --num が指定されなかった場合のデフォルト値の適用
@@ -1074,19 +1074,19 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     if (!latexPath) {
         [controller showNotFoundError:latex.programName];
         suggestLatexOption();
-        exit(1);
+        exit(ExitStatusFailed);
     }
     if (!dviDriverPath) {
         [controller showNotFoundError:dviDriver.programName];
-        exit(1);
+        exit(ExitStatusFailed);
     }
     if (!gsPath) {
         [controller showNotFoundError:gs.programName];
-        exit(1);
+        exit(ExitStatusFailed);
     }
     if (!epstopdfPath) {
         [controller showNotFoundError:@"epstopdf"];
-        exit(1);
+        exit(ExitStatusFailed);
     }
     if (!mudrawPath) {
         mudrawPath = @"mudraw";
@@ -1161,6 +1161,6 @@ int main (int argc, char *argv[]) {
         NSString *inputFilePath = (NSString*)array[1];
         BOOL success = [converter compileAndConvertWithInputPath:inputFilePath];
         
-        return success ? 0 : 1;
+        return success ? ExitStatusSucceeded : ExitStatusFailed;
     }
 }

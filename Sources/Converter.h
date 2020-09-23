@@ -27,7 +27,7 @@
 - (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray<NSString*>*)arguments quiet:(BOOL)quiet;
 - (void)previewFiles:(NSArray<NSString*>*)files withApplication:(NSString*)app;
 - (void)printResult:(NSArray<NSString*>*)generatedFiles quiet:(BOOL)quiet;
-- (void)generationDidFinish;
+- (void)generationDidFinish:(ExitStatus)status;
 - (void)exitCurrentThreadIfTaskKilled;
 @end
 

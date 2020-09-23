@@ -48,6 +48,7 @@
 		3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */; };
 		34A5C63B251B170B00FCF7BA /* Converter-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */; };
 		34A5C63C251B170B00FCF7BA /* Converter-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */; };
+		34A5C64D251B54A800FCF7BA /* ControllerG-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */; };
 		34B5E70420995B2F0071BBE9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34B5E70320995B2F0071BBE9 /* Images.xcassets */; };
 		34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */ = {isa = PBXBuildFile; fileRef = 34BF70F91BD1C6FC00AB76A9 /* pdftops */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
@@ -155,6 +156,8 @@
 		34A5C638251B170A00FCF7BA /* Bridging-Header-G.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header-G.h"; sourceTree = "<group>"; };
 		34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Converter-Extension.swift"; sourceTree = "<group>"; };
 		34A5C641251B17E400FCF7BA /* Bridging-Header-C.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header-C.h"; sourceTree = "<group>"; };
+		34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControllerG-Extension.swift"; sourceTree = "<group>"; };
+		34A5C65B251B661800FCF7BA /* typedef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = typedef.h; sourceTree = "<group>"; };
 		34B5E70320995B2F0071BBE9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TeX2img/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		34BF70F91BD1C6FC00AB76A9 /* pdftops */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pdftops; sourceTree = "<group>"; };
 		34BF870A12AC10D20099654C /* MyLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyLayoutManager.h; sourceTree = "<group>"; };
@@ -255,6 +258,7 @@
 				34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */,
 				3424A8E10E4F2DC1003C9F96 /* ControllerG.h */,
 				3424A8E20E4F2DC1003C9F96 /* ControllerG.m */,
+				34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */,
 				705DC3540F10E4670052AFA5 /* ControllerC.h */,
 				705DC3550F10E4670052AFA5 /* ControllerC.m */,
 				70254EEE10353485000D6D05 /* TeXTextView.h */,
@@ -319,6 +323,7 @@
 				34D2A63F1AB9BC260040B4A5 /* UtilityC.h */,
 				34D2A63D1AB9BC0F0040B4A5 /* UtilityC.m */,
 				348D72A1125A57B8003AF902 /* global.h */,
+				34A5C65B251B661800FCF7BA /* typedef.h */,
 				32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				705DC2BB0F10E0B00052AFA5 /* mainc.m */,
@@ -621,6 +626,7 @@
 				3453398E1B93D5830027CBE7 /* NSPopover-Extension.m in Sources */,
 				3470A01B2089EFD400773332 /* MyATSTypesetter.m in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
+				34A5C64D251B54A800FCF7BA /* ControllerG-Extension.swift in Sources */,
 				348F29601B848C11009AA3CF /* NSPipe-Extension.m in Sources */,
 				34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */,
 				34DBA5841D9A4F3A00951297 /* NSString-Conversion.m in Sources */,

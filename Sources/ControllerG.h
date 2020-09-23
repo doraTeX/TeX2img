@@ -1,4 +1,5 @@
 #import <Cocoa/Cocoa.h>
+#import <UserNotifications/UserNotifications.h>
 #import "Converter.h"
 #import "ProfileController.h"
 
@@ -14,7 +15,7 @@ typedef enum  {
     NOHIGHLIGHT = 2
 } HighlightPattern;
 
-@interface ControllerG : NSObject<OutputController, DnDDelegate>
+@interface ControllerG : NSObject<OutputController, DnDDelegate, UNUserNotificationCenterDelegate, NSUserNotificationCenterDelegate>
 - (void)adoptProfile:(Profile*)aProfile;
 - (MutableProfile*)currentProfile;
 - (NSString*)spaceCharacter;
