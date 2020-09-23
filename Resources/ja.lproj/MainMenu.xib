@@ -554,7 +554,7 @@ DQ
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" drawsBackground="NO" id="QOI-Xa-K0n">
                                         <rect key="frame" x="1" y="1" width="493" height="129"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="466" customClass="TeXTextView">
                                                 <rect key="frame" x="0.0" y="0.0" width="497" height="129"/>
@@ -628,11 +628,11 @@ DQ
                         <rect key="frame" x="11" y="56" width="520" height="59"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                         <view key="contentView" id="q8b-pt-6Ls">
-                            <rect key="frame" x="3" y="3" width="514" height="44"/>
+                            <rect key="frame" x="3" y="3" width="514" height="41"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="461">
-                                    <rect key="frame" x="11" y="13" width="343" height="22"/>
+                                    <rect key="frame" x="11" y="10" width="343" height="22"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="462">
                                         <font key="font" metaFont="system"/>
@@ -644,7 +644,7 @@ DQ
                                     </connections>
                                 </textField>
                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="626">
-                                    <rect key="frame" x="433" y="6" width="79" height="32"/>
+                                    <rect key="frame" x="433" y="3" width="79" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="push" title="参照..." bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="627">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -655,7 +655,7 @@ DQ
                                     </connections>
                                 </button>
                                 <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CGu-Kq-aGw">
-                                    <rect key="frame" x="360" y="10" width="77" height="25"/>
+                                    <rect key="frame" x="360" y="7" width="77" height="25"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="push" title="EPS" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="4mm-fy-0bX" id="dUL-gq-ytC">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -680,7 +680,6 @@ DQ
                                 </popUpButton>
                             </subviews>
                         </view>
-                        <font key="titleFont" size="11" name=".HiraKakuInterface-W3"/>
                     </box>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="707">
                         <rect key="frame" x="8" y="12" width="189" height="32"/>
@@ -1314,7 +1313,7 @@ DQ
                                                     </matrix>
                                                 </subviews>
                                             </view>
-                                            <font key="titleFont" metaFont="system" size="12"/>
+                                            <font key="titleFont" metaFont="cellTitle"/>
                                         </box>
                                         <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="595">
                                             <rect key="frame" x="47" y="371" width="42" height="16"/>
@@ -1441,7 +1440,7 @@ DQ
                                                                 </button>
                                                             </subviews>
                                                         </view>
-                                                        <font key="titleFont" metaFont="system" size="12"/>
+                                                        <font key="titleFont" metaFont="cellTitle"/>
                                                     </box>
                                                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pL6-0n-Zv5">
                                                         <rect key="frame" x="16" y="69" width="191" height="18"/>
@@ -1489,7 +1488,7 @@ DQ
                                                     </button>
                                                 </subviews>
                                             </view>
-                                            <font key="titleFont" metaFont="system" size="12"/>
+                                            <font key="titleFont" metaFont="cellTitle"/>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="ソース表示" translatesAutoresizingMaskIntoConstraints="NO" id="NwF-4V-z52">
                                             <rect key="frame" x="6" y="279" width="273" height="114"/>
@@ -1572,7 +1571,7 @@ DQ
                                                     </button>
                                                 </subviews>
                                             </view>
-                                            <font key="titleFont" metaFont="system" size="12"/>
+                                            <font key="titleFont" metaFont="cellTitle"/>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="不可視文字の表示" translatesAutoresizingMaskIntoConstraints="NO" id="wIf-oC-qXE">
                                             <rect key="frame" x="281" y="279" width="163" height="114"/>
@@ -1671,7 +1670,7 @@ DQ
                                                     </button>
                                                 </subviews>
                                             </view>
-                                            <font key="titleFont" metaFont="system" size="12"/>
+                                            <font key="titleFont" metaFont="cellTitle"/>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="コマンド補完キー" translatesAutoresizingMaskIntoConstraints="NO" id="yVE-bR-DHB">
                                             <rect key="frame" x="6" y="37" width="438" height="57"/>
@@ -1707,7 +1706,7 @@ DQ
                                                     </matrix>
                                                 </subviews>
                                             </view>
-                                            <font key="titleFont" metaFont="system" size="12"/>
+                                            <font key="titleFont" metaFont="cellTitle"/>
                                         </box>
                                     </subviews>
                                 </view>
@@ -1933,7 +1932,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="結果を通知" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="0Gy-jt-u2i">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name=".HiraKakuInterface-W3"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                         <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="651">
@@ -1941,7 +1940,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="出力ビューを自動的に表示" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="652">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name=".HiraKakuInterface-W3"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                         <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="811">
@@ -1960,7 +1959,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="自動プレビュー" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="590">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name=".HiraKakuInterface-W3"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                         <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="591">
@@ -1968,7 +1967,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="作業ファイル削除" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="592">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" size="13" name=".HiraKakuInterface-W3"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </button>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="633">
