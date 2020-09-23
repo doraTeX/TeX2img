@@ -1,6 +1,7 @@
 #import <Quartz/Quartz.h>
 #import <sys/xattr.h>
 #import "Utility.h"
+#import "TeX2img-Swift.h"
 
 #define RESOLUTION_SCALE 5.0
 #define EMPTY_BBOX @"%%BoundingBox: 0 0 0 0\n"
@@ -27,8 +28,8 @@
 @property (nonatomic, assign) float resolutionLevel;
 @property (nonatomic, assign) NSInteger dpi;
 @property (nonatomic, assign) BOOL guessCompilation;
-@property (nonatomic, assign) NSInteger leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, autoPasteFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property (nonatomic, assign) NSInteger numberOfCompilation;
+@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, showOutputDrawerFlag, previewFlag, deleteTmpFileFlag, autoPasteFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property (nonatomic, assign) AutoPasteDestination autoPasteDestination;
 @property (nonatomic, strong) NSObject<OutputController> *controller;
 @property (nonatomic, strong) NSFileManager *fileManager;
@@ -49,7 +50,6 @@
 @property (nonatomic, assign) BOOL pdfInputMode;
 @property (nonatomic, assign) BOOL psInputMode;
 @property (nonatomic, assign) BOOL errorsIgnored;
-@property (nonatomic, assign) CGPDFBox pageBoxType;
 @property (nonatomic, assign) float delay;
 @property (nonatomic, assign) NSInteger loopCount;
 @property (nonatomic, copy) NSNumber *usingNewGsFlag; // nilable BOOL として使用
@@ -423,29 +423,6 @@
     return (!keepPageSizeFlag && [self isEmptyPage:pdfPath page:page] && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0)));
 }
 
-- (NSString*)buildCropTeXSource:(NSString*)pdfPath
-                           page:(NSUInteger)page
-                      addMargin:(BOOL)addMargin
-{
-    NSInteger leftmargin   = addMargin ? leftMargin   : 0;
-    NSInteger rightmargin  = addMargin ? rightMargin  : 0;
-    NSInteger topmargin    = addMargin ? topMargin    : 0;
-    NSInteger bottommargin = addMargin ? bottomMargin : 0;
-    
-    NSString *bbStr = keepPageSizeFlag ?
-    [[PDFPageBox pageBoxWithFilePath:pdfPath page:page] bboxStringOfBox:pageBoxType
-                                                                  hires:NO
-                                                              addHeader:YES] :
-        [self bboxStringOfPdf:pdfPath page:page hires:NO];
-    
-    if (!bbStr) {
-        return nil;
-    }
-    
-    // ここで HiResBoundingBox を使うと，速度優先でビットマップ画像を生成する際に，小数点以下が切り捨てられて端が欠けてしまうことがある。よって，大きめに見積もる非HiResのBBoxを使うのが得策。
-    
-    return [NSString stringWithFormat:@"{\\catcode37=13 \\catcode13=12 \\def^^25^^25#1: #2^^M{\\gdef\\do{\\proc[#2]}}%@\\relax}{}\\def\\proc[#1 #2 #3 #4]{\\pdfhorigin=-#1bp\\relax\\pdfvorigin=#2bp\\relax\\pdfpagewidth=\\dimexpr#3bp-#1bp\\relax\\pdfpageheight=\\dimexpr#4bp-#2bp\\relax}\\do\\advance\\pdfhorigin by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfpagewidth by %ldbp\\relax\\advance\\pdfvorigin by -%ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\advance\\pdfpageheight by %ldbp\\relax\\setbox0=\\hbox{\\pdfximage page %ld mediabox{%@}\\pdfrefximage\\pdflastximage}\\ht0=\\pdfpageheight\\relax\\shipout\\box0\\relax", bbStr, leftmargin, leftmargin, rightmargin, bottommargin, bottommargin, topmargin, page, pdfPath];
-}
 
 // pdfcrop類似処理
 // page に 0 を与えると全ページをクロップした複数ページPDFを生成する。正の値を指定すると，そのページだけをクロップした単一ページPDFを生成する。
@@ -458,69 +435,20 @@
 {
     NSString *cropFileBasePath = [NSString stringWithFormat:@"%@-pdfcrop-%ld%d",
                                   [workingDirectory stringByAppendingPathComponent:tempFileBaseName], page, addMargin];
-    NSString *cropTeXSourcePath = [cropFileBasePath stringByAppendingPathExtension:@"tex"];
     NSString *cropPdfSourcePath = [cropFileBasePath stringByAppendingPathExtension:@"pdf"];
-    NSString *cropLogSourcePath = [cropFileBasePath stringByAppendingPathExtension:@"log"];
     
     // 同じものがあれば再利用
     if (useCache && [fileManager fileExistsAtPath:cropPdfSourcePath]) {
         [fileManager removeItemAtPath:outputFileName error:nil];
         return [fileManager copyItemAtPath:cropPdfSourcePath toPath:outputFileName error:nil];
     }
+    
+    [controller appendOutputAndScroll:@"TeX2img: Adjusting bounding boxes...\n\n" quiet:quietFlag];
 
-    PDFDocument *doc = [PDFDocument documentWithFilePath:pdfPath];
-    if (!doc){
-        return NO;
-    }
-    
-    NSUInteger totalPages = doc.pageCount;
-    NSMutableString *cropTeX = [NSMutableString stringWithFormat:@"\\pdfoutput=1\n\\pdfminorversion=%ld\n", doc.minorVersion];
-
-    if (page > 0) {
-        NSString *cropTeXsource = [self buildCropTeXSource:pdfPath page:page addMargin:addMargin];
-        if (!cropTeXsource) {
-            return NO;
-        }
-        [cropTeX appendString:cropTeXsource];
-    } else {
-        for (NSUInteger i=1; i<=totalPages; i++) {
-            NSString *cropTeXsource = [self buildCropTeXSource:pdfPath page:i addMargin:addMargin];
-            if (!cropTeXsource) {
-                return NO;
-            }
-            [cropTeX appendString:cropTeXsource];
-        }
-    }
-    [cropTeX appendString:@"\\end"];
-    
-    
-    [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
-    [cropTeX writeToFile:cropTeXSourcePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
-
-    // pdfTeX のサーチ
-    BOOL pdfTeXFound = NO;
-    NSString *pdfTeXPath = [latexPath.programPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
-    
-    if ([fileManager fileExistsAtPath:pdfTeXPath]) {
-        pdfTeXFound = YES;
-    } else {
-        pdfTeXPath = [dviDriverPath.programPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"pdftex"];
-        if ([fileManager fileExistsAtPath:pdfTeXPath]) {
-            pdfTeXFound = YES;
-        }
-    }
-    
-    if (!pdfTeXFound) {
-        [controller showNotFoundError:@"pdfTeX"];
-        return NO;
-    }
-    
-    [controller appendOutputAndScroll:@"TeX2img: Adjusting the bounding box using pdfTeX...\n\n" quiet:quietFlag];
-    
-	BOOL success = [controller execCommand:pdfTeXPath
-                               atDirectory:workingDirectory
-                             withArguments:@[@"-no-shell-escape", @"-interaction=batchmode", cropFileBasePath.lastPathComponent]
-                                     quiet:quietFlag];
+    BOOL success = [self generateCroppedPDFOf:pdfPath
+                                         page:page
+                                           to:cropPdfSourcePath
+                                    addMargin:addMargin];
     
     [fileManager removeItemAtPath:outputFileName error:nil];
     
@@ -535,9 +463,6 @@
     if (!transparentFlag && fillBackground) {
         [PDFDocument fillBackgroundOfPdfFilePath:[workingDirectory stringByAppendingPathComponent:outputFileName.lastPathComponent] withColor:fillColor];
     }
-    
-    [fileManager removeItemAtPath:cropTeXSourcePath error:nil];
-    [fileManager removeItemAtPath:cropLogSourcePath error:nil];
 
     return success;
     

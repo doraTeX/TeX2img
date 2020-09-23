@@ -869,6 +869,7 @@
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_VERSION = 5.0;
 				VALID_ARCHS = "arm64 arm64e i386 x86_64";
 			};
 			name = Debug;
@@ -915,6 +916,7 @@
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_VERSION = 5.0;
 				VALID_ARCHS = "arm64 arm64e i386 x86_64";
 			};
 			name = Release;

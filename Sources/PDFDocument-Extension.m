@@ -32,6 +32,11 @@
     return doc;
 }
 
+- (void)appendPage:(PDFPage*)page
+{
+    [self insertPage:page atIndex:self.pageCount];
+}
+
 - (PDFPageBox*)pageBoxAtIndex:(NSUInteger)index
 {
     return [self pageAtIndex:index].pageBox;

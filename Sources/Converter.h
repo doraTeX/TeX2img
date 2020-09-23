@@ -37,4 +37,10 @@
 - (BOOL)compileAndConvertWithSource:(NSString*)texSourceStr;
 - (BOOL)compileAndConvertWithBody:(NSString*)texBodyStr;
 - (void)deleteTemporaryFiles;
+- (NSString*)bboxStringOfPdf:(NSString*)pdfPath
+                        page:(NSUInteger)page
+                       hires:(BOOL)hires;
+@property (nonatomic, assign) BOOL keepPageSizeFlag;
+@property (nonatomic, assign) NSInteger leftMargin, rightMargin, topMargin, bottomMargin;
+@property (nonatomic, assign) CGPDFBox pageBoxType;
 @end
