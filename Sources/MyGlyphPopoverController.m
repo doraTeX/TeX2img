@@ -295,7 +295,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
                 self.unicode = [(NSArray<NSString*>*)[unicodes mapUsingBlock:^NSString*(UnicodeInfo *unicodeInfo) {
                     return [unicodeInfo stringExpressionWithUnicodeName];
                 }] componentsJoinedByString:@"\n"];
-                self.unicodeName = [NSString stringWithFormat:localizedString(@"Base: %@ (%@ %@) <combining character sequence consisting of %d characters>"),
+                self.unicodeName = [NSString stringWithFormat:localizedString(@"Base: %@ (%@ %@) <combining character sequence consisting of %lu characters>"),
                                     firstChar, firstCode, firstChar.unicodeName, unicodes.count];
                 self.unicodeBlockName = firstChar.localizedBlockName;
             } else {
@@ -310,7 +310,7 @@ static const UTF32Char kType6EmojiModifierChar = 0x1F3FF;  // Emoji Modifier Fit
                 }
                 NSUInteger numberOfLines = [character componentsSeparatedByString:@"\n"].count;
                 
-                self.unicodeName = [NSString stringWithFormat:localizedString(@"%d letters, %d words, %d lines"), numberOfComposedCharacters, numberOfWords, numberOfLines];
+                self.unicodeName = [NSString stringWithFormat:localizedString(@"%lu letters, %lu words, %lu lines"), numberOfComposedCharacters, numberOfWords, numberOfLines];
 
                 // display Unicode points
                 NSRect originalFrame = super.view.frame;
