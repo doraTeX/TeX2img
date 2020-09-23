@@ -2534,7 +2534,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     NSString *posixPath;
     
     while ((posixPath = [enumerator nextObject])) {
-        [script appendFormat:@"make new inline picture at theRange with properties {file name:\"%@\", save with document:true}\n", posixPath.pathStringWithHFSStyle];
+        [script appendFormat:@"make new inline picture at theRange with properties {file name:(POSIX file \"%@\") as Unicode text, save with document:true}\n", posixPath];
     }
     
     [script appendString:@"end tell\n"];
@@ -2558,7 +2558,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     [script appendString:@"tell slide thisSlide of active presentation\n"];
     
     for (NSString *posixPath in paths) {
-        [script appendFormat:@"set thePicture to make new picture at end with properties {file name:\"%@\", save with document:true}\n", posixPath.pathStringWithHFSStyle];
+        [script appendFormat:@"set thePicture to make new picture at end with properties {file name:(POSIX file \"%@\") as Unicode text, save with document:true}\n", posixPath];
         [script appendString:@"tell thePicture\n"];
         [script appendString:@"scale height factor 1 scale scale from top left with relative to original size\n"];
         [script appendString:@"scale width factor 1 scale scale from top left with relative to original size\n"];
