@@ -333,8 +333,6 @@
                                             [@"-sOutputFile=" stringByAppendingString:pdfFilePath.stringByQuotingWithDoubleQuotations],
                                             @"-sDEVICE=pdfwrite",
                                             @"-dAutoRotatePages=/None",
-                                            @"-c",
-                                            @".setpdfwrite",
                                             @"-f",
                                             psFilePath.stringByQuotingWithDoubleQuotations]
                                     quiet:quietFlag];
@@ -722,8 +720,6 @@
                                                                                        [NSString stringWithFormat:@"-dFirstPage=%lu", page],
                                                                                        [NSString stringWithFormat:@"-dLastPage=%lu", page],
                                                                                        @"-dAutoRotatePages=/None",
-                                                                                       @"-c",
-                                                                                       @".setpdfwrite",
                                                                                        @"-f",
                                                                                        pdfName
                                                                                        ]];
