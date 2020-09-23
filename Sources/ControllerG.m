@@ -406,9 +406,11 @@ typedef enum {
 - (void)refreshTextView:(NSTextView*)textView
         foregroundColor:(NSColor*)foregroundColor
         backgroundColor:(NSColor*)backgroundColor
+        cursorColor:(NSColor*)cursorColor
 {
     textView.textColor = foregroundColor;
     textView.backgroundColor = backgroundColor;
+    textView.insertionPointColor = cursorColor;
 
     NSRange entireRange = NSMakeRange(0, textView.string.length);
     [textView.textStorage setAttributes:@{NSForegroundColorAttributeName: foregroundColor,
@@ -424,7 +426,8 @@ typedef enum {
 
     [self refreshTextView:outputTextView
           foregroundColor:[currentProfile colorForKey:ForegroundColorKey]
-          backgroundColor:[currentProfile colorForKey:BackgroundColorKey]];
+          backgroundColor:[currentProfile colorForKey:BackgroundColorKey]
+              cursorColor:[currentProfile colorForKey:CursorColorKey]];
 
     [outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
     outputTextView.font = sourceFont;
@@ -975,7 +978,8 @@ typedef enum {
     
     [self refreshTextView:outputTextView
           foregroundColor:[aProfile colorForKey:ForegroundColorKey]
-          backgroundColor:[aProfile colorForKey:BackgroundColorKey]];
+          backgroundColor:[aProfile colorForKey:BackgroundColorKey]
+          cursorColor:[aProfile colorForKey:CursorColorKey]];
 
     // 不可視文字表示の選択肢のフォントを更新
     NSFont *displayFont = [NSFont fontWithName:sourceFont.fontName size:spaceCharacterKindButton.font.pointSize];
@@ -1636,7 +1640,7 @@ typedef enum {
 
     foregroundColorWell.color = NSColor.textColor;
     backgroundColorWell.color = NSColor.controlBackgroundColor;
-    cursorColorWell.color = NSColor.blackColor;
+    cursorColorWell.color = NSColor.textColor;
     braceColorWell.color = NSColor.braceColor;
     commentColorWell.color = NSColor.commentColor;
     commandColorWell.color = NSColor.commandColor;
@@ -2365,7 +2369,9 @@ typedef enum {
     
     [self refreshTextView:outputTextView
           foregroundColor:foregroundColorWell.color
-          backgroundColor:backgroundColorWell.color];
+          backgroundColor:backgroundColorWell.color
+          cursorColor:cursorColorWell.color];
+    
     outputTextView.font = sourceFont;
 }
 
