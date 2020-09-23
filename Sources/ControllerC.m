@@ -98,6 +98,7 @@
 {
     if (!checkWhich(@"xpdf-pdftops") && !checkWhich(@"pdftops")) {
         [self showNotFoundError:@"pdftops"];
+        printStdErr("tex2img: [Error] Place GUI app (TeX2img.app) in /Applications.\n");
         return NO;
     }
     
@@ -107,7 +108,7 @@
 - (BOOL)eps2emfExists;
 {
     if (!checkWhich(@"eps2emf")) {
-        printStdErr("tex2img: [Error] Place the GUI app (TeX2img.app) in /Applications.\n");
+        printStdErr("tex2img: [Error] Place GUI app (TeX2img.app) in /Applications.\n");
         return NO;
     }
     

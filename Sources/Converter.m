@@ -1490,13 +1490,19 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         }
         
         // pdftops でプレーンテキストEPS (PS Level 1) に変換することでパターンをアウトライン化
-        [self pdf2plainTextEps:trimmedPdfFileName outputFileName:epsFileName page:1];
+        if (![self pdf2plainTextEps:trimmedPdfFileName outputFileName:epsFileName page:1]) {
+            return NO;
+        }
         
         // EPSを修正（パスのアウトライン化）
-        [self modifyEpsForOutliningPaths:[workingDirectory stringByAppendingPathComponent:epsFileName]];
+        if (![self modifyEpsForOutliningPaths:[workingDirectory stringByAppendingPathComponent:epsFileName]]) {
+            return NO;
+        }
         
         // 最後にEPSを eps2emf で処理
-        [self eps2emf:epsFileName outputFileName:emfName];
+        if (![self eps2emf:epsFileName outputFileName:emfName]) {
+            return NO;
+        }
         
     } else { // gs 9.15 未満の場合
         NSString *baseName = [tempFileBaseName pathStringByAppendingPageNumber:page];
@@ -1511,10 +1517,14 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         }
         
         // BBを書き換え
-        [self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page];
+        if (![self replaceEpsBBox:epsName withBBoxOfPdf:pdfFilePath page:page]) {
+            return NO;
+        }
         
         // EPSを修正（パスのアウトライン化）
-        [self modifyEpsForOutliningPaths:[workingDirectory stringByAppendingPathComponent:epsName]];
+        if (![self modifyEpsForOutliningPaths:[workingDirectory stringByAppendingPathComponent:epsName]]) {
+            return NO;
+        }
         
         // 再びPDFに戻す
         if (![self eps2pdf:epsName outputFileName:pdfName addMargin:NO]) {
@@ -1542,7 +1552,9 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         }
         
         // 最後にEPSを eps2emf で処理
-        [self eps2emf:tempEpsFileName outputFileName:emfName];
+        if (![self eps2emf:tempEpsFileName outputFileName:emfName]) {
+            return NO;
+        }
     }
 
     return YES;
