@@ -48,6 +48,7 @@
 		34A5C63B251B170B00FCF7BA /* Converter-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */; };
 		34A5C63C251B170B00FCF7BA /* Converter-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */; };
 		34A5C64D251B54A800FCF7BA /* ControllerG-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */; };
+		34A5C66A251BD53300FCF7BA /* tex2img in Copy Command Line Tools */ = {isa = PBXBuildFile; fileRef = 705DC7A10F1197DC0052AFA5 /* tex2img */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		34B5E70420995B2F0071BBE9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34B5E70320995B2F0071BBE9 /* Images.xcassets */; };
 		34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */ = {isa = PBXBuildFile; fileRef = 34BF70F91BD1C6FC00AB76A9 /* pdftops */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
@@ -89,6 +90,17 @@
 				34850828125AC9E30058A26B /* Sparkle.framework in フレームワークをコピー */,
 			);
 			name = "フレームワークをコピー";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		34A5C669251BD4F800FCF7BA /* Copy Command Line Tools */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = bin;
+			dstSubfolderSpec = 12;
+			files = (
+				34A5C66A251BD53300FCF7BA /* tex2img in Copy Command Line Tools */,
+			);
+			name = "Copy Command Line Tools";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -461,6 +473,7 @@
 				34850826125AC99A0058A26B /* フレームワークをコピー */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				34A5C669251BD4F800FCF7BA /* Copy Command Line Tools */,
 				34670E17125B7F6F002308EF /* ShellScript */,
 			);
 			buildRules = (
