@@ -41,7 +41,7 @@ void previewFiles(NSArray<NSString*> *files, NSString *app)
     [script appendString:[[files mapUsingBlock:^NSString*(NSString *path) {
         return [NSString stringWithFormat:@"POSIX file (\"%@\")", path];
     }] componentsJoinedByString:@", "]];
-    [script appendFormat:@"} using POSIX file \"/Applications/%@.app\"\n", app];
+    [script appendFormat:@"} using POSIX file \"%@\"\n", app];
     [script appendString:@"end tell\n"];
     
     NSTask *task = [NSTask new];

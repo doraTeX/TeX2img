@@ -2208,15 +2208,23 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     if (status && previewFlag && ![@"emf" isEqualToString:extension]) {
         NSString *previewApp;
         if ([@"svg" isEqualToString:extension] || ([@"gif" isEqualToString:extension] && mergeOutputsFlag && (generatedPageCount > 1))) {
-            previewApp = @"Safari";
+            if (@available(macOS 10.15, *)) {
+                previewApp = @"/System/Applications/Safari.app";
+            } else {
+                previewApp = @"/Applications/Safari.app";
+            }
         } else if ([@"svgz" isEqualToString:extension]) {
             if ([fileManager fileExistsAtPath:@"/Applications/Google Chrome.app"]) {
-                previewApp = @"Google Chrome";
+                previewApp = @"/Applications/Google Chrome.app";
             } else {
                 previewApp = @"qlmanage";
             }
         } else {
-            previewApp = @"Preview";
+            if (@available(macOS 10.15, *)) {
+                previewApp = @"/System/Applications/Preview.app";
+            } else {
+                previewApp = @"/Applications/Preview.app";
+            }
         }
         
         if ([@"qlmanage" isEqualToString:previewApp]) {
