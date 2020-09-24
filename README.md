@@ -8,7 +8,7 @@
 - SVG ファイル（フォントをアウトライン化，かつテキスト保持も可能）
 - [SMIL](https://developer.mozilla.org/ja/docs/Web/SVG/SVG_animation_with_SMIL) を利用したSVGによるベクターグラフィックスアニメーション（フォントをアウトライン化）[[サンプル]](http://island.geocities.jp/loveinequality/oscillation.svgz)
 - SVGZ ファイル（圧縮SVG形式）
-- EMF ファイル（フォントをアウトライン化）
+- EMF ファイル（フォントをアウトライン化）※Windows版のみ
 
 ## ラスター（ビットマップ）画像形式
 - PNG ファイル（透過・非透過）
