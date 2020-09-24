@@ -2684,6 +2684,12 @@ typedef enum {
     [_extensionPopupButton selectItemWithTitle:outputFileTextField.stringValue.lastPathComponent.pathExtension.uppercaseString];
 }
 
+- (IBAction)openSystemPreferencePane:(id)sender
+{
+    NSURL *paneURL = [NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_Automation"];
+    [[NSWorkspace sharedWorkspace] openURL:paneURL];
+}
+
 #pragma mark - 不可視文字表示の種別設定
 
 - (IBAction)showSpaceCharacterKindSettingPopover:(id)sender
