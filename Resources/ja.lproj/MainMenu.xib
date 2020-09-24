@@ -1975,7 +1975,7 @@ DQ
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="roundRect" title="作業フォルダを開く..." bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" inset="2" id="634">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" size="11" name=".HiraKakuInterface-W3"/>
+                                                <font key="font" metaFont="smallSystem"/>
                                             </buttonCell>
                                             <connections>
                                                 <action selector="openTempDir:" target="450" id="636"/>
@@ -2051,7 +2051,7 @@ DQ
                                             <rect key="frame" x="21" y="182" width="185" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" lineBreakMode="clipping" title="※他アプリの操作には許可が必要です。" id="P81-Ea-pUz">
-                                                <font key="font" size="11" name=".LucidaGrandeUI"/>
+                                                <font key="font" size="11" name="LucidaGrande"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
