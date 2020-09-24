@@ -305,6 +305,49 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="eP0-4q-wpD"/>
+                            <menuItem title="Marks" id="A7t-Fy-OgG">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Marks" id="0BK-D6-aEd">
+                                    <items>
+                                        <menuItem title="Next Mark" keyEquivalent="f" id="oka-P4-b7V">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="doNextBullet:" target="-1" id="9Ri-qI-Csr"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Next Mark (Del)" alternate="YES" keyEquivalent="f" id="d9Q-oc-i1d">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="doNextBulletAndDelete:" target="-1" id="ssM-42-nlh"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Previous Mark" keyEquivalent="g" id="wwb-H4-ev4">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="doPreviousBullet:" target="-1" id="6Hd-ge-HwJ"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Previous Mark (Del)" alternate="YES" keyEquivalent="g" id="tM6-w7-wBc">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="doPreviousBulletAndDelete:" target="-1" id="j5F-kh-Ty1"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Insert Mark" keyEquivalent="8" id="T7r-xj-GSr">
+                                            <connections>
+                                                <action selector="placeBullet:" target="-1" id="bl8-YQ-SDe"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Insert Comment" alternate="YES" keyEquivalent="8" id="TW8-ch-c66">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="placeComment:" target="-1" id="iZO-fq-d4f"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="DjY-aK-Sa3"/>
                             <menuItem title="Character Type Conversion" id="mfi-3C-ZSc">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Character Type Conversion" id="bav-B6-9RD">
@@ -2196,7 +2239,7 @@ DQ
                                             <rect key="frame" x="15" y="148" width="182" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" lineBreakMode="clipping" title="* Automation requires permission." id="D3g-OJ-qrM">
-                                                <font key="font" metaFont="system" size="11"/>
+                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>

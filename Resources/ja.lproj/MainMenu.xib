@@ -300,6 +300,49 @@
                                     <action selector="closeCurrentEnvironment:" target="-1" id="n48-pB-UlS"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="NY1-ij-Ctf"/>
+                            <menuItem title="マーク" id="IyK-Jz-bff">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="マーク" id="di9-SZ-l5q">
+                                    <items>
+                                        <menuItem title="次のマークへ移動" keyEquivalent="f" id="WJh-gU-12H">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="doNextBullet:" target="-1" id="oaf-Y6-56q"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="次のマークへ移動して削除" alternate="YES" keyEquivalent="f" id="ae6-76-yaf">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="doNextBulletAndDelete:" target="-1" id="Wl4-wX-zCa"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="前のマークへ移動" keyEquivalent="g" id="IuR-Eg-hw3">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="doPreviousBullet:" target="-1" id="djp-OZ-kfb"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="前のマークへ移動して削除" alternate="YES" keyEquivalent="g" id="6NF-NL-M2H">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="doPreviousBulletAndDelete:" target="-1" id="GF1-fY-PPc"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="マークを挿入" keyEquivalent="8" id="Pu5-Sq-EcT">
+                                            <connections>
+                                                <action selector="placeBullet:" target="-1" id="1Ha-Ga-Yro"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="コメントを挿入" alternate="YES" keyEquivalent="8" id="Kti-cN-TBE">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="placeComment:" target="-1" id="xom-v5-hbu"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="208-v9-OCT"/>
                             <menuItem title="文字種一括変換" id="Vqd-G4-bth">
                                 <modifierMask key="keyEquivalentModifierMask"/>
