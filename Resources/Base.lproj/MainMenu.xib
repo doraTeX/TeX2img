@@ -1240,7 +1240,7 @@ DQ
                                                 </subviews>
                                             </view>
                                         </box>
-                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Settings peculiar to image formats" translatesAutoresizingMaskIntoConstraints="NO" id="635">
+                                        <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Format-specific Settings" translatesAutoresizingMaskIntoConstraints="NO" id="635">
                                             <rect key="frame" x="6" y="5" width="492" height="136"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="lsG-Me-SjQ">
@@ -1277,13 +1277,13 @@ DQ
                                                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J3E-2Y-JTm">
                                                         <rect key="frame" x="18" y="14" width="310" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Ouput as a plain text file (EPS)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="fvr-td-hdB">
+                                                        <buttonCell key="cell" type="check" title="Output as plain text (EPS)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="fvr-td-hdB">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                     </button>
                                                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wcc-by-C2o">
-                                                        <rect key="frame" x="399" y="63" width="81" height="17"/>
+                                                        <rect key="frame" x="387" y="63" width="81" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="inline" title="Advanced..." bezelStyle="inline" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="DcF-qA-yFo">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
