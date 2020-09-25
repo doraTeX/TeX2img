@@ -78,3 +78,4 @@
 "Completed" = "Conversion completed";
 "Failed" = "Conversion failed";
 "Aborted" = "Conversion aborted";
+"Format" = "Format: ";

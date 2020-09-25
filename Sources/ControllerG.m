@@ -2,6 +2,7 @@
 #import <sys/xattr.h>
 #import "ControllerG.h"
 #import "TeX2img-Swift.h"
+#import "NSArray-Extension.h"
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
@@ -2227,20 +2228,60 @@ typedef enum {
 
 - (IBAction)showSavePanel:(id)sender
 {
+    // 拡張子選択のビュー
+    NSView *accessoryView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 270, 50)];
+    
+    // 拡張子一覧
+    NSPopUpButton *popUpButton = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(130, 10, 120, 25)];
+    [popUpButton addItemsWithTitles:[TargetExtensionsArray mapUsingBlock:^NSString*(NSString *item) {
+        return item.uppercaseString;
+    }]];
+    
+    // ラベル
+    NSTextField *label = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 15, 100, 18)];
+    label.stringValue = localizedString(@"Format");
+    label.alignment = NSTextAlignmentRight;
+    label.bordered = NO;
+    label.selectable = NO;
+    label.editable = NO;
+    label.backgroundColor = NSColor.clearColor;
+    
+    [accessoryView addSubview:popUpButton];
+    [accessoryView addSubview:label];
+    
+    // 保存ダイアログ
     NSSavePanel *savePanel = [NSSavePanel savePanel];
     savePanel.allowedFileTypes = TargetExtensionsArray;
     savePanel.extensionHidden = NO;
     savePanel.canSelectHiddenExtension = NO;
+    savePanel.accessoryView = accessoryView;
+    
+    // アクション設定
+    popUpButton.action = @selector(extensionPopUpButtonInSavePanelChanged:);
+    popUpButton.target = self;
     
     NSString *defaultFilePath = outputFileTextField.stringValue;
     savePanel.nameFieldStringValue = defaultFilePath.lastPathComponent;
-        savePanel.directoryURL = [NSURL fileURLWithPath:defaultFilePath.stringByDeletingLastPathComponent];
+    [popUpButton selectItemWithTitle:defaultFilePath.pathExtension.uppercaseString];
+    savePanel.directoryURL = [NSURL fileURLWithPath:defaultFilePath.stringByDeletingLastPathComponent];
     
     [savePanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
         if (returnCode == NSFileHandlingPanelOKButton) {
             self.outputFileTextField.stringValue = savePanel.URL.path;
+            [self outputFilePathChanged:nil];
         }
     }];
+}
+
+- (void)extensionPopUpButtonInSavePanelChanged:(NSPopUpButton*)sender
+{
+    NSSavePanel *savePanel = (NSSavePanel*)sender.window;
+    NSString *oldName = savePanel.nameFieldStringValue;
+    NSString *extension = sender.selectedItem.title.lowercaseString;
+    NSString *newName = [oldName.stringByDeletingPathExtension stringByAppendingPathExtension:extension];
+    savePanel.nameFieldStringValue = newName;
+    // allowedFileTypes の先頭に新しい拡張子を持っていくことで入力欄の拡張子を変える
+    savePanel.allowedFileTypes = [@[extension] arrayByAddingObjectsFromArray:savePanel.allowedFileTypes];
 }
 
 - (IBAction)toggleMenuItem:(id)sender

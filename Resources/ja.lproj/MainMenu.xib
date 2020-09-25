@@ -597,7 +597,7 @@ DQ
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" drawsBackground="NO" id="QOI-Xa-K0n">
                                         <rect key="frame" x="1" y="1" width="493" height="129"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="466" customClass="TeXTextView">
                                                 <rect key="frame" x="0.0" y="0.0" width="497" height="129"/>
