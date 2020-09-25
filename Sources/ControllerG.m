@@ -143,16 +143,17 @@ typedef enum {
 
 @property (nonatomic, strong) IBOutlet NSColorWell *fillColorWell;
 
-@property (nonatomic, strong) IBOutlet NSColorWell *foregroundColorWell;
-@property (nonatomic, strong) IBOutlet NSColorWell *backgroundColorWell;
-@property (nonatomic, strong) IBOutlet NSColorWell *cursorColorWell;
-@property (nonatomic, strong) IBOutlet NSColorWell *braceColorWell;
-@property (nonatomic, strong) IBOutlet NSColorWell *commentColorWell;
-@property (nonatomic, strong) IBOutlet NSColorWell *commandColorWell;
-@property (nonatomic, strong) IBOutlet NSColorWell *invisibleColorWell;
-@property (nonatomic, strong) IBOutlet NSColorWell *highlightedBraceColorWell;
-@property (nonatomic, strong) IBOutlet NSColorWell *enclosedContentBackgroundColorWell;
-@property (nonatomic, strong) IBOutlet NSColorWell *flashingBackgroundColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeForegroundColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeBackgroundColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeCursorColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeBraceColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeCommentColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeCommandColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeInvisibleColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeHighlightedBraceColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeEnclosedContentBackgroundColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeFlashingBackgroundColorWell;
+
 @property (nonatomic, strong) IBOutlet NSButton *makeatletterEnabledCheckBox;
 
 @property (nonatomic, strong) IBOutlet NSViewController *autoDetectionTargetSettingViewController;
@@ -296,16 +297,16 @@ typedef enum {
 
 @synthesize fillColorWell;
 
-@synthesize foregroundColorWell;
-@synthesize backgroundColorWell;
-@synthesize cursorColorWell;
-@synthesize braceColorWell;
-@synthesize commentColorWell;
-@synthesize commandColorWell;
-@synthesize invisibleColorWell;
-@synthesize highlightedBraceColorWell;
-@synthesize enclosedContentBackgroundColorWell;
-@synthesize flashingBackgroundColorWell;
+@synthesize lightModeForegroundColorWell;
+@synthesize lightModeBackgroundColorWell;
+@synthesize lightModeCursorColorWell;
+@synthesize lightModeBraceColorWell;
+@synthesize lightModeCommentColorWell;
+@synthesize lightModeCommandColorWell;
+@synthesize lightModeInvisibleColorWell;
+@synthesize lightModeHighlightedBraceColorWell;
+@synthesize lightModeEnclosedContentBackgroundColorWell;
+@synthesize lightModeFlashingBackgroundColorWell;
 @synthesize makeatletterEnabledCheckBox;
 
 @synthesize autoDetectionTargetSettingViewController;
@@ -778,74 +779,74 @@ typedef enum {
     [fillColorWell saveColorToMutableDictionary:lastColorDict];
 
     if ([keys containsObject:ForegroundColorKey]) {
-        foregroundColorWell.color = [aProfile colorForKey:ForegroundColorKey];
+        lightModeForegroundColorWell.color = [aProfile colorForKey:ForegroundColorKey];
     } else {
-        foregroundColorWell.color = NSColor.textColor;
+        lightModeForegroundColorWell.color = NSColor.textColor;
     }
-    [foregroundColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeForegroundColorWell saveColorToMutableDictionary:lastColorDict];
 
     if ([keys containsObject:BackgroundColorKey]) {
-        backgroundColorWell.color = [aProfile colorForKey:BackgroundColorKey];
+        lightModeBackgroundColorWell.color = [aProfile colorForKey:BackgroundColorKey];
     } else {
-        backgroundColorWell.color = NSColor.controlBackgroundColor;
+        lightModeBackgroundColorWell.color = NSColor.controlBackgroundColor;
     }
-    [backgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:CursorColorKey]) {
-        cursorColorWell.color = [aProfile colorForKey:CursorColorKey];
+        lightModeCursorColorWell.color = [aProfile colorForKey:CursorColorKey];
     } else {
-        cursorColorWell.color = NSColor.blackColor;
+        lightModeCursorColorWell.color = NSColor.blackColor;
     }
-    [cursorColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeCursorColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:BraceColorKey]) {
-        braceColorWell.color = [aProfile colorForKey:BraceColorKey];
+        lightModeBraceColorWell.color = [aProfile colorForKey:BraceColorKey];
     } else {
-        braceColorWell.color = NSColor.braceColor;
+        lightModeBraceColorWell.color = NSColor.braceColor;
     }
-    [braceColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeBraceColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:CommentColorKey]) {
-        commentColorWell.color = [aProfile colorForKey:CommentColorKey];
+        lightModeCommentColorWell.color = [aProfile colorForKey:CommentColorKey];
     } else {
-        commentColorWell.color = NSColor.commentColor;
+        lightModeCommentColorWell.color = NSColor.commentColor;
     }
-    [commentColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeCommentColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:CommandColorKey]) {
-        commandColorWell.color = [aProfile colorForKey:CommandColorKey];
+        lightModeCommandColorWell.color = [aProfile colorForKey:CommandColorKey];
     } else {
-        commandColorWell.color = NSColor.commandColor;
+        lightModeCommandColorWell.color = NSColor.commandColor;
     }
-    [commandColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeCommandColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:InvisibleColorKey]) {
-        invisibleColorWell.color = [aProfile colorForKey:InvisibleColorKey];
+        lightModeInvisibleColorWell.color = [aProfile colorForKey:InvisibleColorKey];
     } else {
-        invisibleColorWell.color = NSColor.invisibleColor;
+        lightModeInvisibleColorWell.color = NSColor.invisibleColor;
     }
-    [invisibleColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeInvisibleColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:HighlightedBraceColorKey]) {
-        highlightedBraceColorWell.color = [aProfile colorForKey:HighlightedBraceColorKey];
+        lightModeHighlightedBraceColorWell.color = [aProfile colorForKey:HighlightedBraceColorKey];
     } else {
-        highlightedBraceColorWell.color = NSColor.highlightedBraceColor;
+        lightModeHighlightedBraceColorWell.color = NSColor.highlightedBraceColor;
     }
-    [highlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeHighlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:EnclosedContentBackgroundColorKey]) {
-        enclosedContentBackgroundColorWell.color = [aProfile colorForKey:EnclosedContentBackgroundColorKey];
+        lightModeEnclosedContentBackgroundColorWell.color = [aProfile colorForKey:EnclosedContentBackgroundColorKey];
     } else {
-        enclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
+        lightModeEnclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
     }
-    [enclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeEnclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
 
     if ([keys containsObject:FlashingBackgroundColorKey]) {
-        flashingBackgroundColorWell.color = [aProfile colorForKey:FlashingBackgroundColorKey];
+        lightModeFlashingBackgroundColorWell.color = [aProfile colorForKey:FlashingBackgroundColorKey];
     } else {
-        flashingBackgroundColorWell.color = NSColor.flashingBackgroundColor;
+        lightModeFlashingBackgroundColorWell.color = NSColor.flashingBackgroundColor;
     }
-    [flashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
 
     if ([keys containsObject:ColorPalleteColorKey]) {
         colorPalleteColorWell.color = [aProfile colorForKey:ColorPalleteColorKey];
@@ -1136,16 +1137,16 @@ typedef enum {
 
         currentProfile[FillColorKey] = fillColorWell.color.serializedString;
 
-        currentProfile[ForegroundColorKey] = foregroundColorWell.color.serializedString;
-        currentProfile[BackgroundColorKey] = backgroundColorWell.color.serializedString;
-        currentProfile[CursorColorKey] = cursorColorWell.color.serializedString;
-        currentProfile[BraceColorKey] = braceColorWell.color.serializedString;
-        currentProfile[CommentColorKey] = commentColorWell.color.serializedString;
-        currentProfile[CommandColorKey] = commandColorWell.color.serializedString;
-        currentProfile[InvisibleColorKey] = invisibleColorWell.color.serializedString;
-        currentProfile[HighlightedBraceColorKey] = highlightedBraceColorWell.color.serializedString;
-        currentProfile[EnclosedContentBackgroundColorKey] = enclosedContentBackgroundColorWell.color.serializedString;
-        currentProfile[FlashingBackgroundColorKey] = flashingBackgroundColorWell.color.serializedString;
+        currentProfile[ForegroundColorKey] = lightModeForegroundColorWell.color.serializedString;
+        currentProfile[BackgroundColorKey] = lightModeBackgroundColorWell.color.serializedString;
+        currentProfile[CursorColorKey] = lightModeCursorColorWell.color.serializedString;
+        currentProfile[BraceColorKey] = lightModeBraceColorWell.color.serializedString;
+        currentProfile[CommentColorKey] = lightModeCommentColorWell.color.serializedString;
+        currentProfile[CommandColorKey] = lightModeCommandColorWell.color.serializedString;
+        currentProfile[InvisibleColorKey] = lightModeInvisibleColorWell.color.serializedString;
+        currentProfile[HighlightedBraceColorKey] = lightModeHighlightedBraceColorWell.color.serializedString;
+        currentProfile[EnclosedContentBackgroundColorKey] = lightModeEnclosedContentBackgroundColorWell.color.serializedString;
+        currentProfile[FlashingBackgroundColorKey] = lightModeFlashingBackgroundColorWell.color.serializedString;
         currentProfile[MakeatletterEnabledKey] = @(makeatletterEnabledCheckBox.state);
         
         currentProfile[ColorPalleteColorKey] = colorPalleteColorWell.color.serializedString;
@@ -1634,27 +1635,27 @@ typedef enum {
         return;
     }
 
-    foregroundColorWell.color = NSColor.textColor;
-    backgroundColorWell.color = NSColor.controlBackgroundColor;
-    cursorColorWell.color = NSColor.textColor;
-    braceColorWell.color = NSColor.braceColor;
-    commentColorWell.color = NSColor.commentColor;
-    commandColorWell.color = NSColor.commandColor;
-    invisibleColorWell.color = NSColor.invisibleColor;
-    highlightedBraceColorWell.color = NSColor.highlightedBraceColor;
-    enclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
-    flashingBackgroundColorWell.color = NSColor.flashingBackgroundColor;
+    lightModeForegroundColorWell.color = NSColor.textColor;
+    lightModeBackgroundColorWell.color = NSColor.controlBackgroundColor;
+    lightModeCursorColorWell.color = NSColor.textColor;
+    lightModeBraceColorWell.color = NSColor.braceColor;
+    lightModeCommentColorWell.color = NSColor.commentColor;
+    lightModeCommandColorWell.color = NSColor.commandColor;
+    lightModeInvisibleColorWell.color = NSColor.invisibleColor;
+    lightModeHighlightedBraceColorWell.color = NSColor.highlightedBraceColor;
+    lightModeEnclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
+    lightModeFlashingBackgroundColorWell.color = NSColor.flashingBackgroundColor;
     
-    [foregroundColorWell saveColorToMutableDictionary:lastColorDict];
-    [backgroundColorWell saveColorToMutableDictionary:lastColorDict];
-    [cursorColorWell saveColorToMutableDictionary:lastColorDict];
-    [braceColorWell saveColorToMutableDictionary:lastColorDict];
-    [commentColorWell saveColorToMutableDictionary:lastColorDict];
-    [commandColorWell saveColorToMutableDictionary:lastColorDict];
-    [invisibleColorWell saveColorToMutableDictionary:lastColorDict];
-    [highlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
-    [enclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
-    [flashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeForegroundColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeCursorColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeBraceColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeCommentColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeCommandColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeInvisibleColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeHighlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeEnclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    [lightModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
     
     makeatletterEnabledCheckBox.state = NSOnState;
 
@@ -2026,16 +2027,16 @@ typedef enum {
     
     [fillColorWell restoreColorFromDictionary:lastColorDict];
     
-    [foregroundColorWell restoreColorFromDictionary:lastColorDict];
-    [backgroundColorWell restoreColorFromDictionary:lastColorDict];
-    [cursorColorWell restoreColorFromDictionary:lastColorDict];
-    [braceColorWell restoreColorFromDictionary:lastColorDict];
-    [commentColorWell restoreColorFromDictionary:lastColorDict];
-    [commandColorWell restoreColorFromDictionary:lastColorDict];
-    [invisibleColorWell restoreColorFromDictionary:lastColorDict];
-    [highlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
-    [enclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
-    [flashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeForegroundColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeCursorColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeBraceColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeCommentColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeCommandColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeInvisibleColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeHighlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeEnclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeFlashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
 }
 
 - (void)colorPalleteWindowDidBecomeKey:(NSNotification*)aNotification
@@ -2047,16 +2048,16 @@ typedef enum {
 {
     [fillColorWell deactivate];
     
-    [foregroundColorWell deactivate];
-    [backgroundColorWell deactivate];
-    [cursorColorWell deactivate];
-    [braceColorWell deactivate];
-    [commentColorWell deactivate];
-    [commandColorWell deactivate];
-    [invisibleColorWell deactivate];
-    [highlightedBraceColorWell deactivate];
-    [enclosedContentBackgroundColorWell deactivate];
-    [flashingBackgroundColorWell deactivate];
+    [lightModeForegroundColorWell deactivate];
+    [lightModeBackgroundColorWell deactivate];
+    [lightModeCursorColorWell deactivate];
+    [lightModeBraceColorWell deactivate];
+    [lightModeCommentColorWell deactivate];
+    [lightModeCommandColorWell deactivate];
+    [lightModeInvisibleColorWell deactivate];
+    [lightModeHighlightedBraceColorWell deactivate];
+    [lightModeEnclosedContentBackgroundColorWell deactivate];
+    [lightModeFlashingBackgroundColorWell deactivate];
     
     [colorPalleteColorWell deactivate];
     
@@ -2064,16 +2065,16 @@ typedef enum {
 
     [fillColorWell restoreColorFromDictionary:lastColorDict];
 
-    [foregroundColorWell restoreColorFromDictionary:lastColorDict];
-    [backgroundColorWell restoreColorFromDictionary:lastColorDict];
-    [cursorColorWell restoreColorFromDictionary:lastColorDict];
-    [braceColorWell restoreColorFromDictionary:lastColorDict];
-    [commentColorWell restoreColorFromDictionary:lastColorDict];
-    [commandColorWell restoreColorFromDictionary:lastColorDict];
-    [invisibleColorWell restoreColorFromDictionary:lastColorDict];
-    [highlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
-    [enclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
-    [flashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeForegroundColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeCursorColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeBraceColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeCommentColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeCommandColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeInvisibleColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeHighlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeEnclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeFlashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
 
     [colorPalleteColorWell restoreColorFromDictionary:lastColorDict];
 }
@@ -2404,9 +2405,9 @@ typedef enum {
     [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
     
     [self refreshTextView:outputTextView
-          foregroundColor:foregroundColorWell.color
-          backgroundColor:backgroundColorWell.color
-          cursorColor:cursorColorWell.color];
+          foregroundColor:lightModeForegroundColorWell.color
+          backgroundColor:lightModeBackgroundColorWell.color
+          cursorColor:lightModeCursorColorWell.color];
     
     outputTextView.font = sourceFont;
 }

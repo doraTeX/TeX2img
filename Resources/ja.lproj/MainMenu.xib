@@ -2289,11 +2289,9 @@ DQ
                 <outlet property="autoIndentMenuItem" destination="yEx-mS-HPD" id="3xo-4T-JPL"/>
                 <outlet property="autoPasteCheckBox" destination="btX-o8-qUO" id="s7N-HE-rm8"/>
                 <outlet property="autoPasteDestinationPopUpButton" destination="hv6-A1-dhl" id="bqF-Ut-Hkz"/>
-                <outlet property="backgroundColorWell" destination="eYk-0N-5fl" id="glu-Np-Ift"/>
                 <outlet property="beepCheckBox" destination="yFC-gL-sJa" id="qVA-sL-RUz"/>
                 <outlet property="bottomMarginStepper" destination="xtd-D8-9J6" id="XXW-kp-l0d"/>
                 <outlet property="bottomMarginTextField" destination="duD-Zk-r37" id="mqY-ab-hvX"/>
-                <outlet property="braceColorWell" destination="5ZQ-y1-ObI" id="uKq-BW-rqN"/>
                 <outlet property="browseSourceFileButton" destination="a0s-yn-OUV" id="6D3-yg-wGU"/>
                 <outlet property="checkBraceCheckBox" destination="Fup-Yd-IRL" id="JFg-l4-ZPc"/>
                 <outlet property="checkBracketCheckBox" destination="vjA-OV-uKu" id="BW5-Jc-AFx"/>
@@ -2304,11 +2302,8 @@ DQ
                 <outlet property="colorPalleteWindowMenuItem" destination="mwF-OF-D3d" id="LGK-rx-vru"/>
                 <outlet property="colorStyleMatrix" destination="Nw7-Li-duZ" id="oFc-ZQ-gnV"/>
                 <outlet property="colorTextField" destination="ece-oe-9xN" id="R9l-mw-NJG"/>
-                <outlet property="commandColorWell" destination="jTZ-4o-f0r" id="Bhl-HB-rCC"/>
                 <outlet property="commandCompletionKeyMatrix" destination="YdH-me-3lX" id="AqL-Am-nPU"/>
-                <outlet property="commentColorWell" destination="5fH-Qw-pGy" id="2pA-3P-jk1"/>
                 <outlet property="convertYenMarkMenuItem" destination="760" id="762"/>
-                <outlet property="cursorColorWell" destination="Yy9-T4-uMu" id="K7f-eV-fZS"/>
                 <outlet property="delayStepper" destination="Q2q-zf-nqJ" id="WqV-qa-hbT"/>
                 <outlet property="delayTextField" destination="z7U-r1-96O" id="tzH-6t-AJb"/>
                 <outlet property="deleteDisplaySizeCheckBox" destination="afr-f7-ZEX" id="oSG-fY-bJT"/>
@@ -2319,15 +2314,12 @@ DQ
                 <outlet property="dviDriverPathTextField" destination="600" id="fPT-Qp-KrP"/>
                 <outlet property="embedInIllustratorCheckBox" destination="877" id="881"/>
                 <outlet property="embedSourceCheckBox" destination="Bld-79-KdN" id="fcB-Wi-hye"/>
-                <outlet property="enclosedContentBackgroundColorWell" destination="Qkx-sU-Fa1" id="3pf-OO-73c"/>
                 <outlet property="encodingPopUpButton" destination="SEX-u4-2gO" id="9ZB-Jt-h0v"/>
                 <outlet property="extensionPopupButton" destination="CGu-Kq-aGw" id="mKz-QE-2c2"/>
                 <outlet property="fillColorWell" destination="DXG-iX-6XI" id="qHw-MT-VzP"/>
                 <outlet property="flashBackgroundCheckBox" destination="KWP-Tu-qp2" id="QJB-80-Aeu"/>
                 <outlet property="flashInMovingCheckBox" destination="pL6-0n-Zv5" id="VGF-Ti-v8p"/>
-                <outlet property="flashingBackgroundColorWell" destination="t6G-be-r7D" id="uw4-fp-ZG8"/>
                 <outlet property="fontTextField" destination="UfO-wD-pSG" id="Ob5-EN-TVm"/>
-                <outlet property="foregroundColorWell" destination="LKd-6x-bcL" id="qE0-xO-h8v"/>
                 <outlet property="fullwidthSpaceCharacterKindButton" destination="y8j-mU-LJf" id="Ek7-RP-P0O"/>
                 <outlet property="fullwidthSpaceCharacterKindMatrix" destination="Ydb-h7-wm3" id="ZfL-lT-122"/>
                 <outlet property="fullwidthSpaceCharacterKindSettingViewController" destination="BMG-PX-fXT" id="4UD-fB-oO2"/>
@@ -2336,17 +2328,25 @@ DQ
                 <outlet property="gsPathTextField" destination="604" id="609"/>
                 <outlet property="guessCompilationButton" destination="exl-Am-4h5" id="O3P-UU-2gn"/>
                 <outlet property="highlightContentCheckBox" destination="iTI-f0-HhC" id="Wxf-Lg-jTF"/>
-                <outlet property="highlightedBraceColorWell" destination="S4g-2D-ZhF" id="fgY-El-ihN"/>
                 <outlet property="ignoreErrorCheckBox" destination="654" id="656"/>
                 <outlet property="inputSourceFileButton" destination="J9r-D6-YSd" id="dz3-fb-S7i"/>
                 <outlet property="inputSourceFileTextField" destination="Kxp-Ue-6HR" id="G1E-gR-J5p"/>
                 <outlet property="invisibleCharacterBox" destination="wIf-oC-qXE" id="tEy-i2-BV2"/>
-                <outlet property="invisibleColorWell" destination="2PL-XR-xzK" id="c0A-JH-Uz4"/>
                 <outlet property="keepPageSizeAdvancedButton" destination="8JZ-m4-5B8" id="yuI-z2-6DL"/>
                 <outlet property="keepPageSizeCheckBox" destination="cWr-5u-guv" id="dkO-CA-bo7"/>
                 <outlet property="latexPathTextField" destination="597" id="M67-Rd-WNW"/>
                 <outlet property="leftMarginStepper" destination="iux-T1-26V" id="KUc-7h-eXK"/>
                 <outlet property="leftMarginTextField" destination="3w6-gZ-0C2" id="neT-0b-xXe"/>
+                <outlet property="lightModeBackgroundColorWell" destination="eYk-0N-5fl" id="glu-Np-Ift"/>
+                <outlet property="lightModeBraceColorWell" destination="5ZQ-y1-ObI" id="uKq-BW-rqN"/>
+                <outlet property="lightModeCommandColorWell" destination="jTZ-4o-f0r" id="Bhl-HB-rCC"/>
+                <outlet property="lightModeCommentColorWell" destination="5fH-Qw-pGy" id="2pA-3P-jk1"/>
+                <outlet property="lightModeCursorColorWell" destination="Yy9-T4-uMu" id="K7f-eV-fZS"/>
+                <outlet property="lightModeEnclosedContentBackgroundColorWell" destination="Qkx-sU-Fa1" id="3pf-OO-73c"/>
+                <outlet property="lightModeFlashingBackgroundColorWell" destination="t6G-be-r7D" id="uw4-fp-ZG8"/>
+                <outlet property="lightModeForegroundColorWell" destination="LKd-6x-bcL" id="qE0-xO-h8v"/>
+                <outlet property="lightModeHighlightedBraceColorWell" destination="S4g-2D-ZhF" id="fgY-El-ihN"/>
+                <outlet property="lightModeInvisibleColorWell" destination="2PL-XR-xzK" id="c0A-JH-Uz4"/>
                 <outlet property="loopCountStepper" destination="YDl-Kh-2kO" id="acE-Px-A8A"/>
                 <outlet property="loopCountTextField" destination="V9C-Oh-Xce" id="JQ3-0d-BaZ"/>
                 <outlet property="mainWindow" destination="371" id="497"/>
