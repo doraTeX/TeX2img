@@ -153,6 +153,19 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSColorWell *lightModeHighlightedBraceColorWell;
 @property (nonatomic, strong) IBOutlet NSColorWell *lightModeEnclosedContentBackgroundColorWell;
 @property (nonatomic, strong) IBOutlet NSColorWell *lightModeFlashingBackgroundColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeConsoleBackgroundColorWell;
+
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeForegroundColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeBackgroundColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeCursorColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeBraceColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeCommentColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeCommandColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeInvisibleColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeHighlightedBraceColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeEnclosedContentBackgroundColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeFlashingBackgroundColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeConsoleBackgroundColorWell;
 
 @property (nonatomic, strong) IBOutlet NSButton *makeatletterEnabledCheckBox;
 
@@ -307,6 +320,20 @@ typedef enum {
 @synthesize lightModeHighlightedBraceColorWell;
 @synthesize lightModeEnclosedContentBackgroundColorWell;
 @synthesize lightModeFlashingBackgroundColorWell;
+@synthesize lightModeConsoleBackgroundColorWell;
+
+@synthesize darkModeForegroundColorWell;
+@synthesize darkModeBackgroundColorWell;
+@synthesize darkModeCursorColorWell;
+@synthesize darkModeBraceColorWell;
+@synthesize darkModeCommentColorWell;
+@synthesize darkModeCommandColorWell;
+@synthesize darkModeInvisibleColorWell;
+@synthesize darkModeHighlightedBraceColorWell;
+@synthesize darkModeEnclosedContentBackgroundColorWell;
+@synthesize darkModeFlashingBackgroundColorWell;
+@synthesize darkModeConsoleBackgroundColorWell;
+
 @synthesize makeatletterEnabledCheckBox;
 
 @synthesize autoDetectionTargetSettingViewController;
