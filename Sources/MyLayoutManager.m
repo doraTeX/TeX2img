@@ -1,6 +1,7 @@
 #import "MyLayoutManager.h"
 #import "NSDictionary-Extension.h"
 #import "NSColor-Extension.h"
+#import "NSColor-DefaultColor.h"
 #import "MyATSTypesetter.h"
 
 @implementation MyLayoutManager
@@ -40,7 +41,7 @@
     NSFont *theFont = self.textStorage.font;
     NSColor *theColor = [currentProfile colorForKey:InvisibleColorKey];
     if (!theColor) {
-        theColor = NSColor.invisibleColor;
+        theColor = NSColor.defaultInvisibleColor;
     }
     NSDictionary<NSString*,id> *attributes = @{
                                                NSFontAttributeName: theFont,

@@ -8,6 +8,7 @@
 #import "NSMutableString-Extension.h"
 #import "NSFileManager-Extension.h"
 #import "NSColor-Extension.h"
+#import "NSColor-DefaultColor.h"
 #import "NSColorWell-Extension.h"
 #import "NSPipe-Extension.h"
 #import "NSPopover-Extension.h"
@@ -805,76 +806,165 @@ typedef enum {
     }
     [fillColorWell saveColorToMutableDictionary:lastColorDict];
 
+    
+#pragma mark - 配色設定 (Light Mode)
     if ([keys containsObject:ForegroundColorKey]) {
         lightModeForegroundColorWell.color = [aProfile colorForKey:ForegroundColorKey];
     } else {
-        lightModeForegroundColorWell.color = NSColor.textColor;
+        lightModeForegroundColorWell.color = NSColor.defaultForegroundColorForLightMode;
     }
     [lightModeForegroundColorWell saveColorToMutableDictionary:lastColorDict];
 
     if ([keys containsObject:BackgroundColorKey]) {
         lightModeBackgroundColorWell.color = [aProfile colorForKey:BackgroundColorKey];
     } else {
-        lightModeBackgroundColorWell.color = NSColor.controlBackgroundColor;
+        lightModeBackgroundColorWell.color = NSColor.defaultBackgroundColorForLightMode;
     }
     [lightModeBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:CursorColorKey]) {
         lightModeCursorColorWell.color = [aProfile colorForKey:CursorColorKey];
     } else {
-        lightModeCursorColorWell.color = NSColor.blackColor;
+        lightModeCursorColorWell.color = NSColor.defaultCursorColorForLightMode;
     }
     [lightModeCursorColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:BraceColorKey]) {
         lightModeBraceColorWell.color = [aProfile colorForKey:BraceColorKey];
     } else {
-        lightModeBraceColorWell.color = NSColor.braceColor;
+        lightModeBraceColorWell.color = NSColor.defaultBraceColorForLightMode;
     }
     [lightModeBraceColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:CommentColorKey]) {
         lightModeCommentColorWell.color = [aProfile colorForKey:CommentColorKey];
     } else {
-        lightModeCommentColorWell.color = NSColor.commentColor;
+        lightModeCommentColorWell.color = NSColor.defaultCommentColorForLightMode;
     }
     [lightModeCommentColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:CommandColorKey]) {
         lightModeCommandColorWell.color = [aProfile colorForKey:CommandColorKey];
     } else {
-        lightModeCommandColorWell.color = NSColor.commandColor;
+        lightModeCommandColorWell.color = NSColor.defaultCommandColorForLightMode;
     }
     [lightModeCommandColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:InvisibleColorKey]) {
         lightModeInvisibleColorWell.color = [aProfile colorForKey:InvisibleColorKey];
     } else {
-        lightModeInvisibleColorWell.color = NSColor.invisibleColor;
+        lightModeInvisibleColorWell.color = NSColor.defaultInvisibleColorForLightMode;
     }
     [lightModeInvisibleColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:HighlightedBraceColorKey]) {
         lightModeHighlightedBraceColorWell.color = [aProfile colorForKey:HighlightedBraceColorKey];
     } else {
-        lightModeHighlightedBraceColorWell.color = NSColor.highlightedBraceColor;
+        lightModeHighlightedBraceColorWell.color = NSColor.defaultHighlightedBraceColorForLightMode;
     }
     [lightModeHighlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
     
     if ([keys containsObject:EnclosedContentBackgroundColorKey]) {
         lightModeEnclosedContentBackgroundColorWell.color = [aProfile colorForKey:EnclosedContentBackgroundColorKey];
     } else {
-        lightModeEnclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
+        lightModeEnclosedContentBackgroundColorWell.color = NSColor.defaultEnclosedContentBackgroundColorForLightMode;
     }
     [lightModeEnclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
 
     if ([keys containsObject:FlashingBackgroundColorKey]) {
         lightModeFlashingBackgroundColorWell.color = [aProfile colorForKey:FlashingBackgroundColorKey];
     } else {
-        lightModeFlashingBackgroundColorWell.color = NSColor.flashingBackgroundColor;
+        lightModeFlashingBackgroundColorWell.color = NSColor.defaultFlashingBackgroundColorForLightMode;
     }
     [lightModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
 
+    if ([keys containsObject:ConsoleBackgroundColorKey]) {
+        lightModeConsoleBackgroundColorWell.color = [aProfile colorForKey:ConsoleBackgroundColorKey];
+    } else {
+        lightModeConsoleBackgroundColorWell.color = NSColor.defaultConsoleBackgroundColorForLightMode;
+    }
+    [lightModeConsoleBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+
+#pragma mark - 配色設定 (Dark Mode)
+    if ([keys containsObject:ForegroundColorForDarkModeKey]) {
+        darkModeForegroundColorWell.color = [aProfile colorForKey:ForegroundColorForDarkModeKey];
+    } else {
+        darkModeForegroundColorWell.color = NSColor.defaultForegroundColorForDarkMode;
+    }
+    [darkModeForegroundColorWell saveColorToMutableDictionary:lastColorDict];
+
+    if ([keys containsObject:BackgroundColorForDarkModeKey]) {
+        darkModeBackgroundColorWell.color = [aProfile colorForKey:BackgroundColorForDarkModeKey];
+    } else {
+        darkModeBackgroundColorWell.color = NSColor.defaultBackgroundColorForDarkMode;
+    }
+    [darkModeBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    
+    if ([keys containsObject:CursorColorForDarkModeKey]) {
+        darkModeCursorColorWell.color = [aProfile colorForKey:CursorColorForDarkModeKey];
+    } else {
+        darkModeCursorColorWell.color = NSColor.defaultCursorColorForDarkMode;
+    }
+    [darkModeCursorColorWell saveColorToMutableDictionary:lastColorDict];
+    
+    if ([keys containsObject:BraceColorForDarkModeKey]) {
+        darkModeBraceColorWell.color = [aProfile colorForKey:BraceColorForDarkModeKey];
+    } else {
+        darkModeBraceColorWell.color = NSColor.defaultBraceColorForDarkMode;
+    }
+    [darkModeBraceColorWell saveColorToMutableDictionary:lastColorDict];
+    
+    if ([keys containsObject:CommentColorForDarkModeKey]) {
+        darkModeCommentColorWell.color = [aProfile colorForKey:CommentColorForDarkModeKey];
+    } else {
+        darkModeCommentColorWell.color = NSColor.defaultCommentColorForDarkMode;
+    }
+    [darkModeCommentColorWell saveColorToMutableDictionary:lastColorDict];
+    
+    if ([keys containsObject:CommandColorForDarkModeKey]) {
+        darkModeCommandColorWell.color = [aProfile colorForKey:CommandColorForDarkModeKey];
+    } else {
+        darkModeCommandColorWell.color = NSColor.defaultCommandColorForDarkMode;
+    }
+    [darkModeCommandColorWell saveColorToMutableDictionary:lastColorDict];
+    
+    if ([keys containsObject:InvisibleColorForDarkModeKey]) {
+        darkModeInvisibleColorWell.color = [aProfile colorForKey:InvisibleColorForDarkModeKey];
+    } else {
+        darkModeInvisibleColorWell.color = NSColor.defaultInvisibleColorForDarkMode;
+    }
+    [darkModeInvisibleColorWell saveColorToMutableDictionary:lastColorDict];
+    
+    if ([keys containsObject:HighlightedBraceColorForDarkModeKey]) {
+        darkModeHighlightedBraceColorWell.color = [aProfile colorForKey:HighlightedBraceColorForDarkModeKey];
+    } else {
+        darkModeHighlightedBraceColorWell.color = NSColor.defaultHighlightedBraceColorForDarkMode;
+    }
+    [darkModeHighlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
+
+    if ([keys containsObject:EnclosedContentBackgroundColorForDarkModeKey]) {
+        darkModeEnclosedContentBackgroundColorWell.color = [aProfile colorForKey:EnclosedContentBackgroundColorForDarkModeKey];
+    } else {
+        darkModeEnclosedContentBackgroundColorWell.color = NSColor.defaultEnclosedContentBackgroundColorForDarkMode;
+    }
+    [darkModeEnclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+
+    if ([keys containsObject:FlashingBackgroundColorForDarkModeKey]) {
+        darkModeFlashingBackgroundColorWell.color = [aProfile colorForKey:FlashingBackgroundColorForDarkModeKey];
+    } else {
+        darkModeFlashingBackgroundColorWell.color = NSColor.defaultFlashingBackgroundColorForDarkMode;
+    }
+    [darkModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+
+    if ([keys containsObject:ConsoleBackgroundColorForDarkModeKey]) {
+        darkModeConsoleBackgroundColorWell.color = [aProfile colorForKey:ConsoleBackgroundColorForDarkModeKey];
+    } else {
+        darkModeConsoleBackgroundColorWell.color = NSColor.defaultConsoleBackgroundColorForDarkMode;
+    }
+    [darkModeConsoleBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+
+#pragma mark -
+    
     if ([keys containsObject:ColorPalleteColorKey]) {
         colorPalleteColorWell.color = [aProfile colorForKey:ColorPalleteColorKey];
     } else {
@@ -1656,33 +1746,63 @@ typedef enum {
     }
 }
 
-- (IBAction)loadDefaultColors:(id)sender
+- (IBAction)loadDefaultColors:(NSButton*)sender
 {
-    if (sender && !runConfirmPanel(localizedString(@"restoreColorsConfirmationMsg"))) {
+    NSString *modeName = localizedString((sender.tag == 1) ? @"Light Mode" : @"Dark Mode");
+    
+    if (sender && !runConfirmPanel([NSString stringWithFormat:localizedString(@"restoreColorsConfirmationMsg"), modeName])) {
         return;
     }
-
-    lightModeForegroundColorWell.color = NSColor.textColor;
-    lightModeBackgroundColorWell.color = NSColor.controlBackgroundColor;
-    lightModeCursorColorWell.color = NSColor.textColor;
-    lightModeBraceColorWell.color = NSColor.braceColor;
-    lightModeCommentColorWell.color = NSColor.commentColor;
-    lightModeCommandColorWell.color = NSColor.commandColor;
-    lightModeInvisibleColorWell.color = NSColor.invisibleColor;
-    lightModeHighlightedBraceColorWell.color = NSColor.highlightedBraceColor;
-    lightModeEnclosedContentBackgroundColorWell.color = NSColor.enclosedContentBackgroundColor;
-    lightModeFlashingBackgroundColorWell.color = NSColor.flashingBackgroundColor;
     
-    [lightModeForegroundColorWell saveColorToMutableDictionary:lastColorDict];
-    [lightModeBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
-    [lightModeCursorColorWell saveColorToMutableDictionary:lastColorDict];
-    [lightModeBraceColorWell saveColorToMutableDictionary:lastColorDict];
-    [lightModeCommentColorWell saveColorToMutableDictionary:lastColorDict];
-    [lightModeCommandColorWell saveColorToMutableDictionary:lastColorDict];
-    [lightModeInvisibleColorWell saveColorToMutableDictionary:lastColorDict];
-    [lightModeHighlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
-    [lightModeEnclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
-    [lightModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    if (sender.tag == 1) { // ライトモードの「デフォルトに戻す」ボタン
+        lightModeForegroundColorWell.color = NSColor.defaultForegroundColorForLightMode;
+        lightModeBackgroundColorWell.color = NSColor.defaultBackgroundColorForLightMode;
+        lightModeCursorColorWell.color = NSColor.defaultCursorColorForLightMode;
+        lightModeBraceColorWell.color = NSColor.defaultBraceColorForLightMode;
+        lightModeCommentColorWell.color = NSColor.defaultCommentColorForLightMode;
+        lightModeCommandColorWell.color = NSColor.defaultCommandColorForLightMode;
+        lightModeInvisibleColorWell.color = NSColor.defaultInvisibleColorForLightMode;
+        lightModeHighlightedBraceColorWell.color = NSColor.defaultHighlightedBraceColorForLightMode;
+        lightModeEnclosedContentBackgroundColorWell.color = NSColor.defaultEnclosedContentBackgroundColorForLightMode;
+        lightModeFlashingBackgroundColorWell.color = NSColor.defaultFlashingBackgroundColorForLightMode;
+        lightModeConsoleBackgroundColorWell.color = NSColor.defaultConsoleBackgroundColorForLightMode;
+        
+        [lightModeForegroundColorWell saveColorToMutableDictionary:lastColorDict];
+        [lightModeBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+        [lightModeCursorColorWell saveColorToMutableDictionary:lastColorDict];
+        [lightModeBraceColorWell saveColorToMutableDictionary:lastColorDict];
+        [lightModeCommentColorWell saveColorToMutableDictionary:lastColorDict];
+        [lightModeCommandColorWell saveColorToMutableDictionary:lastColorDict];
+        [lightModeInvisibleColorWell saveColorToMutableDictionary:lastColorDict];
+        [lightModeHighlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
+        [lightModeEnclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+        [lightModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+        [lightModeConsoleBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    } else { // ダークモードの「デフォルトに戻す」ボタン
+        darkModeForegroundColorWell.color = NSColor.defaultForegroundColorForDarkMode;
+        darkModeBackgroundColorWell.color = NSColor.defaultBackgroundColorForDarkMode;
+        darkModeCursorColorWell.color = NSColor.defaultCursorColorForDarkMode;
+        darkModeBraceColorWell.color = NSColor.defaultBraceColorForDarkMode;
+        darkModeCommentColorWell.color = NSColor.defaultCommentColorForDarkMode;
+        darkModeCommandColorWell.color = NSColor.defaultCommandColorForDarkMode;
+        darkModeInvisibleColorWell.color = NSColor.defaultInvisibleColorForDarkMode;
+        darkModeHighlightedBraceColorWell.color = NSColor.defaultHighlightedBraceColorForDarkMode;
+        darkModeEnclosedContentBackgroundColorWell.color = NSColor.defaultEnclosedContentBackgroundColorForDarkMode;
+        darkModeFlashingBackgroundColorWell.color = NSColor.defaultFlashingBackgroundColorForDarkMode;
+        darkModeConsoleBackgroundColorWell.color = NSColor.defaultConsoleBackgroundColorForDarkMode;
+        
+        [darkModeForegroundColorWell saveColorToMutableDictionary:lastColorDict];
+        [darkModeBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+        [darkModeCursorColorWell saveColorToMutableDictionary:lastColorDict];
+        [darkModeBraceColorWell saveColorToMutableDictionary:lastColorDict];
+        [darkModeCommentColorWell saveColorToMutableDictionary:lastColorDict];
+        [darkModeCommandColorWell saveColorToMutableDictionary:lastColorDict];
+        [darkModeInvisibleColorWell saveColorToMutableDictionary:lastColorDict];
+        [darkModeHighlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
+        [darkModeEnclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+        [darkModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+        [darkModeConsoleBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+    }
     
     makeatletterEnabledCheckBox.state = NSOnState;
 

@@ -36,7 +36,7 @@
 "cannotWriteErrorMsg" = "Failed to write the file.\n%@";
 "saveCurrentPreambleAsTemplate" = "Save current preamble as a template";
 "restoreTemplatesConfirmationMsg" = "Default templates will be retored.\nThe existing ones will be overwritten.\nDo you really want to continue?";
-"restoreColorsConfirmationMsg" = "All color settings will revert to default state.\nDo you really want to continue?";
+"restoreColorsConfirmationMsg" = "All color settings for %@ will revert back to default state.\nDo you really want to continue?";
 "doesNotContainSource" = "This image does not contain any source information.";
 "errorsIgnoredWarning" = "Some errors were ignored.\nThe result may be different from what you expected.\nModification of the source is recommended.";
 "pageSkippedWarning" = "Page %@ was empty and it was skipped.";
@@ -79,3 +79,5 @@
 "Failed" = "Conversion failed";
 "Aborted" = "Conversion aborted";
 "Format" = "Format: ";
+"Light Mode" = "light mode";
+"Dark Mode" = "dark mode";

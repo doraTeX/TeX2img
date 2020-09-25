@@ -83,6 +83,20 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define HighlightedBraceColorKey @"highlightedBraceColor"
 #define EnclosedContentBackgroundColorKey @"enclosedContentBackgroundColor"
 #define FlashingBackgroundColorKey @"flashingBackgroundColor"
+#define ConsoleBackgroundColorKey @"consoleBackgroundColor"
+
+#define ForegroundColorForDarkModeKey @"foregroundColorForDarkMode"
+#define BackgroundColorForDarkModeKey @"backgroundColorForDarkMode"
+#define CursorColorForDarkModeKey @"cursorColorForDarkMode"
+#define BraceColorForDarkModeKey @"braceColorForDarkMode"
+#define CommentColorForDarkModeKey @"commentColorForDarkMode"
+#define CommandColorForDarkModeKey @"commandColorForDarkMode"
+#define InvisibleColorForDarkModeKey @"invisibleColorForDarkMode"
+#define HighlightedBraceColorForDarkModeKey @"highlightedBraceColorForDarkMode"
+#define EnclosedContentBackgroundColorForDarkModeKey @"enclosedContentBackgroundColorForDarkMode"
+#define FlashingBackgroundColorForDarkModeKey @"flashingBackgroundColorForDarkMode"
+#define ConsoleBackgroundColorForDarkModeKey @"consoleBackgroundColorForDarkMode"
+
 #define MakeatletterEnabledKey @"makeatletterEnabled"
 
 #define WorkingDirectoryTypeKey @"workingDirectoryType"

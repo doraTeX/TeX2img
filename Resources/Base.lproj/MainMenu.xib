@@ -2062,7 +2062,7 @@ DQ
                                                 <action selector="colorSettingChanged:" target="450" id="aeZ-fn-nqc"/>
                                             </connections>
                                         </colorWell>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W2H-Ha-grG">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="W2H-Ha-grG">
                                             <rect key="frame" x="275" y="1" width="85" height="30"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="Default..." bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="l99-jO-IGI">
@@ -2208,7 +2208,7 @@ DQ
                                                 <action selector="colorSettingChanged:" target="450" id="OfX-dI-x1T"/>
                                             </connections>
                                         </colorWell>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MFm-6h-Meh">
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="MFm-6h-Meh">
                                             <rect key="frame" x="359" y="1" width="85" height="30"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="Default..." bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="aVJ-tQ-cNc">

@@ -41,40 +41,6 @@
     }
 }
 
-+ (NSColor*)braceColor
-{
-    return [NSColor colorWithCalibratedRed:0.02 green:0.51 blue:0.13 alpha:1.0];
-}
-
-+ (NSColor*)commentColor
-{
-    return [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:1.0];
-}
-
-+ (NSColor*)commandColor
-{
-    return [NSColor colorWithCalibratedRed:0.0 green:0.0 blue:1.0 alpha:1.0];
-}
-
-+ (NSColor*)invisibleColor
-{
-    return NSColor.orangeColor;
-}
-
-+ (NSColor*)highlightedBraceColor
-{
-    return NSColor.magentaColor;
-}
-
-+ (NSColor*)enclosedContentBackgroundColor
-{
-    return [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.5 alpha:1.0];
-}
-
-+ (NSColor*)flashingBackgroundColor
-{
-    return [NSColor colorWithCalibratedRed:1.0 green:0.95 blue:1.0 alpha:1.0];
-}
 
 + (NSColor*)colorWithCSSName:(NSString*)name
 {

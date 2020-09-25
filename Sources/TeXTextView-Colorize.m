@@ -1,6 +1,7 @@
 #import "TeXTextView.h"
 #import "NSDictionary-Extension.h"
 #import "NSColor-Extension.h"
+#import "NSColor-DefaultColor.h"
 
 @implementation TeXTextView (Colorize)
 - (void)colorizeText
@@ -36,21 +37,21 @@
     
     color = [profile colorForKey:CommandColorKey];
     if (!color) {
-        color = NSColor.commandColor;
+        color = NSColor.defaultCommandColor;
     }
 
     NSDictionary<NSString*,id> *commandColorAttribute = @{NSForegroundColorAttributeName: color};
     
     color = [profile colorForKey:CommentColorKey];
     if (!color) {
-        color = NSColor.commentColor;
+        color = NSColor.defaultCommentColor;
     }
     
     NSDictionary<NSString*,id> *commentColorAttribute = @{NSForegroundColorAttributeName: color};
 
     color = [profile colorForKey:BraceColorKey];
     if (!color) {
-        color = NSColor.braceColor;
+        color = NSColor.defaultBraceColor;
     }
     
     NSDictionary<NSString*,id> *markerColorAttribute = @{NSForegroundColorAttributeName: color};
@@ -132,7 +133,7 @@
 	contentHighlighting = YES;
     NSColor *color = [[controller currentProfile] colorForKey:EnclosedContentBackgroundColorKey];
     if (!color) {
-        color = NSColor.enclosedContentBackgroundColor;
+        color = NSColor.defaultEnclosedContentBackgroundColor;
     }
 	[self.layoutManager addTemporaryAttributes:@{NSBackgroundColorAttributeName: color}
                              forCharacterRange:NSRangeFromString(range)];
@@ -157,7 +158,7 @@
     
     color = [profile colorForKey:HighlightedBraceColorKey];
     if (!color) {
-        color = NSColor.highlightedBraceColor;
+        color = NSColor.defaultHighlightedBraceColor;
     }
 
 	highlightBracesColorDict = @{NSForegroundColorAttributeName: color};

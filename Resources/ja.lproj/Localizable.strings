@@ -36,7 +36,7 @@
 "cannotWriteErrorMsg" = "ファイルの書き込みに失敗しました。\n%@";
 "saveCurrentPreambleAsTemplate" = "プリアンブルをテンプレートとして保存";
 "restoreTemplatesConfirmationMsg" = "デフォルトのテンプレートを復元します。\n同名の既存テンプレートは上書きされます。\nよろしいですか？";
-"restoreColorsConfirmationMsg" = "すべての色設定を初期設定に戻します。\nよろしいですか？";
+"restoreColorsConfirmationMsg" = "%@用のすべての色設定を初期設定に戻します。\nよろしいですか？";
 "doesNotContainSource" = "この画像ファイルにはソース情報が含まれていません。";
 "errorsIgnoredWarning" = "コンパイルエラーを無視して画像化を強行しました。\n組版結果は期待と異なる可能性があります。\nソースを修正してエラーを解決することを推奨します。";
 "pageSkippedWarning" = "%@ ページ目が空白ページであったためスキップしました。";
@@ -79,3 +79,5 @@
 "Failed" = "変換に失敗しました";
 "Aborted" = "変換を中止しました";
 "Format" = "画像形式：";
+"Light Mode" = "ライトモード";
+"Dark Mode" = "ダークモード";

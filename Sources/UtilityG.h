@@ -10,5 +10,6 @@ void runErrorPanel(NSString *message, ...);
 void runWarningPanel(NSString *message, ...);
 BOOL runConfirmPanel(NSString *message, ...);
 BOOL isJapaneseLanguage(void);
+BOOL isDarkMode(void);
 
 #endif

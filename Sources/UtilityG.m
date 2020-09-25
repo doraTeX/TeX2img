@@ -49,3 +49,13 @@ BOOL isJapaneseLanguage()
     });
     return isJapanese;
 }
+
+BOOL isDarkMode()
+{
+    if (@available(macOS 10.14, *)) {
+        return (NSApp.effectiveAppearance.name == NSAppearanceNameDarkAqua);
+    } else {
+        return NO;
+    }
+}
+
