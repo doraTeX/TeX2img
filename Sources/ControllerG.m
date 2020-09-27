@@ -1846,6 +1846,7 @@ typedef enum {
 
     [sourceTextView colorizeText];
     [preambleTextView colorizeText];
+    [self recolorOutputView];
 }
 
 - (void)setupFontTextField:(NSFont*)font
@@ -2618,7 +2619,11 @@ typedef enum {
 
     [sourceTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
     [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
-    
+    [self recolorOutputView];
+}
+
+- (void)recolorOutputView
+{
     [self refreshTextView:outputTextView
           foregroundColor:isDarkMode() ? darkModeConsoleForegroundColorWell.color : lightModeConsoleForegroundColorWell.color
           backgroundColor:isDarkMode() ? darkModeConsoleBackgroundColorWell.color : lightModeConsoleBackgroundColorWell.color
