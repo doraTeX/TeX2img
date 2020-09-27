@@ -128,6 +128,13 @@
     [aMenu insertItem:NSMenuItem.separatorItem atIndex:index];
 }
 
+// ライトモード・ダークモードの切り替えを検知
+- (void)viewDidChangeEffectiveAppearance {
+    [self colorizeText];
+    return;
+}
+
+
 - (BOOL)validateMenuItem:(NSMenuItem*)menuItem
 {
     if (menuItem.action == @selector(showCharacterInfo:)) {
