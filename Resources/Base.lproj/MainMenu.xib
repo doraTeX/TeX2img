@@ -2109,17 +2109,6 @@ DQ
                                                 <action selector="colorSettingChanged:" target="450" id="UKw-q8-bgm"/>
                                             </connections>
                                         </colorWell>
-                                        <button toolTip="Colorize \foo@bar as one control sequence." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e5G-Bl-d2N">
-                                            <rect key="frame" x="30" y="240" width="144" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Enable \makeatletter" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="l1X-wb-Mcw">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="refreshTextView:" target="450" id="elS-me-4Qn"/>
-                                            </connections>
-                                        </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zml-1J-Qhu">
                                             <rect key="frame" x="286" y="376" width="69" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -2262,6 +2251,17 @@ DQ
                                                 <action selector="colorSettingChanged:" target="450" id="WyY-UL-Ueb"/>
                                             </connections>
                                         </colorWell>
+                                        <button toolTip="Colorize \foo@bar as one control sequence." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e5G-Bl-d2N">
+                                            <rect key="frame" x="23" y="211" width="144" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Enable \makeatletter" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="l1X-wb-Mcw">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="smallSystem"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="refreshTextView:" target="450" id="elS-me-4Qn"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
