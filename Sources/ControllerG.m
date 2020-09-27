@@ -154,6 +154,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSColorWell *lightModeHighlightedBraceColorWell;
 @property (nonatomic, strong) IBOutlet NSColorWell *lightModeEnclosedContentBackgroundColorWell;
 @property (nonatomic, strong) IBOutlet NSColorWell *lightModeFlashingBackgroundColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *lightModeConsoleForegroundColorWell;
 @property (nonatomic, strong) IBOutlet NSColorWell *lightModeConsoleBackgroundColorWell;
 
 @property (nonatomic, strong) IBOutlet NSColorWell *darkModeForegroundColorWell;
@@ -166,6 +167,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSColorWell *darkModeHighlightedBraceColorWell;
 @property (nonatomic, strong) IBOutlet NSColorWell *darkModeEnclosedContentBackgroundColorWell;
 @property (nonatomic, strong) IBOutlet NSColorWell *darkModeFlashingBackgroundColorWell;
+@property (nonatomic, strong) IBOutlet NSColorWell *darkModeConsoleForegroundColorWell;
 @property (nonatomic, strong) IBOutlet NSColorWell *darkModeConsoleBackgroundColorWell;
 
 @property (nonatomic, strong) IBOutlet NSButton *makeatletterEnabledCheckBox;
@@ -321,6 +323,7 @@ typedef enum {
 @synthesize lightModeHighlightedBraceColorWell;
 @synthesize lightModeEnclosedContentBackgroundColorWell;
 @synthesize lightModeFlashingBackgroundColorWell;
+@synthesize lightModeConsoleForegroundColorWell;
 @synthesize lightModeConsoleBackgroundColorWell;
 
 @synthesize darkModeForegroundColorWell;
@@ -333,6 +336,7 @@ typedef enum {
 @synthesize darkModeHighlightedBraceColorWell;
 @synthesize darkModeEnclosedContentBackgroundColorWell;
 @synthesize darkModeFlashingBackgroundColorWell;
+@synthesize darkModeConsoleForegroundColorWell;
 @synthesize darkModeConsoleBackgroundColorWell;
 
 @synthesize makeatletterEnabledCheckBox;
@@ -882,6 +886,13 @@ typedef enum {
     }
     [lightModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
 
+    if ([keys containsObject:ConsoleForegroundColorKey]) {
+        lightModeConsoleForegroundColorWell.color = [aProfile colorForKey:ConsoleForegroundColorKey];
+    } else {
+        lightModeConsoleForegroundColorWell.color = NSColor.defaultConsoleForegroundColorForLightMode;
+    }
+    [lightModeConsoleForegroundColorWell saveColorToMutableDictionary:lastColorDict];
+
     if ([keys containsObject:ConsoleBackgroundColorKey]) {
         lightModeConsoleBackgroundColorWell.color = [aProfile colorForKey:ConsoleBackgroundColorKey];
     } else {
@@ -959,6 +970,13 @@ typedef enum {
         darkModeFlashingBackgroundColorWell.color = NSColor.defaultFlashingBackgroundColorForDarkMode;
     }
     [darkModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+
+    if ([keys containsObject:ConsoleForegroundColorForDarkModeKey]) {
+        darkModeConsoleForegroundColorWell.color = [aProfile colorForKey:ConsoleForegroundColorForDarkModeKey];
+    } else {
+        darkModeConsoleForegroundColorWell.color = NSColor.defaultConsoleForegroundColorForDarkMode;
+    }
+    [darkModeConsoleForegroundColorWell saveColorToMutableDictionary:lastColorDict];
 
     if ([keys containsObject:ConsoleBackgroundColorForDarkModeKey]) {
         darkModeConsoleBackgroundColorWell.color = [aProfile colorForKey:ConsoleBackgroundColorForDarkModeKey];
@@ -1781,6 +1799,7 @@ typedef enum {
         lightModeHighlightedBraceColorWell.color = NSColor.defaultHighlightedBraceColorForLightMode;
         lightModeEnclosedContentBackgroundColorWell.color = NSColor.defaultEnclosedContentBackgroundColorForLightMode;
         lightModeFlashingBackgroundColorWell.color = NSColor.defaultFlashingBackgroundColorForLightMode;
+        lightModeConsoleForegroundColorWell.color = NSColor.defaultConsoleForegroundColorForLightMode;
         lightModeConsoleBackgroundColorWell.color = NSColor.defaultConsoleBackgroundColorForLightMode;
         
         [lightModeForegroundColorWell saveColorToMutableDictionary:lastColorDict];
@@ -1793,6 +1812,7 @@ typedef enum {
         [lightModeHighlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
         [lightModeEnclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
         [lightModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+        [lightModeConsoleForegroundColorWell saveColorToMutableDictionary:lastColorDict];
         [lightModeConsoleBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
     } else { // ダークモードの「デフォルトに戻す」ボタン
         darkModeForegroundColorWell.color = NSColor.defaultForegroundColorForDarkMode;
@@ -1805,6 +1825,7 @@ typedef enum {
         darkModeHighlightedBraceColorWell.color = NSColor.defaultHighlightedBraceColorForDarkMode;
         darkModeEnclosedContentBackgroundColorWell.color = NSColor.defaultEnclosedContentBackgroundColorForDarkMode;
         darkModeFlashingBackgroundColorWell.color = NSColor.defaultFlashingBackgroundColorForDarkMode;
+        darkModeConsoleForegroundColorWell.color = NSColor.defaultConsoleForegroundColorForDarkMode;
         darkModeConsoleBackgroundColorWell.color = NSColor.defaultConsoleBackgroundColorForDarkMode;
         
         [darkModeForegroundColorWell saveColorToMutableDictionary:lastColorDict];
@@ -1817,6 +1838,7 @@ typedef enum {
         [darkModeHighlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
         [darkModeEnclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
         [darkModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
+        [darkModeConsoleForegroundColorWell saveColorToMutableDictionary:lastColorDict];
         [darkModeConsoleBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
     }
     
@@ -2221,6 +2243,7 @@ typedef enum {
     [lightModeHighlightedBraceColorWell deactivate];
     [lightModeEnclosedContentBackgroundColorWell deactivate];
     [lightModeFlashingBackgroundColorWell deactivate];
+    [lightModeConsoleForegroundColorWell deactivate];
     [lightModeConsoleBackgroundColorWell deactivate];
 
     [darkModeForegroundColorWell deactivate];
@@ -2233,6 +2256,7 @@ typedef enum {
     [darkModeHighlightedBraceColorWell deactivate];
     [darkModeEnclosedContentBackgroundColorWell deactivate];
     [darkModeFlashingBackgroundColorWell deactivate];
+    [darkModeConsoleForegroundColorWell deactivate];
     [darkModeConsoleBackgroundColorWell deactivate];
 
     [colorPalleteColorWell deactivate];
@@ -2251,6 +2275,7 @@ typedef enum {
     [lightModeHighlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
     [lightModeEnclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
     [lightModeFlashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeConsoleForegroundColorWell restoreColorFromDictionary:lastColorDict];
     [lightModeConsoleBackgroundColorWell restoreColorFromDictionary:lastColorDict];
 
     [darkModeForegroundColorWell restoreColorFromDictionary:lastColorDict];
@@ -2263,6 +2288,7 @@ typedef enum {
     [darkModeHighlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
     [darkModeEnclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
     [darkModeFlashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [darkModeConsoleForegroundColorWell restoreColorFromDictionary:lastColorDict];
     [darkModeConsoleBackgroundColorWell restoreColorFromDictionary:lastColorDict];
 
     [colorPalleteColorWell restoreColorFromDictionary:lastColorDict];
@@ -2594,8 +2620,8 @@ typedef enum {
     [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
     
     [self refreshTextView:outputTextView
-          foregroundColor:isDarkMode() ? darkModeForegroundColorWell.color : lightModeForegroundColorWell.color
-          backgroundColor:isDarkMode() ? darkModeBackgroundColorWell.color : lightModeBackgroundColorWell.color
+          foregroundColor:isDarkMode() ? darkModeConsoleForegroundColorWell.color : lightModeConsoleForegroundColorWell.color
+          backgroundColor:isDarkMode() ? darkModeConsoleBackgroundColorWell.color : lightModeConsoleBackgroundColorWell.color
               cursorColor:isDarkMode() ? darkModeCursorColorWell.color : lightModeCursorColorWell.color];
     
     outputTextView.font = sourceFont;

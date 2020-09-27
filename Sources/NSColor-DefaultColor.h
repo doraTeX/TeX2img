@@ -13,6 +13,7 @@
 + (NSColor*)defaultHighlightedBraceColorForLightMode;
 + (NSColor*)defaultEnclosedContentBackgroundColorForLightMode;
 + (NSColor*)defaultFlashingBackgroundColorForLightMode;
++ (NSColor*)defaultConsoleForegroundColorForLightMode;
 + (NSColor*)defaultConsoleBackgroundColorForLightMode;
 
 + (NSColor*)defaultForegroundColorForDarkMode;
@@ -25,6 +26,7 @@
 + (NSColor*)defaultHighlightedBraceColorForDarkMode;
 + (NSColor*)defaultEnclosedContentBackgroundColorForDarkMode;
 + (NSColor*)defaultFlashingBackgroundColorForDarkMode;
++ (NSColor*)defaultConsoleForegroundColorForDarkMode;
 + (NSColor*)defaultConsoleBackgroundColorForDarkMode;
 
 + (NSColor*)defaultForegroundColor;
@@ -37,6 +39,7 @@
 + (NSColor*)defaultHighlightedBraceColor;
 + (NSColor*)defaultEnclosedContentBackgroundColor;
 + (NSColor*)defaultFlashingBackgroundColor;
++ (NSColor*)defaultConsoleForegroundColor;
 + (NSColor*)defaultConsoleBackgroundColor;
 @end
 

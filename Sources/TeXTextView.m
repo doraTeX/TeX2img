@@ -129,7 +129,8 @@
 }
 
 // ライトモード・ダークモードの切り替えを検知
-- (void)viewDidChangeEffectiveAppearance {
+- (void)viewDidChangeEffectiveAppearance
+{
     [self colorizeText];
     return;
 }

@@ -810,7 +810,7 @@ DQ
                     </popUpButton>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-456" y="276"/>
+            <point key="canvasLocation" x="9" y="265"/>
         </window>
         <window title="環境設定" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="517">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -1781,7 +1781,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="icN-Ln-3Bx">
-                                            <rect key="frame" x="199" y="319" width="30" height="17"/>
+                                            <rect key="frame" x="199" y="322" width="30" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="背景" id="DWN-VM-Bnn">
                                                 <font key="font" metaFont="system"/>
@@ -1790,7 +1790,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="42r-67-98t">
-                                            <rect key="frame" x="173" y="288" width="56" height="17"/>
+                                            <rect key="frame" x="173" y="294" width="56" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="カーソル" id="n8E-Uq-lwT">
                                                 <font key="font" metaFont="system"/>
@@ -1799,7 +1799,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nXq-YJ-QVm">
-                                            <rect key="frame" x="181" y="257" width="48" height="17"/>
+                                            <rect key="frame" x="181" y="266" width="48" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="{ } と $" id="g1a-rX-NDu">
                                                 <font key="font" metaFont="system"/>
@@ -1808,7 +1808,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41t-ra-oMS">
-                                            <rect key="frame" x="155" y="195" width="74" height="17"/>
+                                            <rect key="frame" x="155" y="210" width="74" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="\command" id="GET-WR-4bL">
                                                 <font key="font" metaFont="system"/>
@@ -1817,7 +1817,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="x43-ql-KM8">
-                                            <rect key="frame" x="98" y="133" width="131" height="17"/>
+                                            <rect key="frame" x="98" y="154" width="131" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="{強調表示された括弧}" id="cDj-hY-zFx">
                                                 <font key="font" metaFont="system"/>
@@ -1826,7 +1826,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a83-KB-aKI">
-                                            <rect key="frame" x="46" y="102" width="183" height="17"/>
+                                            <rect key="frame" x="46" y="126" width="183" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="{強調表示された括弧内の背景}" id="o5z-jD-XIo">
                                                 <font key="font" metaFont="system"/>
@@ -1835,7 +1835,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zib-Y9-Syg">
-                                            <rect key="frame" x="96" y="164" width="133" height="17"/>
+                                            <rect key="frame" x="96" y="182" width="133" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="不可視文字" id="b74-6f-dN3">
                                                 <font key="font" metaFont="system"/>
@@ -1852,7 +1852,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eYk-0N-5fl">
-                                            <rect key="frame" x="247" y="316" width="48" height="23"/>
+                                            <rect key="frame" x="247" y="319" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1860,7 +1860,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yy9-T4-uMu">
-                                            <rect key="frame" x="247" y="285" width="48" height="23"/>
+                                            <rect key="frame" x="247" y="291" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1868,7 +1868,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5ZQ-y1-ObI">
-                                            <rect key="frame" x="247" y="254" width="48" height="23"/>
+                                            <rect key="frame" x="247" y="263" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1876,7 +1876,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5fH-Qw-pGy">
-                                            <rect key="frame" x="247" y="223" width="48" height="23"/>
+                                            <rect key="frame" x="247" y="235" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1884,7 +1884,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jTZ-4o-f0r">
-                                            <rect key="frame" x="247" y="192" width="48" height="23"/>
+                                            <rect key="frame" x="247" y="207" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1892,7 +1892,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2PL-XR-xzK">
-                                            <rect key="frame" x="247" y="161" width="48" height="23"/>
+                                            <rect key="frame" x="247" y="179" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1900,7 +1900,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S4g-2D-ZhF">
-                                            <rect key="frame" x="247" y="130" width="48" height="23"/>
+                                            <rect key="frame" x="247" y="151" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1908,7 +1908,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qkx-sU-Fa1">
-                                            <rect key="frame" x="247" y="99" width="48" height="23"/>
+                                            <rect key="frame" x="247" y="123" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1916,7 +1916,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zc7-Fv-zRy">
-                                            <rect key="frame" x="43" y="71" width="186" height="17"/>
+                                            <rect key="frame" x="43" y="98" width="186" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="括弧不一致で点滅している背景" id="myR-76-IeO">
                                                 <font key="font" metaFont="system"/>
@@ -1925,7 +1925,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t6G-be-r7D">
-                                            <rect key="frame" x="247" y="68" width="48" height="23"/>
+                                            <rect key="frame" x="247" y="95" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1933,7 +1933,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R2d-cs-YmN">
-                                            <rect key="frame" x="43" y="40" width="186" height="17"/>
+                                            <rect key="frame" x="43" y="42" width="186" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="コンソールの背景" id="02F-17-Jva">
                                                 <font key="font" metaFont="system"/>
@@ -1942,7 +1942,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EJc-1j-WeR">
-                                            <rect key="frame" x="247" y="37" width="48" height="23"/>
+                                            <rect key="frame" x="247" y="39" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1950,7 +1950,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5Nr-cj-FO2">
-                                            <rect key="frame" x="143" y="226" width="86" height="17"/>
+                                            <rect key="frame" x="143" y="238" width="86" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="% コメント" id="pZg-Zd-fIa">
                                                 <font key="font" metaFont="system"/>
@@ -1959,7 +1959,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button toolTip="\foo@bar のような並びを1つの制御綴として着色します。" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="v1y-4P-OKt">
-                                            <rect key="frame" x="15" y="195" width="136" height="18"/>
+                                            <rect key="frame" x="15" y="210" width="136" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="\makeatletter 有効扱い" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Pqe-N5-87f">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1987,7 +1987,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fAe-qA-XpK">
-                                            <rect key="frame" x="332" y="316" width="48" height="23"/>
+                                            <rect key="frame" x="332" y="319" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1995,7 +1995,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fFE-h9-AvJ">
-                                            <rect key="frame" x="332" y="285" width="48" height="23"/>
+                                            <rect key="frame" x="332" y="291" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -2003,7 +2003,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T4S-SJ-IaE">
-                                            <rect key="frame" x="332" y="254" width="48" height="23"/>
+                                            <rect key="frame" x="332" y="263" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -2011,7 +2011,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jfo-BB-kjI">
-                                            <rect key="frame" x="332" y="223" width="48" height="23"/>
+                                            <rect key="frame" x="332" y="235" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -2019,7 +2019,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qvQ-gI-zp5">
-                                            <rect key="frame" x="332" y="192" width="48" height="23"/>
+                                            <rect key="frame" x="332" y="207" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -2027,7 +2027,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6AX-nj-RQ0">
-                                            <rect key="frame" x="332" y="161" width="48" height="23"/>
+                                            <rect key="frame" x="332" y="179" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -2035,7 +2035,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="p1c-sa-T71">
-                                            <rect key="frame" x="332" y="130" width="48" height="23"/>
+                                            <rect key="frame" x="332" y="151" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -2043,7 +2043,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vu0-7p-izY">
-                                            <rect key="frame" x="332" y="99" width="48" height="23"/>
+                                            <rect key="frame" x="332" y="123" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -2051,7 +2051,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IRZ-pK-08o">
-                                            <rect key="frame" x="332" y="68" width="48" height="23"/>
+                                            <rect key="frame" x="332" y="95" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -2059,7 +2059,7 @@ DQ
                                             </connections>
                                         </colorWell>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PnA-8V-uc8">
-                                            <rect key="frame" x="332" y="37" width="48" height="23"/>
+                                            <rect key="frame" x="332" y="39" width="48" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -2086,6 +2086,31 @@ DQ
                                                 <action selector="loadDefaultColors:" target="450" id="YjK-Ty-lfV"/>
                                             </connections>
                                         </button>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kFO-22-2YI">
+                                            <rect key="frame" x="43" y="70" width="186" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="コンソールの文字" id="zN2-Gt-J3i">
+                                                <font key="font" size="13" name=".HiraKakuInterface-W3"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ivj-A7-AJe">
+                                            <rect key="frame" x="247" y="67" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="jpB-vA-Cir"/>
+                                            </connections>
+                                        </colorWell>
+                                        <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O0J-by-kBr">
+                                            <rect key="frame" x="332" y="67" width="48" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="colorSettingChanged:" target="450" id="g07-Sd-KCk"/>
+                                            </connections>
+                                        </colorWell>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -2215,7 +2240,7 @@ DQ
                                             </popUpButtonCell>
                                         </popUpButton>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lgo-d9-yPF">
-                                            <rect key="frame" x="21" y="182" width="185" height="14"/>
+                                            <rect key="frame" x="21" y="182" width="210" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" lineBreakMode="clipping" title="※他アプリの操作には許可が必要です。" id="P81-Ea-pUz">
                                                 <font key="font" size="11" name="LucidaGrande"/>
@@ -2224,7 +2249,7 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lKh-Be-EPj">
-                                            <rect key="frame" x="209" y="179" width="144" height="19"/>
+                                            <rect key="frame" x="220" y="179" width="144" height="19"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="roundRect" title="システム環境設定を開く..." bezelStyle="roundedRect" image="buttonCell:ouV-Bq-D8d:image" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ouV-Bq-D8d">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2379,7 +2404,7 @@ DQ
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <clipView key="contentView" drawsBackground="NO" id="PMd-Er-wWq">
                         <rect key="frame" x="1" y="1" width="391" height="335"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="476">
                                 <rect key="frame" x="0.0" y="0.0" width="391" height="335"/>
@@ -2402,6 +2427,7 @@ DQ
                     </scroller>
                 </scrollView>
             </subviews>
+            <point key="canvasLocation" x="-541" y="-456"/>
         </customView>
         <customObject id="450" customClass="ControllerG">
             <connections>
@@ -2433,6 +2459,7 @@ DQ
                 <outlet property="darkModeCommandColorWell" destination="qvQ-gI-zp5" id="uKT-dJ-Q2P"/>
                 <outlet property="darkModeCommentColorWell" destination="Jfo-BB-kjI" id="den-9U-GSa"/>
                 <outlet property="darkModeConsoleBackgroundColorWell" destination="PnA-8V-uc8" id="Dcj-n2-svV"/>
+                <outlet property="darkModeConsoleForegroundColorWell" destination="O0J-by-kBr" id="Wc9-Xr-bAG"/>
                 <outlet property="darkModeCursorColorWell" destination="fFE-h9-AvJ" id="9YY-NX-hV2"/>
                 <outlet property="darkModeEnclosedContentBackgroundColorWell" destination="vu0-7p-izY" id="0FM-KC-XHO"/>
                 <outlet property="darkModeFlashingBackgroundColorWell" destination="IRZ-pK-08o" id="QbG-gK-WGV"/>
@@ -2477,6 +2504,7 @@ DQ
                 <outlet property="lightModeCommandColorWell" destination="jTZ-4o-f0r" id="Bhl-HB-rCC"/>
                 <outlet property="lightModeCommentColorWell" destination="5fH-Qw-pGy" id="2pA-3P-jk1"/>
                 <outlet property="lightModeConsoleBackgroundColorWell" destination="EJc-1j-WeR" id="Zft-cG-oUO"/>
+                <outlet property="lightModeConsoleForegroundColorWell" destination="Ivj-A7-AJe" id="i9W-Bl-7U4"/>
                 <outlet property="lightModeCursorColorWell" destination="Yy9-T4-uMu" id="K7f-eV-fZS"/>
                 <outlet property="lightModeEnclosedContentBackgroundColorWell" destination="Qkx-sU-Fa1" id="3pf-OO-73c"/>
                 <outlet property="lightModeFlashingBackgroundColorWell" destination="t6G-be-r7D" id="uw4-fp-ZG8"/>

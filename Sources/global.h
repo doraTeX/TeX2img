@@ -83,6 +83,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define HighlightedBraceColorKey @"highlightedBraceColor"
 #define EnclosedContentBackgroundColorKey @"enclosedContentBackgroundColor"
 #define FlashingBackgroundColorKey @"flashingBackgroundColor"
+#define ConsoleForegroundColorKey @"consoleForegroundColor"
 #define ConsoleBackgroundColorKey @"consoleBackgroundColor"
 
 #define ForegroundColorForDarkModeKey @"foregroundColorForDarkMode"
@@ -95,6 +96,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define HighlightedBraceColorForDarkModeKey @"highlightedBraceColorForDarkMode"
 #define EnclosedContentBackgroundColorForDarkModeKey @"enclosedContentBackgroundColorForDarkMode"
 #define FlashingBackgroundColorForDarkModeKey @"flashingBackgroundColorForDarkMode"
+#define ConsoleForegroundColorForDarkModeKey @"consoleForegroundColorForDarkMode"
 #define ConsoleBackgroundColorForDarkModeKey @"consoleBackgroundColorForDarkMode"
 
 #define MakeatletterEnabledKey @"makeatletterEnabled"
