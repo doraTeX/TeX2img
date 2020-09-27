@@ -7,17 +7,17 @@
 #pragma mark - Light Mode Defaults
 + (NSColor*)defaultForegroundColorForLightMode
 {
-    return NSColor.textColor;
+    return NSColor.blackColor;
 }
 
 + (NSColor*)defaultBackgroundColorForLightMode
 {
-    return NSColor.controlBackgroundColor;
+    return NSColor.whiteColor;
 }
 
 + (NSColor*)defaultCursorColorForLightMode
 {
-    return NSColor.textColor;
+    return NSColor.blackColor;
 }
 
 + (NSColor*)defaultBraceColorForLightMode
@@ -63,32 +63,32 @@
 #pragma mark - Dark Mode Defaults
 + (NSColor*)defaultForegroundColorForDarkMode
 {
-    return NSColor.textColor;
+    return [NSColor colorWithCalibratedRed:0.792 green:0.843 blue:0.854 alpha:1.0];
 }
 
 + (NSColor*)defaultBackgroundColorForDarkMode
 {
-    return NSColor.controlBackgroundColor;
+    return [NSColor colorWithCalibratedRed:0.07 green:0.12 blue:0.14 alpha:1.0];
 }
 
 + (NSColor*)defaultCursorColorForDarkMode
 {
-    return NSColor.textColor;
+    return NSColor.defaultForegroundColorForDarkMode;
 }
 
 + (NSColor*)defaultBraceColorForDarkMode
 {
-    return [NSColor colorWithCalibratedRed:0.02 green:0.51 blue:0.13 alpha:1.0];
+    return [NSColor colorWithCalibratedRed:1.00 green:0.980 blue:0.513 alpha:1.0];
 }
 
 + (NSColor*)defaultCommentColorForDarkMode
 {
-    return [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:1.0];
+    return [NSColor colorWithCalibratedRed:0.580 green:0.584 blue:0.500 alpha:1.0];
 }
 
 + (NSColor*)defaultCommandColorForDarkMode
 {
-    return [NSColor colorWithCalibratedRed:0.0 green:0.0 blue:1.0 alpha:1.0];
+    return [NSColor colorWithCalibratedRed:0.341 green:0.709 blue:0.494 alpha:1.0];
 }
 
 + (NSColor*)defaultInvisibleColorForDarkMode
@@ -98,22 +98,22 @@
 
 + (NSColor*)defaultHighlightedBraceColorForDarkMode
 {
-    return NSColor.magentaColor;
+    return [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.5 alpha:1.0];
 }
 
 + (NSColor*)defaultEnclosedContentBackgroundColorForDarkMode
 {
-    return [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.5 alpha:1.0];
+    return [NSColor colorWithCalibratedRed:0.356 green:0.360 blue:0.258 alpha:1.0];
 }
 
 + (NSColor*)defaultFlashingBackgroundColorForDarkMode
 {
-    return [NSColor colorWithCalibratedRed:1.0 green:0.95 blue:1.0 alpha:1.0];
+    return [NSColor colorWithCalibratedRed:0.04 green:0.13 blue:0.13 alpha:1.0];
 }
 
 + (NSColor*)defaultConsoleBackgroundColorForDarkMode
 {
-    return [NSColor colorWithCalibratedRed:1.0 green:0.95 blue:1.0 alpha:1.0];
+    return NSColor.defaultBackgroundColorForDarkMode;
 }
 
 #pragma mark - Automatic Choice

@@ -438,6 +438,10 @@ typedef enum {
         backgroundColor:(NSColor*)backgroundColor
         cursorColor:(NSColor*)cursorColor
 {
+    if (!foregroundColor) foregroundColor = NSColor.defaultForegroundColor;
+    if (!backgroundColor) backgroundColor = NSColor.defaultBackgroundColor;
+    if (!cursorColor) cursorColor = NSColor.defaultCursorColor;
+    
     textView.textColor = foregroundColor;
     textView.backgroundColor = backgroundColor;
     textView.insertionPointColor = cursorColor;
@@ -455,9 +459,9 @@ typedef enum {
     Profile *currentProfile = [self currentProfile];
 
     [self refreshTextView:outputTextView
-          foregroundColor:[currentProfile colorForKey:ForegroundColorKey]
-          backgroundColor:[currentProfile colorForKey:BackgroundColorKey]
-              cursorColor:[currentProfile colorForKey:CursorColorKey]];
+          foregroundColor:[currentProfile colorForKey:isDarkMode() ? ForegroundColorForDarkModeKey : ForegroundColorKey]
+          backgroundColor:[currentProfile colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorKey]
+              cursorColor:[currentProfile colorForKey:isDarkMode() ? CursorColorForDarkModeKey : CursorColorKey]];
 
     [outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
     outputTextView.font = sourceFont;
@@ -1091,9 +1095,9 @@ typedef enum {
     [preambleTextView refreshWordWrap];
     
     [self refreshTextView:outputTextView
-          foregroundColor:[aProfile colorForKey:ForegroundColorKey]
-          backgroundColor:[aProfile colorForKey:BackgroundColorKey]
-          cursorColor:[aProfile colorForKey:CursorColorKey]];
+          foregroundColor:[aProfile colorForKey:isDarkMode() ? ForegroundColorForDarkModeKey : ForegroundColorKey]
+          backgroundColor:[aProfile colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorKey]
+              cursorColor:[aProfile colorForKey:isDarkMode() ? CursorColorForDarkModeKey : CursorColorKey]];
 
     // 不可視文字表示の選択肢のフォントを更新
     NSFont *displayFont = [NSFont fontWithName:sourceFont.fontName size:spaceCharacterKindButton.font.pointSize];
@@ -1264,6 +1268,18 @@ typedef enum {
         currentProfile[HighlightedBraceColorKey] = lightModeHighlightedBraceColorWell.color.serializedString;
         currentProfile[EnclosedContentBackgroundColorKey] = lightModeEnclosedContentBackgroundColorWell.color.serializedString;
         currentProfile[FlashingBackgroundColorKey] = lightModeFlashingBackgroundColorWell.color.serializedString;
+        
+        currentProfile[ForegroundColorForDarkModeKey] = darkModeForegroundColorWell.color.serializedString;
+        currentProfile[BackgroundColorForDarkModeKey] = darkModeBackgroundColorWell.color.serializedString;
+        currentProfile[CursorColorForDarkModeKey] = darkModeCursorColorWell.color.serializedString;
+        currentProfile[BraceColorForDarkModeKey] = darkModeBraceColorWell.color.serializedString;
+        currentProfile[CommentColorForDarkModeKey] = darkModeCommentColorWell.color.serializedString;
+        currentProfile[CommandColorForDarkModeKey] = darkModeCommandColorWell.color.serializedString;
+        currentProfile[InvisibleColorForDarkModeKey] = darkModeInvisibleColorWell.color.serializedString;
+        currentProfile[HighlightedBraceColorForDarkModeKey] = darkModeHighlightedBraceColorWell.color.serializedString;
+        currentProfile[EnclosedContentBackgroundColorForDarkModeKey] = darkModeEnclosedContentBackgroundColorWell.color.serializedString;
+        currentProfile[FlashingBackgroundColorForDarkModeKey] = darkModeFlashingBackgroundColorWell.color.serializedString;
+
         currentProfile[MakeatletterEnabledKey] = @(makeatletterEnabledCheckBox.state);
         
         currentProfile[ColorPalleteColorKey] = colorPalleteColorWell.color.serializedString;
@@ -2205,7 +2221,20 @@ typedef enum {
     [lightModeHighlightedBraceColorWell deactivate];
     [lightModeEnclosedContentBackgroundColorWell deactivate];
     [lightModeFlashingBackgroundColorWell deactivate];
-    
+    [lightModeConsoleBackgroundColorWell deactivate];
+
+    [darkModeForegroundColorWell deactivate];
+    [darkModeBackgroundColorWell deactivate];
+    [darkModeCursorColorWell deactivate];
+    [darkModeBraceColorWell deactivate];
+    [darkModeCommentColorWell deactivate];
+    [darkModeCommandColorWell deactivate];
+    [darkModeInvisibleColorWell deactivate];
+    [darkModeHighlightedBraceColorWell deactivate];
+    [darkModeEnclosedContentBackgroundColorWell deactivate];
+    [darkModeFlashingBackgroundColorWell deactivate];
+    [darkModeConsoleBackgroundColorWell deactivate];
+
     [colorPalleteColorWell deactivate];
     
     [NSColorPanel.sharedColorPanel performSelector:@selector(orderOut:) withObject:self afterDelay:0];
@@ -2222,6 +2251,19 @@ typedef enum {
     [lightModeHighlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
     [lightModeEnclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
     [lightModeFlashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [lightModeConsoleBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+
+    [darkModeForegroundColorWell restoreColorFromDictionary:lastColorDict];
+    [darkModeBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [darkModeCursorColorWell restoreColorFromDictionary:lastColorDict];
+    [darkModeBraceColorWell restoreColorFromDictionary:lastColorDict];
+    [darkModeCommentColorWell restoreColorFromDictionary:lastColorDict];
+    [darkModeCommandColorWell restoreColorFromDictionary:lastColorDict];
+    [darkModeInvisibleColorWell restoreColorFromDictionary:lastColorDict];
+    [darkModeHighlightedBraceColorWell restoreColorFromDictionary:lastColorDict];
+    [darkModeEnclosedContentBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [darkModeFlashingBackgroundColorWell restoreColorFromDictionary:lastColorDict];
+    [darkModeConsoleBackgroundColorWell restoreColorFromDictionary:lastColorDict];
 
     [colorPalleteColorWell restoreColorFromDictionary:lastColorDict];
 }
@@ -2552,9 +2594,9 @@ typedef enum {
     [preambleTextView performSelector:@selector(textViewDidChangeSelection:) withObject:nil];
     
     [self refreshTextView:outputTextView
-          foregroundColor:lightModeForegroundColorWell.color
-          backgroundColor:lightModeBackgroundColorWell.color
-          cursorColor:lightModeCursorColorWell.color];
+          foregroundColor:isDarkMode() ? darkModeForegroundColorWell.color : lightModeForegroundColorWell.color
+          backgroundColor:isDarkMode() ? darkModeBackgroundColorWell.color : lightModeBackgroundColorWell.color
+              cursorColor:isDarkMode() ? darkModeCursorColorWell.color : lightModeCursorColorWell.color];
     
     outputTextView.font = sourceFont;
 }

@@ -3,6 +3,7 @@
 #import "NSColor-Extension.h"
 #import "NSColor-DefaultColor.h"
 #import "MyATSTypesetter.h"
+#import "UtilityG.h"
 
 @implementation MyLayoutManager
 @synthesize controller;
@@ -39,7 +40,7 @@
     Profile *currentProfile = [controller currentProfile];
 	
     NSFont *theFont = self.textStorage.font;
-    NSColor *theColor = [currentProfile colorForKey:InvisibleColorKey];
+    NSColor *theColor = [currentProfile colorForKey:isDarkMode() ? InvisibleColorForDarkModeKey : InvisibleColorKey];
     if (!theColor) {
         theColor = NSColor.defaultInvisibleColor;
     }
