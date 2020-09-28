@@ -153,6 +153,9 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define ESCAPE_KEY 1
 #define TAB_KEY 2
 
+#define LIGHTMODE_TAG 1
+#define DARKMODE_TAG 2
+
 #define PX_UNIT_TAG 1
 #define BP_UNIT_TAG 2
 #define QUALITY_PRIORITY_TAG 1

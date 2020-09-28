@@ -1786,13 +1786,13 @@ typedef enum {
 
 - (IBAction)loadDefaultColors:(NSButton*)sender
 {
-    NSString *modeName = localizedString((sender.tag == 1) ? @"Light Mode" : @"Dark Mode");
+    NSString *modeName = localizedString((sender.tag == LIGHTMODE_TAG) ? @"Light Mode" : @"Dark Mode");
     
     if (sender && !runConfirmPanel([NSString stringWithFormat:localizedString(@"restoreColorsConfirmationMsg"), modeName])) {
         return;
     }
     
-    if (sender.tag == 1) { // ライトモードの「デフォルトに戻す」ボタン
+    if (sender.tag == LIGHTMODE_TAG) { // ライトモードの「デフォルトに戻す」ボタン
         lightModeForegroundColorWell.color = NSColor.defaultForegroundColorForLightMode;
         lightModeBackgroundColorWell.color = NSColor.defaultBackgroundColorForLightMode;
         lightModeCursorColorWell.color = NSColor.defaultCursorColorForLightMode;
