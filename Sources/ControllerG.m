@@ -463,9 +463,9 @@ typedef enum {
     Profile *currentProfile = [self currentProfile];
 
     [self refreshTextView:outputTextView
-          foregroundColor:[currentProfile colorForKey:isDarkMode() ? ForegroundColorForDarkModeKey : ForegroundColorForLightModeKey]
-          backgroundColor:[currentProfile colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorForLightModeKey]
-              cursorColor:[currentProfile colorForKey:isDarkMode() ? CursorColorForDarkModeKey : CursorColorForLightModeKey]];
+          foregroundColor:consoleForegroundColorInProfile(currentProfile)
+          backgroundColor:consoleBackgroundColorInProfile(currentProfile)
+              cursorColor:cursorColorInProfile(currentProfile)];
 
     [outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
     outputTextView.font = sourceFont;
@@ -1113,9 +1113,9 @@ typedef enum {
     [preambleTextView refreshWordWrap];
     
     [self refreshTextView:outputTextView
-          foregroundColor:[aProfile colorForKey:isDarkMode() ? ForegroundColorForDarkModeKey : ForegroundColorForLightModeKey]
-          backgroundColor:[aProfile colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorForLightModeKey]
-              cursorColor:[aProfile colorForKey:isDarkMode() ? CursorColorForDarkModeKey : CursorColorForLightModeKey]];
+          foregroundColor:consoleForegroundColorInProfile(aProfile)
+          backgroundColor:consoleBackgroundColorInProfile(aProfile)
+              cursorColor:cursorColorInProfile(aProfile)];
 
     // 不可視文字表示の選択肢のフォントを更新
     NSFont *displayFont = [NSFont fontWithName:sourceFont.fontName size:spaceCharacterKindButton.font.pointSize];
@@ -1286,7 +1286,9 @@ typedef enum {
         currentProfile[HighlightedBraceColorForLightModeKey] = lightModeHighlightedBraceColorWell.color.serializedString;
         currentProfile[EnclosedContentBackgroundColorForLightModeKey] = lightModeEnclosedContentBackgroundColorWell.color.serializedString;
         currentProfile[FlashingBackgroundColorForLightModeKey] = lightModeFlashingBackgroundColorWell.color.serializedString;
-        
+        currentProfile[ConsoleForegroundColorForLightModeKey] = lightModeConsoleForegroundColorWell.color.serializedString;
+        currentProfile[ConsoleBackgroundColorForLightModeKey] = lightModeConsoleBackgroundColorWell.color.serializedString;
+
         currentProfile[ForegroundColorForDarkModeKey] = darkModeForegroundColorWell.color.serializedString;
         currentProfile[BackgroundColorForDarkModeKey] = darkModeBackgroundColorWell.color.serializedString;
         currentProfile[CursorColorForDarkModeKey] = darkModeCursorColorWell.color.serializedString;
@@ -1297,6 +1299,8 @@ typedef enum {
         currentProfile[HighlightedBraceColorForDarkModeKey] = darkModeHighlightedBraceColorWell.color.serializedString;
         currentProfile[EnclosedContentBackgroundColorForDarkModeKey] = darkModeEnclosedContentBackgroundColorWell.color.serializedString;
         currentProfile[FlashingBackgroundColorForDarkModeKey] = darkModeFlashingBackgroundColorWell.color.serializedString;
+        currentProfile[ConsoleForegroundColorForDarkModeKey] = darkModeConsoleForegroundColorWell.color.serializedString;
+        currentProfile[ConsoleBackgroundColorForDarkModeKey] = darkModeConsoleBackgroundColorWell.color.serializedString;
 
         currentProfile[MakeatletterEnabledKey] = @(makeatletterEnabledCheckBox.state);
         
@@ -2624,10 +2628,12 @@ typedef enum {
 
 - (void)recolorOutputView
 {
+    Profile *currentProfile = [self currentProfile];
+    
     [self refreshTextView:outputTextView
-          foregroundColor:isDarkMode() ? darkModeConsoleForegroundColorWell.color : lightModeConsoleForegroundColorWell.color
-          backgroundColor:isDarkMode() ? darkModeConsoleBackgroundColorWell.color : lightModeConsoleBackgroundColorWell.color
-              cursorColor:isDarkMode() ? darkModeCursorColorWell.color : lightModeCursorColorWell.color];
+          foregroundColor:consoleForegroundColorInProfile(currentProfile)
+          backgroundColor:consoleBackgroundColorInProfile(currentProfile)
+              cursorColor:cursorColorInProfile(currentProfile)];
     
     outputTextView.font = sourceFont;
 }

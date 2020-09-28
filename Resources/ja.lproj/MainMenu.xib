@@ -812,7 +812,7 @@ DQ
             <value key="minSize" type="size" width="498" height="455"/>
             <view key="contentView" id="518">
                 <rect key="frame" x="0.0" y="0.0" width="498" height="455"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="580">
                         <rect key="frame" x="13" y="10" width="472" height="439"/>

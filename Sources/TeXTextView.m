@@ -165,8 +165,8 @@
     BOOL copyAsRichText = [profile boolForKey:RichTextKey];
     
     if (copyAsRichText) {
-        NSColor *foregroundColor = [profile colorForKey:isDarkMode() ? ForegroundColorForDarkModeKey : ForegroundColorForLightModeKey];
-        NSColor *backgroundColor = [profile colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorForLightModeKey];
+        NSColor *foregroundColor = foregroundColorInProfile(profile);
+        NSColor *backgroundColor = backgroundColorInProfile(profile);
         
         NSMutableAttributedString *destStr = [NSMutableAttributedString new]; // コピー先文字列
         NSRange selectedRange = self.selectedRange;

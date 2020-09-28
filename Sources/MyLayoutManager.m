@@ -40,10 +40,8 @@
     Profile *currentProfile = [controller currentProfile];
 	
     NSFont *theFont = self.textStorage.font;
-    NSColor *theColor = [currentProfile colorForKey:isDarkMode() ? InvisibleColorForDarkModeKey : InvisibleColorForLightModeKey];
-    if (!theColor) {
-        theColor = NSColor.defaultInvisibleColor;
-    }
+    NSColor *theColor = invisibleColorInProfile(currentProfile);
+
     NSDictionary<NSString*,id> *attributes = @{
                                                NSFontAttributeName: theFont,
                                                NSForegroundColorAttributeName: theColor

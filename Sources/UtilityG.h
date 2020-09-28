@@ -11,5 +11,17 @@ void runWarningPanel(NSString *message, ...);
 BOOL runConfirmPanel(NSString *message, ...);
 BOOL isJapaneseLanguage(void);
 BOOL isDarkMode(void);
+NSColor *foregroundColorInProfile(Profile *dict);
+NSColor *backgroundColorInProfile(Profile *dict);
+NSColor *cursorColorInProfile(Profile *dict);
+NSColor *braceColorInProfile(Profile *dict);
+NSColor *commentColorInProfile(Profile *dict);
+NSColor *commandColorInProfile(Profile *dict);
+NSColor *invisibleColorInProfile(Profile *dict);
+NSColor *highlightedBraceColorInProfile(Profile *dict);
+NSColor *enclosedContentBackgroundColorInProfile(Profile *dict);
+NSColor *flashingBackgroundColorInProfile(Profile *dict);
+NSColor *consoleForegroundColorInProfile(Profile *dict);
+NSColor *consoleBackgroundColorInProfile(Profile *dict);
 
 #endif

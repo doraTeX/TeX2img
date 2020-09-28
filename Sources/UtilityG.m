@@ -1,4 +1,6 @@
 #import "UtilityG.h"
+#import "NSDictionary-Extension.h"
+#import "NSColor-DefaultColor.h"
 
 void runOkPanel(NSString *title, NSString *message, ...)
 {
@@ -57,5 +59,113 @@ BOOL isDarkMode()
     } else {
         return NO;
     }
+}
+
+NSColor *readColorFromProfile(Profile *profile,
+                              NSString *lightModeKey,
+                              NSString *darkModeKey,
+                              NSColor *defaultColor)
+{
+    NSColor *theColor = [profile colorForKey:isDarkMode() ? darkModeKey : lightModeKey];
+    if (!theColor) {
+        theColor = defaultColor;
+    }
+    return theColor;
+}
+
+NSColor *foregroundColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                ForegroundColorForLightModeKey,
+                                ForegroundColorForDarkModeKey,
+                                NSColor.defaultForegroundColor);
+}
+
+NSColor *backgroundColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                BackgroundColorForLightModeKey,
+                                BackgroundColorForDarkModeKey,
+                                NSColor.defaultBackgroundColor);
+}
+
+NSColor *cursorColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                CursorColorForLightModeKey,
+                                CursorColorForDarkModeKey,
+                                NSColor.defaultCursorColor);
+}
+
+NSColor *braceColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                BraceColorForLightModeKey,
+                                BraceColorForDarkModeKey,
+                                NSColor.defaultBraceColor);
+}
+
+NSColor *commentColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                CommentColorForLightModeKey,
+                                CommentColorForDarkModeKey,
+                                NSColor.defaultCommentColor);
+}
+
+NSColor *commandColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                CommandColorForLightModeKey,
+                                CommandColorForDarkModeKey,
+                                NSColor.defaultCommandColor);
+}
+
+NSColor *invisibleColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                InvisibleColorForLightModeKey,
+                                InvisibleColorForDarkModeKey,
+                                NSColor.defaultInvisibleColor);
+}
+
+NSColor *highlightedBraceColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                HighlightedBraceColorForLightModeKey,
+                                HighlightedBraceColorForDarkModeKey,
+                                NSColor.defaultHighlightedBraceColor);
+}
+
+NSColor *enclosedContentBackgroundColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                EnclosedContentBackgroundColorForLightModeKey,
+                                EnclosedContentBackgroundColorForDarkModeKey,
+                                NSColor.defaultEnclosedContentBackgroundColor);
+}
+
+NSColor *flashingBackgroundColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                FlashingBackgroundColorForLightModeKey,
+                                FlashingBackgroundColorForDarkModeKey,
+                                NSColor.defaultFlashingBackgroundColor);
+}
+
+NSColor *consoleForegroundColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                ConsoleForegroundColorForLightModeKey,
+                                ConsoleForegroundColorForDarkModeKey,
+                                NSColor.defaultConsoleForegroundColor);
+}
+
+NSColor *consoleBackgroundColorInProfile(Profile *profile)
+{
+    return readColorFromProfile(profile,
+                                ConsoleBackgroundColorForLightModeKey,
+                                ConsoleBackgroundColorForDarkModeKey,
+                                NSColor.defaultConsoleBackgroundColor);
 }
 

@@ -19,43 +19,13 @@
 	
     Profile *profile = [controller currentProfile];
     
-    NSColor *color;
+    self.textColor = foregroundColorInProfile(profile);
+    self.backgroundColor = backgroundColorInProfile(profile);
+    self.insertionPointColor = cursorColorInProfile(profile);
     
-    color = [profile colorForKey:isDarkMode () ? ForegroundColorForDarkModeKey : ForegroundColorForLightModeKey];
-    if (color) {
-        self.textColor = color;
-    }
-    
-    color = [profile colorForKey:isDarkMode () ? BackgroundColorForDarkModeKey : BackgroundColorForLightModeKey];
-    if (color) {
-        self.backgroundColor = color;
-    }
-    
-    color = [profile colorForKey:isDarkMode () ? CursorColorForDarkModeKey : CursorColorForLightModeKey];
-    if (color) {
-        self.insertionPointColor = color;
-    }
-    
-    color = [profile colorForKey:isDarkMode () ? CommandColorForDarkModeKey : CommandColorForLightModeKey];
-    if (!color) {
-        color = NSColor.defaultCommandColor;
-    }
-
-    NSDictionary<NSString*,id> *commandColorAttribute = @{NSForegroundColorAttributeName: color};
-    
-    color = [profile colorForKey:isDarkMode () ? CommentColorForDarkModeKey : CommentColorForLightModeKey];
-    if (!color) {
-        color = NSColor.defaultCommentColor;
-    }
-    
-    NSDictionary<NSString*,id> *commentColorAttribute = @{NSForegroundColorAttributeName: color};
-
-    color = [profile colorForKey:isDarkMode () ? BraceColorForDarkModeKey : BraceColorForLightModeKey];
-    if (!color) {
-        color = NSColor.defaultBraceColor;
-    }
-    
-    NSDictionary<NSString*,id> *markerColorAttribute = @{NSForegroundColorAttributeName: color};
+    NSDictionary<NSString*,id> *commandColorAttribute = @{NSForegroundColorAttributeName: commandColorInProfile(profile)};
+    NSDictionary<NSString*,id> *commentColorAttribute = @{NSForegroundColorAttributeName: commentColorInProfile(profile)};
+    NSDictionary<NSString*,id> *markerColorAttribute = @{NSForegroundColorAttributeName: braceColorInProfile(profile)};
 	
 	layoutManager = self.layoutManager;
 	textString = self.string;
@@ -119,7 +89,7 @@
 
 - (void)resetBackgroundColorOfTextView:(id)sender
 {
-    self.backgroundColor = [[controller currentProfile] colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorForLightModeKey];
+    self.backgroundColor = backgroundColorInProfile([controller currentProfile]);
 }
 
 - (void)resetBackgroundColor:(id)sender
@@ -132,11 +102,7 @@
 - (void)highlightContent:(NSString*)range
 {
 	contentHighlighting = YES;
-    NSColor *color = [[controller currentProfile] colorForKey:isDarkMode() ? EnclosedContentBackgroundColorForDarkModeKey : EnclosedContentBackgroundColorForLightModeKey];
-    if (!color) {
-        color = NSColor.defaultEnclosedContentBackgroundColor;
-    }
-	[self.layoutManager addTemporaryAttributes:@{NSBackgroundColorAttributeName: color}
+	[self.layoutManager addTemporaryAttributes:@{NSBackgroundColorAttributeName: enclosedContentBackgroundColorInProfile([controller currentProfile])}
                              forCharacterRange:NSRangeFromString(range)];
 }
 
@@ -144,7 +110,6 @@
 {
 	NSLayoutManager *layoutManager = self.layoutManager;
 	Profile *profile = [controller currentProfile];
-    NSColor *color;
 
 	// Notification の処理で色づけの変更を行うと，delete を押したときにバグるので，performSelector で別途呼び出して処理する
 	if (contentHighlighting) {
@@ -156,13 +121,8 @@
 	if (highlightPattern == SOLID || braceHighlighting) {
 		[self resetHighlight:nil];
 	}
-    
-    color = [profile colorForKey:isDarkMode() ? HighlightedBraceColorForDarkModeKey : HighlightedBraceColorForLightModeKey];
-    if (!color) {
-        color = NSColor.defaultHighlightedBraceColor;
-    }
 
-	highlightBracesColorDict = @{NSForegroundColorAttributeName: color};
+	highlightBracesColorDict = @{NSForegroundColorAttributeName: highlightedBraceColorInProfile(profile)};
 	unichar k_braceCharList[] = {0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E}; // == ()[]{}<>
     
 	NSString *theString = self.textStorage.string;
@@ -280,7 +240,7 @@
         NSBeep();
     }
 	if ([profile boolForKey:FlashBackgroundKey]) {
-        self.backgroundColor = [profile colorForKey:isDarkMode() ? FlashingBackgroundColorForDarkModeKey : FlashingBackgroundColorForLightModeKey];
+        self.backgroundColor = flashingBackgroundColorInProfile(profile);
 		[self performSelector:@selector(resetBackgroundColorOfTextView:) 
 				   withObject:nil
                    afterDelay:0.20];
