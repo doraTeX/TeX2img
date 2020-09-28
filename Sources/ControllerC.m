@@ -48,7 +48,7 @@
 {
 }
 
-- (void)showOutputDrawer
+- (void)showOutputWindow
 {
 }
 

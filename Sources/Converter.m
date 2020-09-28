@@ -29,7 +29,7 @@
 @property (nonatomic, assign) NSInteger dpi;
 @property (nonatomic, assign) BOOL guessCompilation;
 @property (nonatomic, assign) NSInteger numberOfCompilation;
-@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, showOutputDrawerFlag, sendNotificationFlag, previewFlag, deleteTmpFileFlag, autoPasteFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@property (nonatomic, assign) BOOL leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, showOutputWindowFlag, sendNotificationFlag, previewFlag, deleteTmpFileFlag, autoPasteFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @property (nonatomic, assign) AutoPasteDestination autoPasteDestination;
 @property (nonatomic, strong) NSObject<OutputController> *controller;
 @property (nonatomic, strong) NSFileManager *fileManager;
@@ -69,7 +69,7 @@
 @synthesize dpi;
 @synthesize guessCompilation;
 @synthesize leftMargin, rightMargin, topMargin, bottomMargin, numberOfCompilation;
-@synthesize leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputDrawerFlag, sendNotificationFlag, previewFlag, deleteTmpFileFlag, autoPasteFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
+@synthesize leaveTextFlag, transparentFlag, plainTextFlag, deleteDisplaySizeFlag, mergeOutputsFlag, keepPageSizeFlag, showOutputWindowFlag, sendNotificationFlag, previewFlag, deleteTmpFileFlag, autoPasteFlag, embedInIllustratorFlag, ungroupFlag, ignoreErrorsFlag, utfExportFlag, quietFlag;
 @synthesize autoPasteDestination;
 @synthesize controller;
 @synthesize fileManager;
@@ -127,7 +127,7 @@
     deleteDisplaySizeFlag = [aProfile boolForKey:DeleteDisplaySizeKey];
     mergeOutputsFlag = [aProfile boolForKey:MergeOutputsKey];
     keepPageSizeFlag = [aProfile boolForKey:KeepPageSizeKey];
-    showOutputDrawerFlag = [aProfile boolForKey:ShowOutputDrawerKey];
+    showOutputWindowFlag = [aProfile boolForKey:ShowOutputWindowKey];
     sendNotificationFlag = [aProfile boolForKey:SendNotificationKey];
     previewFlag = [aProfile boolForKey:PreviewKey];
     deleteTmpFileFlag = [aProfile boolForKey:DeleteTmpFileKey];
@@ -2002,8 +2002,8 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     
     // 一連のコンパイル処理の開始準備
     [controller prepareOutputTextView];
-    if (showOutputDrawerFlag) {
-        [controller showOutputDrawer];
+    if (showOutputWindowFlag) {
+        [controller showOutputWindow];
     }
     [controller showMainWindow];
     

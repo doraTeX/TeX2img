@@ -1112,7 +1112,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     aProfile[TransparentKey] = @(transparentFlag);
     aProfile[FillColorKey] = fillColor.serializedString;
     aProfile[DeleteDisplaySizeKey] = @(deleteDisplaySizeFlag);
-    aProfile[ShowOutputDrawerKey] = @(NO);
+    aProfile[ShowOutputWindowKey] = @(NO);
     aProfile[PreviewKey] = @(previewFlag);
     aProfile[DeleteTmpFileKey] = @(deleteTmpFileFlag);
     aProfile[AutoPasteKey] = @(NO);

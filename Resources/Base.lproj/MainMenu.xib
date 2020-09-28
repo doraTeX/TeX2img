@@ -505,7 +505,7 @@
                             <menuItem title="Output View" keyEquivalent="O" id="487">
                                 <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                 <connections>
-                                    <action selector="toggleOutputDrawer:" target="450" id="743"/>
+                                    <action selector="toggleOutputWindow:" target="450" id="qz9-8A-eUm"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Color Picker" keyEquivalent="C" id="Y4d-p8-ynZ">
@@ -829,10 +829,10 @@ DQ
                 <outlet property="mergeOutputsCheckBox" destination="iH4-6u-aJA" id="pj3-BG-N76"/>
                 <outlet property="numberOfCompilationStepper" destination="X9l-Yh-wIQ" id="Qvp-0d-gZn"/>
                 <outlet property="numberOfCompilationTextField" destination="dpd-O4-qxE" id="KWX-AS-ogm"/>
-                <outlet property="outputDrawer" destination="748" id="753"/>
-                <outlet property="outputDrawerMenuItem" destination="487" id="741"/>
                 <outlet property="outputFileTextField" destination="461" id="502"/>
-                <outlet property="outputTextView" destination="476" id="477"/>
+                <outlet property="outputTextView" destination="VEn-BE-xUg" id="bit-Jx-RTN"/>
+                <outlet property="outputWindow" destination="DU3-Zn-idA" id="d59-Ho-iu5"/>
+                <outlet property="outputWindowMenuItem" destination="487" id="741"/>
                 <outlet property="pageBoxMatrix" destination="gdn-rj-Rtj" id="RJz-FM-PQa"/>
                 <outlet property="pageBoxSettingViewController" destination="AFH-N0-w7P" id="I7u-j8-Egp"/>
                 <outlet property="plainTextCheckBox" destination="J3E-2Y-JTm" id="Juu-TL-3Iv"/>
@@ -854,7 +854,7 @@ DQ
                 <outlet property="sendNotificationCheckBox" destination="Op2-EA-Mh0" id="yQv-XY-SXe"/>
                 <outlet property="showFullwidthSpaceCharacterCheckBox" destination="UOc-tL-oge" id="f0L-rP-JYJ"/>
                 <outlet property="showNewLineCharacterCheckBox" destination="tuH-Mu-6qj" id="9Ri-Ee-btf"/>
-                <outlet property="showOutputDrawerCheckBox" destination="650" id="742"/>
+                <outlet property="showOutputWindowCheckBox" destination="650" id="742"/>
                 <outlet property="showSpaceCharacterCheckBox" destination="HQa-0J-uFs" id="P3q-Sr-DsE"/>
                 <outlet property="showTabCharacterCheckBox" destination="hZo-cQ-gku" id="NVt-tM-Zyf"/>
                 <outlet property="sourceTextView" destination="aKZ-WF-zY9" id="Q4i-tH-xWD"/>
@@ -2554,47 +2554,6 @@ DQ
                 <outlet property="saveAsTextField" destination="678" id="695"/>
             </connections>
         </customObject>
-        <customView id="747" userLabel="Drawer Content View">
-            <rect key="frame" x="0.0" y="0.0" width="521" height="287"/>
-            <autoresizingMask key="autoresizingMask"/>
-            <subviews>
-                <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="473">
-                    <rect key="frame" x="0.0" y="0.0" width="521" height="287"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    <clipView key="contentView" drawsBackground="NO" id="I8W-kP-SQB">
-                        <rect key="frame" x="1" y="1" width="519" height="285"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <subviews>
-                            <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="476">
-                                <rect key="frame" x="0.0" y="0.0" width="519" height="285"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                <size key="minSize" width="519" height="285"/>
-                                <size key="maxSize" width="1040" height="10000000"/>
-                                <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                            </textView>
-                        </subviews>
-                    </clipView>
-                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="475">
-                        <rect key="frame" x="-100" y="-100" width="465" height="15"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </scroller>
-                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="474">
-                        <rect key="frame" x="466" y="1" width="15" height="220"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </scroller>
-                </scrollView>
-            </subviews>
-        </customView>
-        <drawer trailingOffset="15" id="748">
-            <size key="contentSize" width="300" height="100"/>
-            <size key="maxContentSize" width="10000" height="10000"/>
-            <connections>
-                <outlet property="contentView" destination="747" id="751"/>
-                <outlet property="parentWindow" destination="371" id="752"/>
-            </connections>
-        </drawer>
         <customObject id="769" customClass="SUUpdater"/>
         <userDefaultsController representsSharedInstance="YES" id="781"/>
         <window title="Color Picker" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="r0I-g2-mDW">
@@ -3113,6 +3072,47 @@ DQ
             </subviews>
             <point key="canvasLocation" x="-789.5" y="1640"/>
         </customView>
+        <window title="Output" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="DU3-Zn-idA">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="283" y="305" width="356" height="292"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <value key="minSize" type="size" width="230" height="154"/>
+            <view key="contentView" id="Clb-Xv-5xZ">
+                <rect key="frame" x="0.0" y="0.0" width="356" height="292"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gas-fo-Ddo">
+                        <rect key="frame" x="-1" y="-1" width="358" height="294"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <clipView key="contentView" drawsBackground="NO" id="KnO-8K-y1g">
+                            <rect key="frame" x="1" y="1" width="356" height="292"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" smartInsertDelete="YES" id="VEn-BE-xUg">
+                                    <rect key="frame" x="0.0" y="0.0" width="356" height="292"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="minSize" width="356" height="292"/>
+                                    <size key="maxSize" width="1040" height="10000000"/>
+                                    <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                </textView>
+                            </subviews>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="H3V-d5-mZ2">
+                            <rect key="frame" x="-100" y="-100" width="465" height="15"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="35J-h0-ToE">
+                            <rect key="frame" x="218" y="1" width="16" height="154"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="-10" y="42"/>
+        </window>
     </objects>
     <resources>
         <image name="buttonCell:hiu-6r-sfg:image" width="1" height="1">

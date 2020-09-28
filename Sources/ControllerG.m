@@ -39,7 +39,7 @@ typedef enum {
 @interface ControllerG()
 @property (nonatomic, strong) IBOutlet ProfileController *profileController;
 @property (nonatomic, strong) IBOutlet NSWindow *mainWindow;
-@property (nonatomic, strong) IBOutlet NSDrawer *outputDrawer;
+@property (nonatomic, strong) IBOutlet NSWindow *outputWindow;
 @property (nonatomic, strong) IBOutlet NSTextView *outputTextView;
 @property (nonatomic, strong) IBOutlet NSTextField *outputFileTextField;
 @property (nonatomic, strong) IBOutlet NSPopUpButton *extensionPopupButton;
@@ -49,7 +49,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet TeXTextView *preambleTextView;
 @property (nonatomic, strong) IBOutlet NSMenuItem *convertYenMarkMenuItem;
 @property (nonatomic, strong) IBOutlet NSMenuItem *richTextMenuItem;
-@property (nonatomic, strong) IBOutlet NSMenuItem *outputDrawerMenuItem;
+@property (nonatomic, strong) IBOutlet NSMenuItem *outputWindowMenuItem;
 @property (nonatomic, strong) IBOutlet NSMenuItem *preambleWindowMenuItem;
 @property (nonatomic, strong) IBOutlet NSMenuItem *generateMenuItem;
 @property (nonatomic, strong) IBOutlet NSMenuItem *abortMenuItem;
@@ -95,7 +95,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSButton *deleteDisplaySizeCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *mergeOutputsCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *keepPageSizeCheckBox;
-@property (nonatomic, strong) IBOutlet NSButton *showOutputDrawerCheckBox;
+@property (nonatomic, strong) IBOutlet NSButton *showOutputWindowCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *sendNotificationCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *previewCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *deleteTmpFileCheckBox;
@@ -215,13 +215,13 @@ typedef enum {
 @synthesize profileController;
 @synthesize mainWindow;
 @synthesize sourceTextView;
-@synthesize outputDrawer;
+@synthesize outputWindow;
 @synthesize outputTextView;
 @synthesize preambleWindow;
 @synthesize preambleTextView;
 @synthesize convertYenMarkMenuItem;
 @synthesize richTextMenuItem;
-@synthesize outputDrawerMenuItem;
+@synthesize outputWindowMenuItem;
 @synthesize preambleWindowMenuItem;
 @synthesize generateMenuItem;
 @synthesize abortMenuItem;
@@ -267,7 +267,7 @@ typedef enum {
 @synthesize deleteDisplaySizeCheckBox;
 @synthesize mergeOutputsCheckBox;
 @synthesize keepPageSizeCheckBox;
-@synthesize showOutputDrawerCheckBox;
+@synthesize showOutputWindowCheckBox;
 @synthesize sendNotificationCheckBox;
 @synthesize previewCheckBox;
 @synthesize deleteTmpFileCheckBox;
@@ -498,15 +498,15 @@ typedef enum {
                                                 object:nil];
 }
 
-- (void)showOutputDrawerOnMainThread
+- (void)showOutputWindowOnMainThread
 {
-    outputDrawerMenuItem.state = YES;
-    [outputDrawer open];
+    outputWindowMenuItem.state = YES;
+    [outputWindow makeKeyAndOrderFront:nil];
 }
 
-- (void)showOutputDrawer
+- (void)showOutputWindow
 {
-    [self performSelectorOnMainThread:@selector(showOutputDrawerOnMainThread) withObject:nil waitUntilDone:YES];
+    [self performSelectorOnMainThread:@selector(showOutputWindowOnMainThread) withObject:nil waitUntilDone:YES];
 }
 
 - (void)showExtensionErrorOnMainThread
@@ -737,7 +737,7 @@ typedef enum {
 	
 	[self loadStringSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
 	
-	showOutputDrawerCheckBox.state = [aProfile integerForKey:ShowOutputDrawerKey];
+	showOutputWindowCheckBox.state = [aProfile integerForKey:ShowOutputWindowKey];
     sendNotificationCheckBox.state = [aProfile integerForKey:SendNotificationKey];
 	previewCheckBox.state = [aProfile integerForKey:PreviewKey];
 	deleteTmpFileCheckBox.state = [aProfile integerForKey:DeleteTmpFileKey];
@@ -1188,7 +1188,7 @@ typedef enum {
         currentProfile[MainWindowHeightKey] = @(NSHeight(mainWindow.frame));
         currentProfile[OutputFileKey] = outputFileTextField.stringValue;
         
-        currentProfile[ShowOutputDrawerKey] = @(showOutputDrawerCheckBox.state);
+        currentProfile[ShowOutputWindowKey] = @(showOutputWindowCheckBox.state);
         currentProfile[SendNotificationKey] = @(sendNotificationCheckBox.state);
         currentProfile[PreviewKey] = @(previewCheckBox.state);
         currentProfile[DeleteTmpFileKey] = @(deleteTmpFileCheckBox.state);
@@ -1560,10 +1560,6 @@ typedef enum {
 #pragma mark - デリゲート・ノティフィケーションのコールバック
 - (void)awakeFromNib
 {
-	//	以下は Interface Builder 上で設定できる
-	//	[mainWindow setReleasedWhenClosed:NO];
-	//	[preambleWindow setReleasedWhenClosed:NO];
-
     lastColorDict = [NSMutableDictionary<NSString*,NSColor*> dictionary];
 
     // 通知の設定
@@ -1588,6 +1584,12 @@ typedef enum {
 					name:NSApplicationWillTerminateNotification
 				  object:NSApp];
 	
+    // 出力ウィンドウが閉じられるときにメニューのチェックを外す
+    [aCenter addObserver:self
+                selector:@selector(uncheckOutputWindowMenuItem:)
+                    name:NSWindowWillCloseNotification
+                  object:outputWindow];
+
 	// プリアンブルウィンドウが閉じられるときにメニューのチェックを外す
 	[aCenter addObserver:self
 				selector:@selector(uncheckPreambleWindowMenuItem:)
@@ -1628,6 +1630,10 @@ typedef enum {
                 selector:@selector(otherWindowsDidBecomeKey:)
                     name:NSWindowDidBecomeKeyNotification
                   object:mainWindow];
+    [aCenter addObserver:self
+                selector:@selector(otherWindowsDidBecomeKey:)
+                    name:NSWindowDidBecomeKeyNotification
+                  object:outputWindow];
     [aCenter addObserver:self
                 selector:@selector(otherWindowsDidBecomeKey:)
                     name:NSWindowDidBecomeKeyNotification
@@ -1893,13 +1899,14 @@ typedef enum {
 
 - (void)closeOtherWindows:(NSNotification*)aNotification
 {
+    [outputWindow close];
 	[preambleWindow close];
-	[preferenceWindow close];
+    [preferenceWindow close];
 }
 
-- (void)uncheckOutputDrawerMenuItem:(NSNotification*)aNotification
+- (void)uncheckOutputWindowMenuItem:(NSNotification*)aNotification
 {
-	outputDrawerMenuItem.state = NO;
+	outputWindowMenuItem.state = NO;
 }
 
 - (void)uncheckPreambleWindowMenuItem:(NSNotification*)aNotification
@@ -2538,14 +2545,21 @@ typedef enum {
     [(NSStepper*)(textField.target) takeIntValueFrom:textField];
 }
 
-- (IBAction)toggleOutputDrawer:(id)sender
+- (IBAction)toggleOutputWindow:(id)sender
 {
-	if (outputDrawer.state == NSDrawerOpenState) {
-		outputDrawerMenuItem.state = NO;
-		[outputDrawer close];
-	} else {
-		[self showOutputDrawer];
-	}
+    if (outputWindow.isVisible) {
+        [outputWindow close];
+    } else {
+        outputWindowMenuItem.state = YES;
+
+        NSRect mainWindowRect = mainWindow.frame;
+        NSRect outputWindowRect = outputWindow.frame;
+        [outputWindow setFrame:NSMakeRect(NSMinX(mainWindowRect) + NSWidth(mainWindowRect),
+                                          NSMinY(mainWindowRect) + NSHeight(mainWindowRect) - NSHeight(outputWindowRect),
+                                          NSWidth(outputWindowRect), NSHeight(outputWindowRect))
+                       display:NO];
+        [outputWindow makeKeyAndOrderFront:nil];
+    }
 }
 
 - (IBAction)togglePreambleWindow:(id)sender
@@ -2564,7 +2578,6 @@ typedef enum {
 		[preambleWindow makeKeyAndOrderFront:nil];
         [preambleTextView colorizeText];
 	}
-    
 }
 
 - (IBAction)closeWindow:(id)sender
@@ -2892,8 +2905,8 @@ typedef enum {
     
     [mainWindow makeKeyWindow]; // これをしておかないと，スレッド発動後に NSNumberFormatter によるフォーマットがコンパイル用スレッドから発動してエラーを引き起こすことがある
     
-    if (showOutputDrawerCheckBox.state) {
-        [self showOutputDrawer];
+    if (showOutputWindowCheckBox.state) {
+        [self showOutputWindow];
     }
 	
     generateButton.title = localizedString(@"Abort");

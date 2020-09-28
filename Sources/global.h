@@ -32,7 +32,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define MainWindowWidthKey @"mainWindowWidth"
 #define MainWindowHeightKey @"mainWindowHeight"
 #define OutputFileKey @"outputFile"
-#define ShowOutputDrawerKey @"showOutputDrawer"
+#define ShowOutputWindowKey @"showOutputDrawer"
 #define ThreadingKey @"threading"
 #define SendNotificationKey @"sendNotification"
 #define PreviewKey @"preview"

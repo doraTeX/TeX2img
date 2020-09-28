@@ -18,7 +18,7 @@
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet;
 - (void)prepareOutputTextView;
 - (void)releaseOutputTextView;
-- (void)showOutputDrawer;
+- (void)showOutputWindow;
 - (void)showMainWindow;
 - (void)showErrorsIgnoredWarning;
 - (void)showPageSkippedWarning:(NSArray<NSNumber*>*)pages;
