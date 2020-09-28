@@ -37,14 +37,11 @@
 	float theInsetWidth = 0.0;
 	float theInsetHeight = 4.0;
 	NSSize theSize = NSMakeSize(theInsetWidth, theInsetHeight);
-    Profile *currentProfile = [controller currentProfile];
+    Profile *currentProfile = controller.currentProfile;
 	
-    NSFont *theFont = self.textStorage.font;
-    NSColor *theColor = invisibleColorInProfile(currentProfile);
-
     NSDictionary<NSString*,id> *attributes = @{
-                                               NSFontAttributeName: theFont,
-                                               NSForegroundColorAttributeName: theColor
+                                               NSFontAttributeName: self.textStorage.font,
+                                               NSForegroundColorAttributeName: invisibleColorInProfile(currentProfile)
                                                };
 	
     NSString *replacementCharacter = [NSString stringWithFormat:@"%C", 0xFFFD]; // Replacement Character

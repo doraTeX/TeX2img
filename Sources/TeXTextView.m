@@ -151,7 +151,7 @@
         return YES;
     } else if ((c >= 'a') && (c <= 'z')) {
         return YES;
-    } else if (c == '@' && controller && [[controller currentProfile] boolForKey:MakeatletterEnabledKey]) {
+    } else if (c == '@' && controller && [controller.currentProfile boolForKey:MakeatletterEnabledKey]) {
         return YES;
     } else {
         return NO;
@@ -160,7 +160,7 @@
 
 - (void)copy:(id)sender
 {
-    Profile *profile = [controller currentProfile];
+    Profile *profile = controller.currentProfile;
     
     BOOL copyAsRichText = [profile boolForKey:RichTextKey];
     
@@ -220,7 +220,7 @@
 
 - (void)fixupTabs
 {
-    Profile *currentProfile = [controller currentProfile];
+    Profile *currentProfile = controller.currentProfile;
     
     NSMutableParagraphStyle *paragraphStyle = [self.defaultParagraphStyle mutableCopy];
     
@@ -247,7 +247,7 @@
 
 - (void)refreshWordWrap
 {
-    Profile *currentProfile = [controller currentProfile];
+    Profile *currentProfile = controller.currentProfile;
     BOOL wrap = [currentProfile boolForKey:WrapLineKey];
     
     if (wrap) {
@@ -363,7 +363,7 @@
     }
 
     NSString *theString = (NSString*)aString;
-    Profile *currentProfile = [controller currentProfile];
+    Profile *currentProfile = controller.currentProfile;
     unichar texChar = 0x5c;
     
     if ([theString isEqualToString:@"¥"] && [currentProfile boolForKey:ConvertYenMarkKey]) {
@@ -404,7 +404,7 @@
 // ペースト時の対応
 - (BOOL)readSelectionFromPasteboard:(NSPasteboard*)pboard type:(NSString*)type
 {
-    Profile *currentProfile = [controller currentProfile];
+    Profile *currentProfile = controller.currentProfile;
     
     // テキスト貼り付け時，クリップボードから貼り付けられる円マークをバックスラッシュに置き換えて貼り付ける
     if ([type isEqualToString:NSStringPboardType] && [currentProfile boolForKey:ConvertYenMarkKey]) {
@@ -457,7 +457,7 @@
     NSString *theCommand;
     NSUInteger tabWidth, i;
     NSString *indentString;
-    Profile *aProfile = [controller currentProfile];
+    Profile *aProfile = controller.currentProfile;
     BOOL useTabForIndent = [aProfile boolForKey:TabIndentKey];
     tabWidth = [aProfile integerForKey:TabWidthKey];
     
@@ -900,7 +900,7 @@
     NSInteger length, i, j, leftpar, rightpar, nestingLevel, uchar;
     BOOL done;
     unichar BACKSLASH = 0x5c;
-    BOOL makeatletterEnabled = controller ? [[controller currentProfile] boolForKey:MakeatletterEnabledKey] : YES;
+    BOOL makeatletterEnabled = controller ? [controller.currentProfile boolForKey:MakeatletterEnabledKey] : YES;
     
     textString = self.string;
     if (!textString) {

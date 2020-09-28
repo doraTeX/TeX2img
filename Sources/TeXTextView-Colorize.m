@@ -17,7 +17,7 @@
 	NSUInteger		aLineEnd;
 	NSUInteger		end;
 	
-    Profile *profile = [controller currentProfile];
+    Profile *profile = controller.currentProfile;
     
     self.textColor = foregroundColorInProfile(profile);
     self.backgroundColor = backgroundColorInProfile(profile);
@@ -89,7 +89,7 @@
 
 - (void)resetBackgroundColorOfTextView:(id)sender
 {
-    self.backgroundColor = backgroundColorInProfile([controller currentProfile]);
+    self.backgroundColor = backgroundColorInProfile(controller.currentProfile);
 }
 
 - (void)resetBackgroundColor:(id)sender
@@ -102,14 +102,14 @@
 - (void)highlightContent:(NSString*)range
 {
 	contentHighlighting = YES;
-	[self.layoutManager addTemporaryAttributes:@{NSBackgroundColorAttributeName: enclosedContentBackgroundColorInProfile([controller currentProfile])}
+	[self.layoutManager addTemporaryAttributes:@{NSBackgroundColorAttributeName: enclosedContentBackgroundColorInProfile(controller.currentProfile)}
                              forCharacterRange:NSRangeFromString(range)];
 }
 
 - (void)textViewDidChangeSelection:(NSNotification*)inNotification
 {
 	NSLayoutManager *layoutManager = self.layoutManager;
-	Profile *profile = [controller currentProfile];
+	Profile *profile = controller.currentProfile;
 
 	// Notification の処理で色づけの変更を行うと，delete を押したときにバグるので，performSelector で別途呼び出して処理する
 	if (contentHighlighting) {
@@ -261,7 +261,7 @@
     
     rightpar = [replacementString characterAtIndex:0];
     
-    Profile *profile = [controller currentProfile];
+    Profile *profile = controller.currentProfile;
     
     HighlightPattern highlightPattern = SOLID;
     BOOL checkBrace = [profile boolForKey:CheckBraceKey];

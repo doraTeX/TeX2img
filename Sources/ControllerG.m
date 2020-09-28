@@ -460,7 +460,7 @@ typedef enum {
 {
     [outputTextView.textStorage.mutableString appendString:str];
     
-    Profile *currentProfile = [self currentProfile];
+    Profile *currentProfile = self.currentProfile;
 
     [self refreshTextView:outputTextView
           foregroundColor:consoleForegroundColorInProfile(currentProfile)
@@ -1882,7 +1882,7 @@ typedef enum {
         [self closeFontPanel];
     }
 
-	[profileController updateProfile:[self currentProfile] forName:AutoSavedProfileName];
+	[profileController updateProfile:self.currentProfile forName:AutoSavedProfileName];
 	[profileController saveProfiles];
 }
 
@@ -1941,7 +1941,7 @@ typedef enum {
 
 - (NSArray<NSString*>*)analyzeContents:(NSString*)contents
 {
-    BOOL convertYenMark = [[self currentProfile] boolForKey:ConvertYenMarkKey];
+    BOOL convertYenMark = [self.currentProfile boolForKey:ConvertYenMarkKey];
     if (convertYenMark) {
         contents = [[NSMutableString stringWithString:contents] replaceYenWithBackSlash];
     }
@@ -2125,7 +2125,7 @@ typedef enum {
             NSString *preamble = self.preambleTextView.textStorage.mutableString;
             NSString *body = self.sourceTextView.textStorage.mutableString;
             NSString *contents = [NSString stringWithFormat:@"%@\n\\begin{document}\n%@\n\\end{document}\n", preamble, body];
-            NSStringEncoding encoding = [self stringEncodingFromEncodingOption:[[self currentProfile] stringForKey:EncodingKey]];
+            NSStringEncoding encoding = [self stringEncodingFromEncodingOption:[self.currentProfile stringForKey:EncodingKey]];
             
             if (![contents writeToFile:outputPath atomically:YES encoding:encoding error:nil]) {
                 runErrorPanel(localizedString(@"cannotWriteErrorMsg"), outputPath);
@@ -2628,7 +2628,7 @@ typedef enum {
 
 - (void)recolorOutputView
 {
-    Profile *currentProfile = [self currentProfile];
+    Profile *currentProfile = self.currentProfile;
     
     [self refreshTextView:outputTextView
           foregroundColor:consoleForegroundColorInProfile(currentProfile)
@@ -2710,7 +2710,7 @@ typedef enum {
     abortMenuItem.enabled = NO;
     taskKilled = NO;
     
-    if ([[self currentProfile] boolForKey:SendNotificationKey]) {
+    if ([self.currentProfile boolForKey:SendNotificationKey]) {
         ExitStatus exitStatus = (ExitStatus)(status.intValue);
         [self sendUserNotificationWithStatus:exitStatus];
     }
@@ -2827,7 +2827,7 @@ typedef enum {
 - (void)generateImage
 {
     NSString *inputSourceFilePath;
-    MutableProfile *aProfile = [self currentProfile];
+    MutableProfile *aProfile = self.currentProfile;
     aProfile[EpstopdfPathKey] = [NSBundle.mainBundle pathForResource:@"epstopdf" ofType:nil];
     aProfile[MudrawPathKey] = [[NSBundle.mainBundle pathForResource:@"mupdf" ofType:nil] stringByAppendingPathComponent:@"mudraw"];
     aProfile[PdftopsPathKey] = [[NSBundle.mainBundle pathForResource:@"pdftops" ofType:nil] stringByAppendingPathComponent:@"pdftops"];

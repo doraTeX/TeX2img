@@ -39,7 +39,7 @@ static NSString *endcommentString = @"›";
 	NSCharacterSet *charSet;
 	unichar c;
     
-    Profile *profile = [controller currentProfile];
+    Profile *profile = controller.currentProfile;
     NSInteger commandCompletionKeyTag = [profile integerForKey:CommandCompletionKeyKey];
     
     unichar esc = (commandCompletionKeyTag == ESCAPE_KEY) ? 0x001B : '\t';
