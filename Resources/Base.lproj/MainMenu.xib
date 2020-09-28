@@ -8,11 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application" customClass="NSObject">
-            <connections>
-                <outlet property="delegate" destination="sHM-Z6-Bnt" id="Ykq-2F-XXv"/>
-            </connections>
-        </customObject>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <menu title="AMainMenu" systemMenu="main" id="29" userLabel="MainMenu">
             <items>
                 <menuItem title="TeX2img" id="56">
@@ -64,9 +60,9 @@
                             <menuItem isSeparatorItem="YES" id="149">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Quit TeX2img" keyEquivalent="q" id="136" userLabel="1111">
+                            <menuItem title="Quit TeX2img" keyEquivalent="q" id="136">
                                 <connections>
-                                    <action selector="terminate:" target="-3" id="449"/>
+                                    <action selector="terminate:" target="-2" id="Zao-Of-O6o"/>
                                 </connections>
                             </menuItem>
                         </items>

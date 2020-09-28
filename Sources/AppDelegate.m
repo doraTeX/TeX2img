@@ -9,7 +9,8 @@
 
 @synthesize controllerG;
 
-- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
+- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename
+{
     return [controllerG importSourceFromFilePathOrPDFDocument:filename skipConfirm:YES];
 }
 @end

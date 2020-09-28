@@ -60,9 +60,9 @@
                             <menuItem isSeparatorItem="YES" id="149">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="TeX2img を終了" keyEquivalent="q" id="136" userLabel="1111">
+                            <menuItem title="TeX2img を終了" keyEquivalent="q" id="136">
                                 <connections>
-                                    <action selector="terminate:" target="-3" id="449"/>
+                                    <action selector="terminate:" target="-2" id="Luu-If-g9L"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -733,7 +733,6 @@ DQ
             </view>
             <point key="canvasLocation" x="-221" y="756.5"/>
         </window>
-        <customObject id="420" customClass="NSFontManager"/>
         <window title="プリアンブル部" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="480">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="196" y="137" width="327" height="373"/>
@@ -2381,48 +2380,12 @@ DQ
             </view>
             <point key="canvasLocation" x="42" y="-147"/>
         </window>
-        <customObject id="695" userLabel="ProfileController" customClass="ProfileController">
+        <customObject id="z9s-hm-74e" userLabel="App Delegate" customClass="AppDelegate">
             <connections>
-                <outlet property="controllerG" destination="450" id="713"/>
-                <outlet property="profilesTableView" destination="683" id="700"/>
-                <outlet property="profilesWindow" destination="672" id="705"/>
-                <outlet property="saveAsTextField" destination="676" id="696"/>
+                <outlet property="controllerG" destination="450" id="tmR-gp-r4q"/>
             </connections>
         </customObject>
-        <customView id="775" userLabel="Drawer Content View">
-            <rect key="frame" x="0.0" y="0.0" width="391" height="337"/>
-            <autoresizingMask key="autoresizingMask"/>
-            <subviews>
-                <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="473">
-                    <rect key="frame" x="0.0" y="0.0" width="393" height="337"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    <clipView key="contentView" drawsBackground="NO" id="PMd-Er-wWq">
-                        <rect key="frame" x="1" y="1" width="391" height="335"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="476">
-                                <rect key="frame" x="0.0" y="0.0" width="391" height="335"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                <size key="minSize" width="391" height="335"/>
-                                <size key="maxSize" width="784" height="10000000"/>
-                                <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                            </textView>
-                        </subviews>
-                    </clipView>
-                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="475">
-                        <rect key="frame" x="-100" y="-100" width="465" height="15"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </scroller>
-                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="474">
-                        <rect key="frame" x="466" y="1" width="15" height="220"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </scroller>
-                </scrollView>
-            </subviews>
-            <point key="canvasLocation" x="-541" y="-456"/>
-        </customView>
+        <customObject id="420" customClass="NSFontManager"/>
         <customObject id="450" customClass="ControllerG">
             <connections>
                 <outlet property="abortMenuItem" destination="tC1-Xo-mzW" id="xdP-eh-ocO"/>
@@ -2564,6 +2527,48 @@ DQ
                 <outlet property="wrapLineCheckBox" destination="SOn-w4-4gh" id="9ie-N8-Yrz"/>
             </connections>
         </customObject>
+        <customObject id="695" userLabel="ProfileController" customClass="ProfileController">
+            <connections>
+                <outlet property="controllerG" destination="450" id="713"/>
+                <outlet property="profilesTableView" destination="683" id="700"/>
+                <outlet property="profilesWindow" destination="672" id="705"/>
+                <outlet property="saveAsTextField" destination="676" id="696"/>
+            </connections>
+        </customObject>
+        <customView id="775" userLabel="Drawer Content View">
+            <rect key="frame" x="0.0" y="0.0" width="391" height="337"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="473">
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="337"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <clipView key="contentView" drawsBackground="NO" id="PMd-Er-wWq">
+                        <rect key="frame" x="1" y="1" width="391" height="335"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="476">
+                                <rect key="frame" x="0.0" y="0.0" width="391" height="335"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                <size key="minSize" width="391" height="335"/>
+                                <size key="maxSize" width="784" height="10000000"/>
+                                <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            </textView>
+                        </subviews>
+                    </clipView>
+                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="475">
+                        <rect key="frame" x="-100" y="-100" width="465" height="15"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="474">
+                        <rect key="frame" x="466" y="1" width="15" height="220"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                </scrollView>
+            </subviews>
+            <point key="canvasLocation" x="-541" y="-456"/>
+        </customView>
         <drawer trailingOffset="15" id="776">
             <size key="contentSize" width="300" height="100"/>
             <size key="maxContentSize" width="10000" height="10000"/>
