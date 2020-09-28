@@ -463,9 +463,9 @@ typedef enum {
     Profile *currentProfile = [self currentProfile];
 
     [self refreshTextView:outputTextView
-          foregroundColor:[currentProfile colorForKey:isDarkMode() ? ForegroundColorForDarkModeKey : ForegroundColorKey]
-          backgroundColor:[currentProfile colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorKey]
-              cursorColor:[currentProfile colorForKey:isDarkMode() ? CursorColorForDarkModeKey : CursorColorKey]];
+          foregroundColor:[currentProfile colorForKey:isDarkMode() ? ForegroundColorForDarkModeKey : ForegroundColorForLightModeKey]
+          backgroundColor:[currentProfile colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorForLightModeKey]
+              cursorColor:[currentProfile colorForKey:isDarkMode() ? CursorColorForDarkModeKey : CursorColorForLightModeKey]];
 
     [outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
     outputTextView.font = sourceFont;
@@ -816,85 +816,85 @@ typedef enum {
 
     
 #pragma mark - 配色設定 (Light Mode)
-    if ([keys containsObject:ForegroundColorKey]) {
-        lightModeForegroundColorWell.color = [aProfile colorForKey:ForegroundColorKey];
+    if ([keys containsObject:ForegroundColorForLightModeKey]) {
+        lightModeForegroundColorWell.color = [aProfile colorForKey:ForegroundColorForLightModeKey];
     } else {
         lightModeForegroundColorWell.color = NSColor.defaultForegroundColorForLightMode;
     }
     [lightModeForegroundColorWell saveColorToMutableDictionary:lastColorDict];
 
-    if ([keys containsObject:BackgroundColorKey]) {
-        lightModeBackgroundColorWell.color = [aProfile colorForKey:BackgroundColorKey];
+    if ([keys containsObject:BackgroundColorForLightModeKey]) {
+        lightModeBackgroundColorWell.color = [aProfile colorForKey:BackgroundColorForLightModeKey];
     } else {
         lightModeBackgroundColorWell.color = NSColor.defaultBackgroundColorForLightMode;
     }
     [lightModeBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
     
-    if ([keys containsObject:CursorColorKey]) {
-        lightModeCursorColorWell.color = [aProfile colorForKey:CursorColorKey];
+    if ([keys containsObject:CursorColorForLightModeKey]) {
+        lightModeCursorColorWell.color = [aProfile colorForKey:CursorColorForLightModeKey];
     } else {
         lightModeCursorColorWell.color = NSColor.defaultCursorColorForLightMode;
     }
     [lightModeCursorColorWell saveColorToMutableDictionary:lastColorDict];
     
-    if ([keys containsObject:BraceColorKey]) {
-        lightModeBraceColorWell.color = [aProfile colorForKey:BraceColorKey];
+    if ([keys containsObject:BraceColorForLightModeKey]) {
+        lightModeBraceColorWell.color = [aProfile colorForKey:BraceColorForLightModeKey];
     } else {
         lightModeBraceColorWell.color = NSColor.defaultBraceColorForLightMode;
     }
     [lightModeBraceColorWell saveColorToMutableDictionary:lastColorDict];
     
-    if ([keys containsObject:CommentColorKey]) {
-        lightModeCommentColorWell.color = [aProfile colorForKey:CommentColorKey];
+    if ([keys containsObject:CommentColorForLightModeKey]) {
+        lightModeCommentColorWell.color = [aProfile colorForKey:CommentColorForLightModeKey];
     } else {
         lightModeCommentColorWell.color = NSColor.defaultCommentColorForLightMode;
     }
     [lightModeCommentColorWell saveColorToMutableDictionary:lastColorDict];
     
-    if ([keys containsObject:CommandColorKey]) {
-        lightModeCommandColorWell.color = [aProfile colorForKey:CommandColorKey];
+    if ([keys containsObject:CommandColorForLightModeKey]) {
+        lightModeCommandColorWell.color = [aProfile colorForKey:CommandColorForLightModeKey];
     } else {
         lightModeCommandColorWell.color = NSColor.defaultCommandColorForLightMode;
     }
     [lightModeCommandColorWell saveColorToMutableDictionary:lastColorDict];
     
-    if ([keys containsObject:InvisibleColorKey]) {
-        lightModeInvisibleColorWell.color = [aProfile colorForKey:InvisibleColorKey];
+    if ([keys containsObject:InvisibleColorForLightModeKey]) {
+        lightModeInvisibleColorWell.color = [aProfile colorForKey:InvisibleColorForLightModeKey];
     } else {
         lightModeInvisibleColorWell.color = NSColor.defaultInvisibleColorForLightMode;
     }
     [lightModeInvisibleColorWell saveColorToMutableDictionary:lastColorDict];
     
-    if ([keys containsObject:HighlightedBraceColorKey]) {
-        lightModeHighlightedBraceColorWell.color = [aProfile colorForKey:HighlightedBraceColorKey];
+    if ([keys containsObject:HighlightedBraceColorForLightModeKey]) {
+        lightModeHighlightedBraceColorWell.color = [aProfile colorForKey:HighlightedBraceColorForLightModeKey];
     } else {
         lightModeHighlightedBraceColorWell.color = NSColor.defaultHighlightedBraceColorForLightMode;
     }
     [lightModeHighlightedBraceColorWell saveColorToMutableDictionary:lastColorDict];
     
-    if ([keys containsObject:EnclosedContentBackgroundColorKey]) {
-        lightModeEnclosedContentBackgroundColorWell.color = [aProfile colorForKey:EnclosedContentBackgroundColorKey];
+    if ([keys containsObject:EnclosedContentBackgroundColorForLightModeKey]) {
+        lightModeEnclosedContentBackgroundColorWell.color = [aProfile colorForKey:EnclosedContentBackgroundColorForLightModeKey];
     } else {
         lightModeEnclosedContentBackgroundColorWell.color = NSColor.defaultEnclosedContentBackgroundColorForLightMode;
     }
     [lightModeEnclosedContentBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
 
-    if ([keys containsObject:FlashingBackgroundColorKey]) {
-        lightModeFlashingBackgroundColorWell.color = [aProfile colorForKey:FlashingBackgroundColorKey];
+    if ([keys containsObject:FlashingBackgroundColorForLightModeKey]) {
+        lightModeFlashingBackgroundColorWell.color = [aProfile colorForKey:FlashingBackgroundColorForLightModeKey];
     } else {
         lightModeFlashingBackgroundColorWell.color = NSColor.defaultFlashingBackgroundColorForLightMode;
     }
     [lightModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
 
-    if ([keys containsObject:ConsoleForegroundColorKey]) {
-        lightModeConsoleForegroundColorWell.color = [aProfile colorForKey:ConsoleForegroundColorKey];
+    if ([keys containsObject:ConsoleForegroundColorForLightModeKey]) {
+        lightModeConsoleForegroundColorWell.color = [aProfile colorForKey:ConsoleForegroundColorForLightModeKey];
     } else {
         lightModeConsoleForegroundColorWell.color = NSColor.defaultConsoleForegroundColorForLightMode;
     }
     [lightModeConsoleForegroundColorWell saveColorToMutableDictionary:lastColorDict];
 
-    if ([keys containsObject:ConsoleBackgroundColorKey]) {
-        lightModeConsoleBackgroundColorWell.color = [aProfile colorForKey:ConsoleBackgroundColorKey];
+    if ([keys containsObject:ConsoleBackgroundColorForLightModeKey]) {
+        lightModeConsoleBackgroundColorWell.color = [aProfile colorForKey:ConsoleBackgroundColorForLightModeKey];
     } else {
         lightModeConsoleBackgroundColorWell.color = NSColor.defaultConsoleBackgroundColorForLightMode;
     }
@@ -1113,9 +1113,9 @@ typedef enum {
     [preambleTextView refreshWordWrap];
     
     [self refreshTextView:outputTextView
-          foregroundColor:[aProfile colorForKey:isDarkMode() ? ForegroundColorForDarkModeKey : ForegroundColorKey]
-          backgroundColor:[aProfile colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorKey]
-              cursorColor:[aProfile colorForKey:isDarkMode() ? CursorColorForDarkModeKey : CursorColorKey]];
+          foregroundColor:[aProfile colorForKey:isDarkMode() ? ForegroundColorForDarkModeKey : ForegroundColorForLightModeKey]
+          backgroundColor:[aProfile colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorForLightModeKey]
+              cursorColor:[aProfile colorForKey:isDarkMode() ? CursorColorForDarkModeKey : CursorColorForLightModeKey]];
 
     // 不可視文字表示の選択肢のフォントを更新
     NSFont *displayFont = [NSFont fontWithName:sourceFont.fontName size:spaceCharacterKindButton.font.pointSize];
@@ -1276,16 +1276,16 @@ typedef enum {
 
         currentProfile[FillColorKey] = fillColorWell.color.serializedString;
 
-        currentProfile[ForegroundColorKey] = lightModeForegroundColorWell.color.serializedString;
-        currentProfile[BackgroundColorKey] = lightModeBackgroundColorWell.color.serializedString;
-        currentProfile[CursorColorKey] = lightModeCursorColorWell.color.serializedString;
-        currentProfile[BraceColorKey] = lightModeBraceColorWell.color.serializedString;
-        currentProfile[CommentColorKey] = lightModeCommentColorWell.color.serializedString;
-        currentProfile[CommandColorKey] = lightModeCommandColorWell.color.serializedString;
-        currentProfile[InvisibleColorKey] = lightModeInvisibleColorWell.color.serializedString;
-        currentProfile[HighlightedBraceColorKey] = lightModeHighlightedBraceColorWell.color.serializedString;
-        currentProfile[EnclosedContentBackgroundColorKey] = lightModeEnclosedContentBackgroundColorWell.color.serializedString;
-        currentProfile[FlashingBackgroundColorKey] = lightModeFlashingBackgroundColorWell.color.serializedString;
+        currentProfile[ForegroundColorForLightModeKey] = lightModeForegroundColorWell.color.serializedString;
+        currentProfile[BackgroundColorForLightModeKey] = lightModeBackgroundColorWell.color.serializedString;
+        currentProfile[CursorColorForLightModeKey] = lightModeCursorColorWell.color.serializedString;
+        currentProfile[BraceColorForLightModeKey] = lightModeBraceColorWell.color.serializedString;
+        currentProfile[CommentColorForLightModeKey] = lightModeCommentColorWell.color.serializedString;
+        currentProfile[CommandColorForLightModeKey] = lightModeCommandColorWell.color.serializedString;
+        currentProfile[InvisibleColorForLightModeKey] = lightModeInvisibleColorWell.color.serializedString;
+        currentProfile[HighlightedBraceColorForLightModeKey] = lightModeHighlightedBraceColorWell.color.serializedString;
+        currentProfile[EnclosedContentBackgroundColorForLightModeKey] = lightModeEnclosedContentBackgroundColorWell.color.serializedString;
+        currentProfile[FlashingBackgroundColorForLightModeKey] = lightModeFlashingBackgroundColorWell.color.serializedString;
         
         currentProfile[ForegroundColorForDarkModeKey] = darkModeForegroundColorWell.color.serializedString;
         currentProfile[BackgroundColorForDarkModeKey] = darkModeBackgroundColorWell.color.serializedString;

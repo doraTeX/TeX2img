@@ -21,36 +21,36 @@
     
     NSColor *color;
     
-    color = [profile colorForKey:isDarkMode () ? ForegroundColorForDarkModeKey : ForegroundColorKey];
+    color = [profile colorForKey:isDarkMode () ? ForegroundColorForDarkModeKey : ForegroundColorForLightModeKey];
     if (color) {
         self.textColor = color;
     }
     
-    color = [profile colorForKey:isDarkMode () ? BackgroundColorForDarkModeKey : BackgroundColorKey];
+    color = [profile colorForKey:isDarkMode () ? BackgroundColorForDarkModeKey : BackgroundColorForLightModeKey];
     if (color) {
         self.backgroundColor = color;
     }
     
-    color = [profile colorForKey:isDarkMode () ? CursorColorForDarkModeKey : CursorColorKey];
+    color = [profile colorForKey:isDarkMode () ? CursorColorForDarkModeKey : CursorColorForLightModeKey];
     if (color) {
         self.insertionPointColor = color;
     }
     
-    color = [profile colorForKey:isDarkMode () ? CommandColorForDarkModeKey : CommandColorKey];
+    color = [profile colorForKey:isDarkMode () ? CommandColorForDarkModeKey : CommandColorForLightModeKey];
     if (!color) {
         color = NSColor.defaultCommandColor;
     }
 
     NSDictionary<NSString*,id> *commandColorAttribute = @{NSForegroundColorAttributeName: color};
     
-    color = [profile colorForKey:isDarkMode () ? CommentColorForDarkModeKey : CommentColorKey];
+    color = [profile colorForKey:isDarkMode () ? CommentColorForDarkModeKey : CommentColorForLightModeKey];
     if (!color) {
         color = NSColor.defaultCommentColor;
     }
     
     NSDictionary<NSString*,id> *commentColorAttribute = @{NSForegroundColorAttributeName: color};
 
-    color = [profile colorForKey:isDarkMode () ? BraceColorForDarkModeKey : BraceColorKey];
+    color = [profile colorForKey:isDarkMode () ? BraceColorForDarkModeKey : BraceColorForLightModeKey];
     if (!color) {
         color = NSColor.defaultBraceColor;
     }
@@ -119,7 +119,7 @@
 
 - (void)resetBackgroundColorOfTextView:(id)sender
 {
-    self.backgroundColor = [[controller currentProfile] colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorKey];
+    self.backgroundColor = [[controller currentProfile] colorForKey:isDarkMode() ? BackgroundColorForDarkModeKey : BackgroundColorForLightModeKey];
 }
 
 - (void)resetBackgroundColor:(id)sender
@@ -132,7 +132,7 @@
 - (void)highlightContent:(NSString*)range
 {
 	contentHighlighting = YES;
-    NSColor *color = [[controller currentProfile] colorForKey:isDarkMode() ? EnclosedContentBackgroundColorForDarkModeKey : EnclosedContentBackgroundColorKey];
+    NSColor *color = [[controller currentProfile] colorForKey:isDarkMode() ? EnclosedContentBackgroundColorForDarkModeKey : EnclosedContentBackgroundColorForLightModeKey];
     if (!color) {
         color = NSColor.defaultEnclosedContentBackgroundColor;
     }
@@ -157,7 +157,7 @@
 		[self resetHighlight:nil];
 	}
     
-    color = [profile colorForKey:isDarkMode() ? HighlightedBraceColorForDarkModeKey : HighlightedBraceColorKey];
+    color = [profile colorForKey:isDarkMode() ? HighlightedBraceColorForDarkModeKey : HighlightedBraceColorForLightModeKey];
     if (!color) {
         color = NSColor.defaultHighlightedBraceColor;
     }
@@ -280,7 +280,7 @@
         NSBeep();
     }
 	if ([profile boolForKey:FlashBackgroundKey]) {
-        self.backgroundColor = [profile colorForKey:isDarkMode() ? FlashingBackgroundColorForDarkModeKey : FlashingBackgroundColorKey];
+        self.backgroundColor = [profile colorForKey:isDarkMode() ? FlashingBackgroundColorForDarkModeKey : FlashingBackgroundColorForLightModeKey];
 		[self performSelector:@selector(resetBackgroundColorOfTextView:) 
 				   withObject:nil
                    afterDelay:0.20];
