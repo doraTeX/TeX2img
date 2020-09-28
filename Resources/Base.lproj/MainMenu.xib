@@ -167,15 +167,9 @@
                                         </menuItem>
                                         <menuItem title="Next Mark" keyEquivalent="/" id="765">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES"/>
-                                            <connections>
-                                                <action selector="doNextBullet:" target="-1" id="767"/>
-                                            </connections>
                                         </menuItem>
                                         <menuItem title="Previous Mark" keyEquivalent="/" id="766">
                                             <modifierMask key="keyEquivalentModifierMask" shift="YES" control="YES"/>
-                                            <connections>
-                                                <action selector="doPreviousBullet:" target="-1" id="768"/>
-                                            </connections>
                                         </menuItem>
                                         <menuItem title="Use Selection for Find" tag="7" keyEquivalent="e" id="221"/>
                                         <menuItem title="Jump to Selection" keyEquivalent="j" id="210">
@@ -312,7 +306,7 @@
                                         <menuItem title="Next Mark" keyEquivalent="f" id="oka-P4-b7V">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
-                                                <action selector="doNextBullet:" target="-1" id="9Ri-qI-Csr"/>
+                                                <action selector="doNextBullet:" target="-1" id="0DH-Cf-bE7"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Next Mark (Del)" alternate="YES" keyEquivalent="f" id="d9Q-oc-i1d">
@@ -324,7 +318,7 @@
                                         <menuItem title="Previous Mark" keyEquivalent="g" id="wwb-H4-ev4">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
-                                                <action selector="doPreviousBullet:" target="-1" id="6Hd-ge-HwJ"/>
+                                                <action selector="doPreviousBullet:" target="-1" id="vRB-UQ-h0r"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Previous Mark (Del)" alternate="YES" keyEquivalent="g" id="tM6-w7-wBc">

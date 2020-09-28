@@ -163,15 +163,9 @@
                                         </menuItem>
                                         <menuItem title="次のマーク" keyEquivalent="/" id="797">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES"/>
-                                            <connections>
-                                                <action selector="doNextBullet:" target="-1" id="799"/>
-                                            </connections>
                                         </menuItem>
                                         <menuItem title="前のマーク" keyEquivalent="/" id="798">
                                             <modifierMask key="keyEquivalentModifierMask" shift="YES" control="YES"/>
-                                            <connections>
-                                                <action selector="doPreviousBullet:" target="-1" id="800"/>
-                                            </connections>
                                         </menuItem>
                                         <menuItem title="選択部分を検索に使用" tag="7" keyEquivalent="e" id="221"/>
                                         <menuItem title="選択部分へジャンプ" keyEquivalent="j" id="210">
@@ -308,36 +302,36 @@
                                         <menuItem title="次のマークへ移動" keyEquivalent="f" id="WJh-gU-12H">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
-                                                <action selector="doNextBullet:" target="-1" id="oaf-Y6-56q"/>
+                                                <action selector="doNextBullet:" target="-1" id="WMQ-ls-8NT"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="次のマークへ移動して削除" alternate="YES" keyEquivalent="f" id="ae6-76-yaf">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES" command="YES"/>
                                             <connections>
-                                                <action selector="doNextBulletAndDelete:" target="-1" id="Wl4-wX-zCa"/>
+                                                <action selector="doNextBulletAndDelete:" target="-1" id="GDi-Ph-t34"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="前のマークへ移動" keyEquivalent="g" id="IuR-Eg-hw3">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
-                                                <action selector="doPreviousBullet:" target="-1" id="djp-OZ-kfb"/>
+                                                <action selector="doPreviousBullet:" target="-1" id="Sda-4x-B72"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="前のマークへ移動して削除" alternate="YES" keyEquivalent="g" id="6NF-NL-M2H">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" option="YES" command="YES"/>
                                             <connections>
-                                                <action selector="doPreviousBulletAndDelete:" target="-1" id="GF1-fY-PPc"/>
+                                                <action selector="doPreviousBulletAndDelete:" target="-1" id="eGx-g1-mSf"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="マークを挿入" keyEquivalent="8" id="Pu5-Sq-EcT">
                                             <connections>
-                                                <action selector="placeBullet:" target="-1" id="1Ha-Ga-Yro"/>
+                                                <action selector="placeBullet:" target="-1" id="1ur-cp-526"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="コメントを挿入" alternate="YES" keyEquivalent="8" id="Kti-cN-TBE">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
-                                                <action selector="placeComment:" target="-1" id="xom-v5-hbu"/>
+                                                <action selector="placeComment:" target="-1" id="dn7-kt-YOP"/>
                                             </connections>
                                         </menuItem>
                                     </items>

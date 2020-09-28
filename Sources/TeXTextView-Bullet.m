@@ -7,7 +7,7 @@ NSString *startCommentString = @"\u2022\u2039"; // "•‹"
 NSString *endCommentString = @"\u203A"; // "›"
 
 @implementation TeXTextView (Bullet)
-- (void)doNextBullet:(id)sender // modified by (HS)
+- (IBAction)doNextBullet:(id)sender // modified by (HS)
 {
     NSString *text = self.string;
     NSRange tempRange = self.selectedRange;
@@ -40,7 +40,7 @@ NSString *endCommentString = @"\u203A"; // "›"
     }
 }
 
-- (void)doPreviousBullet:(id)sender // modified by (HS)
+- (IBAction)doPreviousBullet:(id)sender // modified by (HS)
 {
     NSString *text = self.string;
     NSRange tempRange = self.selectedRange;
@@ -72,7 +72,7 @@ NSString *endCommentString = @"\u203A"; // "›"
     }
 }
 
-- (void)doNextBulletAndDelete:(id)sender // modified by (HS)
+- (IBAction)doNextBulletAndDelete:(id)sender // modified by (HS)
 {
     NSString *text = self.string;
     NSRange tempRange = self.selectedRange;
@@ -111,7 +111,7 @@ NSString *endCommentString = @"\u203A"; // "›"
     }
 }
 
-- (void)doPreviousBulletAndDelete:(id)sender // modified by (HS)
+- (IBAction)doPreviousBulletAndDelete:(id)sender // modified by (HS)
 {
     NSString *text = self.string;
     NSRange tempRange = self.selectedRange;
@@ -149,7 +149,7 @@ NSString *endCommentString = @"\u203A"; // "›"
     }
 }
 
-- (void)placeBullet:(id)sender // modified by (HS) to be a simple insertion (replacing the selection)
+- (IBAction)placeBullet:(id)sender // modified by (HS) to be a simple insertion (replacing the selection)
 {
     NSRange myRange = self.selectedRange;
     [self replaceCharactersInRange:myRange withString:placeholderString] ;//" •\n" puts • on previous line
@@ -158,7 +158,7 @@ NSString *endCommentString = @"\u203A"; // "›"
     self.selectedRange = myRange;
 }
 
-- (void)placeComment:(id)sender // by (HS) to be a simple insertion (replacing the selection)
+- (IBAction)placeComment:(id)sender // by (HS) to be a simple insertion (replacing the selection)
 {
     NSRange myRange = self.selectedRange;
     [self replaceCharactersInRange:myRange withString:startCommentString]; //" •\n" puts • on previous line
