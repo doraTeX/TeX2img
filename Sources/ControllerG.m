@@ -501,6 +501,40 @@ typedef enum {
 - (void)showOutputWindowOnMainThread
 {
     outputWindowMenuItem.state = YES;
+
+    NSRect outputWindowRect = outputWindow.frame;
+    NSScreen *screen = mainWindow.screen;
+    
+    NSRect newRect = NSMakeRect(NSMaxX(mainWindow.frame),
+                                NSMaxY(mainWindow.frame) - NSHeight(outputWindowRect),
+                                NSWidth(outputWindowRect), NSHeight(outputWindowRect));
+    
+    if (NSMaxX(newRect) <= NSMaxX(screen.visibleFrame)) { // 右に表示する余裕があるとき
+        [outputWindow setFrame:newRect display:NO];
+    } else {
+        newRect = NSMakeRect(NSMinX(mainWindow.frame) - NSWidth(outputWindowRect),
+                             NSMaxY(mainWindow.frame) - NSHeight(outputWindowRect),
+                             NSWidth(outputWindowRect), NSHeight(outputWindowRect));
+        if (NSMinX(screen.visibleFrame) <= NSMinX(newRect)) { // 左に表示する余裕があるとき
+            [outputWindow setFrame:newRect display:NO];
+        } else { // 左右ともに表示する余裕がないとき
+            // メインウィンドウを縮められる限り縮める
+            CGFloat newWidth = MAX(NSMaxX(screen.visibleFrame) - NSWidth(outputWindowRect) - NSMinX(mainWindow.frame) - 1, mainWindow.minSize.width);
+            newRect = NSMakeRect(NSMinX(mainWindow.frame),
+                                 mainWindow.frame.origin.y,
+                                 newWidth,
+                                 NSHeight(mainWindow.frame));
+            [mainWindow setFrame:newRect display:YES animate:YES];
+
+            // 画面右端までアウトプットウィンドウを表示
+            newRect = NSMakeRect(NSMaxX(mainWindow.frame),
+                                 NSMaxY(mainWindow.frame) - NSHeight(outputWindowRect),
+                                 NSMaxX(screen.visibleFrame) - NSMaxX(mainWindow.frame),
+                                 NSHeight(outputWindowRect));
+            [outputWindow setFrame:newRect display:NO];
+        }
+    }
+
     [outputWindow makeKeyAndOrderFront:nil];
 }
 
@@ -2550,15 +2584,7 @@ typedef enum {
     if (outputWindow.isVisible) {
         [outputWindow close];
     } else {
-        outputWindowMenuItem.state = YES;
-
-        NSRect mainWindowRect = mainWindow.frame;
-        NSRect outputWindowRect = outputWindow.frame;
-        [outputWindow setFrame:NSMakeRect(NSMinX(mainWindowRect) + NSWidth(mainWindowRect),
-                                          NSMinY(mainWindowRect) + NSHeight(mainWindowRect) - NSHeight(outputWindowRect),
-                                          NSWidth(outputWindowRect), NSHeight(outputWindowRect))
-                       display:NO];
-        [outputWindow makeKeyAndOrderFront:nil];
+        [self showOutputWindow];
     }
 }
 
@@ -2568,13 +2594,41 @@ typedef enum {
 		[preambleWindow close];
 	} else {
 		preambleWindowMenuItem.state = YES;
+        
+        NSRect preambleWindowRect = preambleWindow.frame;
+        NSScreen *screen = mainWindow.screen;
+        
+        NSRect newRect = NSMakeRect(NSMinX(mainWindow.frame) - NSWidth(preambleWindowRect),
+                                    NSMaxY(mainWindow.frame) - NSHeight(preambleWindowRect),
+                                    NSWidth(preambleWindowRect), NSHeight(preambleWindowRect));
 
-		NSRect mainWindowRect = mainWindow.frame;
-		NSRect preambleWindowRect = preambleWindow.frame;
-		[preambleWindow setFrame:NSMakeRect(NSMinX(mainWindowRect) - NSWidth(preambleWindowRect), 
-											NSMinY(mainWindowRect) + NSHeight(mainWindowRect) - NSHeight(preambleWindowRect), 
-											NSWidth(preambleWindowRect), NSHeight(preambleWindowRect))
-						 display:NO];
+        if (NSMinX(screen.visibleFrame) <= NSMinX(newRect)) { // 左に表示する余裕があるとき
+            [preambleWindow setFrame:newRect display:NO];
+        } else {
+            newRect = NSMakeRect(NSMaxX(mainWindow.frame),
+                                 NSMaxY(mainWindow.frame) - NSHeight(preambleWindowRect),
+                                 NSWidth(preambleWindowRect), NSHeight(preambleWindowRect));
+            if (NSMaxX(newRect) <= NSMaxX(screen.visibleFrame)) { // 右に表示する余裕があるとき
+                [preambleWindow setFrame:newRect display:NO];
+            } else { // 左右ともに表示する余裕がないとき
+                // メインウィンドウを縮められる限り縮める
+                CGFloat newWidth = MAX(NSMaxX(mainWindow.frame) - NSMinX(screen.visibleFrame) - NSWidth(preambleWindow.frame) - 1, mainWindow.minSize.width);
+                CGFloat newX = NSMaxX(mainWindow.frame) - newWidth;
+                newRect = NSMakeRect(newX,
+                                     mainWindow.frame.origin.y,
+                                     newWidth,
+                                     NSHeight(mainWindow.frame));
+                [mainWindow setFrame:newRect display:YES animate:YES];
+                
+                // 画面左端からプリアンブルウィンドウを表示
+                newRect = NSMakeRect(NSMinX(screen.visibleFrame),
+                                     NSMaxY(mainWindow.frame) - NSHeight(preambleWindowRect),
+                                     NSMinX(mainWindow.frame) - NSMinX(screen.visibleFrame),
+                                     NSHeight(preambleWindowRect));
+                [preambleWindow setFrame:newRect display:NO];
+            }
+        }
+        
 		[preambleWindow makeKeyAndOrderFront:nil];
         [preambleTextView colorizeText];
 	}
