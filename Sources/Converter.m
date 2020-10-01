@@ -12,7 +12,6 @@
 #import "NSDictionary-Extension.h"
 #import "NSMutableString-Extension.h"
 #import "NSBitmapImageRep-Extension.h"
-#import "NSPipe-Extension.h"
 #import "PDFDocument-Extension.h"
 #import "Converter.h"
 

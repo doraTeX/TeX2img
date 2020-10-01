@@ -11,7 +11,7 @@ extension ControllerG {
         task.launch()
         task.waitUntilExit()
         
-        var searchPaths = pipe.stringValue().components(separatedBy: ":")
+        var searchPaths = pipe.stringValue.components(separatedBy: ":")
         
         let additionalPaths = [
             "/Applications/TeXLive/Library/mactexaddons/bin",

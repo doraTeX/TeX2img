@@ -10,7 +10,6 @@
 #import "NSColor-Extension.h"
 #import "NSColor-DefaultColor.h"
 #import "NSColorWell-Extension.h"
-#import "NSPipe-Extension.h"
 #import "NSPopover-Extension.h"
 #import "NSMatrix-Extension.h"
 #import "PDFDocument-Extension.h"
