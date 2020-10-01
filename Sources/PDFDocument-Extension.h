@@ -1,5 +1,5 @@
 #import <Quartz/Quartz.h>
-#import "PDFPage-Extension.h"
+#import "TeX2img-Swift.h"
 
 @interface PDFDocument (Extension)
 + (instancetype)documentWithFilePath:(NSString*)path;
