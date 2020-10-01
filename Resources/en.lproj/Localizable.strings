@@ -81,3 +81,11 @@
 "Format" = "Format: ";
 "Light Mode" = "light mode";
 "Dark Mode" = "dark mode";
+"Install..." = "Install...";
+"Uninstall..." = "Uninstall...";
+"Installed" = "Installed at %@";
+"Not Installed" = "Not installed";
+"Install CUI Confirmation" = "%@ will be installed. OK?";
+"Uninstall CUI Confirmation" = "%@ will be uninstalled. OK?";
+"Admin password required" = "The administrator password is required to continue.";
+

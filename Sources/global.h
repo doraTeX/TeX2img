@@ -17,6 +17,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
 #define MAX_LEN 2048
 #define BASH_PATH @"/bin/bash"
+#define CUI_PATH @"/usr/local/bin/tex2img"
 
 #define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"svgz"])
 #define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"svgz", @"tex"])

@@ -52,7 +52,6 @@ void previewFiles(NSArray<NSString*> *files, NSString *app)
     task.standardError = pipe;
     
     [task launch];
-
 }
 
 BOOL isTeX2imgAnnotation(PDFAnnotation *annotation)

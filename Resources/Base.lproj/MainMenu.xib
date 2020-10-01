@@ -764,6 +764,9 @@ DQ
                 <outlet property="colorTextField" destination="FSu-oQ-wrx" id="2Pb-rY-fhi"/>
                 <outlet property="commandCompletionKeyMatrix" destination="v4G-0e-MKD" id="v8u-tl-4RR"/>
                 <outlet property="convertYenMarkMenuItem" destination="730" id="731"/>
+                <outlet property="cuiToolInstallButton" destination="HPl-UJ-fwu" id="ylz-7K-g86"/>
+                <outlet property="cuiToolStatusTextField" destination="wnC-5o-2fo" id="fAd-3N-GuP"/>
+                <outlet property="cuiToolStatusView" destination="tlM-d0-QVi" id="9fe-en-tCN"/>
                 <outlet property="darkModeBackgroundColorWell" destination="oGI-S9-ieU" id="1bY-34-Gl5"/>
                 <outlet property="darkModeBraceColorWell" destination="tXV-Gp-PMV" id="3aR-sV-buu"/>
                 <outlet property="darkModeCommandColorWell" destination="Zd7-9Q-8On" id="pCS-ZN-39s"/>
@@ -2260,17 +2263,6 @@ DQ
                                     <rect key="frame" x="10" y="33" width="509" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="779">
-                                            <rect key="frame" x="16" y="57" width="229" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Automatically check for updates" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="780">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <binding destination="781" name="value" keyPath="values.SUEnableAutomaticChecks" id="782"/>
-                                            </connections>
-                                        </button>
                                         <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="589">
                                             <rect key="frame" x="13" y="330" width="204" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -2382,7 +2374,7 @@ DQ
                                         <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="650">
                                             <rect key="frame" x="13" y="370" width="351" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Show output view" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="651">
+                                            <buttonCell key="cell" type="check" title="Show output window" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="651">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -2418,6 +2410,61 @@ DQ
                                                 <action selector="openSystemPreferencePane:" target="450" id="4cU-7S-v9h"/>
                                             </connections>
                                         </button>
+                                        <box fixedFrame="YES" title="Misc" translatesAutoresizingMaskIntoConstraints="NO" id="wl5-Fo-arS">
+                                            <rect key="frame" x="14" y="10" width="426" height="114"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                            <view key="contentView" id="YyP-xV-3yd">
+                                                <rect key="frame" x="3" y="3" width="420" height="96"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vDC-aL-k8f">
+                                                        <rect key="frame" x="18" y="38" width="131" height="16"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Command Line Tool: " id="HjF-Ql-HPF">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="779">
+                                                        <rect key="frame" x="18" y="66" width="229" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Automatically check for updates" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="780">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <binding destination="781" name="value" keyPath="values.SUEnableAutomaticChecks" id="782"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HPl-UJ-fwu">
+                                                        <rect key="frame" x="155" y="37" width="70" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="roundRect" title="Uninstall..." bezelStyle="roundedRect" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xOz-zZ-U8I">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="installCUITool:" target="450" id="Mj4-aO-kFr"/>
+                                                        </connections>
+                                                    </button>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tlM-d0-QVi">
+                                                        <rect key="frame" x="148" y="6" width="32" height="32"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="A7c-3m-z92"/>
+                                                    </imageView>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wnC-5o-2fo">
+                                                        <rect key="frame" x="177" y="6" width="218" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Not installed" id="55n-9s-zph">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                </subviews>
+                                            </view>
+                                        </box>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -2473,7 +2520,7 @@ DQ
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Cyy-6j-Hc7">
                             <rect key="frame" x="1" y="1" width="405" height="95"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" id="682">
                                     <rect key="frame" x="0.0" y="0.0" width="405" height="95"/>

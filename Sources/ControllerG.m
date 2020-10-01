@@ -200,6 +200,10 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSTextField *loopCountTextField;
 @property (nonatomic, strong) IBOutlet NSStepper *loopCountStepper;
 
+@property (nonatomic, strong) IBOutlet NSButton *cuiToolInstallButton;
+@property (nonatomic, strong) IBOutlet NSImageView *cuiToolStatusView;
+@property (nonatomic, strong) IBOutlet NSTextField *cuiToolStatusTextField;
+
 @property (atomic, strong) Converter *converter;
 @property (atomic, strong) NSTask *runningTask;
 @property (atomic, strong) NSPipe *outputPipe;
@@ -377,6 +381,49 @@ typedef enum {
 @synthesize taskKilled;
 @synthesize sourceFont;
 
+
+- (BOOL)sudoCommand:(NSString*)command
+        atDirectory:(NSString*)path
+      withArguments:(NSArray<NSString*>*)arguments
+       stdoutString:(NSString**)output
+   errorDescription:(NSString**)errorDescription
+{
+    NSString *arg = [arguments componentsJoinedByString:@" "];
+    NSString *shellscript = [NSString stringWithFormat:@"cd '%@'; '%@' %@", path, command, arg];
+
+    NSDictionary *errorInfo = [NSDictionary dictionary];
+    NSString *script = [NSString stringWithFormat:@"do shell script \"%@\" with administrator privileges", shellscript];
+
+    NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
+
+    NSAppleEventDescriptor *eventResult = [appleScript executeAndReturnError:&errorInfo];
+    
+    if (!eventResult) {
+        *errorDescription = nil;
+        
+        if ([errorInfo valueForKey:NSAppleScriptErrorNumber]) {
+            NSNumber *errorNumber = (NSNumber*)[errorInfo valueForKey:NSAppleScriptErrorNumber];
+        
+            if (errorNumber.intValue == -128) {
+                *errorDescription = localizedString(@"Admin password required");
+            }
+        }
+        
+        if (*errorDescription == nil) {
+            if ([errorInfo valueForKey:NSAppleScriptErrorMessage]) {
+                *errorDescription = (NSString*)[errorInfo valueForKey:NSAppleScriptErrorMessage];
+            }
+        }
+        
+        return NO;
+    
+    } else {
+        *output = eventResult.stringValue;
+        
+        return YES;
+    }
+
+}
 
 #pragma mark - OutputController プロトコルの実装
 - (void)exitCurrentThreadIfTaskKilled
@@ -1692,8 +1739,24 @@ typedef enum {
         [self restoreDefaultTemplatesLogic];
     }
     
+    [self updateCUIToolStatus];
+    
     [self preferencesChanged:nil];
     [self outputFilePathChanged:nil];
+}
+
+- (void)updateCUIToolStatus
+{
+    // CUI版のインストール状態チェック
+    if ([[NSFileManager defaultManager] fileExistsAtPath:CUI_PATH]) {
+        _cuiToolInstallButton.title = localizedString(@"Uninstall...");
+        _cuiToolStatusView.image = [NSImage imageNamed:NSImageNameStatusAvailable];
+        _cuiToolStatusTextField.stringValue = [NSString stringWithFormat:localizedString(@"Installed"), CUI_PATH];
+    } else {
+        _cuiToolInstallButton.title = localizedString(@"Install...");
+        _cuiToolStatusView.image = [NSImage imageNamed:NSImageNameStatusUnavailable];
+        _cuiToolStatusTextField.stringValue = localizedString(@"Not Installed");
+    }
 }
 
 - (void)loadDefaultFont
@@ -2907,6 +2970,49 @@ typedef enum {
 {
     NSURL *paneURL = [NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_Automation"];
     [[NSWorkspace sharedWorkspace] openURL:paneURL];
+}
+
+- (IBAction)installCUITool:(id)sender
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:CUI_PATH]) { // アンインストール
+        NSString *message = [NSString stringWithFormat:localizedString(@"Uninstall CUI Confirmation"), CUI_PATH];
+        
+        if (runConfirmPanel(message)) {
+            NSString *output;
+            NSString *errorMessage;
+            [self sudoCommand:@"rm"
+                  atDirectory:NSTemporaryDirectory()
+                withArguments:@[CUI_PATH]
+                 stdoutString:&output
+             errorDescription:&errorMessage];
+            
+            if (errorMessage) {
+                runErrorPanel(errorMessage);
+            }
+        }
+
+    } else { // インストール
+        NSString *message = [NSString stringWithFormat:localizedString(@"Install CUI Confirmation"), CUI_PATH];
+        if (runConfirmPanel(message)) {
+            NSString *cuiPath = [[[[NSBundle mainBundle] sharedSupportPath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:@"tex2img"];
+            cuiPath = [NSString stringWithFormat:@"'%@'", cuiPath];
+
+            NSString *output;
+            NSString *errorMessage;
+            [self sudoCommand:@"ln"
+                  atDirectory:NSTemporaryDirectory()
+                withArguments:@[@"-sf", cuiPath, CUI_PATH]
+                 stdoutString:&output
+             errorDescription:&errorMessage];
+            
+            if (errorMessage) {
+                runErrorPanel(errorMessage);
+            }
+        }
+    }
+    
+    [self updateCUIToolStatus];
 }
 
 #pragma mark - 不可視文字表示の種別設定

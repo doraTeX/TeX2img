@@ -81,3 +81,10 @@
 "Format" = "画像形式：";
 "Light Mode" = "ライトモード";
 "Dark Mode" = "ダークモード";
+"Install..." = "インストール...";
+"Uninstall..." = "アンインストール...";
+"Installed" = "%@ にインストール済み";
+"Not Installed" = "未インストール";
+"Install CUI Confirmation" = "%@ をインストールしてよろしいですか？";
+"Uninstall CUI Confirmation" = "%@ をアンインストールしてよろしいですか？";
+"Admin password required" = "続行には管理者パスワードが必要です。";
