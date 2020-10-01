@@ -13,7 +13,6 @@
 		342C6196101E637F00E29FEB /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 342C6194101E637F00E29FEB /* epstopdf */; };
 		3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
 		34522C121BAC550800DE1B86 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 34522C111BAC550800DE1B86 /* libicucore.tbd */; };
-		3453398E1B93D5830027CBE7 /* NSPopover-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3453398D1B93D5830027CBE7 /* NSPopover-Extension.m */; };
 		346225661AB558AB00F632AD /* mupdf in Resources */ = {isa = PBXBuildFile; fileRef = 346225651AB558AB00F632AD /* mupdf */; };
 		34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 34670DD5125B7AC3002308EF /* dsa_pub.pem */; };
 		34675B2B251CE443000EBBA3 /* TeXTextView-Bullet.m in Sources */ = {isa = PBXBuildFile; fileRef = 34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.m */; };
@@ -36,6 +35,8 @@
 		3486590B2526473500B8B190 /* NSBitmapImageRep-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3486590A2526473500B8B190 /* NSBitmapImageRep-Extension.swift */; };
 		3486590C2526473500B8B190 /* NSBitmapImageRep-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3486590A2526473500B8B190 /* NSBitmapImageRep-Extension.swift */; };
 		3486591025264BCE00B8B190 /* NSMatrix-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3486590F25264BCE00B8B190 /* NSMatrix-Extension.swift */; };
+		348659162526523000B8B190 /* NSPopover-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348659152526523000B8B190 /* NSPopover-Extension.swift */; };
+		3486591D252658AA00B8B190 /* tex2img in Copy Command Line Tools */ = {isa = PBXBuildFile; fileRef = 705DC7A10F1197DC0052AFA5 /* tex2img */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		34867AC91B7B4804002AD2CF /* NSColorWell-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34867AC81B7B4804002AD2CF /* NSColorWell-Extension.m */; };
 		348BB5190F08C3850063003D /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
 		348BBF961B795AB900EDE00C /* NSColor-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.m */; };
@@ -51,7 +52,6 @@
 		34A5C63B251B170B00FCF7BA /* Converter-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */; };
 		34A5C63C251B170B00FCF7BA /* Converter-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */; };
 		34A5C64D251B54A800FCF7BA /* ControllerG-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */; };
-		34A5C66A251BD53300FCF7BA /* tex2img in Copy Command Line Tools */ = {isa = PBXBuildFile; fileRef = 705DC7A10F1197DC0052AFA5 /* tex2img */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		34B5E70420995B2F0071BBE9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34B5E70320995B2F0071BBE9 /* Images.xcassets */; };
 		34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */ = {isa = PBXBuildFile; fileRef = 34BF70F91BD1C6FC00AB76A9 /* pdftops */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
@@ -101,7 +101,7 @@
 			dstPath = bin;
 			dstSubfolderSpec = 12;
 			files = (
-				34A5C66A251BD53300FCF7BA /* tex2img in Copy Command Line Tools */,
+				3486591D252658AA00B8B190 /* tex2img in Copy Command Line Tools */,
 			);
 			name = "Copy Command Line Tools";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -128,8 +128,6 @@
 		343A66DC2249CABC0026CFA3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		343A66DD2249CABC0026CFA3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		34522C111BAC550800DE1B86 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
-		3453398C1B93D5830027CBE7 /* NSPopover-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPopover-Extension.h"; sourceTree = "<group>"; };
-		3453398D1B93D5830027CBE7 /* NSPopover-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPopover-Extension.m"; sourceTree = "<group>"; };
 		346225651AB558AB00F632AD /* mupdf */ = {isa = PBXFileReference; lastKnownFileType = folder; path = mupdf; sourceTree = "<group>"; };
 		34670DD5125B7AC3002308EF /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-Bullet.m"; sourceTree = "<group>"; };
@@ -148,6 +146,7 @@
 		348659052526458600B8B190 /* NSPipe-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPipe-Extension.swift"; sourceTree = "<group>"; };
 		3486590A2526473500B8B190 /* NSBitmapImageRep-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSBitmapImageRep-Extension.swift"; sourceTree = "<group>"; };
 		3486590F25264BCE00B8B190 /* NSMatrix-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMatrix-Extension.swift"; sourceTree = "<group>"; };
+		348659152526523000B8B190 /* NSPopover-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPopover-Extension.swift"; sourceTree = "<group>"; };
 		34867AC71B7B4804002AD2CF /* NSColorWell-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColorWell-Extension.h"; sourceTree = "<group>"; };
 		34867AC81B7B4804002AD2CF /* NSColorWell-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSColorWell-Extension.m"; sourceTree = "<group>"; };
 		348BB5170F08C3850063003D /* Converter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Converter.h; sourceTree = "<group>"; };
@@ -432,8 +431,7 @@
 				34867AC71B7B4804002AD2CF /* NSColorWell-Extension.h */,
 				34867AC81B7B4804002AD2CF /* NSColorWell-Extension.m */,
 				348659052526458600B8B190 /* NSPipe-Extension.swift */,
-				3453398C1B93D5830027CBE7 /* NSPopover-Extension.h */,
-				3453398D1B93D5830027CBE7 /* NSPopover-Extension.m */,
+				348659152526523000B8B190 /* NSPopover-Extension.swift */,
 				3486590F25264BCE00B8B190 /* NSMatrix-Extension.swift */,
 				34BFF6D11B9F1A9F00E8DE77 /* PDFDocument-Extension.h */,
 				34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */,
@@ -628,7 +626,6 @@
 				34BFF6D71B9F1FF900E8DE77 /* PDFPageBox.m in Sources */,
 				347314FB1B89CFDC00F285A3 /* NSString-Unicode.m in Sources */,
 				348658F52526402E00B8B190 /* NSDate-Extension.swift in Sources */,
-				3453398E1B93D5830027CBE7 /* NSPopover-Extension.m in Sources */,
 				3470A01B2089EFD400773332 /* MyATSTypesetter.m in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
 				3486590B2526473500B8B190 /* NSBitmapImageRep-Extension.swift in Sources */,
@@ -643,6 +640,7 @@
 				348BBF961B795AB900EDE00C /* NSColor-Extension.m in Sources */,
 				3486591025264BCE00B8B190 /* NSMatrix-Extension.swift in Sources */,
 				349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */,
+				348659162526523000B8B190 /* NSPopover-Extension.swift in Sources */,
 				348659062526458600B8B190 /* NSPipe-Extension.swift in Sources */,
 				34A5C63B251B170B00FCF7BA /* Converter-Extension.swift in Sources */,
 				346DA57B1B705F6800B51BD7 /* NSArray-Extension.m in Sources */,

@@ -10,7 +10,6 @@
 #import "NSColor-Extension.h"
 #import "NSColor-DefaultColor.h"
 #import "NSColorWell-Extension.h"
-#import "NSPopover-Extension.h"
 #import "PDFDocument-Extension.h"
 #import "TeXTextView.h"
 #import "UtilityG.h"
@@ -2866,31 +2865,32 @@ typedef enum {
     }
 }
 
-- (IBAction)showAutoDetectionTargetSettingPopover:(id)sender
+- (IBAction)showAutoDetectionTargetSettingPopover:(NSButton*)sender
 {
-    [NSPopover showPopoverWithViewController:autoDetectionTargetSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:preferenceWindow.contentView
-                                     offsetX:25
-                                           Y:24];
+    [NSPopover showWith:autoDetectionTargetSettingViewController
+              atRightOf:sender
+                   view:preferenceWindow.contentView
+                offsetX:25
+                      y:24];
 }
 
-- (IBAction)showPageBoxSettingPopover:(id)sender
+- (IBAction)showPageBoxSettingPopover:(NSButton*)sender
 {
-    [NSPopover showPopoverWithViewController:pageBoxSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:preferenceWindow.contentView
-                                     offsetX:32
-                                           Y:preferenceWindow.frame.size.height - (isJapaneseLanguage() ? 313 : 300)]; // Japanese.lproj と English.lproj の MainMenu.xib の違いに対応
+    [NSPopover showWith:pageBoxSettingViewController
+              atRightOf:sender
+                   view:preferenceWindow.contentView
+                offsetX:32
+                      y:preferenceWindow.frame.size.height - (isJapaneseLanguage() ? 313 : 300)];
+                // Japanese.lproj と English.lproj の MainMenu.xib の違いに対応
 }
 
-- (IBAction)showAnimationParameterSettingPopover:(id)sender
+- (IBAction)showAnimationParameterSettingPopover:(NSButton*)sender
 {
-    [NSPopover showPopoverWithViewController:animationParameterSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:preferenceWindow.contentView
-                                     offsetX:32
-                                           Y:preferenceWindow.frame.size.height - 446];
+    [NSPopover showWith:animationParameterSettingViewController
+              atRightOf:sender
+                   view:preferenceWindow.contentView
+                offsetX:32
+                      y:preferenceWindow.frame.size.height - 446];
 }
 
 - (IBAction)extensionPopUpButtonChanged:(NSPopUpButton*)sender
@@ -2911,40 +2911,40 @@ typedef enum {
 
 #pragma mark - 不可視文字表示の種別設定
 
-- (IBAction)showSpaceCharacterKindSettingPopover:(id)sender
+- (IBAction)showSpaceCharacterKindSettingPopover:(NSButton*)sender
 {
-    [NSPopover showPopoverWithViewController:spaceCharacterKindSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:invisibleCharacterBox
-                                     offsetX:2
-                                           Y:1];
+    [NSPopover showWith:spaceCharacterKindSettingViewController
+              atRightOf:sender
+                   view:invisibleCharacterBox
+                offsetX:2
+                      y:1];
 }
 
-- (IBAction)showFullwidthSpaceCharacterKindSettingPopover:(id)sender
+- (IBAction)showFullwidthSpaceCharacterKindSettingPopover:(NSButton*)sender
 {
-    [NSPopover showPopoverWithViewController:fullwidthSpaceCharacterKindSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:invisibleCharacterBox
-                                     offsetX:2
-                                           Y:1];
+    [NSPopover showWith:fullwidthSpaceCharacterKindSettingViewController
+              atRightOf:sender
+                   view:invisibleCharacterBox
+                offsetX:2
+                      y:1];
 }
 
-- (IBAction)showReturnCharacterKindSettingPopover:(id)sender
+- (IBAction)showReturnCharacterKindSettingPopover:(NSButton*)sender
 {
-    [NSPopover showPopoverWithViewController:returnCharacterKindSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:invisibleCharacterBox
-                                     offsetX:2
-                                           Y:1];
+    [NSPopover showWith:returnCharacterKindSettingViewController
+              atRightOf:sender
+                   view:invisibleCharacterBox
+                offsetX:2
+                      y:1];
 }
 
-- (IBAction)showTabCharacterKindSettingPopover:(id)sender
+- (IBAction)showTabCharacterKindSettingPopover:(NSButton*)sender
 {
-    [NSPopover showPopoverWithViewController:tabCharacterKindSettingViewController
-                             atRightOfButton:(NSButton*)sender
-                                      ofView:invisibleCharacterBox
-                                     offsetX:2
-                                           Y:1];
+    [NSPopover showWith:tabCharacterKindSettingViewController
+              atRightOf:sender
+                   view:invisibleCharacterBox
+                offsetX:2
+                      y:1];
 }
 
 - (IBAction)invisibleCharacterKindChanged:(id)sender
