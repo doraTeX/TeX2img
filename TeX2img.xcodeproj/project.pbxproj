@@ -582,7 +582,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "VER=`cat Sources/mainc.m | grep \"#define VERSION\" | cut -d' ' -f 3 | sed 's/\"//g'`\ncd $BUILT_PRODUCTS_DIR\necho \"#!/bin/sh\" > deployc.sh\necho zip tex2imgcMac$VER.zip tex2img >> deployc.sh\nchmod +x deployc.sh";
+			shellScript = "VER=`cat Sources/mainc.m | grep \"#define VERSION\" | cut -d' ' -f 3 | sed 's/\"//g'`\ncd $BUILT_PRODUCTS_DIR\necho \"#!/bin/sh\" > deployc.sh\necho zip tex2imgcMac$VER.zip tex2img >> deployc.sh\nchmod +x deployc.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -763,6 +763,7 @@
 				);
 				PRODUCT_NAME = tex2img;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Bridging-Header-C.h";
 				SWIFT_VERSION = 5.0;
 				ZERO_LINK = NO;
