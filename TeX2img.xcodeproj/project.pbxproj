@@ -60,6 +60,7 @@
 		34BFF6DB1B9F240A00E8DE77 /* PDFPage-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6DA1B9F240A00E8DE77 /* PDFPage-Extension.m */; };
 		34BFF6DC1B9F240A00E8DE77 /* PDFPage-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6DA1B9F240A00E8DE77 /* PDFPage-Extension.m */; };
 		34CB9281251F93500045CE9E /* NSColor-DefaultColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CB9280251F93500045CE9E /* NSColor-DefaultColor.m */; };
+		34CB92922525627E0045CE9E /* ControllerG-UserNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */; };
 		34CCBB071A964E8A0061842E /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 34CCBB061A964E8A0061842E /* Templates */; };
 		34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CEA1931AB970CE00F98258 /* UtilityG.m */; };
 		34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
@@ -183,6 +184,7 @@
 		34BFF6DA1B9F240A00E8DE77 /* PDFPage-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PDFPage-Extension.m"; sourceTree = "<group>"; };
 		34CB9280251F93500045CE9E /* NSColor-DefaultColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSColor-DefaultColor.m"; sourceTree = "<group>"; };
 		34CB9283251F93850045CE9E /* NSColor-DefaultColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSColor-DefaultColor.h"; sourceTree = "<group>"; };
+		34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControllerG-UserNotification.swift"; sourceTree = "<group>"; };
 		34CCBB061A964E8A0061842E /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
 		34CEA1931AB970CE00F98258 /* UtilityG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilityG.m; sourceTree = "<group>"; };
 		34CEA1951AB970F600F98258 /* UtilityG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityG.h; sourceTree = "<group>"; };
@@ -274,6 +276,7 @@
 				3424A8E10E4F2DC1003C9F96 /* ControllerG.h */,
 				3424A8E20E4F2DC1003C9F96 /* ControllerG.m */,
 				34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */,
+				34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */,
 				705DC3540F10E4670052AFA5 /* ControllerC.h */,
 				705DC3550F10E4670052AFA5 /* ControllerC.m */,
 				70254EEE10353485000D6D05 /* TeXTextView.h */,
@@ -644,6 +647,7 @@
 				3470A01B2089EFD400773332 /* MyATSTypesetter.m in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
 				34A5C64D251B54A800FCF7BA /* ControllerG-Extension.swift in Sources */,
+				34CB92922525627E0045CE9E /* ControllerG-UserNotification.swift in Sources */,
 				348F29601B848C11009AA3CF /* NSPipe-Extension.m in Sources */,
 				34CF33A410260315009A8CA6 /* NSDictionary-Extension.m in Sources */,
 				34DBA5841D9A4F3A00951297 /* NSString-Conversion.m in Sources */,
