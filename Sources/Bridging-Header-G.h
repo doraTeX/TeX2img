@@ -3,3 +3,4 @@
 #import "PDFPageBox.h"
 #import "PDFDocument-Extension.h"
 #import "ControllerG.h"
+#import "MyLayoutManager.h"

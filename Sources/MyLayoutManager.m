@@ -2,8 +2,8 @@
 #import "NSDictionary-Extension.h"
 #import "NSColor-Extension.h"
 #import "NSColor-DefaultColor.h"
-#import "MyATSTypesetter.h"
 #import "UtilityG.h"
+#import "TeX2img-Swift.h"
 
 @implementation MyLayoutManager
 @synthesize controller;
