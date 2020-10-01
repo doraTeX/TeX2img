@@ -38,7 +38,6 @@ extension ControllerG {
     public func userNotificationCenter(_ center: NSUserNotificationCenter, shouldPresent notification: NSUserNotification) -> Bool {
         return true
     }
-        
 }
 
 

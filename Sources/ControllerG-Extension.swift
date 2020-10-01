@@ -15,19 +15,10 @@ extension ControllerG {
         
         let additionalPaths = [
             "/Applications/TeXLive/Library/mactexaddons/bin",
-            "/Applications/TeXLive/Library/texlive/XXXX/bin/x86_64-darwin",
-            "/Applications/TeXLive/texlive/XXXX/bin/x86_64-darwin",
-            "/usr/local/texlive/XXXX/bin/x86_64-darwin",
-            "/opt/texlive/XXXX/bin/x86_64-darwin",
-            "/Applications/TeXLive/Library/texlive/XXXX/bin/x86_64-darwinlegacy",
-            "/Applications/TeXLive/Library/texlive/XXXX/bin/universal-darwin",
-            "/Applications/TeXLive/texlive/XXXX/bin/x86_64-darwinlegacy",
-            "/Applications/TeXLive/texlive/XXXX/bin/universal-darwin",
-            "/usr/local/texlive/XXXX/bin/x86_64-darwinlegacy",
-            "/usr/local/texlive/XXXX/bin/universal-darwin",
-            "/opt/local/texlive/XXXX/bin/universal-darwin",
-            "/opt/texlive/XXXX/bin/x86_64-darwinlegacy",
-            "/opt/texlive/XXXX/bin/universal-darwin",
+            "/Applications/TeXLive/Library/texlive/XXXX/bin/YYYY",
+            "/Applications/TeXLive/texlive/XXXX/bin/YYYY",
+            "/usr/local/texlive/XXXX/bin/YYYY",
+            "/opt/texlive/XXXX/bin/YYYY",
             "/Library/TeX/texbin",
             "/usr/texbin",
             "/Applications/UpTeX.app/Contents/Resources/TEX/texbin/",
@@ -41,10 +32,20 @@ extension ControllerG {
         ]
         
         let years = Array((2013..<2100).reversed())
+        let platforms = ["x86_64-darwin", "x86_64-darwinlegacy", "universal-darwin"]
         
         for path in additionalPaths {
             if path.contains("XXXX") {
-                searchPaths += years.map { path.replacingOccurrences(of: "XXXX", with: String($0))}
+                for year in years {
+                    let replacedPath = path.replacingOccurrences(of: "XXXX", with: String(year))
+                    if replacedPath.contains("YYYY") {
+                        for platform in platforms {
+                            searchPaths.append(replacedPath.replacingOccurrences(of: "YYYY", with: platform))
+                        }
+                    } else {
+                        searchPaths.append(replacedPath)
+                    }
+                }
             } else {
                 searchPaths.append(path)
             }
