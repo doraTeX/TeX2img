@@ -11,7 +11,6 @@
 #import "NSColor-DefaultColor.h"
 #import "NSColorWell-Extension.h"
 #import "NSPopover-Extension.h"
-#import "NSMatrix-Extension.h"
 #import "PDFDocument-Extension.h"
 #import "TeXTextView.h"
 #import "UtilityG.h"

@@ -1,4 +1,5 @@
 #import "PDFDocument-Extension.h"
+#import "TeX2img-Swift.h"
 
 @implementation PDFDocument (Extension)
 + (instancetype)documentWithFilePath:(NSString*)path

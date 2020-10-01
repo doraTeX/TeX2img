@@ -1,5 +1,6 @@
 #import "PDFPageBox.h"
 #import "PDFDocument-Extension.h"
+#import "TeX2img-Swift.h"
 
 @interface PDFPageBox ()
 {
