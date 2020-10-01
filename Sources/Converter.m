@@ -7,7 +7,6 @@
 #define EMPTY_BBOX @"%%BoundingBox: 0 0 0 0\n"
 
 #import "NSArray-Extension.h"
-#import "NSIndexSet-Extension.h"
 #import "NSString-Extension.h"
 #import "NSString-Conversion.h"
 #import "NSDictionary-Extension.h"
