@@ -1778,7 +1778,7 @@ typedef enum {
         return;
     }
     
-    if (sender.tag == LIGHTMODE_TAG) { // ライトモードの「デフォルトに戻す」ボタン
+    if (!sender || (sender.tag == LIGHTMODE_TAG)) { // 初回起動時，またはライトモードの「デフォルトに戻す」ボタン
         lightModeForegroundColorWell.color = NSColor.defaultForegroundColorForLightMode;
         lightModeBackgroundColorWell.color = NSColor.defaultBackgroundColorForLightMode;
         lightModeCursorColorWell.color = NSColor.defaultCursorColorForLightMode;
@@ -1804,7 +1804,8 @@ typedef enum {
         [lightModeFlashingBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
         [lightModeConsoleForegroundColorWell saveColorToMutableDictionary:lastColorDict];
         [lightModeConsoleBackgroundColorWell saveColorToMutableDictionary:lastColorDict];
-    } else { // ダークモードの「デフォルトに戻す」ボタン
+    }
+    if (!sender || (sender.tag == DARKMODE_TAG)) { // 初回起動時，またはダークモードの「デフォルトに戻す」ボタン
         darkModeForegroundColorWell.color = NSColor.defaultForegroundColorForDarkMode;
         darkModeBackgroundColorWell.color = NSColor.defaultBackgroundColorForDarkMode;
         darkModeCursorColorWell.color = NSColor.defaultCursorColorForDarkMode;
