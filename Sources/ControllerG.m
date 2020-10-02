@@ -389,7 +389,7 @@ typedef enum {
    errorDescription:(NSString**)errorDescription
 {
     NSString *arg = [arguments componentsJoinedByString:@" "];
-    NSString *shellscript = [NSString stringWithFormat:@"cd '%@'; '%@' %@", path, command, arg];
+    NSString *shellscript = [[NSString stringWithFormat:@"cd '%@'; '%@' %@", path, command, arg] stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
 
     NSDictionary *errorInfo = [NSDictionary dictionary];
     NSString *script = [NSString stringWithFormat:@"do shell script \"%@\" with administrator privileges", shellscript];
@@ -2975,39 +2975,54 @@ typedef enum {
 - (IBAction)installCUITool:(id)sender
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
+    
     if ([fileManager fileExistsAtPath:CUI_PATH]) { // アンインストール
         NSString *message = [NSString stringWithFormat:localizedString(@"Uninstall CUI Confirmation"), CUI_PATH];
         
         if (runConfirmPanel(message)) {
-            NSString *output;
-            NSString *errorMessage;
-            [self sudoCommand:@"rm"
-                  atDirectory:NSTemporaryDirectory()
-                withArguments:@[CUI_PATH]
-                 stdoutString:&output
-             errorDescription:&errorMessage];
+            NSError *error = nil;
+            [fileManager removeItemAtPath:CUI_PATH error:&error]; // まずは管理者権限なしでやってみる
             
-            if (errorMessage) {
-                runErrorPanel(errorMessage);
+            if (error) { // エラーが生じたら管理者権限で
+                NSString *output;
+                NSString *errorMessage;
+                [self sudoCommand:@"/bin/rm"
+                      atDirectory:NSTemporaryDirectory()
+                    withArguments:@[CUI_PATH]
+                     stdoutString:&output
+                 errorDescription:&errorMessage];
+                
+                if (errorMessage) {
+                    runErrorPanel(errorMessage);
+                }
             }
         }
 
     } else { // インストール
         NSString *message = [NSString stringWithFormat:localizedString(@"Install CUI Confirmation"), CUI_PATH];
+        
         if (runConfirmPanel(message)) {
-            NSString *cuiPath = [[[[NSBundle mainBundle] sharedSupportPath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:@"tex2img"];
-            cuiPath = [NSString stringWithFormat:@"'%@'", cuiPath];
+            NSString *cuiInAppPath = [[[[NSBundle mainBundle] sharedSupportPath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:@"tex2img"];
 
-            NSString *output;
-            NSString *errorMessage;
-            [self sudoCommand:@"ln"
-                  atDirectory:NSTemporaryDirectory()
-                withArguments:@[@"-sf", cuiPath, CUI_PATH]
-                 stdoutString:&output
-             errorDescription:&errorMessage];
+            NSError *error = nil;
+            [fileManager createSymbolicLinkAtPath:CUI_PATH
+                              withDestinationPath:cuiInAppPath
+                                            error:&error];
             
-            if (errorMessage) {
-                runErrorPanel(errorMessage);
+            if (error) {
+                NSString *cuiDir = CUI_PATH.stringByDeletingLastPathComponent;
+                NSString *bashArg = [NSString stringWithFormat:@"\"mkdir -p '%@'; ln -sf '%@' '%@'\"", cuiDir, cuiInAppPath, CUI_PATH];
+                NSString *output;
+                NSString *errorMessage;
+                [self sudoCommand:@"/bin/bash"
+                      atDirectory:NSTemporaryDirectory()
+                    withArguments:@[@"-c", bashArg]
+                     stdoutString:&output
+                 errorDescription:&errorMessage];
+                
+                if (errorMessage) {
+                    runErrorPanel(errorMessage);
+                }
             }
         }
     }
