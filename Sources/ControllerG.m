@@ -1513,7 +1513,7 @@ typedef enum {
     NSString *templateDirectoryPath = self.templateDirectoryPath;
     NSString *originalTemplateDirectory = [NSBundle.mainBundle pathForResource:TemplateDirectoryName ofType:nil];
     
-    if (![fileManager fileExistsAtPath:templateDirectoryPath isDirectory:nil]) {
+    if (![fileManager fileExistsAtPath:templateDirectoryPath]) {
         [fileManager createDirectoryAtPath:templateDirectoryPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     
@@ -1734,7 +1734,7 @@ typedef enum {
 
     // Application Support の準備
     NSString *templateDirectoryPath = self.templateDirectoryPath;
-    if (![fileManager fileExistsAtPath:templateDirectoryPath isDirectory:nil]) {
+    if (![fileManager fileExistsAtPath:templateDirectoryPath]) {
         // 初回起動時には app bundle 内のテンプレートをコピー
         [self restoreDefaultTemplatesLogic];
     }
@@ -2363,7 +2363,7 @@ typedef enum {
 
         NSString *filePath = [self.templateDirectoryPath stringByAppendingPathComponent:[title stringByAppendingPathExtension:@"tex"]];
         
-        if ([fileManager fileExistsAtPath:filePath isDirectory:nil]
+        if ([fileManager fileExistsAtPath:filePath]
             && (!runConfirmPanel(localizedString(@"profileOverwriteMsg")))) {
             [self saveAsTemplate:title];
         } else {

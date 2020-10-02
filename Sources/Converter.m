@@ -259,7 +259,7 @@
     NSString *auxFilePath = [[workingDirectory stringByAppendingPathComponent:tempFileBaseName] stringByAppendingPathExtension:@"aux"];
     
     // まず aux を削除
-    if ([fileManager fileExistsAtPath:auxFilePath isDirectory:nil] && ![fileManager removeItemAtPath:auxFilePath error:nil]) {
+    if ([fileManager fileExistsAtPath:auxFilePath] && ![fileManager removeItemAtPath:auxFilePath error:nil]) {
         return NO;
     }
     
