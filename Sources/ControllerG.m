@@ -2985,8 +2985,8 @@ typedef enum {
             [fileManager removeItemAtPath:CUI_PATH error:&error]; // まずは管理者権限なしでやってみる
             
             if (error) { // エラーが生じたら管理者権限で
-                NSString *output;
-                NSString *errorMessage;
+                NSString *output = nil;
+                NSString *errorMessage = nil;
                 [self sudoCommand:@"/bin/rm"
                       atDirectory:NSTemporaryDirectory()
                     withArguments:@[CUI_PATH]
@@ -3010,11 +3010,12 @@ typedef enum {
                               withDestinationPath:cuiInAppPath
                                             error:&error];
             
-            if (error) {
+            if (error) { // エラーが生じたら管理者権限で
                 NSString *cuiDir = CUI_PATH.stringByDeletingLastPathComponent;
                 NSString *bashArg = [NSString stringWithFormat:@"\"mkdir -p '%@'; ln -sf '%@' '%@'\"", cuiDir, cuiInAppPath, CUI_PATH];
-                NSString *output;
-                NSString *errorMessage;
+                
+                NSString *output = nil;
+                NSString *errorMessage = nil;
                 [self sudoCommand:@"/bin/bash"
                       atDirectory:NSTemporaryDirectory()
                     withArguments:@[@"-c", bashArg]
