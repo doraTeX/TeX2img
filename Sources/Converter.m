@@ -1064,6 +1064,17 @@
         return NO;
     }
     
+    // 最近の mudraw はファイル名の後ろにページ番号を付与するので，その形のファイル名のものが生成されていたらそれを除去した形にリネーム
+    NSString *outputtedSvgPath = [[svgFilePath.stringByDeletingPathExtension stringByAppendingFormat:@"%ld", page] stringByAppendingPathExtension:@"svg"];
+    if ([fileManager fileExistsAtPath:outputtedSvgPath]) {
+        NSError *error = nil;
+        [fileManager removeItemAtPath:svgFilePath error:nil];
+        [fileManager moveItemAtPath:outputtedSvgPath toPath:svgFilePath error:&error];
+        if (error) {
+            return NO;
+        }
+    }
+    
     // SVG の width, height 属性を削除する
     if (deleteDisplaySizeFlag) {
         NSMutableString *mstr = [NSMutableString stringWithString:[NSString stringWithContentsOfFile:svgFilePath encoding:NSUTF8StringEncoding error:nil]];
