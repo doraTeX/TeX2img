@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		3408053D1A96E6B50067AA56 /* NSFileManager-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* NSFileManager-Extension.m */; };
+		3419977025282F9D0022F53C /* PDFPageBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3419976F25282F9D0022F53C /* PDFPageBox.swift */; };
+		3419977125282F9D0022F53C /* PDFPageBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3419976F25282F9D0022F53C /* PDFPageBox.swift */; };
 		3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */ = {isa = PBXBuildFile; fileRef = 3424A8E20E4F2DC1003C9F96 /* ControllerG.m */; };
 		342C6196101E637F00E29FEB /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 342C6194101E637F00E29FEB /* epstopdf */; };
 		3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */; };
@@ -57,8 +59,6 @@
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
 		34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */; };
 		34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */; };
-		34BFF6D71B9F1FF900E8DE77 /* PDFPageBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D61B9F1FF900E8DE77 /* PDFPageBox.m */; };
-		34BFF6D81B9F1FF900E8DE77 /* PDFPageBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D61B9F1FF900E8DE77 /* PDFPageBox.m */; };
 		34CB9281251F93500045CE9E /* NSColor-DefaultColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CB9280251F93500045CE9E /* NSColor-DefaultColor.m */; };
 		34CB92922525627E0045CE9E /* ControllerG-UserNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */; };
 		34CCBB071A964E8A0061842E /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 34CCBB061A964E8A0061842E /* Templates */; };
@@ -117,6 +117,7 @@
 		32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeX2img_Prefix.pch; sourceTree = "<group>"; };
 		3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager-Extension.h"; sourceTree = "<group>"; };
 		3408053C1A96E6B50067AA56 /* NSFileManager-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager-Extension.m"; sourceTree = "<group>"; };
+		3419976F25282F9D0022F53C /* PDFPageBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPageBox.swift; sourceTree = "<group>"; };
 		3424A8E10E4F2DC1003C9F96 /* ControllerG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerG.h; sourceTree = "<group>"; };
 		3424A8E20E4F2DC1003C9F96 /* ControllerG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerG.m; sourceTree = "<group>"; };
 		342C6194101E637F00E29FEB /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
@@ -172,8 +173,6 @@
 		34BF870B12AC10D20099654C /* MyLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyLayoutManager.m; sourceTree = "<group>"; };
 		34BFF6D11B9F1A9F00E8DE77 /* PDFDocument-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PDFDocument-Extension.h"; sourceTree = "<group>"; };
 		34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PDFDocument-Extension.m"; sourceTree = "<group>"; };
-		34BFF6D51B9F1FF900E8DE77 /* PDFPageBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFPageBox.h; sourceTree = "<group>"; };
-		34BFF6D61B9F1FF900E8DE77 /* PDFPageBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFPageBox.m; sourceTree = "<group>"; };
 		34CB9280251F93500045CE9E /* NSColor-DefaultColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSColor-DefaultColor.m"; sourceTree = "<group>"; };
 		34CB9283251F93850045CE9E /* NSColor-DefaultColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSColor-DefaultColor.h"; sourceTree = "<group>"; };
 		34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControllerG-UserNotification.swift"; sourceTree = "<group>"; };
@@ -259,8 +258,7 @@
 				349927381B786546009BD5F1 /* MyGlyphPopoverController.m */,
 				34821EC610282CF9008DEB1F /* ProfileController.h */,
 				34821EC710282CF9008DEB1F /* ProfileController.m */,
-				34BFF6D51B9F1FF900E8DE77 /* PDFPageBox.h */,
-				34BFF6D61B9F1FF900E8DE77 /* PDFPageBox.m */,
+				3419976F25282F9D0022F53C /* PDFPageBox.swift */,
 				348BB5170F08C3850063003D /* Converter.h */,
 				348BB5180F08C3850063003D /* Converter.m */,
 				34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */,
@@ -599,7 +597,6 @@
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
 				34D2A63E1AB9BC0F0040B4A5 /* UtilityC.m in Sources */,
 				348659072526458600B8B190 /* Pipe-Extension.swift in Sources */,
-				34BFF6D81B9F1FF900E8DE77 /* PDFPageBox.m in Sources */,
 				346DA57C1B705F6800B51BD7 /* NSArray-Extension.m in Sources */,
 				34A5C63C251B170B00FCF7BA /* Converter-Extension.swift in Sources */,
 				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,
@@ -608,6 +605,7 @@
 				34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */,
 				3468197D1C06A78800641CBF /* NSMutableString-Extension.m in Sources */,
 				34865902252643BE00B8B190 /* NSIndexSet-Extension.swift in Sources */,
+				3419977125282F9D0022F53C /* PDFPageBox.swift in Sources */,
 				348658F62526402E00B8B190 /* NSDate-Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -616,12 +614,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3419977025282F9D0022F53C /* PDFPageBox.swift in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */,
 				3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */,
 				34867AC91B7B4804002AD2CF /* NSColorWell-Extension.m in Sources */,
 				34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */,
-				34BFF6D71B9F1FF900E8DE77 /* PDFPageBox.m in Sources */,
 				347314FB1B89CFDC00F285A3 /* NSString-Unicode.m in Sources */,
 				348658F52526402E00B8B190 /* NSDate-Extension.swift in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,

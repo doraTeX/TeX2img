@@ -1,6 +1,6 @@
 import Foundation
 
-class MyATSTypesetter : NSATSTypesetter {
+class MyATSTypesetter: NSATSTypesetter {
     @objc override func actionForControlCharacter(at index: Int) -> NSTypesetterControlCharacterAction {
         let action = super.actionForControlCharacter(at: index)
         

@@ -560,14 +560,14 @@
       withPageBoxOfPdf:(NSString*)pdfName
                   page:(NSUInteger)page
 {
-    PDFPageBox *pageBox = [PDFPageBox pageBoxWithFilePath:[workingDirectory stringByAppendingPathComponent:pdfName] page:page];
+    PDFPageBox *pageBox = [[PDFPageBox alloc] initWithFilePath:[workingDirectory stringByAppendingPathComponent:pdfName] page:page];
     NSString *epsPath = [workingDirectory stringByAppendingPathComponent:epsName];
-    NSString *bbStr = [pageBox bboxStringOfBox:pageBoxType
-                                         hires:NO
-                                     addHeader:NO];
-    NSString *hiresBbStr = [pageBox bboxStringOfBox:pageBoxType
-                                              hires:YES
-                                          addHeader:NO];
+    NSString *bbStr = [pageBox bboxStringOf:pageBoxType
+                                      hires:NO
+                                  addHeader:NO];
+    NSString *hiresBbStr = [pageBox bboxStringOf:pageBoxType
+                                           hires:YES
+                                       addHeader:NO];
     
     [self replaceBBoxOfEps:epsPath bb:bbStr hiresBb:hiresBbStr];
     return YES;

@@ -1,5 +1,5 @@
 #import <Quartz/Quartz.h>
-#import "PDFPageBox.h"
+@class PDFPageBox;
 
 @interface PDFDocument (Extension)
 + (instancetype)documentWithFilePath:(NSString*)path;

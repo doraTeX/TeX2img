@@ -14,9 +14,9 @@ import Quartz
         let bottomMargin = addMargin ? CGFloat(self.bottomMargin) : 0
         
         guard let bbStr = keepPageSizeFlag
-            ? PDFPageBox(filePath: pdfPath, page: page).bboxString(of: pageBoxType,
-                                                                   hires: false,
-                                                                   addHeader: true)
+                ? PDFPageBox(filePath: pdfPath, page: page)?.bboxString(of: pageBoxType,
+                                                                        hires: false,
+                                                                        addHeader: true)
                 : self.bboxString(ofPdf: pdfPath, page: page, hires: false) else { return nil }
         
         if bbStr == "" {
@@ -29,7 +29,7 @@ import Quartz
             .map{ CGFloat(Int($0)!) }
         let (bboxLx, bboxLy, bboxUx, bboxUy) = (bbox[0], bbox[1], bbox[2], bbox[3])
         
-        let mediaBox = pdfPage.pageBox.mediaBoxRect()
+        let mediaBox = pdfPage.pageBox.mediaBoxRect
         let (mboxLx, mboxLy, mboxUx, mboxUy) = (mediaBox.minX, mediaBox.minY, mediaBox.minX + mediaBox.width, mediaBox.minY + mediaBox.height)
         
         let rotation = pdfPage.rotation
