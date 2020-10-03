@@ -2036,13 +2036,21 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     // プレビュー処理
     if (status && previewFlag) {
         NSString *previewApp;
-        if ([@"svg" isEqualToString:extension] || ([@"gif" isEqualToString:extension] && mergeOutputsFlag && (generatedPageCount > 1))) {
+        if ([@"gif" isEqualToString:extension] && mergeOutputsFlag && (generatedPageCount > 1)) {
             previewApp = @"/System/Applications/Safari.app";
             if (![fileManager fileExistsAtPath:previewApp]) {
                 previewApp = @"/Applications/Safari.app";
             }
         } else if ([@"svgz" isEqualToString:extension]) {
-            previewApp = SVGZ_PREVIEWER;
+            previewApp = SVG_PREVIEWER;
+        } else if ([@"svg" isEqualToString:extension]) {
+            previewApp = SVG_PREVIEWER;
+            if (![fileManager fileExistsAtPath:previewApp]) {
+                previewApp = @"/System/Applications/Safari.app";
+                if (![fileManager fileExistsAtPath:previewApp]) {
+                    previewApp = @"/Applications/Safari.app";
+                }
+            }
         } else {
             previewApp = @"/System/Applications/Preview.app";
             if (![fileManager fileExistsAtPath:previewApp]) {

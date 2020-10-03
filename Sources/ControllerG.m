@@ -756,7 +756,7 @@ typedef enum {
     NSArray<NSString*> *files = (NSArray<NSString*>*)(parameters[0]);
     NSString *app = (NSString*)(parameters[1]);
     
-    if ([app isEqualToString:SVGZ_PREVIEWER] && ![NSFileManager.defaultManager fileExistsAtPath:SVGZ_PREVIEWER]) {
+    if ([app isEqualToString:SVG_PREVIEWER] && ![NSFileManager.defaultManager fileExistsAtPath:SVG_PREVIEWER]) {
         NSAlert *alert = [NSAlert new];
         alert.messageText = localizedString(@"Warning");
         alert.informativeText = localizedString(@"Gapplin required");
