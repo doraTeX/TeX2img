@@ -2037,32 +2037,20 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     if (status && previewFlag) {
         NSString *previewApp;
         if ([@"svg" isEqualToString:extension] || ([@"gif" isEqualToString:extension] && mergeOutputsFlag && (generatedPageCount > 1))) {
-            if (@available(macOS 10.15, *)) {
-                previewApp = @"/System/Applications/Safari.app";
-            } else {
+            previewApp = @"/System/Applications/Safari.app";
+            if (![fileManager fileExistsAtPath:previewApp]) {
                 previewApp = @"/Applications/Safari.app";
             }
         } else if ([@"svgz" isEqualToString:extension]) {
-            if ([fileManager fileExistsAtPath:@"/Applications/Google Chrome.app"]) {
-                previewApp = @"/Applications/Google Chrome.app";
-            } else {
-                previewApp = @"qlmanage";
-            }
+            previewApp = SVGZ_PREVIEWER;
         } else {
-            if (@available(macOS 10.15, *)) {
-                previewApp = @"/System/Applications/Preview.app";
-            } else {
+            previewApp = @"/System/Applications/Preview.app";
+            if (![fileManager fileExistsAtPath:previewApp]) {
                 previewApp = @"/Applications/Preview.app";
             }
         }
         
-        if ([@"qlmanage" isEqualToString:previewApp]) {
-            [generatedFiles enumerateObjectsUsingBlock:^(NSString * _Nonnull path, NSUInteger idx, BOOL * _Nonnull stop) {
-                system([NSString stringWithFormat:@"/usr/bin/qlmanage -p %@ &", path.stringByQuotingWithDoubleQuotations].UTF8String);
-            }];
-        } else {
-            [controller previewFiles:generatedFiles withApplication:previewApp];
-        }
+        [controller previewFiles:generatedFiles withApplication:previewApp];
     }
 
     // 自動ペースト

@@ -88,4 +88,5 @@
 "Install CUI Confirmation" = "%@ will be installed. OK?";
 "Uninstall CUI Confirmation" = "%@ will be uninstalled. OK?";
 "Admin password required" = "The administrator password is required to continue.";
-
+"Gapplin required" = "You need Gapplin to preview SVGZ files.\nIt is available on the App Store for free.";
+"Open in App Store" = "Open in App Store...";

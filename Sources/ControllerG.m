@@ -755,7 +755,23 @@ typedef enum {
 {
     NSArray<NSString*> *files = (NSArray<NSString*>*)(parameters[0]);
     NSString *app = (NSString*)(parameters[1]);
-    previewFiles(files, app);
+    
+    if ([app isEqualToString:SVGZ_PREVIEWER] && ![NSFileManager.defaultManager fileExistsAtPath:SVGZ_PREVIEWER]) {
+        NSAlert *alert = [NSAlert new];
+        alert.messageText = localizedString(@"Warning");
+        alert.informativeText = localizedString(@"Gapplin required");
+        alert.alertStyle = NSAlertStyleInformational;
+        [alert addButtonWithTitle:@"OK"];
+        [alert addButtonWithTitle:localizedString(@"Open in App Store")];
+        NSModalResponse result = [alert runModal];
+        
+        if (result == NSAlertSecondButtonReturn) {
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:GAPPLIN_URL]];
+        }
+
+    } else {
+        previewFiles(files, app);
+    }
 }
 
 - (void)previewFiles:(NSArray<NSString*>*)files withApplication:(NSString*)app

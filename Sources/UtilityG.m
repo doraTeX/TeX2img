@@ -7,7 +7,12 @@ void runOkPanel(NSString *title, NSString *message, ...)
     va_list arguments;
     va_start(arguments, message);
     NSString *msg = [[NSString alloc] initWithFormat:message arguments:arguments];
-    NSRunAlertPanel(title, @"%@", @"OK", nil, nil, msg);
+    NSAlert *alert = [NSAlert new];
+    alert.messageText = title;
+    alert.informativeText = msg;
+    alert.alertStyle = NSAlertStyleInformational;
+    [alert addButtonWithTitle:@"OK"];
+    [alert runModal];
     va_end(arguments);
 }
 
@@ -16,7 +21,12 @@ void runErrorPanel(NSString *message, ...)
     va_list arguments;
     va_start(arguments, message);
     NSString *msg = [[NSString alloc] initWithFormat:message arguments:arguments];
-    runOkPanel(localizedString(@"Error"), msg);
+    NSAlert *alert = [NSAlert new];
+    alert.messageText = localizedString(@"Error");
+    alert.informativeText = msg;
+    alert.alertStyle = NSAlertStyleCritical;
+    [alert addButtonWithTitle:@"OK"];
+    [alert runModal];
     va_end(arguments);
 }
 
@@ -25,7 +35,12 @@ void runWarningPanel(NSString *message, ...)
     va_list arguments;
     va_start(arguments, message);
     NSString *msg = [[NSString alloc] initWithFormat:message arguments:arguments];
-    runOkPanel(localizedString(@"Warning"), msg);
+    NSAlert *alert = [NSAlert new];
+    alert.messageText = localizedString(@"Warning");
+    alert.informativeText = msg;
+    alert.alertStyle = NSAlertStyleWarning;
+    [alert addButtonWithTitle:@"OK"];
+    [alert runModal];
     va_end(arguments);
 }
 
@@ -34,10 +49,16 @@ BOOL runConfirmPanel(NSString *message, ...)
     va_list arguments;
     va_start(arguments, message);
     NSString *msg = [[NSString alloc] initWithFormat:message arguments:arguments];
-    NSInteger result = NSRunAlertPanel(localizedString(@"Confirm"), @"%@", @"OK", localizedString(@"Cancel"), nil, msg);
+    NSAlert *alert = [NSAlert new];
+    alert.messageText = localizedString(@"Confirm");
+    alert.informativeText = msg;
+    alert.alertStyle = NSAlertStyleInformational;
+    [alert addButtonWithTitle:@"OK"];
+    [alert addButtonWithTitle:localizedString(@"Cancel")];
+    NSModalResponse result = [alert runModal];
     va_end(arguments);
     
-    return (result == NSOKButton);
+    return (result == NSAlertFirstButtonReturn);
 }
 
 

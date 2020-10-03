@@ -88,3 +88,6 @@
 "Install CUI Confirmation" = "%@ をインストールしてよろしいですか？";
 "Uninstall CUI Confirmation" = "%@ をアンインストールしてよろしいですか？";
 "Admin password required" = "続行には管理者パスワードが必要です。";
+"Gapplin required" = "SVGZファイルのプレビューには Gapplin が必要です。\nApp Store で無料で入手できます。";
+"Open in App Store" = "App Store で開く...";
+
