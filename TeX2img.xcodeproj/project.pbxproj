@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
-		3408053D1A96E6B50067AA56 /* NSFileManager-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* NSFileManager-Extension.m */; };
+		3408053D1A96E6B50067AA56 /* FileManager-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */; };
 		3419977025282F9D0022F53C /* PDFPageBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3419976F25282F9D0022F53C /* PDFPageBox.swift */; };
 		3419977125282F9D0022F53C /* PDFPageBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3419976F25282F9D0022F53C /* PDFPageBox.swift */; };
 		3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */ = {isa = PBXBuildFile; fileRef = 3424A8E20E4F2DC1003C9F96 /* ControllerG.m */; };
@@ -115,8 +115,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeX2img_Prefix.pch; sourceTree = "<group>"; };
-		3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager-Extension.h"; sourceTree = "<group>"; };
-		3408053C1A96E6B50067AA56 /* NSFileManager-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager-Extension.m"; sourceTree = "<group>"; };
+		3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager-Extension.swift"; sourceTree = "<group>"; };
 		3419976F25282F9D0022F53C /* PDFPageBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPageBox.swift; sourceTree = "<group>"; };
 		3424A8E10E4F2DC1003C9F96 /* ControllerG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerG.h; sourceTree = "<group>"; };
 		3424A8E20E4F2DC1003C9F96 /* ControllerG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerG.m; sourceTree = "<group>"; };
@@ -416,8 +415,7 @@
 				34DBA5831D9A4F3A00951297 /* NSString-Conversion.m */,
 				7025539710353D33000D6D05 /* NSMutableString-Extension.h */,
 				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
-				3408053B1A96E6B50067AA56 /* NSFileManager-Extension.h */,
-				3408053C1A96E6B50067AA56 /* NSFileManager-Extension.m */,
+				3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */,
 				3486590A2526473500B8B190 /* NSBitmapImageRep-Extension.swift */,
 				348658F42526402E00B8B190 /* NSDate-Extension.swift */,
 				348BBF941B795AB900EDE00C /* NSColor-Extension.h */,
@@ -647,7 +645,7 @@
 				348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */,
 				34675B2B251CE443000EBBA3 /* TeXTextView-Bullet.m in Sources */,
 				348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */,
-				3408053D1A96E6B50067AA56 /* NSFileManager-Extension.m in Sources */,
+				3408053D1A96E6B50067AA56 /* FileManager-Extension.swift in Sources */,
 				34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */,
 				34D41D1E17A6BE2C00997795 /* NSString-Extension.m in Sources */,
 			);
