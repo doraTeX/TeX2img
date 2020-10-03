@@ -49,25 +49,25 @@ import CoreGraphics
         // 回転情報の考慮
         let rotation = pdfPage.rotation
         if rotation == 90 {
-            rect = CGRect(x:rect.origin.y,
-                          y:   mediaBoxRect.size.width - rect.origin.x - rect.size.width,
-                          width:    rect.size.height,
-                          height:    rect.size.width)
+            rect = CGRect(x: rect.origin.y,
+                          y: mediaBoxRect.size.width - rect.origin.x - rect.size.width,
+                          width: rect.size.height,
+                          height: rect.size.width)
         }
         if (rotation == 180) {
-            rect = CGRect(x:mediaBoxRect.size.width - rect.origin.x - rect.size.width,
-                          y:   mediaBoxRect.size.height - rect.origin.y - rect.size.height,
-                          width:  rect.size.width,
-                          height:  rect.size.height)
+            rect = CGRect(x: mediaBoxRect.size.width - rect.origin.x - rect.size.width,
+                          y: mediaBoxRect.size.height - rect.origin.y - rect.size.height,
+                          width: rect.size.width,
+                          height: rect.size.height)
         }
         if (rotation == 270) {
             rect = CGRect(x: mediaBoxRect.size.height - rect.origin.y - rect.size.height,
-                          y:  rect.origin.x,
-                          width:   rect.size.height,
-                          height:  rect.size.width)
+                          y: rect.origin.x,
+                          width: rect.size.height,
+                          height: rect.size.width)
         }
         
-        if (hires) {
+        if hires {
             result = String(format: "%@%f %f %f %f\n",
                             (addHeader ? "%%HiResBoundingBox: " : ""),
                             rect.origin.x,
@@ -75,7 +75,7 @@ import CoreGraphics
                             rect.origin.x + rect.size.width,
                             rect.origin.y + rect.size.height)
         } else {
-            result = String(format:"%@%ld %ld %ld %ld\n",
+            result = String(format: "%@%ld %ld %ld %ld\n",
                             (addHeader ? "%%BoundingBox: " : ""),
                             Int(floor(rect.origin.x)),
                             Int(floor(rect.origin.y)),
