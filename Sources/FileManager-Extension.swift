@@ -19,7 +19,7 @@
 
 import Foundation
 
-@objc extension FileManager {
+extension FileManager {
     @objc var applicationSupportDirectory: String? {
         let executableName = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
         
@@ -34,7 +34,7 @@ import Foundation
         }
     }
     
-    @nonobjc func findOrCreateDirectory(searchPathDirectory: SearchPathDirectory,
+    func findOrCreateDirectory(searchPathDirectory: SearchPathDirectory,
                                         inDomain domainMask: SearchPathDomainMask,
                                         appendPathComponent appendComponent: String) throws -> String? {
         //

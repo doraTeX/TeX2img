@@ -3,12 +3,12 @@ import CoreGraphics
 @objc class PDFPageBox: NSObject {
     let pdfPage: PDFPage
     
-    @objc public init(pdfPage: PDFPage) {
+    init(pdfPage: PDFPage) {
         self.pdfPage = pdfPage
         super.init()
     }
     
-    @objc public convenience init?(filePath path: String, page: UInt) {
+    @objc convenience init?(filePath path: String, page: UInt) {
         guard page > 0 else { return nil }
         let index = page-1
         guard let pdfPage = PDFDocument(filePath: path)?.page(at: index) else { return nil }

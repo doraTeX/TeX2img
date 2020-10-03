@@ -1,6 +1,6 @@
 import Quartz
 
-@objc extension Converter {
+extension Converter {
     func cropPage(of pdfPath: String,
                   page: UInt,
                   from inputDocument: PDFDocument,
@@ -72,7 +72,7 @@ import Quartz
         return pdfPage
     }
 
-    func generateCroppedPDF(of inputPath: String, page: UInt, to outputPath: String, addMargin: Bool) -> Bool {
+    @objc func generateCroppedPDF(of inputPath: String, page: UInt, to outputPath: String, addMargin: Bool) -> Bool {
         guard let inputDoc = PDFDocument(filePath: inputPath) else { return false }
         let totalPageCount = inputDoc.pageCount
         let targetPages = (page==0) ? [UInt](1...totalPageCount) : [page]

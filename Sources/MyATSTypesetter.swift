@@ -1,7 +1,7 @@
 import Foundation
 
 class MyATSTypesetter: NSATSTypesetter {
-    @objc override func actionForControlCharacter(at index: Int) -> NSTypesetterControlCharacterAction {
+    override func actionForControlCharacter(at index: Int) -> NSTypesetterControlCharacterAction {
         let action = super.actionForControlCharacter(at: index)
         
         if action.contains(.zeroAdvancementAction),
@@ -13,11 +13,11 @@ class MyATSTypesetter: NSATSTypesetter {
         return action
     }
     
-    @objc override func boundingBox(forControlGlyphAt glyphIndex: Int,
-                                    for textContainer: NSTextContainer,
-                                    proposedLineFragment proposedRect: NSRect,
-                                    glyphPosition: NSPoint,
-                                    characterIndex charIndex: Int) -> NSRect {
+    override func boundingBox(forControlGlyphAt glyphIndex: Int,
+                              for textContainer: NSTextContainer,
+                              proposedLineFragment proposedRect: NSRect,
+                              glyphPosition: NSPoint,
+                              characterIndex charIndex: Int) -> NSRect {
         var rect = proposedRect
         if let width = (self.layoutManager as? MyLayoutManager)?.replacementGlyphWidth() {
             rect.size.width = width
