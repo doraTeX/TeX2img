@@ -80,7 +80,7 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		CE4A31F10E5036500095D4FC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE4A31F00E5036500095D4FC /* Localizable.strings */; };
-		CEB04B28225226FB005EED2C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB04B27225226FB005EED2C /* AppDelegate.m */; };
+		CEB04B28225226FB005EED2C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB04B27225226FB005EED2C /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -217,8 +217,7 @@
 		7087BD5D0F0E3CD600A06CF5 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* TeX2img.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeX2img.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEB04B26225226FB005EED2C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		CEB04B27225226FB005EED2C /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		CEB04B27225226FB005EED2C /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -248,8 +247,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				CEB04B26225226FB005EED2C /* AppDelegate.h */,
-				CEB04B27225226FB005EED2C /* AppDelegate.m */,
+				CEB04B27225226FB005EED2C /* AppDelegate.swift */,
 				34BF870A12AC10D20099654C /* MyLayoutManager.h */,
 				34BF870B12AC10D20099654C /* MyLayoutManager.m */,
 				3486591F252659A600B8B190 /* MyATSTypesetter.swift */,
@@ -638,7 +636,7 @@
 				348659062526458600B8B190 /* Pipe-Extension.swift in Sources */,
 				34A5C63B251B170B00FCF7BA /* Converter-Extension.swift in Sources */,
 				346DA57B1B705F6800B51BD7 /* NSArray-Extension.m in Sources */,
-				CEB04B28225226FB005EED2C /* AppDelegate.m in Sources */,
+				CEB04B28225226FB005EED2C /* AppDelegate.swift in Sources */,
 				34865900252643A600B8B190 /* NSIndexSet-Extension.swift in Sources */,
 				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,
 				7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */,

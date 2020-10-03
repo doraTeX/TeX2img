@@ -9,21 +9,147 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>eps</string>
-				<string>png</string>
-				<string>jpg</string>
-				<string>gif</string>
-				<string>tiff</string>
-				<string>bmp</string>
-				<string>pdf</string>
-				<string>svg</string>
-				<string>svgz</string>
 				<string>tex</string>
 			</array>
 			<key>CFBundleTypeName</key>
-			<string>Import Extensions</string>
+			<string>TeX Document</string>
 			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>org.tug.tex</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>pdf</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>PDF Document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>eps</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>JPEG Document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.encapsulated-postscript</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>jpg</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>JPEG Document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.jpeg</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>png</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>PNG Document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.png</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>gif</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>GIF Document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.compuserve.gif</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>tiff</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>TIFF Document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.compuserve.tiff</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>bmp</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>BMP Document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.microsoft.bmp</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>svg</string>
+				<string>svgz</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>SVG Document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.svg-image</string>
+			</array>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>

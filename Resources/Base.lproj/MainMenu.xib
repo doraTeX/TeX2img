@@ -6,7 +6,11 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+            <connections>
+                <outlet property="delegate" destination="sHM-Z6-Bnt" id="JIK-J9-SnH"/>
+            </connections>
+        </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <menu title="AMainMenu" systemMenu="main" id="29" userLabel="MainMenu">
@@ -733,9 +737,9 @@ DQ
             </view>
             <point key="canvasLocation" x="-224" y="470.5"/>
         </window>
-        <customObject id="sHM-Z6-Bnt" customClass="AppDelegate">
+        <customObject id="sHM-Z6-Bnt" customClass="AppDelegate" customModule="TeX2img" customModuleProvider="target">
             <connections>
-                <outlet property="controllerG" destination="450" id="hUw-Hq-C0d"/>
+                <outlet property="controllerG" destination="450" id="Yhi-61-Irb"/>
             </connections>
         </customObject>
         <customObject id="420" customClass="NSFontManager"/>
