@@ -1,4 +1,4 @@
-import CoreGraphics
+import Quartz
 
 @objc class PDFPageBox: NSObject {
     let pdfPage: PDFPage

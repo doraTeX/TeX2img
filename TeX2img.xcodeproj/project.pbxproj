@@ -57,8 +57,8 @@
 		34B5E70420995B2F0071BBE9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34B5E70320995B2F0071BBE9 /* Images.xcassets */; };
 		34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */ = {isa = PBXBuildFile; fileRef = 34BF70F91BD1C6FC00AB76A9 /* pdftops */; };
 		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
-		34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */; };
-		34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */; };
+		34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.swift */; };
+		34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.swift */; };
 		34CB9281251F93500045CE9E /* NSColor-DefaultColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CB9280251F93500045CE9E /* NSColor-DefaultColor.m */; };
 		34CB92922525627E0045CE9E /* ControllerG-UserNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */; };
 		34CCBB071A964E8A0061842E /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 34CCBB061A964E8A0061842E /* Templates */; };
@@ -170,8 +170,7 @@
 		34BF70F91BD1C6FC00AB76A9 /* pdftops */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pdftops; sourceTree = "<group>"; };
 		34BF870A12AC10D20099654C /* MyLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyLayoutManager.h; sourceTree = "<group>"; };
 		34BF870B12AC10D20099654C /* MyLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyLayoutManager.m; sourceTree = "<group>"; };
-		34BFF6D11B9F1A9F00E8DE77 /* PDFDocument-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PDFDocument-Extension.h"; sourceTree = "<group>"; };
-		34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PDFDocument-Extension.m"; sourceTree = "<group>"; };
+		34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PDFDocument-Extension.swift"; sourceTree = "<group>"; };
 		34CB9280251F93500045CE9E /* NSColor-DefaultColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSColor-DefaultColor.m"; sourceTree = "<group>"; };
 		34CB9283251F93850045CE9E /* NSColor-DefaultColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSColor-DefaultColor.h"; sourceTree = "<group>"; };
 		34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControllerG-UserNotification.swift"; sourceTree = "<group>"; };
@@ -425,8 +424,7 @@
 				348659052526458600B8B190 /* Pipe-Extension.swift */,
 				348659152526523000B8B190 /* NSPopover-Extension.swift */,
 				3486590F25264BCE00B8B190 /* NSMatrix-Extension.swift */,
-				34BFF6D11B9F1A9F00E8DE77 /* PDFDocument-Extension.h */,
-				34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.m */,
+				34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.swift */,
 				348658FA2526421000B8B190 /* PDFPage-Extension.swift */,
 			);
 			name = Extensions;
@@ -587,7 +585,7 @@
 			files = (
 				3486590C2526473500B8B190 /* NSBitmapImageRep-Extension.swift in Sources */,
 				349276B01BFA19FB00C0BD99 /* NSColor-Extension.m in Sources */,
-				34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */,
+				34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */,
 				349564B91ABFF3D1004B9C1D /* Utility.m in Sources */,
 				3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */,
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
@@ -615,7 +613,7 @@
 				34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */,
 				3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */,
 				34867AC91B7B4804002AD2CF /* NSColorWell-Extension.m in Sources */,
-				34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.m in Sources */,
+				34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */,
 				347314FB1B89CFDC00F285A3 /* NSString-Unicode.m in Sources */,
 				348658F52526402E00B8B190 /* NSDate-Extension.swift in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,

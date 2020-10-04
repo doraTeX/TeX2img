@@ -6,7 +6,7 @@ extension Converter {
                   from inputDocument: PDFDocument,
                   addMargin: Bool) -> PDFPage? {
         let index = page - 1
-        let pdfPage = inputDocument.page(at: index)!
+        guard let pdfPage = inputDocument.page(at: index) else { return nil }
         
         let leftMargin = addMargin ? CGFloat(self.leftMargin) : 0
         let rightMargin = addMargin ? CGFloat(self.rightMargin) : 0
@@ -94,7 +94,9 @@ extension Converter {
         
         let outputDoc = PDFDocument()
         for doc in outputDocs {
-            outputDoc.append(doc.page(at: 0))
+            if let page = doc.page(at: 0) {
+                outputDoc.append(page)
+            }
         }
         
         outputDoc.write(toFile: outputPath)

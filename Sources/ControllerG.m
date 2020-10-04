@@ -9,7 +9,6 @@
 #import "NSColor-Extension.h"
 #import "NSColor-DefaultColor.h"
 #import "NSColorWell-Extension.h"
-#import "PDFDocument-Extension.h"
 #import "TeXTextView.h"
 #import "UtilityG.h"
 
@@ -2050,7 +2049,7 @@ typedef enum {
             if (bufferLength < 0) { // ソース情報が含まれない画像ファイルの場合
                 // PDFの場合はファイル内のアノテーション情報も探索を試みる
                 if ([@"pdf" isEqualToString:extension]) {
-                    PDFDocument *doc = [PDFDocument documentWithFilePath:inputPath];
+                    PDFDocument *doc = [[PDFDocument alloc] initWithFilePath:inputPath];
                     contents = [self extractTeXSourceStringFromAnnotationOfPDF:doc];
                     if (!contents) {
                         runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);

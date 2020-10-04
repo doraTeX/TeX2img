@@ -21,7 +21,7 @@ import Foundation
 
 extension FileManager {
     @objc var applicationSupportDirectory: String? {
-        let executableName = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
+        guard let executableName = Bundle.main.infoDictionary?["CFBundleExecutable"] as? String else { return nil }
         
         do {
             let result = try self.findOrCreateDirectory(searchPathDirectory: .applicationSupportDirectory,

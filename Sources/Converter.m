@@ -11,7 +11,6 @@
 #import "NSString-Conversion.h"
 #import "NSDictionary-Extension.h"
 #import "NSMutableString-Extension.h"
-#import "PDFDocument-Extension.h"
 #import "Converter.h"
 
 @interface Converter()
@@ -455,7 +454,7 @@
     }
     
     if (!transparentFlag && fillBackground) {
-        [PDFDocument fillBackgroundOfPdfFilePath:[workingDirectory stringByAppendingPathComponent:outputFileName.lastPathComponent] withColor:fillColor];
+        [PDFDocument fillBackgroundOfPdfFilePath:[workingDirectory stringByAppendingPathComponent:outputFileName.lastPathComponent] with:fillColor];
     }
 
     return success;
@@ -767,7 +766,7 @@
     }
     
 	// PDFの指定ページを読み取り，NSPDFImageRep オブジェクトを作成
-	NSData *pageData = [[PDFDocument documentWithFilePath:cropPdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
+	NSData *pageData = [[[PDFDocument alloc] initWithFilePath:cropPdfFilePath] pageAtIndex:(page-1)].dataRepresentation;
     if (!pageData) {
         [controller showFileGenerationError:cropPdfFilePath];
         return NO;
@@ -1172,7 +1171,7 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
             // 生成したPDFに背景塗りを加える
             if (!transparentFlag) {
                 [PDFDocument fillBackgroundOfPdfFilePath:[workingDirectory stringByAppendingPathComponent:outputFileName]
-                                               withColor:fillColor];
+                                                    with:fillColor];
             }
         }
     } else {
@@ -1317,7 +1316,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     // PDF の場合はアノテーション情報にソースを保存
     NSString *extension = filePath.pathExtension.lowercaseString;
     if ([@"pdf" isEqualToString:extension]) {
-        PDFDocument *doc = [PDFDocument documentWithFilePath:filePath];
+        PDFDocument *doc = [[PDFDocument alloc] initWithFilePath:filePath];
         if (!doc) {
             return;
         }
@@ -1576,7 +1575,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 
     [controller exitCurrentThreadIfTaskKilled];
     
-    PDFDocument *pdfDocument = [PDFDocument documentWithFilePath:pdfFilePath];
+    PDFDocument *pdfDocument = [[PDFDocument alloc] initWithFilePath:pdfFilePath];
     
     if (!pdfDocument) {
         [controller showFileFormatError:pdfFilePath];
@@ -1877,7 +1876,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 if (outputFiles.count > 1) { // PDFマージ作業の実行
                     NSString *tempOutPath = [workingDirectory stringByAppendingPathComponent:[tempFileBaseName stringByAppendingString:@"-out.pdf"]];
                     [fileManager removeItemAtPath:tempOutPath error:nil];
-                    success = [[PDFDocument documentWithMergingPDFFiles:outputFiles] writeToFile:tempOutPath];
+                    success = [[[PDFDocument alloc] initWithMergingPDFFiles:outputFiles] writeToFile:tempOutPath];
                     if (success) {
                         success = [self copyTargetFrom:tempOutPath toPath:outputFilePath];
                     }
@@ -2241,7 +2240,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         
         if (pdfInputMode) {
             // PDFの書式チェック
-            if (![PDFDocument documentWithFilePath:sourcePath]) {
+            if (![[PDFDocument alloc] initWithFilePath:sourcePath]) {
                 [controller showFileFormatError:sourcePath];
                 [controller generationDidFinish:ExitStatusFailed];
                 return NO;
