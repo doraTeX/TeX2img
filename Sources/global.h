@@ -15,7 +15,6 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 
 #define AnnotationHeader @"%%TeX2img Document\n"
 
-#define MAX_LEN 2048
 #define BASH_PATH @"/bin/bash"
 #define CUI_PATH @"/usr/local/bin/tex2img"
 #define SVG_PREVIEWER @"/Applications/Gapplin.app"

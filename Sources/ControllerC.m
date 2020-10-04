@@ -3,12 +3,13 @@
 #import "ControllerC.h"
 #import "UtilityC.h"
 #import "NSString-Extension.h"
+#import <sys/syslimits.h>
 
 @implementation ControllerC
 #pragma mark OutputController プロトコルの実装
 - (BOOL)execCommand:(NSString*)command atDirectory:(NSString*)path withArguments:(NSArray<NSString*>*)arguments quiet:(BOOL)quiet
 {
-    char str[MAX_LEN];
+    char str[PATH_MAX];
     FILE *fp;
     
     chdir(path.UTF8String);
@@ -30,7 +31,7 @@
     }
 
     while (YES) {
-        if (fgets(str, MAX_LEN-1, fp) == NULL) {
+        if (fgets(str, PATH_MAX-1, fp) == NULL) {
             break;
         }
         [self appendOutputAndScroll:[NSMutableString stringWithUTF8String:str] quiet:quiet];

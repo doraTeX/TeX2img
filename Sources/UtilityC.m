@@ -37,14 +37,14 @@ BOOL checkWhich(NSString *cmdName)
 
 NSString* getPath(NSString *cmdName)
 {
-    char str[MAX_LEN];
+    char str[PATH_MAX];
     FILE *fp;
     char *pStr;
     
     if ((fp = popen([NSString stringWithFormat:@"PATH=%@:$PATH; /usr/bin/which %@", additionalSearchPath(), cmdName].UTF8String, "r")) == NULL) {
         return nil;
     }
-    fgets(str, MAX_LEN-1, fp);
+    fgets(str, PATH_MAX-1, fp);
     
     pStr = str;
     while ((*pStr != '\r') && (*pStr != '\n') && (*pStr != EOF)) {
