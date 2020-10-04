@@ -46,9 +46,7 @@ extension FileManager {
         // Normally only need the first path returned
         // Append the extra path component
         //
-        guard let resolvedPath = (paths.first as NSString?)?.appendingPathComponent(appendComponent) else {
-            return nil
-        }
+        guard let resolvedPath = (paths.first as NSString?)?.appendingPathComponent(appendComponent) else { return nil }
         
         //
         // Create the path if it doesn't exist
