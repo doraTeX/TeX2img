@@ -1,5 +1,5 @@
 #import "NSDictionary-Extension.h"
-#import "NSColor-Extension.h"
+#import "TeX2img-Swift.h"
 
 @implementation NSDictionary (Extension)
 - (float)floatForKey:(NSString*)aKey
@@ -39,7 +39,7 @@
 
 - (NSColor*)colorForKey:(NSString*)aKey
 {
-    return [NSColor colorWithSerializedString:[self stringForKey:aKey]];
+    return [[NSColor alloc] initWithSerializedString:[self stringForKey:aKey]];
 }
 
 @end

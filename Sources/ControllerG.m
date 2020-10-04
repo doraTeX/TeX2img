@@ -6,7 +6,6 @@
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
-#import "NSColor-Extension.h"
 #import "NSColor-DefaultColor.h"
 #import "NSColorWell-Extension.h"
 #import "TeXTextView.h"

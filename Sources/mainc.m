@@ -8,7 +8,7 @@
 #import "UtilityC.h"
 #import "NSString-Extension.h"
 #import "NSDictionary-Extension.h"
-#import "NSColor-Extension.h"
+#import "tex2img-Swift.h"
 
 #define OPTION_NUM 54
 #define VERSION "2.3.0"
@@ -960,7 +960,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
                                                                    blue:((CGFloat)b)/255
                                                                   alpha:1.0];
                             } else {
-                                fillColor = [NSColor colorWithCSSName:colorValue];
+                                fillColor = [[NSColor alloc] initWithCssName:colorValue];
                                 if (!fillColor) {
                                     printf("error: --background-color is invalid.\n");
                                     exit(ExitStatusFailed);

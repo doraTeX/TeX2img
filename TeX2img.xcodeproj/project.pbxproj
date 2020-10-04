@@ -41,11 +41,11 @@
 		34865920252659A600B8B190 /* MyATSTypesetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3486591F252659A600B8B190 /* MyATSTypesetter.swift */; };
 		34867AC91B7B4804002AD2CF /* NSColorWell-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34867AC81B7B4804002AD2CF /* NSColorWell-Extension.m */; };
 		348BB5190F08C3850063003D /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
-		348BBF961B795AB900EDE00C /* NSColor-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.m */; };
+		348BBF961B795AB900EDE00C /* NSColor-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.swift */; };
 		348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */; };
 		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
 		348E08831C3DE76F004CFB4B /* UnicodeBlocks.strings in Resources */ = {isa = PBXBuildFile; fileRef = 348E08811C3DE76F004CFB4B /* UnicodeBlocks.strings */; };
-		349276B01BFA19FB00C0BD99 /* NSColor-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.m */; };
+		349276B01BFA19FB00C0BD99 /* NSColor-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.swift */; };
 		349564B81ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
 		349564B91ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
 		349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349927381B786546009BD5F1 /* MyGlyphPopoverController.m */; };
@@ -150,8 +150,7 @@
 		34867AC81B7B4804002AD2CF /* NSColorWell-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSColorWell-Extension.m"; sourceTree = "<group>"; };
 		348BB5170F08C3850063003D /* Converter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Converter.h; sourceTree = "<group>"; };
 		348BB5180F08C3850063003D /* Converter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Converter.m; sourceTree = "<group>"; };
-		348BBF941B795AB900EDE00C /* NSColor-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor-Extension.h"; sourceTree = "<group>"; };
-		348BBF951B795AB900EDE00C /* NSColor-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSColor-Extension.m"; sourceTree = "<group>"; };
+		348BBF951B795AB900EDE00C /* NSColor-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSColor-Extension.swift"; sourceTree = "<group>"; };
 		348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-CommandCompletion.m"; sourceTree = "<group>"; };
 		348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-Colorize.m"; sourceTree = "<group>"; };
 		348D72A1125A57B8003AF902 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
@@ -415,8 +414,7 @@
 				3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */,
 				3486590A2526473500B8B190 /* NSBitmapImageRep-Extension.swift */,
 				348658F42526402E00B8B190 /* NSDate-Extension.swift */,
-				348BBF941B795AB900EDE00C /* NSColor-Extension.h */,
-				348BBF951B795AB900EDE00C /* NSColor-Extension.m */,
+				348BBF951B795AB900EDE00C /* NSColor-Extension.swift */,
 				34CB9283251F93850045CE9E /* NSColor-DefaultColor.h */,
 				34CB9280251F93500045CE9E /* NSColor-DefaultColor.m */,
 				34867AC71B7B4804002AD2CF /* NSColorWell-Extension.h */,
@@ -584,7 +582,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3486590C2526473500B8B190 /* NSBitmapImageRep-Extension.swift in Sources */,
-				349276B01BFA19FB00C0BD99 /* NSColor-Extension.m in Sources */,
+				349276B01BFA19FB00C0BD99 /* NSColor-Extension.swift in Sources */,
 				34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */,
 				349564B91ABFF3D1004B9C1D /* Utility.m in Sources */,
 				3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */,
@@ -626,7 +624,7 @@
 				34821EC810282CF9008DEB1F /* ProfileController.m in Sources */,
 				34CB9281251F93500045CE9E /* NSColor-DefaultColor.m in Sources */,
 				349564B81ABFF3D1004B9C1D /* Utility.m in Sources */,
-				348BBF961B795AB900EDE00C /* NSColor-Extension.m in Sources */,
+				348BBF961B795AB900EDE00C /* NSColor-Extension.swift in Sources */,
 				3486591025264BCE00B8B190 /* NSMatrix-Extension.swift in Sources */,
 				349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */,
 				348659162526523000B8B190 /* NSPopover-Extension.swift in Sources */,
