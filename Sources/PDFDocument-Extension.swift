@@ -5,7 +5,7 @@ extension PDFDocument {
         self.init(url: URL(fileURLWithPath: path))
     }
 
-    @objc convenience init?(mergingPDFFiles paths: [String]) {
+    @objc convenience init?(merging paths: [String]) {
         guard let firstPath = paths.first else { return nil }
         self.init(filePath: firstPath)
 
@@ -29,7 +29,7 @@ extension PDFDocument {
 
     // 1ページのみの PDF の MediaBox の背景を指定された色で塗りつぶす（複数ページPDFは未対応）。
     // 日本語の埋め込みテキストは壊れてしまう。
-    @objc class func fillBackgroundOfPdfFilePath(_ path: String, with fillColor: NSColor) {
+    @objc class func fillBackground(of path: String, with fillColor: NSColor) {
         guard let doc = PDFDocument(filePath: path) else { return }
         let pageCount = doc.pageCount
         let fillColorRef = fillColor.cgColor

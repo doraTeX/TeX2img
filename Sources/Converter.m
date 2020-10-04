@@ -454,7 +454,7 @@
     }
     
     if (!transparentFlag && fillBackground) {
-        [PDFDocument fillBackgroundOfPdfFilePath:[workingDirectory stringByAppendingPathComponent:outputFileName.lastPathComponent] with:fillColor];
+        [PDFDocument fillBackgroundOf:[workingDirectory stringByAppendingPathComponent:outputFileName.lastPathComponent] with:fillColor];
     }
 
     return success;
@@ -1170,7 +1170,7 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
         if (fill) {
             // 生成したPDFに背景塗りを加える
             if (!transparentFlag) {
-                [PDFDocument fillBackgroundOfPdfFilePath:[workingDirectory stringByAppendingPathComponent:outputFileName]
+                [PDFDocument fillBackgroundOf:[workingDirectory stringByAppendingPathComponent:outputFileName]
                                                     with:fillColor];
             }
         }
@@ -1876,7 +1876,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                 if (outputFiles.count > 1) { // PDFマージ作業の実行
                     NSString *tempOutPath = [workingDirectory stringByAppendingPathComponent:[tempFileBaseName stringByAppendingString:@"-out.pdf"]];
                     [fileManager removeItemAtPath:tempOutPath error:nil];
-                    success = [[[PDFDocument alloc] initWithMergingPDFFiles:outputFiles] writeToFile:tempOutPath];
+                    success = [[[PDFDocument alloc] initWithMerging:outputFiles] writeToFile:tempOutPath];
                     if (success) {
                         success = [self copyTargetFrom:tempOutPath toPath:outputFilePath];
                     }
