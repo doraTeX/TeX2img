@@ -17,7 +17,7 @@
 		34522C121BAC550800DE1B86 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 34522C111BAC550800DE1B86 /* libicucore.tbd */; };
 		346225661AB558AB00F632AD /* mupdf in Resources */ = {isa = PBXBuildFile; fileRef = 346225651AB558AB00F632AD /* mupdf */; };
 		34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 34670DD5125B7AC3002308EF /* dsa_pub.pem */; };
-		34675B2B251CE443000EBBA3 /* TeXTextView-Bullet.m in Sources */ = {isa = PBXBuildFile; fileRef = 34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.m */; };
+		34675B2B251CE443000EBBA3 /* TeXTextView-Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */; };
 		3468197D1C06A78800641CBF /* NSMutableString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7025539810353D33000D6D05 /* NSMutableString-Extension.m */; };
 		346DA57B1B705F6800B51BD7 /* NSArray-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */; };
 		346DA57C1B705F6800B51BD7 /* NSArray-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */; };
@@ -130,7 +130,7 @@
 		34522C111BAC550800DE1B86 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		346225651AB558AB00F632AD /* mupdf */ = {isa = PBXFileReference; lastKnownFileType = folder; path = mupdf; sourceTree = "<group>"; };
 		34670DD5125B7AC3002308EF /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
-		34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-Bullet.m"; sourceTree = "<group>"; };
+		34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TeXTextView-Bullet.swift"; sourceTree = "<group>"; };
 		346DA5791B705F6800B51BD7 /* NSArray-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray-Extension.h"; sourceTree = "<group>"; };
 		346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Extension.m"; sourceTree = "<group>"; };
 		347314F91B89CFDC00F285A3 /* NSString-Unicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Unicode.h"; sourceTree = "<group>"; };
@@ -266,7 +266,7 @@
 				70254EEF10353485000D6D05 /* TeXTextView.m */,
 				348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */,
 				348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */,
-				34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.m */,
+				34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */,
 			);
 			name = Classes;
 			path = Sources;
@@ -635,7 +635,7 @@
 				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,
 				7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */,
 				348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */,
-				34675B2B251CE443000EBBA3 /* TeXTextView-Bullet.m in Sources */,
+				34675B2B251CE443000EBBA3 /* TeXTextView-Bullet.swift in Sources */,
 				348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */,
 				3408053D1A96E6B50067AA56 /* FileManager-Extension.swift in Sources */,
 				34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */,

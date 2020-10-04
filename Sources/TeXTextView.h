@@ -35,11 +35,3 @@
 - (void)resetBackgroundColor:(id)sender;
 @end
 
-@interface TeXTextView (Bullet)
-- (IBAction)doNextBullet:(id)sender;
-- (IBAction)doPreviousBullet:(id)sender;
-- (IBAction)doNextBulletAndDelete:(id)sender;
-- (IBAction)doPreviousBulletAndDelete:(id)sender;
-- (IBAction)placeBullet:(id)sender;
-- (IBAction)placeComment:(id)sender;
-@end
