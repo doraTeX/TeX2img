@@ -994,8 +994,8 @@
                                 options:0
                                   range:NSMakeRange(0, svg.length)];
 
-        // id への参照にプレフックスを付ける
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?<!\\&)\\#"
+        // id への参照（#から始まり，カラーの16進コードではない）にプレフックスを付ける
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?<!\\&)\\#(?![0-9a-f]{6}(?![0-9a-f]))"
                                                                                options:0
                                                                                  error:nil];
         
