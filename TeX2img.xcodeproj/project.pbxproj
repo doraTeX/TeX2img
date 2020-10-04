@@ -39,7 +39,7 @@
 		348659162526523000B8B190 /* NSPopover-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348659152526523000B8B190 /* NSPopover-Extension.swift */; };
 		3486591D252658AA00B8B190 /* tex2img in Copy Command Line Tools */ = {isa = PBXBuildFile; fileRef = 705DC7A10F1197DC0052AFA5 /* tex2img */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		34865920252659A600B8B190 /* MyATSTypesetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3486591F252659A600B8B190 /* MyATSTypesetter.swift */; };
-		34867AC91B7B4804002AD2CF /* NSColorWell-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34867AC81B7B4804002AD2CF /* NSColorWell-Extension.m */; };
+		34867AC91B7B4804002AD2CF /* NSColorWell-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34867AC81B7B4804002AD2CF /* NSColorWell-Extension.swift */; };
 		348BB5190F08C3850063003D /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
 		348BBF961B795AB900EDE00C /* NSColor-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.swift */; };
 		348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */; };
@@ -146,8 +146,7 @@
 		3486590F25264BCE00B8B190 /* NSMatrix-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMatrix-Extension.swift"; sourceTree = "<group>"; };
 		348659152526523000B8B190 /* NSPopover-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPopover-Extension.swift"; sourceTree = "<group>"; };
 		3486591F252659A600B8B190 /* MyATSTypesetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyATSTypesetter.swift; sourceTree = "<group>"; };
-		34867AC71B7B4804002AD2CF /* NSColorWell-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColorWell-Extension.h"; sourceTree = "<group>"; };
-		34867AC81B7B4804002AD2CF /* NSColorWell-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSColorWell-Extension.m"; sourceTree = "<group>"; };
+		34867AC81B7B4804002AD2CF /* NSColorWell-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSColorWell-Extension.swift"; sourceTree = "<group>"; };
 		348BB5170F08C3850063003D /* Converter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Converter.h; sourceTree = "<group>"; };
 		348BB5180F08C3850063003D /* Converter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Converter.m; sourceTree = "<group>"; };
 		348BBF951B795AB900EDE00C /* NSColor-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSColor-Extension.swift"; sourceTree = "<group>"; };
@@ -417,8 +416,7 @@
 				348BBF951B795AB900EDE00C /* NSColor-Extension.swift */,
 				34CB9283251F93850045CE9E /* NSColor-DefaultColor.h */,
 				34CB9280251F93500045CE9E /* NSColor-DefaultColor.m */,
-				34867AC71B7B4804002AD2CF /* NSColorWell-Extension.h */,
-				34867AC81B7B4804002AD2CF /* NSColorWell-Extension.m */,
+				34867AC81B7B4804002AD2CF /* NSColorWell-Extension.swift */,
 				348659052526458600B8B190 /* Pipe-Extension.swift */,
 				348659152526523000B8B190 /* NSPopover-Extension.swift */,
 				3486590F25264BCE00B8B190 /* NSMatrix-Extension.swift */,
@@ -610,7 +608,7 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */,
 				3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */,
-				34867AC91B7B4804002AD2CF /* NSColorWell-Extension.m in Sources */,
+				34867AC91B7B4804002AD2CF /* NSColorWell-Extension.swift in Sources */,
 				34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */,
 				347314FB1B89CFDC00F285A3 /* NSString-Unicode.m in Sources */,
 				348658F52526402E00B8B190 /* NSDate-Extension.swift in Sources */,

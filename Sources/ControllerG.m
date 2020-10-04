@@ -7,7 +7,6 @@
 #import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
 #import "NSColor-DefaultColor.h"
-#import "NSColorWell-Extension.h"
 #import "TeXTextView.h"
 #import "UtilityG.h"
 
