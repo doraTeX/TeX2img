@@ -2482,8 +2482,10 @@ typedef enum {
     popUpButton.target = self;
     
     NSString *defaultFilePath = outputFileTextField.stringValue;
-    savePanel.nameFieldStringValue = defaultFilePath.lastPathComponent;
-    [popUpButton selectItemWithTitle:defaultFilePath.pathExtension.uppercaseString];
+    NSString *defaultExtensionUpper = _extensionPopupButton.selectedItem.title;
+    NSString *defaultExtensionLower = defaultExtensionUpper.lowercaseString;
+    savePanel.nameFieldStringValue = [defaultFilePath.lastPathComponent.stringByDeletingPathExtension stringByAppendingPathExtension:defaultExtensionLower];
+    [popUpButton selectItemWithTitle:defaultExtensionUpper];
     savePanel.directoryURL = [NSURL fileURLWithPath:defaultFilePath.stringByDeletingLastPathComponent];
     
     [savePanel beginSheetModalForWindow:mainWindow completionHandler:^(NSInteger returnCode) {
@@ -2976,7 +2978,11 @@ typedef enum {
 
 - (IBAction)outputFilePathChanged:(id)sender
 {
-    [_extensionPopupButton selectItemWithTitle:outputFileTextField.stringValue.lastPathComponent.pathExtension.uppercaseString];
+    NSString *newExtension = outputFileTextField.stringValue.lastPathComponent.pathExtension;
+    
+    if ([TargetExtensionsArray containsObject:newExtension]) {
+        [_extensionPopupButton selectItemWithTitle:newExtension.uppercaseString];
+    }
 }
 
 - (IBAction)openSystemPreferencePane:(id)sender
