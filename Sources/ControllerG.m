@@ -540,7 +540,7 @@ typedef enum {
 
 - (void)showOutputWindowOnMainThread
 {
-    outputWindowMenuItem.state = YES;
+    outputWindowMenuItem.state = NSOnState;
 
     NSRect outputWindowRect = outputWindow.frame;
     NSScreen *screen = mainWindow.screen;
@@ -1899,12 +1899,12 @@ typedef enum {
 
 - (void)uncheckOutputWindowMenuItem:(NSNotification*)aNotification
 {
-	outputWindowMenuItem.state = NO;
+	outputWindowMenuItem.state = NSOffState;
 }
 
 - (void)uncheckPreambleWindowMenuItem:(NSNotification*)aNotification
 {
-	preambleWindowMenuItem.state = NO;
+	preambleWindowMenuItem.state = NSOffState;
 }
 
 
@@ -2147,7 +2147,7 @@ typedef enum {
     if (colorPalleteWindow.isVisible) {
         [colorPalleteWindow close];
     } else {
-        colorPalleteWindowMenuItem.state = YES;
+        colorPalleteWindowMenuItem.state = NSOnState;
         [colorPalleteWindow makeKeyAndOrderFront:nil];
         [colorStyleMatrix sendAction];
     }
@@ -2205,7 +2205,7 @@ typedef enum {
 
 - (void)uncheckColorPalleteWindowMenuItem:(NSNotification*)aNotification
 {
-    colorPalleteWindowMenuItem.state = NO;
+    colorPalleteWindowMenuItem.state = NSOffState;
     if (NSColorPanel.sharedColorPanelExists) {
         [NSColorPanel.sharedColorPanel orderOut:self];
     }
@@ -2554,7 +2554,7 @@ typedef enum {
 	if (preambleWindow.isVisible) {
 		[preambleWindow close];
 	} else {
-		preambleWindowMenuItem.state = YES;
+		preambleWindowMenuItem.state = NSOnState;
         
         NSRect preambleWindowRect = preambleWindow.frame;
         NSScreen *screen = mainWindow.screen;
