@@ -24,7 +24,7 @@
     
     NSDictionary<NSString*,id> *commandColorAttribute = @{NSForegroundColorAttributeName: commandColorInProfile(profile)};
     NSDictionary<NSString*,id> *commentColorAttribute = @{NSForegroundColorAttributeName: commentColorInProfile(profile)};
-    NSDictionary<NSString*,id> *markerColorAttribute = @{NSForegroundColorAttributeName: braceColorInProfile(profile)};
+    NSDictionary<NSString*,id> *braceColorAttribute = @{NSForegroundColorAttributeName: braceColorInProfile(profile)};
 	
 	layoutManager = self.layoutManager;
 	textString = self.string;
@@ -46,7 +46,7 @@
 		if ((theChar == '{') || (theChar == '}') || (theChar == '$')) {
 			colorRange.location = location;
 			colorRange.length = 1;
-			[layoutManager addTemporaryAttributes:markerColorAttribute forCharacterRange:colorRange];
+			[layoutManager addTemporaryAttributes:braceColorAttribute forCharacterRange:colorRange];
 			location++;
 		} else if (theChar == '%') {
 			colorRange.location = location;
