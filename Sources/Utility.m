@@ -62,13 +62,4 @@ NSString* systemVersion()
     return (NSString*)[dict objectForKey:@"ProductVersion"];
 }
 
-NSInteger systemMajorVersion()
-{
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\.(\\d+)\\.?"
-                                                                           options:0
-                                                                             error:nil];
-    NSString *version = systemVersion();
-    NSTextCheckingResult *match = [regex firstMatchInString:version options:0 range:NSMakeRange(0, version.length)];
-    return [[version substringWithRange:[match rangeAtIndex:1]] intValue];
-}
 

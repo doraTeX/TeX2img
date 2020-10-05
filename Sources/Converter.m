@@ -669,12 +669,19 @@
     
     NSString *temporaryOutputPdfFileName = [tempFileBaseName stringByAppendingString:@"-out.pdf"];
 	
+    // 10.10 以下で --hires を渡すと，その後の Quartz API での処理時に端が欠けてしまうので，10.10 以下では --nohires を渡す
+    // https://github.com/doraTeX/TeX2img/issues/58
+    NSString *hiresOption;
+    if (@available(macOS 10.11, *)) {
+        hiresOption = @"--hires";
+    } else {
+        hiresOption = @"--nohires";
+    }
+    
 	[controller execCommand:[NSString stringWithFormat:@"export PATH=\"%@\";/usr/bin/perl \"%@\"", gsPath.programPath.stringByDeletingLastPathComponent, epstopdfPath]
                 atDirectory:workingDirectory
               withArguments:@[[NSString stringWithFormat:@"--outfile=%@", temporaryOutputPdfFileName.stringByQuotingWithDoubleQuotations],
-                              // 10.10 以下で --hires を渡すと，その後の Quartz API での処理時に端が欠けてしまうので，10.10 以下では --nohires を渡す
-                              // https://github.com/doraTeX/TeX2img/issues/58
-                              (systemMajorVersion() >= 11) ? @"--hires" : @"--nohires",
+                              hiresOption,
                               epsName]
                       quiet:quietFlag];
     
