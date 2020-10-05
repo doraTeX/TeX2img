@@ -1,8 +1,9 @@
 import Cocoa
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    @IBOutlet weak var controllerG: ControllerG!
     private var observer: Any!
+
+    @IBOutlet weak var controllerG: ControllerG!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         if #available(macOS 10.14, *) {
@@ -21,6 +22,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let filename = filenames.first else { return }
         controllerG.importSource(fromFilePathOrPDFDocument: filename, skipConfirm: false)
     }
-
 }
 

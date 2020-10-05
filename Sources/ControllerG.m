@@ -549,32 +549,38 @@ typedef enum {
     NSRect outputWindowRect = outputWindow.frame;
     NSScreen *screen = mainWindow.screen;
     
+    CGFloat outputWindowNewOriginY = MAX(NSMinY(mainWindow.frame), 0);
+    CGFloat outputWindowNewHeight = MAX(NSMaxY(mainWindow.frame) - outputWindowNewOriginY, outputWindow.minSize.height);
+    
     NSRect newRect = NSMakeRect(NSMaxX(mainWindow.frame),
-                                NSMaxY(mainWindow.frame) - NSHeight(outputWindowRect),
-                                NSWidth(outputWindowRect), NSHeight(outputWindowRect));
+                                outputWindowNewOriginY,
+                                NSWidth(outputWindowRect),
+                                outputWindowNewHeight);
     
     if (NSMaxX(newRect) <= NSMaxX(screen.visibleFrame)) { // 右に表示する余裕があるとき
         [outputWindow setFrame:newRect display:NO];
     } else {
         newRect = NSMakeRect(NSMinX(mainWindow.frame) - NSWidth(outputWindowRect),
-                             NSMaxY(mainWindow.frame) - NSHeight(outputWindowRect),
-                             NSWidth(outputWindowRect), NSHeight(outputWindowRect));
+                             outputWindowNewOriginY,
+                             NSWidth(outputWindowRect),
+                             outputWindowNewHeight);
+
         if (NSMinX(screen.visibleFrame) <= NSMinX(newRect)) { // 左に表示する余裕があるとき
             [outputWindow setFrame:newRect display:NO];
         } else { // 左右ともに表示する余裕がないとき
             // メインウィンドウを縮められる限り縮める
             CGFloat newWidth = MAX(NSMaxX(screen.visibleFrame) - NSWidth(outputWindowRect) - NSMinX(mainWindow.frame) - 1, mainWindow.minSize.width);
             newRect = NSMakeRect(NSMinX(mainWindow.frame),
-                                 mainWindow.frame.origin.y,
+                                 NSMinY(mainWindow.frame),
                                  newWidth,
                                  NSHeight(mainWindow.frame));
             [mainWindow setFrame:newRect display:YES animate:YES];
 
             // 画面右端までアウトプットウィンドウを表示
             newRect = NSMakeRect(NSMaxX(mainWindow.frame),
-                                 NSMaxY(mainWindow.frame) - NSHeight(outputWindowRect),
+                                 outputWindowNewOriginY,
                                  NSMaxX(screen.visibleFrame) - NSMaxX(mainWindow.frame),
-                                 NSHeight(outputWindowRect));
+                                 outputWindowNewHeight);
             [outputWindow setFrame:newRect display:NO];
         }
     }
