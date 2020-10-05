@@ -2200,6 +2200,24 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
                                         error:nil];
             }
         }
+
+        // その他，TeX2img自体が生み出さなくても，TeXコンパイラに渡すエンジンのオプションや，ユーザが用意したコンパイル用補助スクリプトが生み出す可能性がある補助ファイルを削除
+        // https://github.com/doraTeX/TeX2img/issues/96
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.bbl", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.bcf", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@-blx.bib", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.blg", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.fls", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.idx", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.ind", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.ilg", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.out", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.run.xml", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.toc", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.synctex", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.synctex.gz", basePath] error:nil];
+        [fileManager removeItemAtPath:[NSString stringWithFormat:@"%@.synctex.gz(busy)", basePath] error:nil];
+
     }
 }
 
