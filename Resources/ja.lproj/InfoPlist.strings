@@ -1,4 +1,4 @@
 /* Localized versions of Info.plist keys */
 
-NSHumanReadableCopyright = "Yusuke Terada"; /* 寺田 侑祐 */
+NSHumanReadableCopyright = "Copyright © 2007–2020 Yusuke Terada (寺田 侑祐)"; /* 寺田 侑祐 */
 NSAppleEventsUsageDescription = "生成画像を Word, PowerPoint, Illustrator などの他のアプリに自動で埋め込むためには制御の許可が必要です。";
