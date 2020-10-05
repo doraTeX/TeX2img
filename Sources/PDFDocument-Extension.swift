@@ -23,7 +23,11 @@ extension PDFDocument {
     var pages: [PDFPage] {
         return (0..<self.pageCount).compactMap{ self.page(at: $0) }
     }
-    
+
+    var pageRefs: [CGPDFPage] {
+        return self.pages.compactMap{ $0.pageRef }
+    }
+
     func append(_ page: PDFPage) {
         self.insert(page, at: self.pageCount)
     }
@@ -42,9 +46,8 @@ extension PDFDocument {
         guard let doc = PDFDocument(filePath: path) else { return }
         let fillColorRef = fillColor.cgColor
 
-        for page in doc.pages {
-            guard let pdfPageRef = page.pageRef else { return }
-            var mediaBoxRect = pdfPageRef.getBoxRect(.mediaBox)
+        for pageRef in doc.pageRefs {
+            var mediaBoxRect = pageRef.getBoxRect(.mediaBox)
 
             guard let contextRef = CGContext(URL(fileURLWithPath: path) as CFURL, mediaBox: &mediaBoxRect, nil) else { return }
 
@@ -58,7 +61,7 @@ extension PDFDocument {
                                   height: mediaBoxRect.size.height + 2)
 
             contextRef.fill(drawRect)
-            contextRef.drawPDFPage(pdfPageRef)
+            contextRef.drawPDFPage(pageRef)
             contextRef.restoreGState()
             contextRef.endPDFPage()
         }
