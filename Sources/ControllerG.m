@@ -1205,11 +1205,8 @@ typedef enum {
     [preambleTextView colorizeText];
     [preambleTextView fixupTabs];
     [preambleTextView refreshWordWrap];
-    
-    [self refreshTextView:outputTextView
-          foregroundColor:consoleForegroundColorInProfile(aProfile)
-          backgroundColor:consoleBackgroundColorInProfile(aProfile)
-              cursorColor:cursorColorInProfile(aProfile)];
+
+    [self refreshOutputTextViewUsingProfile:aProfile];
 
     // 不可視文字表示の選択肢のフォントを更新
     NSFont *displayFont = [NSFont fontWithName:sourceFont.fontName size:spaceCharacterKindButton.font.pointSize];
@@ -1231,6 +1228,18 @@ typedef enum {
         default:
             break;
     }
+}
+
+- (void)refreshOutputTextViewUsingProfile:(Profile*)aProfile
+{
+    if (!aProfile) {
+        aProfile = [self currentProfile];
+    }
+    
+    [self refreshTextView:outputTextView
+          foregroundColor:consoleForegroundColorInProfile(aProfile)
+          backgroundColor:consoleBackgroundColorInProfile(aProfile)
+              cursorColor:cursorColorInProfile(aProfile)];
 }
 
 - (void)setInvisibleCharacterFont:(NSFont*)font
@@ -1668,7 +1677,6 @@ typedef enum {
 
 	// デフォルトのアウトプットファイルのパスをセット
 	outputFileTextField.stringValue = [NSString stringWithFormat:@"%@/Desktop/equation.eps", NSHomeDirectory()];
-    
 
     // 色パレットが表示されていれば消す
     [self closeColorPanel];
