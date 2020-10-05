@@ -2,43 +2,48 @@ import Quartz
 
 @objc class PDFPageBox: NSObject {
     let pdfPage: PDFPage
+    let cgPdfPage: CGPDFPage
     
     init(pdfPage: PDFPage) {
         self.pdfPage = pdfPage
+        self.cgPdfPage = pdfPage.pageRef!
         super.init()
     }
     
     @objc convenience init?(filePath path: String, page: UInt) {
         guard page > 0 else { return nil }
-        let index = page-1
+        let index = page - 1
         guard let pdfPage = PDFDocument(filePath: path)?.page(at: index) else { return nil }
         self.init(pdfPage: pdfPage)
     }
     
+    func boxRect(_ box: CGPDFBox) -> NSRect {
+        return self.cgPdfPage.getBoxRect(box) as NSRect
+    }
+    
     var mediaBoxRect: NSRect {
-        return self.pdfPage.pageRef!.getBoxRect(.mediaBox) as NSRect
+        return self.boxRect(.mediaBox)
     }
     
     var cropBoxRect: NSRect {
-        return self.pdfPage.pageRef!.getBoxRect(.cropBox) as NSRect
+        return self.boxRect(.cropBox)
     }
     
     var bleedBoxRect: NSRect {
-        return self.pdfPage.pageRef!.getBoxRect(.bleedBox) as NSRect
+        return self.boxRect(.bleedBox)
     }
     
     var trimBoxRect: NSRect {
-        return self.pdfPage.pageRef!.getBoxRect(.trimBox) as NSRect
+        return self.boxRect(.trimBox)
     }
     
     var artBoxRect: NSRect {
-        return self.pdfPage.pageRef!.getBoxRect(.artBox) as NSRect
+        return self.boxRect(.artBox)
     }
     
-    @objc func bboxString(of boxType: CGPDFBox, hires: Bool, addHeader: Bool) -> String {
-        let pageRef = self.pdfPage.pageRef!
-        let mediaBoxRect = pageRef.getBoxRect(.mediaBox)
-        var rect = pageRef.getBoxRect(boxType).intersection(mediaBoxRect)  // MediaBox でクリップ
+    @objc func bboxString(of box: CGPDFBox, hires: Bool, addHeader: Bool) -> String {
+        let mediaBoxRect = self.mediaBoxRect
+        var rect = self.boxRect(box).intersection(mediaBoxRect) // MediaBox でクリップ
         
         // gs がデフォルトで -dUseMediaBox で呼ばれることに対応して，MediaBox に対する相対座標を返す
         rect.origin.x -= mediaBoxRect.origin.x
@@ -47,7 +52,7 @@ import Quartz
         let result: String
         
         // 回転情報の考慮
-        let rotation = pdfPage.rotation
+        let rotation = self.pdfPage.rotation
         if rotation == 90 {
             rect = CGRect(x: rect.origin.y,
                           y: mediaBoxRect.size.width - rect.origin.x - rect.size.width,
