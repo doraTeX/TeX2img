@@ -2576,17 +2576,22 @@ typedef enum {
         
         NSRect preambleWindowRect = preambleWindow.frame;
         NSScreen *screen = mainWindow.screen;
-        
+
+        CGFloat preambleWindowNewOriginY = MAX(NSMinY(mainWindow.frame), 0);
+        CGFloat preambleWindowNewHeight = MAX(NSMaxY(mainWindow.frame) - preambleWindowNewOriginY, preambleWindow.minSize.height);
+
         NSRect newRect = NSMakeRect(NSMinX(mainWindow.frame) - NSWidth(preambleWindowRect),
-                                    NSMaxY(mainWindow.frame) - NSHeight(preambleWindowRect),
-                                    NSWidth(preambleWindowRect), NSHeight(preambleWindowRect));
+                                    preambleWindowNewOriginY,
+                                    NSWidth(preambleWindowRect),
+                                    preambleWindowNewHeight);
 
         if (NSMinX(screen.visibleFrame) <= NSMinX(newRect)) { // 左に表示する余裕があるとき
             [preambleWindow setFrame:newRect display:NO];
         } else {
             newRect = NSMakeRect(NSMaxX(mainWindow.frame),
-                                 NSMaxY(mainWindow.frame) - NSHeight(preambleWindowRect),
-                                 NSWidth(preambleWindowRect), NSHeight(preambleWindowRect));
+                                 preambleWindowNewOriginY,
+                                 NSWidth(preambleWindowRect),
+                                 preambleWindowNewHeight);
             if (NSMaxX(newRect) <= NSMaxX(screen.visibleFrame)) { // 右に表示する余裕があるとき
                 [preambleWindow setFrame:newRect display:NO];
             } else { // 左右ともに表示する余裕がないとき
@@ -2601,9 +2606,9 @@ typedef enum {
                 
                 // 画面左端からプリアンブルウィンドウを表示
                 newRect = NSMakeRect(NSMinX(screen.visibleFrame),
-                                     NSMaxY(mainWindow.frame) - NSHeight(preambleWindowRect),
+                                     preambleWindowNewOriginY,
                                      NSMinX(mainWindow.frame) - NSMinX(screen.visibleFrame),
-                                     NSHeight(preambleWindowRect));
+                                     preambleWindowNewHeight);
                 [preambleWindow setFrame:newRect display:NO];
             }
         }
