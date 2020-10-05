@@ -61,7 +61,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>
-                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" placeholderIntrinsicWidth="262" placeholderIntrinsicHeight="14" translatesAutoresizingMaskIntoConstraints="NO" id="cvP-MD-1SF">
+                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" placeholderIntrinsicWidth="262" placeholderIntrinsicHeight="14" preferredMaxLayoutWidth="320" translatesAutoresizingMaskIntoConstraints="NO" id="cvP-MD-1SF">
                     <rect key="frame" x="14" y="50" width="324" height="14"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" controlSize="small" selectable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="left" title="3 letters" id="H6i-fn-bnL">
