@@ -92,14 +92,7 @@ extension Converter {
             outputDocs[i].append(croppedPage)
         }
         
-        let outputDoc = PDFDocument()
-        for doc in outputDocs {
-            if let page = doc.page(at: 0) {
-                outputDoc.append(page)
-            }
-        }
-        
-        outputDoc.write(toFile: outputPath)
+        PDFDocument(merging: outputDocs).write(toFile: outputPath)
         
         return success
     }
