@@ -325,6 +325,7 @@
                                             @"-dBATCH",
                                             [@"-sOutputFile=" stringByAppendingString:pdfFilePath.stringByQuotingWithDoubleQuotations],
                                             @"-sDEVICE=pdfwrite",
+                                            @"-dCompatibilityLevel=1.5",
                                             @"-dAutoRotatePages=/None",
                                             @"-f",
                                             psFilePath.stringByQuotingWithDoubleQuotations]
@@ -632,6 +633,7 @@
     NSMutableArray<NSString*> *arguments = [NSMutableArray<NSString*> arrayWithArray:@[@"-dNOPAUSE",
                                                                                        @"-dBATCH",
                                                                                        @"-sDEVICE=pdfwrite",
+                                                                                       @"-dCompatibilityLevel=1.5",
                                                                                        @"-dNoOutputFonts",
                                                                                        [NSString stringWithFormat:@"-r%ld", resolution],
                                                                                        [NSString stringWithFormat:@"-sOutputFile=%@", pdfOutName],
