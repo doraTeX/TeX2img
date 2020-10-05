@@ -549,7 +549,7 @@ typedef enum {
     NSRect outputWindowRect = outputWindow.frame;
     NSScreen *screen = mainWindow.screen;
     
-    CGFloat outputWindowNewOriginY = MAX(NSMinY(mainWindow.frame), 0);
+    CGFloat outputWindowNewOriginY = MAX(NSMinY(mainWindow.frame), NSMinY(screen.visibleFrame));
     CGFloat outputWindowNewHeight = MAX(NSMaxY(mainWindow.frame) - outputWindowNewOriginY, outputWindow.minSize.height);
     
     NSRect newRect = NSMakeRect(NSMaxX(mainWindow.frame),
@@ -2577,7 +2577,7 @@ typedef enum {
         NSRect preambleWindowRect = preambleWindow.frame;
         NSScreen *screen = mainWindow.screen;
 
-        CGFloat preambleWindowNewOriginY = MAX(NSMinY(mainWindow.frame), 0);
+        CGFloat preambleWindowNewOriginY = MAX(NSMinY(mainWindow.frame), NSMinY(screen.visibleFrame));
         CGFloat preambleWindowNewHeight = MAX(NSMaxY(mainWindow.frame) - preambleWindowNewOriginY, preambleWindow.minSize.height);
 
         NSRect newRect = NSMakeRect(NSMinX(mainWindow.frame) - NSWidth(preambleWindowRect),
