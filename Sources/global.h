@@ -20,8 +20,8 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define SVG_PREVIEWER @"/Applications/Gapplin.app"
 #define GAPPLIN_URL @"macappstore://apps.apple.com/app/id768053424?mt=12"
 
-#define TargetExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"svgz"])
-#define ImportExtensionsArray (@[@"eps", @"png", @"jpg", @"gif", @"tiff", @"bmp", @"pdf", @"svg", @"svgz", @"tex"])
+#define TargetExtensionsArray (@[@"eps", @"pdf", @"svg", @"svgz", @"jpg", @"png", @"gif", @"tiff", @"bmp"])
+#define ImportExtensionsArray (@[@"eps", @"pdf", @"svg", @"svgz", @"jpg", @"png", @"gif", @"tiff", @"bmp", @"tex"])
 #define InputExtensionsArray (@[@"tex", @"pdf", @"ps", @"eps"])
 #define BitmapExtensionsArray (@[@"png", @"jpg", @"gif", @"tiff", @"bmp"])
 #define MergeableExtensionsArray (@[@"pdf", @"tiff", @"gif", @"svg", @"svgz"])
