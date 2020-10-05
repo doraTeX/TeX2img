@@ -76,7 +76,7 @@ extension Converter {
         guard let inputDoc = PDFDocument(filePath: inputPath) else { return false }
         let totalPageCount = inputDoc.pageCount
         let targetPages = (page==0) ? [UInt](1...totalPageCount) : [page]
-        let outputDocs = Array(0..<targetPages.count).map { _ in PDFDocument() }
+        let outputDocs = (0..<targetPages.count).map { _ in PDFDocument() }
 
         var success = true
         
