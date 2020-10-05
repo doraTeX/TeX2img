@@ -540,6 +540,10 @@ typedef enum {
 
 - (void)showOutputWindowOnMainThread
 {
+    if (outputWindow.isVisible) {
+        return;
+    }
+    
     outputWindowMenuItem.state = NSOnState;
 
     NSRect outputWindowRect = outputWindow.frame;
