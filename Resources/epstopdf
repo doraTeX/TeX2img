@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# $Id: epstopdf.pl 36129 2015-01-24 00:30:11Z karl $
+# $Id: epstopdf.pl 48681 2018-09-16 23:03:58Z karl $
 # (Copyright lines below.)
 #
 # Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,27 @@
 # "%%BoundingBox: (atend)" when input is not seekable (e.g., from a pipe),
 #
 # emacs-page
-my $ver = "2.23";
-
-# History
+#
+my $ver = "2.28";
+#  2018/09/17 v2.28 (Karl Berry)
+#    * -dCompatibilityLevel=1.5 by default, since gs9.25 switched to 1.7.
+#  2017/09/14 v2.27 (Karl Berry)
+#    * extract value from --gsopt with $3 not $2 (extra regexp group
+#      added previously), and check it with ^(...)$ so anchors apply to all.
+#      (report to Karl from Yannick Berker, 7 Sep 2017 14:07:09.)
+#  2017/01/07 v2.26 (Norbert Preining, Karl Berry)
+#    * allow cmdline of infile outfile.pdf.
+#    * explicitly allow -o as abbreviation for --outfile,
+#      to guard against future --options. (Also --output.)
+#  2016/06/30 v2.25 (Norbert Preining, Karl Berry)
+#    * don't set (default) device until after restricted check.
+#    * a few more debugging lines.
+#  2016/05/29 v2.24 (Karl Berry)
+#    * new option --gray; patch from William Bader,
+#      tex-k mail 9 Feb 2016 19:37:08.
+#    * disallow --device completely in restricted mode,
+#      to avoid maintenance of device list.
+#      tex-live mail 10 Feb 2016 10:36:26.
 #  2015/01/22 v2.23 (Karl Berry)
 #    * use # instead of = to placate msys; report from KUROKI Yusuke,
 #      tex-k mail 20 Jan 2015 12:40:16.
@@ -171,9 +189,9 @@ my $ver = "2.23";
 ### emacs-page
 ### program identification
 my $program = "epstopdf";
-my $ident = '($Id: epstopdf.pl 36129 2015-01-24 00:30:11Z karl $)' . " $ver";
+my $ident = '($Id: epstopdf.pl 48681 2018-09-16 23:03:58Z karl $)' . " $ver";
 my $copyright = <<END_COPYRIGHT ;
-Copyright 2009-2014 Karl Berry et al.
+Copyright 2009-2018 Karl Berry et al.
 Copyright 2002-2009 Gerben Wierda et al.
 Copyright 1998-2001 Sebastian Rahtz et al.
 License RBSD: Revised BSD <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>
@@ -199,10 +217,11 @@ my $default_device = 'pdfwrite';
 $::opt_autorotate = "None";
 $::opt_compress = 1;
 $::opt_debug = 0;
-$::opt_device= $default_device;
+$::opt_device = "";
 $::opt_embed = 1;
 $::opt_exact = 0;
 $::opt_filter = 0;
+$::opt_gray = 0;
 $::opt_gs = 1;
 $::opt_gscmd = "";
 @::opt_gsopt = ();
@@ -282,6 +301,7 @@ my %optcheck = qw<
   MonoImageFilter /(CCITTFaxEncode|FlateEncode|RunLengthEncode)
   MonoImageResolution \d+
   NOCIE true
+  NODISPLAY true
   NOEPS true
   NOINTERPOLATE true
   NOPSICC true
@@ -315,36 +335,23 @@ my %optcheck = qw<
 # In any case not suitable for restricted:
 # -dDOPS
 
-### restricted devices
-# More or less copied from ghostscript's configure:
-# BMP_DEVS, JPEG_DEVS, PNG_DEVS, TIFF_DEVS, PCX_DEVS, PBM_DEVS
-# PS_DEVS (without text devices)
-my @restricted_devlist = ($default_device);
-my @restricted_devlist_ext = qw[
-  bmpmono bmpgray bmpsep1 bmpsep8 bmp16 bmp256 bmp16m bmp32b
-  jpeg jpeggray jpegcmyk
-  pbm pbmraw pgm pgmraw pgnm pgnmraw pnm pnmraw ppm ppmraw
-    pkm pkmraw pksm pksmraw pam pamcmyk4 pamcmyk32 plan plang
-    planm planc plank
-  pcxmono pcxgray pcx16 pcx256 pcx24b pcxcmyk pcx2up
-  png16 png16m png256 png48 pngalpha pnggray pngmono
-  psdf psdcmyk psdrgb pdfwrite pswrite ps2write epswrite psgray psmono psrgb
-  tiffs tiff12nc tiff24nc tiff48nc tiff32nc tiff64nc tiffcrle tifflzw
-    tiffpack tiffgray tiffsep tiffsep1 tiffscaled tiffscaled8 tiffscaled24
-  svg svgwrite
-];
-push (@restricted_devlist, @restricted_devlist_ext);
-my %restricted_devlist = ( map {$_, 1} @restricted_devlist );
-
 ### usage
 my @bool = ("false", "true");
 my $resmsg = $::opt_res ? $::opt_res : "[use gs default]";
 my $rotmsg = $::opt_autorotate ? $::opt_autorotate : "[use gs default]";
-my $defgsopts = "-q -dNOPAUSE -sDEVICE=pdfwrite";
-my $usage = <<"END_OF_USAGE";
-${title}Usage: $program [OPTION]... [EPSFILE]
 
-Convert EPS to PDF (or other formats), by default using Ghostscript.
+my $usage = <<"END_OF_USAGE";
+${title}Usage: $program [OPTION]... [EPSFILE [PDFFILE.pdf]]
+
+Convert an EPS file to PDF (or other formats), by default using Ghostscript.
+
+By default, the output name is the input name with any extension
+replaced by ".pdf".  An output name ending with .pdf can also be given
+as a second argument on the command line, or the --outfile (-o) option
+can be used with any name.
+
+The output is PDF 1.5 by default; use --gsopt=-dCompatibilityLevel=1.7
+(for example) to change this.
 
 The resulting output is guaranteed to start at the 0,0 coordinate, and
 sets a page size exactly corresponding to the BoundingBox.  Thus, the
@@ -357,7 +364,7 @@ Options:
   --help             display this help and exit
   --version          display version information and exit
 
-  --outfile=FILE     write result to FILE   (default based on input name)
+  -o, --outfile=FILE write result to FILE   (default based on input name)
   --restricted       use restricted mode    (default: $bool[$restricted])
 
   --(no)debug        output debugging info  (default: $bool[$::opt_debug])
@@ -374,8 +381,9 @@ Options for Ghostscript:
                        recognized VAL choices: None, All, PageByPage;
                        for EPS files, PageByPage is equivalent to All.
   --(no)compress     use compression        (default: $bool[$::opt_compress])
-  --device=DEV       use -sDEVICE=DEV       (default: $::opt_device)
+  --device=DEV       use -sDEVICE=DEV       (default: $default_device)
   --(no)embed        embed fonts            (default: $bool[$::opt_embed])
+  --(no)gray         grayscale output       (default: $bool[$::opt_gray])
   --pdfsettings=VAL  use -dPDFSETTINGS=/VAL (default is prepress if --embed,
                        else empty); recognized VAL choices:
                        screen, ebook, printer, prepress, default.
@@ -386,6 +394,7 @@ Options for Ghostscript:
 
 Examples all equivalently converting test.eps to test.pdf:
   \$ $program test.eps
+  \$ $program test.eps test.pdf
   \$ cat test.eps | $program --filter >test.pdf
   \$ cat test.eps | $program -f -o=test.pdf
 
@@ -401,21 +410,20 @@ is doing.
 More about the options for Ghostscript:
   Additional options to be used with gs can be specified
     with either or both of the two cumulative options --gsopts and --gsopt.
-  --gsopts takes a single string of options, which is split at whitespace,
-    each resulting word then added to the gs command line individually.
+  --gsopts takes a single string of options, which is split at whitespace
+    and each resulting word then added to the gs command line individually.
   --gsopt adds its argument as a single option to the gs command line.
     It can be used multiple times to specify options separately,
     and is necessary if an option or its value contains whitespace.
   In restricted mode, options are limited to those with names and values
-    known to be safe; some options taking booleans, integers or fixed
+    known to be safe.  Some options taking booleans, integers or fixed
     names are allowed, those taking general strings are not.
 
 All options to epstopdf may start with either - or --, and may be
 unambiguously abbreviated.  It is best to use the full option name in
-scripts, though, to avoid possible collisions with new options in the
-future.
+scripts to avoid possible collisions with new options in the future.
 
-When reporting bugs, please include an input file and command line
+When reporting bugs, please include an input file and all command line
 options so the problem can be reproduced.
 
 Report bugs to: tex-k\@tug.org
@@ -431,6 +439,7 @@ GetOptions (
   "device=s",
   "embed!",
   "exact!",
+  "gray!",
   "filter!",
   "gs!",
   "gscmd=s",              # \ref{val_gscmd}
@@ -438,7 +447,7 @@ GetOptions (
   "gsopts=s" => \&gsopts, # \ref{val_gsopts}
   "help|h",
   "hires!",
-  "outfile=s",            # \ref{openout_any}
+  "outfile|output|o=s",   # \ref{openout_any}
   "pdfsettings=s",
   "quiet",
   "res=s",
@@ -457,7 +466,7 @@ $restricted = 1 if $::opt_restricted;
 sub debug      { print STDERR "* @_\n" if $::opt_debug; }
 sub warning    { print STDERR "==> Warning: @_\n"; }
 sub error      { die "$title!!! Error: @_\n"; }
-sub errorUsage { die "Error: @_ (try --help for more information)\n"; }
+sub errorUsage { die "$program: Error: @_ (try --help for more information)\n"; }
 sub warnerr    { $restricted ? error(@_) : warning(@_); }
 
 ### debug messages
@@ -490,13 +499,13 @@ sub safe_name {
 ### help, version options.
 if ($::opt_help) {
   print $usage;
-  exit (0);
+  exit 0;
 }
 
 if ($::opt_version) {
   print $title;
   print $copyright;
-  exit (0);
+  exit 0;
 }
 
 ### get input filename (\ref{openin_any} for validation)
@@ -506,16 +515,29 @@ if ($::opt_filter) {
     errorUsage "Input file cannot be used with filter option";
   debug "Filtering: will read standard input";
 } else {
+  # not filtering.
   @ARGV > 0 or errorUsage "Input filename missing";
-  @ARGV < 2 or errorUsage "Unknown option or too many input files";
+  # allow infile outfile.pdf.
+  if (@ARGV == 2) {
+    if ($::opt_outfile) {
+      errorUsage ("Multiple output specifications: second arg=$ARGV[1],"
+                  . " --outfile=$::opt_outfile");
+    }
+    if ($ARGV[1] !~ m/\.pdf$/i) {
+      errorUsage "Output file argument requires .pdf extension: $ARGV[1]";
+    }
+    # seems we can use it.
+    $::opt_outfile = $ARGV[1];
+    debug "Output filename from argv:", $::opt_outfile;
+  }
+  @ARGV > 2 and errorUsage "Too many arguments: @ARGV";
+  
   $InputFilename = $ARGV[0];
-  #-r $InputFilename or error "\"$InputFilename\" not readable";
   debug "Input filename:", $InputFilename;
 }
 
 ### emacs-page
-### start building GS command line for the pipe
-### take --safer and --gsopts into account
+### building the gs invocation.
 
 ### option gscmd
 if ($::opt_gscmd) {
@@ -533,13 +555,19 @@ push @GS, '-q' if $::opt_quiet;
 push @GS, $::opt_safer ? '-dSAFER' : '-dNOSAFER';
 push @GS, '-dNOPAUSE';
 push @GS, '-dBATCH';
+push @GS, '-dCompatibilityLevel=1.5';
 
-if ($::opt_device and $restricted and
-    not $restricted_devlist{$::opt_device}) {
-  error "Option forbidden in restricted mode: --device=$::opt_device";
-  $::opt_device = '';
+### option device
+if ($::opt_device) {
+  if ($restricted) {
+    error "Option forbidden in restricted mode: --device";
+  } else {
+    debug "Switching from $default_device to $::opt_device";
+  }
+} else {
+  $::opt_device = $default_device;
 }
-$::opt_device = $default_device unless $::opt_device;
+
 push @GS, "-sDEVICE=$::opt_device";
 
 ### option outfile
@@ -582,8 +610,10 @@ push @GS, qw[
   -dEmbedAllFonts=true
 ] if $::opt_embed;
 
-
 push @GS, '-dUseFlateCompression=false' unless $::opt_compress;
+
+push @GS, qw(-sColorConversionStrategy=Gray -dProcessColorModel=/DeviceGray)
+  if $::opt_gray;
 
 if ($::opt_res and
     not $::opt_res =~ /^(\d+(x\d+)?)$/) {
@@ -591,7 +621,7 @@ if ($::opt_res and
   $::opt_res = '';
 }
 push @GS, "-r$::opt_res" if $::opt_res;
-$resmsg= $::opt_res ? $::opt_res : "[use gs default]";
+$resmsg = $::opt_res ? $::opt_res : "[use gs default]";
 
 # \label{val_autorotate}
 if ($::opt_autorotate and
@@ -609,9 +639,9 @@ foreach my $gsopt (@::opt_gsopt) {
     my $ok = 0;
     if ($gsopt =~ /^-[dD]([A-Za-z0-9]+)(=(.*))?$/) {
       my $name = $1;
-      my $value = $2;
+      my $value = $3;
       $value = 'true' if not defined $value;
-      if ($optcheck{$name} and $value =~ /^$optcheck{$name}$/) {
+      if ($optcheck{$name} and $value =~ /^($optcheck{$name})$/) {
         $ok = 1;
       }
       else {
@@ -651,8 +681,10 @@ if ($::opt_gs) {
   debug "Ghostscript command:", $GS;
   debug "Compression:", ($::opt_compress) ? "on" : "off";
   debug "Embedding:", ($::opt_embed) ? "on" : "off";
-  debug "Rotation:", $rotmsg;
+  debug "Grayscale:", ($::opt_gray) ? "on" : "off";
+  debug "PDFSettings:", $::opt_pdfsettings;
   debug "Resolution:", $resmsg;
+  debug "Rotation:", $rotmsg;
 }
 
 ### emacs-page
