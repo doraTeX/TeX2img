@@ -823,6 +823,67 @@ DQ
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
+                            <tabViewItem label="一般" identifier="" id="OXu-5w-0l4">
+                                <view key="view" id="uFS-2q-4Q2">
+                                    <rect key="frame" x="10" y="33" width="452" height="393"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r8c-av-NDf">
+                                            <rect key="frame" x="15" y="362" width="229" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <buttonCell key="cell" type="check" title="起動時に前回終了時のソースを復元" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="tNd-of-ciW">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" size="13" name=".HiraKakuInterface-W3"/>
+                                            </buttonCell>
+                                        </button>
+                                        <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gUY-O3-Gx6">
+                                            <rect key="frame" x="15" y="332" width="229" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <buttonCell key="cell" type="check" title="アップデートを自動的に確認" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="lJX-6j-49Z">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <binding destination="813" name="value" keyPath="values.SUEnableAutomaticChecks" id="ReE-Gy-BIG"/>
+                                            </connections>
+                                        </button>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JKU-tU-UBZ">
+                                            <rect key="frame" x="125" y="305" width="106" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="roundRect" title="アンインストール..." bezelStyle="roundedRect" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fVf-w7-Qhs">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="smallSystem"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="installCUITool:" target="450" id="2dz-Jx-apx"/>
+                                            </connections>
+                                        </button>
+                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HXc-Pc-LvY">
+                                            <rect key="frame" x="121" y="275" width="32" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="FCH-Lo-nn7"/>
+                                        </imageView>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MzF-d3-8UJ">
+                                            <rect key="frame" x="15" y="307" width="113" height="16"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" lineBreakMode="clipping" title="コマンドライン版：" id="Awx-gY-bzG">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JKK-Or-GTl">
+                                            <rect key="frame" x="150" y="275" width="255" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" lineBreakMode="clipping" title="未インストール" id="2Mv-NO-jo6">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
                             <tabViewItem label="出力画像" identifier="1" id="582">
                                 <view key="view" id="583">
                                     <rect key="frame" x="10" y="33" width="452" height="393"/>
@@ -2245,61 +2306,6 @@ DQ
                                                 <action selector="openSystemPreferencePane:" target="450" id="dC5-Bh-QQL"/>
                                             </connections>
                                         </button>
-                                        <box fixedFrame="YES" title="その他" translatesAutoresizingMaskIntoConstraints="NO" id="qHC-P9-JE7">
-                                            <rect key="frame" x="20" y="10" width="426" height="114"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                            <view key="contentView" id="kph-gg-pVX">
-                                                <rect key="frame" x="3" y="3" width="420" height="96"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="811">
-                                                        <rect key="frame" x="18" y="63" width="229" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="アップデートを自動的に確認" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="812">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <binding destination="813" name="value" keyPath="values.SUEnableAutomaticChecks" id="814"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cls-cM-ktK">
-                                                        <rect key="frame" x="128" y="36" width="106" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="roundRect" title="アンインストール..." bezelStyle="roundedRect" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xxm-81-4SE">
-                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="smallSystem"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="installCUITool:" target="450" id="nfA-Zm-GXf"/>
-                                                        </connections>
-                                                    </button>
-                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wod-x4-3xR">
-                                                        <rect key="frame" x="124" y="6" width="32" height="32"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="xng-6N-9eW"/>
-                                                    </imageView>
-                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jqa-c4-ctV">
-                                                        <rect key="frame" x="18" y="38" width="113" height="16"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" lineBreakMode="clipping" title="コマンドライン版：" id="Kjs-hp-xze">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cbw-23-oAW">
-                                                        <rect key="frame" x="153" y="6" width="255" height="26"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" lineBreakMode="clipping" title="未インストール" id="STX-xt-qox">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                </subviews>
-                                            </view>
-                                        </box>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -2444,6 +2450,7 @@ DQ
                 <outlet property="autoIndentMenuItem" destination="yEx-mS-HPD" id="3xo-4T-JPL"/>
                 <outlet property="autoPasteCheckBox" destination="btX-o8-qUO" id="s7N-HE-rm8"/>
                 <outlet property="autoPasteDestinationPopUpButton" destination="hv6-A1-dhl" id="bqF-Ut-Hkz"/>
+                <outlet property="autoRestoreCheckBox" destination="r8c-av-NDf" id="l9s-gA-DXa"/>
                 <outlet property="beepCheckBox" destination="yFC-gL-sJa" id="qVA-sL-RUz"/>
                 <outlet property="bottomMarginStepper" destination="xtd-D8-9J6" id="XXW-kp-l0d"/>
                 <outlet property="bottomMarginTextField" destination="duD-Zk-r37" id="mqY-ab-hvX"/>
@@ -2459,9 +2466,9 @@ DQ
                 <outlet property="colorTextField" destination="ece-oe-9xN" id="R9l-mw-NJG"/>
                 <outlet property="commandCompletionKeyMatrix" destination="YdH-me-3lX" id="AqL-Am-nPU"/>
                 <outlet property="convertYenMarkMenuItem" destination="760" id="762"/>
-                <outlet property="cuiToolInstallButton" destination="cls-cM-ktK" id="vW0-zE-wrj"/>
-                <outlet property="cuiToolStatusTextField" destination="cbw-23-oAW" id="lE6-QH-WW3"/>
-                <outlet property="cuiToolStatusView" destination="wod-x4-3xR" id="sKa-m0-mHX"/>
+                <outlet property="cuiToolInstallButton" destination="JKU-tU-UBZ" id="lF1-d3-8B8"/>
+                <outlet property="cuiToolStatusTextField" destination="JKK-Or-GTl" id="2Ud-CQ-Kg8"/>
+                <outlet property="cuiToolStatusView" destination="HXc-Pc-LvY" id="odi-dN-Zef"/>
                 <outlet property="darkModeBackgroundColorWell" destination="fAe-qA-XpK" id="FXu-2Y-WsF"/>
                 <outlet property="darkModeBraceColorWell" destination="T4S-SJ-IaE" id="QYf-W2-6SM"/>
                 <outlet property="darkModeCommandColorWell" destination="qvQ-gI-zp5" id="uKT-dJ-Q2P"/>

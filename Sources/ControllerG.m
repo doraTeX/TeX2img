@@ -83,6 +83,9 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet NSButton *browseSourceFileButton;
 
 @property (nonatomic, strong) IBOutlet NSButton *generateButton;
+
+@property (nonatomic, strong) IBOutlet NSButton *autoRestoreCheckBox;
+
 @property (nonatomic, strong) IBOutlet NSButton *transparentCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *plainTextCheckBox;
 @property (nonatomic, strong) IBOutlet NSButton *deleteDisplaySizeCheckBox;
@@ -259,6 +262,8 @@ typedef enum {
 @synthesize browseSourceFileButton;
 
 @synthesize generateButton;
+
+@synthesize autoRestoreCheckBox;
 @synthesize transparentCheckBox;
 @synthesize plainTextCheckBox;
 @synthesize deleteDisplaySizeCheckBox;
@@ -368,6 +373,15 @@ typedef enum {
 @synthesize delayStepper;
 @synthesize loopCountTextField;
 @synthesize loopCountStepper;
+
+@synthesize cuiToolInstallButton;
+@synthesize cuiToolStatusView;
+@synthesize cuiToolStatusTextField;
+
+@synthesize keepPageSizeAdvancedButton;
+@synthesize mergeOutputAdvancedButton;
+
+@synthesize extensionPopupButton;
 
 @synthesize commandCompletionList;
 
@@ -836,7 +850,13 @@ typedef enum {
     NSArray<NSString*> *keys = aProfile.allKeys;
 	
 	[self loadStringSettingForTextField:outputFileTextField fromProfile:aProfile forKey:OutputFileKey];
-	
+
+    if ([keys containsObject:AutoRestoreSourceKey]) {
+        autoRestoreCheckBox.state = [aProfile integerForKey:AutoRestoreSourceKey];
+    } else {
+        autoRestoreCheckBox.state = NSOnState;
+    }
+
 	showOutputWindowCheckBox.state = [aProfile integerForKey:ShowOutputWindowKey];
     sendNotificationCheckBox.state = [aProfile integerForKey:SendNotificationKey];
 	previewCheckBox.state = [aProfile integerForKey:PreviewKey];
@@ -1280,8 +1300,10 @@ typedef enum {
 		[mainWindow setFrame:NSMakeRect(x, y, mainWindowWidth, mainWindowHeight) display:YES];
 	}
     
+    BOOL autoRestore = [aProfile boolForKey:AutoRestoreSourceKey];
     NSString *body = [aProfile stringForKey:SourceBodyKey];
-    if (body) {
+
+    if (autoRestore && body) {
         [sourceTextView replaceEntireContentsWithString:body];
     }
     
@@ -1301,6 +1323,8 @@ typedef enum {
         currentProfile[MainWindowWidthKey] = @(NSWidth(mainWindow.frame));
         currentProfile[MainWindowHeightKey] = @(NSHeight(mainWindow.frame));
         currentProfile[OutputFileKey] = outputFileTextField.stringValue;
+        
+        currentProfile[AutoRestoreSourceKey] = @(autoRestoreCheckBox.state);
         
         currentProfile[ShowOutputWindowKey] = @(showOutputWindowCheckBox.state);
         currentProfile[SendNotificationKey] = @(sendNotificationCheckBox.state);
@@ -1785,13 +1809,13 @@ typedef enum {
 {
     // CUI版のインストール状態チェック
     if ([[NSFileManager defaultManager] fileExistsAtPath:CUI_PATH]) {
-        _cuiToolInstallButton.title = localizedString(@"Uninstall...");
-        _cuiToolStatusView.image = [NSImage imageNamed:NSImageNameStatusAvailable];
-        _cuiToolStatusTextField.stringValue = [NSString stringWithFormat:localizedString(@"Installed"), CUI_PATH];
+        cuiToolInstallButton.title = localizedString(@"Uninstall...");
+        cuiToolStatusView.image = [NSImage imageNamed:NSImageNameStatusAvailable];
+        cuiToolStatusTextField.stringValue = [NSString stringWithFormat:localizedString(@"Installed"), CUI_PATH];
     } else {
-        _cuiToolInstallButton.title = localizedString(@"Install...");
-        _cuiToolStatusView.image = [NSImage imageNamed:NSImageNameStatusUnavailable];
-        _cuiToolStatusTextField.stringValue = localizedString(@"Not Installed");
+        cuiToolInstallButton.title = localizedString(@"Install...");
+        cuiToolStatusView.image = [NSImage imageNamed:NSImageNameStatusUnavailable];
+        cuiToolStatusTextField.stringValue = localizedString(@"Not Installed");
     }
 }
 
@@ -2506,7 +2530,7 @@ typedef enum {
     popUpButton.target = self;
     
     NSString *defaultFilePath = outputFileTextField.stringValue;
-    NSString *defaultExtensionUpper = _extensionPopupButton.selectedItem.title;
+    NSString *defaultExtensionUpper = extensionPopupButton.selectedItem.title;
     NSString *defaultExtensionLower = defaultExtensionUpper.lowercaseString;
     savePanel.nameFieldStringValue = [defaultFilePath.lastPathComponent.stringByDeletingPathExtension stringByAppendingPathExtension:defaultExtensionLower];
     [popUpButton selectItemWithTitle:defaultExtensionUpper];
@@ -2631,8 +2655,8 @@ typedef enum {
 
 - (IBAction)preferencesChanged:(id)sender
 {
-    _keepPageSizeAdvancedButton.enabled = (keepPageSizeCheckBox.state == NSOnState);
-    _mergeOutputAdvancedButton.enabled = (mergeOutputsCheckBox.state == NSOnState);
+    keepPageSizeAdvancedButton.enabled = (keepPageSizeCheckBox.state == NSOnState);
+    mergeOutputAdvancedButton.enabled = (mergeOutputsCheckBox.state == NSOnState);
     
     if (toClipboardCheckBox.state == NSOnState) {
         autoPasteCheckBox.enabled = YES;
@@ -3010,7 +3034,7 @@ typedef enum {
     NSString *newExtension = outputFileTextField.stringValue.lastPathComponent.pathExtension;
     
     if ([TargetExtensionsArray containsObject:newExtension]) {
-        [_extensionPopupButton selectItemWithTitle:newExtension.uppercaseString];
+        [extensionPopupButton selectItemWithTitle:newExtension.uppercaseString];
     }
 }
 
