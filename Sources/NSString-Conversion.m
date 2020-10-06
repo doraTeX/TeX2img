@@ -16471,6 +16471,7 @@
     [str replaceAllOccurrencesOfString:@"㍽" withString:@"\\ajLig{大正}" addingPercentForEndOfLine:YES];
     [str replaceAllOccurrencesOfString:@"㍼" withString:@"\\ajLig{昭和}" addingPercentForEndOfLine:YES];
     [str replaceAllOccurrencesOfString:@"㍻" withString:@"\\ajLig{平成}" addingPercentForEndOfLine:YES];
+    [str replaceAllOccurrencesOfString:@"㋿" withString:@"\\ajLig{令和}" addingPercentForEndOfLine:YES];
     [str replaceAllOccurrencesOfString:@"㍉" withString:@"\\ajLig{ミリ}" addingPercentForEndOfLine:YES];
     [str replaceAllOccurrencesOfString:@"㌔" withString:@"\\ajLig{キロ}" addingPercentForEndOfLine:YES];
     [str replaceAllOccurrencesOfString:@"㌢" withString:@"\\ajLig{センチ}" addingPercentForEndOfLine:YES];
@@ -16725,6 +16726,7 @@
     [str replaceAllOccurrencesOfString:@"\\ajLig{大正}" withString:@"㍽" addingPercentForEndOfLine:NO];
     [str replaceAllOccurrencesOfString:@"\\ajLig{昭和}" withString:@"㍼" addingPercentForEndOfLine:NO];
     [str replaceAllOccurrencesOfString:@"\\ajLig{平成}" withString:@"㍻" addingPercentForEndOfLine:NO];
+    [str replaceAllOccurrencesOfString:@"\\ajLig{令和}" withString:@"㋿" addingPercentForEndOfLine:NO];
     [str replaceAllOccurrencesOfString:@"\\ajLig{ミリ}" withString:@"㍉" addingPercentForEndOfLine:NO];
     [str replaceAllOccurrencesOfString:@"\\ajLig{キロ}" withString:@"㌔" addingPercentForEndOfLine:NO];
     [str replaceAllOccurrencesOfString:@"\\ajLig{センチ}" withString:@"㌢" addingPercentForEndOfLine:NO];
