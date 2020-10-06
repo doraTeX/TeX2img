@@ -554,6 +554,7 @@ typedef enum {
 - (void)showOutputWindowOnMainThread
 {
     if (outputWindow.isVisible) {
+        [outputWindow makeKeyAndOrderFront:nil]; // 裏に隠れていても前面に持ってくる
         return;
     }
     
