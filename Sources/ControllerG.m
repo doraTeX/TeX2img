@@ -1214,7 +1214,8 @@ typedef enum {
     [self invisibleCharacterKindChanged:nil];
 
     [self loadSettingForTextView:preambleTextView fromProfile:aProfile forKey:PreambleKey];
-    
+    [self refreshOutputTextViewUsingProfile:aProfile];
+
     NSFont *aFont = [NSFont fontWithName:[aProfile stringForKey:SourceFontNameKey] size:[aProfile floatForKey:SourceFontSizeKey]];
     if (aFont) {
         sourceFont = aFont;
@@ -1232,7 +1233,6 @@ typedef enum {
     [preambleTextView fixupTabs];
     [preambleTextView refreshWordWrap];
 
-    [self refreshOutputTextViewUsingProfile:aProfile];
 
     // 不可視文字表示の選択肢のフォントを更新
     NSFont *displayFont = [NSFont fontWithName:sourceFont.fontName size:spaceCharacterKindButton.font.pointSize];
