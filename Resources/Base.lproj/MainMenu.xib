@@ -777,7 +777,7 @@ DQ
                 <outlet property="darkModeCommandColorWell" destination="Zd7-9Q-8On" id="pCS-ZN-39s"/>
                 <outlet property="darkModeCommentColorWell" destination="Nqv-xl-r4i" id="ejs-66-whO"/>
                 <outlet property="darkModeConsoleBackgroundColorWell" destination="k4Y-BK-eec" id="22N-Ur-gfn"/>
-                <outlet property="darkModeConsoleForegroundColorWell" destination="k4Y-BK-eec" id="6Ci-tl-NxA"/>
+                <outlet property="darkModeConsoleForegroundColorWell" destination="Qqs-kj-aYH" id="JPy-uO-pWI"/>
                 <outlet property="darkModeCursorColorWell" destination="NY8-gg-3PM" id="fjw-gH-j78"/>
                 <outlet property="darkModeEnclosedContentBackgroundColorWell" destination="ej2-fo-kp5" id="QJU-xE-uIU"/>
                 <outlet property="darkModeFlashingBackgroundColorWell" destination="Y8g-WB-szD" id="byG-TN-KtE"/>
