@@ -1035,7 +1035,7 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="Output" identifier="1" id="582">
+                            <tabViewItem label="Image" identifier="1" id="582">
                                 <view key="view" id="583">
                                     <rect key="frame" x="10" y="33" width="509" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1415,7 +1415,7 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="Engines" identifier="2" id="581">
+                            <tabViewItem label="Engine" identifier="2" id="581">
                                 <view key="view" id="584">
                                     <rect key="frame" x="10" y="33" width="509" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1634,7 +1634,7 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="View" identifier="3" id="sci-do-lkd">
+                            <tabViewItem label="Editor" identifier="3" id="sci-do-lkd">
                                 <view key="view" id="RZt-Sg-m5Y">
                                     <rect key="frame" x="10" y="33" width="509" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2324,7 +2324,7 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="After Compilation" identifier="5" id="587">
+                            <tabViewItem label="Post-process" identifier="5" id="587">
                                 <view key="view" id="588">
                                     <rect key="frame" x="10" y="33" width="509" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2387,7 +2387,7 @@ DQ
                                             <rect key="frame" x="47" y="199" width="182" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="(EPS files are recommended)" id="cEM-7Z-hSh">
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -2429,10 +2429,10 @@ DQ
                                             </popUpButtonCell>
                                         </popUpButton>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9dz-NT-Byh">
-                                            <rect key="frame" x="313" y="244" width="182" height="17"/>
+                                            <rect key="frame" x="313" y="241" width="182" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="(PDF files are recommended)" id="DD2-Ex-ihS">
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>

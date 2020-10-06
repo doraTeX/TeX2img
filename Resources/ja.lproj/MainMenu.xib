@@ -1477,7 +1477,7 @@ DQ
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="表示" identifier="3" id="EnK-oW-z8i">
+                            <tabViewItem label="エディタ" identifier="3" id="EnK-oW-z8i">
                                 <view key="view" id="dCI-tZ-eeA">
                                     <rect key="frame" x="10" y="33" width="452" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
