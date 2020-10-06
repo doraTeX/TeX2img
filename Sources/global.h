@@ -131,6 +131,7 @@ typedef NSMutableDictionary<NSString*,id> MutableProfile;
 #define SourceFontNameKey @"sourceFontName"
 #define SourceFontSizeKey @"sourceFontSize"
 #define PreambleKey @"preamble"
+#define SourceBodyKey @"sourceBody"
 #define InputMethodKey @"inputMethod"
 #define InputSourceFilePathKey @"inputSourceFilePath"
 #define EncodingKey @"encoding"

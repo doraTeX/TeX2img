@@ -1261,9 +1261,9 @@ typedef enum {
     tabCharacterKindButton.font = font;
 }
 
-- (BOOL)adoptProfileWithWindowFrameForName:(NSString*)profileName
+- (BOOL)adoptProfileDuringLauching
 {
-	Profile *aProfile = [profileController profileForName:profileName];
+	Profile *aProfile = [profileController profileForName:AutoSavedProfileName];
     if (!aProfile) {
         return NO;
     }
@@ -1279,7 +1279,12 @@ typedef enum {
 	if (x!=0 && y!=0 && mainWindowWidth!=0 && mainWindowHeight!=0) {
 		[mainWindow setFrame:NSMakeRect(x, y, mainWindowWidth, mainWindowHeight) display:YES];
 	}
-	
+    
+    NSString *body = [aProfile stringForKey:SourceBodyKey];
+    if (body) {
+        [sourceTextView replaceEntireContentsWithString:body];
+    }
+    
 	return YES;
 }
 
@@ -1375,6 +1380,7 @@ typedef enum {
         currentProfile[SourceFontSizeKey] = @(sourceFont.pointSize);
         
         currentProfile[PreambleKey] = [NSString stringWithString:preambleTextView.textStorage.string]; // stringWithString は必須
+        currentProfile[SourceBodyKey] = [NSString stringWithString:sourceTextView.textStorage.string]; // stringWithString は必須
         
         currentProfile[InputMethodKey] = (directInputButton.state == NSOnState) ? @(DIRECT) : @(FROMFILE);
         currentProfile[InputSourceFilePathKey] = inputSourceFileTextField.stringValue;
@@ -1713,7 +1719,7 @@ typedef enum {
 	
 	if ([fileManager fileExistsAtPath:plistFile]) {
 		[profileController loadProfilesFromPlist];
-		loadLastProfileSuccess = [self adoptProfileWithWindowFrameForName:AutoSavedProfileName];
+		loadLastProfileSuccess = [self adoptProfileDuringLauching];
 		[profileController removeProfileForName:AutoSavedProfileName];
 	}
     
@@ -1899,7 +1905,7 @@ typedef enum {
         [self closeFontPanel];
     }
 
-	[profileController updateProfile:self.currentProfile forName:AutoSavedProfileName];
+	[profileController updateProfile:[self currentProfile] forName:AutoSavedProfileName];
 	[profileController saveProfiles];
 }
 
