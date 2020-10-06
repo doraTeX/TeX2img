@@ -43,6 +43,67 @@ extension Converter {
         guard epsData.write(toFile: epsPath) else { return }
     }
     
+    
+    @objc func enlargeBoundingBox(of epsPath: String) {
+        
+        enum BoundingBoxType {
+            case boundingBox
+            case hiresBoundingBox
+            
+            var regexPattern: String {
+                switch self {
+                case .boundingBox:
+                    return #"^(\-?\d+) (\-?\d+) (\-?\d+) (\-?\d+)$"#
+                case .hiresBoundingBox:
+                    return #"^(\-?[\d\.]+) (\-?[\d\.]+) (\-?[\d\.]+) (\-?[\d\.]+)$"#
+                }
+            }
+            
+            var regex: NSRegularExpression {
+                return try! NSRegularExpression(pattern: self.regexPattern, options: [])
+            }
+            
+            func checkingResultOf(content: String) -> NSTextCheckingResult? {
+                let range = NSRange(location: 0, length: content.count)
+                return self.regex.firstMatch(in: content, options: [], range: range)
+            }
+        }
+        
+        guard var epsData = Data(filePath: epsPath) else { return }
+
+        if let bbArea = bboxOf(data: epsData, hires: false),
+           let match = BoundingBoxType.boundingBox.checkingResultOf(content: bbArea.content) {
+            
+            let matchingAt = { Int((bbArea.content as NSString).substring(with: match.range(at: $0)))! }
+
+            let llx = matchingAt(1) - leftMargin
+            let lly = matchingAt(2) - bottomMargin
+            let urx = matchingAt(3) + rightMargin
+            let ury = matchingAt(4) + topMargin
+            let newContent = "\(llx) \(lly) \(urx) \(ury)"
+            guard let newData = newContent.data(using: .utf8) else { return }
+
+            epsData.replaceSubrange(bbArea.range, with: newData)
+        }
+
+        if let hiresBbArea = bboxOf(data: epsData, hires: true),
+           let match = BoundingBoxType.hiresBoundingBox.checkingResultOf(content: hiresBbArea.content) {
+            
+            let matchingAt = { Double((hiresBbArea.content as NSString).substring(with: match.range(at: $0)))! }
+
+            let llx = matchingAt(1) - Double(leftMargin)
+            let lly = matchingAt(2) - Double(bottomMargin)
+            let urx = matchingAt(3) + Double(rightMargin)
+            let ury = matchingAt(4) + Double(topMargin)
+            let newContent = "\(llx) \(lly) \(urx) \(ury)"
+            guard let newData = newContent.data(using: .utf8) else { return }
+
+            epsData.replaceSubrange(hiresBbArea.range, with: newData)
+        }
+
+        guard epsData.write(toFile: epsPath) else { return }
+    }
+    
     /// PDFの特定の1ページの余白をクロップする
     /// - Parameters:
     ///   - pdfPath: 入力PDFパス

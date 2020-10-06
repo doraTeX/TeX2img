@@ -865,23 +865,6 @@
                              quiet:quietFlag];
 }
 
-- (void)enlargeBB:(NSString*)epsName
-{
-    NSString *epsPath = [workingDirectory stringByAppendingPathComponent:epsName];
-    NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: (\\-?[0-9]+) (\\-?[0-9]+) (\\-?[0-9]+) (\\-?[0-9]+)\\n/){ \"%%%%BoundingBox: #{$1.to_i-%ld} #{$2.to_i-%ld} #{$3.to_i+%ld} #{$4.to_i+%ld}\\n\"}.sub(/%%%%HiResBoundingBox\\: (\\-?[0-9\\.]+) (\\-?[0-9\\.]+) (\\-?[0-9\\.]+) (\\-?[0-9\\.]+)\\n/){ \"%%%%HiResBoundingBox: #{$1.to_f-%f} #{$2.to_f-%f} #{$3.to_f+%f} #{$4.to_f+%f}\\n\"};File.open('%@', 'wb') {|f| f.write s}",
-                          epsPath,
-                          leftMargin, bottomMargin, rightMargin, topMargin,
-                          (CGFloat)leftMargin, (CGFloat)bottomMargin, (CGFloat)rightMargin, (CGFloat)topMargin,
-                          epsPath
-                          ];
-    NSString *scriptPath = [workingDirectory stringByAppendingPathComponent:[tempFileBaseName stringByAppendingString:@"-enlargeBB"]];
-
-    FILE *fp = fopen(scriptPath.UTF8String, "w");
-    fputs(script.UTF8String, fp);
-    fclose(fp);
-    
-    system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
-}
 
 - (BOOL)mergeTIFFFiles:(NSArray<NSString*>*)sourcePaths
                 toPath:(NSString*)destPath
@@ -1226,7 +1209,7 @@ intermediateOutlinedFileName:outlinedPdfFileName
         
         // 余白を付け加えるようバウンディングボックスを改変（背景塗りを追加している場合は既に余白が付いているので除く）
         if (transparentFlag && (topMargin + bottomMargin + leftMargin + rightMargin > 0)) {
-            [self enlargeBB:intermediateOutlinedFileName];
+            [self enlargeBoundingBoxOf:[workingDirectory stringByAppendingPathComponent:intermediateOutlinedFileName]];
         }
         
         // 生成したEPSファイルの名前を最終出力ファイル名へ変更する
