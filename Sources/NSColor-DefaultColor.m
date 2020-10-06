@@ -103,7 +103,7 @@
 
 + (NSColor*)defaultHighlightedBraceColorForDarkMode
 {
-    return [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.5 alpha:1.0];
+    return [NSColor colorWithCalibratedRed:1.00 green:0.196 blue:0.341 alpha:1.0];
 }
 
 + (NSColor*)defaultEnclosedContentBackgroundColorForDarkMode
