@@ -22,6 +22,51 @@ extension Converter {
     }
     
     
+    /// gsが出力した bbox のデータにおける BoundingBox および HiResBoundingBox の行（行頭から末尾の改行まで）を読み取る
+    /// - Parameters:
+    ///   - epsPath: EPSのパス
+    /// - Returns: @[Pageの行, BoundingBoxの行, HiResBoundingBoxの行, ... ]
+    @objc func extractBoundingBoxLines(from bboxFilePath: String) -> NSArray? {
+        guard let bboxFileData = Data(filePath: bboxFilePath) else { return nil }
+        
+        var result: [String] = []
+
+        let returnCharData = "\n".data(using: .utf8)!
+        let pageHeaderData = "\nPage ".data(using: .utf8)!
+        let bboxHeaderData = "%%BoundingBox: ".data(using: .utf8)!
+        let hiresBboxHeaderData = "%%HiResBoundingBox: ".data(using: .utf8)!
+        
+        var startIndex = bboxFileData.startIndex
+
+        // bbox file の中から Pageの行，BoundingBoxの行，HiResBoundingBoxの行を前から順に繰り返し探していき，見つからなくなったらループから離脱
+        while true {
+            if let pageHeaderRange = bboxFileData.range(of: pageHeaderData, options: [], in: startIndex..<bboxFileData.endIndex),
+               let pageHeaderEndIndex = bboxFileData.range(of: returnCharData, options: [], in: pageHeaderRange.upperBound..<bboxFileData.endIndex)?.startIndex,
+               let bboxHeaderRange = bboxFileData.range(of: bboxHeaderData, options: [], in: pageHeaderEndIndex..<bboxFileData.endIndex),
+               let bboxEndIndex = bboxFileData.range(of: returnCharData, options: [], in: bboxHeaderRange.upperBound..<bboxFileData.endIndex)?.startIndex,
+               let hiresBboxHeaderRange = bboxFileData.range(of: hiresBboxHeaderData, options: [], in: bboxEndIndex..<bboxFileData.endIndex),
+               let hiresBboxEndIndex = bboxFileData.range(of: returnCharData, options: [], in: hiresBboxHeaderRange.upperBound..<bboxFileData.endIndex)?.startIndex {
+                
+                let pageContentRange = pageHeaderRange.startIndex.advanced(by: 1)..<pageHeaderEndIndex.advanced(by: 1)
+                let pageLine = String(data: bboxFileData.subdata(in: pageContentRange), encoding: .utf8)!
+                
+                let bboxContentRange = bboxHeaderRange.startIndex..<bboxEndIndex.advanced(by: 1)
+                let bboxLine = String(data: bboxFileData.subdata(in: bboxContentRange), encoding: .utf8)!
+                
+                let hiresBboxContentRange = hiresBboxHeaderRange.startIndex..<hiresBboxEndIndex.advanced(by: 1)
+                let hiresBboxLine = String(data: bboxFileData.subdata(in: hiresBboxContentRange), encoding: .utf8)!
+                
+                result += [pageLine, bboxLine, hiresBboxLine]
+                
+                startIndex = hiresBboxEndIndex
+            } else {
+                break
+            }
+        }
+        
+        return result as NSArray
+    }
+
     /// EPSの BoundingBox および HiResBoundingBox の内容を，指定された内容に置換する
     /// - Parameters:
     ///   - epsPath: EPSのパス
@@ -42,7 +87,7 @@ extension Converter {
 
         guard epsData.write(toFile: epsPath) else { return }
     }
-    
+
     
     @objc func enlargeBoundingBox(of epsPath: String) {
         

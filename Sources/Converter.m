@@ -367,13 +367,18 @@
                                                  ]
                                          quiet:quietFlag];
         
-        NSString *bboxOutput = [NSString stringWithContentsOfFile:bboxFilePath encoding:NSUTF8StringEncoding error:NULL];
+        NSArray<NSString*> *lines = [self extractBoundingBoxLinesFrom:bboxFilePath];
         [fileManager removeItemAtPath:bboxFilePath error:nil];
+        
+        if (!lines) {
+            [controller showExecError:@"Ghostscript"];
+            return nil;
+        }
         
         // 出力を解析
         NSUInteger currentPage = 0;
         
-        for (NSString *line in [bboxOutput componentsSeparatedByString:@"\n"]) {
+        for (NSString *line in lines) {
             if ((line.length >= 5) && [[line substringWithRange:NSMakeRange(0, 5)] isEqualToString:@"Page "]) { // "Page "から始まる行について
                 currentPage = [line substringFromIndex:5].integerValue;
                 success = YES;
@@ -391,7 +396,6 @@
 
         if (!success) {
             [controller showExecError:@"Ghostscript"];
-            [fileManager removeItemAtPath:bboxFilePath error:nil];
             return nil;
         }
     }
