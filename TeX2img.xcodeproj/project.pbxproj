@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		3408053D1A96E6B50067AA56 /* FileManager-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */; };
+		340F4D61252C086000FA56D7 /* Data-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F4D5F252C07A200FA56D7 /* Data-Extension.swift */; };
+		340F4D63252C086A00FA56D7 /* Data-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F4D5F252C07A200FA56D7 /* Data-Extension.swift */; };
 		3419977025282F9D0022F53C /* PDFPageBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3419976F25282F9D0022F53C /* PDFPageBox.swift */; };
 		3419977125282F9D0022F53C /* PDFPageBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3419976F25282F9D0022F53C /* PDFPageBox.swift */; };
 		3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */ = {isa = PBXBuildFile; fileRef = 3424A8E20E4F2DC1003C9F96 /* ControllerG.m */; };
@@ -116,6 +118,7 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeX2img_Prefix.pch; sourceTree = "<group>"; };
 		3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager-Extension.swift"; sourceTree = "<group>"; };
+		340F4D5F252C07A200FA56D7 /* Data-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data-Extension.swift"; sourceTree = "<group>"; };
 		3419976F25282F9D0022F53C /* PDFPageBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPageBox.swift; sourceTree = "<group>"; };
 		3424A8E10E4F2DC1003C9F96 /* ControllerG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerG.h; sourceTree = "<group>"; };
 		3424A8E20E4F2DC1003C9F96 /* ControllerG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerG.m; sourceTree = "<group>"; };
@@ -418,6 +421,7 @@
 				34CB9280251F93500045CE9E /* NSColor-DefaultColor.m */,
 				34867AC81B7B4804002AD2CF /* NSColorWell-Extension.swift */,
 				348659052526458600B8B190 /* Pipe-Extension.swift */,
+				340F4D5F252C07A200FA56D7 /* Data-Extension.swift */,
 				348659152526523000B8B190 /* NSPopover-Extension.swift */,
 				3486590F25264BCE00B8B190 /* NSMatrix-Extension.swift */,
 				34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.swift */,
@@ -587,6 +591,7 @@
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
 				34D2A63E1AB9BC0F0040B4A5 /* UtilityC.m in Sources */,
 				348659072526458600B8B190 /* Pipe-Extension.swift in Sources */,
+				340F4D61252C086000FA56D7 /* Data-Extension.swift in Sources */,
 				346DA57C1B705F6800B51BD7 /* NSArray-Extension.m in Sources */,
 				34A5C63C251B170B00FCF7BA /* Converter-Extension.swift in Sources */,
 				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,
@@ -628,6 +633,7 @@
 				348659162526523000B8B190 /* NSPopover-Extension.swift in Sources */,
 				34865920252659A600B8B190 /* MyATSTypesetter.swift in Sources */,
 				348659062526458600B8B190 /* Pipe-Extension.swift in Sources */,
+				340F4D63252C086A00FA56D7 /* Data-Extension.swift in Sources */,
 				34A5C63B251B170B00FCF7BA /* Converter-Extension.swift in Sources */,
 				346DA57B1B705F6800B51BD7 /* NSArray-Extension.m in Sources */,
 				CEB04B28225226FB005EED2C /* AppDelegate.swift in Sources */,

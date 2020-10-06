@@ -1,6 +1,55 @@
 import Quartz
 
 extension Converter {
+    
+    /// EPSのDataの中から BoundingBox または HiresBoundingBox の値を探し，その範囲と値を返す
+    /// - Parameters:
+    ///   - data: EPSを読み込んだData
+    ///   - hires: HiResBoundingBox の方を読むか否か
+    /// - Returns: 指定されたBBoxの範囲と値
+    func bboxOf(data: Data, hires: Bool) -> (range: Range<Data.Index>, content: String)? {
+        let header = "%%" + (hires ? "HiRes" : "") + "BoundingBox: "
+        guard let returnCharData = "\n".data(using: .utf8),
+              let headerData = header.data(using: .utf8),
+              let headerRange = data.range(of: headerData) else { return nil }
+        
+        let searchRange = headerRange.upperBound..<data.endIndex
+        guard let contentEndIndex = data.range(of: returnCharData, options: [], in: searchRange)?.startIndex else { return nil }
+        let contentRange = headerRange.endIndex..<contentEndIndex
+        guard let content = String(data: data.subdata(in: contentRange), encoding: .utf8) else { return nil }
+        
+        return (range: contentRange, content: content)
+    }
+    
+    
+    /// EPSの BoundingBox および HiResBoundingBox の内容を，指定された内容に置換する
+    /// - Parameters:
+    ///   - epsPath: EPSのパス
+    ///   - boundingBox: 新しいBoundingBoxの内容
+    ///   - hiresBoundingBox: 新しいHiResBoundingBoxの内容
+    @objc func replaceBBoxOf(epsPath: String, boundingBox: String, hiresBoundingBox: String) {
+        guard var epsData = Data(filePath: epsPath),
+              let bboxData = boundingBox.data(using: .utf8),
+              let hiresBboxData = hiresBoundingBox.data(using: .utf8) else { return }
+        
+        if let bbArea = bboxOf(data: epsData, hires: false) {
+            epsData.replaceSubrange(bbArea.range, with: bboxData)
+        }
+
+        if let hiresBbArea = bboxOf(data: epsData, hires: true) {
+            epsData.replaceSubrange(hiresBbArea.range, with: hiresBboxData)
+        }
+
+        guard epsData.write(toFile: epsPath) else { return }
+    }
+    
+    /// PDFの特定の1ページの余白をクロップする
+    /// - Parameters:
+    ///   - pdfPath: 入力PDFパス
+    ///   - page: ページ番号(1-index)
+    ///   - inputDocument: 入力PDFを読み込んだPDFDocumentオブジェクト
+    ///   - addMargin: 余白付与するか
+    /// - Returns: クロップされたPDFPageオブジェクト
     func cropPage(of pdfPath: String,
                   page: UInt,
                   from inputDocument: PDFDocument,
@@ -72,6 +121,14 @@ extension Converter {
         return pdfPage
     }
 
+    
+    /// PDFの全ページ余白をクロップしたPDFを生成する
+    /// - Parameters:
+    ///   - inputPath: 入力PDFパス
+    ///   - page: 特定のページ番号(1-index)，または0を指定した場合は全ページ対象
+    ///   - outputPath: 出力PDFパス
+    ///   - addMargin: 余白付与するか
+    /// - Returns: 成功・失敗
     @objc func generateCroppedPDF(of inputPath: String, page: UInt, to outputPath: String, addMargin: Bool) -> Bool {
         guard let inputDoc = PDFDocument(filePath: inputPath) else { return false }
         let totalPageCount = inputDoc.pageCount

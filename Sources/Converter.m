@@ -504,24 +504,6 @@
     return result;
 }
 
-- (void)replaceBBoxOfEps:(NSString*)epsPath
-                      bb:(NSString*)bbStr
-                 hiresBb:(NSString*)hiresBbStr
-{
-    NSString *script = [NSString stringWithFormat:@"s=File.open('%@', 'rb'){|f| f.read}.sub(/%%%%BoundingBox\\: .+?\\n/){ \"%%%%BoundingBox: %@\"}.sub(/%%%%HiResBoundingBox\\: .+?\\n/){ \"%%%%HiResBoundingBox: %@\"};File.open('%@', 'wb') {|f| f.write s}",
-                        epsPath,
-                        bbStr,
-                        hiresBbStr,
-                        epsPath
-                        ];
-    NSString *scriptPath = [workingDirectory stringByAppendingPathComponent:[tempFileBaseName stringByAppendingString:@"-replaceBB"]];
-    
-    FILE *fp = fopen(scriptPath.UTF8String, "w");
-    fputs(script.UTF8String, fp);
-    fclose(fp);
-    
-    system([NSString stringWithFormat:@"/usr/bin/ruby \"%@\"; rm \"%@\"", scriptPath, scriptPath].UTF8String);
-}
 
 - (BOOL)replaceEpsBBox:(NSString*)epsName
          withBBoxOfPdf:(NSString*)pdfName
@@ -542,7 +524,7 @@
     bbStr = [bbStr stringByReplacingOccurrencesOfString:@"%%BoundingBox: " withString:@""];
     hiresBbStr = hiresBbStr ? [hiresBbStr stringByReplacingOccurrencesOfString:@"%%HiResBoundingBox: " withString:@""] : bbStr;
     
-    [self replaceBBoxOfEps:epsPath bb:bbStr hiresBb:hiresBbStr];
+    [self replaceBBoxOfEpsPath:epsPath boundingBox:bbStr hiresBoundingBox:hiresBbStr];
     return YES;
 }
 
@@ -552,7 +534,7 @@
     NSString *bbStr = @"0 0 0 0\n";
     NSString *hiresBbStr = @"0.000000 0.000000 0.000000 0.000000\n";
     
-    [self replaceBBoxOfEps:epsPath bb:bbStr hiresBb:hiresBbStr];
+    [self replaceBBoxOfEpsPath:epsPath boundingBox:bbStr hiresBoundingBox:hiresBbStr];
     return YES;
 }
 
@@ -569,7 +551,7 @@
                                            hires:YES
                                        addHeader:NO];
     
-    [self replaceBBoxOfEps:epsPath bb:bbStr hiresBb:hiresBbStr];
+    [self replaceBBoxOfEpsPath:epsPath boundingBox:bbStr hiresBoundingBox:hiresBbStr];
     return YES;
 }
 
