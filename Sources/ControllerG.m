@@ -820,6 +820,7 @@ typedef enum {
 	
 	if (tempStr) {
 		textField.stringValue = tempStr;
+        [self outputFilePathChanged:nil];
 	}
 }
 
