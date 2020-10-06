@@ -1,6 +1,5 @@
 #import "MyLayoutManager.h"
 #import "NSDictionary-Extension.h"
-#import "NSColor-DefaultColor.h"
 #import "UtilityG.h"
 #import "TeX2img-Swift.h"
 

@@ -1,6 +1,6 @@
 #import "UtilityG.h"
 #import "NSDictionary-Extension.h"
-#import "NSColor-DefaultColor.h"
+#import "TeX2img-Swift.h"
 
 void runOkPanel(NSString *title, NSString *message, ...)
 {
@@ -73,21 +73,12 @@ BOOL isJapaneseLanguage()
     return isJapanese;
 }
 
-BOOL isDarkMode()
-{
-    if (@available(macOS 10.14, *)) {
-        return (NSApp.effectiveAppearance.name == NSAppearanceNameDarkAqua);
-    } else {
-        return NO;
-    }
-}
-
 NSColor *readColorFromProfile(Profile *profile,
                               NSString *lightModeKey,
                               NSString *darkModeKey,
                               NSColor *defaultColor)
 {
-    NSColor *theColor = [profile colorForKey:isDarkMode() ? darkModeKey : lightModeKey];
+    NSColor *theColor = [profile colorForKey:NSApp.isDarkMode ? darkModeKey : lightModeKey];
     if (!theColor) {
         theColor = defaultColor;
     }
