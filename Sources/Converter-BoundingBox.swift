@@ -24,7 +24,7 @@ extension Converter {
     
     /// gsが出力した bbox のデータにおける BoundingBox および HiResBoundingBox の行（行頭から末尾の改行まで）を読み取る
     /// - Parameters:
-    ///   - epsPath: EPSのパス
+    ///   - bboxFilePath: gsが出力したbboxファイルのパス
     /// - Returns: @[Pageの行, BoundingBoxの行, HiResBoundingBoxの行, ... ]
     @objc func extractBoundingBoxLines(from bboxFilePath: String) -> NSArray? {
         guard let bboxFileData = Data(filePath: bboxFilePath) else { return nil }
