@@ -1,6 +1,6 @@
 import Quartz
 
-@objc class PDFPageBox: NSObject {
+class PDFPageBox: NSObject {
     let pdfPage: PDFPage
     let cgPdfPage: CGPDFPage
     
