@@ -55,8 +55,8 @@
 		349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349927381B786546009BD5F1 /* MyGlyphPopoverController.m */; };
 		3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */; };
 		3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */; };
-		34A5C63B251B170B00FCF7BA /* Converter-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */; };
-		34A5C63C251B170B00FCF7BA /* Converter-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */; };
+		34A5C63B251B170B00FCF7BA /* Converter-BoundingBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */; };
+		34A5C63C251B170B00FCF7BA /* Converter-BoundingBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */; };
 		34A5C64D251B54A800FCF7BA /* ControllerG-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */; };
 		34B5E70420995B2F0071BBE9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34B5E70320995B2F0071BBE9 /* Images.xcassets */; };
 		34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */ = {isa = PBXBuildFile; fileRef = 34BF70F91BD1C6FC00AB76A9 /* pdftops */; };
@@ -167,7 +167,7 @@
 		3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverMulti.xib; sourceTree = "<group>"; };
 		3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverSingle.xib; sourceTree = "<group>"; };
 		34A5C638251B170A00FCF7BA /* Bridging-Header-G.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header-G.h"; sourceTree = "<group>"; };
-		34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Converter-Extension.swift"; sourceTree = "<group>"; };
+		34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Converter-BoundingBox.swift"; sourceTree = "<group>"; };
 		34A5C641251B17E400FCF7BA /* Bridging-Header-C.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header-C.h"; sourceTree = "<group>"; };
 		34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControllerG-Extension.swift"; sourceTree = "<group>"; };
 		34A5C65B251B661800FCF7BA /* typedef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = typedef.h; sourceTree = "<group>"; };
@@ -261,7 +261,7 @@
 				3419976F25282F9D0022F53C /* PDFPageBox.swift */,
 				348BB5170F08C3850063003D /* Converter.h */,
 				348BB5180F08C3850063003D /* Converter.m */,
-				34A5C63A251B170B00FCF7BA /* Converter-Extension.swift */,
+				34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */,
 				3424A8E10E4F2DC1003C9F96 /* ControllerG.h */,
 				3424A8E20E4F2DC1003C9F96 /* ControllerG.m */,
 				34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */,
@@ -592,7 +592,7 @@
 				34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */,
 				348659072526458600B8B190 /* Pipe-Extension.swift in Sources */,
 				340F4D61252C086000FA56D7 /* Data-Extension.swift in Sources */,
-				34A5C63C251B170B00FCF7BA /* Converter-Extension.swift in Sources */,
+				34A5C63C251B170B00FCF7BA /* Converter-BoundingBox.swift in Sources */,
 				348658FC2526421000B8B190 /* PDFPage-Extension.swift in Sources */,
 				34865902252643BE00B8B190 /* NSIndexSet-Extension.swift in Sources */,
 				3419977125282F9D0022F53C /* PDFPageBox.swift in Sources */,
@@ -622,7 +622,7 @@
 				34865920252659A600B8B190 /* MyATSTypesetter.swift in Sources */,
 				348659062526458600B8B190 /* Pipe-Extension.swift in Sources */,
 				340F4D63252C086A00FA56D7 /* Data-Extension.swift in Sources */,
-				34A5C63B251B170B00FCF7BA /* Converter-Extension.swift in Sources */,
+				34A5C63B251B170B00FCF7BA /* Converter-BoundingBox.swift in Sources */,
 				340F4D68252C799400FA56D7 /* NSApplication-Extension.swift in Sources */,
 				CEB04B28225226FB005EED2C /* AppDelegate.swift in Sources */,
 				34865900252643A600B8B190 /* NSIndexSet-Extension.swift in Sources */,
