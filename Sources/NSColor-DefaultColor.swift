@@ -20,7 +20,7 @@ import Foundation
     static var defaultForegroundColorForDarkMode: NSColor { NSColor(calibratedRed: 0.792, green: 0.843, blue: 0.854, alpha: 1.0) }
     static var defaultBackgroundColorForDarkMode: NSColor { NSColor(calibratedRed: 0.07, green: 0.10, blue: 0.12, alpha: 1.0) }
     static var defaultCursorColorForDarkMode: NSColor { NSColor.defaultForegroundColorForDarkMode }
-    static var defaultBraceColorForDarkMode: NSColor { NSColor(calibratedRed: 1.00, green: 0.980, blue: 0.513, alpha: 1.0) }
+    static var defaultBraceColorForDarkMode: NSColor { NSColor(calibratedRed: 0.831, green: 0.819, blue: 0.239, alpha: 1.0) }
     static var defaultCommentColorForDarkMode: NSColor { NSColor(calibratedRed: 0.866, green: 0.603, blue: 0.898, alpha: 1.0) }
     static var defaultCommandColorForDarkMode: NSColor { NSColor(calibratedRed: 0.341, green: 0.709, blue: 0.494, alpha: 1.0) }
     static var defaultInvisibleColorForDarkMode: NSColor { NSColor.orange }
