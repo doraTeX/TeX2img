@@ -1,6 +1,8 @@
+import Cocoa
+
 class MyLayoutManager: NSLayoutManager {
     private let controller: ControllerG?
-    private let replacementCharacter: NSString = "\u{FFFD}" // Replacement Character
+    private let replacementCharacter = "\u{FFFD}" // Replacement Character
     
     required init?(coder: NSCoder) {
         controller = nil
@@ -47,22 +49,23 @@ class MyLayoutManager: NSLayoutManager {
         
         for theGlyphIndex in inGlyphRange.location..<theLengthToRedraw  {
             let theCharIndex = self.characterIndexForGlyph(at: theGlyphIndex)
-            let theCharacter = (theCompleteStr as NSString).character(at: theCharIndex)
+            let theCharacter = theCompleteStr[theCharIndex]
+            let theUnichar = theCharacter.utf16.first!
             let thePointToDraw = self.point(toDrawGlyphAt: theGlyphIndex, adjust: theSize)
             
-            if theCharacter == "\t".utf16.first!,
+            if theCharacter == "\t",
                controller.showTabCharacterEnabled() {
                 controller.tabCharacter().draw(at: thePointToDraw, withAttributes: attributes)
-            } else if theCharacter == "\n".utf16.first!,
+            } else if theCharacter == "\n",
                       controller.showNewLineCharacterEnabled() {
                 controller.returnCharacter().draw(at: thePointToDraw, withAttributes: attributes)
-            } else if theCharacter == 0x3000,
+            } else if theCharacter == "\u{3000}",
                       controller.showFullwidthSpaceCharacterEnabled() { // Fullwidth-space (JP)
                 controller.fullwidthSpaceCharacter().draw(at: thePointToDraw, withAttributes: attributes)
-            } else if theCharacter == " ".utf16.first!,
+            } else if theCharacter == " ",
                       controller.showSpaceCharacterEnabled() {
                 controller.spaceCharacter().draw(at: thePointToDraw, withAttributes: attributes)
-            } else if (theCharacter >= 0x0000 && theCharacter <= 0x0008) || (theCharacter >= 0x000B && theCharacter <= 0x001F) { // other control characters
+            } else if (theUnichar >= 0x0000 && theUnichar <= 0x0008) || (theUnichar >= 0x000B && theUnichar <= 0x001F) { // other control characters
                 replacementCharacter.draw(at: thePointToDraw, withAttributes: attributes)
             }
         }

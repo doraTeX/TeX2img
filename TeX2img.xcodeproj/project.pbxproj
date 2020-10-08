@@ -10,6 +10,12 @@
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		3408053D1A96E6B50067AA56 /* FileManager-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */; };
 		3408DF36252ED251002A9D9F /* MyLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF35252ED251002A9D9F /* MyLayoutManager.swift */; };
+		3408DF46252F47B1002A9D9F /* BidirectionalCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */; };
+		3408DF47252F47B1002A9D9F /* LosslessStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */; };
+		3408DF48252F47B1002A9D9F /* StringProtocol-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF45252F47B1002A9D9F /* StringProtocol-Extension.swift */; };
+		3408DF4A252F489A002A9D9F /* StringProtocol-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF45252F47B1002A9D9F /* StringProtocol-Extension.swift */; };
+		3408DF4B252F489D002A9D9F /* BidirectionalCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */; };
+		3408DF4C252F48A0002A9D9F /* LosslessStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */; };
 		340F4D61252C086000FA56D7 /* Data-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F4D5F252C07A200FA56D7 /* Data-Extension.swift */; };
 		340F4D63252C086A00FA56D7 /* Data-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F4D5F252C07A200FA56D7 /* Data-Extension.swift */; };
 		340F4D68252C799400FA56D7 /* NSApplication-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F4D67252C799400FA56D7 /* NSApplication-Extension.swift */; };
@@ -121,6 +127,9 @@
 		32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeX2img_Prefix.pch; sourceTree = "<group>"; };
 		3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager-Extension.swift"; sourceTree = "<group>"; };
 		3408DF35252ED251002A9D9F /* MyLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLayoutManager.swift; sourceTree = "<group>"; };
+		3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BidirectionalCollection.swift; sourceTree = "<group>"; };
+		3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LosslessStringConvertible.swift; sourceTree = "<group>"; };
+		3408DF45252F47B1002A9D9F /* StringProtocol-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StringProtocol-Extension.swift"; sourceTree = "<group>"; };
 		340F4D5F252C07A200FA56D7 /* Data-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data-Extension.swift"; sourceTree = "<group>"; };
 		340F4D67252C799400FA56D7 /* NSApplication-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSApplication-Extension.swift"; sourceTree = "<group>"; };
 		340F4D6A252C79D900FA56D7 /* NSApperance-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSApperance-Extension.swift"; sourceTree = "<group>"; };
@@ -403,6 +412,9 @@
 			children = (
 				340F4D67252C799400FA56D7 /* NSApplication-Extension.swift */,
 				340F4D6A252C79D900FA56D7 /* NSApperance-Extension.swift */,
+				3408DF45252F47B1002A9D9F /* StringProtocol-Extension.swift */,
+				3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */,
+				3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */,
 				346DA5791B705F6800B51BD7 /* NSArray-Extension.h */,
 				346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */,
 				348658FF252643A600B8B190 /* NSIndexSet-Extension.swift */,
@@ -587,6 +599,9 @@
 			files = (
 				3486590C2526473500B8B190 /* NSBitmapImageRep-Extension.swift in Sources */,
 				349276B01BFA19FB00C0BD99 /* NSColor-Extension.swift in Sources */,
+				3408DF4A252F489A002A9D9F /* StringProtocol-Extension.swift in Sources */,
+				3408DF4B252F489D002A9D9F /* BidirectionalCollection.swift in Sources */,
+				3408DF4C252F48A0002A9D9F /* LosslessStringConvertible.swift in Sources */,
 				34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */,
 				348659072526458600B8B190 /* Pipe-Extension.swift in Sources */,
 				340F4D61252C086000FA56D7 /* Data-Extension.swift in Sources */,
@@ -616,11 +631,13 @@
 				34CB9281251F93500045CE9E /* NSColor-DefaultColor.swift in Sources */,
 				348BBF961B795AB900EDE00C /* NSColor-Extension.swift in Sources */,
 				3486591025264BCE00B8B190 /* NSMatrix-Extension.swift in Sources */,
+				3408DF46252F47B1002A9D9F /* BidirectionalCollection.swift in Sources */,
 				348659162526523000B8B190 /* NSPopover-Extension.swift in Sources */,
 				34865920252659A600B8B190 /* MyATSTypesetter.swift in Sources */,
 				348659062526458600B8B190 /* Pipe-Extension.swift in Sources */,
 				340F4D63252C086A00FA56D7 /* Data-Extension.swift in Sources */,
 				34A5C63B251B170B00FCF7BA /* Converter-BoundingBox.swift in Sources */,
+				3408DF47252F47B1002A9D9F /* LosslessStringConvertible.swift in Sources */,
 				340F4D68252C799400FA56D7 /* NSApplication-Extension.swift in Sources */,
 				CEB04B28225226FB005EED2C /* AppDelegate.swift in Sources */,
 				34865900252643A600B8B190 /* NSIndexSet-Extension.swift in Sources */,
@@ -631,6 +648,7 @@
 				34CB92922525627E0045CE9E /* ControllerG-UserNotification.swift in Sources */,
 				340F4D6B252C79D900FA56D7 /* NSApperance-Extension.swift in Sources */,
 				34867AC91B7B4804002AD2CF /* NSColorWell-Extension.swift in Sources */,
+				3408DF48252F47B1002A9D9F /* StringProtocol-Extension.swift in Sources */,
 				34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */,
 				348658F52526402E00B8B190 /* NSDate-Extension.swift in Sources */,
 				3408DF36252ED251002A9D9F /* MyLayoutManager.swift in Sources */,
