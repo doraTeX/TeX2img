@@ -625,9 +625,9 @@
 - (void)replaceEntireContentsWithString:(NSString*)contents
 {
     [self insertText:contents replacementRange:NSMakeRange(0, self.textStorage.mutableString.length)];
-    [self colorizeText];
     self.selectedRange = NSMakeRange(0, 0);
     [self scrollRangeToVisible:NSMakeRange(0, 0)];
+    [self performSelector:@selector(colorizeText) withObject:nil afterDelay:0.2];
 }
 
 - (IBAction)closeCurrentEnvironment:(id)sender
