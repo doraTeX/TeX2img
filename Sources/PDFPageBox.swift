@@ -21,25 +21,11 @@ class PDFPageBox: NSObject {
         return self.cgPdfPage.getBoxRect(box) as NSRect
     }
     
-    var mediaBoxRect: NSRect {
-        return self.boxRect(.mediaBox)
-    }
-    
-    var cropBoxRect: NSRect {
-        return self.boxRect(.cropBox)
-    }
-    
-    var bleedBoxRect: NSRect {
-        return self.boxRect(.bleedBox)
-    }
-    
-    var trimBoxRect: NSRect {
-        return self.boxRect(.trimBox)
-    }
-    
-    var artBoxRect: NSRect {
-        return self.boxRect(.artBox)
-    }
+    var mediaBoxRect: NSRect { self.boxRect(.mediaBox) }
+    var cropBoxRect: NSRect { self.boxRect(.cropBox) }
+    var bleedBoxRect: NSRect { self.boxRect(.bleedBox) }
+    var trimBoxRect: NSRect { self.boxRect(.trimBox) }
+    var artBoxRect: NSRect { self.boxRect(.artBox) }
     
     @objc func bboxString(of box: CGPDFBox, hires: Bool, addHeader: Bool) -> String {
         let mediaBoxRect = self.mediaBoxRect

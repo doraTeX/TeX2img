@@ -1,9 +1,7 @@
 import Cocoa
 
 extension NSIndexSet {
-    @objc var arrayOfIndexesPlusOne: [Int] {
-        return self.map { $0+1 }
-    }
+    @objc var arrayOfIndexesPlusOne: [Int] { self.map { $0+1 } }
 }
 
 

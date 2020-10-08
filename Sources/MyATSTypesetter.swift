@@ -22,6 +22,7 @@ class MyATSTypesetter: NSATSTypesetter {
         if let width = (self.layoutManager as? MyLayoutManager)?.replacementGlyphWidth() {
             rect.size.width = width
         }
+        
         return rect
     }
 }
