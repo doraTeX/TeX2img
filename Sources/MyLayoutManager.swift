@@ -49,23 +49,22 @@ class MyLayoutManager: NSLayoutManager {
         
         for theGlyphIndex in inGlyphRange.location..<theLengthToRedraw  {
             let theCharIndex = self.characterIndexForGlyph(at: theGlyphIndex)
-            let theCharacter = theCompleteStr[theCharIndex]
-            let theUnichar = theCharacter.utf16.first!
+            let theCharacter = theCompleteStr.utf16[safe: theCharIndex]!
             let thePointToDraw = self.point(toDrawGlyphAt: theGlyphIndex, adjust: theSize)
             
-            if theCharacter == "\t",
+            if theCharacter == "\t".utf16.first!,
                controller.showTabCharacterEnabled() {
                 controller.tabCharacter().draw(at: thePointToDraw, withAttributes: attributes)
-            } else if theCharacter == "\n",
+            } else if theCharacter == "\n".utf16.first!,
                       controller.showNewLineCharacterEnabled() {
                 controller.returnCharacter().draw(at: thePointToDraw, withAttributes: attributes)
-            } else if theCharacter == "\u{3000}",
+            } else if theCharacter == 0x3000,
                       controller.showFullwidthSpaceCharacterEnabled() { // Fullwidth-space (JP)
                 controller.fullwidthSpaceCharacter().draw(at: thePointToDraw, withAttributes: attributes)
-            } else if theCharacter == " ",
+            } else if theCharacter == " ".utf16.first!,
                       controller.showSpaceCharacterEnabled() {
                 controller.spaceCharacter().draw(at: thePointToDraw, withAttributes: attributes)
-            } else if (theUnichar >= 0x0000 && theUnichar <= 0x0008) || (theUnichar >= 0x000B && theUnichar <= 0x001F) { // other control characters
+            } else if (theCharacter >= 0x0000 && theCharacter <= 0x0008) || (theCharacter >= 0x000B && theCharacter <= 0x001F) { // other control characters
                 replacementCharacter.draw(at: thePointToDraw, withAttributes: attributes)
             }
         }
