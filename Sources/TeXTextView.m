@@ -5,9 +5,9 @@
 #import "NSString-Unicode.h"
 #import "NSString-Conversion.h"
 #import "NSMutableString-Extension.h"
-#import "MyLayoutManager.h"
 #import "MyGlyphPopoverController.h"
 #import "UtilityG.h"
+#import "TeX2img-Swift.h"
 
 @implementation TeXTextView
 - (void)awakeFromNib
@@ -23,8 +23,7 @@
     autoCompleting = NO;
     contentHighlighting = NO;
     braceHighlighting = NO;
-    MyLayoutManager *layoutManager = [MyLayoutManager new];
-    layoutManager.controller = controller;
+    MyLayoutManager *layoutManager = [[MyLayoutManager alloc] initWithController: controller];
     self.dropDelegate = controller;
     dragging = NO;
     currentDragOperation = NSDragOperationNone;

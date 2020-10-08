@@ -1,5 +1,4 @@
 #import "typedef.h"
 #import "Converter.h"
 #import "ControllerG.h"
-#import "MyLayoutManager.h"
 #import "TeXTextView.h"

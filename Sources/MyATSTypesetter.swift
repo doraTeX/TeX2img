@@ -19,7 +19,7 @@ class MyATSTypesetter: NSATSTypesetter {
                               glyphPosition: NSPoint,
                               characterIndex charIndex: Int) -> NSRect {
         var rect = proposedRect
-        if let width = (self.layoutManager as? MyLayoutManager)?.replacementGlyphWidth() {
+        if let width = (self.layoutManager as? MyLayoutManager)?.replacementGlyphWidth {
             rect.size.width = width
         }
         

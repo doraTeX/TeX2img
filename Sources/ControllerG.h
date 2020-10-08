@@ -22,6 +22,11 @@ typedef enum  {
 - (NSString*)fullwidthSpaceCharacter;
 - (NSString*)returnCharacter;
 - (NSString*)tabCharacter;
+- (BOOL)showTabCharacterEnabled;
+- (BOOL)showNewLineCharacterEnabled;
+- (BOOL)showFullwidthSpaceCharacterEnabled;
+- (BOOL)showSpaceCharacterEnabled;
+- (NSColor*)invisibleColor;
 - (void)refreshOutputTextViewUsingProfile:(Profile*)aProfile;
 - (BOOL)importSourceFromFilePathOrPDFDocument:(id)input skipConfirm:(BOOL)skipConfirm;
 @property (nonatomic, strong) IBOutlet TeXTextView *sourceTextView;

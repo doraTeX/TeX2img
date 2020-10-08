@@ -3173,4 +3173,28 @@ typedef enum {
     return ((NSButton*)(tabCharacterKindMatrix.selectedCell)).title;
 }
 
+- (BOOL)showTabCharacterEnabled
+{
+    return [self.currentProfile boolForKey:ShowTabCharacterKey];
+}
+
+- (BOOL)showNewLineCharacterEnabled
+{
+    return [self.currentProfile boolForKey:ShowNewLineCharacterKey];
+}
+
+- (BOOL)showFullwidthSpaceCharacterEnabled
+{
+    return [self.currentProfile boolForKey:ShowFullwidthSpaceCharacterKey];
+}
+
+- (BOOL)showSpaceCharacterEnabled
+{
+    return [self.currentProfile boolForKey:ShowSpaceCharacterKey];
+}
+
+- (NSColor*)invisibleColor
+{
+    return invisibleColorInProfile(self.currentProfile);
+}
 @end

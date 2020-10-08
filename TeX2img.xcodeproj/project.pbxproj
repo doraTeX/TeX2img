@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		3408053D1A96E6B50067AA56 /* FileManager-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */; };
+		3408DF36252ED251002A9D9F /* MyLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF35252ED251002A9D9F /* MyLayoutManager.swift */; };
 		340F4D61252C086000FA56D7 /* Data-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F4D5F252C07A200FA56D7 /* Data-Extension.swift */; };
 		340F4D63252C086A00FA56D7 /* Data-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F4D5F252C07A200FA56D7 /* Data-Extension.swift */; };
 		340F4D68252C799400FA56D7 /* NSApplication-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F4D67252C799400FA56D7 /* NSApplication-Extension.swift */; };
@@ -60,7 +61,6 @@
 		34A5C64D251B54A800FCF7BA /* ControllerG-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */; };
 		34B5E70420995B2F0071BBE9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34B5E70320995B2F0071BBE9 /* Images.xcassets */; };
 		34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */ = {isa = PBXBuildFile; fileRef = 34BF70F91BD1C6FC00AB76A9 /* pdftops */; };
-		34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 34BF870B12AC10D20099654C /* MyLayoutManager.m */; };
 		34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.swift */; };
 		34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.swift */; };
 		34CB9281251F93500045CE9E /* NSColor-DefaultColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34CB9280251F93500045CE9E /* NSColor-DefaultColor.swift */; };
@@ -120,6 +120,7 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeX2img_Prefix.pch; sourceTree = "<group>"; };
 		3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager-Extension.swift"; sourceTree = "<group>"; };
+		3408DF35252ED251002A9D9F /* MyLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLayoutManager.swift; sourceTree = "<group>"; };
 		340F4D5F252C07A200FA56D7 /* Data-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data-Extension.swift"; sourceTree = "<group>"; };
 		340F4D67252C799400FA56D7 /* NSApplication-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSApplication-Extension.swift"; sourceTree = "<group>"; };
 		340F4D6A252C79D900FA56D7 /* NSApperance-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSApperance-Extension.swift"; sourceTree = "<group>"; };
@@ -173,8 +174,6 @@
 		34A5C65B251B661800FCF7BA /* typedef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = typedef.h; sourceTree = "<group>"; };
 		34B5E70320995B2F0071BBE9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TeX2img/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		34BF70F91BD1C6FC00AB76A9 /* pdftops */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pdftops; sourceTree = "<group>"; };
-		34BF870A12AC10D20099654C /* MyLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyLayoutManager.h; sourceTree = "<group>"; };
-		34BF870B12AC10D20099654C /* MyLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyLayoutManager.m; sourceTree = "<group>"; };
 		34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PDFDocument-Extension.swift"; sourceTree = "<group>"; };
 		34CB9280251F93500045CE9E /* NSColor-DefaultColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSColor-DefaultColor.swift"; sourceTree = "<group>"; };
 		34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControllerG-UserNotification.swift"; sourceTree = "<group>"; };
@@ -251,8 +250,7 @@
 			isa = PBXGroup;
 			children = (
 				CEB04B27225226FB005EED2C /* AppDelegate.swift */,
-				34BF870A12AC10D20099654C /* MyLayoutManager.h */,
-				34BF870B12AC10D20099654C /* MyLayoutManager.m */,
+				3408DF35252ED251002A9D9F /* MyLayoutManager.swift */,
 				3486591F252659A600B8B190 /* MyATSTypesetter.swift */,
 				349927371B786546009BD5F1 /* MyGlyphPopoverController.h */,
 				349927381B786546009BD5F1 /* MyGlyphPopoverController.m */,
@@ -635,6 +633,7 @@
 				34867AC91B7B4804002AD2CF /* NSColorWell-Extension.swift in Sources */,
 				34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */,
 				348658F52526402E00B8B190 /* NSDate-Extension.swift in Sources */,
+				3408DF36252ED251002A9D9F /* MyLayoutManager.swift in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */,
 				3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */,
@@ -650,7 +649,6 @@
 				7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */,
 				348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */,
 				348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */,
-				34BF870C12AC10D20099654C /* MyLayoutManager.m in Sources */,
 				34D41D1E17A6BE2C00997795 /* NSString-Extension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
