@@ -52,16 +52,16 @@ class MyLayoutManager: NSLayoutManager {
             let theCharacter = theCompleteStr.utf16[safe: theCharIndex]!
             let thePointToDraw = self.point(toDrawGlyphAt: theGlyphIndex, adjust: theSize)
             
-            if theCharacter == "\t".utf16.first!,
+            if theCharacter == "\t".utf16.first,
                controller.showTabCharacterEnabled() {
                 controller.tabCharacter().draw(at: thePointToDraw, withAttributes: attributes)
-            } else if theCharacter == "\n".utf16.first!,
+            } else if theCharacter == "\n".utf16.first,
                       controller.showNewLineCharacterEnabled() {
                 controller.returnCharacter().draw(at: thePointToDraw, withAttributes: attributes)
             } else if theCharacter == 0x3000,
                       controller.showFullwidthSpaceCharacterEnabled() { // Fullwidth-space (JP)
                 controller.fullwidthSpaceCharacter().draw(at: thePointToDraw, withAttributes: attributes)
-            } else if theCharacter == " ".utf16.first!,
+            } else if theCharacter == " ".utf16.first,
                       controller.showSpaceCharacterEnabled() {
                 controller.spaceCharacter().draw(at: thePointToDraw, withAttributes: attributes)
             } else if (theCharacter >= 0x0000 && theCharacter <= 0x0008) || (theCharacter >= 0x000B && theCharacter <= 0x001F) { // other control characters
