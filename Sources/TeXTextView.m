@@ -628,6 +628,7 @@
     self.selectedRange = NSMakeRange(0, 0);
     [self scrollRangeToVisible:NSMakeRange(0, 0)];
     [self performSelector:@selector(colorizeText) withObject:nil afterDelay:0.2];
+    [self performSelector:@selector(colorizeText) withObject:nil afterDelay:0.5]; // 念のためもう一度
 }
 
 - (IBAction)closeCurrentEnvironment:(id)sender
