@@ -207,6 +207,7 @@ typedef enum {
 @property (atomic, strong) NSPipe *outputPipe;
 @property (atomic, assign) BOOL taskKilled;
 @property (atomic, assign) NSFont *sourceFont;
+@property (atomic, strong) UserNotificationDelegate *userNotificationDelegate;
 
 @end
 
@@ -389,6 +390,7 @@ typedef enum {
 @synthesize outputPipe;
 @synthesize taskKilled;
 @synthesize sourceFont;
+@synthesize userNotificationDelegate;
 
 
 - (BOOL)sudoCommand:(NSString*)command
@@ -1591,15 +1593,17 @@ typedef enum {
 #pragma mark - デリゲート・ノティフィケーションのコールバック
 - (void)awakeFromNib
 {
-    lastColorDict = [NSMutableDictionary<NSString*,NSColor*> dictionary];
-
     // 通知の設定
+    userNotificationDelegate = [UserNotificationDelegate new];
+    
     if (@available(macOS 10.14, *)) {
-        [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+        [UNUserNotificationCenter currentNotificationCenter].delegate = userNotificationDelegate;
     } else {
-        [NSUserNotificationCenter defaultUserNotificationCenter].delegate = self;
+        [NSUserNotificationCenter defaultUserNotificationCenter].delegate = userNotificationDelegate;
     }
     
+    lastColorDict = [NSMutableDictionary<NSString*,NSColor*> dictionary];
+
 	// ノティフィケーションの設定
 	NSNotificationCenter *aCenter = NSNotificationCenter.defaultCenter;
 	

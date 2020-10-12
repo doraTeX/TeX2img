@@ -34,18 +34,4 @@ extension ControllerG {
             NSUserNotificationCenter.default.deliver(notification)
         }
     }
-    
-    public func userNotificationCenter(_ center: NSUserNotificationCenter, shouldPresent notification: NSUserNotification) -> Bool {
-        return true
-    }
 }
-
-
-
-@available(macOS 10.14, *)
-extension ControllerG {
-    public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.sound, .alert, .badge])
-    }
-}
-
