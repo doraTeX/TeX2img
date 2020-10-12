@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
+		3402125525341B29002D1545 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 3402125425341B29002D1545 /* Credits.rtf */; };
 		3408053D1A96E6B50067AA56 /* FileManager-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */; };
 		3408DF36252ED251002A9D9F /* MyLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF35252ED251002A9D9F /* MyLayoutManager.swift */; };
 		3408DF46252F47B1002A9D9F /* BidirectionalCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */; };
@@ -125,6 +126,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeX2img_Prefix.pch; sourceTree = "<group>"; };
+		3402125425341B29002D1545 /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager-Extension.swift"; sourceTree = "<group>"; };
 		3408DF35252ED251002A9D9F /* MyLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLayoutManager.swift; sourceTree = "<group>"; };
 		3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BidirectionalCollection.swift; sourceTree = "<group>"; };
@@ -366,6 +368,7 @@
 				3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */,
 				CE4A31F00E5036500095D4FC /* Localizable.strings */,
 				348E08811C3DE76F004CFB4B /* UnicodeBlocks.strings */,
+				3402125425341B29002D1545 /* Credits.rtf */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -540,6 +543,7 @@
 				342C6196101E637F00E29FEB /* epstopdf in Resources */,
 				3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */,
 				34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */,
+				3402125525341B29002D1545 /* Credits.rtf in Resources */,
 				348E08831C3DE76F004CFB4B /* UnicodeBlocks.strings in Resources */,
 				34B5E70420995B2F0071BBE9 /* Images.xcassets in Resources */,
 				346225661AB558AB00F632AD /* mupdf in Resources */,
