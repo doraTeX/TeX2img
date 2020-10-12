@@ -553,6 +553,11 @@ typedef enum {
 
 - (void)showOutputWindowOnMainThread
 {
+    if (mainWindow.isInFullScreenMode) {
+        [outputWindow makeKeyAndOrderFront:nil];
+        return;
+    }
+    
     if (outputWindow.isVisible) {
         [outputWindow makeKeyAndOrderFront:nil]; // 裏に隠れていても前面に持ってくる
         return;
@@ -2600,6 +2605,12 @@ typedef enum {
 
 - (IBAction)togglePreambleWindow:(id)sender
 {
+    if (mainWindow.isInFullScreenMode) {
+        [preambleWindow makeKeyAndOrderFront:nil];
+        [preambleTextView colorizeText];
+        return;
+    }
+    
 	if (preambleWindow.isVisible) {
 		[preambleWindow close];
 	} else {

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		3402125525341B29002D1545 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 3402125425341B29002D1545 /* Credits.rtf */; };
+		3402125A2534AF36002D1545 /* NSWindow-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340212592534AF36002D1545 /* NSWindow-Extension.swift */; };
 		3408053D1A96E6B50067AA56 /* FileManager-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */; };
 		3408DF36252ED251002A9D9F /* MyLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF35252ED251002A9D9F /* MyLayoutManager.swift */; };
 		3408DF46252F47B1002A9D9F /* BidirectionalCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */; };
@@ -127,6 +128,7 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeX2img_Prefix.pch; sourceTree = "<group>"; };
 		3402125425341B29002D1545 /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
+		340212592534AF36002D1545 /* NSWindow-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSWindow-Extension.swift"; sourceTree = "<group>"; };
 		3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager-Extension.swift"; sourceTree = "<group>"; };
 		3408DF35252ED251002A9D9F /* MyLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLayoutManager.swift; sourceTree = "<group>"; };
 		3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BidirectionalCollection.swift; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 				3408DF45252F47B1002A9D9F /* StringProtocol-Extension.swift */,
 				3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */,
 				3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */,
+				340212592534AF36002D1545 /* NSWindow-Extension.swift */,
 				346DA5791B705F6800B51BD7 /* NSArray-Extension.h */,
 				346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */,
 				348658FF252643A600B8B190 /* NSIndexSet-Extension.swift */,
@@ -641,6 +644,7 @@
 				348659062526458600B8B190 /* Pipe-Extension.swift in Sources */,
 				340F4D63252C086A00FA56D7 /* Data-Extension.swift in Sources */,
 				34A5C63B251B170B00FCF7BA /* Converter-BoundingBox.swift in Sources */,
+				3402125A2534AF36002D1545 /* NSWindow-Extension.swift in Sources */,
 				3408DF47252F47B1002A9D9F /* LosslessStringConvertible.swift in Sources */,
 				340F4D68252C799400FA56D7 /* NSApplication-Extension.swift in Sources */,
 				CEB04B28225226FB005EED2C /* AppDelegate.swift in Sources */,
