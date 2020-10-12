@@ -2,6 +2,14 @@ import Cocoa
 import UserNotifications
 
 @objc class UserNotificationDelegate: NSObject, UNUserNotificationCenterDelegate, NSUserNotificationCenterDelegate {
+    public func userNotificationCenter(_ center: NSUserNotificationCenter, didDeliver: NSUserNotification) {
+        
+    }
+    
+    public func userNotificationCenter(_ center: NSUserNotificationCenter, didActivate: NSUserNotification) {
+        
+    }
+    
     public func userNotificationCenter(_ center: NSUserNotificationCenter, shouldPresent notification: NSUserNotification) -> Bool {
         return true
     }
