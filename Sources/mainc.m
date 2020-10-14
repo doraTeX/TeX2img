@@ -11,7 +11,7 @@
 #import "tex2img-Swift.h"
 
 #define OPTION_NUM 54
-#define VERSION "2.4.0"
+#define VERSION "2.4.2"
 #define DEFAULT_MAXIMAL_NUMBER_OF_COMPILATION 3
 
 #define ENABLED "enabled"
