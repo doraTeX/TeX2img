@@ -22,7 +22,7 @@ extension Converter {
     }
     
     
-    /// gsが出力した bbox のデータにおける BoundingBox および HiResBoundingBox の行（行頭から末尾の改行まで）を読み取る
+    /// gsが出力した bbox のデータにおける BoundingBox および HiResBoundingBox の行（行頭から末尾（改行除く））を読み取る
     /// - Parameters:
     ///   - bboxFilePath: gsが出力したbboxファイルのパス
     /// - Returns: @[Pageの行, BoundingBoxの行, HiResBoundingBoxの行, ... ]
@@ -47,13 +47,13 @@ extension Converter {
                let hiresBboxHeaderRange = bboxFileData.range(of: hiresBboxHeaderData, options: [], in: bboxEndIndex..<bboxFileData.endIndex),
                let hiresBboxEndIndex = bboxFileData.range(of: returnCharData, options: [], in: hiresBboxHeaderRange.upperBound..<bboxFileData.endIndex)?.startIndex {
                 
-                let pageContentRange = pageHeaderRange.startIndex.advanced(by: 1)..<pageContentEndIndex.advanced(by: 1)
+                let pageContentRange = pageHeaderRange.startIndex.advanced(by: 1)..<pageContentEndIndex
                 let pageLine = String(data: bboxFileData.subdata(in: pageContentRange), encoding: .utf8)!
                 
-                let bboxContentRange = bboxHeaderRange.startIndex..<bboxEndIndex.advanced(by: 1)
+                let bboxContentRange = bboxHeaderRange.startIndex..<bboxEndIndex
                 let bboxLine = String(data: bboxFileData.subdata(in: bboxContentRange), encoding: .utf8)!
                 
-                let hiresBboxContentRange = hiresBboxHeaderRange.startIndex..<hiresBboxEndIndex.advanced(by: 1)
+                let hiresBboxContentRange = hiresBboxHeaderRange.startIndex..<hiresBboxEndIndex
                 let hiresBboxLine = String(data: bboxFileData.subdata(in: hiresBboxContentRange), encoding: .utf8)!
                 
                 result += [pageLine, bboxLine, hiresBboxLine]
