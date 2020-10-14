@@ -1116,7 +1116,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="7Sp-ko-uNP" id="dvu-L7-vLR"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField toolTip="left margin" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Sp-ko-uNP">
+                                                    <textField toolTip="left margin" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Sp-ko-uNP" customClass="AutoSelectTextField" customModule="TeX2img" customModuleProvider="target">
                                                         <rect key="frame" x="133" y="131" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="X0B-dc-Vxz">
@@ -1140,7 +1140,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="hqG-JC-d3g" id="CfK-aq-s6Q"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField toolTip="top margin" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hqG-JC-d3g">
+                                                    <textField toolTip="top margin" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hqG-JC-d3g" customClass="AutoSelectTextField" customModule="TeX2img" customModuleProvider="target">
                                                         <rect key="frame" x="258" y="160" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="E4u-I5-WeB">
@@ -1173,7 +1173,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="0pz-V8-6fa" id="Y3G-10-yFZ"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField toolTip="right margin" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0pz-V8-6fa">
+                                                    <textField toolTip="right margin" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0pz-V8-6fa" customClass="AutoSelectTextField" customModule="TeX2img" customModuleProvider="target">
                                                         <rect key="frame" x="380" y="131" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="8Tb-re-mVJ">
@@ -1197,7 +1197,7 @@ DQ
                                                             <action selector="takeIntValueFrom:" target="oYB-lU-4No" id="5pP-JD-SwH"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField toolTip="bottom margin" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oYB-lU-4No">
+                                                    <textField toolTip="bottom margin" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oYB-lU-4No" customClass="AutoSelectTextField" customModule="TeX2img" customModuleProvider="target">
                                                         <rect key="frame" x="258" y="104" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="0" drawsBackground="YES" id="k8e-2D-t01">
@@ -1230,7 +1230,7 @@ DQ
                                                             <action selector="takeFloatValueFrom:" target="9ua-sS-yhp" id="4UA-h7-TyJ"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField toolTip="resolution level" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ua-sS-yhp">
+                                                    <textField toolTip="resolution level" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ua-sS-yhp" customClass="AutoSelectTextField" customModule="TeX2img" customModuleProvider="target">
                                                         <rect key="frame" x="184" y="188" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="5" drawsBackground="YES" id="ZAQ-bs-9ph">
@@ -1328,7 +1328,7 @@ DQ
                                                             <action selector="takeFloatValueFrom:" target="O2K-xm-zgC" id="Bze-B1-dol"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField toolTip="dpi" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O2K-xm-zgC">
+                                                    <textField toolTip="dpi" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O2K-xm-zgC" customClass="AutoSelectTextField" customModule="TeX2img" customModuleProvider="target">
                                                         <rect key="frame" x="388" y="188" width="47" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="72" drawsBackground="YES" id="WN1-JZ-ANh">
@@ -1481,7 +1481,7 @@ DQ
                                                 <action selector="takeIntValueFrom:" target="dpd-O4-qxE" id="OId-ct-Yrx"/>
                                             </connections>
                                         </stepper>
-                                        <textField toolTip="Number of Compilation" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dpd-O4-qxE">
+                                        <textField toolTip="Number of Compilation" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dpd-O4-qxE" customClass="AutoSelectTextField" customModule="TeX2img" customModuleProvider="target">
                                             <rect key="frame" x="233" y="240" width="47" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="3" drawsBackground="YES" id="ZoJ-Y8-MRN">
@@ -1763,7 +1763,7 @@ DQ
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField toolTip="Tab Width" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GqY-X3-Qub">
+                                                    <textField toolTip="Tab Width" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GqY-X3-Qub" customClass="AutoSelectTextField" customModule="TeX2img" customModuleProvider="target">
                                                         <rect key="frame" x="43" y="64" width="34" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="4" drawsBackground="YES" id="1Ov-gw-QBC">

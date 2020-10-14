@@ -11,6 +11,7 @@
 		3402125525341B29002D1545 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 3402125425341B29002D1545 /* Credits.rtf */; };
 		3402125A2534AF36002D1545 /* NSWindow-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340212592534AF36002D1545 /* NSWindow-Extension.swift */; };
 		3402126D2534D273002D1545 /* UserNotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3402126C2534D272002D1545 /* UserNotificationDelegate.swift */; };
+		340364362537552B005A43A5 /* AutoSelectTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340364352537552B005A43A5 /* AutoSelectTextField.swift */; };
 		3408053D1A96E6B50067AA56 /* FileManager-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */; };
 		3408DF36252ED251002A9D9F /* MyLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF35252ED251002A9D9F /* MyLayoutManager.swift */; };
 		3408DF46252F47B1002A9D9F /* BidirectionalCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */; };
@@ -131,6 +132,7 @@
 		3402125425341B29002D1545 /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		340212592534AF36002D1545 /* NSWindow-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSWindow-Extension.swift"; sourceTree = "<group>"; };
 		3402126C2534D272002D1545 /* UserNotificationDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserNotificationDelegate.swift; sourceTree = "<group>"; };
+		340364352537552B005A43A5 /* AutoSelectTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoSelectTextField.swift; sourceTree = "<group>"; };
 		3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager-Extension.swift"; sourceTree = "<group>"; };
 		3408DF35252ED251002A9D9F /* MyLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLayoutManager.swift; sourceTree = "<group>"; };
 		3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BidirectionalCollection.swift; sourceTree = "<group>"; };
@@ -273,6 +275,7 @@
 				34821EC710282CF9008DEB1F /* ProfileController.m */,
 				3419976F25282F9D0022F53C /* PDFPageBox.swift */,
 				3402126C2534D272002D1545 /* UserNotificationDelegate.swift */,
+				340364352537552B005A43A5 /* AutoSelectTextField.swift */,
 				348BB5170F08C3850063003D /* Converter.h */,
 				348BB5180F08C3850063003D /* Converter.m */,
 				34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */,
@@ -662,6 +665,7 @@
 				3408DF48252F47B1002A9D9F /* StringProtocol-Extension.swift in Sources */,
 				34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */,
 				348658F52526402E00B8B190 /* NSDate-Extension.swift in Sources */,
+				340364362537552B005A43A5 /* AutoSelectTextField.swift in Sources */,
 				3402126D2534D273002D1545 /* UserNotificationDelegate.swift in Sources */,
 				3408DF36252ED251002A9D9F /* MyLayoutManager.swift in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
