@@ -7,6 +7,5 @@ NSString* execCommand(NSString *cmdline);
 NSString* getFullPath(NSString *aPath);
 void previewFiles(NSArray<NSString*> *files, NSString *app);
 BOOL isTeX2imgAnnotation(PDFAnnotation *annotation);
-NSString* systemVersion(void);
 
 #endif

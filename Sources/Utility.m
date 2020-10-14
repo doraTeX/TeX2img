@@ -56,10 +56,4 @@ BOOL isTeX2imgAnnotation(PDFAnnotation *annotation)
     return ([contents rangeOfString:AnnotationHeader].location == 0);
 }
 
-NSString* systemVersion()
-{
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"];
-    return (NSString*)[dict objectForKey:@"ProductVersion"];
-}
-
 
