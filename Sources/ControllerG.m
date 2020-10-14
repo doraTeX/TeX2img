@@ -470,6 +470,7 @@ typedef enum {
     outputPipe = [NSPipe pipe];
     [outputPipe.fileHandleForReading readInBackgroundAndNotify];
     
+    runningTask.environment = @{@"PATH" : @"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"};
     runningTask.currentDirectoryPath = path;
     runningTask.launchPath = BASH_PATH;
     runningTask.standardOutput = outputPipe;

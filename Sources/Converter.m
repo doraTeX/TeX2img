@@ -515,17 +515,15 @@
 {
     NSString *epsPath = [workingDirectory stringByAppendingPathComponent:epsName];
     NSString *bbStr = [self bboxStringOfPdf:pdfName page:page hires:NO];
-    NSString *hiresBbStr = [self bboxStringOfPdf:pdfName page:page hires:YES];
-    
     if (!bbStr) {
         return NO;
     }
-    
     if ([bbStr isEqualToString:EMPTY_BBOX]) { // 白紙ページの場合は置換を行わない
         return YES;
     }
-    
     bbStr = [bbStr stringByReplacingOccurrencesOfString:@"%%BoundingBox: " withString:@""];
+
+    NSString *hiresBbStr = [self bboxStringOfPdf:pdfName page:page hires:YES];
     hiresBbStr = hiresBbStr ? [hiresBbStr stringByReplacingOccurrencesOfString:@"%%HiResBoundingBox: " withString:@""] : bbStr;
     
     [self replaceBBoxOfEpsPath:epsPath boundingBox:bbStr hiresBoundingBox:hiresBbStr];
