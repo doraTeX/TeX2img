@@ -2218,7 +2218,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 {
     @autoreleasepool {
         BOOL isDir;
-        additionalInputPath = getFullPath(sourcePath.stringByDeletingLastPathComponent);
+        additionalInputPath = getFullPath(sourcePath).stringByDeletingLastPathComponent;
         if (workingDirectoryType == WorkingDirectoryFile) {
             workingDirectory = additionalInputPath;
         }
