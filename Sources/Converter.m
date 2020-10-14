@@ -405,20 +405,31 @@
 
 - (BOOL)isEmptyPage:(NSString*)pdfPath
                page:(NSUInteger)page
+            success:(BOOL*)success
 {
     NSString *bbStr = [self bboxStringOfPdf:pdfPath page:page hires:NO];
     
     if (!bbStr) {
+        *success = NO;
         return NO;
     }
+    
+    *success = YES;
     
     return [bbStr isEqualToString:EMPTY_BBOX];
 }
 
 - (BOOL)willEmptyPageBeCreated:(NSString*)pdfPath
                           page:(NSUInteger)page
+                       success:(BOOL*)success
 {
-    return (!keepPageSizeFlag && [self isEmptyPage:pdfPath page:page] && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0)));
+    BOOL isEmptyPage = [self isEmptyPage:pdfPath page:page success:success];
+    
+    if (!*success) {
+        return NO;
+    }
+    
+    return (!keepPageSizeFlag && isEmptyPage && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0)));
 }
 
 
@@ -593,7 +604,14 @@
         return NO;
     }
     
-    if ([self isEmptyPage:pdfName page:page] && !keepPageSizeFlag) {
+    BOOL success = YES;
+    BOOL isEmpty = [self isEmptyPage:pdfName page:page success:&success];
+    
+    if (!success) {
+        return NO;
+    }
+    
+    if (isEmpty && !keepPageSizeFlag) {
         return [self replaceEpsBBoxWithEmptyBBox:epsName];
     }
     
@@ -738,7 +756,13 @@
 	NSString *extension = outputFileName.pathExtension.lowercaseString;
     NSString *cropPdfFilePath = [workingDirectory stringByAppendingPathComponent:[tempFileBaseName stringByAppendingString:@"-image.pdf"]];
     
-    if (crop && [self willEmptyPageBeCreated:pdfFilePath page:page]) {
+    BOOL success = YES;
+    BOOL isEmpty = [self willEmptyPageBeCreated:pdfFilePath page:page success:&success];
+    if (!success) {
+        return NO;
+    }
+    
+    if (crop && isEmpty) {
         return YES;
     }
 
@@ -1087,7 +1111,14 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
                  useCache:useCache
            fillBackground:NO];
             
-            if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は pdfwrite が使えない（エラーになる）ので，そこだけpdfcrop類似処理で変換する
+            BOOL success = YES;
+            BOOL isEmpty = [self isEmptyPage:pdfFileName page:page success:&success];
+            
+            if (!success) {
+                return NO;
+            }
+            
+            if (isEmpty) { // 空白ページを経由する場合は pdfwrite が使えない（エラーになる）ので，そこだけpdfcrop類似処理で変換する
                 [self pdfcrop:pdfFileName
                outputFileName:intermediateOutlinedFileName
                          page:page
@@ -1113,7 +1144,14 @@ intermediateOutlinedFileName:(NSString*)intermediateOutlinedFileName
         }
 
     } else if ([@"pdf" isEqualToString:extension]) { // アウトラインを取ったPDFを作成する場合
-        if ([self isEmptyPage:pdfFileName page:page]) { // 空白ページを経由する場合は epstopdf が使えない（エラーになる）ので，そこだけpdfcrop類似処理で変換する
+        BOOL success = YES;
+        BOOL isEmpty = [self isEmptyPage:pdfFileName page:page success:&success];
+        
+        if (!success) {
+            return NO;
+        }
+        
+        if (isEmpty) { // 空白ページを経由する場合は epstopdf が使えない（エラーになる）ので，そこだけpdfcrop類似処理で変換する
             [self pdfcrop:pdfFileName
            outputFileName:outputFileName
                      page:page
@@ -1562,12 +1600,28 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 
     emptyPageFlags = [NSMutableArray<NSNumber*> array];
     for (NSInteger i=1; i<=pageCount; i++) {
-        [emptyPageFlags addObject:@([self willEmptyPageBeCreated:pdfFilePath page:i])];
+        BOOL isEmpty = [self willEmptyPageBeCreated:pdfFilePath page:i success:&success];
+        if (!success) {
+            break;
+        }
+        [emptyPageFlags addObject:@(isEmpty)];
+    }
+    
+    if (!success) {
+        return NO;
     }
 
     whitePageFlags = [NSMutableArray<NSNumber*> array];
     for (NSInteger i=1; i<=pageCount; i++) {
-        [whitePageFlags addObject:@([self isEmptyPage:pdfFilePath page:i] && !(emptyPageFlags[i-1].boolValue))];
+        BOOL isWhite = [self isEmptyPage:pdfFilePath page:i success:&success];
+        if (!success) {
+            break;
+        }
+        [whitePageFlags addObject:@(isWhite && !(emptyPageFlags[i-1].boolValue))];
+    }
+
+    if (!success) {
+        return NO;
     }
 
     // PDFから各形式に変換
@@ -1993,6 +2047,11 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
     BOOL status = [self compileAndConvert];
 
     [controller releaseOutputTextView];
+    
+    if (!status) {
+        [controller generationDidFinish:ExitStatusFailed];
+        return NO;
+    }
     
     // 生成ファイルを集める
     NSMutableArray<NSString*> *generatedFiles = [NSMutableArray<NSString*> array];
