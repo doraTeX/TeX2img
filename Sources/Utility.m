@@ -17,7 +17,10 @@ NSString* execCommand(NSString *cmdline)
 
 NSString* getFullPath(NSString *aPath)
 {
-    return [NSString stringWithUTF8String:[NSURL fileURLWithPath: aPath].fileSystemRepresentation];
+    NSURL *url = [NSURL fileURLWithPath:aPath];
+    if (!url) return nil;
+    
+    return [NSString stringWithUTF8String:url.fileSystemRepresentation];
 }
 
 void previewFiles(NSArray<NSString*> *files, NSString *app)
