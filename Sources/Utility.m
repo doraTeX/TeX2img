@@ -20,7 +20,7 @@ NSString* getFullPath(NSString *aPath)
     NSURL *url = [NSURL fileURLWithPath:aPath];
     if (!url) return nil;
     
-    return [NSString stringWithUTF8String:url.fileSystemRepresentation];
+    return [NSString stringWithUTF8String:url.fileSystemRepresentation].stringByStandardizingPath;
 }
 
 void previewFiles(NSArray<NSString*> *files, NSString *app)
