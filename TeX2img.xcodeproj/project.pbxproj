@@ -505,7 +505,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1220;
+				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					705DC7A00F1197DC0052AFA5 = {
 						DevelopmentTeam = 86GWZ48925;
@@ -972,6 +972,7 @@
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_VERSION = 5.0;
 				VALID_ARCHS = "arm64 arm64e i386 x86_64";
 			};
