@@ -25,27 +25,18 @@ NSString* getFullPath(NSString *aPath)
 
 void previewFiles(NSArray<NSString*> *files, NSString *app)
 {
-    if (files.count == 0) {
-        return;
+    if (@available(macOS 10.15, *)) {
+        NSArray<NSURL*> *targetURLs = [files mapUsingBlock: ^NSURL*(NSString* path){ return [NSURL fileURLWithPath:path]; }];
+        [[NSWorkspace sharedWorkspace] openURLs:targetURLs
+                           withApplicationAtURL:[NSURL fileURLWithPath:app]
+                                  configuration:[NSWorkspaceOpenConfiguration configuration]
+                              completionHandler:nil];
+    } else {
+        [files enumerateObjectsUsingBlock:^(NSString * _Nonnull path, NSUInteger idx, BOOL * _Nonnull stop) {
+            [[NSWorkspace sharedWorkspace] openFile:path withApplication:app];
+        }];
     }
-    
-    NSMutableString *script = [NSMutableString string];
-    [script appendString:@"tell application \"Finder\"\n"];
-    [script appendString:@"open {"];
-    [script appendString:[[files mapUsingBlock:^NSString*(NSString *path) {
-        return [NSString stringWithFormat:@"POSIX file (\"%@\")", path];
-    }] componentsJoinedByString:@", "]];
-    [script appendFormat:@"} using POSIX file \"%@\"\n", app];
-    [script appendString:@"end tell\n"];
-    
-    NSTask *task = [NSTask new];
-    NSPipe *pipe = [NSPipe pipe];
-    task.launchPath = @"/usr/bin/osascript";
-    task.arguments = @[@"-e", script];
-    task.standardOutput = pipe;
-    task.standardError = pipe;
-    
-    [task launch];
+
 }
 
 BOOL isTeX2imgAnnotation(PDFAnnotation *annotation)
