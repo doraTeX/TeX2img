@@ -2092,7 +2092,22 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
             }
         }
         
-        [controller previewFiles:generatedFiles withApplication:previewApp];
+        NSArray<NSString*> *pathsForPreview = [generatedFiles mapUsingBlock:^NSString*(NSString *path) {
+            // macOS 13 Ventura 以降では Preview.app でEPSファイルのプレビューができなくなったことに対応するため，その場合はEPSプレビュー用のPDFを生成
+            if (@available(macOS 13, *)) {
+                if ([@"eps" isEqualToString:extension]) {
+                    NSString *pdfPathForPreview = [NSTemporaryDirectory() stringByAppendingPathComponent:[path.lastPathComponent.stringByDeletingPathExtension stringByAppendingPathExtension:@"pdf"]];
+                    [self epstopdf:path outputFileName:pdfPathForPreview];
+                    return pdfPathForPreview;
+                } else {
+                    return path;
+                }
+            } else {
+                return path;
+            }
+        }];
+        
+        [controller previewFiles:pathsForPreview withApplication:previewApp];
     }
 
     // 自動ペースト
