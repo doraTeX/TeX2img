@@ -10,6 +10,7 @@
 "Indent" = "Shift Right";
 "Unindent" = "Shift Left";
 "Completion" = "Command Completion";
+"Insert Newpage" = "Insert \newpage";
 "resotrePreambleMsg" = "Do you want to set the preamble as follows?";
 "Cancel" = "Cancel";
 "programNotFoundErrorMsg" = "%@ cannot be found.\nMake sure that LaTeX / Ghostscript are installed and configured in Preferences.";

@@ -10,6 +10,7 @@
 "Indent" = "行を右へシフト";
 "Unindent" = "行を左へシフト";
 "Completion" = "コマンド補完";
+"Insert Newpage" = "\newpage を挿入";
 "resotrePreambleMsg" = "次のプリアンブルをロードしてよろしいですか？";
 "Cancel" = "キャンセル";
 "programNotFoundErrorMsg" = "%@ が見つかりません。\nLaTeX / Ghostscript 一式がインストールされているか，「環境設定」で設定されたパスが実際にインストールされているパスと合致しているか確認してください。";

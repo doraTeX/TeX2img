@@ -869,6 +869,20 @@
     }
 }
 
+- (IBAction)insertNewpage:(NSMenuItem*)sender
+{
+    NSString *textToInsert = @"\\newpage\n\n";
+    NSString *actionName = localizedString(@"Insert Newpage");
+    NSRange currentRange = self.selectedRange;
+    NSString *oldString = [self.string substringWithRange:currentRange];
+    
+    [self replaceCharactersInRange:currentRange withString:textToInsert];
+    [self registerUndoWithString:oldString location:currentRange.location
+                          length:textToInsert.length key:actionName];
+
+    [self colorizeText];
+}
+
 #pragma mark - 自動インデント
 - (void)insertNewline:(id)sender
 {

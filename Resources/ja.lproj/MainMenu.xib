@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -470,6 +470,13 @@
                                 </menu>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="Pxc-2v-6nr"/>
+                            <menuItem title="\newpageを挿入" keyEquivalent="n" id="Nxo-7O-vha">
+                                <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                <connections>
+                                    <action selector="insertNewpage:" target="-1" id="HC0-c6-9Hd"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="R98-OM-7LF"/>
                             <menuItem title="自動インデント" state="on" id="yEx-mS-HPD">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
@@ -631,7 +638,7 @@ DQ
                                         <action selector="sourceSettingChanged:" target="450" id="FqP-FC-A9M"/>
                                     </connections>
                                 </button>
-                                <button fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="J9r-D6-YSd">
+                                <button tag="1" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J9r-D6-YSd">
                                     <rect key="frame" x="11" y="38" width="438" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="radio" title="TeX ソースファイルまたは PDF / PS / EPS ファイルを読み込む" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="pIE-hd-hRZ">
@@ -1818,7 +1825,7 @@ DQ
                                     <rect key="frame" x="10" y="33" width="452" height="393"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="Wt2-ec-htK">
+                                        <button tag="1" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wt2-ec-htK">
                                             <rect key="frame" x="255" y="5" width="87" height="27"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="デフォルト..." bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="uWc-c0-f6S">
@@ -2133,7 +2140,7 @@ DQ
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="fwE-tk-d03">
+                                        <button tag="2" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fwE-tk-d03">
                                             <rect key="frame" x="340" y="5" width="87" height="27"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="push" title="デフォルト..." bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jXG-yq-7hJ">
