@@ -10,7 +10,7 @@ class PDFPageBox: NSObject {
         super.init()
     }
     
-    @objc convenience init?(filePath path: String, page: UInt) {
+    @objc convenience init?(filePath path: String, page: Int) {
         guard page > 0 else { return nil }
         let index = page - 1
         guard let pdfPage = PDFDocument(filePath: path)?.page(at: index) else { return nil }

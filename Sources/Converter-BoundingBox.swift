@@ -157,7 +157,7 @@ extension Converter {
     ///   - addMargin: 余白付与するか
     /// - Returns: クロップされたPDFPageオブジェクト
     func cropPage(of pdfPath: String,
-                  page: UInt,
+                  page: Int,
                   from inputDocument: PDFDocument,
                   addMargin: Bool) -> PDFPage? {
         let index = page - 1
@@ -235,10 +235,10 @@ extension Converter {
     ///   - outputPath: 出力PDFパス
     ///   - addMargin: 余白付与するか
     /// - Returns: 成功・失敗
-    @objc func generateCroppedPDF(of inputPath: String, page: UInt, to outputPath: String, addMargin: Bool) -> Bool {
+    @objc func generateCroppedPDF(of inputPath: String, page: Int, to outputPath: String, addMargin: Bool) -> Bool {
         guard let inputDoc = PDFDocument(filePath: inputPath) else { return false }
         let totalPageCount = inputDoc.pageCount
-        let targetPages = (page==0) ? [UInt](1...totalPageCount) : [page]
+        let targetPages = (page==0) ? [Int](1...totalPageCount) : [page]
         let outputDocs = (0..<targetPages.count).map { _ in PDFDocument() }
 
         var success = true

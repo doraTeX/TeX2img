@@ -340,7 +340,7 @@
 }
 
 - (NSString*)bboxStringOfPdf:(NSString*)pdfPath
-                        page:(NSUInteger)page
+                        page:(NSInteger)page
                        hires:(BOOL)hires
 {
     NSString *key = [NSString stringWithFormat:@"%@-%ld-%d", pdfPath.lastPathComponent, page, hires];
