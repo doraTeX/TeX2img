@@ -85,7 +85,7 @@ extension Converter {
             epsData.replaceSubrange(hiresBbArea.range, with: hiresBboxData)
         }
 
-        guard epsData.write(toFile: epsPath) else { return }
+        guard epsData.writeToPath(epsPath) else { return }
     }
 
     
@@ -146,7 +146,7 @@ extension Converter {
             epsData.replaceSubrange(hiresBbArea.range, with: newData)
         }
 
-        guard epsData.write(toFile: epsPath) else { return }
+        guard epsData.writeToPath(epsPath) else { return }
     }
     
     /// PDFの特定の1ページの余白をクロップする
@@ -255,7 +255,7 @@ extension Converter {
             outputDocs[i].append(croppedPage)
         }
         
-        PDFDocument(merging: outputDocs).write(toFile: outputPath)
+        PDFDocument(merging: outputDocs).writeToFilePath(outputPath)
         
         return success
     }
