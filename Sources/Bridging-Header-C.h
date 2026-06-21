@@ -1,2 +1,1 @@
-#import "typedef.h"
-#import "global.h"
+// Bridging header for tex2img (CUI). ICU and constants are imported from Swift.

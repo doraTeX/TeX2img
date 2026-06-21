@@ -64,6 +64,10 @@
 		349276B01BFA19FB00C0BD99 /* NSColor-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.swift */; };
 		34A5C70B251B700000FCF7BA /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C70C251B700000FCF7BA /* Utility.swift */; };
 		34A5C70D251B700000FCF7BA /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C70C251B700000FCF7BA /* Utility.swift */; };
+		34HDR032F30000300A1FA03 /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34HDR012F30000100A1FA01 /* GlobalConstants.swift */; };
+		34HDR042F30000400A1FA04 /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34HDR012F30000100A1FA01 /* GlobalConstants.swift */; };
+		34HDR052F30000500A1FA05 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34HDR022F30000200A1FA02 /* Types.swift */; };
+		34HDR062F30000600A1FA06 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34HDR022F30000200A1FA02 /* Types.swift */; };
 		34A5C715251B700000FCF7BB /* MyGlyphPopoverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C714251B700000FCF7BB /* MyGlyphPopoverController.swift */; };
 		3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */; };
 		3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */; };
@@ -143,7 +147,8 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeX2img_Prefix.pch; sourceTree = "<group>"; };
+		34HDR012F30000100A1FA01 /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
+		34HDR022F30000200A1FA02 /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
 		3402125425341B29002D1545 /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		340212592534AF36002D1545 /* NSWindow-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSWindow-Extension.swift"; sourceTree = "<group>"; };
 		3402126C2534D272002D1545 /* UserNotificationDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserNotificationDelegate.swift; sourceTree = "<group>"; };
@@ -188,7 +193,7 @@
 		34E0A0012F20000100A1FA01 /* TeXTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeXTextView.swift; sourceTree = "<group>"; };
 		34E0A0022F20000100A1FA02 /* TeXTextView-Colorize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TeXTextView-Colorize.swift"; sourceTree = "<group>"; };
 		34E0A0032F20000100A1FA03 /* TeXTextView-CommandCompletion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TeXTextView-CommandCompletion.swift"; sourceTree = "<group>"; };
-		348D72A1125A57B8003AF902 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
+
 		34A5C70C251B700000FCF7BA /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		34A5C714251B700000FCF7BB /* MyGlyphPopoverController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyGlyphPopoverController.swift; sourceTree = "<group>"; };
 		3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverMulti.xib; sourceTree = "<group>"; };
@@ -197,7 +202,7 @@
 		34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Converter-BoundingBox.swift"; sourceTree = "<group>"; };
 		34A5C641251B17E400FCF7BA /* Bridging-Header-C.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header-C.h"; sourceTree = "<group>"; };
 		34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControllerG-Extension.swift"; sourceTree = "<group>"; };
-		34A5C65B251B661800FCF7BA /* typedef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = typedef.h; sourceTree = "<group>"; };
+
 		34B5E70320995B2F0071BBE9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TeX2img/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		34BF70F91BD1C6FC00AB76A9 /* pdftops */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pdftops; sourceTree = "<group>"; };
 		34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PDFDocument-Extension.swift"; sourceTree = "<group>"; };
@@ -205,7 +210,7 @@
 		34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControllerG-UserNotification.swift"; sourceTree = "<group>"; };
 		34CCBB061A964E8A0061842E /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
 		34A5C711251B700000FCF7BA /* UtilityG.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilityG.swift; sourceTree = "<group>"; };
-		34CEA1951AB970F600F98258 /* UtilityG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityG.h; sourceTree = "<group>"; };
+
 		34A5C702251B700000FCF7BA /* NSDictionary-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDictionary-Extension.swift"; sourceTree = "<group>"; };
 		34A5C70F251B700000FCF7BA /* UtilityC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilityC.swift; sourceTree = "<group>"; };
 		34A5C709251B700000FCF7BA /* NSString-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSString-Extension.swift"; sourceTree = "<group>"; };
@@ -340,12 +345,11 @@
 			isa = PBXGroup;
 			children = (
 				34A5C70C251B700000FCF7BA /* Utility.swift */,
-				34CEA1951AB970F600F98258 /* UtilityG.h */,
+				34HDR012F30000100A1FA01 /* GlobalConstants.swift */,
+				34HDR022F30000200A1FA02 /* Types.swift */,
 				34A5C711251B700000FCF7BA /* UtilityG.swift */,
 				34A5C70F251B700000FCF7BA /* UtilityC.swift */,
-				348D72A1125A57B8003AF902 /* global.h */,
-				34A5C65B251B661800FCF7BA /* typedef.h */,
-				32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */,
+
 
 				34D0A0032F10000300A1FA03 /* mainc.swift */,
 				34A5C638251B170A00FCF7BA /* Bridging-Header-G.h */,
@@ -623,6 +627,8 @@
 				3419977125282F9D0022F53C /* PDFPageBox.swift in Sources */,
 				348658F62526402E00B8B190 /* NSDate-Extension.swift in Sources */,
 				34A5C70D251B700000FCF7BA /* Utility.swift in Sources */,
+				34HDR032F30000300A1FA03 /* GlobalConstants.swift in Sources */,
+				34HDR052F30000500A1FA05 /* Types.swift in Sources */,
 				34A5C704251B700000FCF7BA /* NSDictionary-Extension.swift in Sources */,
 				34A5C717251B700000FCF7BC /* ControllerC.swift in Sources */,
 				34A5C70E251B700000FCF7BA /* UtilityC.swift in Sources */,
@@ -684,6 +690,8 @@
 				34A5C727251B700000FCF7BF /* NSString-Conversion+LigTable.swift in Sources */,
 				34A5C713251B700000FCF7BA /* ProfileController.swift in Sources */,
 				34A5C70B251B700000FCF7BA /* Utility.swift in Sources */,
+				34HDR042F30000400A1FA04 /* GlobalConstants.swift in Sources */,
+				34HDR062F30000600A1FA06 /* Types.swift in Sources */,
 				34A5C715251B700000FCF7BB /* MyGlyphPopoverController.swift in Sources */,
 				34A5C700251B700000FCF7BA /* NSArray-Extension.swift in Sources */,
 				34A5C705251B700000FCF7BA /* NSMutableString-Extension.swift in Sources */,
@@ -759,8 +767,6 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INSTALL_PATH = /usr/local/bin;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
@@ -797,8 +803,6 @@
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Frameworks",
 				);
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INSTALL_PATH = /usr/local/bin;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
@@ -841,8 +845,6 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Sources/TeX2img_Prefix.pch;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -881,8 +883,6 @@
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Quartz.framework/Frameworks",
 				);
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Sources/TeX2img_Prefix.pch;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
