@@ -242,7 +242,17 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     // MARK: - OutputController
 
-    @objc func exitCurrentThreadIfTaskKilled() {
+    private func performOnMainThread(waitUntilDone: Bool = true, _ work: @escaping () -> Void) {
+        if Thread.isMainThread {
+            work()
+        } else if waitUntilDone {
+            DispatchQueue.main.sync(execute: work)
+        } else {
+            DispatchQueue.main.async(execute: work)
+        }
+    }
+
+    func exitCurrentThreadIfTaskKilled() {
         if taskKilled {
             taskKilled = false
             Thread.current.cancel()
@@ -255,10 +265,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    @objc func execCommand(_ command: String,
-                           atDirectory path: String,
-                           withArguments arguments: [String],
-                           quiet: Bool) -> Bool {
+    func execCommand(_ command: String,
+                     atDirectory path: String,
+                     withArguments arguments: [String],
+                     quiet: Bool) -> Bool {
         exitCurrentThreadIfTaskKilled()
 
         var cmdline = command + " "
@@ -295,8 +305,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         return task.terminationStatus == 0
     }
 
-    @objc func showMainWindow() {
-        mainWindow.performSelector(onMainThread: #selector(NSWindow.makeKeyAndOrderFront(_:)), with: nil, waitUntilDone: false)
+    func showMainWindow() {
+        DispatchQueue.main.async {
+            self.mainWindow.makeKeyAndOrderFront(nil)
+        }
     }
 
     private func refreshTextView(_ textView: NSTextView,
@@ -322,7 +334,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         ], range: entireRange)
     }
 
-    @objc private func appendOutputAndScrollOnMainThread(_ str: String) {
+    private func appendOutputOnMainThread(_ str: String) {
         outputTextView.textStorage?.mutableString.append(str)
 
         let profile = currentProfile()
@@ -335,23 +347,23 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         outputTextView.font = sourceFont
     }
 
-    @objc func appendOutputAndScroll(_ str: String, quiet: Bool) {
+    func appendOutputAndScroll(_ str: String, quiet: Bool) {
         guard !quiet, !str.isEmpty else { return }
-        performSelector(onMainThread: #selector(appendOutputAndScrollOnMainThread(_:)), with: str, waitUntilDone: true)
+        performOnMainThread { self.appendOutputOnMainThread(str) }
     }
 
-    @objc func prepareOutputTextView() {
+    func prepareOutputTextView() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(readOutputData(_:)),
                                                name: FileHandle.readCompletionNotification,
                                                object: nil)
     }
 
-    @objc func releaseOutputTextView() {
+    func releaseOutputTextView() {
         NotificationCenter.default.removeObserver(self, name: FileHandle.readCompletionNotification, object: nil)
     }
 
-    @objc private func showOutputWindowOnMainThread() {
+    private func presentOutputWindow() {
         if mainWindow.isInFullScreenMode {
             outputWindow.makeKeyAndOrderFront(nil)
             return
@@ -404,27 +416,23 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         outputWindow.makeKeyAndOrderFront(nil)
     }
 
-    @objc func showOutputWindow() {
-        performSelector(onMainThread: #selector(showOutputWindowOnMainThread), with: nil, waitUntilDone: true)
+    func showOutputWindow() {
+        performOnMainThread { self.presentOutputWindow() }
     }
 
-    @objc private func showExtensionErrorOnMainThread() {
-        UtilityG.runErrorPanel(message: NSLocalizedString("extensionErrMsg", comment: ""))
+    func showExtensionError() {
+        performOnMainThread {
+            UtilityG.runErrorPanel(message: NSLocalizedString("extensionErrMsg", comment: ""))
+        }
     }
 
-    @objc func showExtensionError() {
-        performSelector(onMainThread: #selector(showExtensionErrorOnMainThread), with: nil, waitUntilDone: true)
+    func showNotFoundError(_ aPath: String) {
+        performOnMainThread {
+            UtilityG.runErrorPanel(message: String(format: NSLocalizedString("programNotFoundErrorMsg", comment: ""), aPath))
+        }
     }
 
-    @objc private func showNotFoundErrorOnMainThread(_ aPath: String) {
-        UtilityG.runErrorPanel(message: String(format: NSLocalizedString("programNotFoundErrorMsg", comment: ""), aPath))
-    }
-
-    @objc func showNotFoundError(_ aPath: String) {
-        performSelector(onMainThread: #selector(showNotFoundErrorOnMainThread(_:)), with: aPath, waitUntilDone: true)
-    }
-
-    @objc func latexExists(atPath latexPath: String, dviDriverPath: String, gsPath: String) -> Bool {
+    func latexExists(atPath latexPath: String, dviDriverPath: String, gsPath: String) -> Bool {
         let fileManager = FileManager.default
 
         if !fileManager.fileExists(atPath: latexPath.programPath) {
@@ -442,75 +450,59 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         return true
     }
 
-    @objc func epstopdfExists() -> Bool { true }
-    @objc func mudrawExists() -> Bool { true }
-    @objc func pdftopsExists() -> Bool { true }
+    func epstopdfExists() -> Bool { true }
+    func mudrawExists() -> Bool { true }
+    func pdftopsExists() -> Bool { true }
 
-    @objc private func showFileFormatErrorOnMainThread(_ aPath: String) {
-        UtilityG.runErrorPanel(message: String(format: NSLocalizedString("fileFormatErrorMsg", comment: ""), aPath))
+    func showFileFormatError(_ aPath: String) {
+        performOnMainThread {
+            UtilityG.runErrorPanel(message: String(format: NSLocalizedString("fileFormatErrorMsg", comment: ""), aPath))
+        }
     }
 
-    @objc func showFileFormatError(_ aPath: String) {
-        performSelector(onMainThread: #selector(showFileFormatErrorOnMainThread(_:)), with: aPath, waitUntilDone: true)
+    func showFileGenerationError(_ aPath: String) {
+        performOnMainThread {
+            UtilityG.runErrorPanel(message: String(format: NSLocalizedString("fileGenerationErrorMsg", comment: ""), aPath))
+        }
     }
 
-    @objc private func showFileGenerationErrorOnMainThread(_ aPath: String) {
-        UtilityG.runErrorPanel(message: String(format: NSLocalizedString("fileGenerationErrorMsg", comment: ""), aPath))
+    func showExecError(_ command: String) {
+        performOnMainThread {
+            UtilityG.runErrorPanel(message: String(format: NSLocalizedString("execErrorMsg", comment: ""), command))
+        }
     }
 
-    @objc func showFileGenerationError(_ aPath: String) {
-        performSelector(onMainThread: #selector(showFileGenerationErrorOnMainThread(_:)), with: aPath, waitUntilDone: true)
+    func showCannotOverwriteError(_ path: String) {
+        performOnMainThread {
+            UtilityG.runErrorPanel(message: String(format: NSLocalizedString("cannotOverwriteErrorMsg", comment: ""), path))
+        }
     }
 
-    @objc private func showExecErrorOnMainThread(_ command: String) {
-        UtilityG.runErrorPanel(message: String(format: NSLocalizedString("execErrorMsg", comment: ""), command))
+    func showCannotCreateDirectoryError(_ dir: String) {
+        performOnMainThread {
+            UtilityG.runErrorPanel(message: String(format: NSLocalizedString("cannotCreateDirectoryErrorMsg", comment: ""), dir))
+        }
     }
 
-    @objc func showExecError(_ command: String) {
-        performSelector(onMainThread: #selector(showExecErrorOnMainThread(_:)), with: command, waitUntilDone: true)
+    func showCompileError() {
+        performOnMainThread {
+            UtilityG.runErrorPanel(message: NSLocalizedString("compileErrorMsg", comment: ""))
+        }
     }
 
-    @objc private func showCannotOverwriteErrorOnMainThread(_ path: String) {
-        UtilityG.runErrorPanel(message: String(format: NSLocalizedString("cannotOverwriteErrorMsg", comment: ""), path))
+    func showImageSizeError() {
+        performOnMainThread {
+            UtilityG.runErrorPanel(message: NSLocalizedString("imageSizeErrorMsg", comment: ""))
+        }
     }
 
-    @objc func showCannotOverwriteError(_ path: String) {
-        performSelector(onMainThread: #selector(showCannotOverwriteErrorOnMainThread(_:)), with: path, waitUntilDone: true)
+    func showErrorsIgnoredWarning() {
+        performOnMainThread {
+            UtilityG.runWarningPanel(message: NSLocalizedString("errorsIgnoredWarning", comment: ""))
+        }
     }
 
-    @objc private func showCannotCreateDirectoryErrorOnMainThread(_ dir: String) {
-        UtilityG.runErrorPanel(message: String(format: NSLocalizedString("cannotCreateDirectoryErrorMsg", comment: ""), dir))
-    }
-
-    @objc func showCannotCreateDirectoryError(_ dir: String) {
-        performSelector(onMainThread: #selector(showCannotCreateDirectoryErrorOnMainThread(_:)), with: dir, waitUntilDone: true)
-    }
-
-    @objc private func showCompileErrorOnMainThread() {
-        UtilityG.runErrorPanel(message: NSLocalizedString("compileErrorMsg", comment: ""))
-    }
-
-    @objc func showCompileError() {
-        performSelector(onMainThread: #selector(showCompileErrorOnMainThread), with: nil, waitUntilDone: true)
-    }
-
-    @objc private func showImageSizeErrorOnMainThread() {
-        UtilityG.runErrorPanel(message: NSLocalizedString("imageSizeErrorMsg", comment: ""))
-    }
-
-    @objc func showImageSizeError() {
-        performSelector(onMainThread: #selector(showImageSizeErrorOnMainThread), with: nil, waitUntilDone: true)
-    }
-
-    @objc private func showErrorsIgnoredWarningOnMainThread() {
-        UtilityG.runWarningPanel(message: NSLocalizedString("errorsIgnoredWarning", comment: ""))
-    }
-
-    @objc func showErrorsIgnoredWarning() {
-        performSelector(onMainThread: #selector(showErrorsIgnoredWarningOnMainThread), with: nil, waitUntilDone: true)
-    }
-
-    @objc func showPageSkippedWarning(_ pages: [NSNumber]) {
+    func showPageSkippedWarning(_ pages: [NSNumber]) {
         appendOutputAndScroll(String(format: "TeX2img: [%@] ", NSLocalizedString("Warning", comment: "")), quiet: false)
         if pages.count > 1 {
             appendOutputAndScroll(String(format: NSLocalizedString("pagesSkippedWarning", comment: ""),
@@ -521,7 +513,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         appendOutputAndScroll("\n", quiet: false)
     }
 
-    @objc func showWhitePageWarning(_ pages: [NSNumber]) {
+    func showWhitePageWarning(_ pages: [NSNumber]) {
         appendOutputAndScroll(String(format: "TeX2img: [%@] ", NSLocalizedString("Warning", comment: "")), quiet: false)
         if pages.count > 1 {
             appendOutputAndScroll(String(format: NSLocalizedString("whitePagesWarning", comment: ""),
@@ -532,10 +524,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         appendOutputAndScroll("\n", quiet: false)
     }
 
-    @objc private func previewFilesOnMainThread(_ parameters: NSArray) {
-        guard let files = parameters[0] as? [String],
-              let app = parameters[1] as? String else { return }
-
+    private func previewFilesOnMainThread(_ files: [String], app: String) {
         if app == SVG_PREVIEWER && !FileManager.default.fileExists(atPath: SVG_PREVIEWER) {
             let alert = NSAlert()
             alert.messageText = NSLocalizedString("Warning", comment: "")
@@ -552,11 +541,13 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    @objc func previewFiles(_ files: [String], withApplication app: String) {
-        performSelector(onMainThread: #selector(previewFilesOnMainThread(_:)), with: [files, app], waitUntilDone: false)
+    func previewFiles(_ files: [String], withApplication app: String) {
+        performOnMainThread(waitUntilDone: false) {
+            self.previewFilesOnMainThread(files, app: app)
+        }
     }
 
-    @objc func printResult(_ generatedFiles: [String], quiet: Bool) {
+    func printResult(_ generatedFiles: [String], quiet: Bool) {
         let count = generatedFiles.count
         if count > 1 {
             appendOutputAndScroll(String(format: "TeX2img: %@\n",
@@ -1302,7 +1293,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         fontTextField.stringValue = String(format: "%@ - %.1fpt", font.displayName ?? font.fontName, font.pointSize)
     }
 
-    @objc private func showAutoDetectionResult(_ parameters: NSDictionary) {
+    private func presentAutoDetectionResult(_ parameters: [String: Any]) {
         UtilityG.runOkPanel(title: parameters["Title"] as? String ?? "",
                             message: String(format: "%@\n%@\n%@\n%@\n%@",
                                             parameters["Msg1"] as? String ?? "",
@@ -1521,7 +1512,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    @objc func textViewDroppedFile(_ file: Any) {
+    func textViewDroppedFile(_ file: Any) {
         importSource(fromFilePathOrPDFDocument: file, skipConfirm: false)
     }
 
@@ -1995,7 +1986,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             GsPathKey: gsPath.isEmpty ? "Ghostscript: Not Found" : gsPath
         ]
         let waitUntilDone = (parameters["waitUntilDone"] as? Bool) ?? true
-        performSelector(onMainThread: #selector(showAutoDetectionResult(_:)), with: result as NSDictionary, waitUntilDone: waitUntilDone)
+        performOnMainThread(waitUntilDone: waitUntilDone) {
+            self.presentAutoDetectionResult(result)
+        }
     }
 
     @IBAction func searchPrograms(_ sender: Any) {
@@ -2013,7 +2006,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    @objc private func generationDidFinishOnMainThreadAfterDelay(_ status: NSNumber) {
+    private func completeGenerationDidFinish(_ status: ExitStatus) {
         converter?.deleteTemporaryFiles()
         generateButton.title = NSLocalizedString("Generate", comment: "")
         generateButton.action = #selector(generate(_:))
@@ -2022,16 +2015,16 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         taskKilled = false
 
         if currentProfile().boolForKey(SendNotificationKey) {
-            sendUserNotification(status: ExitStatus(rawValue: status.intValue) ?? .failed)
+            sendUserNotification(status: status)
         }
     }
 
-    @objc private func generationDidFinishOnMainThread(_ status: NSNumber) {
-        perform(#selector(generationDidFinishOnMainThreadAfterDelay(_:)), with: status, afterDelay: 0.3)
-    }
-
-    @objc func generationDidFinish(_ status: ExitStatus) {
-        performSelector(onMainThread: #selector(generationDidFinishOnMainThread(_:)), with: NSNumber(value: status.rawValue), waitUntilDone: true)
+    func generationDidFinish(_ status: ExitStatus) {
+        performOnMainThread {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.completeGenerationDidFinish(status)
+            }
+        }
     }
 
     private func printCurrentStatus(_ profile: NSMutableDictionary) {

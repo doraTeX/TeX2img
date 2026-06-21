@@ -1,8 +1,7 @@
 import Foundation
 
-@objc(ControllerC)
 class ControllerC: NSObject, OutputController {
-    @objc func execCommand(_ command: String,
+    func execCommand(_ command: String,
                            atDirectory path: String,
                            withArguments arguments: [String],
                            quiet: Bool) -> Bool {
@@ -43,19 +42,19 @@ class ControllerC: NSObject, OutputController {
         return task.terminationStatus == 0
     }
 
-    @objc func prepareOutputTextView() {
+    func prepareOutputTextView() {
     }
 
-    @objc func releaseOutputTextView() {
+    func releaseOutputTextView() {
     }
 
-    @objc func showOutputWindow() {
+    func showOutputWindow() {
     }
 
-    @objc func showMainWindow() {
+    func showMainWindow() {
     }
 
-    @objc func latexExists(atPath latexPath: String,
+    func latexExists(atPath latexPath: String,
                            dviDriverPath: String,
                            gsPath: String) -> Bool {
         if !UtilityC.checkWhich(latexPath) {
@@ -74,7 +73,7 @@ class ControllerC: NSObject, OutputController {
         return true
     }
 
-    @objc func epstopdfExists() -> Bool {
+    func epstopdfExists() -> Bool {
         if !UtilityC.checkWhich("epstopdf") {
             showNotFoundError("epstopdf")
             return false
@@ -82,7 +81,7 @@ class ControllerC: NSObject, OutputController {
         return true
     }
 
-    @objc func mudrawExists() -> Bool {
+    func mudrawExists() -> Bool {
         if !UtilityC.checkWhich("mudraw") {
             showNotFoundError("mudraw")
             return false
@@ -90,7 +89,7 @@ class ControllerC: NSObject, OutputController {
         return true
     }
 
-    @objc func pdftopsExists() -> Bool {
+    func pdftopsExists() -> Bool {
         if !UtilityC.checkWhich("xpdf-pdftops") && !UtilityC.checkWhich("pdftops") {
             showNotFoundError("pdftops")
             UtilityC.printStdErr("tex2img: [Error] Place GUI app (TeX2img.app) in /Applications.\n")
@@ -99,53 +98,53 @@ class ControllerC: NSObject, OutputController {
         return true
     }
 
-    @objc func showNotFoundError(_ aPath: String) {
+    func showNotFoundError(_ aPath: String) {
         UtilityC.printStdErr(String(format: "tex2img: [Error] Command \"%@\" cannot be found.\nCheck the environment variable $PATH.\n", aPath))
     }
 
-    @objc func showExtensionError() {
+    func showExtensionError() {
         UtilityC.printStdErr("tex2img: [Error] The extention of output file must be either eps/pdf/jpg/png/gif/tiff/bmp/svg.\n")
     }
 
-    @objc func showFileFormatError(_ aPath: String) {
+    func showFileFormatError(_ aPath: String) {
         UtilityC.printStdErr(String(format: "tex2img: [Error] Invalid file format: %@\n", aPath))
     }
 
-    @objc func showFileGenerationError(_ aPath: String) {
+    func showFileGenerationError(_ aPath: String) {
         UtilityC.printStdErr(String(format: "tex2img: [Error] %@ cannot be created, and so generation has been aborted.\nCheck permission.\n", aPath))
     }
 
-    @objc func showExecError(_ command: String) {
+    func showExecError(_ command: String) {
         UtilityC.printStdErr(String(format: "tex2img: [Error] %@ cannot be executed.\nCheck errors in the source code.\n", command))
     }
 
-    @objc func showCannotOverwriteError(_ path: String) {
+    func showCannotOverwriteError(_ path: String) {
         UtilityC.printStdErr(String(format: "tex2img: [Error] %@ cannot be overwritten.\n", path))
     }
 
-    @objc func showCannotCreateDirectoryError(_ dir: String) {
+    func showCannotCreateDirectoryError(_ dir: String) {
         UtilityC.printStdErr(String(format: "tex2img: [Error] Directory %@ cannot be overwritten.\n", dir))
     }
 
-    @objc func showCompileError() {
+    func showCompileError() {
         UtilityC.printStdErr("tex2img: [Error] A TeX compile error occurred.\nCheck errors in the source code.\n")
     }
 
-    @objc func showImageSizeError() {
+    func showImageSizeError() {
         UtilityC.printStdErr("tex2img: [Error] An image format error occurred.\nThe image size may be too large.\nTry lower the resolution level.\n")
     }
 
-    @objc func appendOutputAndScroll(_ str: String, quiet: Bool) {
+    func appendOutputAndScroll(_ str: String, quiet: Bool) {
         if !quiet {
             print(str, terminator: "")
         }
     }
 
-    @objc func showErrorsIgnoredWarning() {
+    func showErrorsIgnoredWarning() {
         UtilityC.printStdErr("tex2img: [Warning] Some errors were ignored. The result may be different from what you expected.\n")
     }
 
-    @objc func showPageSkippedWarning(_ pages: [NSNumber]) {
+    func showPageSkippedWarning(_ pages: [NSNumber]) {
         if pages.count > 1 {
             let joined = pages.map { $0.stringValue }.joined(separator: ", ")
             UtilityC.printStdErr(String(format: "tex2img: [Warning] Page %@ were empty and they were skipped.\n", joined))
@@ -154,7 +153,7 @@ class ControllerC: NSObject, OutputController {
         }
     }
 
-    @objc func showWhitePageWarning(_ pages: [NSNumber]) {
+    func showWhitePageWarning(_ pages: [NSNumber]) {
         if pages.count > 1 {
             let joined = pages.map { $0.stringValue }.joined(separator: ", ")
             UtilityC.printStdErr(String(format: "tex2img: [Warning] Page %@ were empty and white pages were generated.\n", joined))
@@ -163,11 +162,11 @@ class ControllerC: NSObject, OutputController {
         }
     }
 
-    @objc func previewFiles(_ files: [String], withApplication app: String) {
+    func previewFiles(_ files: [String], withApplication app: String) {
         Utility.previewFiles(files, app: app)
     }
 
-    @objc func printResult(_ generatedFiles: [String], quiet: Bool) {
+    func printResult(_ generatedFiles: [String], quiet: Bool) {
         let count = generatedFiles.count
         guard !quiet else { return }
 
@@ -186,9 +185,9 @@ class ControllerC: NSObject, OutputController {
         }
     }
 
-    @objc func generationDidFinish(_ status: ExitStatus) {
+    func generationDidFinish(_ status: ExitStatus) {
     }
 
-    @objc func exitCurrentThreadIfTaskKilled() {
+    func exitCurrentThreadIfTaskKilled() {
     }
 }

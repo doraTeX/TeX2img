@@ -10,6 +10,11 @@
 deployc.sh
 build/
 DerivedData/
+*.o
+*.d
+*.dia
+*.swiftdeps
+*.swiftconstvalues
 # Xcode project files except for the project file
 *.xcodeproj/*
 !*.xcodeproj/xcshareddata

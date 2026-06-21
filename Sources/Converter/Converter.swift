@@ -11,7 +11,7 @@ private let targetExtensions = ["eps", "pdf", "svg", "svgz", "jpg", "png", "gif"
 private let bitmapExtensions = ["png", "jpg", "gif", "tiff", "bmp"]
 private let mergeableExtensions = ["pdf", "tiff", "gif", "svg", "svgz"]
 
-@objc protocol OutputController: NSObjectProtocol {
+protocol OutputController: AnyObject {
     func showExtensionError()
     func showNotFoundError(_ aPath: String)
     func latexExists(atPath latexPath: String, dviDriverPath: String, gsPath: String) -> Bool

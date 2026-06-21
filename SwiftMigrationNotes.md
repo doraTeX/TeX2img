@@ -97,6 +97,14 @@ TeX2img と tex2img が Swift ソースを共有しているため、Xcode が `
 - `NSString-Conversion+CIDTable.swift` の実行時ロード化（`Resources/cidToUnicode.json`）
 - 一部 `@objc` 整理（`NSString-Conversion` 全メソッド、`Converter` プロパティ、`searchProgram`）
 
+### OutputController pure Swift 化（完了）
+
+- `@objc protocol OutputController` → `protocol OutputController: AnyObject`
+- `DnDDelegate` も同様に pure Swift 化
+- `ExitStatus` から `@objc` を除去
+- ControllerG の `performSelector(onMainThread:)` → `DispatchQueue.main.sync/async`（`performOnMainThread` ヘルパー経由）
+- ControllerC / ControllerG の OutputController 実装から `@objc` を除去
+
 ### `@objc` 整理（完了）
 
 不要な `@objc` を削除。残存は以下の理由によるもののみ:
@@ -104,8 +112,7 @@ TeX2img と tex2img が Swift ソースを共有しているため、Xcode が `
 | 残存箇所 | 理由 |
 |---|---|
 | `@objc(ControllerG)` / `@objc(TeXTextView)` / `@objc(ProfileController)` / `@objc(MyGlyphPopoverController)` / `@objc(Converter)` | XIB の `customClass` 接続 |
-| `@objc protocol OutputController` + 実装メソッド（ControllerG/C） | バックグラウンドスレッドからの動的ディスパッチ |
-| `performSelector` / `NSNotification` オブザーバターゲット | セレクタベースの呼び出し |
+| `NSNotification` オブザーバターゲット / `IBAction` | セレクタベースの呼び出し |
 | `@objc(compileAndConvertWith*)` on Converter | `Thread.detachNewThreadSelector` |
 | `@objc dynamic` on MyGlyphPopoverController | XIB バインディング |
 | `@objc enum ExitStatus` / `@objc protocol DnDDelegate` | OutputController / DnD 連携 |

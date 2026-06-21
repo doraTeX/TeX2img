@@ -48,8 +48,10 @@ case "$TARGET" in
         ;;
     all)
         resolve_packages
-        build_scheme "tex2img CUI"
+        # TeX2img GUI を先にビルドする。tex2img を先にすると共有 Swift ソースの
+        # リンクファイルリストに tex2img の mainc.o が混入する場合がある。
         build_scheme "TeX2img GUI"
+        build_scheme "tex2img CUI"
         ;;
     *) usage ;;
 esac

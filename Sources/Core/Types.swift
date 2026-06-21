@@ -1,6 +1,6 @@
 import Foundation
 
-@objc enum ExitStatus: Int {
+enum ExitStatus: Int {
     case succeeded = 0
     case failed = 1
     case aborted = 2
@@ -16,6 +16,6 @@ let FLASH = HighlightPattern.flash.rawValue
 let SOLID = HighlightPattern.solid.rawValue
 let NOHIGHLIGHT = HighlightPattern.noHighlight.rawValue
 
-@objc protocol DnDDelegate: NSObjectProtocol {
+protocol DnDDelegate: AnyObject {
     func textViewDroppedFile(_ file: Any)
 }
