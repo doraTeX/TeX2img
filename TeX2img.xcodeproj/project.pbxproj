@@ -84,7 +84,7 @@
 		34DBA5841D9A4F3A00951297 /* NSString-Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 34DBA5831D9A4F3A00951297 /* NSString-Conversion.m */; };
 		70254EF010353485000D6D05 /* TeXTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70254EEF10353485000D6D05 /* TeXTextView.m */; };
 		34A5C707251B700000FCF7BA /* NSMutableString-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */; };
-		705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC3550F10E4670052AFA5 /* ControllerC.m */; };
+		34A5C717251B700000FCF7BC /* ControllerC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C716251B700000FCF7BC /* ControllerC.swift */; };
 		705DC7A60F1197E90052AFA5 /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
 		705DC7A70F1197E90052AFA5 /* mainc.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC2BB0F10E0B00052AFA5 /* mainc.m */; };
 		705DC7A80F1197EE0052AFA5 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -221,8 +221,7 @@
 		70254EEF10353485000D6D05 /* TeXTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeXTextView.m; sourceTree = "<group>"; };
 		34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSMutableString-Extension.swift"; sourceTree = "<group>"; };
 		705DC2BB0F10E0B00052AFA5 /* mainc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mainc.m; sourceTree = "<group>"; };
-		705DC3540F10E4670052AFA5 /* ControllerC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerC.h; sourceTree = "<group>"; };
-		705DC3550F10E4670052AFA5 /* ControllerC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerC.m; sourceTree = "<group>"; };
+		34A5C716251B700000FCF7BC /* ControllerC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerC.swift; sourceTree = "<group>"; };
 		705DC7A10F1197DC0052AFA5 /* tex2img */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tex2img; sourceTree = BUILT_PRODUCTS_DIR; };
 		7087BD5D0F0E3CD600A06CF5 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -272,8 +271,7 @@
 				3424A8E20E4F2DC1003C9F96 /* ControllerG.m */,
 				34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */,
 				34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */,
-				705DC3540F10E4670052AFA5 /* ControllerC.h */,
-				705DC3550F10E4670052AFA5 /* ControllerC.m */,
+				34A5C716251B700000FCF7BC /* ControllerC.swift */,
 				70254EEE10353485000D6D05 /* TeXTextView.h */,
 				70254EEF10353485000D6D05 /* TeXTextView.m */,
 				348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */,
@@ -607,7 +605,7 @@
 				348658F62526402E00B8B190 /* NSDate-Extension.swift in Sources */,
 				34A5C70D251B700000FCF7BA /* Utility.swift in Sources */,
 				34A5C704251B700000FCF7BA /* NSDictionary-Extension.swift in Sources */,
-				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
+				34A5C717251B700000FCF7BC /* ControllerC.swift in Sources */,
 				34A5C70E251B700000FCF7BA /* UtilityC.swift in Sources */,
 				34A5C701251B700000FCF7BA /* NSArray-Extension.swift in Sources */,
 				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,

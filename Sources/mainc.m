@@ -3,7 +3,6 @@
 #import <getopt.h>
 #import <Quartz/Quartz.h>
 #import "Converter.h"
-#import "ControllerC.h"
 #import "global.h"
 
 
