@@ -9,7 +9,6 @@ private func localizedString(_ key: String) -> String {
     NSLocalizedString(key, comment: "")
 }
 
-@objc(TeXTextView)
 class TeXTextView: NSTextView {
     @IBOutlet weak var controller: ControllerG!
 
@@ -33,6 +32,11 @@ class TeXTextView: NSTextView {
     var replaceLocation = NSNotFound
     var completionListLocation: UInt = 0
     var textLocation = NSNotFound
+    private var selectionChangeObserver: NSObjectProtocol?
+
+    func refreshSelectionHighlighting() {
+        textViewDidChangeSelection(Notification(name: NSTextView.didChangeSelectionNotification, object: self))
+    }
 
     override func awakeFromNib() {
         let autoCompletionPath = ("~/Library/TeXShop/Keyboard/autocompletion.plist" as NSString).expandingTildeInPath
@@ -64,6 +68,14 @@ class TeXTextView: NSTextView {
         isAutomaticTextReplacementEnabled = false
 
         registerForDraggedTypes([legacyFilenamesType, .pdf])
+
+        selectionChangeObserver = NotificationCenter.default.addObserver(
+            forName: NSTextView.didChangeSelectionNotification,
+            object: self,
+            queue: .main
+        ) { [weak self] notification in
+            self?.textViewDidChangeSelection(notification)
+        }
 
         if let undoManager = undoManager {
             NotificationCenter.default.addObserver(
@@ -680,7 +692,7 @@ class TeXTextView: NSTextView {
         selectedRect.origin.y += containerOrigin.y - 6.0
         selectedRect = convertToLayer(selectedRect)
 
-        popoverController.showPopoverRelativeToRect(selectedRect, ofView: self)
+        popoverController.showPopover(relativeTo: selectedRect, of: self)
         showFindIndicator(for: selectedRange)
     }
 

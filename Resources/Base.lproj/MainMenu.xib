@@ -672,7 +672,7 @@ DQ
                                         <rect key="frame" x="1" y="1" width="491" height="127"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="aKZ-WF-zY9" customClass="TeXTextView">
+                                            <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="aKZ-WF-zY9" customClass="TeXTextView" customModule="TeX2img" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="495" height="127"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -750,7 +750,7 @@ DQ
             </connections>
         </customObject>
         <customObject id="420" customClass="NSFontManager"/>
-        <customObject id="450" customClass="ControllerG">
+        <customObject id="450" customClass="ControllerG" customModule="TeX2img" customModuleProvider="target">
             <connections>
                 <outlet property="abortMenuItem" destination="Qig-9P-21A" id="rd7-S5-Bep"/>
                 <outlet property="animationParameterSettingViewController" destination="LOA-vu-3XX" id="cRl-Ku-zpn"/>
@@ -911,7 +911,7 @@ DQ
                             <rect key="frame" x="1" y="1" width="327" height="330"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
-                                <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="485" customClass="TeXTextView">
+                                <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="485" customClass="TeXTextView" customModule="TeX2img" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="327" height="330"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -2611,7 +2611,7 @@ DQ
             </view>
             <point key="canvasLocation" x="-224" y="404"/>
         </window>
-        <customObject id="671" userLabel="ProfileController" customClass="ProfileController">
+        <customObject id="671" userLabel="ProfileController" customClass="ProfileController" customModule="TeX2img" customModuleProvider="target">
             <connections>
                 <outlet property="controllerG" destination="450" id="706"/>
                 <outlet property="profilesTableView" destination="682" id="692"/>

@@ -93,7 +93,7 @@ extension TeXTextView {
         )
     }
 
-    @objc func textViewDidChangeSelection(_ notification: Notification) {
+    func textViewDidChangeSelection(_ notification: Notification) {
         guard let layoutManager else { return }
         let profile = controller.currentProfile()
 

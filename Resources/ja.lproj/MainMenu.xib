@@ -604,7 +604,7 @@ DQ
                                         <rect key="frame" x="1" y="1" width="491" height="127"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="466" customClass="TeXTextView">
+                                            <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="466" customClass="TeXTextView" customModule="TeX2img" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="495" height="127"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -760,7 +760,7 @@ DQ
                             <rect key="frame" x="1" y="1" width="327" height="333"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
-                                <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="485" customClass="TeXTextView">
+                                <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" id="485" customClass="TeXTextView" customModule="TeX2img" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="327" height="333"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -2447,7 +2447,7 @@ DQ
             </connections>
         </customObject>
         <customObject id="420" customClass="NSFontManager"/>
-        <customObject id="450" customClass="ControllerG">
+        <customObject id="450" customClass="ControllerG" customModule="TeX2img" customModuleProvider="target">
             <connections>
                 <outlet property="abortMenuItem" destination="tC1-Xo-mzW" id="xdP-eh-ocO"/>
                 <outlet property="animationParameterSettingViewController" destination="bRQ-po-MXp" id="W3J-0Q-Be8"/>
@@ -2592,7 +2592,7 @@ DQ
                 <outlet property="wrapLineCheckBox" destination="SOn-w4-4gh" id="9ie-N8-Yrz"/>
             </connections>
         </customObject>
-        <customObject id="695" userLabel="ProfileController" customClass="ProfileController">
+        <customObject id="695" userLabel="ProfileController" customClass="ProfileController" customModule="TeX2img" customModuleProvider="target">
             <connections>
                 <outlet property="controllerG" destination="450" id="713"/>
                 <outlet property="profilesTableView" destination="683" id="700"/>

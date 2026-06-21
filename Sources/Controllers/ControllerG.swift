@@ -11,8 +11,6 @@ private let eaKey = "com.loveinequality.TeX2img"
 private let targetExtensions = ["eps", "pdf", "svg", "svgz", "jpg", "png", "gif", "tiff", "bmp"]
 private let importExtensions = ["eps", "pdf", "svg", "svgz", "jpg", "png", "gif", "tiff", "bmp", "tex"]
 private let inputExtensions = ["tex", "pdf", "ps", "eps"]
-private let textViewDidChangeSelection = Selector("textViewDidChangeSelection:")
-
 private enum InputMethod: Int {
     case direct = 0
     case fromFile = 1
@@ -26,7 +24,6 @@ private enum EncodingTag: Int {
     case euc = 4
 }
 
-@objc(ControllerG)
 class ControllerG: NSObject, OutputController, DnDDelegate {
     @IBOutlet var sourceTextView: TeXTextView!
     var commandCompletionList: NSMutableString?
@@ -208,6 +205,17 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private var taskKilled = false
     private var sourceFont: NSFont?
     private var userNotificationDelegate: UserNotificationDelegate?
+    private var notificationObservers = [NSObjectProtocol]()
+    private var outputDataObserver: NSObjectProtocol?
+
+    private func observeNotification(forName name: Notification.Name,
+                                     object: Any? = nil,
+                                     handler: @escaping (Notification) -> Void) {
+        let token = NotificationCenter.default.addObserver(forName: name, object: object, queue: .main) { notification in
+            handler(notification)
+        }
+        notificationObservers.append(token)
+    }
 
     // MARK: - Sudo / Process helpers
 
@@ -353,14 +361,20 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     func prepareOutputTextView() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(readOutputData(_:)),
-                                               name: FileHandle.readCompletionNotification,
-                                               object: nil)
+        outputDataObserver = NotificationCenter.default.addObserver(
+            forName: FileHandle.readCompletionNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            self?.readOutputData(notification)
+        }
     }
 
     func releaseOutputTextView() {
-        NotificationCenter.default.removeObserver(self, name: FileHandle.readCompletionNotification, object: nil)
+        if let outputDataObserver {
+            NotificationCenter.default.removeObserver(outputDataObserver)
+            self.outputDataObserver = nil
+        }
     }
 
     private func presentOutputWindow() {
@@ -1015,7 +1029,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    @objc private func constructTemplatePopup(_ sender: Any) {
+    private func constructTemplatePopup(_ sender: Any) {
         guard let menu = templatePopupButton.menu else { return }
         while menu.numberOfItems > 5 {
             menu.removeItem(at: 1)
@@ -1035,7 +1049,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    @objc func adoptPreambleTemplate(_ sender: Any) {
+    @IBAction func adoptPreambleTemplate(_ sender: Any) {
         let templatePath: String?
         if let menuItem = sender as? NSMenuItem {
             templatePath = menuItem.toolTip
@@ -1103,27 +1117,54 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             NSUserNotificationCenter.default.delegate = userNotificationDelegate
         }
 
-        let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(showMainWindow(_:)), name: NSApplication.didBecomeActiveNotification, object: NSApp)
-        center.addObserver(self, selector: #selector(applicationWillTerminate(_:)), name: NSApplication.willTerminateNotification, object: NSApp)
-        center.addObserver(self, selector: #selector(uncheckOutputWindowMenuItem(_:)), name: NSWindow.willCloseNotification, object: outputWindow)
-        center.addObserver(self, selector: #selector(uncheckPreambleWindowMenuItem(_:)), name: NSWindow.willCloseNotification, object: preambleWindow)
-        center.addObserver(self, selector: #selector(uncheckColorPalleteWindowMenuItem(_:)), name: NSWindow.willCloseNotification, object: colorPalleteWindow)
-        center.addObserver(self, selector: #selector(closeOtherWindows(_:)), name: NSWindow.willCloseNotification, object: mainWindow)
-        center.addObserver(sourceTextView, selector: textViewDidChangeSelection, name: NSTextView.didChangeSelectionNotification, object: sourceTextView)
-        center.addObserver(preambleTextView, selector: textViewDidChangeSelection, name: NSTextView.didChangeSelectionNotification, object: preambleTextView)
-        center.addObserver(self, selector: #selector(constructTemplatePopup(_:)), name: NSPopUpButton.willPopUpNotification, object: templatePopupButton)
-        center.addObserver(self, selector: #selector(otherWindowsDidBecomeKey(_:)), name: NSWindow.didBecomeKeyNotification, object: mainWindow)
-        center.addObserver(self, selector: #selector(otherWindowsDidBecomeKey(_:)), name: NSWindow.didBecomeKeyNotification, object: outputWindow)
-        center.addObserver(self, selector: #selector(otherWindowsDidBecomeKey(_:)), name: NSWindow.didBecomeKeyNotification, object: preambleWindow)
-        center.addObserver(self, selector: #selector(preferenceWindowDidBecomeKey(_:)), name: NSWindow.didBecomeKeyNotification, object: preferenceWindow)
-        center.addObserver(self, selector: #selector(colorPalleteWindowDidBecomeKey(_:)), name: NSWindow.didBecomeKeyNotification, object: colorPalleteWindow)
+        observeNotification(forName: NSApplication.didBecomeActiveNotification, object: NSApp) { [weak self] _ in
+            self?.showMainWindow()
+        }
+        observeNotification(forName: NSApplication.willTerminateNotification, object: NSApp) { [weak self] _ in
+            self?.applicationWillTerminate()
+        }
+        observeNotification(forName: NSWindow.willCloseNotification, object: outputWindow) { [weak self] _ in
+            self?.uncheckOutputWindowMenuItem()
+        }
+        observeNotification(forName: NSWindow.willCloseNotification, object: preambleWindow) { [weak self] _ in
+            self?.uncheckPreambleWindowMenuItem()
+        }
+        observeNotification(forName: NSWindow.willCloseNotification, object: colorPalleteWindow) { [weak self] _ in
+            self?.uncheckColorPalleteWindowMenuItem()
+        }
+        observeNotification(forName: NSWindow.willCloseNotification, object: mainWindow) { [weak self] _ in
+            self?.closeOtherWindows()
+        }
+        observeNotification(forName: NSPopUpButton.willPopUpNotification, object: templatePopupButton) { [weak self] notification in
+            self?.constructTemplatePopup(notification)
+        }
+        observeNotification(forName: NSWindow.didBecomeKeyNotification, object: mainWindow) { [weak self] notification in
+            self?.otherWindowsDidBecomeKey(notification)
+        }
+        observeNotification(forName: NSWindow.didBecomeKeyNotification, object: outputWindow) { [weak self] notification in
+            self?.otherWindowsDidBecomeKey(notification)
+        }
+        observeNotification(forName: NSWindow.didBecomeKeyNotification, object: preambleWindow) { [weak self] notification in
+            self?.otherWindowsDidBecomeKey(notification)
+        }
+        observeNotification(forName: NSWindow.didBecomeKeyNotification, object: preferenceWindow) { [weak self] notification in
+            self?.preferenceWindowDidBecomeKey(notification)
+        }
+        observeNotification(forName: NSWindow.didBecomeKeyNotification, object: colorPalleteWindow) { [weak self] notification in
+            self?.colorPalleteWindowDidBecomeKey(notification)
+        }
 
         for textField in [dpiTextField, leftMarginTextField, rightMarginTextField, topMarginTextField, bottomMarginTextField, numberOfCompilationTextField] {
-            center.addObserver(self, selector: #selector(refreshRelatedStepperValue(_:)), name: NSControl.textDidChangeNotification, object: textField)
+            observeNotification(forName: NSControl.textDidChangeNotification, object: textField) { [weak self] notification in
+                self?.refreshRelatedStepperValue(notification)
+            }
         }
-        center.addObserver(self, selector: #selector(refreshTextView(_:)), name: NSControl.textDidChangeNotification, object: tabWidthTextField)
-        center.addObserver(self, selector: #selector(outputFilePathChanged(_:)), name: NSControl.textDidChangeNotification, object: outputFileTextField)
+        observeNotification(forName: NSControl.textDidChangeNotification, object: tabWidthTextField) { [weak self] _ in
+            self?.refreshTextView(tabWidthTextField)
+        }
+        observeNotification(forName: NSControl.textDidChangeNotification, object: outputFileTextField) { [weak self] _ in
+            self?.outputFilePathChanged(nil)
+        }
 
         outputFileTextField.stringValue = "\(NSHomeDirectory())/Desktop/equation.eps"
         closeColorPanel()
@@ -1303,7 +1344,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                                             parameters["Msg2"] as? String ?? ""))
     }
 
-    @objc func applicationWillTerminate(_ notification: Notification) {
+    private func applicationWillTerminate() {
         if NSColorPanel.sharedColorPanelExists {
             closeColorPanel()
         }
@@ -1315,24 +1356,27 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        notificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
+        if let outputDataObserver {
+            NotificationCenter.default.removeObserver(outputDataObserver)
+        }
     }
 
-    @objc private func closeOtherWindows(_ notification: Notification) {
+    private func closeOtherWindows() {
         outputWindow.close()
         preambleWindow.close()
         preferenceWindow.close()
     }
 
-    @objc private func uncheckOutputWindowMenuItem(_ notification: Notification) {
+    private func uncheckOutputWindowMenuItem() {
         outputWindowMenuItem.state = .off
     }
 
-    @objc private func uncheckPreambleWindowMenuItem(_ notification: Notification) {
+    private func uncheckPreambleWindowMenuItem() {
         preambleWindowMenuItem.state = .off
     }
 
-    @objc private func otherWindowsDidBecomeKey(_ notification: Notification) {
+    private func otherWindowsDidBecomeKey(_ notification: Notification) {
         lastActiveWindow = notification.object as? NSWindow
         closeColorPanel()
     }
@@ -1341,7 +1385,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         showMainWindow()
     }
 
-    @objc private func readOutputData(_ notification: Notification) {
+    private func readOutputData(_ notification: Notification) {
         guard let outputPipe else { return }
         do {
             var data = outputPipe.fileHandleForReading.availableData
@@ -1563,14 +1607,14 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    @objc private func uncheckColorPalleteWindowMenuItem(_ notification: Notification) {
+    private func uncheckColorPalleteWindowMenuItem() {
         colorPalleteWindowMenuItem.state = .off
         if NSColorPanel.sharedColorPanelExists {
             NSColorPanel.shared.orderOut(self)
         }
     }
 
-    @objc private func preferenceWindowDidBecomeKey(_ notification: Notification) {
+    private func preferenceWindowDidBecomeKey(_ notification: Notification) {
         lastActiveWindow = notification.object as? NSWindow
         fillColorWell.restoreColor(from: lastColorDict)
         lightModeForegroundColorWell.restoreColor(from: lastColorDict)
@@ -1585,7 +1629,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         lightModeFlashingBackgroundColorWell.restoreColor(from: lastColorDict)
     }
 
-    @objc private func colorPalleteWindowDidBecomeKey(_ notification: Notification) {
+    private func colorPalleteWindowDidBecomeKey(_ notification: Notification) {
         colorPalleteColorWell.restoreColor(from: lastColorDict)
     }
 
@@ -1649,11 +1693,11 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         NSFontPanel.shared.perform(#selector(NSFontPanel.orderOut(_:)), with: self, afterDelay: 0)
     }
 
-    @objc private func dialogOk(_ sender: Any) {
+    @IBAction private func dialogOk(_ sender: Any) {
         NSApp.stopModal(withCode: .OK)
     }
 
-    @objc private func dialogCancel(_ sender: Any) {
+    @IBAction private func dialogCancel(_ sender: Any) {
         NSApp.stopModal(withCode: .cancel)
     }
 
@@ -1806,7 +1850,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    @objc private func extensionPopUpButtonInSavePanelChanged(_ sender: NSPopUpButton) {
+    @IBAction private func extensionPopUpButtonInSavePanelChanged(_ sender: NSPopUpButton) {
         guard let savePanel = sender.window as? NSSavePanel else { return }
         let oldName = savePanel.nameFieldStringValue
         let extensionLower = sender.selectedItem?.title.lowercased() ?? ""
@@ -1835,7 +1879,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         refreshTextView(sender)
     }
 
-    @objc private func refreshRelatedStepperValue(_ notification: Notification) {
+    private func refreshRelatedStepperValue(_ notification: Notification) {
         guard let textField = notification.object as? NSTextField,
               let stepper = textField.target as? NSStepper else { return }
         stepper.integerValue = textField.integerValue
@@ -1924,7 +1968,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         panel.isEnabled = true
     }
 
-    @objc private func changeFont(_ sender: Any) {
+    @IBAction private func changeFont(_ sender: Any) {
         guard let font = NSFontManager.shared.selectedFont else { return }
         setupFontTextField(font)
         sourceFont = font
@@ -1939,8 +1983,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     @IBAction func colorSettingChanged(_ sender: Any) {
         guard preferenceWindow.isKeyWindow, let well = sender as? NSColorWell else { return }
         well.saveColor(to: lastColorDict)
-        sourceTextView.perform(textViewDidChangeSelection, with: nil)
-        preambleTextView.perform(textViewDidChangeSelection, with: nil)
+        sourceTextView.refreshSelectionHighlighting()
+        preambleTextView.refreshSelectionHighlighting()
         recolorOutputView()
     }
 
@@ -2105,13 +2149,17 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         switch InputMethod(rawValue: profile.integerForKey(InputMethodKey)) ?? .direct {
         case .direct:
             let body = sourceTextView.textStorage?.string ?? ""
-            Thread.detachNewThreadSelector(#selector(Converter.compileAndConvert(withBody:)), toTarget: converter!, with: body)
+            DispatchQueue.global(qos: .userInitiated).async { [converter] in
+                converter?.compileAndConvert(withBody: body)
+            }
         case .fromFile:
             let inputSourceFilePath = (profile.stringForKey(InputSourceFilePathKey) as NSString?)?.standardizingPath ?? ""
             if FileManager.default.fileExists(atPath: inputSourceFilePath) {
                 let ext = (inputSourceFilePath as NSString).pathExtension
                 if inputExtensions.contains(ext) {
-                    Thread.detachNewThreadSelector(#selector(Converter.compileAndConvert(withInputPath:)), toTarget: converter!, with: inputSourceFilePath)
+                    DispatchQueue.global(qos: .userInitiated).async { [converter] in
+                        converter?.compileAndConvert(withInputPath: inputSourceFilePath)
+                    }
                 } else {
                     UtilityG.runErrorPanel(message: String(format: NSLocalizedString("inputFileTypeErrorMsg", comment: ""), inputSourceFilePath))
                     generationDidFinish(.failed)

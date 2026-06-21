@@ -40,7 +40,6 @@ protocol OutputController: AnyObject {
     func exitCurrentThreadIfTaskKilled()
 }
 
-@objc(Converter)
 class Converter: NSObject {
     // MARK: - Public properties
 
@@ -1563,7 +1562,7 @@ class Converter: NSObject {
 
         return true
     }
-    @objc private func runAppleScriptOnMainThread(_ script: String) {
+    private func runAppleScript(_ script: String) {
         NSAppleScript(source: script)?.executeAndReturnError(nil)
     }
 
@@ -1661,7 +1660,9 @@ class Converter: NSObject {
             }
 
             if let script {
-                performSelector(onMainThread: #selector(runAppleScriptOnMainThread(_:)), with: script, waitUntilDone: false)
+                DispatchQueue.main.async { [weak self] in
+                    self?.runAppleScript(script)
+                }
             }
         }
 
@@ -1674,7 +1675,9 @@ class Converter: NSObject {
                 }
             }
             script += "end tell\n"
-            performSelector(onMainThread: #selector(runAppleScriptOnMainThread(_:)), with: script, waitUntilDone: false)
+            DispatchQueue.main.async { [weak self] in
+                self?.runAppleScript(script)
+            }
         }
 
         if status {
@@ -1765,7 +1768,6 @@ class Converter: NSObject {
         try? fileManager.removeItem(atPath: "\(basePath).synctex.gz(busy)")
     }
 
-    @objc(compileAndConvertWithSource:)
     func compileAndConvert(withSource texSourceStr: String) -> Bool {
         let tempTeXFilePath = String(format: "%@.tex", (workingDirectory as NSString).appendingPathComponent(tempFileBaseName))
 
@@ -1778,7 +1780,6 @@ class Converter: NSObject {
         return compileAndConvertWithCheck()
     }
 
-    @objc(compileAndConvertWithBody:)
     func compileAndConvert(withBody texBodyStr: String) -> Bool {
         autoreleasepool {
             let texSourceStr = String(format: "%@\n\\begin{document}\n%@\n\\end{document}", preambleStr, texBodyStr)
@@ -1786,7 +1787,6 @@ class Converter: NSObject {
         }
     }
 
-    @objc(compileAndConvertWithInputPath:)
     func compileAndConvert(withInputPath sourcePath: String) -> Bool {
         autoreleasepool {
             additionalInputPath = (Utility.getFullPath(sourcePath) as NSString?)?.deletingLastPathComponent

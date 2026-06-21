@@ -5,7 +5,6 @@ private let movedRowsPasteboardType = NSPasteboard.PasteboardType("TeX2imgMovedR
 private let profileNamesKey = "profileNames"
 private let profilesKey = "profiles"
 
-@objc(ProfileController)
 class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     private var profiles = [NSDictionary]()
     private var profileNames = [String]()

@@ -131,7 +131,6 @@ private final class UnicodeInfo: NSObject {
     }
 }
 
-@objc(MyGlyphPopoverController)
 class MyGlyphPopoverController: NSViewController {
     @objc dynamic var glyph = ""
     @objc dynamic var unicodeName = ""
@@ -141,7 +140,6 @@ class MyGlyphPopoverController: NSViewController {
     @IBOutlet private var unicodesTextView: NSTextView!
     @IBOutlet private var unicodeBlockNameField: NSTextField!
 
-    @objc(initWithCharacter:)
     init?(character: String) {
         let numberOfComposedCharacters = character.numberOfComposedCharacters()
         guard numberOfComposedCharacters > 0 else { return nil }
@@ -307,7 +305,7 @@ class MyGlyphPopoverController: NSViewController {
         }
     }
 
-    @objc func showPopoverRelativeToRect(_ positioningRect: NSRect, ofView parentView: NSView) {
+    func showPopover(relativeTo positioningRect: NSRect, of parentView: NSView) {
         let popover = NSPopover()
         popover.contentViewController = self
         popover.behavior = .semitransient
