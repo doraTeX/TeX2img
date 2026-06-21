@@ -36,8 +36,8 @@
 		34A5C705251B700000FCF7BA /* NSMutableString-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */; };
 		34A5C700251B700000FCF7BA /* NSArray-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */; };
 		34A5C701251B700000FCF7BA /* NSArray-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */; };
-		347314FB1B89CFDC00F285A3 /* NSString-Unicode.m in Sources */ = {isa = PBXBuildFile; fileRef = 347314FA1B89CFDC00F285A3 /* NSString-Unicode.m */; };
-		34821EC810282CF9008DEB1F /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34821EC710282CF9008DEB1F /* ProfileController.m */; };
+		34A5C715251B700000FCF7BA /* NSString-Unicode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C714251B700000FCF7BA /* NSString-Unicode.swift */; };
+		34A5C713251B700000FCF7BA /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C712251B700000FCF7BA /* ProfileController.swift */; };
 		348507F8125AC21E0058A26B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; };
 		34850828125AC9E30058A26B /* Sparkle.framework in フレームワークをコピー */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		348658F52526402E00B8B190 /* NSDate-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348658F42526402E00B8B190 /* NSDate-Extension.swift */; };
@@ -157,10 +157,8 @@
 		34670DD5125B7AC3002308EF /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TeXTextView-Bullet.swift"; sourceTree = "<group>"; };
 		34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSArray-Extension.swift"; sourceTree = "<group>"; };
-		347314F91B89CFDC00F285A3 /* NSString-Unicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Unicode.h"; sourceTree = "<group>"; };
-		347314FA1B89CFDC00F285A3 /* NSString-Unicode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Unicode.m"; sourceTree = "<group>"; };
-		34821EC610282CF9008DEB1F /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
-		34821EC710282CF9008DEB1F /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
+		34A5C714251B700000FCF7BA /* NSString-Unicode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSString-Unicode.swift"; sourceTree = "<group>"; };
+		34A5C712251B700000FCF7BA /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		348507F7125AC21E0058A26B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		348658F42526402E00B8B190 /* NSDate-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDate-Extension.swift"; sourceTree = "<group>"; };
 		348658FA2526421000B8B190 /* PDFPage-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PDFPage-Extension.swift"; sourceTree = "<group>"; };
@@ -265,8 +263,7 @@
 				3486591F252659A600B8B190 /* MyATSTypesetter.swift */,
 				349927371B786546009BD5F1 /* MyGlyphPopoverController.h */,
 				349927381B786546009BD5F1 /* MyGlyphPopoverController.m */,
-				34821EC610282CF9008DEB1F /* ProfileController.h */,
-				34821EC710282CF9008DEB1F /* ProfileController.m */,
+				34A5C712251B700000FCF7BA /* ProfileController.swift */,
 				3419976F25282F9D0022F53C /* PDFPageBox.swift */,
 				3402126C2534D272002D1545 /* UserNotificationDelegate.swift */,
 				340364352537552B005A43A5 /* AutoSelectTextField.swift */,
@@ -423,8 +420,7 @@
 				348658FF252643A600B8B190 /* NSIndexSet-Extension.swift */,
 				34A5C702251B700000FCF7BA /* NSDictionary-Extension.swift */,
 				34A5C709251B700000FCF7BA /* NSString-Extension.swift */,
-				347314F91B89CFDC00F285A3 /* NSString-Unicode.h */,
-				347314FA1B89CFDC00F285A3 /* NSString-Unicode.m */,
+				34A5C714251B700000FCF7BA /* NSString-Unicode.swift */,
 				34DBA5821D9A4F3A00951297 /* NSString-Conversion.h */,
 				34DBA5831D9A4F3A00951297 /* NSString-Conversion.m */,
 				34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */,
@@ -659,11 +655,11 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				34A5C710251B700000FCF7BA /* UtilityG.swift in Sources */,
 				3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */,
-				347314FB1B89CFDC00F285A3 /* NSString-Unicode.m in Sources */,
+				34A5C715251B700000FCF7BA /* NSString-Unicode.swift in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
 				34A5C703251B700000FCF7BA /* NSDictionary-Extension.swift in Sources */,
 				34DBA5841D9A4F3A00951297 /* NSString-Conversion.m in Sources */,
-				34821EC810282CF9008DEB1F /* ProfileController.m in Sources */,
+				34A5C713251B700000FCF7BA /* ProfileController.swift in Sources */,
 				34A5C70B251B700000FCF7BA /* Utility.swift in Sources */,
 				349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */,
 				34A5C700251B700000FCF7BA /* NSArray-Extension.swift in Sources */,

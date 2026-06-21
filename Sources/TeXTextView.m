@@ -2,7 +2,6 @@
 #import "TeXTextView.h"
 
 
-#import "NSString-Unicode.h"
 #import "NSString-Conversion.h"
 
 #import "MyGlyphPopoverController.h"
