@@ -204,6 +204,17 @@ def update_pbxproj(sources_group_id: str, new_group_blocks: str) -> None:
         text,
         count=1,
     )
+    if f"{sources_group_id} /* Sources */," not in text:
+        text = text.replace(
+            "080E96DDFE201D6D7F000001 /* Classes */,",
+            f"{sources_group_id} /* Sources */,",
+        )
+        for stale in [
+            "348F295D1B848951009AA3CF /* Extensions */,",
+            "29B97315FDCFA39411CA2CEA /* Other Sources */,",
+            "347314F41B89CD9500F285A3 /* ICU Headers */,",
+        ]:
+            text = text.replace(f"\t\t\t{stale}\n", "")
 
     for old in [
         r"\t\t080E96DDFE201D6D7F000001 /\* Classes \*/ = \{.*?\n\t\t\};\n",
