@@ -2,7 +2,7 @@
 #import <sys/xattr.h>
 #import "ControllerG.h"
 #import "TeX2img-Swift.h"
-#import "NSArray-Extension.h"
+
 #import "NSDictionary-Extension.h"
 #import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"

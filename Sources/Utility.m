@@ -1,5 +1,5 @@
 #import "Utility.h"
-#import "NSArray-Extension.h"
+
 #import "TeX2img-Swift.h"
 
 NSString* execCommand(NSString *cmdline)

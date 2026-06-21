@@ -34,8 +34,8 @@
 		34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 34670DD5125B7AC3002308EF /* dsa_pub.pem */; };
 		34675B2B251CE443000EBBA3 /* TeXTextView-Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */; };
 		3468197D1C06A78800641CBF /* NSMutableString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7025539810353D33000D6D05 /* NSMutableString-Extension.m */; };
-		346DA57B1B705F6800B51BD7 /* NSArray-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */; };
-		346DA57C1B705F6800B51BD7 /* NSArray-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */; };
+		34A5C700251B700000FCF7BA /* NSArray-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */; };
+		34A5C701251B700000FCF7BA /* NSArray-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */; };
 		347314FB1B89CFDC00F285A3 /* NSString-Unicode.m in Sources */ = {isa = PBXBuildFile; fileRef = 347314FA1B89CFDC00F285A3 /* NSString-Unicode.m */; };
 		34821EC810282CF9008DEB1F /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34821EC710282CF9008DEB1F /* ProfileController.m */; };
 		348507F8125AC21E0058A26B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; };
@@ -156,8 +156,7 @@
 		346225651AB558AB00F632AD /* mupdf */ = {isa = PBXFileReference; lastKnownFileType = folder; path = mupdf; sourceTree = "<group>"; };
 		34670DD5125B7AC3002308EF /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TeXTextView-Bullet.swift"; sourceTree = "<group>"; };
-		346DA5791B705F6800B51BD7 /* NSArray-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray-Extension.h"; sourceTree = "<group>"; };
-		346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Extension.m"; sourceTree = "<group>"; };
+		34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSArray-Extension.swift"; sourceTree = "<group>"; };
 		347314F91B89CFDC00F285A3 /* NSString-Unicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString-Unicode.h"; sourceTree = "<group>"; };
 		347314FA1B89CFDC00F285A3 /* NSString-Unicode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-Unicode.m"; sourceTree = "<group>"; };
 		34821EC610282CF9008DEB1F /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
@@ -427,8 +426,7 @@
 				3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */,
 				3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */,
 				340212592534AF36002D1545 /* NSWindow-Extension.swift */,
-				346DA5791B705F6800B51BD7 /* NSArray-Extension.h */,
-				346DA57A1B705F6800B51BD7 /* NSArray-Extension.m */,
+				34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */,
 				348658FF252643A600B8B190 /* NSIndexSet-Extension.swift */,
 				34CF33A210260315009A8CA6 /* NSDictionary-Extension.h */,
 				34CF33A310260315009A8CA6 /* NSDictionary-Extension.m */,
@@ -627,7 +625,7 @@
 				3432CA3C1026168A009631F9 /* NSDictionary-Extension.m in Sources */,
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
 				34D2A63E1AB9BC0F0040B4A5 /* UtilityC.m in Sources */,
-				346DA57C1B705F6800B51BD7 /* NSArray-Extension.m in Sources */,
+				34A5C701251B700000FCF7BA /* NSArray-Extension.swift in Sources */,
 				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,
 				705DC7A70F1197E90052AFA5 /* mainc.m in Sources */,
 				34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */,
@@ -678,7 +676,7 @@
 				34821EC810282CF9008DEB1F /* ProfileController.m in Sources */,
 				349564B81ABFF3D1004B9C1D /* Utility.m in Sources */,
 				349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */,
-				346DA57B1B705F6800B51BD7 /* NSArray-Extension.m in Sources */,
+				34A5C700251B700000FCF7BA /* NSArray-Extension.swift in Sources */,
 				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,
 				7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */,
 				348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */,

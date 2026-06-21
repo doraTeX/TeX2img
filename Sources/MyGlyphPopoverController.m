@@ -34,7 +34,7 @@
 #import "MyGlyphPopoverController.h"
 #import "NSString-Extension.h"
 #import "NSString-Unicode.h"
-#import "NSArray-Extension.h"
+#import "TeX2img-Swift.h"
 #import "UtilityG.h"
 
 // variation Selectors
