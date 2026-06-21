@@ -2,10 +2,10 @@ import AppKit
 import CoreFoundation
 import Foundation
 
-@objc extension NSString {
+extension NSString {
     // MARK: - UTF / CID
 
-    @objc func stringByReplacingUnicodeCharactersWithUTF() -> String {
+    func stringByReplacingUnicodeCharactersWithUTF() -> String {
         let iso2022jp = String.Encoding.iso2022JP.rawValue
         let newString = NSMutableString()
         let texChar: unichar = 0x5C
@@ -54,7 +54,7 @@ import Foundation
         return newString as String
     }
 
-    @objc func stringByReplacingUTFWithUnicodeCharacters() -> String {
+    func stringByReplacingUTFWithUnicodeCharacters() -> String {
         let str = NSMutableString(string: self)
 
         str.replaceAllOccurrences(ofPattern: #"\\UTF\{([0-9A-Fa-z]{4})\}"#) { match, groups in
@@ -75,13 +75,13 @@ import Foundation
 
     // MARK: - Hiragana / Katakana
 
-    @objc func stringByReplacingHiraganaWithKatakana() -> String {
+    func stringByReplacingHiraganaWithKatakana() -> String {
         let str = NSMutableString(string: self)
         replaceMappedCharacters(in: str, offset: 0x3040, destinationOffset: 0x30A0, range: 0x0001...0x0056, addingPercent: false)
         return str as String
     }
 
-    @objc func stringByReplacingKatakanaWithHiragana() -> String {
+    func stringByReplacingKatakanaWithHiragana() -> String {
         let str = NSMutableString(string: self)
         replaceMappedCharacters(in: str, offset: 0x30A0, destinationOffset: 0x3040, range: 0x0001...0x0056, addingPercent: false)
         return str as String
@@ -89,13 +89,13 @@ import Foundation
 
     // MARK: - Digits
 
-    @objc func stringByReplacingHalfwidthDigitsWithFullwidthDigits() -> String {
+    func stringByReplacingHalfwidthDigitsWithFullwidthDigits() -> String {
         let str = NSMutableString(string: self)
         replaceMappedCharacters(in: str, offset: 0x0030, destinationOffset: 0xFF10, range: 0...9, addingPercent: false)
         return str as String
     }
 
-    @objc func stringByReplacingFullwidthDigitsWithHalfwidthDigits() -> String {
+    func stringByReplacingFullwidthDigitsWithHalfwidthDigits() -> String {
         let str = NSMutableString(string: self)
         replaceMappedCharacters(in: str, offset: 0xFF10, destinationOffset: 0x0030, range: 0...9, addingPercent: true)
         return str as String
@@ -103,14 +103,14 @@ import Foundation
 
     // MARK: - Alphabets
 
-    @objc func stringByReplacingHalfwidthAlphabetsWithFullwidthAlphabets() -> String {
+    func stringByReplacingHalfwidthAlphabetsWithFullwidthAlphabets() -> String {
         let str = NSMutableString(string: self)
         replaceMappedCharacters(in: str, offset: 0x0040, destinationOffset: 0xFF20, range: 1...26, addingPercent: false)
         replaceMappedCharacters(in: str, offset: 0x0060, destinationOffset: 0xFF40, range: 1...26, addingPercent: false)
         return str as String
     }
 
-    @objc func stringByReplacingFullwidthAlphabetsWithHalfwidthAlphabets() -> String {
+    func stringByReplacingFullwidthAlphabetsWithHalfwidthAlphabets() -> String {
         let str = NSMutableString(string: self)
         replaceMappedCharacters(in: str, offset: 0xFF20, destinationOffset: 0x0040, range: 1...26, addingPercent: true)
         replaceMappedCharacters(in: str, offset: 0xFF40, destinationOffset: 0x0060, range: 1...26, addingPercent: true)
@@ -119,7 +119,7 @@ import Foundation
 
     // MARK: - ajmacros (aggregate)
 
-    @objc func stringByReplacingUnicodeCharactersWithAjMacros() -> String {
+    func stringByReplacingUnicodeCharactersWithAjMacros() -> String {
         return stringByReplacingMaruSujiWithAjMaru()
             .stringByReplacingKuroMaruSujiWithAjKuroMaru()
             .stringByReplacingKakkoSujiWithAjKakko()
@@ -140,7 +140,7 @@ import Foundation
             .stringByReplacingLigWithAjLig()
     }
 
-    @objc func stringByReplacingAjMacrosWithUnicodeCharacters() -> String {
+    func stringByReplacingAjMacrosWithUnicodeCharacters() -> String {
         return stringByReplacingAjMaruWithMaruSuji()
             .stringByReplacingAjKuroMaruWithKuroMaruSuji()
             .stringByReplacingAjKakkoWithMakkoSuji()
@@ -163,7 +163,7 @@ import Foundation
 
     // MARK: - ajMaru
 
-    @objc func stringByReplacingMaruSujiWithAjMaru() -> String {
+    func stringByReplacingMaruSujiWithAjMaru() -> String {
         let str = NSMutableString(string: self)
         replaceSingleCharacter(in: str, source: 0x24EA, destination: "\\ajMaru{0}", addingPercent: true)
         for index in 1...20 {
@@ -178,7 +178,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjMaruWithMaruSuji() -> String {
+    func stringByReplacingAjMaruWithMaruSuji() -> String {
         let str = NSMutableString(string: self)
         replaceAll(in: str, source: "\\ajMaru{0}", destination: Self.string(fromCodePoint: 0x24EA), addingPercent: false)
         replaceAll(in: str, source: "\\ajMaru0", destination: Self.string(fromCodePoint: 0x24EA), addingPercent: false)
@@ -203,7 +203,7 @@ import Foundation
 
     // MARK: - ajKuroMaru
 
-    @objc func stringByReplacingKuroMaruSujiWithAjKuroMaru() -> String {
+    func stringByReplacingKuroMaruSujiWithAjKuroMaru() -> String {
         let str = NSMutableString(string: self)
         replaceSingleCharacter(in: str, source: 0x24FF, destination: "\\ajKuroMaru{0}", addingPercent: true)
         for index in 1...10 {
@@ -215,7 +215,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjKuroMaruWithKuroMaruSuji() -> String {
+    func stringByReplacingAjKuroMaruWithKuroMaruSuji() -> String {
         let str = NSMutableString(string: self)
         replaceAll(in: str, source: "\\ajKuroMaru{0}", destination: Self.string(fromCodePoint: 0x24FF), addingPercent: false)
         replaceAll(in: str, source: "\\ajKuroMaru0", destination: Self.string(fromCodePoint: 0x24FF), addingPercent: false)
@@ -236,7 +236,7 @@ import Foundation
 
     // MARK: - ajKakko
 
-    @objc func stringByReplacingKakkoSujiWithAjKakko() -> String {
+    func stringByReplacingKakkoSujiWithAjKakko() -> String {
         let str = NSMutableString(string: self)
         for index in 1...20 {
             replaceSingleCharacter(in: str, source: UInt32(0x2474 + index - 1), destination: "\\ajKakko{\(index)}", addingPercent: true)
@@ -244,7 +244,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjKakkoWithMakkoSuji() -> String {
+    func stringByReplacingAjKakkoWithMakkoSuji() -> String {
         let str = NSMutableString(string: self)
         for index in 1...20 {
             let destination = Self.string(fromCodePoint: UInt32(0x2474 + index - 1))
@@ -259,7 +259,7 @@ import Foundation
 
     // MARK: - ajMaruAlph / ajMarualph
 
-    @objc func stringByReplacingMaruAlphWithAjMaruAlph() -> String {
+    func stringByReplacingMaruAlphWithAjMaruAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
             replaceSingleCharacter(in: str, source: UInt32(0x24B6 + index - 1), destination: "\\ajMaruAlph{\(index)}", addingPercent: true)
@@ -270,7 +270,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjMaruAlphWithMaruAlph() -> String {
+    func stringByReplacingAjMaruAlphWithMaruAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
             let destination = Self.string(fromCodePoint: UInt32(0x24B6 + index - 1))
@@ -293,7 +293,7 @@ import Foundation
 
     // MARK: - ajKakkoAlph / ajKakkoalph
 
-    @objc func stringByReplacingKakkoAlphWithAjKakkoAlph() -> String {
+    func stringByReplacingKakkoAlphWithAjKakkoAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
             let source = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD10 + index - 1))
@@ -305,7 +305,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjKakkoAlphWithKakkoAlph() -> String {
+    func stringByReplacingAjKakkoAlphWithKakkoAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
             let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD10 + index - 1))
@@ -328,7 +328,7 @@ import Foundation
 
     // MARK: - ajKuroMaruAlph
 
-    @objc func stringByReplacingKuroMaruAlphWithAjKuroMaruAlph() -> String {
+    func stringByReplacingKuroMaruAlphWithAjKuroMaruAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
             let source = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD50 + index - 1))
@@ -337,7 +337,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjKuroMaruAlphWithKuroMaruAlph() -> String {
+    func stringByReplacingAjKuroMaruAlphWithKuroMaruAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
             let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD50 + index - 1))
@@ -352,7 +352,7 @@ import Foundation
 
     // MARK: - ajKakuAlph
 
-    @objc func stringByReplacingKakuAlphWithAjKakuAlph() -> String {
+    func stringByReplacingKakuAlphWithAjKakuAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
             let source = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD30 + index - 1))
@@ -361,7 +361,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjKakuAlphWithKakuAlph() -> String {
+    func stringByReplacingAjKakuAlphWithKakuAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
             let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD30 + index - 1))
@@ -376,7 +376,7 @@ import Foundation
 
     // MARK: - ajKuroKakuAlph
 
-    @objc func stringByReplacingKuroKakuAlphWithAjKuroKakuAlph() -> String {
+    func stringByReplacingKuroKakuAlphWithAjKuroKakuAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
             let source = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD70 + index - 1))
@@ -385,7 +385,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjKuroKakuAlphWithKuroKakuAlph() -> String {
+    func stringByReplacingAjKuroKakuAlphWithKuroKakuAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
             let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD70 + index - 1))
@@ -400,7 +400,7 @@ import Foundation
 
     // MARK: - ajRoman / ajroman
 
-    @objc func stringByReplacingRomanWithAjRoman() -> String {
+    func stringByReplacingRomanWithAjRoman() -> String {
         let str = NSMutableString(string: self)
         for index in 1...12 {
             replaceSingleCharacter(in: str, source: UInt32(0x2160 + index - 1), destination: "\\ajRoman{\(index)}", addingPercent: true)
@@ -411,7 +411,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjRomanWithRoman() -> String {
+    func stringByReplacingAjRomanWithRoman() -> String {
         let str = NSMutableString(string: self)
         for index in 1...12 {
             let destination = Self.string(fromCodePoint: UInt32(0x2160 + index - 1))
@@ -434,7 +434,7 @@ import Foundation
 
     // MARK: - ajPeriod
 
-    @objc func stringByReplacingPeriodWithAjPeriod() -> String {
+    func stringByReplacingPeriodWithAjPeriod() -> String {
         let str = NSMutableString(string: self)
         for index in 1...9 {
             replaceSingleCharacter(in: str, source: UInt32(0x2488 + index - 1), destination: "\\ajPeriod{\(index)}", addingPercent: true)
@@ -442,7 +442,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjPeriodWithPeriod() -> String {
+    func stringByReplacingAjPeriodWithPeriod() -> String {
         let str = NSMutableString(string: self)
         for index in 1...9 {
             let destination = Self.string(fromCodePoint: UInt32(0x2488 + index - 1))
@@ -457,7 +457,7 @@ import Foundation
 
     // MARK: - ajKakkoYobi
 
-    @objc func stringByReplacingKakkoYobiWithAjKakkoYobi() -> String {
+    func stringByReplacingKakkoYobiWithAjKakkoYobi() -> String {
         let str = NSMutableString(string: self)
         replaceSingleCharacter(in: str, source: 0x3230, destination: "\\ajKakkoYobi{1}", addingPercent: true)
         for index in 2...7 {
@@ -468,7 +468,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjKakkoYobiWithKakkoYobi() -> String {
+    func stringByReplacingAjKakkoYobiWithKakkoYobi() -> String {
         let str = NSMutableString(string: self)
         let firstDestination = Self.string(fromCodePoint: 0x3230)
         replaceAll(in: str, source: "\\ajKakkoYobi{1}", destination: firstDestination, addingPercent: false)
@@ -489,7 +489,7 @@ import Foundation
 
     // MARK: - ajMaruYobi
 
-    @objc func stringByReplacingMaruYobiWithAjMaruYobi() -> String {
+    func stringByReplacingMaruYobiWithAjMaruYobi() -> String {
         let str = NSMutableString(string: self)
         replaceSingleCharacter(in: str, source: 0x3290, destination: "\\ajKakkoYobi{1}", addingPercent: true)
         for index in 2...7 {
@@ -500,7 +500,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjMaruYobiWithMaruYobi() -> String {
+    func stringByReplacingAjMaruYobiWithMaruYobi() -> String {
         let str = NSMutableString(string: self)
         let firstDestination = Self.string(fromCodePoint: 0x3290)
         replaceAll(in: str, source: "\\ajKakkoYobi{1}", destination: firstDestination, addingPercent: false)
@@ -521,7 +521,7 @@ import Foundation
 
     // MARK: - ajNijuMaru
 
-    @objc func stringByReplacingNijuMaruWithAjNijuMaru() -> String {
+    func stringByReplacingNijuMaruWithAjNijuMaru() -> String {
         let str = NSMutableString(string: self)
         for index in 1...10 {
             replaceSingleCharacter(in: str, source: UInt32(0x24F5 + index - 1), destination: "\\ajNijuMaru{\(index)}", addingPercent: true)
@@ -529,7 +529,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjNijuMaruWithNijuMaru() -> String {
+    func stringByReplacingAjNijuMaruWithNijuMaru() -> String {
         let str = NSMutableString(string: self)
         for index in 1...10 {
             let destination = Self.string(fromCodePoint: UInt32(0x24F5 + index - 1))
@@ -544,7 +544,7 @@ import Foundation
 
     // MARK: - ajRecycle
 
-    @objc func stringByReplacingRecycleWithAjRecycle() -> String {
+    func stringByReplacingRecycleWithAjRecycle() -> String {
         let str = NSMutableString(string: self)
         for index in 0...11 {
             replaceSingleCharacter(in: str, source: UInt32(0x2672 + index), destination: "\\ajRecycle{\(index)}", addingPercent: true)
@@ -552,7 +552,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjRecycleWithRecycle() -> String {
+    func stringByReplacingAjRecycleWithRecycle() -> String {
         let str = NSMutableString(string: self)
         for index in 0...11 {
             let destination = Self.string(fromCodePoint: UInt32(0x2672 + index))
@@ -567,7 +567,7 @@ import Foundation
 
     // MARK: - ajMaruKata
 
-    @objc func stringByReplacingMaruKataWithAjMaruKata() -> String {
+    func stringByReplacingMaruKataWithAjMaruKata() -> String {
         let str = NSMutableString(string: self)
         for index in 1...47 {
             replaceSingleCharacter(in: str, source: UInt32(0x32D0 + index - 1), destination: "\\ajMaruKata{\(index)}", addingPercent: true)
@@ -575,7 +575,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjMaruKataWithMaruKata() -> String {
+    func stringByReplacingAjMaruKataWithMaruKata() -> String {
         let str = NSMutableString(string: self)
         for index in 1...47 {
             let destination = Self.string(fromCodePoint: UInt32(0x32D0 + index - 1))
@@ -590,7 +590,7 @@ import Foundation
 
     // MARK: - ajKakkoKansuji
 
-    @objc func stringByReplacingKakkoKansujiWithAjKakkoKansuji() -> String {
+    func stringByReplacingKakkoKansujiWithAjKakkoKansuji() -> String {
         let str = NSMutableString(string: self)
         for index in 1...10 {
             replaceSingleCharacter(in: str, source: UInt32(0x3220 + index - 1), destination: "\\ajKakkoKansuji{\(index)}", addingPercent: true)
@@ -598,7 +598,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjKakkoKansujiWithKakkoKansuji() -> String {
+    func stringByReplacingAjKakkoKansujiWithKakkoKansuji() -> String {
         let str = NSMutableString(string: self)
         for index in 1...10 {
             let destination = Self.string(fromCodePoint: UInt32(0x3220 + index - 1))
@@ -613,7 +613,7 @@ import Foundation
 
     // MARK: - ajMaruKansuji
 
-    @objc func stringByReplacingMaruKansujiWithAjMaruKansuji() -> String {
+    func stringByReplacingMaruKansujiWithAjMaruKansuji() -> String {
         let str = NSMutableString(string: self)
         for index in 1...10 {
             replaceSingleCharacter(in: str, source: UInt32(0x3280 + index - 1), destination: "\\ajMaruKansuji{\(index)}", addingPercent: true)
@@ -621,7 +621,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjMaruKansujiWithMaruKansuji() -> String {
+    func stringByReplacingAjMaruKansujiWithMaruKansuji() -> String {
         let str = NSMutableString(string: self)
         for index in 1...10 {
             let destination = Self.string(fromCodePoint: UInt32(0x3280 + index - 1))
@@ -636,7 +636,7 @@ import Foundation
 
     // MARK: - ajLig
 
-    @objc func stringByReplacingLigWithAjLig() -> String {
+    func stringByReplacingLigWithAjLig() -> String {
         let str = NSMutableString(string: self)
         for (source, destination, addingPercent) in ligToAjLigStringReplacements {
             replaceAll(in: str, source: source, destination: destination, addingPercent: addingPercent)
@@ -644,7 +644,7 @@ import Foundation
         return str as String
     }
 
-    @objc func stringByReplacingAjLigWithLig() -> String {
+    func stringByReplacingAjLigWithLig() -> String {
         let str = NSMutableString(string: self)
         for (source, destination, addingPercent) in ajLigToLigStringReplacements {
             replaceAll(in: str, source: source, destination: destination, addingPercent: addingPercent)
@@ -657,7 +657,7 @@ import Foundation
 
     // MARK: - Quotes
 
-    @objc func stringByReplacingFullwidthQuotesWithHalfwidthQuotes() -> String {
+    func stringByReplacingFullwidthQuotesWithHalfwidthQuotes() -> String {
         let str = NSMutableString(string: self)
         replaceAll(in: str, source: "\u{2018}\u{201C}", destination: "`\\,``", addingPercent: false)
         replaceAll(in: str, source: "\u{201D}\u{2019}", destination: "''\\,'", addingPercent: false)

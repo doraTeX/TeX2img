@@ -12,7 +12,6 @@ typealias Profile = NSDictionary
 typealias MutableProfile = NSMutableDictionary
 
 let AnnotationHeader = "%%TeX2img Document\n"
-let BASH_PATH = "/bin/bash"
 let CUI_PATH = "/usr/local/bin/tex2img"
 let SVG_PREVIEWER = "/Applications/Gapplin.app"
 let GAPPLIN_URL = "macappstore://apps.apple.com/app/id768053424?mt=12"

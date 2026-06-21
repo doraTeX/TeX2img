@@ -58,10 +58,14 @@ TeX2img と tex2img が Swift ソースを共有しているため、Xcode が `
 - tex2img に `SWIFT_EMIT_CONST_VALUES = NO`
 - TeX2img → tex2img の `PBXTargetDependency` を追加
 
-## Obsolete API（Swift 化完了後に現代化）
+## Obsolete API 現代化（完了）
 
-- `Utility.execCommand` — `Process` で `/bin/bash -c` を実行している。呼び出し元がシェル文字列を渡す API のため現状維持。引数配列を直接渡す形へのリファクタリングが必要。
-- `ControllerG-Extension.searchProgram` — 同様に `bash -c` を使用。
+| API | 変更内容 |
+|---|---|
+| `Utility.execCommand` | `/bin/bash -c` → 実行ファイルパス + 引数配列を直接 `Process` に渡す形へ |
+| `ControllerC.execCommand` | `/bin/sh -c` → `ControllerG` と同様に実行ファイルを直接起動 |
+| `ControllerG-Extension.searchProgram` | `bash -c` + `path_helper` → `/usr/libexec/path_helper` を直接実行し PATH をパース |
+| `ObjCBool` | `FileManager.isDirectory(atPath:)` / `isRegularFile(atPath:)`（`URLResourceValues` ベース）へ置換 |
 
 ## mainc 移植メモ
 
@@ -77,7 +81,7 @@ TeX2img と tex2img が Swift ソースを共有しているため、Xcode が `
 
 - 旧 `NSString-Conversion.m` の約 15,465 件の `replaceCID:withUnicodePoint:` 呼び出しを `[Int: UInt32]` 辞書 `cidToUnicode` に集約。
 - `NSString-Conversion+CIDTable.swift`（`scripts/generate_cid_table.py` で生成）、`+LigTable.swift`（`scripts/extract_lig_pairs.py`）に分割。
-- コンパイル負荷が大きい。将来的には実行時ロード（plist/JSON）への移行を検討。
+- CID テーブルは `Resources/cidToUnicode.json`（15,464 件）としてバンドルし、実行時に JSON ロード（`NSString-Conversion+CIDTable.swift` はローダーのみ）。tex2img CLI は CID 変換を使わないため空辞書で動作。
 
 ## UtilityC 移植メモ
 
@@ -86,7 +90,14 @@ TeX2img と tex2img が Swift ソースを共有しているため、Xcode が `
 
 ## 残作業（Swift 化完了後）
 
-- 不要な `@objc` 修飾子の整理（XIB 接続に必要な分のみ残す）
-- `ObjCBool` 残存チェック
-- obsolete API の現代化（上記セクション参照）
-- `NSString-Conversion+CIDTable.swift` の実行時ロード化（ビルド負荷軽減）
+### 完了
+
+- `ObjCBool` 除去 → `FileManager.isDirectory(atPath:)` / `isRegularFile(atPath:)`
+- obsolete API 現代化（`execCommand`, `searchProgram`）
+- `NSString-Conversion+CIDTable.swift` の実行時ロード化（`Resources/cidToUnicode.json`）
+- 一部 `@objc` 整理（`NSString-Conversion` 全メソッド、`Converter` プロパティ、`searchProgram`）
+
+### 未着手（優先度低）
+
+- 残存 `@objc` の精査（`OutputController` プロトコル、`performSelector` ターゲット、XIB `IBAction`/`IBOutlet` に必要な分は維持）
+- `NSString-Unicode` 等の NSString 拡張の `@objc` 整理

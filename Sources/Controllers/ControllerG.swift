@@ -1010,8 +1010,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             }
         }
 
-        var isDirectory: ObjCBool = false
-        if fileManager.fileExists(atPath: fullPath, isDirectory: &isDirectory), isDirectory.boolValue {
+        if fileManager.isDirectory(atPath: fullPath) {
             let itemWithSubmenu = NSMenuItem(title: filename, action: nil, keyEquivalent: "")
             let submenu = NSMenu()
             submenu.autoenablesItems = false

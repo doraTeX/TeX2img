@@ -13,6 +13,7 @@
 		3402126D2534D273002D1545 /* UserNotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3402126C2534D272002D1545 /* UserNotificationDelegate.swift */; };
 		340364362537552B005A43A5 /* AutoSelectTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340364352537552B005A43A5 /* AutoSelectTextField.swift */; };
 		3408053D1A96E6B50067AA56 /* FileManager-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */; };
+		34FMEXT12F40000300A1FA03 /* FileManager-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */; };
 		3408DF36252ED251002A9D9F /* MyLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF35252ED251002A9D9F /* MyLayoutManager.swift */; };
 		3408DF46252F47B1002A9D9F /* BidirectionalCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */; };
 		3408DF47252F47B1002A9D9F /* LosslessStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */; };
@@ -61,6 +62,7 @@
 		34E0A0122F20000100A1FA12 /* TeXTextView-Colorize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E0A0022F20000100A1FA02 /* TeXTextView-Colorize.swift */; };
 		34E0A0132F20000100A1FA13 /* TeXTextView-CommandCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E0A0032F20000100A1FA03 /* TeXTextView-CommandCompletion.swift */; };
 		348E08831C3DE76F004CFB4B /* UnicodeBlocks.strings in Resources */ = {isa = PBXBuildFile; fileRef = 348E08811C3DE76F004CFB4B /* UnicodeBlocks.strings */; };
+		34CID0012F40000100A1FA01 /* cidToUnicode.json in Resources */ = {isa = PBXBuildFile; fileRef = 34CID0022F40000200A1FA02 /* cidToUnicode.json */; };
 		349276B01BFA19FB00C0BD99 /* NSColor-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.swift */; };
 		34A5C70B251B700000FCF7BA /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C70C251B700000FCF7BA /* Utility.swift */; };
 		34A5C70D251B700000FCF7BA /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C70C251B700000FCF7BA /* Utility.swift */; };
@@ -174,6 +176,7 @@
 		34522C111BAC550800DE1B86 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		346225651AB558AB00F632AD /* mupdf */ = {isa = PBXFileReference; lastKnownFileType = folder; path = mupdf; sourceTree = "<group>"; };
 		34670DD5125B7AC3002308EF /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
+		34CID0022F40000200A1FA02 /* cidToUnicode.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = cidToUnicode.json; sourceTree = "<group>"; };
 		34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TeXTextView-Bullet.swift"; sourceTree = "<group>"; };
 		34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSArray-Extension.swift"; sourceTree = "<group>"; };
 		34A5C714251B700000FCF7BA /* NSString-Unicode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSString-Unicode.swift"; sourceTree = "<group>"; };
@@ -329,6 +332,7 @@
 				3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */,
 				CE4A31F00E5036500095D4FC /* Localizable.strings */,
 				348E08811C3DE76F004CFB4B /* UnicodeBlocks.strings */,
+				34CID0022F40000200A1FA02 /* cidToUnicode.json */,
 				3402125425341B29002D1545 /* Credits.rtf */,
 			);
 			path = Resources;
@@ -631,6 +635,7 @@
 				34BF70FA1BD1C6FC00AB76A9 /* pdftops in Resources */,
 				3402125525341B29002D1545 /* Credits.rtf in Resources */,
 				348E08831C3DE76F004CFB4B /* UnicodeBlocks.strings in Resources */,
+				34CID0012F40000100A1FA01 /* cidToUnicode.json in Resources */,
 				34B5E70420995B2F0071BBE9 /* Images.xcassets in Resources */,
 				346225661AB558AB00F632AD /* mupdf in Resources */,
 				34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */,
@@ -700,6 +705,7 @@
 				34865902252643BE00B8B190 /* NSIndexSet-Extension.swift in Sources */,
 				3419977125282F9D0022F53C /* PDFPageBox.swift in Sources */,
 				348658F62526402E00B8B190 /* NSDate-Extension.swift in Sources */,
+				34FMEXT12F40000300A1FA03 /* FileManager-Extension.swift in Sources */,
 				34A5C70D251B700000FCF7BA /* Utility.swift in Sources */,
 				34HDR032F30000300A1FA03 /* GlobalConstants.swift in Sources */,
 				34HDR052F30000500A1FA05 /* Types.swift in Sources */,

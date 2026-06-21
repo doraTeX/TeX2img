@@ -44,12 +44,12 @@ private let mergeableExtensions = ["pdf", "tiff", "gif", "svg", "svgz"]
 class Converter: NSObject {
     // MARK: - Public properties
 
-    @objc var keepPageSizeFlag = false
-    @objc var leftMargin: Int = 0
-    @objc var rightMargin: Int = 0
-    @objc var topMargin: Int = 0
-    @objc var bottomMargin: Int = 0
-    @objc var pageBoxType: CGPDFBox = .mediaBox
+    var keepPageSizeFlag = false
+    var leftMargin: Int = 0
+    var rightMargin: Int = 0
+    var topMargin: Int = 0
+    var bottomMargin: Int = 0
+    var pageBoxType: CGPDFBox = .mediaBox
 
     // MARK: - Private properties
 
@@ -1033,21 +1033,19 @@ class Converter: NSObject {
     private func copyTarget(from sourcePath: String, toPath destPath: String) -> Bool {
         if sourcePath == destPath { return true }
 
-        var isDirectory = ObjCBool(false)
-        let fileExists = fileManager.fileExists(atPath: destPath, isDirectory: &isDirectory)
+        let fileExists = fileManager.fileExists(atPath: destPath)
 
         if fileExists {
-            if isDirectory.boolValue || ((try? fileManager.removeItem(atPath: destPath)) == nil) {
+            if fileManager.isDirectory(atPath: destPath) || ((try? fileManager.removeItem(atPath: destPath)) == nil) {
                 controller?.showCannotOverwriteError(destPath)
                 return false
             }
         } else {
             let destDir = (destPath as NSString).deletingLastPathComponent
-            var dirIsDirectory = ObjCBool(false)
-            let dirExists = fileManager.fileExists(atPath: destDir, isDirectory: &dirIsDirectory)
+            let dirExists = fileManager.fileExists(atPath: destDir)
 
             if (!dirExists && ((try? fileManager.createDirectory(atPath: destDir, withIntermediateDirectories: true)) == nil)) ||
-                (dirExists && !dirIsDirectory.boolValue) {
+                (dirExists && !fileManager.isDirectory(atPath: destDir)) {
                 controller?.showCannotCreateDirectoryError(destDir)
                 return false
             }
@@ -1057,10 +1055,8 @@ class Converter: NSObject {
     }
 
     private func embedTeXSource(_ texFilePath: String, intoFile filePath: String) {
-        var isDirectory = ObjCBool(false)
         guard embedSource,
-              fileManager.fileExists(atPath: texFilePath, isDirectory: &isDirectory),
-              !isDirectory.boolValue else { return }
+              fileManager.isRegularFile(atPath: texFilePath) else { return }
 
         guard let data = try? Data(contentsOf: URL(fileURLWithPath: texFilePath)) else { return }
 
@@ -1467,8 +1463,7 @@ class Converter: NSObject {
             }
 
             if !outputFiles.isEmpty {
-                var isDirectory = ObjCBool(false)
-                if fileManager.fileExists(atPath: outputFilePath, isDirectory: &isDirectory) && isDirectory.boolValue {
+                if fileManager.isDirectory(atPath: outputFilePath) {
                     controller?.showCannotOverwriteError(outputFilePath)
                     return false
                 }
@@ -1803,8 +1798,7 @@ class Converter: NSObject {
                 workingDirectory = additionalInputPath ?? workingDirectory
             }
 
-            var isDirectory = ObjCBool(false)
-            if fileManager.fileExists(atPath: sourcePath, isDirectory: &isDirectory) && isDirectory.boolValue {
+            if fileManager.isDirectory(atPath: sourcePath) {
                 controller?.showFileFormatError(sourcePath)
                 controller?.generationDidFinish(.failed)
                 return false

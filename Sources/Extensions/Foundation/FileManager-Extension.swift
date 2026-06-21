@@ -20,6 +20,16 @@
 import Foundation
 
 extension FileManager {
+    func isDirectory(atPath path: String) -> Bool {
+        (try? URL(fileURLWithPath: path).resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
+    }
+
+    func isRegularFile(atPath path: String) -> Bool {
+        guard let values = try? URL(fileURLWithPath: path).resourceValues(forKeys: [.isDirectoryKey]) else {
+            return false
+        }
+        return values.isDirectory == false
+    }
     @objc var applicationSupportDirectory: String? {
         guard let executableName = Bundle.main.infoDictionary?["CFBundleExecutable"] as? String else { return nil }
         

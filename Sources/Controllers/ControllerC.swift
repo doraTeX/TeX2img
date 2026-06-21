@@ -8,18 +8,15 @@ class ControllerC: NSObject, OutputController {
                            quiet: Bool) -> Bool {
         FileManager.default.changeCurrentDirectoryPath(path)
 
-        var cmdline = command + " "
-        for argument in arguments {
-            cmdline += argument + " "
-        }
-        cmdline += "2>&1"
-
-        appendOutputAndScroll(String(format: "$ %@\n", cmdline), quiet: quiet)
+        let displayCommand = ([command] + arguments).joined(separator: " ") + " 2>&1"
+        appendOutputAndScroll(String(format: "$ %@\n", displayCommand), quiet: quiet)
 
         let task = Process()
         let pipe = Pipe()
-        task.executableURL = URL(fileURLWithPath: "/bin/sh")
-        task.arguments = ["-c", cmdline]
+        task.environment = ["PATH": "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"]
+        task.currentDirectoryURL = URL(fileURLWithPath: path)
+        task.executableURL = URL(fileURLWithPath: command)
+        task.arguments = arguments
         task.standardOutput = pipe
         task.standardError = pipe
 

@@ -3,15 +3,13 @@ import Foundation
 import PDFKit
 
 private let annotationHeader = "%%TeX2img Document\n"
-private let bashPath = "/bin/bash"
-
 @objc(Utility)
 class Utility: NSObject {
-    @objc static func execCommand(_ cmdline: String) -> String {
+    @objc static func execCommand(_ executablePath: String, arguments: [String] = []) -> String {
         let task = Process()
         let pipe = Pipe()
-        task.executableURL = URL(fileURLWithPath: bashPath)
-        task.arguments = ["-c", cmdline]
+        task.executableURL = URL(fileURLWithPath: executablePath)
+        task.arguments = arguments
         task.standardOutput = pipe
         try? task.run()
         task.waitUntilExit()

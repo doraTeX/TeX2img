@@ -2,16 +2,8 @@ import Foundation
 
 
 extension ControllerG {
-    @objc func searchProgram(_ programName: String) -> String? {
-        let task = Process()
-        let pipe = Pipe()
-        task.launchPath = BASH_PATH
-        task.arguments = ["-c", "eval `/usr/libexec/path_helper -s`; echo $PATH"];
-        task.standardOutput = pipe
-        task.launch()
-        task.waitUntilExit()
-        
-        var searchPaths = pipe.stringValue.components(separatedBy: ":")
+    func searchProgram(_ programName: String) -> String? {
+        var searchPaths = Self.pathHelperSearchPaths()
         
         let additionalPaths = [
             "/Applications/TeXLive/Library/mactexaddons/bin",
@@ -53,13 +45,32 @@ extension ControllerG {
         
         for path in searchPaths {
             let fullPath = (path as NSString).appendingPathComponent(programName)
-            var isDir: ObjCBool = true
-            let result = FileManager.default.fileExists(atPath: fullPath, isDirectory: &isDir)
-            if result && !isDir.boolValue {
+            if FileManager.default.isRegularFile(atPath: fullPath) {
                 return fullPath
             }
         }
-        
+
         return nil
+    }
+
+    private static func pathHelperSearchPaths() -> [String] {
+        var paths = ProcessInfo.processInfo.environment["PATH"]?.components(separatedBy: ":") ?? []
+
+        let task = Process()
+        let pipe = Pipe()
+        task.executableURL = URL(fileURLWithPath: "/usr/libexec/path_helper")
+        task.arguments = ["-s"]
+        task.standardOutput = pipe
+        try? task.run()
+        task.waitUntilExit()
+
+        let output = pipe.stringValue
+        if let range = output.range(of: #"PATH="([^"]+)""#, options: .regularExpression) {
+            let match = output[range]
+            let pathString = match.dropFirst(5).dropLast()
+            paths.insert(contentsOf: pathString.split(separator: ":").map(String.init), at: 0)
+        }
+
+        return paths
     }
 }
