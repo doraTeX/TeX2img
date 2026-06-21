@@ -8,6 +8,8 @@
 *.synctex.gz(busy)
 *~.nib
 deployc.sh
+build/
+DerivedData/
 # Xcode project files except for the project file
 *.xcodeproj/*
 !*.xcodeproj/xcshareddata
