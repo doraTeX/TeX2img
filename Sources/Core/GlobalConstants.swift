@@ -8,8 +8,7 @@ enum AutoPasteDestination: Int {
     case apKeynote = 5
 }
 
-typealias Profile = NSDictionary
-typealias MutableProfile = NSMutableDictionary
+typealias Profile = [String: Any]
 
 let AnnotationHeader = "%%TeX2img Document\n"
 let CUI_PATH = "/usr/local/bin/tex2img"

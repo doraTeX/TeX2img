@@ -46,7 +46,7 @@ extension TeXTextView {
     }
 
     private func handleCommandCompletion(event: NSEvent, commandCompletionList: String, texChar: unichar) {
-        let textString = string as NSString
+        let textString = string
         var selectedLocation = selectedRange.location
         var latexString: String?
 
@@ -149,7 +149,7 @@ extension TeXTextView {
                 }
 
                 let searchTarget = "\n" + (originalString ?? "")
-                let foundRange = (commandCompletionList as NSString).range(
+                let foundRange = commandCompletionList!.range(
                     of: searchTarget,
                     options: event.modifierFlags.isEmpty ? [] : .backwards,
                     range: searchRange
@@ -164,15 +164,15 @@ extension TeXTextView {
                 var lineRange = foundRange
                 lineRange.location += 1
                 lineRange.length -= 1
-                lineRange = (commandCompletionList as NSString).lineRange(for: lineRange)
+                lineRange = commandCompletionList!.lineRange(for: lineRange)
                 lineRange.length -= 1
 
-                var foundString = (commandCompletionList as NSString).substring(with: lineRange)
+                var foundString = commandCompletionList!.substring(with: lineRange)
                 completionListLocation = UInt(lineRange.location)
 
-                let spaceRange = (foundString as NSString).range(of: ":=")
+                let spaceRange = foundString.range(of: ":=")
                 if spaceRange.location != NSNotFound {
-                    foundString = (foundString as NSString).substring(
+                    foundString = foundString.substring(
                         with: NSRange(location: spaceRange.location + 2, length: foundString.count - spaceRange.location - 2)
                     )
                 }

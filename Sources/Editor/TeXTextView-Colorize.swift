@@ -19,7 +19,7 @@ extension TeXTextView {
             .foregroundColor: UtilityG.braceColor(inProfile: profile),
         ]
 
-        guard let layoutManager, let textString = string as NSString? else { return }
+        guard let layoutManager, let textString = string? else { return }
         let length = textString.length
 
         var aLineStart: Int = 0
@@ -112,7 +112,7 @@ extension TeXTextView {
         highlightBracesColorDict = [.foregroundColor: UtilityG.highlightedBraceColor(inProfile: profile)]
         let braceCharList: [unichar] = [0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E]
 
-        let theString = textStorage!.string as NSString
+        let theString = textStorage!.string
         let theStringLength = theString.length
         guard theStringLength > 0 else { return }
 
@@ -273,7 +273,7 @@ extension TeXTextView {
         default: leftpar = "[".utf16.first!
         }
 
-        let textString = string as NSString
+        let textString = string
         var i = affectedCharRange.location
         var j = 1
         var count = 1

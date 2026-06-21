@@ -5,7 +5,7 @@ import UserNotifications
 extension ControllerG {
     func sendUserNotification(status: ExitStatus) {
         let title: String
-        guard let body = (self.currentProfile()["outputFile"] as? NSString)?.lastPathComponent else { return }
+        guard let body = self.currentProfile().stringForKey(OutputFileKey)?.lastPathComponent else { return }
         
         switch status {
         case .failed:

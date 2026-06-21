@@ -41,7 +41,9 @@ class TeXTextView: NSTextView {
     override func awakeFromNib() {
         let autoCompletionPath = "~/Library/TeXShop/Keyboard/autocompletion.plist".expandingTildeInPath
         if FileManager.default.fileExists(atPath: autoCompletionPath) {
-            autocompletionDictionary = NSDictionary(contentsOfFile: autoCompletionPath) as? [String: String]
+            if let dict = NSDictionary(contentsOfFile: autoCompletionPath) as? [String: String] {
+                autocompletionDictionary = dict
+            }
         } else {
             autocompletionDictionary = nil
         }
@@ -340,7 +342,7 @@ class TeXTextView: NSTextView {
         var undoRange = NSRange(location: Int(oldLocation), length: Int(oldLength))
         if undoRange.location + undoRange.length > string.count { return }
 
-        let oldString = (string as NSString).substring(with: undoRange)
+        let oldString = string.substring(with: undoRange)
         replaceCharacters(in: undoRange, with: newString)
         registerUndo(with: oldString, location: UInt(undoRange.location), length: UInt(newString.count), key: undoKey)
         resetBackgroundColor(nil)
@@ -349,13 +351,13 @@ class TeXTextView: NSTextView {
     private func insertSpecialNonStandard(_ theString: String, undoKey key: String) {
         var stringBuf = theString
         let oldRange = selectedRange
-        let oldString = (string as NSString).substring(with: oldRange)
+        let oldString = string.substring(with: oldRange)
 
         stringBuf = stringBuf.replacingOccurrences(of: "#SEL#", with: oldString)
 
-        var searchRange = (stringBuf as NSString).range(of: "#INS#", options: .literal)
+        var searchRange = stringBuf.range(of: "#INS#", options: .literal)
         if searchRange.location != NSNotFound {
-            stringBuf = (stringBuf as NSString).replacingCharacters(in: searchRange, with: "")
+            stringBuf = stringBuf.replacingCharacters(in: searchRange, with: "")
         }
 
         let newString = stringBuf
@@ -388,7 +390,7 @@ class TeXTextView: NSTextView {
                   let firstChar = theString.utf16.first {
             if firstChar >= 128
                 || selectedRange.location == 0
-                || (self.string as NSString).character(at: selectedRange.location - 1) != texChar {
+                || self.string.character(at: selectedRange.location - 1) != texChar {
                 if let completionString = autocompletionDictionary[theString] {
                     autoCompleting = true
                     insertSpecialNonStandard(completionString, undoKey: localizedString("Auto Completion"))
@@ -449,7 +451,7 @@ class TeXTextView: NSTextView {
     }
 
     @IBAction func doCommentOrIndent(_ sender: NSMenuItem) {
-        let text = string as NSString
+        let text = string
         let oldRange = selectedRange
 
         var blockStart: Int = 0
@@ -457,7 +459,7 @@ class TeXTextView: NSTextView {
         text.getLineStart(&blockStart, end: &blockEnd, contentsEnd: nil, for: oldRange)
 
         var modifyRange = NSRange(location: blockStart, length: blockEnd - blockStart)
-        let oldString = (string as NSString).substring(with: modifyRange)
+        let oldString = string.substring(with: modifyRange)
 
         var lineStart = blockStart
         var firstLine = true
@@ -605,7 +607,7 @@ class TeXTextView: NSTextView {
 
         selectedRange = updatedOldRange
 
-        let updatedText = self.string as NSString
+        let updatedText = self.string
         updatedText.getLineStart(&blockStart, end: &blockEnd, contentsEnd: nil, for: selectedRange)
         modifyRange = NSRange(location: blockStart, length: blockEnd - blockStart)
         selectedRange = modifyRange
@@ -630,7 +632,7 @@ class TeXTextView: NSTextView {
 
         let oldRange = selectedRange
         let regex = try? NSRegularExpression(pattern: #"\\(begin|end)\{(.*?)\}"#, options: [])
-        let target = (textStorage!.string as NSString).substring(to: oldRange.location)
+        let target = textStorage!.string.substring(to: oldRange.location)
         let matches = regex?.matches(in: target, options: [], range: NSRange(location: 0, length: target.count)) ?? []
 
         var newString: String?
@@ -640,8 +642,8 @@ class TeXTextView: NSTextView {
             let range1 = match.range(at: 1)
             let range2 = match.range(at: 2)
 
-            let prefix = range1.location == NSNotFound ? "" : (target as NSString).substring(with: range1)
-            let environment = range2.location == NSNotFound ? "" : (target as NSString).substring(with: range2)
+            let prefix = range1.location == NSNotFound ? "" : target.substring(with: range1)
+            let environment = range2.location == NSNotFound ? "" : target.substring(with: range2)
             let increment = prefix == "end" ? 1 : -1
 
             if let count = environmentStack[environment] {
@@ -682,7 +684,7 @@ class TeXTextView: NSTextView {
             return
         }
 
-        let selectedString = (string as NSString).substring(with: selectedRange)
+        let selectedString = string.substring(with: selectedRange)
         guard let popoverController = MyGlyphPopoverController(character: selectedString) else { return }
 
         let glyphRange = layoutManager!.glyphRange(forCharacterRange: selectedRange, actualCharacterRange: nil)
@@ -705,7 +707,7 @@ class TeXTextView: NSTextView {
             selectedRange = self.selectedRange
         }
 
-        let selectedString = (string as NSString).substring(with: selectedRange) as NSString
+        let selectedString = string.substring(with: selectedRange)
         let newString: String
         let undoKey: String?
 
@@ -768,7 +770,7 @@ class TeXTextView: NSTextView {
             selectedRange = self.selectedRange
         }
 
-        let selectedString = (string as NSString).substring(with: selectedRange) as NSString
+        let selectedString = string.substring(with: selectedRange)
         let newString: String
         let undoKey: String?
 
@@ -815,7 +817,7 @@ class TeXTextView: NSTextView {
         let textToInsert = "\\newpage\n\n"
         let actionName = localizedString("Insert Newpage")
         let currentRange = selectedRange
-        let oldString = (string as NSString).substring(with: currentRange)
+        let oldString = string.substring(with: currentRange)
 
         replaceCharacters(in: currentRange, with: textToInsert)
         registerUndo(with: oldString, location: UInt(currentRange.location), length: UInt(textToInsert.count), key: actionName)
@@ -836,18 +838,18 @@ class TeXTextView: NSTextView {
 
     func indentStringForCurrentLocation() -> String {
         let selectedRange = self.selectedRange
-        let stringToCurrentLocation = "\n" + (textStorage!.string as NSString).substring(to: selectedRange.location)
+        let stringToCurrentLocation = "\n" + textStorage!.string.substring(to: selectedRange.location)
         let regex = try? NSRegularExpression(pattern: "\\n([ \t]*)[^\\n]*$", options: [])
         let match = regex?.firstMatch(in: stringToCurrentLocation, options: [], range: NSRange(location: 0, length: stringToCurrentLocation.count))
         guard let match else { return "" }
-        return (stringToCurrentLocation as NSString).substring(with: match.range(at: 1))
+        return stringToCurrentLocation.substring(with: match.range(at: 1))
     }
 
     override func selectionRange(
         forProposedRange proposedSelRange: NSRange,
         granularity: NSSelectionGranularity
     ) -> NSRange {
-        let textString = string as NSString?
+        let textString = string?
         guard let textString else { return NSRange(location: 0, length: 0) }
 
         var replacementRange = super.selectionRange(forProposedRange: proposedSelRange, granularity: granularity)

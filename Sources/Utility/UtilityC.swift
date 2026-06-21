@@ -7,8 +7,8 @@ class UtilityC: NSObject {
     private static func guiPaths() -> [String] {
         let home = NSHomeDirectory()
         return [
-            (home as NSString).appendingPathComponent("Desktop"),
-            (home as NSString).appendingPathComponent("Applications"),
+            home.appendingPathComponent("Desktop"),
+            home.appendingPathComponent("Applications"),
             home,
             "/Applications",
             "/Applications/TeXLive",
@@ -18,8 +18,8 @@ class UtilityC: NSObject {
     private static func additionalSearchPath() -> String {
         var results = [String]()
         for guiPath in guiPaths() {
-            let mupdfPath = (guiPath as NSString).appendingPathComponent((resourcesDir as NSString).appendingPathComponent("mupdf"))
-            let pdftopsPath = (guiPath as NSString).appendingPathComponent((resourcesDir as NSString).appendingPathComponent("pdftops"))
+            let mupdfPath = guiPath.appendingPathComponent(resourcesDir.appendingPathComponent("mupdf"))
+            let pdftopsPath = guiPath.appendingPathComponent(resourcesDir.appendingPathComponent("pdftops"))
             results.append(mupdfPath)
             results.append(pdftopsPath)
         }

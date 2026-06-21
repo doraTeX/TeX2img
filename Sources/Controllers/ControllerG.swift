@@ -198,7 +198,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     private var lastSavedPath: String?
     private var lastActiveWindow: NSWindow?
-    private var lastColorDict = NSMutableDictionary()
+    private var lastColorDict: [String: Any] = [:]
     private var converter: Converter?
     private var runningTask: Process?
     private var outputPipe: Pipe?
@@ -574,37 +574,37 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     // MARK: - Profile helpers
 
-    private func loadStringSetting(for textField: NSTextField, from profile: NSDictionary, key: String) {
+    private func loadStringSetting(for textField: NSTextField, from profile: Profile, key: String) {
         if let tempStr = profile.stringForKey(key) {
             textField.stringValue = tempStr
             outputFilePathChanged(nil)
         }
     }
 
-    private func loadNumberSetting(for textField: NSTextField, from profile: NSDictionary, key: String) {
+    private func loadNumberSetting(for textField: NSTextField, from profile: Profile, key: String) {
         if let tempNumber = profile[key] as? NSNumber {
             textField.floatValue = tempNumber.floatValue
         }
     }
 
-    private func loadSetting(for textView: NSTextView, from profile: NSDictionary, key: String) {
+    private func loadSetting(for textView: NSTextView, from profile: Profile, key: String) {
         if let tempStr = profile.stringForKey(key) {
             textView.textStorage?.mutableString.setString(tempStr)
         }
     }
 
-    private func loadColorWell(_ well: NSColorWell, from profile: NSDictionary, key: String, defaultColor: NSColor) {
-        if profile.allKeys.contains(where: { ($0 as? String) == key }) {
+    private func loadColorWell(_ well: NSColorWell, from profile: Profile, key: String, defaultColor: NSColor) {
+        if profile.keys.contains(key) {
             well.color = profile.colorForKey(key) ?? defaultColor
         } else {
             well.color = defaultColor
         }
-        well.saveColor(to: lastColorDict)
+        well.saveColor(to: &lastColorDict)
     }
 
-    func adoptProfile(_ aProfile: NSDictionary) {
+    func adoptProfile(_ aProfile: Profile) {
         guard aProfile.count > 0 else { return }
-        let keys = aProfile.allKeys.compactMap { $0 as? String }
+        let keys = Array(aProfile.keys)
 
         loadStringSetting(for: outputFileTextField, from: aProfile, key: OutputFileKey)
 
@@ -704,7 +704,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         } else {
             colorPalleteColorWell.color = .red
         }
-        colorPalleteColorWell.saveColor(to: lastColorDict)
+        colorPalleteColorWell.saveColor(to: &lastColorDict)
 
         if keys.contains(MakeatletterEnabledKey) {
             makeatletterEnabledCheckBox.state = aProfile.boolForKey(MakeatletterEnabledKey) ? .on : .off
@@ -826,7 +826,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    func refreshOutputTextView(usingProfile aProfile: NSDictionary?) {
+    func refreshOutputTextView(usingProfile aProfile: Profile?) {
         let profile = aProfile ?? currentProfile()
         refreshTextView(outputTextView,
                         foregroundColor: UtilityG.consoleForegroundColor(inProfile: profile),
@@ -865,8 +865,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         return true
     }
 
-    func currentProfile() -> NSMutableDictionary {
-        let currentProfile = NSMutableDictionary()
+    func currentProfile() -> Profile {
+        var currentProfile: Profile = [:]
         do {
             currentProfile[TeX2imgVersionKey] = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")
             currentProfile[XKey] = mainWindow.frame.minX
@@ -938,8 +938,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             currentProfile[ShowNewLineCharacterKey] = showNewLineCharacterCheckBox.state.rawValue
             currentProfile[SourceFontNameKey] = sourceFont?.fontName
             currentProfile[SourceFontSizeKey] = sourceFont?.pointSize ?? 0
-            currentProfile[PreambleKey] = NSString(string: preambleTextView.textStorage?.string ?? "")
-            currentProfile[SourceBodyKey] = NSString(string: sourceTextView.textStorage?.string ?? "")
+            currentProfile[PreambleKey] = preambleTextView.textStorage?.string ?? ""
+            currentProfile[SourceBodyKey] = sourceTextView.textStorage?.string ?? ""
             currentProfile[InputMethodKey] = directInputButton.state == .on ? InputMethod.direct.rawValue : InputMethod.fromFile.rawValue
             currentProfile[InputSourceFilePathKey] = inputSourceFileTextField.stringValue
             currentProfile[WorkingDirectoryTypeKey] = workInInputFileDirectoryCheckBox.state == .on ? WorkingDirectoryFile : WorkingDirectoryTmp
@@ -947,7 +947,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             let workingDirectoryType = currentProfile.integerForKey(WorkingDirectoryTypeKey)
             let inputMethod = currentProfile.integerForKey(InputMethodKey)
             if workingDirectoryType == WorkingDirectoryFile && inputMethod == InputMethod.fromFile.rawValue {
-                currentProfile[WorkingDirectoryPathKey] = (currentProfile.stringForKey(InputSourceFilePathKey) as NSString?)?.deletingLastPathComponent
+                currentProfile[WorkingDirectoryPathKey] = currentProfile.stringForKey(InputSourceFilePathKey)?.deletingLastPathComponent
             } else {
                 currentProfile[WorkingDirectoryPathKey] = FileManager.default.temporaryDirectory.path
             }
@@ -1066,7 +1066,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
 
         var detectedEncoding: UInt = 0
-        guard let contents = NSString.stringWithAutoEncodingDetectionOfData( data, detectedEncoding: &detectedEncoding) else {
+        guard let contents = String.stringWithAutoEncodingDetectionOfData(data, detectedEncoding: &detectedEncoding) else {
             UtilityG.runErrorPanel(message: String(format: NSLocalizedString("cannotReadErrorMsg", comment: ""), templatePath))
             return
         }
@@ -1204,10 +1204,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
             let templateName = autoDetectionTargetMatrix.selectedCell()?.title ?? ""
             if let originalTemplateDirectory = Bundle.main.path(forResource: templateDirectoryName, ofType: nil) {
-                let templatePath = (originalTemplateDirectory.appendingPathComponent(templateName) as NSString).appendingPathExtension("tex") ?? ""
+                let templatePath = originalTemplateDirectory.appendingPathComponent(templateName).appendingPathExtension("tex") ?? ""
                 if let data = try? Data(contentsOf: URL(fileURLWithPath: templatePath)) {
                     var detectedEncoding: UInt = 0
-                    if let contents = NSString.stringWithAutoEncodingDetectionOfData( data, detectedEncoding: &detectedEncoding) {
+                    if let contents = String.stringWithAutoEncodingDetectionOfData(data, detectedEncoding: &detectedEncoding) {
                         preambleTextView.replaceEntireContents(with: contents)
                     }
                 }
@@ -1286,18 +1286,18 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             lightModeFlashingBackgroundColorWell.color = .defaultFlashingBackgroundColorForLightMode
             lightModeConsoleForegroundColorWell.color = .defaultConsoleForegroundColorForLightMode
             lightModeConsoleBackgroundColorWell.color = .defaultConsoleBackgroundColorForLightMode
-            lightModeForegroundColorWell.saveColor(to: lastColorDict)
-            lightModeBackgroundColorWell.saveColor(to: lastColorDict)
-            lightModeCursorColorWell.saveColor(to: lastColorDict)
-            lightModeBraceColorWell.saveColor(to: lastColorDict)
-            lightModeCommentColorWell.saveColor(to: lastColorDict)
-            lightModeCommandColorWell.saveColor(to: lastColorDict)
-            lightModeInvisibleColorWell.saveColor(to: lastColorDict)
-            lightModeHighlightedBraceColorWell.saveColor(to: lastColorDict)
-            lightModeEnclosedContentBackgroundColorWell.saveColor(to: lastColorDict)
-            lightModeFlashingBackgroundColorWell.saveColor(to: lastColorDict)
-            lightModeConsoleForegroundColorWell.saveColor(to: lastColorDict)
-            lightModeConsoleBackgroundColorWell.saveColor(to: lastColorDict)
+            lightModeForegroundColorWell.saveColor(to: &lastColorDict)
+            lightModeBackgroundColorWell.saveColor(to: &lastColorDict)
+            lightModeCursorColorWell.saveColor(to: &lastColorDict)
+            lightModeBraceColorWell.saveColor(to: &lastColorDict)
+            lightModeCommentColorWell.saveColor(to: &lastColorDict)
+            lightModeCommandColorWell.saveColor(to: &lastColorDict)
+            lightModeInvisibleColorWell.saveColor(to: &lastColorDict)
+            lightModeHighlightedBraceColorWell.saveColor(to: &lastColorDict)
+            lightModeEnclosedContentBackgroundColorWell.saveColor(to: &lastColorDict)
+            lightModeFlashingBackgroundColorWell.saveColor(to: &lastColorDict)
+            lightModeConsoleForegroundColorWell.saveColor(to: &lastColorDict)
+            lightModeConsoleBackgroundColorWell.saveColor(to: &lastColorDict)
         }
 
         if senderTag < 0 || senderTag == DARKMODE_TAG {
@@ -1313,18 +1313,18 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             darkModeFlashingBackgroundColorWell.color = .defaultFlashingBackgroundColorForDarkMode
             darkModeConsoleForegroundColorWell.color = .defaultConsoleForegroundColorForDarkMode
             darkModeConsoleBackgroundColorWell.color = .defaultConsoleBackgroundColorForDarkMode
-            darkModeForegroundColorWell.saveColor(to: lastColorDict)
-            darkModeBackgroundColorWell.saveColor(to: lastColorDict)
-            darkModeCursorColorWell.saveColor(to: lastColorDict)
-            darkModeBraceColorWell.saveColor(to: lastColorDict)
-            darkModeCommentColorWell.saveColor(to: lastColorDict)
-            darkModeCommandColorWell.saveColor(to: lastColorDict)
-            darkModeInvisibleColorWell.saveColor(to: lastColorDict)
-            darkModeHighlightedBraceColorWell.saveColor(to: lastColorDict)
-            darkModeEnclosedContentBackgroundColorWell.saveColor(to: lastColorDict)
-            darkModeFlashingBackgroundColorWell.saveColor(to: lastColorDict)
-            darkModeConsoleForegroundColorWell.saveColor(to: lastColorDict)
-            darkModeConsoleBackgroundColorWell.saveColor(to: lastColorDict)
+            darkModeForegroundColorWell.saveColor(to: &lastColorDict)
+            darkModeBackgroundColorWell.saveColor(to: &lastColorDict)
+            darkModeCursorColorWell.saveColor(to: &lastColorDict)
+            darkModeBraceColorWell.saveColor(to: &lastColorDict)
+            darkModeCommentColorWell.saveColor(to: &lastColorDict)
+            darkModeCommandColorWell.saveColor(to: &lastColorDict)
+            darkModeInvisibleColorWell.saveColor(to: &lastColorDict)
+            darkModeHighlightedBraceColorWell.saveColor(to: &lastColorDict)
+            darkModeEnclosedContentBackgroundColorWell.saveColor(to: &lastColorDict)
+            darkModeFlashingBackgroundColorWell.saveColor(to: &lastColorDict)
+            darkModeConsoleForegroundColorWell.saveColor(to: &lastColorDict)
+            darkModeConsoleBackgroundColorWell.saveColor(to: &lastColorDict)
         }
 
         makeatletterEnabledCheckBox.state = .on
@@ -1415,8 +1415,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         let regex = try? NSRegularExpression(pattern: pattern, options: .dotMatchesLineSeparators)
         let range = NSRange(location: 0, length: contents.utf16.count)
         if let match = regex?.firstMatch(in: contents, options: [], range: range) {
-            let preamble = (contents as NSString).substring(with: match.range(at: 1)) + "\n"
-            let body = (contents as NSString).substring(with: match.range(at: 2)).deletingLastReturnCharacters() + "\n"
+            let preamble = contents.substring(with: match.range(at: 1)) + "\n"
+            let body = contents.substring(with: match.range(at: 2)).deletingLastReturnCharacters() + "\n"
             return [preamble, body]
         }
         return ["", contents]
@@ -1456,7 +1456,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         let annotations = page.annotations
         for annotation in annotations where Utility.isTeX2imgAnnotation(annotation) {
             let contents = annotation.contents?.replacingOccurrences(of: "\r\n", with: "\n") ?? ""
-            return (contents as NSString).substring(from: AnnotationHeader.count)
+            return contents.substring(from: AnnotationHeader.count)
         }
         return nil
     }
@@ -1472,7 +1472,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             if extensionLower == "tex" {
                 if let data = try? Data(contentsOf: URL(fileURLWithPath: inputPath)) {
                     var detectedEncoding: UInt = 0
-                    contents = NSString.stringWithAutoEncodingDetectionOfData( data, detectedEncoding: &detectedEncoding)
+                    contents = String.stringWithAutoEncodingDetectionOfData(data, detectedEncoding: &detectedEncoding)
                 }
                 lastSavedPath = inputPath
             } else if extensionLower == "pdf" {
@@ -1577,7 +1577,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     @IBAction func colorPalleteColorSet(_ sender: Any) {
         guard colorPalleteWindow.isKeyWindow else { return }
-        colorPalleteColorWell.saveColor(to: lastColorDict)
+        colorPalleteColorWell.saveColor(to: &lastColorDict)
         let color = colorPalleteColorWell.color
 
         var formatString: String?
@@ -1985,7 +1985,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     @IBAction func colorSettingChanged(_ sender: Any) {
         guard preferenceWindow.isKeyWindow, let well = sender as? NSColorWell else { return }
-        well.saveColor(to: lastColorDict)
+        well.saveColor(to: &lastColorDict)
         sourceTextView.refreshSelectionHighlighting()
         preambleTextView.refreshSelectionHighlighting()
         recolorOutputView()
@@ -2048,7 +2048,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
         let templateName = autoDetectionTargetMatrix.selectedCell()?.title ?? ""
         if let originalTemplateDirectory = Bundle.main.path(forResource: templateDirectoryName, ofType: nil) {
-            let templatePath = (originalTemplateDirectory.appendingPathComponent(templateName) as NSString).appendingPathExtension("tex") ?? ""
+            let templatePath = originalTemplateDirectory.appendingPathComponent(templateName).appendingPathExtension("tex") ?? ""
             adoptPreambleTemplate(templatePath)
         }
     }
@@ -2074,7 +2074,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    private func printCurrentStatus(_ profile: NSMutableDictionary) {
+    private func printCurrentStatus(_ profile: Profile) {
         var output = ""
         output += "************************************\n  TeX2img settings\n************************************\n"
         output += "Version: \(profile.stringForKey(TeX2imgVersionKey) ?? "")\n"
@@ -2092,7 +2092,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         output += "DVI Driver: \(profile.stringForKey(DviDriverPathKey) ?? "")\n"
         output += "Ghostscript: \(profile.stringForKey(GsPathKey) ?? "")\nWorking directory: "
         if profile.integerForKey(WorkingDirectoryTypeKey) == WorkingDirectoryFile && profile.integerForKey(InputMethodKey) == InputMethod.fromFile.rawValue {
-            output += (profile.stringForKey(InputSourceFilePathKey) as NSString?)?.deletingLastPathComponent ?? ""
+            output += profile.stringForKey(InputSourceFilePathKey)?.deletingLastPathComponent ?? ""
         } else {
             output += FileManager.default.temporaryDirectory.path
         }
@@ -2156,7 +2156,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                 converter?.compileAndConvert(withBody: body)
             }
         case .fromFile:
-            let inputSourceFilePath = (profile.stringForKey(InputSourceFilePathKey) as NSString?)?.standardizingPath ?? ""
+            let inputSourceFilePath = profile.stringForKey(InputSourceFilePathKey)?.standardizingPath ?? ""
             if FileManager.default.fileExists(atPath: inputSourceFilePath) {
                 let ext = inputSourceFilePath.pathExtension
                 if inputExtensions.contains(ext) {
@@ -2267,7 +2267,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             let message = String(format: NSLocalizedString("Install CUI Confirmation", comment: ""), CUI_PATH)
             if UtilityG.runConfirmPanel(message: message) {
                 let cuiInAppPath = Bundle.main.sharedSupportPath.map {
-                    ($0.appendingPathComponent("bin") as NSString).appendingPathComponent("tex2img")
+                    $0.appendingPathComponent("bin").appendingPathComponent("tex2img")
                 } ?? ""
                 do {
                     try fileManager.createSymbolicLink(atPath: CUI_PATH, withDestinationPath: cuiInAppPath)

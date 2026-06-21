@@ -2,10 +2,11 @@ import AppKit
 import CoreFoundation
 import Foundation
 
-extension NSString {
+extension String {
     // MARK: - UTF / CID
 
     func stringByReplacingUnicodeCharactersWithUTF() -> String {
+        let nsSelf = self as NSString
         let iso2022jp = String.Encoding.iso2022JP.rawValue
         let newString = NSMutableString()
         let texChar: unichar = 0x5C
@@ -14,14 +15,14 @@ extension NSString {
         var endLine = 0
         var contentsEnd = 0
 
-        while charRange.location < length {
+        while charRange.location < nsSelf.length {
             if charRange.location == endLine {
-                getLineStart(&startLine, end: &endLine, contentsEnd: &contentsEnd, for: charRange)
+                nsSelf.getLineStart(&startLine, end: &endLine, contentsEnd: &contentsEnd, for: charRange)
             }
-            charRange = rangeOfComposedCharacterSequence(at: charRange.location)
-            let subString = substring(with: charRange)
+            charRange = nsSelf.rangeOfComposedCharacterSequence(at: charRange.location)
+            let subString = nsSelf.substring(with: charRange)
 
-            if !(subString as NSString).canBeConverted(to: iso2022jp) {
+            if !subString.canBeConverted(to: iso2022jp) {
                 let textView = NSTextView()
                 textView.textStorage?.setAttributedString(NSAttributedString(string: subString))
 
@@ -33,13 +34,13 @@ extension NSString {
                     utfString = NSMutableString(format: "%CID{%ld}", texChar, glyph.characterIdentifier)
                 } else if charRange.length > 1, let layout = textView.layoutManager {
                     utfString = NSMutableString(format: "%CID{%d}", texChar, layout.glyph(at: 0))
-                } else if (subString as NSString).character(at: 0) == 0x2015 {
+                } else if subString.character(at: 0) == 0x2015 {
                     utfString = NSMutableString(format: "%C", 0x2014)
                 } else {
-                    utfString = NSMutableString(format: "%CUTF{%04X}", texChar, (subString as NSString).character(at: 0))
+                    utfString = NSMutableString(format: "%CUTF{%04X}", texChar, subString.character(at: 0))
                 }
 
-                if charRange.location + charRange.length == contentsEnd, charRange.location + charRange.length < length {
+                if charRange.location + charRange.length == contentsEnd, charRange.location + charRange.length < nsSelf.length {
                     utfString.append("%")
                 }
                 newString.append(utfString as String)
@@ -673,7 +674,7 @@ extension NSString {
 
 // MARK: - Helpers
 
-private extension NSString {
+private extension String {
     static func string(fromCodePoint codePoint: UInt32) -> String {
         if codePoint <= 0xFFFF, let scalar = UnicodeScalar(codePoint) {
             return String(scalar)

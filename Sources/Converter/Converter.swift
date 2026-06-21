@@ -105,7 +105,7 @@ class Converter: NSObject {
 
     // MARK: - Initialization
 
-    init(profile aProfile: NSDictionary) {
+    init(profile aProfile: Profile) {
         super.init()
         pageCount = 1
 
@@ -169,16 +169,12 @@ class Converter: NSObject {
         psInputMode = false
         errorsIgnored = false
 
-        tempFileBaseName = String(format: "temp%d-%@", getpid(), NSString.UUIDString())
+        tempFileBaseName = String(format: "temp%d-%@", getpid(), String.uuidString())
         bboxDictionary = [:]
     }
 
-    static func converter(withProfile aProfile: NSDictionary) -> Converter {
+    static func converter(withProfile aProfile: Profile) -> Converter {
         return Converter(profile: aProfile)
-    }
-
-    convenience init(profileDictionary: [String: Any]) {
-        self.init(profile: profileDictionary as NSDictionary)
     }
 
     // MARK: - Thread control
@@ -195,7 +191,7 @@ class Converter: NSObject {
     // MARK: - TeX source writing
 
     private func substituteUTF(_ dataString: String) -> String {
-        (dataString as NSString).stringByReplacingUnicodeCharactersWithUTF()
+        dataString.stringByReplacingUnicodeCharactersWithUTF()
     }
 
     private func writeStringWithYenBackslashConverting(_ targetString: String, toFile path: String) -> Bool {
@@ -337,17 +333,17 @@ class Converter: NSObject {
             var parseSuccess = success
 
             for line in lines {
-                if line.count >= 5 && (line as NSString).substring(with: NSRange(location: 0, length: 5)) == "Page " {
-                    currentPage = Int((line as NSString).substring(from: 5)) ?? 0
+                if line.count >= 5 && line.substring(with: NSRange(location: 0, length: 5)) == "Page " {
+                    currentPage = Int(line.substring(from: 5)) ?? 0
                     parseSuccess = true
                     continue
                 }
-                if line.count >= 14 && (line as NSString).substring(with: NSRange(location: 0, length: 14)) == "%%BoundingBox:" {
+                if line.count >= 14 && line.substring(with: NSRange(location: 0, length: 14)) == "%%BoundingBox:" {
                     let dictKey = String(format: "%@-%ld-0", pdfPath.lastPathComponent, currentPage)
                     bboxDictionary[dictKey] = line + "\n"
                     continue
                 }
-                if line.count >= 19 && (line as NSString).substring(with: NSRange(location: 0, length: 19)) == "%%HiResBoundingBox:" {
+                if line.count >= 19 && line.substring(with: NSRange(location: 0, length: 19)) == "%%HiResBoundingBox:" {
                     let dictKey = String(format: "%@-%ld-1", pdfPath.lastPathComponent, currentPage)
                     bboxDictionary[dictKey] = line + "\n"
                     continue
@@ -440,7 +436,7 @@ class Converter: NSObject {
         if let versionString,
            let regex = try? NSRegularExpression(pattern: "\\d+(?:\\.\\d+)?"),
            let match = regex.firstMatch(in: versionString, range: NSRange(location: 0, length: versionString.count)) {
-            let versionSubstring = (versionString as NSString).substring(with: match.range(at: 0))
+            let versionSubstring = versionString.substring(with: match.range(at: 0))
             let version = Double(versionSubstring) ?? 0
             if version < 9.15 {
                 result = false
@@ -579,7 +575,7 @@ class Converter: NSObject {
 
     private func eps2pdf(_ epsName: String, outputFileName pdfName: String, addMargin: Bool) -> Bool {
         if addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0) {
-            let trimFileName = String(format: "%@-trim.pdf", (epsName as NSString).deletingPathExtension)
+            let trimFileName = String(format: "%@-trim.pdf", epsName.deletingPathExtension)
             return epstopdf(epsName, outputFileName: trimFileName) &&
                 pdfcrop(trimFileName, outputFileName: pdfName, page: 0, addMargin: true, useCache: false, fillBackground: false)
         } else {
@@ -795,7 +791,7 @@ class Converter: NSObject {
             svg = lines.joined(separator: "\n")
 
             let idPrefix = String(format: "%@-%ld-",
-                                  (destPath.lastPathComponent as NSString).deletingPathExtension.replacingOccurrences(of: " ", with: "_"),
+                                  destPath.lastPathComponent.deletingPathExtension.replacingOccurrences(of: " ", with: "_"),
                                   idx)
 
             svg = svg.replacingOccurrences(of: " id=\"", with: " id=\"\(idPrefix)")
@@ -852,7 +848,7 @@ class Converter: NSObject {
                                               quiet: quietFlag) ?? false
         if !success { return false }
 
-        let outputtedSvgPath = (((svgFilePath as NSString).deletingPathExtension as NSString).appendingFormat("%ld", page) as NSString).appendingPathExtension("svg")!
+        let outputtedSvgPath = svgFilePath.deletingPathExtension.appendingPathComponent("\(page)").appendingPathExtension("svg")!
         if fileManager.fileExists(atPath: outputtedSvgPath) {
             try? fileManager.removeItem(atPath: svgFilePath)
             do {
@@ -1050,7 +1046,7 @@ class Converter: NSObject {
         guard let data = try? Data(contentsOf: URL(fileURLWithPath: texFilePath)) else { return }
 
         var detectedEncoding: UInt = 0
-        guard let contents = NSString.stringWithAutoEncodingDetectionOfData(data, detectedEncoding: &detectedEncoding) else { return }
+        guard let contents = String.stringWithAutoEncodingDetectionOfData(data, detectedEncoding: &detectedEncoding) else { return }
 
         let extension_ = filePath.pathExtension.lowercased()
         if extension_ == "pdf" {
@@ -1625,7 +1621,7 @@ class Converter: NSObject {
             let pathsForPreview = generatedFiles.map { path -> String in
                 if #available(macOS 13, *) {
                     if extension_ == "eps" {
-                        let pdfPathForPreview = fileManager.temporaryDirectory.path.appendingPathComponent((path.lastPathComponent as NSString).deletingPathExtension + ".pdf")
+                        let pdfPathForPreview = fileManager.temporaryDirectory.path.appendingPathComponent(path.lastPathComponent.deletingPathExtension + ".pdf")
                         _ = epstopdf(path, outputFileName: pdfPathForPreview)
                         return pdfPathForPreview
                     }

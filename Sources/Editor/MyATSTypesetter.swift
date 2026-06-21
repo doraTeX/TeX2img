@@ -5,7 +5,7 @@ class MyATSTypesetter: NSATSTypesetter {
         let action = super.actionForControlCharacter(at: index)
         
         if action.contains(.zeroAdvancementAction),
-           let character = (self.attributedString?.string as NSString?)?.character(at: index),
+           let character = self.attributedString?.string.character(at: index),
            !CFStringIsSurrogateLowCharacter(character) {
             return .whitespaceAction
         }

@@ -119,7 +119,7 @@ extension Converter {
         if let bbArea = bboxOf(data: epsData, hires: false),
            let match = BoundingBoxType.boundingBox.checkingResultOf(content: bbArea.content) {
             
-            let matchingAt = { Int((bbArea.content as NSString).substring(with: match.range(at: $0)))! }
+            let matchingAt = { Int(bbArea.content.substring(with: match.range(at: $0)))! }
 
             let llx = matchingAt(1) - leftMargin
             let lly = matchingAt(2) - bottomMargin
@@ -134,7 +134,7 @@ extension Converter {
         if let hiresBbArea = bboxOf(data: epsData, hires: true),
            let match = BoundingBoxType.hiresBoundingBox.checkingResultOf(content: hiresBbArea.content) {
             
-            let matchingAt = { Double((hiresBbArea.content as NSString).substring(with: match.range(at: $0)))! }
+            let matchingAt = { Double(hiresBbArea.content.substring(with: match.range(at: $0)))! }
 
             let llx = matchingAt(1) - Double(leftMargin)
             let lly = matchingAt(2) - Double(bottomMargin)

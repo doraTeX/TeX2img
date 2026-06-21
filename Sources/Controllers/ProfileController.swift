@@ -6,7 +6,7 @@ private let profileNamesKey = "profileNames"
 private let profilesKey = "profiles"
 
 class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
-    private var profiles = [NSDictionary]()
+    private var profiles = [Profile]()
     private var profileNames = [String]()
 
     @IBOutlet private var profilesWindow: NSWindow!
@@ -14,9 +14,9 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     @IBOutlet private var saveAsTextField: NSTextField!
     @IBOutlet private var controllerG: ControllerG!
 
-    func profileForName(_ profileName: String) -> NSMutableDictionary? {
+    func profileForName(_ profileName: String) -> Profile? {
         guard let targetIndex = profileNames.firstIndex(of: profileName) else { return nil }
-        return NSMutableDictionary(dictionary: profiles[targetIndex])
+        return profiles[targetIndex]
     }
 
     func loadProfilesFromPlist() {
@@ -24,7 +24,7 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         if let names = defaults.array(forKey: profileNamesKey) as? [String] {
             profileNames = names
         }
-        if let storedProfiles = defaults.array(forKey: profilesKey) as? [NSDictionary] {
+        if let storedProfiles = defaults.array(forKey: profilesKey) as? [Profile] {
             profiles = storedProfiles
         }
     }
@@ -40,7 +40,7 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         profiles.remove(at: targetIndex)
     }
 
-    func updateProfile(_ aProfile: NSDictionary, forName profileName: String) {
+    func updateProfile(_ aProfile: Profile, forName profileName: String) {
         if let targetIndex = profileNames.firstIndex(of: profileName) {
             profileNames[targetIndex] = profileName
             profiles[targetIndex] = aProfile

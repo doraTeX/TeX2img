@@ -49,7 +49,7 @@ class UtilityG: NSObject {
         return Cache.value
     }
 
-    private static func readColor(from profile: NSDictionary,
+    private static func readColor(from profile: Profile,
                                   lightModeKey: String,
                                   darkModeKey: String,
                                   defaultColor: NSColor) -> NSColor {
@@ -57,84 +57,84 @@ class UtilityG: NSObject {
         return profile.colorForKey(key) ?? defaultColor
     }
 
-    static func foregroundColor(inProfile profile: NSDictionary) -> NSColor {
+    static func foregroundColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "foregroundColor",
                   darkModeKey: "foregroundColorForDarkMode",
                   defaultColor: .defaultForegroundColor)
     }
 
-    static func backgroundColor(inProfile profile: NSDictionary) -> NSColor {
+    static func backgroundColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "backgroundColor",
                   darkModeKey: "backgroundColorForDarkMode",
                   defaultColor: .defaultBackgroundColor)
     }
 
-    static func cursorColor(inProfile profile: NSDictionary) -> NSColor {
+    static func cursorColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "cursorColor",
                   darkModeKey: "cursorColorForDarkMode",
                   defaultColor: .defaultCursorColor)
     }
 
-    static func braceColor(inProfile profile: NSDictionary) -> NSColor {
+    static func braceColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "braceColor",
                   darkModeKey: "braceColorForDarkMode",
                   defaultColor: .defaultBraceColor)
     }
 
-    static func commentColor(inProfile profile: NSDictionary) -> NSColor {
+    static func commentColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "commentColor",
                   darkModeKey: "commentColorForDarkMode",
                   defaultColor: .defaultCommentColor)
     }
 
-    static func commandColor(inProfile profile: NSDictionary) -> NSColor {
+    static func commandColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "commandColor",
                   darkModeKey: "commandColorForDarkMode",
                   defaultColor: .defaultCommandColor)
     }
 
-    static func invisibleColor(inProfile profile: NSDictionary) -> NSColor {
+    static func invisibleColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "invisibleColor",
                   darkModeKey: "invisibleColorForDarkMode",
                   defaultColor: .defaultInvisibleColor)
     }
 
-    static func highlightedBraceColor(inProfile profile: NSDictionary) -> NSColor {
+    static func highlightedBraceColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "highlightedBraceColor",
                   darkModeKey: "highlightedBraceColorForDarkMode",
                   defaultColor: .defaultHighlightedBraceColor)
     }
 
-    static func enclosedContentBackgroundColor(inProfile profile: NSDictionary) -> NSColor {
+    static func enclosedContentBackgroundColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "enclosedContentBackgroundColor",
                   darkModeKey: "enclosedContentBackgroundColorForDarkMode",
                   defaultColor: .defaultEnclosedContentBackgroundColor)
     }
 
-    static func flashingBackgroundColor(inProfile profile: NSDictionary) -> NSColor {
+    static func flashingBackgroundColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "flashingBackgroundColor",
                   darkModeKey: "flashingBackgroundColorForDarkMode",
                   defaultColor: .defaultFlashingBackgroundColor)
     }
 
-    static func consoleForegroundColor(inProfile profile: NSDictionary) -> NSColor {
+    static func consoleForegroundColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "consoleForegroundColor",
                   darkModeKey: "consoleForegroundColorForDarkMode",
                   defaultColor: .defaultConsoleForegroundColor)
     }
 
-    static func consoleBackgroundColor(inProfile profile: NSDictionary) -> NSColor {
+    static func consoleBackgroundColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "consoleBackgroundColor",
                   darkModeKey: "consoleBackgroundColorForDarkMode",

@@ -1,12 +1,12 @@
 import AppKit
 
 extension NSColorWell {
-    func saveColor(to dictionary: NSMutableDictionary) {
-        dictionary[self.description] = self.color
+    func saveColor(to dictionary: inout [String: Any]) {
+        dictionary[description] = color
     }
 
-    func restoreColor(from dictionary: NSMutableDictionary) {
-        if let color = dictionary[self.description] as? NSColor {
+    func restoreColor(from dictionary: [String: Any]) {
+        if let color = dictionary[description] as? NSColor {
             self.color = color
         }
     }

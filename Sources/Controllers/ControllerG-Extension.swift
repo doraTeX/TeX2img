@@ -44,7 +44,7 @@ extension ControllerG {
         }
         
         for path in searchPaths {
-            let fullPath = (path as NSString).appendingPathComponent(programName)
+            let fullPath = path.appendingPathComponent(programName)
             if FileManager.default.isRegularFile(atPath: fullPath) {
                 return fullPath
             }

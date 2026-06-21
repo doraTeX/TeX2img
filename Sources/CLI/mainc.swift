@@ -234,7 +234,7 @@ struct Tex2imgCommand: ParsableCommand {
             throw Tex2imgCLIError.failed
         }
 
-        let inputExtension = (inputFile as NSString).pathExtension
+        let inputExtension = inputFile.pathExtension
         guard inputExtensions.contains(inputExtension) else {
             UtilityC.printStdErr("tex2img : Invalid input file type - \(inputFile)\n")
             throw Tex2imgCLIError.failed
@@ -288,21 +288,17 @@ struct Tex2imgCommand: ParsableCommand {
         }
 
         let controller = ControllerC()
-        let latexNSString = latex as NSString
-        let dviDriverNSString = dviDriver as NSString
-        let gsNSString = gs as NSString
-
-        guard let latexPath = UtilityC.getPath(latexNSString.programPath) else {
-            controller.showNotFoundError(latexNSString.programName)
+        guard let latexPath = UtilityC.getPath(latex.programPath) else {
+            controller.showNotFoundError(latex.programName)
             UtilityC.suggestLatexOption()
             throw Tex2imgCLIError.failed
         }
-        guard let dviDriverPath = UtilityC.getPath(dviDriverNSString.programPath) else {
-            controller.showNotFoundError(dviDriverNSString.programName)
+        guard let dviDriverPath = UtilityC.getPath(dviDriver.programPath) else {
+            controller.showNotFoundError(dviDriver.programName)
             throw Tex2imgCLIError.failed
         }
-        guard let gsPath = UtilityC.getPath(gsNSString.programPath) else {
-            controller.showNotFoundError(gsNSString.programName)
+        guard let gsPath = UtilityC.getPath(gs.programPath) else {
+            controller.showNotFoundError(gs.programName)
             throw Tex2imgCLIError.failed
         }
         guard let epstopdfPath = UtilityC.getPath("epstopdf") else {
@@ -317,10 +313,10 @@ struct Tex2imgCommand: ParsableCommand {
             throw Tex2imgCLIError.failed
         }
 
-        let profile = NSMutableDictionary()
-        profile[LatexPathKey] = latexPath.stringByAppendingStringSepareted(bySpace: latexNSString.argumentsString)
-        profile[DviDriverPathKey] = dviDriverPath.stringByAppendingStringSepareted(bySpace: dviDriverNSString.argumentsString)
-        profile[GsPathKey] = gsPath.stringByAppendingStringSepareted(bySpace: gsNSString.argumentsString)
+        var profile: Profile = [:]
+        profile[LatexPathKey] = latexPath.appendingStringSeparatedBySpace(latex.argumentsString)
+        profile[DviDriverPathKey] = dviDriverPath.appendingStringSeparatedBySpace(dviDriver.argumentsString)
+        profile[GsPathKey] = gsPath.appendingStringSeparatedBySpace(gs.argumentsString)
         profile[EpstopdfPathKey] = epstopdfPath
         profile[MudrawPathKey] = mudrawPath
         profile[PdftopsPathKey] = pdftopsPath
@@ -404,7 +400,7 @@ struct Tex2imgCommand: ParsableCommand {
             printCurrentStatus(inputFilePath: inputFile, profile: profile)
         }
 
-        let converter = Converter(profileDictionary: profile as! [String: Any])
+        let converter = Converter(profile: profile)
         let success = converter.compileAndConvert(withInputPath: inputFile)
         return success ? Int32(ExitStatus.succeeded.rawValue) : Int32(ExitStatus.failed.rawValue)
     }
@@ -702,7 +698,7 @@ private func printUsage() {
     print("  --help                     : display this message")
 }
 
-private func printCurrentStatus(inputFilePath: String, profile: NSDictionary) {
+private func printCurrentStatus(inputFilePath: String, profile: Profile) {
     print("************************************")
     print("  TeX2img settings")
     print("************************************")
@@ -721,9 +717,8 @@ private func printCurrentStatus(inputFilePath: String, profile: NSDictionary) {
         kanjiSuffix = " -kanji=\(encoding)"
     }
 
-    let latexNSString = latex as NSString
-    let latexPath = UtilityC.getPath(latexNSString.programName) ?? ""
-    print("LaTeX compiler: \(latexPath)\(kanjiSuffix) \(latexNSString.argumentsString)")
+    let latexPath = UtilityC.getPath(latex.programName) ?? ""
+    print("LaTeX compiler: \(latexPath)\(kanjiSuffix) \(latex.argumentsString)")
 
     print("Auto detection of the number of compilation: ", terminator: "")
     if profile.boolForKey(GuessCompilationKey) {
@@ -735,14 +730,12 @@ private func printCurrentStatus(inputFilePath: String, profile: NSDictionary) {
     }
 
     let dviDriver = profile.stringForKey(DviDriverPathKey) ?? ""
-    let dviDriverNSString = dviDriver as NSString
-    let dviDriverPath = UtilityC.getPath(dviDriverNSString.programName) ?? ""
-    print("DVI Driver: \(dviDriverPath) \(dviDriverNSString.argumentsString)")
+    let dviDriverPath = UtilityC.getPath(dviDriver.programName) ?? ""
+    print("DVI Driver: \(dviDriverPath) \(dviDriver.argumentsString)")
 
     let gs = profile.stringForKey(GsPathKey) ?? ""
-    let gsNSString = gs as NSString
-    let gsPath = UtilityC.getPath(gsNSString.programName) ?? ""
-    print("Ghostscript: \(gsPath) \(gsNSString.argumentsString)")
+    let gsPath = UtilityC.getPath(gs.programName) ?? ""
+    print("Ghostscript: \(gsPath) \(gs.argumentsString)")
 
     let epstopdfPath = UtilityC.getPath(profile.stringForKey(EpstopdfPathKey) ?? "") ?? "NOT FOUND"
     print("epstopdf: \(epstopdfPath)")
@@ -759,7 +752,7 @@ private func printCurrentStatus(inputFilePath: String, profile: NSDictionary) {
         print(FileManager.default.temporaryDirectory.path, terminator: "")
     case Int(WorkingDirectoryFile):
         if let fullPath = Utility.getFullPath(inputFilePath) {
-            print((fullPath as NSString).deletingLastPathComponent, terminator: "")
+            print(fullPath.deletingLastPathComponent, terminator: "")
         }
     case Int(WorkingDirectoryCurrent):
         print(FileManager.default.currentDirectoryPath, terminator: "")
@@ -771,7 +764,7 @@ private func printCurrentStatus(inputFilePath: String, profile: NSDictionary) {
     print("Resolution level: \(profile.floatForKey(ResolutionKey))")
     print("DPI: \(profile.integerForKey(DPIKey))")
 
-    let ext = (outputFilePath as NSString).pathExtension
+    let ext = outputFilePath.pathExtension
     let unit: String
     if profile.integerForKey(UnitKey) == Int(PX_UNIT_TAG)
         && (ext == "png" || ext == "gif" || ext == "tiff") {

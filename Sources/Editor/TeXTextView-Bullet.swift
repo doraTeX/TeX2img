@@ -8,7 +8,7 @@ fileprivate let endCommentString = "\u{203A}" // "›"
 
 extension TeXTextView {
     @IBAction func doNextBullet(_ sender: Any) {  // modified by (HS)
-        let text = self.string as NSString
+        let text = self.string
         var tempRange = self.selectedRange
         tempRange.location += tempRange.length // move the range to after the selection (a la Find) to avoid re-finding (HS)
         //set up a search range from here to eof
@@ -42,7 +42,7 @@ extension TeXTextView {
     
     
     @IBAction func doPreviousBullet(_ sender: Any) { // modified by (HS)
-        let text = self.string as NSString
+        let text = self.string
         let tempRange = self.selectedRange
         //set up a search range from string start to beginning of selection
         let backwardRange = NSRange(location: 0, length: tempRange.location)
@@ -74,7 +74,7 @@ extension TeXTextView {
 
 
     @IBAction func doNextBulletAndDelete(_ sender: Any) { // modified by (HS)
-        let text = self.string as NSString
+        let text = self.string
         var tempRange = self.selectedRange
         tempRange.location += tempRange.length // move the range to after the selection (a la Find) to avoid re-finding (HS)
         //set up a search range from here to eof
@@ -98,7 +98,7 @@ extension TeXTextView {
 
             // delete bullet (marker)
             tempRange.location = markerRange.location
-            tempRange.length = (placeholderString as NSString).length
+            tempRange.length = placeholderString.nsLength
             markerRange.length -= tempRange.length // deleting the bullet so selection is shorter
             self.replaceCharacters(in: tempRange, with: "")
 
@@ -113,7 +113,7 @@ extension TeXTextView {
 
     
     @IBAction func doPreviousBulletAndDelete(_ sender: Any) { // modified by (HS)
-        let text = self.string as NSString
+        let text = self.string
         var tempRange = self.selectedRange
         //set up a search range from string start to beginning of selection
         let backwardRange = NSRange(location: 0, length: tempRange.location)
@@ -136,7 +136,7 @@ extension TeXTextView {
             
             // delete bullet (marker)
             tempRange.location = markerRange.location
-            tempRange.length = (placeholderString as NSString).length
+            tempRange.length = placeholderString.nsLength
             markerRange.length -= tempRange.length // deleting the bullet so selection is shorter
             self.replaceCharacters(in: tempRange, with: "")
             
@@ -153,7 +153,7 @@ extension TeXTextView {
     @IBAction func placeBullet(_ sender: Any) { // modified by (HS) to be a simple insertion (replacing the selection)
         var myRange = self.selectedRange
         self.replaceCharacters(in: myRange, with: placeholderString) //" •\n" puts • on previous line
-        myRange.location += (placeholderString as NSString).length //= end+2;//start puts • on previous line
+        myRange.location += placeholderString.nsLength //= end+2;//start puts • on previous line
         myRange.length = 0
         self.selectedRange = myRange
     }
@@ -162,7 +162,7 @@ extension TeXTextView {
     @IBAction func placeComment(_ sender: Any) { // by (HS) to be a simple insertion (replacing the selection)
         var myRange = self.selectedRange
         self.replaceCharacters(in: myRange, with: startCommentString) //" •\n" puts • on previous line
-        myRange.location += (startCommentString as NSString).length //= end+2;//start puts • on previous line
+        myRange.location += startCommentString.nsLength //= end+2;//start puts • on previous line
         myRange.length = 0
         self.replaceCharacters(in: myRange, with: endCommentString)
         self.selectedRange = myRange
