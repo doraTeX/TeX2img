@@ -291,12 +291,11 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         outputPipe = pipe
         runningTask = task
 
-        task.environment = ["PATH": "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"]
         task.currentDirectoryURL = URL(fileURLWithPath: path)
-        task.executableURL = URL(fileURLWithPath: command)
+        task.executableURL = URL(fileURLWithPath: "/bin/sh")
         task.standardOutput = pipe
         task.standardError = pipe
-        task.arguments = arguments
+        task.arguments = ["-c", cmdline]
         taskKilled = false
 
         pipe.fileHandleForReading.readInBackgroundAndNotify()
@@ -2134,7 +2133,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     private func generateImage() {
-        let profile = currentProfile()
+        var profile = currentProfile()
         profile[EpstopdfPathKey] = Bundle.main.path(forResource: "epstopdf", ofType: nil)
         if let mupdfPath = Bundle.main.path(forResource: "mupdf", ofType: nil) {
             profile[MudrawPathKey] = mupdfPath.appendingPathComponent("mudraw")

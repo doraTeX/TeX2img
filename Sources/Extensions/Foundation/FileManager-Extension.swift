@@ -21,14 +21,21 @@ import Foundation
 
 extension FileManager {
     func isDirectory(atPath path: String) -> Bool {
-        (try? URL(fileURLWithPath: path).resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
+        var isDirectory: ObjCBool = false
+        guard fileExists(atPath: path, isDirectory: &isDirectory) else { return false }
+        return isDirectory.boolValue
     }
 
     func isRegularFile(atPath path: String) -> Bool {
-        guard let values = try? URL(fileURLWithPath: path).resourceValues(forKeys: [.isDirectoryKey]) else {
-            return false
-        }
-        return values.isDirectory == false
+        var isDirectory: ObjCBool = false
+        guard fileExists(atPath: path, isDirectory: &isDirectory) else { return false }
+        return !isDirectory.boolValue
+    }
+
+    func directoryStatus(atPath path: String) -> Bool? {
+        var isDirectory: ObjCBool = false
+        guard fileExists(atPath: path, isDirectory: &isDirectory) else { return nil }
+        return isDirectory.boolValue
     }
     var applicationSupportDirectory: String? {
         guard let executableName = Bundle.main.infoDictionary?["CFBundleExecutable"] as? String else { return nil }

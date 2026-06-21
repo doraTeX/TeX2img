@@ -44,6 +44,9 @@ case "$TARGET" in
         ;;
     TeX2img)
         resolve_packages
+        # tex2img は TeX2img の依存ターゲット。並列ビルドすると SwiftFileList が
+        # 混ざることがあるため、先に CLI を単独ビルドしてから GUI をビルドする。
+        build_scheme "tex2img CUI"
         build_scheme "TeX2img GUI"
         ;;
     all)

@@ -3,6 +3,7 @@ import Foundation
 
 extension TeXTextView {
     func colorizeText() {
+        guard let controller else { return }
         let profile = controller.currentProfile()
 
         textColor = UtilityG.foregroundColor(inProfile: profile)
@@ -19,7 +20,8 @@ extension TeXTextView {
             .foregroundColor: UtilityG.braceColor(inProfile: profile),
         ]
 
-        guard let layoutManager, let textString = string? else { return }
+        guard let layoutManager else { return }
+        let textString = string
         let length = textString.length
 
         var aLineStart: Int = 0

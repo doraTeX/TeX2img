@@ -12,19 +12,19 @@ extension TeXTextView {
         var tempRange = self.selectedRange
         tempRange.location += tempRange.length // move the range to after the selection (a la Find) to avoid re-finding (HS)
         //set up a search range from here to eof
-        let forwardRange = NSRange(location: tempRange.location, length: text.length - tempRange.location)
+        let forwardRange = NSRange(location: tempRange.location, length: text.nsLength - tempRange.location)
         var markerRange = text.range(of: placeholderString, options: .literal, range: forwardRange)
 
         //if marker found - set commentRange there and look for end of comment
         if markerRange.location != NSNotFound {
             // marker found
-            var commentRange = NSRange(location: markerRange.location, length: text.length - markerRange.location)
+            var commentRange = NSRange(location: markerRange.location, length: text.nsLength - markerRange.location)
             commentRange = text.range(of: startCommentString, options: .literal, range: commentRange)
 
             if (commentRange.location != NSNotFound) && (commentRange.location == markerRange.location) {
                 // found comment start right after marker --- there is a comment
                 commentRange.location = markerRange.location
-                commentRange.length = text.length - markerRange.location
+                commentRange.length = text.nsLength - markerRange.location
                 commentRange = text.range(of: endCommentString, options: .literal, range: commentRange)
 
                 if commentRange.location != NSNotFound {
@@ -50,13 +50,13 @@ extension TeXTextView {
 
         //if marker found - set commentRange there and look for end of comment
         if markerRange.location != NSNotFound { // marker found
-            var commentRange = NSRange(location: markerRange.location, length: text.length - markerRange.location)
+            var commentRange = NSRange(location: markerRange.location, length: text.nsLength - markerRange.location)
             commentRange = text.range(of: startCommentString, options: .literal, range: commentRange)
 
             if (commentRange.location != NSNotFound) && (commentRange.location == markerRange.location) {
                 // found comment start right after marker --- there is a comment
                 commentRange.location = markerRange.location
-                commentRange.length = text.length - markerRange.location
+                commentRange.length = text.nsLength - markerRange.location
                 commentRange = text.range(of: endCommentString, options: .literal, range: commentRange)
 
                 if commentRange.location != NSNotFound {
@@ -78,17 +78,17 @@ extension TeXTextView {
         var tempRange = self.selectedRange
         tempRange.location += tempRange.length // move the range to after the selection (a la Find) to avoid re-finding (HS)
         //set up a search range from here to eof
-        let forwardRange = NSRange(location: tempRange.location, length: text.length - tempRange.location)
+        let forwardRange = NSRange(location: tempRange.location, length: text.nsLength - tempRange.location)
         var markerRange = text.range(of: placeholderString, options: .literal, range: forwardRange)
         //if marker found - set commentRange there and look for end of comment
         if markerRange.location != NSNotFound { // marker found
-            var commentRange = NSRange(location: markerRange.location, length: text.length - markerRange.location)
+            var commentRange = NSRange(location: markerRange.location, length: text.nsLength - markerRange.location)
             commentRange = text.range(of: startCommentString, options: .literal, range: commentRange)
 
             if (commentRange.location != NSNotFound) && (commentRange.location == markerRange.location) {
                 // found comment start right after marker --- there is a comment
                 commentRange.location = markerRange.location
-                commentRange.length = text.length - markerRange.location
+                commentRange.length = text.nsLength - markerRange.location
                 commentRange = text.range(of: endCommentString, options: .literal, range: commentRange)
 
                 if commentRange.location != NSNotFound {
@@ -121,12 +121,12 @@ extension TeXTextView {
 
         //if marker found - set commentRange there and look for end of comment
         if markerRange.location != NSNotFound { // marker found
-            var commentRange = NSRange(location: markerRange.location, length: text.length - markerRange.location)
+            var commentRange = NSRange(location: markerRange.location, length: text.nsLength - markerRange.location)
             commentRange = text.range(of: startCommentString, options: .literal, range: commentRange)
 
             if (commentRange.location != NSNotFound) && (commentRange.location == markerRange.location) {
                 // found comment start right after marker --- there is a comment
-                var commentRange = NSRange(location: markerRange.location, length: text.length - markerRange.location)
+                var commentRange = NSRange(location: markerRange.location, length: text.nsLength - markerRange.location)
                 commentRange = text.range(of: endCommentString, options: .literal, range: commentRange)
 
                 if commentRange.location != NSNotFound {

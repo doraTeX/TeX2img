@@ -849,8 +849,7 @@ class TeXTextView: NSTextView {
         forProposedRange proposedSelRange: NSRange,
         granularity: NSSelectionGranularity
     ) -> NSRange {
-        let textString = string?
-        guard let textString else { return NSRange(location: 0, length: 0) }
+        let textString = string
 
         var replacementRange = super.selectionRange(forProposedRange: proposedSelRange, granularity: granularity)
         let makeatletterEnabled = controller?.currentProfile().boolForKey(MakeatletterEnabledKey) ?? true
@@ -1020,8 +1019,7 @@ class TeXTextView: NSTextView {
         let draggedFilePath = draggedFiles[0]
         let fileURL = URL(fileURLWithPath: draggedFilePath)
         guard FileManager.default.fileExists(atPath: draggedFilePath) else { return [] }
-        let isDirectory = (try? fileURL.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory ?? false
-        guard !isDirectory else { return [] }
+        guard !FileManager.default.isDirectory(atPath: draggedFilePath) else { return [] }
 
         let ext = fileURL.pathExtension
         guard importExtensions.contains(ext) else { return [] }

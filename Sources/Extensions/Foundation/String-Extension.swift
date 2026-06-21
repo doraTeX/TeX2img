@@ -85,12 +85,37 @@ extension String {
         (self as NSString).length
     }
 
+    var length: Int {
+        nsLength
+    }
+
     func substring(with range: NSRange) -> String {
         (self as NSString).substring(with: range)
     }
 
     func substring(from offset: Int) -> String {
         (self as NSString).substring(from: offset)
+    }
+
+    func substring(to offset: Int) -> String {
+        (self as NSString).substring(to: offset)
+    }
+
+    func getLineStart(
+        _ start: UnsafeMutablePointer<Int>?,
+        end: UnsafeMutablePointer<Int>?,
+        contentsEnd: UnsafeMutablePointer<Int>?,
+        for range: NSRange
+    ) {
+        (self as NSString).getLineStart(start, end: end, contentsEnd: contentsEnd, for: range)
+    }
+
+    func rangeOfCharacter(
+        from searchSet: CharacterSet,
+        options: NSString.CompareOptions = [],
+        range searchRange: NSRange
+    ) -> NSRange {
+        (self as NSString).rangeOfCharacter(from: searchSet, options: options, range: searchRange)
     }
 
     func range(of searchString: String, options: NSString.CompareOptions = [], range searchRange: NSRange? = nil) -> NSRange {

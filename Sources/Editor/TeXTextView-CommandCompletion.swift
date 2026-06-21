@@ -149,7 +149,7 @@ extension TeXTextView {
                 }
 
                 let searchTarget = "\n" + (originalString ?? "")
-                let foundRange = commandCompletionList!.range(
+                let foundRange = commandCompletionList.range(
                     of: searchTarget,
                     options: event.modifierFlags.isEmpty ? [] : .backwards,
                     range: searchRange
@@ -164,10 +164,10 @@ extension TeXTextView {
                 var lineRange = foundRange
                 lineRange.location += 1
                 lineRange.length -= 1
-                lineRange = commandCompletionList!.lineRange(for: lineRange)
+                lineRange = commandCompletionList.lineRange(for: lineRange)
                 lineRange.length -= 1
 
-                var foundString = commandCompletionList!.substring(with: lineRange)
+                var foundString = commandCompletionList.substring(with: lineRange)
                 completionListLocation = UInt(lineRange.location)
 
                 let spaceRange = foundString.range(of: ":=")
