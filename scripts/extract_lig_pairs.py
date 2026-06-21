@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import re
 
-with open("Sources/NSString-Conversion.m", "r", encoding="utf-8") as f:
+with open("Sources/NSString/NSString-Conversion.m", "r", encoding="utf-8") as f:
     content = f.read()
 
 def decode_objc_string(s):
@@ -113,12 +113,12 @@ out.extend(emit_pairs("ajLigToLigStringReplacements", parse_string_replacements(
 out.append("")
 out.extend(emit_pattern_pairs("ajLigToLigPatternReplacements", parse_pattern_replacements(extract_method("stringByReplacingAjLigWithLig"))))
 
-with open("Sources/NSString-Conversion+LigTable.swift", "w", encoding="utf-8") as f:
+with open("Sources/NSString/NSString-Conversion+LigTable.swift", "w", encoding="utf-8") as f:
     f.write("import Foundation\n\n")
     f.write("\n".join(out))
     f.write("\n")
 
-print(f"Wrote Sources/NSString-Conversion+LigTable.swift ({len(out)} lines)")
+print(f"Wrote Sources/NSString/NSString-Conversion+LigTable.swift ({len(out)} lines)")
 print("ligToAjLig count:", len(parse_string_replacements(extract_method("stringByReplacingLigWithAjLig"))))
 print("ajLigToLig count:", len(parse_string_replacements(extract_method("stringByReplacingAjLigWithLig"))))
 print("pattern count:", len(parse_pattern_replacements(extract_method("stringByReplacingAjLigWithLig"))))

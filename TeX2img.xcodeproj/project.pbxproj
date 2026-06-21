@@ -272,32 +272,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		080E96DDFE201D6D7F000001 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				CEB04B27225226FB005EED2C /* AppDelegate.swift */,
-				3408DF35252ED251002A9D9F /* MyLayoutManager.swift */,
-				3486591F252659A600B8B190 /* MyATSTypesetter.swift */,
-				34A5C714251B700000FCF7BB /* MyGlyphPopoverController.swift */,
-				34A5C712251B700000FCF7BA /* ProfileController.swift */,
-				3419976F25282F9D0022F53C /* PDFPageBox.swift */,
-				3402126C2534D272002D1545 /* UserNotificationDelegate.swift */,
-				340364352537552B005A43A5 /* AutoSelectTextField.swift */,
-				34A5C71F251B700000FCF7BE /* Converter.swift */,
-				34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */,
-				34A5C719251B700000FCF7BD /* ControllerG.swift */,
-				34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */,
-				34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */,
-				34A5C716251B700000FCF7BC /* ControllerC.swift */,
-				34E0A0012F20000100A1FA01 /* TeXTextView.swift */,
-				34E0A0022F20000100A1FA02 /* TeXTextView-Colorize.swift */,
-				34E0A0032F20000100A1FA03 /* TeXTextView-CommandCompletion.swift */,
-				34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */,
-			);
-			name = Classes;
-			path = Sources;
-			sourceTree = "<group>";
-		};
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -330,33 +304,12 @@
 		29B97314FDCFA39411CA2CEA /* TeX2img */ = {
 			isa = PBXGroup;
 			children = (
-				080E96DDFE201D6D7F000001 /* Classes */,
-				348F295D1B848951009AA3CF /* Extensions */,
-				29B97315FDCFA39411CA2CEA /* Other Sources */,
-				347314F41B89CD9500F285A3 /* ICU Headers */,
+				34SRC47DC6F477BFA565885F5 /* Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			name = TeX2img;
-			sourceTree = "<group>";
-		};
-		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
-			isa = PBXGroup;
-			children = (
-				34A5C70C251B700000FCF7BA /* Utility.swift */,
-				34HDR012F30000100A1FA01 /* GlobalConstants.swift */,
-				34HDR022F30000200A1FA02 /* Types.swift */,
-				34A5C711251B700000FCF7BA /* UtilityG.swift */,
-				34A5C70F251B700000FCF7BA /* UtilityC.swift */,
-
-
-				34D0A0032F10000300A1FA03 /* mainc.swift */,
-				34A5C638251B170A00FCF7BA /* Bridging-Header-G.h */,
-				34A5C641251B17E400FCF7BA /* Bridging-Header-C.h */,
-			);
-			name = "Other Sources";
-			path = Sources;
 			sourceTree = "<group>";
 		};
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
@@ -391,7 +344,164 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		347314F41B89CD9500F285A3 /* ICU Headers */ = {
+		34SRC47DC6F477BFA565885F5 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+			34SRC9AA437FDCC3A55FEA3B7 /* App */,
+			34SRCC093CD213EE25523835B /* Controllers */,
+			34SRC6BC2DAA2087C593ABCBF /* Converter */,
+			34SRC3C0CF7D6FE525BC99047 /* Editor */,
+			34SRC7F5DC46D9DCE5E52A618 /* NSString */,
+			34SRC07C8D8DDBF275892A4D7 /* Extensions */,
+			34SRC3D1C39B515F35240AD88 /* Utility */,
+			34SRC2D7EEA8EFF3F5626B12D /* CLI */,
+			34SRC2545F6F49BB45AFC80D9 /* Core */,
+			34SRC8DAFEA289C0658268CF0 /* icu */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		34SRC9AA437FDCC3A55FEA3B7 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				CEB04B27225226FB005EED2C /* AppDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		34SRCC093CD213EE25523835B /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				34A5C719251B700000FCF7BD /* ControllerG.swift */,
+				34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */,
+				34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */,
+				34A5C716251B700000FCF7BC /* ControllerC.swift */,
+				34A5C712251B700000FCF7BA /* ProfileController.swift */,
+				34A5C714251B700000FCF7BB /* MyGlyphPopoverController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		34SRC6BC2DAA2087C593ABCBF /* Converter */ = {
+			isa = PBXGroup;
+			children = (
+				34A5C71F251B700000FCF7BE /* Converter.swift */,
+				34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */,
+			);
+			path = Converter;
+			sourceTree = "<group>";
+		};
+		34SRC3C0CF7D6FE525BC99047 /* Editor */ = {
+			isa = PBXGroup;
+			children = (
+				34E0A0012F20000100A1FA01 /* TeXTextView.swift */,
+				34E0A0022F20000100A1FA02 /* TeXTextView-Colorize.swift */,
+				34E0A0032F20000100A1FA03 /* TeXTextView-CommandCompletion.swift */,
+				34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */,
+				3486591F252659A600B8B190 /* MyATSTypesetter.swift */,
+				3408DF35252ED251002A9D9F /* MyLayoutManager.swift */,
+				340364352537552B005A43A5 /* AutoSelectTextField.swift */,
+			);
+			path = Editor;
+			sourceTree = "<group>";
+		};
+		34SRC7F5DC46D9DCE5E52A618 /* NSString */ = {
+			isa = PBXGroup;
+			children = (
+				34A5C709251B700000FCF7BA /* NSString-Extension.swift */,
+				34A5C722251B700000FCF7BF /* NSString-Conversion.swift */,
+				34A5C723251B700000FCF7BF /* NSString-Conversion+CIDTable.swift */,
+				34A5C724251B700000FCF7BF /* NSString-Conversion+LigTable.swift */,
+				34A5C714251B700000FCF7BA /* NSString-Unicode.swift */,
+				34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */,
+			);
+			path = NSString;
+			sourceTree = "<group>";
+		};
+		34SRC07C8D8DDBF275892A4D7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				34SRCBA7E889651985A8384FB /* Foundation */,
+				34SRC7912D259FB885A0DB1C5 /* AppKit */,
+				34SRCA50780908E0C5DD89C5C /* PDF */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+			34SRCBA7E889651985A8384FB /* Foundation */ = {
+				isa = PBXGroup;
+				children = (
+					34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */,
+					34A5C702251B700000FCF7BA /* NSDictionary-Extension.swift */,
+					348658FF252643A600B8B190 /* NSIndexSet-Extension.swift */,
+					348658F42526402E00B8B190 /* NSDate-Extension.swift */,
+					340F4D5F252C07A200FA56D7 /* Data-Extension.swift */,
+					3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */,
+					348659052526458600B8B190 /* Pipe-Extension.swift */,
+					3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */,
+					3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */,
+					3408DF45252F47B1002A9D9F /* StringProtocol-Extension.swift */,
+				);
+				path = Foundation;
+				sourceTree = "<group>";
+			};
+			34SRC7912D259FB885A0DB1C5 /* AppKit */ = {
+				isa = PBXGroup;
+				children = (
+					340F4D67252C799400FA56D7 /* NSApplication-Extension.swift */,
+					340F4D6A252C79D900FA56D7 /* NSApperance-Extension.swift */,
+					348BBF951B795AB900EDE00C /* NSColor-Extension.swift */,
+					34CB9280251F93500045CE9E /* NSColor-DefaultColor.swift */,
+					34867AC81B7B4804002AD2CF /* NSColorWell-Extension.swift */,
+					340212592534AF36002D1545 /* NSWindow-Extension.swift */,
+					3486590A2526473500B8B190 /* NSBitmapImageRep-Extension.swift */,
+					3486590F25264BCE00B8B190 /* NSMatrix-Extension.swift */,
+					348659152526523000B8B190 /* NSPopover-Extension.swift */,
+				);
+				path = AppKit;
+				sourceTree = "<group>";
+			};
+			34SRCA50780908E0C5DD89C5C /* PDF */ = {
+				isa = PBXGroup;
+				children = (
+					34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.swift */,
+					348658FA2526421000B8B190 /* PDFPage-Extension.swift */,
+					3419976F25282F9D0022F53C /* PDFPageBox.swift */,
+				);
+				path = PDF;
+				sourceTree = "<group>";
+			};
+		34SRC3D1C39B515F35240AD88 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				34A5C70C251B700000FCF7BA /* Utility.swift */,
+				34A5C70F251B700000FCF7BA /* UtilityC.swift */,
+				34A5C711251B700000FCF7BA /* UtilityG.swift */,
+				3402126C2534D272002D1545 /* UserNotificationDelegate.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		34SRC2D7EEA8EFF3F5626B12D /* CLI */ = {
+			isa = PBXGroup;
+			children = (
+				34D0A0032F10000300A1FA03 /* mainc.swift */,
+			);
+			path = CLI;
+			sourceTree = "<group>";
+		};
+		34SRC2545F6F49BB45AFC80D9 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				34HDR012F30000100A1FA01 /* GlobalConstants.swift */,
+				34HDR022F30000200A1FA02 /* Types.swift */,
+				34A5C641251B17E400FCF7BA /* Bridging-Header-C.h */,
+				34A5C638251B170A00FCF7BA /* Bridging-Header-G.h */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		34SRC8DAFEA289C0658268CF0 /* icu */ = {
 			isa = PBXGroup;
 			children = (
 				34F5F5A11B8BF404002F194B /* localpointer.h */,
@@ -414,43 +524,7 @@
 				34F5F5B21B8BF404002F194B /* uvernum.h */,
 				34F5F5B31B8BF404002F194B /* uversion.h */,
 			);
-			name = "ICU Headers";
-			path = Sources/icu;
-			sourceTree = "<group>";
-		};
-		348F295D1B848951009AA3CF /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				340F4D67252C799400FA56D7 /* NSApplication-Extension.swift */,
-				340F4D6A252C79D900FA56D7 /* NSApperance-Extension.swift */,
-				3408DF45252F47B1002A9D9F /* StringProtocol-Extension.swift */,
-				3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */,
-				3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */,
-				340212592534AF36002D1545 /* NSWindow-Extension.swift */,
-				34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */,
-				348658FF252643A600B8B190 /* NSIndexSet-Extension.swift */,
-				34A5C702251B700000FCF7BA /* NSDictionary-Extension.swift */,
-				34A5C709251B700000FCF7BA /* NSString-Extension.swift */,
-				34A5C714251B700000FCF7BA /* NSString-Unicode.swift */,
-				34A5C722251B700000FCF7BF /* NSString-Conversion.swift */,
-				34A5C723251B700000FCF7BF /* NSString-Conversion+CIDTable.swift */,
-				34A5C724251B700000FCF7BF /* NSString-Conversion+LigTable.swift */,
-				34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */,
-				3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */,
-				3486590A2526473500B8B190 /* NSBitmapImageRep-Extension.swift */,
-				348658F42526402E00B8B190 /* NSDate-Extension.swift */,
-				348BBF951B795AB900EDE00C /* NSColor-Extension.swift */,
-				34CB9280251F93500045CE9E /* NSColor-DefaultColor.swift */,
-				34867AC81B7B4804002AD2CF /* NSColorWell-Extension.swift */,
-				348659052526458600B8B190 /* Pipe-Extension.swift */,
-				340F4D5F252C07A200FA56D7 /* Data-Extension.swift */,
-				348659152526523000B8B190 /* NSPopover-Extension.swift */,
-				3486590F25264BCE00B8B190 /* NSMatrix-Extension.swift */,
-				34BFF6D21B9F1A9F00E8DE77 /* PDFDocument-Extension.swift */,
-				348658FA2526421000B8B190 /* PDFPage-Extension.swift */,
-			);
-			name = Extensions;
-			path = Sources;
+			path = icu;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -604,7 +678,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "VER=`grep 'let tex2imgVersion' Sources/mainc.swift | sed 's/.*= \"\\(.*\\)\"/\\1/'`\ncd $BUILT_PRODUCTS_DIR\necho \"#!/bin/sh\" > deployc.sh\necho zip tex2imgcMac$VER.zip tex2img >> deployc.sh\nchmod +x deployc.sh\n";
+			shellScript = "VER=`grep 'let tex2imgVersion' Sources/CLI/mainc.swift | sed 's/.*= \"\\(.*\\)\"/\\1/'`\ncd $BUILT_PRODUCTS_DIR\necho \"#!/bin/sh\" > deployc.sh\necho zip tex2imgcMac$VER.zip tex2img >> deployc.sh\nchmod +x deployc.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -779,7 +853,7 @@
 				PRODUCT_NAME = tex2img;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_CONST_VALUES = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Bridging-Header-C.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Core/Bridging-Header-C.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -816,7 +890,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_CONST_VALUES = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Bridging-Header-C.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Core/Bridging-Header-C.h";
 				SWIFT_VERSION = 5.0;
 				ZERO_LINK = NO;
 			};
@@ -856,7 +930,7 @@
 				PRODUCT_NAME = TeX2img;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Bridging-Header-G.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Core/Bridging-Header-G.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -894,7 +968,7 @@
 				PRODUCT_NAME = TeX2img;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Bridging-Header-G.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Core/Bridging-Header-G.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

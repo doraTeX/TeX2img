@@ -2,7 +2,7 @@
 import re
 from collections import Counter
 
-m_path = "Sources/NSString-Conversion.m"
+m_path = "Sources/NSString/NSString-Conversion.m"
 with open(m_path, "r", encoding="utf-8") as f:
     content = f.read()
 
@@ -21,7 +21,7 @@ lines = ["import Foundation", "", "let cidToUnicode: [Int: UInt32] = ["]
 for cid, code in matches:
     lines.append(f"    {cid}: {code},")
 lines.append("]")
-out_path = "Sources/NSString-Conversion+CIDTable.swift"
+out_path = "Sources/NSString/NSString-Conversion+CIDTable.swift"
 with open(out_path, "w", encoding="utf-8") as f:
     f.write("\n".join(lines) + "\n")
 print(f"Wrote {out_path} ({len(lines)} lines)")
