@@ -148,7 +148,7 @@
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
-		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		34HDR012F30000100A1FA01 /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
@@ -206,7 +206,7 @@
 		3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverSingle.xib; sourceTree = "<group>"; };
 		34A5C638251B170A00FCF7BA /* Bridging-Header-G.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header-G.h"; sourceTree = "<group>"; };
 		34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Converter-BoundingBox.swift"; sourceTree = "<group>"; };
-		34A5C641251B17E400FCF7BA /* Bridging-Header-C.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header-C.h"; sourceTree = "<group>"; };
+
 		34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControllerG-Extension.swift"; sourceTree = "<group>"; };
 
 		34B5E70320995B2F0071BBE9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TeX2img/Images.xcassets; sourceTree = SOURCE_ROOT; };
@@ -503,7 +503,6 @@
 			children = (
 				34HDR012F30000100A1FA01 /* GlobalConstants.swift */,
 				34HDR022F30000200A1FA02 /* Types.swift */,
-				34A5C641251B17E400FCF7BA /* Bridging-Header-C.h */,
 				34A5C638251B170A00FCF7BA /* Bridging-Header-G.h */,
 			);
 			path = Core;
@@ -865,7 +864,6 @@
 				PRODUCT_NAME = tex2img;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_CONST_VALUES = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Core/Bridging-Header-C.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -902,7 +900,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_CONST_VALUES = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "Sources/Core/Bridging-Header-C.h";
 				SWIFT_VERSION = 5.0;
 				ZERO_LINK = NO;
 			};
