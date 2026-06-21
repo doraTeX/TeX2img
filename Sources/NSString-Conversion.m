@@ -1,5 +1,5 @@
 #import "NSString-Conversion.h"
-#import "NSMutableString-Extension.h"
+#import "TeX2img-Swift.h"
 
 @implementation NSString (Conversion)
 

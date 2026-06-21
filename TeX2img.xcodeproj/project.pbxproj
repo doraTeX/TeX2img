@@ -33,7 +33,7 @@
 		346225661AB558AB00F632AD /* mupdf in Resources */ = {isa = PBXBuildFile; fileRef = 346225651AB558AB00F632AD /* mupdf */; };
 		34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 34670DD5125B7AC3002308EF /* dsa_pub.pem */; };
 		34675B2B251CE443000EBBA3 /* TeXTextView-Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */; };
-		3468197D1C06A78800641CBF /* NSMutableString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7025539810353D33000D6D05 /* NSMutableString-Extension.m */; };
+		34A5C705251B700000FCF7BA /* NSMutableString-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */; };
 		34A5C700251B700000FCF7BA /* NSArray-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */; };
 		34A5C701251B700000FCF7BA /* NSArray-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C6FF251B700000FCF7BA /* NSArray-Extension.swift */; };
 		347314FB1B89CFDC00F285A3 /* NSString-Unicode.m in Sources */ = {isa = PBXBuildFile; fileRef = 347314FA1B89CFDC00F285A3 /* NSString-Unicode.m */; };
@@ -83,7 +83,7 @@
 		34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D41D1D17A6BE2C00997795 /* NSString-Extension.m */; };
 		34DBA5841D9A4F3A00951297 /* NSString-Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 34DBA5831D9A4F3A00951297 /* NSString-Conversion.m */; };
 		70254EF010353485000D6D05 /* TeXTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70254EEF10353485000D6D05 /* TeXTextView.m */; };
-		7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7025539810353D33000D6D05 /* NSMutableString-Extension.m */; };
+		34A5C707251B700000FCF7BA /* NSMutableString-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */; };
 		705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC3550F10E4670052AFA5 /* ControllerC.m */; };
 		705DC7A60F1197E90052AFA5 /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
 		705DC7A70F1197E90052AFA5 /* mainc.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC2BB0F10E0B00052AFA5 /* mainc.m */; };
@@ -225,8 +225,7 @@
 		34F5F5B31B8BF404002F194B /* uversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = uversion.h; sourceTree = "<group>"; };
 		70254EEE10353485000D6D05 /* TeXTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeXTextView.h; sourceTree = "<group>"; };
 		70254EEF10353485000D6D05 /* TeXTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeXTextView.m; sourceTree = "<group>"; };
-		7025539710353D33000D6D05 /* NSMutableString-Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableString-Extension.h"; sourceTree = "<group>"; };
-		7025539810353D33000D6D05 /* NSMutableString-Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableString-Extension.m"; sourceTree = "<group>"; };
+		34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSMutableString-Extension.swift"; sourceTree = "<group>"; };
 		705DC2BB0F10E0B00052AFA5 /* mainc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mainc.m; sourceTree = "<group>"; };
 		705DC3540F10E4670052AFA5 /* ControllerC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerC.h; sourceTree = "<group>"; };
 		705DC3550F10E4670052AFA5 /* ControllerC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerC.m; sourceTree = "<group>"; };
@@ -434,8 +433,7 @@
 				347314FA1B89CFDC00F285A3 /* NSString-Unicode.m */,
 				34DBA5821D9A4F3A00951297 /* NSString-Conversion.h */,
 				34DBA5831D9A4F3A00951297 /* NSString-Conversion.m */,
-				7025539710353D33000D6D05 /* NSMutableString-Extension.h */,
-				7025539810353D33000D6D05 /* NSMutableString-Extension.m */,
+				34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */,
 				3408053C1A96E6B50067AA56 /* FileManager-Extension.swift */,
 				3486590A2526473500B8B190 /* NSBitmapImageRep-Extension.swift */,
 				348658F42526402E00B8B190 /* NSDate-Extension.swift */,
@@ -627,7 +625,7 @@
 				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,
 				705DC7A70F1197E90052AFA5 /* mainc.m in Sources */,
 				34D41D1F17A6BE2C00997795 /* NSString-Extension.m in Sources */,
-				3468197D1C06A78800641CBF /* NSMutableString-Extension.m in Sources */,
+				34A5C707251B700000FCF7BA /* NSMutableString-Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -676,7 +674,7 @@
 				349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */,
 				34A5C700251B700000FCF7BA /* NSArray-Extension.swift in Sources */,
 				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,
-				7025539910353D33000D6D05 /* NSMutableString-Extension.m in Sources */,
+				34A5C705251B700000FCF7BA /* NSMutableString-Extension.swift in Sources */,
 				348D7281125A566A003AF902 /* TeXTextView-CommandCompletion.m in Sources */,
 				348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */,
 				34D41D1E17A6BE2C00997795 /* NSString-Extension.m in Sources */,
