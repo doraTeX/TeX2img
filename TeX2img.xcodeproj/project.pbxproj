@@ -26,7 +26,7 @@
 		340F4D6B252C79D900FA56D7 /* NSApperance-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F4D6A252C79D900FA56D7 /* NSApperance-Extension.swift */; };
 		3419977025282F9D0022F53C /* PDFPageBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3419976F25282F9D0022F53C /* PDFPageBox.swift */; };
 		3419977125282F9D0022F53C /* PDFPageBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3419976F25282F9D0022F53C /* PDFPageBox.swift */; };
-		3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */ = {isa = PBXBuildFile; fileRef = 3424A8E20E4F2DC1003C9F96 /* ControllerG.m */; };
+		34A5C718251B700000FCF7BD /* ControllerG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C719251B700000FCF7BD /* ControllerG.swift */; };
 		342C6196101E637F00E29FEB /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 342C6194101E637F00E29FEB /* epstopdf */; };
 		34A5C703251B700000FCF7BA /* NSDictionary-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C702251B700000FCF7BA /* NSDictionary-Extension.swift */; };
 		34522C121BAC550800DE1B86 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 34522C111BAC550800DE1B86 /* libicucore.tbd */; };
@@ -86,12 +86,12 @@
 		34A5C707251B700000FCF7BA /* NSMutableString-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */; };
 		34A5C717251B700000FCF7BC /* ControllerC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C716251B700000FCF7BC /* ControllerC.swift */; };
 		705DC7A60F1197E90052AFA5 /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 348BB5180F08C3850063003D /* Converter.m */; };
-		705DC7A70F1197E90052AFA5 /* mainc.m in Sources */ = {isa = PBXBuildFile; fileRef = 705DC2BB0F10E0B00052AFA5 /* mainc.m */; };
+		34D0A0042F10000400A1FA04 /* mainc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D0A0032F10000300A1FA03 /* mainc.swift */; };
 		705DC7A80F1197EE0052AFA5 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		705DC7A90F1197EE0052AFA5 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7087BD5D0F0E3CD600A06CF5 /* Quartz.framework */; };
 		7087BD5E0F0E3CD600A06CF5 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7087BD5D0F0E3CD600A06CF5 /* Quartz.framework */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
-		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		CE4A31F10E5036500095D4FC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE4A31F00E5036500095D4FC /* Localizable.strings */; };
 		CEB04B28225226FB005EED2C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB04B27225226FB005EED2C /* AppDelegate.swift */; };
@@ -142,8 +142,7 @@
 		340F4D67252C799400FA56D7 /* NSApplication-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSApplication-Extension.swift"; sourceTree = "<group>"; };
 		340F4D6A252C79D900FA56D7 /* NSApperance-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSApperance-Extension.swift"; sourceTree = "<group>"; };
 		3419976F25282F9D0022F53C /* PDFPageBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPageBox.swift; sourceTree = "<group>"; };
-		3424A8E10E4F2DC1003C9F96 /* ControllerG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllerG.h; sourceTree = "<group>"; };
-		3424A8E20E4F2DC1003C9F96 /* ControllerG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllerG.m; sourceTree = "<group>"; };
+		34A5C719251B700000FCF7BD /* ControllerG.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerG.swift; sourceTree = "<group>"; };
 		342C6194101E637F00E29FEB /* epstopdf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = epstopdf; sourceTree = "<group>"; };
 		343A66D72249CAB20026CFA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		343A66D82249CAB40026CFA3 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -220,7 +219,7 @@
 		70254EEE10353485000D6D05 /* TeXTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeXTextView.h; sourceTree = "<group>"; };
 		70254EEF10353485000D6D05 /* TeXTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeXTextView.m; sourceTree = "<group>"; };
 		34A5C706251B700000FCF7BA /* NSMutableString-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSMutableString-Extension.swift"; sourceTree = "<group>"; };
-		705DC2BB0F10E0B00052AFA5 /* mainc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mainc.m; sourceTree = "<group>"; };
+		34D0A0032F10000300A1FA03 /* mainc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = mainc.swift; sourceTree = "<group>"; };
 		34A5C716251B700000FCF7BC /* ControllerC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerC.swift; sourceTree = "<group>"; };
 		705DC7A10F1197DC0052AFA5 /* tex2img */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tex2img; sourceTree = BUILT_PRODUCTS_DIR; };
 		7087BD5D0F0E3CD600A06CF5 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
@@ -267,8 +266,7 @@
 				348BB5170F08C3850063003D /* Converter.h */,
 				348BB5180F08C3850063003D /* Converter.m */,
 				34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */,
-				3424A8E10E4F2DC1003C9F96 /* ControllerG.h */,
-				3424A8E20E4F2DC1003C9F96 /* ControllerG.m */,
+				34A5C719251B700000FCF7BD /* ControllerG.swift */,
 				34A5C64C251B54A800FCF7BA /* ControllerG-Extension.swift */,
 				34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */,
 				34A5C716251B700000FCF7BC /* ControllerC.swift */,
@@ -335,8 +333,8 @@
 				348D72A1125A57B8003AF902 /* global.h */,
 				34A5C65B251B661800FCF7BA /* typedef.h */,
 				32CA4F630368D1EE00C91783 /* TeX2img_Prefix.pch */,
-				29B97316FDCFA39411CA2CEA /* main.m */,
-				705DC2BB0F10E0B00052AFA5 /* mainc.m */,
+
+				34D0A0032F10000300A1FA03 /* mainc.swift */,
 				34A5C638251B170A00FCF7BA /* Bridging-Header-G.h */,
 				34A5C641251B17E400FCF7BA /* Bridging-Header-C.h */,
 			);
@@ -452,6 +450,9 @@
 			);
 			dependencies = (
 			);
+			packageProductDependencies = (
+				34D0A0022F10000200A1FA02 /* ArgumentParser */,
+			);
 			name = tex2img;
 			productName = tex2img;
 			productReference = 705DC7A10F1197DC0052AFA5 /* tex2img */;
@@ -511,6 +512,9 @@
 				en,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* TeX2img */;
+			packageReferences = (
+				34D0A0012F10000100A1FA01 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+			);
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -581,7 +585,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "VER=`cat Sources/mainc.m | grep \"#define VERSION\" | cut -d' ' -f 3 | sed 's/\"//g'`\ncd $BUILT_PRODUCTS_DIR\necho \"#!/bin/sh\" > deployc.sh\necho zip tex2imgcMac$VER.zip tex2img >> deployc.sh\nchmod +x deployc.sh\n";
+			shellScript = "VER=`grep 'let tex2imgVersion' Sources/mainc.swift | sed 's/.*= \"\\(.*\\)\"/\\1/'`\ncd $BUILT_PRODUCTS_DIR\necho \"#!/bin/sh\" > deployc.sh\necho zip tex2imgcMac$VER.zip tex2img >> deployc.sh\nchmod +x deployc.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -609,7 +613,7 @@
 				34A5C70E251B700000FCF7BA /* UtilityC.swift in Sources */,
 				34A5C701251B700000FCF7BA /* NSArray-Extension.swift in Sources */,
 				705DC7A60F1197E90052AFA5 /* Converter.m in Sources */,
-				705DC7A70F1197E90052AFA5 /* mainc.m in Sources */,
+				34D0A0042F10000400A1FA04 /* mainc.swift in Sources */,
 				34A5C70A251B700000FCF7BA /* NSString-Extension.swift in Sources */,
 				34A5C707251B700000FCF7BA /* NSMutableString-Extension.swift in Sources */,
 			);
@@ -648,9 +652,9 @@
 				340364362537552B005A43A5 /* AutoSelectTextField.swift in Sources */,
 				3402126D2534D273002D1545 /* UserNotificationDelegate.swift in Sources */,
 				3408DF36252ED251002A9D9F /* MyLayoutManager.swift in Sources */,
-				8D11072D0486CEB800E47090 /* main.m in Sources */,
+
 				34A5C710251B700000FCF7BA /* UtilityG.swift in Sources */,
-				3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */,
+				34A5C718251B700000FCF7BD /* ControllerG.swift in Sources */,
 				34A5C715251B700000FCF7BA /* NSString-Unicode.swift in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
 				34A5C703251B700000FCF7BA /* NSDictionary-Extension.swift in Sources */,
@@ -991,6 +995,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		34D0A0012F10000100A1FA01 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		34D0A0022F10000200A1FA02 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 34D0A0012F10000100A1FA01 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
 }
