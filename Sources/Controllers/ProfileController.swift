@@ -152,7 +152,7 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     private func moveObjects<T>(in array: inout [T],
                                 fromIndexes: IndexSet,
                                 toIndex insertIndex: Int) -> IndexSet {
-        let adjustedInsertIndex = insertIndex - (fromIndexes as NSIndexSet).countOfIndexes(in: NSRange(location: 0, length: insertIndex))
+        let adjustedInsertIndex = insertIndex - fromIndexes.count(in: 0..<insertIndex)
         let objectsToMove = fromIndexes.map { array[$0] }
         for index in fromIndexes.reversed() {
             array.remove(at: index)

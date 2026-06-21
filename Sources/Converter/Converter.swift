@@ -31,8 +31,8 @@ protocol OutputController: AnyObject {
     func showOutputWindow()
     func showMainWindow()
     func showErrorsIgnoredWarning()
-    func showPageSkippedWarning(_ pages: [NSNumber])
-    func showWhitePageWarning(_ pages: [NSNumber])
+    func showPageSkippedWarning(_ pages: [Int])
+    func showWhitePageWarning(_ pages: [Int])
     func execCommand(_ command: String, atDirectory path: String, withArguments arguments: [String], quiet: Bool) -> Bool
     func previewFiles(_ files: [String], withApplication app: String)
     func printResult(_ generatedFiles: [String], quiet: Bool)
@@ -97,9 +97,9 @@ class Converter: NSObject {
     private var errorsIgnored = false
     private var delay: Float = 0
     private var loopCount: Int = 0
-    private var usingNewGsFlag: NSNumber?
-    private var emptyPageFlags = [NSNumber]()
-    private var whitePageFlags = [NSNumber]()
+    private var usingNewGsFlag: Bool?
+    private var emptyPageFlags = [Bool]()
+    private var whitePageFlags = [Bool]()
     private var bboxDictionary = [String: String]()
     private var fillColor = NSColor.white
 
@@ -118,7 +118,7 @@ class Converter: NSObject {
         guessCompilation = aProfile.boolForKey(GuessCompilationKey)
         numberOfCompilation = aProfile.integerForKey(NumberOfCompilationKey)
 
-        outputFilePath = ((aProfile.stringForKey(OutputFileKey) ?? "") as NSString).standardizingPath
+        outputFilePath = (aProfile.stringForKey(OutputFileKey) ?? "").standardizingPath
         preambleStr = aProfile.stringForKey(PreambleKey) ?? ""
 
         encoding = aProfile.stringForKey(EncodingKey) ?? ""
@@ -194,17 +194,14 @@ class Converter: NSObject {
 
     // MARK: - TeX source writing
 
-    private func substituteUTF(_ dataString: String) -> NSMutableString {
-        return NSMutableString(string: (dataString as NSString).stringByReplacingUnicodeCharactersWithUTF())
+    private func substituteUTF(_ dataString: String) -> String {
+        (dataString as NSString).stringByReplacingUnicodeCharactersWithUTF()
     }
 
     private func writeStringWithYenBackslashConverting(_ targetString: String, toFile path: String) -> Bool {
-        let mstr = NSMutableString(string: targetString)
-        mstr.replaceYenWithBackSlash()
-
-        var output = mstr
+        var output = targetString.replacingYenWithBackslash()
         if utfExportFlag {
-            output = substituteUTF(mstr as String)
+            output = substituteUTF(output)
         }
 
         let enc: UInt
@@ -218,25 +215,24 @@ class Converter: NSObject {
             enc = CFStringConvertEncodingToNSStringEncoding(CFStringEncoding(CFStringBuiltInEncodings.UTF8.rawValue))
         }
 
-        return (try? output.write(toFile: path, atomically: false, encoding: enc)) != nil
+        return (try? output.write(toFile: path, atomically: false, encoding: String.Encoding(rawValue: enc))) != nil
     }
 
-    private func preliminaryCommandsForEnvironmentVariables() -> NSMutableString {
-        let cmdline = NSMutableString(format: "export PATH=$PATH:%@:%@;",
-                                        (((latexPath as NSString).programPath as NSString).deletingLastPathComponent as NSString).stringByQuotingWithDoubleQuotations(),
-                                        (((gsPath as NSString).programPath as NSString).deletingLastPathComponent as NSString).stringByQuotingWithDoubleQuotations())
+    private func preliminaryCommandsForEnvironmentVariables() -> String {
+        var cmdline = String(format: "export PATH=$PATH:%@:%@;",
+                             latexPath.programPath.deletingLastPathComponent.quotingWithDoubleQuotations(),
+                             gsPath.programPath.deletingLastPathComponent.quotingWithDoubleQuotations())
 
         if let additionalInputPath {
-            cmdline.appendFormat("export TEXINPUTS=\"%@:`kpsewhich -progname=%@ -expand-var=\\\\$TEXINPUTS`\";", additionalInputPath, (latexPath as NSString).programName)
+            cmdline += String(format: "export TEXINPUTS=\"%@:`kpsewhich -progname=%@ -expand-var=\\\\$TEXINPUTS`\";", additionalInputPath, latexPath.programName)
         }
 
         return cmdline
     }
 
     private func compile(withArguments arguments: [String]) -> Bool {
-        let cmdline = preliminaryCommandsForEnvironmentVariables()
-        cmdline.append(latexPath)
-        return controller?.execCommand(cmdline as String, atDirectory: workingDirectory, withArguments: arguments, quiet: quietFlag) ?? false
+        let cmdline = preliminaryCommandsForEnvironmentVariables() + latexPath
+        return controller?.execCommand(cmdline, atDirectory: workingDirectory, withArguments: arguments, quiet: quietFlag) ?? false
     }
 
     private func tex2dvi(_ texFilePath: String) -> Bool {
@@ -246,9 +242,9 @@ class Converter: NSObject {
             arguments.append("-kanji=" + encoding)
         }
 
-        arguments.append((texFilePath as NSString).stringByQuotingWithDoubleQuotations())
+        arguments.append(texFilePath.quotingWithDoubleQuotations())
 
-        let auxFilePath = ((workingDirectory as NSString).appendingPathComponent(tempFileBaseName) as NSString).appendingPathExtension("aux")!
+        let auxFilePath = workingDirectory.appendingPathComponent(tempFileBaseName).appendingPathExtension("aux")!
 
         if fileManager.fileExists(atPath: auxFilePath) && !((try? fileManager.removeItem(atPath: auxFilePath)) != nil) {
             return false
@@ -279,29 +275,27 @@ class Converter: NSObject {
     }
 
     private func execDviDriver(_ dviFilePath: String) -> Bool {
-        let cmdline = preliminaryCommandsForEnvironmentVariables()
-        cmdline.append(dviDriverPath)
+        let cmdline = preliminaryCommandsForEnvironmentVariables() + dviDriverPath
 
-        let status = controller?.execCommand(cmdline as String, atDirectory: workingDirectory, withArguments: [(dviFilePath as NSString).stringByQuotingWithDoubleQuotations()], quiet: quietFlag) ?? false
+        let status = controller?.execCommand(cmdline, atDirectory: workingDirectory, withArguments: [dviFilePath.quotingWithDoubleQuotations()], quiet: quietFlag) ?? false
         controller?.appendOutputAndScroll("\n", quiet: quietFlag)
         return status
     }
 
     private func ps2pdf(_ psFilePath: String, outputFile pdfFilePath: String) -> Bool {
-        let cmdline = preliminaryCommandsForEnvironmentVariables()
-        cmdline.append(gsPath)
+        let cmdline = preliminaryCommandsForEnvironmentVariables() + gsPath
 
-        let status = controller?.execCommand(cmdline as String,
+        let status = controller?.execCommand(cmdline,
                                              atDirectory: workingDirectory,
                                              withArguments: ["-dSAFER",
                                                              "-dNOPAUSE",
                                                              "-dBATCH",
-                                                             "-sOutputFile=" + (pdfFilePath as NSString).stringByQuotingWithDoubleQuotations(),
+                                                             "-sOutputFile=" + pdfFilePath.quotingWithDoubleQuotations(),
                                                              "-sDEVICE=pdfwrite",
                                                              "-dCompatibilityLevel=1.5",
                                                              "-dAutoRotatePages=/None",
                                                              "-f",
-                                                             (psFilePath as NSString).stringByQuotingWithDoubleQuotations()],
+                                                             psFilePath.quotingWithDoubleQuotations()],
                                              quiet: quietFlag) ?? false
         controller?.appendOutputAndScroll("\n", quiet: quietFlag)
 
@@ -313,22 +307,22 @@ class Converter: NSObject {
     }
 
     func bboxString(ofPdf pdfPath: String, page: Int, hires: Bool) -> String? {
-        let key = String(format: "%@-%ld-%d", (pdfPath as NSString).lastPathComponent, page, hires ? 1 : 0)
+        let key = String(format: "%@-%ld-%d", pdfPath.lastPathComponent, page, hires ? 1 : 0)
 
         if bboxDictionary[key] == nil {
             let bboxFileName = tempFileBaseName + "-bbox"
-            let bboxFilePath = (workingDirectory as NSString).appendingPathComponent(bboxFileName)
+            let bboxFilePath = workingDirectory.appendingPathComponent(bboxFileName)
 
             controller?.appendOutputAndScroll("TeX2img: Getting the bounding box...\n\n", quiet: quietFlag)
 
-            let success = controller?.execCommand((gsPath as NSString).programPath,
+            let success = controller?.execCommand(gsPath.programPath,
                                                   atDirectory: workingDirectory,
                                                   withArguments: ["-dBATCH",
                                                                   "-dNOPAUSE",
                                                                   "-sDEVICE=bbox",
                                                                   "-c '<< /WhiteIsOpaque true >> setpagedevice'",
                                                                   "-f",
-                                                                  ((pdfPath as NSString).lastPathComponent as NSString).stringByQuotingWithDoubleQuotations(),
+                                                                  pdfPath.lastPathComponent.quotingWithDoubleQuotations(),
                                                                   "> " + bboxFileName],
                                                   quiet: quietFlag) ?? false
 
@@ -349,12 +343,12 @@ class Converter: NSObject {
                     continue
                 }
                 if line.count >= 14 && (line as NSString).substring(with: NSRange(location: 0, length: 14)) == "%%BoundingBox:" {
-                    let dictKey = String(format: "%@-%ld-0", (pdfPath as NSString).lastPathComponent, currentPage)
+                    let dictKey = String(format: "%@-%ld-0", pdfPath.lastPathComponent, currentPage)
                     bboxDictionary[dictKey] = line + "\n"
                     continue
                 }
                 if line.count >= 19 && (line as NSString).substring(with: NSRange(location: 0, length: 19)) == "%%HiResBoundingBox:" {
-                    let dictKey = String(format: "%@-%ld-1", (pdfPath as NSString).lastPathComponent, currentPage)
+                    let dictKey = String(format: "%@-%ld-1", pdfPath.lastPathComponent, currentPage)
                     bboxDictionary[dictKey] = line + "\n"
                     continue
                 }
@@ -392,8 +386,8 @@ class Converter: NSObject {
                          useCache: Bool,
                          fillBackground: Bool) -> Bool {
         let cropFileBasePath = String(format: "%@-pdfcrop-%ld%d",
-                                      (workingDirectory as NSString).appendingPathComponent(tempFileBaseName), page, addMargin ? 1 : 0)
-        let cropPdfSourcePath = (cropFileBasePath as NSString).appendingPathExtension("pdf")!
+                                      workingDirectory.appendingPathComponent(tempFileBaseName), page, addMargin ? 1 : 0)
+        let cropPdfSourcePath = cropFileBasePath.appendingPathExtension("pdf")!
 
         if useCache && fileManager.fileExists(atPath: cropPdfSourcePath) {
             try? fileManager.removeItem(atPath: outputFileName)
@@ -415,7 +409,7 @@ class Converter: NSObject {
         }
 
         if !transparentFlag && fillBackground {
-            PDFDocument.fillBackground(of: (workingDirectory as NSString).appendingPathComponent((outputFileName as NSString).lastPathComponent), with: fillColor)
+            PDFDocument.fillBackground(of: workingDirectory.appendingPathComponent(outputFileName.lastPathComponent), with: fillColor)
         }
 
         return success
@@ -423,14 +417,14 @@ class Converter: NSObject {
 
     private func isUsingNewGS() -> Bool {
         if let usingNewGsFlag {
-            return usingNewGsFlag.boolValue
+            return usingNewGsFlag
         }
 
         var result = true
         let gsVerFileName = tempFileBaseName + "-gsver"
-        let gsVerFilePath = (workingDirectory as NSString).appendingPathComponent(gsVerFileName)
+        let gsVerFilePath = workingDirectory.appendingPathComponent(gsVerFileName)
 
-        let success = controller?.execCommand((gsPath as NSString).programPath,
+        let success = controller?.execCommand(gsPath.programPath,
                                               atDirectory: workingDirectory,
                                               withArguments: ["--version", "> " + gsVerFileName],
                                               quiet: true) ?? false
@@ -453,12 +447,12 @@ class Converter: NSObject {
             }
         }
 
-        usingNewGsFlag = NSNumber(value: result)
+        usingNewGsFlag = result
         return result
     }
 
     private func replaceEpsBBox(_ epsName: String, withBBoxOfPdf pdfName: String, page: UInt) -> Bool {
-        let epsPath = (workingDirectory as NSString).appendingPathComponent(epsName)
+        let epsPath = workingDirectory.appendingPathComponent(epsName)
         guard let bbStr = bboxString(ofPdf: pdfName, page: Int(page), hires: false) else { return false }
         if bbStr == emptyBBox { return true }
 
@@ -471,14 +465,14 @@ class Converter: NSObject {
     }
 
     private func replaceEpsBBoxWithEmptyBBox(_ epsName: String) -> Bool {
-        let epsPath = (workingDirectory as NSString).appendingPathComponent(epsName)
+        let epsPath = workingDirectory.appendingPathComponent(epsName)
         replaceBBoxOf(epsPath: epsPath, boundingBox: "0 0 0 0\n", hiresBoundingBox: "0.000000 0.000000 0.000000 0.000000\n")
         return true
     }
 
     private func replaceEpsBBox(_ epsName: String, withPageBoxOfPdf pdfName: String, page: UInt) -> Bool {
-        let pageBox = PDFPageBox(filePath: (workingDirectory as NSString).appendingPathComponent(pdfName), page: Int(page))
-        let epsPath = (workingDirectory as NSString).appendingPathComponent(epsName)
+        let pageBox = PDFPageBox(filePath: workingDirectory.appendingPathComponent(pdfName), page: Int(page))
+        let epsPath = workingDirectory.appendingPathComponent(epsName)
         let bbStr = pageBox?.bboxString(of: pageBoxType, hires: false, addHeader: false) ?? ""
         let hiresBbStr = pageBox?.bboxString(of: pageBoxType, hires: true, addHeader: false) ?? ""
 
@@ -491,7 +485,7 @@ class Converter: NSObject {
                          "-dBATCH",
                          "-dAutoRotatePages=/None",
                          String(format: "-r%ld", resolution),
-                         String(format: "-sOutputFile=%@", (epsName as NSString).stringByQuotingWithDoubleQuotations()),
+                         String(format: "-sOutputFile=%@", epsName.quotingWithDoubleQuotations()),
                          String(format: "-dFirstPage=%lu", page),
                          String(format: "-dLastPage=%lu", page)]
 
@@ -501,7 +495,7 @@ class Converter: NSObject {
             arguments += ["-sDEVICE=epswrite", "-dNOCACHE"]
         }
 
-        arguments.append((pdfName as NSString).stringByQuotingWithDoubleQuotations())
+        arguments.append(pdfName.quotingWithDoubleQuotations())
 
         let status = controller?.execCommand(gsPath, atDirectory: workingDirectory, withArguments: arguments, quiet: quietFlag) ?? false
 
@@ -548,9 +542,9 @@ class Converter: NSObject {
             return false
         }
 
-        let thisOutputPath = (workingDirectory as NSString).appendingPathComponent(outputFileName)
+        let thisOutputPath = workingDirectory.appendingPathComponent(outputFileName)
         try? fileManager.removeItem(atPath: thisOutputPath)
-        try? fileManager.moveItem(atPath: (workingDirectory as NSString).appendingPathComponent(pdfOutName), toPath: thisOutputPath)
+        try? fileManager.moveItem(atPath: workingDirectory.appendingPathComponent(pdfOutName), toPath: thisOutputPath)
 
         return true
     }
@@ -567,19 +561,19 @@ class Converter: NSObject {
             hiresOption = "--nohires"
         }
 
-        let exportPath = ((gsPath as NSString).programPath as NSString).deletingLastPathComponent
+        let exportPath = gsPath.programPath.deletingLastPathComponent
         let command = String(format: "export PATH=\"%@\";/usr/bin/perl \"%@\"", exportPath, epstopdfPath)
 
         controller?.execCommand(command,
                               atDirectory: workingDirectory,
-                              withArguments: [String(format: "--outfile=%@", (temporaryOutputPdfFileName as NSString).stringByQuotingWithDoubleQuotations()),
+                              withArguments: [String(format: "--outfile=%@", temporaryOutputPdfFileName.quotingWithDoubleQuotations()),
                                               hiresOption,
                                               epsName],
                               quiet: quietFlag)
 
-        let outFilePath = (workingDirectory as NSString).appendingPathComponent((pdfName as NSString).lastPathComponent)
+        let outFilePath = workingDirectory.appendingPathComponent(pdfName.lastPathComponent)
         try? fileManager.removeItem(atPath: outFilePath)
-        try? fileManager.moveItem(atPath: (workingDirectory as NSString).appendingPathComponent((temporaryOutputPdfFileName as NSString).lastPathComponent), toPath: outFilePath)
+        try? fileManager.moveItem(atPath: workingDirectory.appendingPathComponent(temporaryOutputPdfFileName.lastPathComponent), toPath: outFilePath)
         return true
     }
 
@@ -618,8 +612,8 @@ class Converter: NSObject {
 
 
     private func pdf2image(_ pdfFilePath: String, outputFileName: String, page: UInt, crop: Bool) -> Bool {
-        let extension_ = (outputFileName as NSString).pathExtension.lowercased()
-        let cropPdfFilePath = (workingDirectory as NSString).appendingPathComponent(tempFileBaseName + "-image.pdf")
+        let extension_ = outputFileName.pathExtension.lowercased()
+        let cropPdfFilePath = workingDirectory.appendingPathComponent(tempFileBaseName + "-image.pdf")
 
         var success = true
         let isEmpty = willEmptyPageBeCreated(pdfFilePath, page: page, success: &success)
@@ -711,7 +705,7 @@ class Converter: NSObject {
             outputData = imageRep.representation(usingType: kUTTypeBMP, usingDPI: dpi)
         }
 
-        let outputPath = (workingDirectory as NSString).appendingPathComponent(outputFileName)
+        let outputPath = workingDirectory.appendingPathComponent(outputFileName)
         try? outputData?.write(to: URL(fileURLWithPath: outputPath))
 
         guard NSImageRep(contentsOfFile: outputPath) != nil else {
@@ -728,7 +722,7 @@ class Converter: NSObject {
         let pageStr = String(page)
         let arguments = ["-f", pageStr, "-l", pageStr, "-eps", pdfName, epsName]
 
-        return controller?.execCommand((pdftopsPath as NSString).stringByQuotingWithDoubleQuotations(),
+        return controller?.execCommand(pdftopsPath.quotingWithDoubleQuotations(),
                                      atDirectory: workingDirectory,
                                      withArguments: arguments,
                                      quiet: quietFlag) ?? false
@@ -736,15 +730,15 @@ class Converter: NSObject {
 
     private func mergeTIFFFiles(_ sourcePaths: [String], toPath destPath: String) -> Bool {
         var arguments = ["-cat"]
-        arguments += sourcePaths.map { ($0 as NSString).stringByQuotingWithDoubleQuotations() }
-        arguments += ["-out", ((destPath as NSString).lastPathComponent as NSString).stringByQuotingWithDoubleQuotations()]
+        arguments += sourcePaths.map { $0.quotingWithDoubleQuotations() }
+        arguments += ["-out", destPath.lastPathComponent.quotingWithDoubleQuotations()]
 
         var success = controller?.execCommand("/usr/bin/tiffutil",
                                               atDirectory: workingDirectory,
                                               withArguments: arguments,
                                               quiet: quietFlag) ?? false
         if success {
-            success = copyTarget(from: (workingDirectory as NSString).appendingPathComponent((destPath as NSString).lastPathComponent), toPath: destPath)
+            success = copyTarget(from: workingDirectory.appendingPathComponent(destPath.lastPathComponent), toPath: destPath)
         }
         return success
     }
@@ -773,7 +767,7 @@ class Converter: NSObject {
             CGImageDestinationFinalize(destination)
             let animatedData = gif89aData(fromGIF87aData: gifData as Data)
             if let animatedData {
-                let tempOutPath = (workingDirectory as NSString).appendingPathComponent(tempFileBaseName + "-out.gif")
+                let tempOutPath = workingDirectory.appendingPathComponent(tempFileBaseName + "-out.gif")
                 try? fileManager.removeItem(atPath: tempOutPath)
                 success = (try? animatedData.write(to: URL(fileURLWithPath: tempOutPath))) != nil
                 if success {
@@ -801,7 +795,7 @@ class Converter: NSObject {
             svg = lines.joined(separator: "\n")
 
             let idPrefix = String(format: "%@-%ld-",
-                                  ((destPath as NSString).lastPathComponent as NSString).deletingPathExtension.replacingOccurrences(of: " ", with: "_"),
+                                  (destPath.lastPathComponent as NSString).deletingPathExtension.replacingOccurrences(of: " ", with: "_"),
                                   idx)
 
             svg = svg.replacingOccurrences(of: " id=\"", with: " id=\"\(idPrefix)")
@@ -829,7 +823,7 @@ class Converter: NSObject {
                             + "<defs>%@</defs><use><animate attributeName=\"xlink:href\" begin=\"0s\" dur=\"%fs\" repeatCount=\"%@\" values=\"%@\" /></use></svg>",
                             result, dur, repeatCount, svgIdRefs)
 
-        let tempOutPath = (workingDirectory as NSString).appendingPathComponent(tempFileBaseName + "-out.svg")
+        let tempOutPath = workingDirectory.appendingPathComponent(tempFileBaseName + "-out.svg")
         try? fileManager.removeItem(atPath: tempOutPath)
 
         do {
@@ -844,15 +838,15 @@ class Converter: NSObject {
     private func pdf2svg(_ pdfFilePath: String, outputFileName svgFilePath: String, page: UInt, skipEmptyPage: Bool) -> Bool {
         guard controller?.mudrawExists() == true else { return false }
 
-        if skipEmptyPage && page > 0 && page <= UInt(emptyPageFlags.count) && emptyPageFlags[Int(page) - 1].boolValue {
+        if skipEmptyPage && page > 0 && page <= UInt(emptyPageFlags.count) && emptyPageFlags[Int(page) - 1] {
             return true
         }
 
-        let arguments = ["-o", (svgFilePath as NSString).stringByQuotingWithDoubleQuotations(),
-                         (pdfFilePath as NSString).stringByQuotingWithDoubleQuotations(),
+        let arguments = ["-o", svgFilePath.quotingWithDoubleQuotations(),
+                         pdfFilePath.quotingWithDoubleQuotations(),
                          String(format: "%ld", page)]
 
-        let success = controller?.execCommand((mudrawPath as NSString).stringByQuotingWithDoubleQuotations(),
+        let success = controller?.execCommand(mudrawPath.quotingWithDoubleQuotations(),
                                               atDirectory: workingDirectory,
                                               withArguments: arguments,
                                               quiet: quietFlag) ?? false
@@ -892,7 +886,7 @@ class Converter: NSObject {
                             addMargin: Bool,
                             useCache: Bool,
                             fillBackground fill: Bool) -> Bool {
-        let extension_ = (outputFileName as NSString).pathExtension.lowercased()
+        let extension_ = outputFileName.pathExtension.lowercased()
         let lowResolution = Int(resolutionLevel * Float(Int(resolutionScale)) * 2 * 72)
         let resolution = speedPriorityMode ? lowResolution : 20016
         let trimFileName = tempFileBaseName + "-trim.pdf"
@@ -909,7 +903,7 @@ class Converter: NSObject {
                     _ = pdfcrop(pdfFileName, outputFileName: intermediateOutlinedFileName, page: page, addMargin: true, useCache: false, fillBackground: false)
                 } else {
                     if !pdf2pdf(trimFileName, outputFileName: intermediateOutlinedFileName, resolution: resolution, page: page) ||
-                        !fileManager.fileExists(atPath: (workingDirectory as NSString).appendingPathComponent(intermediateOutlinedFileName)) {
+                        !fileManager.fileExists(atPath: workingDirectory.appendingPathComponent(intermediateOutlinedFileName)) {
                         return false
                     }
                 }
@@ -919,7 +913,7 @@ class Converter: NSObject {
                 }
             } else {
                 if !pdf2eps(pdfFileName, outputFileName: outputFileName, resolution: resolution, page: page) ||
-                    !fileManager.fileExists(atPath: (workingDirectory as NSString).appendingPathComponent(outputFileName)) {
+                    !fileManager.fileExists(atPath: workingDirectory.appendingPathComponent(outputFileName)) {
                     return false
                 }
             }
@@ -935,12 +929,12 @@ class Converter: NSObject {
                     _ = pdfcrop(pdfFileName, outputFileName: trimFileName, page: page, addMargin: addMargin, useCache: useCache, fillBackground: false)
 
                     if !pdf2pdf(trimFileName, outputFileName: outputFileName, resolution: resolution, page: 1) ||
-                        !fileManager.fileExists(atPath: (workingDirectory as NSString).appendingPathComponent(outputFileName)) {
+                        !fileManager.fileExists(atPath: workingDirectory.appendingPathComponent(outputFileName)) {
                         return false
                     }
                 } else {
                     if !pdf2eps(pdfFileName, outputFileName: intermediateOutlinedFileName, resolution: resolution, page: page) ||
-                        !fileManager.fileExists(atPath: (workingDirectory as NSString).appendingPathComponent(intermediateOutlinedFileName)) {
+                        !fileManager.fileExists(atPath: workingDirectory.appendingPathComponent(intermediateOutlinedFileName)) {
                         return false
                     }
                     _ = eps2pdf(intermediateOutlinedFileName, outputFileName: outputFileName, addMargin: addMargin)
@@ -948,7 +942,7 @@ class Converter: NSObject {
             }
 
             if fill && !transparentFlag {
-                PDFDocument.fillBackground(of: (workingDirectory as NSString).appendingPathComponent(outputFileName), with: fillColor)
+                PDFDocument.fillBackground(of: workingDirectory.appendingPathComponent(outputFileName), with: fillColor)
             }
         } else {
             return false
@@ -971,14 +965,14 @@ class Converter: NSObject {
                             page: UInt,
                             useCache: Bool,
                             skipEmptyPage: Bool) -> Bool {
-        let extension_ = (outputFileName as NSString).pathExtension.lowercased()
+        let extension_ = outputFileName.pathExtension.lowercased()
         let outlinedPdfFileName = tempFileBaseName + "-outline.pdf"
 
         if emptyPageFlags.isEmpty {
             exitCurrentThread()
         }
 
-        if skipEmptyPage && page > 0 && page <= UInt(emptyPageFlags.count) && emptyPageFlags[Int(page) - 1].boolValue {
+        if skipEmptyPage && page > 0 && page <= UInt(emptyPageFlags.count) && emptyPageFlags[Int(page) - 1] {
             return true
         }
 
@@ -1000,13 +994,13 @@ class Converter: NSObject {
                            fillBackground: false)
 
             if transparentFlag && (topMargin + bottomMargin + leftMargin + rightMargin > 0) {
-                enlargeBoundingBox(of: (workingDirectory as NSString).appendingPathComponent(intermediateOutlinedFileName))
+                enlargeBoundingBox(of: workingDirectory.appendingPathComponent(intermediateOutlinedFileName))
             }
 
             if fileManager.fileExists(atPath: outputFileName) {
                 try? fileManager.removeItem(atPath: outputFileName)
             }
-            try? fileManager.moveItem(atPath: (workingDirectory as NSString).appendingPathComponent(intermediateOutlinedFileName), toPath: outputFileName)
+            try? fileManager.moveItem(atPath: workingDirectory.appendingPathComponent(intermediateOutlinedFileName), toPath: outputFileName)
         } else {
             _ = outlinePDF(pdfFileName,
                            intermediateOutlinedFileName: intermediateOutlinedFileName,
@@ -1016,7 +1010,7 @@ class Converter: NSObject {
                            useCache: useCache,
                            fillBackground: false)
 
-            if !pdf2image((workingDirectory as NSString).appendingPathComponent(outlinedPdfFileName),
+            if !pdf2image(workingDirectory.appendingPathComponent(outlinedPdfFileName),
                           outputFileName: outputFileName, page: 1, crop: false) {
                 return false
             }
@@ -1036,7 +1030,7 @@ class Converter: NSObject {
                 return false
             }
         } else {
-            let destDir = (destPath as NSString).deletingLastPathComponent
+            let destDir = destPath.deletingLastPathComponent
             let dirExists = fileManager.fileExists(atPath: destDir)
 
             if (!dirExists && ((try? fileManager.createDirectory(atPath: destDir, withIntermediateDirectories: true)) == nil)) ||
@@ -1058,7 +1052,7 @@ class Converter: NSObject {
         var detectedEncoding: UInt = 0
         guard let contents = NSString.stringWithAutoEncodingDetectionOfData(data, detectedEncoding: &detectedEncoding) else { return }
 
-        let extension_ = (filePath as NSString).pathExtension.lowercased()
+        let extension_ = filePath.pathExtension.lowercased()
         if extension_ == "pdf" {
             guard let doc = PDFDocument(filePath: filePath),
                   let page = doc.page(at: 0) else { return }
@@ -1084,11 +1078,11 @@ class Converter: NSObject {
     }
 
     private func convertPDF(_ pdfFilePath: String, toOutlinedSVG svgFilePath: String, page: UInt) -> Bool {
-        let baseName = (tempFileBaseName as NSString).pathStringByAppendingPageNumber(page)
+        let baseName = tempFileBaseName.pathStringByAppendingPageNumber(page)
         let outlinedPdfFileName = baseName + "-outline.pdf"
         let croppedPdfFileName = baseName + "-crop.pdf"
         let trimmedPdfFileName = baseName + "-trim.pdf"
-        let tempEpsFileName = (baseName as NSString).appendingPathExtension("eps")!
+        let tempEpsFileName = baseName.appendingPathExtension("eps")!
 
         if isUsingNewGS() {
             if !pdfcrop(pdfFilePath, outputFileName: croppedPdfFileName, page: page, addMargin: true, useCache: true, fillBackground: false) {
@@ -1139,25 +1133,25 @@ class Converter: NSObject {
         return controller?.execCommand("/usr/bin/gzip",
                                        atDirectory: workingDirectory,
                                        withArguments: ["-cfq9",
-                                                       (svgPath as NSString).stringByQuotingWithDoubleQuotations(),
-                                                       "> " + (svgzPath as NSString).stringByQuotingWithDoubleQuotations()],
+                                                       svgPath.quotingWithDoubleQuotations(),
+                                                       "> " + svgzPath.quotingWithDoubleQuotations()],
                                        quiet: quietFlag) ?? false
     }
 
 
     private func compileAndConvert() -> Bool {
-        let texFilePath = String(format: "%@.tex", (workingDirectory as NSString).appendingPathComponent(tempFileBaseName))
-        let dviFilePath = String(format: "%@.dvi", (workingDirectory as NSString).appendingPathComponent(tempFileBaseName))
-        let psFilePath = String(format: "%@.ps", (workingDirectory as NSString).appendingPathComponent(tempFileBaseName))
-        let pdfFilePath = String(format: "%@.pdf", (workingDirectory as NSString).appendingPathComponent(tempFileBaseName))
-        let croppedPdfFilePath = String(format: "%@-crop.pdf", (workingDirectory as NSString).appendingPathComponent(tempFileBaseName))
+        let texFilePath = String(format: "%@.tex", workingDirectory.appendingPathComponent(tempFileBaseName))
+        let dviFilePath = String(format: "%@.dvi", workingDirectory.appendingPathComponent(tempFileBaseName))
+        let psFilePath = String(format: "%@.ps", workingDirectory.appendingPathComponent(tempFileBaseName))
+        let pdfFilePath = String(format: "%@.pdf", workingDirectory.appendingPathComponent(tempFileBaseName))
+        let croppedPdfFilePath = String(format: "%@-crop.pdf", workingDirectory.appendingPathComponent(tempFileBaseName))
         let pdfFileName = tempFileBaseName + ".pdf"
         let outputEpsFileName = tempFileBaseName + ".eps"
-        var outputFileName = (outputFilePath as NSString).lastPathComponent
-        var extension_ = (outputFilePath as NSString).pathExtension.lowercased()
+        var outputFileName = outputFilePath.lastPathComponent
+        var extension_ = outputFilePath.pathExtension.lowercased()
 
         if extension_ == "svgz" {
-            outputFileName = (outputFileName as NSString).stringByReplacingPathExtension("svg")
+            outputFileName = outputFileName.replacingPathExtension("svg")
         }
 
         var texDate: Date?
@@ -1287,7 +1281,7 @@ class Converter: NSObject {
             var pageSuccess = true
             let isEmpty = willEmptyPageBeCreated(pdfFilePath, page: UInt(i), success: &pageSuccess)
             if !pageSuccess { return false }
-            emptyPageFlags.append(NSNumber(value: isEmpty))
+            emptyPageFlags.append(isEmpty)
         }
 
         whitePageFlags = []
@@ -1295,15 +1289,15 @@ class Converter: NSObject {
             var pageSuccess = true
             let isWhite = isEmptyPage(pdfFilePath, page: UInt(i), success: &pageSuccess)
             if !pageSuccess { return false }
-            let isSkipped = i <= emptyPageFlags.count && emptyPageFlags[i - 1].boolValue
-            whitePageFlags.append(NSNumber(value: isWhite && !isSkipped))
+            let isSkipped = i <= emptyPageFlags.count && emptyPageFlags[i - 1]
+            whitePageFlags.append(isWhite && !isSkipped)
         }
 
         // PDFから各形式に変換
         if bitmapExtensions.contains(extension_) && speedPriorityMode {
             for i in 1...pageCount {
                 success = pdf2image(pdfFilePath,
-                                    outputFileName: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                                    outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                     page: UInt(i), crop: true)
                 controller?.exitCurrentThreadIfTaskKilled()
                 if !success { return success }
@@ -1311,13 +1305,13 @@ class Converter: NSObject {
         } else if extension_ == "pdf" && leaveTextFlag {
             for i in 1...pageCount {
                 success = pdfcrop(pdfFilePath,
-                                  outputFileName: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                                  outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                   page: UInt(i), addMargin: true, useCache: false, fillBackground: !transparentFlag)
                 controller?.exitCurrentThreadIfTaskKilled()
                 if !success { return success }
             }
         } else if (extension_ == "svg" || extension_ == "svgz") && leaveTextFlag {
-            let skippedCount = (emptyPageFlags as NSArray).indexesOfTrueValue().count
+            let skippedCount = emptyPageFlags.trueValueCount
             if !(mergeOutputsFlag && (pageCount - skippedCount > 1)) {
                 if transparentFlag {
                     _ = pdfcrop(pdfFilePath, outputFileName: croppedPdfFilePath, page: 0, addMargin: true, useCache: true, fillBackground: false)
@@ -1325,7 +1319,7 @@ class Converter: NSObject {
 
                     for i in 1...pageCount {
                         success = pdf2svg(croppedPdfFilePath,
-                                          outputFileName: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                                          outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                           page: UInt(i), skipEmptyPage: true)
                         controller?.exitCurrentThreadIfTaskKilled()
                         if !success { return success }
@@ -1336,12 +1330,12 @@ class Converter: NSObject {
 
                     for i in 1...pageCount {
                         _ = pdfcrop(pdfFilePath,
-                                    outputFileName: (croppedPdfFilePath as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                                    outputFileName: croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i)),
                                     page: UInt(i), addMargin: true, useCache: false, fillBackground: true)
                         controller?.exitCurrentThreadIfTaskKilled()
 
-                        success = pdf2svg((croppedPdfFilePath as NSString).pathStringByAppendingPageNumber(UInt(i)),
-                                          outputFileName: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                        success = pdf2svg(croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i)),
+                                          outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                           page: 1, skipEmptyPage: false)
                         controller?.exitCurrentThreadIfTaskKilled()
                         if !success { return success }
@@ -1352,9 +1346,9 @@ class Converter: NSObject {
             if transparentFlag || bitmapExtensions.contains(extension_) {
                 if extension_ == "svg" || extension_ == "svgz" {
                     for i in 1...pageCount {
-                        if i <= emptyPageFlags.count && emptyPageFlags[i - 1].boolValue { continue }
+                        if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
                         success = convertPDF(pdfFileName,
-                                             toOutlinedSVG: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                                             toOutlinedSVG: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                              page: UInt(i))
                         controller?.exitCurrentThreadIfTaskKilled()
                         if !success { return success }
@@ -1362,14 +1356,14 @@ class Converter: NSObject {
                 } else if isUsingNewGS() {
                     if extension_ == "eps" {
                         for i in 1...pageCount {
-                            if i <= emptyPageFlags.count && emptyPageFlags[i - 1].boolValue { continue }
-                            let croppedFile = (croppedPdfFilePath as NSString).pathStringByAppendingPageNumber(UInt(i))
+                            if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
+                            let croppedFile = croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i))
                             _ = pdfcrop(pdfFilePath, outputFileName: croppedFile, page: UInt(i), addMargin: false, useCache: false, fillBackground: false)
                             controller?.exitCurrentThreadIfTaskKilled()
 
-                            success = convertPDF((croppedFile as NSString).lastPathComponent,
-                                                 intermediateOutlinedFileName: (outputEpsFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
-                                                 outputFileName: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                            success = convertPDF(croppedFile.lastPathComponent,
+                                                 intermediateOutlinedFileName: outputEpsFileName.pathStringByAppendingPageNumber(UInt(i)),
+                                                 outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                                  page: 1, useCache: false, skipEmptyPage: false)
                             controller?.exitCurrentThreadIfTaskKilled()
                             if !success { return success }
@@ -1377,8 +1371,8 @@ class Converter: NSObject {
                     } else {
                         for i in 1...pageCount {
                             success = convertPDF(pdfFileName,
-                                                 intermediateOutlinedFileName: (outputEpsFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
-                                                 outputFileName: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                                                 intermediateOutlinedFileName: outputEpsFileName.pathStringByAppendingPageNumber(UInt(i)),
+                                                 outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                                  page: UInt(i), useCache: true, skipEmptyPage: true)
                             controller?.exitCurrentThreadIfTaskKilled()
                             if !success { return success }
@@ -1386,14 +1380,14 @@ class Converter: NSObject {
                     }
                 } else {
                     for i in 1...pageCount {
-                        if i <= emptyPageFlags.count && emptyPageFlags[i - 1].boolValue { continue }
-                        let croppedFile = (croppedPdfFilePath as NSString).pathStringByAppendingPageNumber(UInt(i))
+                        if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
+                        let croppedFile = croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i))
                         _ = pdfcrop(pdfFilePath, outputFileName: croppedFile, page: UInt(i), addMargin: false, useCache: false, fillBackground: false)
                         controller?.exitCurrentThreadIfTaskKilled()
 
-                        success = convertPDF((croppedFile as NSString).lastPathComponent,
-                                             intermediateOutlinedFileName: (outputEpsFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
-                                             outputFileName: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                        success = convertPDF(croppedFile.lastPathComponent,
+                                             intermediateOutlinedFileName: outputEpsFileName.pathStringByAppendingPageNumber(UInt(i)),
+                                             outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                              page: 1, useCache: false, skipEmptyPage: false)
                         controller?.exitCurrentThreadIfTaskKilled()
                         if !success { return success }
@@ -1402,35 +1396,35 @@ class Converter: NSObject {
             } else {
                 if extension_ == "eps" {
                     for i in 1...pageCount {
-                        if i <= emptyPageFlags.count && emptyPageFlags[i - 1].boolValue { continue }
-                        let croppedFile = (croppedPdfFilePath as NSString).pathStringByAppendingPageNumber(UInt(i))
+                        if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
+                        let croppedFile = croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i))
                         _ = pdfcrop(pdfFilePath, outputFileName: croppedFile, page: UInt(i), addMargin: true, useCache: false, fillBackground: true)
                         controller?.exitCurrentThreadIfTaskKilled()
 
-                        success = convertPDF((croppedFile as NSString).lastPathComponent,
-                                             intermediateOutlinedFileName: (outputEpsFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
-                                             outputFileName: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                        success = convertPDF(croppedFile.lastPathComponent,
+                                             intermediateOutlinedFileName: outputEpsFileName.pathStringByAppendingPageNumber(UInt(i)),
+                                             outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                              page: 1, useCache: false, skipEmptyPage: false)
                         controller?.exitCurrentThreadIfTaskKilled()
                         if !success { return success }
                     }
                 } else if extension_ == "pdf" {
                     for i in 1...pageCount {
-                        if i <= emptyPageFlags.count && emptyPageFlags[i - 1].boolValue { continue }
+                        if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
 
-                        if i <= whitePageFlags.count && whitePageFlags[i - 1].boolValue {
+                        if i <= whitePageFlags.count && whitePageFlags[i - 1] {
                             _ = pdfcrop(pdfFilePath,
-                                        outputFileName: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                                        outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                         page: UInt(i), addMargin: true, useCache: false, fillBackground: !transparentFlag)
                         } else {
                             _ = pdfcrop(pdfFilePath,
-                                        outputFileName: (croppedPdfFilePath as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                                        outputFileName: croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i)),
                                         page: UInt(i), addMargin: false, useCache: false, fillBackground: false)
                             controller?.exitCurrentThreadIfTaskKilled()
 
-                            success = convertPDF(((croppedPdfFilePath as NSString).lastPathComponent as NSString).pathStringByAppendingPageNumber(UInt(i)),
-                                                 intermediateOutlinedFileName: (outputEpsFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
-                                                 outputFileName: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                            success = convertPDF(croppedPdfFilePath.lastPathComponent.pathStringByAppendingPageNumber(UInt(i)),
+                                                 intermediateOutlinedFileName: outputEpsFileName.pathStringByAppendingPageNumber(UInt(i)),
+                                                 outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                                  page: 1, useCache: false, skipEmptyPage: false)
                             controller?.exitCurrentThreadIfTaskKilled()
                             if !success { return success }
@@ -1438,9 +1432,9 @@ class Converter: NSObject {
                     }
                 } else if extension_ == "svg" || extension_ == "svgz" {
                     for i in 1...pageCount {
-                        if i <= emptyPageFlags.count && emptyPageFlags[i - 1].boolValue { continue }
+                        if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
                         success = convertPDF(pdfFileName,
-                                             toOutlinedSVG: (outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)),
+                                             toOutlinedSVG: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                              page: UInt(i))
                         controller?.exitCurrentThreadIfTaskKilled()
                         if !success { return success }
@@ -1452,8 +1446,8 @@ class Converter: NSObject {
         if mergeableExtensions.contains(extension_) && mergeOutputsFlag {
             var outputFiles = [String]()
             for i in 1...pageCount {
-                if i <= emptyPageFlags.count && !emptyPageFlags[i - 1].boolValue {
-                    outputFiles.append((workingDirectory as NSString).appendingPathComponent((outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i))))
+                if i <= emptyPageFlags.count && !emptyPageFlags[i - 1] {
+                    outputFiles.append(workingDirectory.appendingPathComponent(outputFileName.pathStringByAppendingPageNumber(UInt(i))))
                 }
             }
 
@@ -1469,7 +1463,7 @@ class Converter: NSObject {
 
                 if extension_ == "pdf" {
                     if outputFiles.count > 1 {
-                        let tempOutPath = (workingDirectory as NSString).appendingPathComponent(tempFileBaseName + "-out.pdf")
+                        let tempOutPath = workingDirectory.appendingPathComponent(tempFileBaseName + "-out.pdf")
                         try? fileManager.removeItem(atPath: tempOutPath)
                         success = PDFDocument(merging: outputFiles)?.writeToFilePath(tempOutPath) ?? false
                         if success {
@@ -1502,7 +1496,7 @@ class Converter: NSObject {
                 if extension_ == "svg" || extension_ == "svgz" {
                     if outputFiles.count > 1 {
                         if extension_ == "svgz" {
-                            let newSvgPath = (workingDirectory as NSString).appendingPathComponent(tempFileBaseName + "-merge.svg")
+                            let newSvgPath = workingDirectory.appendingPathComponent(tempFileBaseName + "-merge.svg")
                             success = generateAnimatedSVG(from: outputFiles, toPath: newSvgPath)
                             if success {
                                 success = gzipSVG(newSvgPath, toSVGZ: outputFilePath)
@@ -1533,11 +1527,11 @@ class Converter: NSObject {
             var destURLs = [NSURL]()
 
             for i in 1...pageCount {
-                if i <= emptyPageFlags.count && !emptyPageFlags[i - 1].boolValue {
-                    let destPath = (outputFilePath as NSString).pathStringByAppendingPageNumber(UInt(i))
+                if i <= emptyPageFlags.count && !emptyPageFlags[i - 1] {
+                    let destPath = outputFilePath.pathStringByAppendingPageNumber(UInt(i))
                     destURLs.append(NSURL(fileURLWithPath: destPath))
 
-                    let origPath = (workingDirectory as NSString).appendingPathComponent((outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i)))
+                    let origPath = workingDirectory.appendingPathComponent(outputFileName.pathStringByAppendingPageNumber(UInt(i)))
                     if extension_ == "svgz" {
                         success = gzipSVG(origPath, toSVGZ: destPath)
                     } else {
@@ -1567,14 +1561,14 @@ class Converter: NSObject {
     }
 
     private func compileAndConvertWithCheck() -> Bool {
-        guard controller?.latexExists(atPath: (latexPath as NSString).programPath,
-                                      dviDriverPath: (dviDriverPath as NSString).programPath,
-                                      gsPath: (gsPath as NSString).programPath) == true else {
+        guard controller?.latexExists(atPath: latexPath.programPath,
+                                      dviDriverPath: dviDriverPath.programPath,
+                                      gsPath: gsPath.programPath) == true else {
             controller?.generationDidFinish(.failed)
             return false
         }
 
-        let extension_ = (outputFilePath as NSString).pathExtension.lowercased()
+        let extension_ = outputFilePath.pathExtension.lowercased()
 
 
         if !targetExtensions.contains(extension_) {
@@ -1598,14 +1592,14 @@ class Converter: NSObject {
         }
 
         var generatedFiles = [String]()
-        let skippedIndexes = (emptyPageFlags as NSArray).indexesOfTrueValue()
+        let skippedIndexes = emptyPageFlags.indexesOfTrueValue()
         let generatedPageCount = pageCount - skippedIndexes.count
         if mergeableExtensions.contains(extension_) && mergeOutputsFlag && generatedPageCount > 0 {
             generatedFiles.append(outputFilePath)
         } else {
             for i in 1...pageCount {
-                if i <= emptyPageFlags.count && !emptyPageFlags[i - 1].boolValue {
-                    generatedFiles.append((outputFilePath as NSString).pathStringByAppendingPageNumber(UInt(i)))
+                if i <= emptyPageFlags.count && !emptyPageFlags[i - 1] {
+                    generatedFiles.append(outputFilePath.pathStringByAppendingPageNumber(UInt(i)))
                 }
             }
         }
@@ -1631,7 +1625,7 @@ class Converter: NSObject {
             let pathsForPreview = generatedFiles.map { path -> String in
                 if #available(macOS 13, *) {
                     if extension_ == "eps" {
-                        let pdfPathForPreview = (fileManager.temporaryDirectory.path as NSString).appendingPathComponent(((path as NSString).lastPathComponent as NSString).deletingPathExtension + ".pdf")
+                        let pdfPathForPreview = fileManager.temporaryDirectory.path.appendingPathComponent((path.lastPathComponent as NSString).deletingPathExtension + ".pdf")
                         _ = epstopdf(path, outputFileName: pdfPathForPreview)
                         return pdfPathForPreview
                     }
@@ -1684,14 +1678,14 @@ class Converter: NSObject {
             controller?.printResult(generatedFiles, quiet: quietFlag)
         }
 
-        let skippedPageIndexes = (emptyPageFlags as NSArray).indexesOfTrueValue()
-        if skippedPageIndexes.count > 0 {
-            controller?.showPageSkippedWarning((skippedPageIndexes as NSIndexSet).arrayOfIndexesPlusOne as [NSNumber])
+        let skippedPages = emptyPageFlags.enumerated().compactMap { $0.element ? $0.offset + 1 : nil }
+        if !skippedPages.isEmpty {
+            controller?.showPageSkippedWarning(skippedPages)
         }
 
-        let whitePageIndexes = (whitePageFlags as NSArray).indexesOfTrueValue()
-        if status && whitePageIndexes.count > 0 {
-            controller?.showWhitePageWarning((whitePageIndexes as NSIndexSet).arrayOfIndexesPlusOne as [NSNumber])
+        let whitePages = whitePageFlags.enumerated().compactMap { $0.element ? $0.offset + 1 : nil }
+        if status && !whitePages.isEmpty {
+            controller?.showWhitePageWarning(whitePages)
         }
 
         if ignoreErrorsFlag && errorsIgnored {
@@ -1708,9 +1702,9 @@ class Converter: NSObject {
     func deleteTemporaryFiles() {
         guard deleteTmpFileFlag else { return }
 
-        let outputFileName = (outputFilePath as NSString).lastPathComponent
-        let basePath = (workingDirectory as NSString).appendingPathComponent(tempFileBaseName)
-        let extension_ = (outputFilePath as NSString).pathExtension.lowercased()
+        let outputFileName = outputFilePath.lastPathComponent
+        let basePath = workingDirectory.appendingPathComponent(tempFileBaseName)
+        let extension_ = outputFilePath.pathExtension.lowercased()
 
         let tempFiles = [
             "\(basePath).tex", "\(basePath).dvi", "\(basePath).log", "\(basePath).aux", "\(basePath).ps",
@@ -1726,18 +1720,18 @@ class Converter: NSObject {
         if extension_ == "svgz" {
             try? fileManager.removeItem(atPath: "\(basePath)-out.svg")
             try? fileManager.removeItem(atPath: "\(basePath)-merge.svg")
-            try? fileManager.removeItem(atPath: (workingDirectory as NSString).appendingPathComponent((outputFileName as NSString).stringByReplacingPathExtension("svg")))
+            try? fileManager.removeItem(atPath: workingDirectory.appendingPathComponent(outputFileName.replacingPathExtension("svg")))
         }
 
-        let outputDir = (outputFilePath as NSString).deletingLastPathComponent
+        let outputDir = outputFilePath.deletingLastPathComponent
         for i in 1...pageCount {
             let outputFullPath = Utility.getFullPath(outputDir) ?? outputDir
             let workingFullPath = Utility.getFullPath(workingDirectory) ?? workingDirectory
 
             if outputFullPath != workingFullPath {
-                try? fileManager.removeItem(atPath: (workingDirectory as NSString).appendingPathComponent((outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i))))
-            } else if mergeableExtensions.contains((outputFilePath as NSString).pathExtension) && mergeOutputsFlag && i >= 2 {
-                try? fileManager.removeItem(atPath: (workingDirectory as NSString).appendingPathComponent((outputFileName as NSString).pathStringByAppendingPageNumber(UInt(i))))
+                try? fileManager.removeItem(atPath: workingDirectory.appendingPathComponent(outputFileName.pathStringByAppendingPageNumber(UInt(i))))
+            } else if mergeableExtensions.contains(outputFilePath.pathExtension) && mergeOutputsFlag && i >= 2 {
+                try? fileManager.removeItem(atPath: workingDirectory.appendingPathComponent(outputFileName.pathStringByAppendingPageNumber(UInt(i))))
             }
 
             let pageTempFiles = [
@@ -1754,8 +1748,8 @@ class Converter: NSObject {
             }
 
             if extension_ == "svgz" {
-                let svgPath = (workingDirectory as NSString).appendingPathComponent((outputFileName as NSString).stringByReplacingPathExtension("svg"))
-                try? fileManager.removeItem(atPath: (svgPath as NSString).pathStringByAppendingPageNumber(UInt(i)))
+                let svgPath = workingDirectory.appendingPathComponent(outputFileName.replacingPathExtension("svg"))
+                try? fileManager.removeItem(atPath: svgPath.pathStringByAppendingPageNumber(UInt(i)))
             }
         }
 
@@ -1769,7 +1763,7 @@ class Converter: NSObject {
     }
 
     func compileAndConvert(withSource texSourceStr: String) -> Bool {
-        let tempTeXFilePath = String(format: "%@.tex", (workingDirectory as NSString).appendingPathComponent(tempFileBaseName))
+        let tempTeXFilePath = String(format: "%@.tex", workingDirectory.appendingPathComponent(tempFileBaseName))
 
         if !writeStringWithYenBackslashConverting(texSourceStr, toFile: tempTeXFilePath) {
             controller?.showFileGenerationError(tempTeXFilePath)
@@ -1789,7 +1783,7 @@ class Converter: NSObject {
 
     func compileAndConvert(withInputPath sourcePath: String) -> Bool {
         autoreleasepool {
-            additionalInputPath = (Utility.getFullPath(sourcePath) as NSString?)?.deletingLastPathComponent
+            additionalInputPath = Utility.getFullPath(sourcePath)?.deletingLastPathComponent
             if workingDirectoryType == Int(WorkingDirectoryFile) {
                 workingDirectory = additionalInputPath ?? workingDirectory
             }
@@ -1800,10 +1794,10 @@ class Converter: NSObject {
                 return false
             }
 
-            let ext = (sourcePath as NSString).pathExtension.lowercased()
+            let ext = sourcePath.pathExtension.lowercased()
             pdfInputMode = ext == "pdf"
             psInputMode = ext == "ps" || ext == "eps"
-            let basePath = (workingDirectory as NSString).appendingPathComponent(tempFileBaseName)
+            let basePath = workingDirectory.appendingPathComponent(tempFileBaseName)
 
             if pdfInputMode {
                 guard PDFDocument(filePath: sourcePath) != nil else {
@@ -1812,21 +1806,21 @@ class Converter: NSObject {
                     return false
                 }
 
-                let tempPdfFilePath = (basePath as NSString).appendingPathExtension("pdf")!
+                let tempPdfFilePath = basePath.appendingPathExtension("pdf")!
                 guard (try? fileManager.copyItem(atPath: sourcePath, toPath: tempPdfFilePath)) != nil else {
                     controller?.showFileGenerationError(tempPdfFilePath)
                     controller?.generationDidFinish(.failed)
                     return false
                 }
             } else if psInputMode {
-                let tempPsFilePath = (basePath as NSString).appendingPathExtension("ps")!
+                let tempPsFilePath = basePath.appendingPathExtension("ps")!
                 guard (try? fileManager.copyItem(atPath: sourcePath, toPath: tempPsFilePath)) != nil else {
                     controller?.showFileGenerationError(tempPsFilePath)
                     controller?.generationDidFinish(.failed)
                     return false
                 }
             } else {
-                let tempTeXFilePath = (basePath as NSString).appendingPathExtension("tex")!
+                let tempTeXFilePath = basePath.appendingPathExtension("tex")!
                 guard (try? fileManager.copyItem(atPath: sourcePath, toPath: tempTeXFilePath)) != nil else {
                     controller?.showFileGenerationError(tempTeXFilePath)
                     controller?.generationDidFinish(.failed)

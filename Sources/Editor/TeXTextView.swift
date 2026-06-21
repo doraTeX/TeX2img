@@ -39,7 +39,7 @@ class TeXTextView: NSTextView {
     }
 
     override func awakeFromNib() {
-        let autoCompletionPath = ("~/Library/TeXShop/Keyboard/autocompletion.plist" as NSString).expandingTildeInPath
+        let autoCompletionPath = "~/Library/TeXShop/Keyboard/autocompletion.plist".expandingTildeInPath
         if FileManager.default.fileExists(atPath: autoCompletionPath) {
             autocompletionDictionary = NSDictionary(contentsOfFile: autoCompletionPath) as? [String: String]
         } else {

@@ -129,6 +129,17 @@ TeX2img と tex2img が Swift ソースを共有しているため、Xcode が `
 | `NSTemporaryDirectory()` | `FileManager.default.temporaryDirectory.path`（`ControllerG` 7 箇所） |
 | GlyphPopover XIB バインディング | IBOutlet + `updateFields()` に置換、`@objc dynamic` 除去 |
 
-### 型の現代化（未着手）
+### 型の現代化（進行中）
 
-`NSString` / `NSArray` / `NSDictionary` → Swift 標準型への置き換えはこれから。中心は `GlobalConstants.swift` の `typealias Profile = NSDictionary` と、それに依存する `ControllerG` / `ProfileController` / `Converter` / `UtilityG` / `mainc.swift`。
+| 変更 | 状態 |
+|---|---|
+| `String-Extension.swift`（パス操作・`quotingWithDoubleQuotations` 等） | 完了 |
+| `Dictionary where Key == String` に profile 読み取り API | 完了（`NSDictionary` 版は互換のため残存） |
+| `[Bool].indexesOfTrueValue()` / `trueValueCount` | 完了 |
+| `Converter` の `emptyPageFlags` / `whitePageFlags` → `[Bool]` | 完了 |
+| ページ警告 API → `[Int]`（`[NSNumber]` 廃止） | 完了 |
+| `commandCompletionList` → `String?` | 完了 |
+| `Converter` / `ControllerG` の `as NSString` パス操作 | 一部完了（`Converter` 中心） |
+| `typealias Profile = NSDictionary` → struct / `[String: Any]` | 未着手（最大の塊） |
+| `NSString-Conversion` の `NSMutableString` 中心ロジック | 未着手 |
+| `TeXTextView` の `string as NSString`（`NSRange` 操作） | 未着手 |

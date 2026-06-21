@@ -18,7 +18,9 @@
 		3408DF46252F47B1002A9D9F /* BidirectionalCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */; };
 		3408DF47252F47B1002A9D9F /* LosslessStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */; };
 		3408DF48252F47B1002A9D9F /* StringProtocol-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF45252F47B1002A9D9F /* StringProtocol-Extension.swift */; };
+		3408DF49252F47B1002A9D9E /* String-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF4A252F47B1002A9D9E /* String-Extension.swift */; };
 		3408DF4A252F489A002A9D9F /* StringProtocol-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF45252F47B1002A9D9F /* StringProtocol-Extension.swift */; };
+		3408DF4B252F489E002A9D9E /* String-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF4A252F47B1002A9D9E /* String-Extension.swift */; };
 		3408DF4B252F489D002A9D9F /* BidirectionalCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */; };
 		3408DF4C252F48A0002A9D9F /* LosslessStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */; };
 		340F4D61252C086000FA56D7 /* Data-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340F4D5F252C07A200FA56D7 /* Data-Extension.swift */; };
@@ -160,6 +162,7 @@
 		3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BidirectionalCollection.swift; sourceTree = "<group>"; };
 		3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LosslessStringConvertible.swift; sourceTree = "<group>"; };
 		3408DF45252F47B1002A9D9F /* StringProtocol-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StringProtocol-Extension.swift"; sourceTree = "<group>"; };
+		3408DF4A252F47B1002A9D9E /* String-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String-Extension.swift"; sourceTree = "<group>"; };
 		340F4D5F252C07A200FA56D7 /* Data-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data-Extension.swift"; sourceTree = "<group>"; };
 		340F4D67252C799400FA56D7 /* NSApplication-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSApplication-Extension.swift"; sourceTree = "<group>"; };
 		340F4D6A252C79D900FA56D7 /* NSApperance-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSApperance-Extension.swift"; sourceTree = "<group>"; };
@@ -445,6 +448,7 @@
 					3408DF43252F47B1002A9D9F /* BidirectionalCollection.swift */,
 					3408DF44252F47B1002A9D9F /* LosslessStringConvertible.swift */,
 					3408DF45252F47B1002A9D9F /* StringProtocol-Extension.swift */,
+					3408DF4A252F47B1002A9D9E /* String-Extension.swift */,
 				);
 				path = Foundation;
 				sourceTree = "<group>";
@@ -695,6 +699,7 @@
 				3486590C2526473500B8B190 /* NSBitmapImageRep-Extension.swift in Sources */,
 				349276B01BFA19FB00C0BD99 /* NSColor-Extension.swift in Sources */,
 				3408DF4A252F489A002A9D9F /* StringProtocol-Extension.swift in Sources */,
+				3408DF4B252F489E002A9D9E /* String-Extension.swift in Sources */,
 				3408DF4B252F489D002A9D9F /* BidirectionalCollection.swift in Sources */,
 				3408DF4C252F48A0002A9D9F /* LosslessStringConvertible.swift in Sources */,
 				34BFF6D41B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */,
@@ -754,6 +759,7 @@
 				340F4D6B252C79D900FA56D7 /* NSApperance-Extension.swift in Sources */,
 				34867AC91B7B4804002AD2CF /* NSColorWell-Extension.swift in Sources */,
 				3408DF48252F47B1002A9D9F /* StringProtocol-Extension.swift in Sources */,
+				3408DF49252F47B1002A9D9E /* String-Extension.swift in Sources */,
 				34BFF6D31B9F1A9F00E8DE77 /* PDFDocument-Extension.swift in Sources */,
 				348658F52526402E00B8B190 /* NSDate-Extension.swift in Sources */,
 				340364362537552B005A43A5 /* AutoSelectTextField.swift in Sources */,

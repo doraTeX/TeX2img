@@ -17,7 +17,7 @@ extension TeXTextView {
         let commandCompletionKeyTag = profile.integerForKey(CommandCompletionKeyKey)
         let esc: unichar = commandCompletionKeyTag == ESCAPE_KEY ? 0x001B : "\t".utf16.first!
         let commandCompletionChar = String(UnicodeScalar(esc)!)
-        let commandCompletionList = controller.commandCompletionList as String?
+        let commandCompletionList = controller.commandCompletionList
 
         if event.characters == commandCompletionChar, event.modifierFlags.contains(.option) {
             doNextBullet(self)

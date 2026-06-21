@@ -26,7 +26,7 @@ private enum EncodingTag: Int {
 
 class ControllerG: NSObject, OutputController, DnDDelegate {
     @IBOutlet var sourceTextView: TeXTextView!
-    var commandCompletionList: NSMutableString?
+    var commandCompletionList: String?
 
     @IBOutlet private var profileController: ProfileController!
     @IBOutlet private var mainWindow: NSWindow!
@@ -516,24 +516,24 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    func showPageSkippedWarning(_ pages: [NSNumber]) {
+    func showPageSkippedWarning(_ pages: [Int]) {
         appendOutputAndScroll(String(format: "TeX2img: [%@] ", NSLocalizedString("Warning", comment: "")), quiet: false)
         if pages.count > 1 {
             appendOutputAndScroll(String(format: NSLocalizedString("pagesSkippedWarning", comment: ""),
-                                         pages.map { $0.stringValue }.joined(separator: ", ")), quiet: false)
+                                         pages.map(String.init).joined(separator: ", ")), quiet: false)
         } else if let page = pages.first {
-            appendOutputAndScroll(String(format: NSLocalizedString("pageSkippedWarning", comment: ""), page.stringValue), quiet: false)
+            appendOutputAndScroll(String(format: NSLocalizedString("pageSkippedWarning", comment: ""), page), quiet: false)
         }
         appendOutputAndScroll("\n", quiet: false)
     }
 
-    func showWhitePageWarning(_ pages: [NSNumber]) {
+    func showWhitePageWarning(_ pages: [Int]) {
         appendOutputAndScroll(String(format: "TeX2img: [%@] ", NSLocalizedString("Warning", comment: "")), quiet: false)
         if pages.count > 1 {
             appendOutputAndScroll(String(format: NSLocalizedString("whitePagesWarning", comment: ""),
-                                         pages.map { $0.stringValue }.joined(separator: ", ")), quiet: false)
+                                         pages.map(String.init).joined(separator: ", ")), quiet: false)
         } else if let page = pages.first {
-            appendOutputAndScroll(String(format: NSLocalizedString("whitePageWarning", comment: ""), page.stringValue), quiet: false)
+            appendOutputAndScroll(String(format: NSLocalizedString("whitePageWarning", comment: ""), page), quiet: false)
         }
         appendOutputAndScroll("\n", quiet: false)
     }
@@ -1001,10 +1001,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     private func addTemplateMenuItem(_ filename: String, atDirectory directory: String, to menu: NSMenu, at index: NSNumber?) {
         let fileManager = FileManager.default
-        let fullPath = (directory as NSString).appendingPathComponent(filename)
+        let fullPath = directory.appendingPathComponent(filename)
 
-        if (filename as NSString).pathExtension == "tex" {
-            let title = (filename as NSString).deletingPathExtension
+        if filename.pathExtension == "tex" {
+            let title = filename.deletingPathExtension
             let menuItem = NSMenuItem(title: title, action: #selector(adoptPreambleTemplate(_:)), keyEquivalent: "")
             menuItem.target = self
             menuItem.toolTip = fullPath
@@ -1019,7 +1019,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             let itemWithSubmenu = NSMenuItem(title: filename, action: nil, keyEquivalent: "")
             let submenu = NSMenu()
             submenu.autoenablesItems = false
-            constructTemplatePopupRecursively(atDirectory: (directory as NSString).appendingPathComponent(filename), parentMenu: submenu)
+            constructTemplatePopupRecursively(atDirectory: directory.appendingPathComponent(filename), parentMenu: submenu)
             itemWithSubmenu.submenu = submenu
             if let index {
                 menu.insertItem(itemWithSubmenu, at: index.intValue)
@@ -1079,7 +1079,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     private var templateDirectoryPath: String {
         let applicationSupportDirectoryPath = FileManager.default.applicationSupportDirectory ?? FileManager.default.temporaryDirectory.path
-        return (applicationSupportDirectoryPath as NSString).appendingPathComponent(templateDirectoryName)
+        return applicationSupportDirectoryPath.appendingPathComponent(templateDirectoryName)
     }
 
     @IBAction func restoreDefaultTemplates(_ sender: Any) {
@@ -1099,8 +1099,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
         if let files = try? fileManager.contentsOfDirectory(atPath: originalTemplateDirectory) {
             for file in files {
-                let src = (originalTemplateDirectory as NSString).appendingPathComponent(file)
-                let dst = (templateDirectoryPath as NSString).appendingPathComponent(file)
+                let src = originalTemplateDirectory.appendingPathComponent(file)
+                let dst = templateDirectoryPath.appendingPathComponent(file)
                 try? fileManager.removeItem(atPath: dst)
                 try? fileManager.copyItem(atPath: src, toPath: dst)
             }
@@ -1160,7 +1160,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             }
         }
         observeNotification(forName: NSControl.textDidChangeNotification, object: tabWidthTextField) { [weak self] _ in
-            self?.refreshTextView(tabWidthTextField)
+            guard let self else { return }
+            self.refreshTextView(self.tabWidthTextField)
         }
         observeNotification(forName: NSControl.textDidChangeNotification, object: outputFileTextField) { [weak self] _ in
             self?.outputFilePathChanged(nil)
@@ -1203,7 +1204,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
             let templateName = autoDetectionTargetMatrix.selectedCell()?.title ?? ""
             if let originalTemplateDirectory = Bundle.main.path(forResource: templateDirectoryName, ofType: nil) {
-                let templatePath = ((originalTemplateDirectory as NSString).appendingPathComponent(templateName) as NSString).appendingPathExtension("tex") ?? ""
+                let templatePath = (originalTemplateDirectory.appendingPathComponent(templateName) as NSString).appendingPathExtension("tex") ?? ""
                 if let data = try? Data(contentsOf: URL(fileURLWithPath: templatePath)) {
                     var detectedEncoding: UInt = 0
                     if let contents = NSString.stringWithAutoEncodingDetectionOfData( data, detectedEncoding: &detectedEncoding) {
@@ -1217,15 +1218,17 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             UserDefaults.standard.set(true, forKey: "SUEnableAutomaticChecks")
         }
 
-        let completionPath = ("~/Library/TeXShop/CommandCompletion/CommandCompletion.txt" as NSString).standardizingPath
+        let completionPath = "~/Library/TeXShop/CommandCompletion/CommandCompletion.txt".expandingTildeInPath.standardizingPath
         if fileManager.fileExists(atPath: completionPath),
            let completionData = try? Data(contentsOf: URL(fileURLWithPath: completionPath)),
-           let completionList = NSMutableString(data: completionData, encoding: String.Encoding.utf8.rawValue) {
-            commandCompletionList = completionList
-            commandCompletionList?.insert("\n", at: 0)
-            if commandCompletionList?.character(at: commandCompletionList!.length - 1) != unichar(UnicodeScalar("\n").value) {
-                commandCompletionList?.append("\n")
+           var completionList = String(data: completionData, encoding: .utf8) {
+            if !completionList.hasPrefix("\n") {
+                completionList = "\n" + completionList
             }
+            if !completionList.hasSuffix("\n") {
+                completionList += "\n"
+            }
+            commandCompletionList = completionList
         }
 
         if !fileManager.fileExists(atPath: templateDirectoryPath) {
@@ -1405,7 +1408,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private func analyzeContents(_ contents: String) -> [String] {
         var contents = contents
         if currentProfile().boolForKey(ConvertYenMarkKey) {
-            contents = (NSMutableString(string: contents).replaceYenWithBackSlash() as String)
+            contents = contents.replacingYenWithBackslash()
         }
 
         let pattern = "^(.*?)(?:\\r|\\n|\\r\\n)*(?:\\\\|¥)begin\\{document\\}(?:\\r|\\n|\\r\\n)*(.*)(?:\\\\|¥)end\\{document\\}"
@@ -1413,7 +1416,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         let range = NSRange(location: 0, length: contents.utf16.count)
         if let match = regex?.firstMatch(in: contents, options: [], range: range) {
             let preamble = (contents as NSString).substring(with: match.range(at: 1)) + "\n"
-            let body = ((contents as NSString).substring(with: match.range(at: 2)) as NSString).stringByDeletingLastReturnCharacters() + "\n"
+            let body = (contents as NSString).substring(with: match.range(at: 2)).deletingLastReturnCharacters() + "\n"
             return [preamble, body]
         }
         return ["", contents]
@@ -1465,7 +1468,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         var outputFilePath: String?
 
         if let inputPath = input as? String {
-            let extensionLower = (inputPath as NSString).pathExtension.lowercased()
+            let extensionLower = inputPath.pathExtension.lowercased()
             if extensionLower == "tex" {
                 if let data = try? Data(contentsOf: URL(fileURLWithPath: inputPath)) {
                     var detectedEncoding: UInt = 0
@@ -1537,8 +1540,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         savePanel.canSelectHiddenExtension = true
 
         if let lastSavedPath {
-            savePanel.nameFieldStringValue = (lastSavedPath as NSString).lastPathComponent
-            savePanel.directoryURL = URL(fileURLWithPath: (lastSavedPath as NSString).deletingLastPathComponent)
+            savePanel.nameFieldStringValue = lastSavedPath.lastPathComponent
+            savePanel.directoryURL = URL(fileURLWithPath: lastSavedPath.deletingLastPathComponent)
         }
 
         savePanel.beginSheetModal(for: mainWindow) { returnCode in
@@ -1747,7 +1750,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             return
         }
 
-        let filePath = (templateDirectoryPath as NSString).appendingPathComponent((title as NSString).appendingPathExtension("tex") ?? title)
+        let filePath = templateDirectoryPath.appendingPathComponent(title.appendingPathExtension("tex") ?? title)
         if FileManager.default.fileExists(atPath: filePath),
            !UtilityG.runConfirmPanel(message: NSLocalizedString("profileOverwriteMsg", comment: "")) {
             saveAsTemplate(title)
@@ -1838,9 +1841,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         let defaultFilePath = outputFileTextField.stringValue
         let defaultExtensionUpper = extensionPopupButton.selectedItem?.title ?? "EPS"
         let defaultExtensionLower = defaultExtensionUpper.lowercased()
-        savePanel.nameFieldStringValue = ((defaultFilePath as NSString).lastPathComponent as NSString).deletingPathExtension + ".\(defaultExtensionLower)"
+        savePanel.nameFieldStringValue = defaultFilePath.lastPathComponent.deletingPathExtension + ".\(defaultExtensionLower)"
         popUpButton.selectItem(withTitle: defaultExtensionUpper)
-        savePanel.directoryURL = URL(fileURLWithPath: (defaultFilePath as NSString).deletingLastPathComponent)
+        savePanel.directoryURL = URL(fileURLWithPath: defaultFilePath.deletingLastPathComponent)
 
         savePanel.beginSheetModal(for: mainWindow) { returnCode in
             if returnCode == .OK, let path = savePanel.url?.path {
@@ -1854,7 +1857,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         guard let savePanel = sender.window as? NSSavePanel else { return }
         let oldName = savePanel.nameFieldStringValue
         let extensionLower = sender.selectedItem?.title.lowercased() ?? ""
-        savePanel.nameFieldStringValue = ((oldName as NSString).deletingPathExtension as NSString).appendingPathExtension(extensionLower) ?? oldName
+        savePanel.nameFieldStringValue = oldName.deletingPathExtension.appendingPathExtension(extensionLower) ?? oldName
         savePanel.allowedFileTypes = [extensionLower] + (savePanel.allowedFileTypes ?? [])
     }
 
@@ -2045,7 +2048,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
         let templateName = autoDetectionTargetMatrix.selectedCell()?.title ?? ""
         if let originalTemplateDirectory = Bundle.main.path(forResource: templateDirectoryName, ofType: nil) {
-            let templatePath = ((originalTemplateDirectory as NSString).appendingPathComponent(templateName) as NSString).appendingPathExtension("tex") ?? ""
+            let templatePath = (originalTemplateDirectory.appendingPathComponent(templateName) as NSString).appendingPathExtension("tex") ?? ""
             adoptPreambleTemplate(templatePath)
         }
     }
@@ -2095,7 +2098,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
         output += "\nResolution level: \(profile.floatForKey(ResolutionKey))\n"
         output += "DPI: \(profile.integerForKey(DPIKey))\n"
-        let ext = (outputFilePath as NSString).pathExtension
+        let ext = outputFilePath.pathExtension
         let unit = profile.integerForKey(UnitKey) == PX_UNIT_TAG && ["png", "gif", "tiff"].contains(ext) ? "px" : "bp"
         output += "Left   margin: \(profile.integerForKey(LeftMarginKey))\(unit)\n"
         output += "Right  margin: \(profile.integerForKey(RightMarginKey))\(unit)\n"
@@ -2134,10 +2137,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         let profile = currentProfile()
         profile[EpstopdfPathKey] = Bundle.main.path(forResource: "epstopdf", ofType: nil)
         if let mupdfPath = Bundle.main.path(forResource: "mupdf", ofType: nil) {
-            profile[MudrawPathKey] = (mupdfPath as NSString).appendingPathComponent("mudraw")
+            profile[MudrawPathKey] = mupdfPath.appendingPathComponent("mudraw")
         }
         if let pdftopsBase = Bundle.main.path(forResource: "pdftops", ofType: nil) {
-            profile[PdftopsPathKey] = (pdftopsBase as NSString).appendingPathComponent("pdftops")
+            profile[PdftopsPathKey] = pdftopsBase.appendingPathComponent("pdftops")
         }
         profile[QuietKey] = false
         profile[ControllerKey] = self
@@ -2155,7 +2158,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         case .fromFile:
             let inputSourceFilePath = (profile.stringForKey(InputSourceFilePathKey) as NSString?)?.standardizingPath ?? ""
             if FileManager.default.fileExists(atPath: inputSourceFilePath) {
-                let ext = (inputSourceFilePath as NSString).pathExtension
+                let ext = inputSourceFilePath.pathExtension
                 if inputExtensions.contains(ext) {
                     DispatchQueue.global(qos: .userInitiated).async { [converter] in
                         converter?.compileAndConvert(withInputPath: inputSourceFilePath)
@@ -2228,11 +2231,11 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     @IBAction func extensionPopUpButtonChanged(_ sender: NSPopUpButton) {
         let ext = sender.selectedItem?.title.lowercased() ?? ""
-        outputFileTextField.stringValue = ((outputFileTextField.stringValue as NSString).deletingPathExtension as NSString).appendingPathExtension(ext) ?? outputFileTextField.stringValue
+        outputFileTextField.stringValue = outputFileTextField.stringValue.deletingPathExtension.appendingPathExtension(ext) ?? outputFileTextField.stringValue
     }
 
     @IBAction func outputFilePathChanged(_ sender: Any?) {
-        let newExtension = ((outputFileTextField.stringValue as NSString).lastPathComponent as NSString).pathExtension
+        let newExtension = outputFileTextField.stringValue.lastPathComponent.pathExtension
         if targetExtensions.contains(newExtension) {
             extensionPopupButton.selectItem(withTitle: newExtension.uppercased())
         }
@@ -2264,12 +2267,12 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             let message = String(format: NSLocalizedString("Install CUI Confirmation", comment: ""), CUI_PATH)
             if UtilityG.runConfirmPanel(message: message) {
                 let cuiInAppPath = Bundle.main.sharedSupportPath.map {
-                    (($0 as NSString).appendingPathComponent("bin") as NSString).appendingPathComponent("tex2img")
+                    ($0.appendingPathComponent("bin") as NSString).appendingPathComponent("tex2img")
                 } ?? ""
                 do {
                     try fileManager.createSymbolicLink(atPath: CUI_PATH, withDestinationPath: cuiInAppPath)
                 } catch {
-                    let cuiDir = (CUI_PATH as NSString).deletingLastPathComponent
+                    let cuiDir = CUI_PATH.deletingLastPathComponent
                     var output: NSString?
                     var errorMessage: NSString?
                     _ = sudoCommand("/bin/mkdir", atDirectory: FileManager.default.temporaryDirectory.path, withArguments: ["-p", cuiDir], stdoutString: &output, errorDescription: &errorMessage)

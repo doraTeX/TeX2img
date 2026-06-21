@@ -144,21 +144,21 @@ class ControllerC: NSObject, OutputController {
         UtilityC.printStdErr("tex2img: [Warning] Some errors were ignored. The result may be different from what you expected.\n")
     }
 
-    func showPageSkippedWarning(_ pages: [NSNumber]) {
+    func showPageSkippedWarning(_ pages: [Int]) {
         if pages.count > 1 {
-            let joined = pages.map { $0.stringValue }.joined(separator: ", ")
+            let joined = pages.map(String.init).joined(separator: ", ")
             UtilityC.printStdErr(String(format: "tex2img: [Warning] Page %@ were empty and they were skipped.\n", joined))
         } else if let page = pages.first {
-            UtilityC.printStdErr(String(format: "tex2img: [Warning] Page %ld was empty and it was skipped.\n", page.intValue))
+            UtilityC.printStdErr(String(format: "tex2img: [Warning] Page %ld was empty and it was skipped.\n", page))
         }
     }
 
-    func showWhitePageWarning(_ pages: [NSNumber]) {
+    func showWhitePageWarning(_ pages: [Int]) {
         if pages.count > 1 {
-            let joined = pages.map { $0.stringValue }.joined(separator: ", ")
+            let joined = pages.map(String.init).joined(separator: ", ")
             UtilityC.printStdErr(String(format: "tex2img: [Warning] Page %@ were empty and white pages were generated.\n", joined))
         } else if let page = pages.first {
-            UtilityC.printStdErr(String(format: "tex2img: [Warning] Page %ld was empty and a white page was generated.\n", page.intValue))
+            UtilityC.printStdErr(String(format: "tex2img: [Warning] Page %ld was empty and a white page was generated.\n", page))
         }
     }
 

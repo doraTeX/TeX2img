@@ -17,7 +17,7 @@ class Utility: NSObject {
 
     static func getFullPath(_ aPath: String) -> String? {
         let url = NSURL(fileURLWithPath: aPath)
-        return (String(cString: url.fileSystemRepresentation) as NSString).standardizingPath
+        return String(cString: url.fileSystemRepresentation).standardizingPath
     }
 
     static func previewFiles(_ files: [String], app: String) {

@@ -177,10 +177,11 @@ let PTEX_ENCODING_JIS = "jis"
 let PTEX_ENCODING_EUC = "euc"
 let EA_Key = "com.loveinequality.TeX2img"
 var GUI_PATHS: [String] {
-    [
-        (NSHomeDirectory() as NSString).appendingPathComponent("Desktop"),
-        (NSHomeDirectory() as NSString).appendingPathComponent("Applications"),
-        NSHomeDirectory(),
+    let home = NSHomeDirectory()
+    return [
+        home.appendingPathComponent("Desktop"),
+        home.appendingPathComponent("Applications"),
+        home,
         "/Applications",
         "/Applications/TeXLive",
     ]
