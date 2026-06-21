@@ -9,6 +9,7 @@
         <customObject id="-2" userLabel="File's Owner" customClass="MyGlyphPopoverController" customModule="TeX2img" customModuleProvider="target">
             <connections>
                 <outlet property="unicodesTextView" destination="PO6-Mn-aGw" id="6n6-OV-N3t"/>
+                <outlet property="unicodeNameField" destination="cvP-MD-1SF" id="uN6-nM-4fK"/>
                 <outlet property="view" destination="c22-O7-iKe" id="tsm-eO-5VC"/>
             </connections>
         </customObject>
@@ -42,13 +43,6 @@
                                     </fragment>
                                 </attributedString>
                                 <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <connections>
-                                    <binding destination="-2" name="value" keyPath="unicode" id="jf0-Dk-8HW">
-                                        <dictionary key="options">
-                                            <bool key="NSConditionallySetsEditable" value="NO"/>
-                                        </dictionary>
-                                    </binding>
-                                </connections>
                             </textView>
                         </subviews>
                     </clipView>
@@ -69,9 +63,6 @@
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
-                    <connections>
-                        <binding destination="-2" name="value" keyPath="unicodeName" id="bJ0-A8-8ap"/>
-                    </connections>
                 </textField>
             </subviews>
             <point key="canvasLocation" x="310" y="146"/>

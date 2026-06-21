@@ -8,7 +8,10 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MyGlyphPopoverController" customModule="TeX2img" customModuleProvider="target">
             <connections>
+                <outlet property="glyphField" destination="Lnp-OL-NAu" id="aK3-gF-1dL"/>
                 <outlet property="unicodeBlockNameField" destination="QPS-gR-GaP" id="EFE-eD-O93"/>
+                <outlet property="unicodeField" destination="5tD-mh-lm6" id="uN4-fD-2mK"/>
+                <outlet property="unicodeNameField" destination="cvP-MD-1SF" id="uN5-nM-3fK"/>
                 <outlet property="view" destination="c22-O7-iKe" id="tsm-eO-5VC"/>
             </connections>
         </customObject>
@@ -29,9 +32,6 @@
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
-                    <connections>
-                        <binding destination="-2" name="value" keyPath="glyph" id="RgA-ki-sJ4"/>
-                    </connections>
                 </textField>
                 <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" placeholderIntrinsicWidth="262" placeholderIntrinsicHeight="14" preferredMaxLayoutWidth="262" translatesAutoresizingMaskIntoConstraints="NO" id="cvP-MD-1SF">
                     <rect key="frame" x="70" y="45" width="266" height="14"/>
@@ -40,9 +40,6 @@
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
-                    <connections>
-                        <binding destination="-2" name="value" keyPath="unicodeName" id="bJ0-A8-8ap"/>
-                    </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" placeholderIntrinsicWidth="46" placeholderIntrinsicHeight="14" preferredMaxLayoutWidth="262" translatesAutoresizingMaskIntoConstraints="NO" id="QPS-gR-GaP">
                     <rect key="frame" x="70" y="28" width="266" height="14"/>
@@ -51,9 +48,6 @@
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
-                    <connections>
-                        <binding destination="-2" name="value" keyPath="unicodeBlockName" id="Za5-cl-WnW"/>
-                    </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" placeholderIntrinsicWidth="46" placeholderIntrinsicHeight="14" preferredMaxLayoutWidth="262" translatesAutoresizingMaskIntoConstraints="NO" id="5tD-mh-lm6">
                     <rect key="frame" x="70" y="11" width="266" height="14"/>
@@ -62,9 +56,6 @@
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
-                    <connections>
-                        <binding destination="-2" name="value" keyPath="unicode" id="hp1-3b-UV5"/>
-                    </connections>
                 </textField>
             </subviews>
             <constraints>

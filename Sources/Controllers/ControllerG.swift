@@ -949,7 +949,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             if workingDirectoryType == WorkingDirectoryFile && inputMethod == InputMethod.fromFile.rawValue {
                 currentProfile[WorkingDirectoryPathKey] = (currentProfile.stringForKey(InputSourceFilePathKey) as NSString?)?.deletingLastPathComponent
             } else {
-                currentProfile[WorkingDirectoryPathKey] = NSTemporaryDirectory()
+                currentProfile[WorkingDirectoryPathKey] = FileManager.default.temporaryDirectory.path
             }
 
             currentProfile[FillColorKey] = fillColorWell.color.serializedString
@@ -1078,7 +1078,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     private var templateDirectoryPath: String {
-        let applicationSupportDirectoryPath = FileManager.default.applicationSupportDirectory ?? NSTemporaryDirectory()
+        let applicationSupportDirectoryPath = FileManager.default.applicationSupportDirectory ?? FileManager.default.temporaryDirectory.path
         return (applicationSupportDirectoryPath as NSString).appendingPathComponent(templateDirectoryName)
     }
 
@@ -1767,7 +1767,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     @IBAction func openTempDir(_ sender: Any) {
-        NSWorkspace.shared.openFile(NSTemporaryDirectory(), withApplication: "Finder")
+        NSWorkspace.shared.openFile(FileManager.default.temporaryDirectory.path, withApplication: "Finder")
     }
 
     @IBAction func showPreferenceWindow(_ sender: Any) {
@@ -2091,7 +2091,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         if profile.integerForKey(WorkingDirectoryTypeKey) == WorkingDirectoryFile && profile.integerForKey(InputMethodKey) == InputMethod.fromFile.rawValue {
             output += (profile.stringForKey(InputSourceFilePathKey) as NSString?)?.deletingLastPathComponent ?? ""
         } else {
-            output += NSTemporaryDirectory()
+            output += FileManager.default.temporaryDirectory.path
         }
         output += "\nResolution level: \(profile.floatForKey(ResolutionKey))\n"
         output += "DPI: \(profile.integerForKey(DPIKey))\n"
@@ -2254,7 +2254,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                 } catch {
                     var output: NSString?
                     var errorMessage: NSString?
-                    _ = sudoCommand("/bin/rm", atDirectory: NSTemporaryDirectory(), withArguments: [CUI_PATH], stdoutString: &output, errorDescription: &errorMessage)
+                    _ = sudoCommand("/bin/rm", atDirectory: FileManager.default.temporaryDirectory.path, withArguments: [CUI_PATH], stdoutString: &output, errorDescription: &errorMessage)
                     if let errorMessage {
                         UtilityG.runErrorPanel(message: errorMessage as String)
                     }
@@ -2272,9 +2272,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                     let cuiDir = (CUI_PATH as NSString).deletingLastPathComponent
                     var output: NSString?
                     var errorMessage: NSString?
-                    _ = sudoCommand("/bin/mkdir", atDirectory: NSTemporaryDirectory(), withArguments: ["-p", cuiDir], stdoutString: &output, errorDescription: &errorMessage)
+                    _ = sudoCommand("/bin/mkdir", atDirectory: FileManager.default.temporaryDirectory.path, withArguments: ["-p", cuiDir], stdoutString: &output, errorDescription: &errorMessage)
                     if errorMessage == nil {
-                        _ = sudoCommand("/bin/ln", atDirectory: NSTemporaryDirectory(), withArguments: ["-sf", cuiInAppPath, CUI_PATH], stdoutString: &output, errorDescription: &errorMessage)
+                        _ = sudoCommand("/bin/ln", atDirectory: FileManager.default.temporaryDirectory.path, withArguments: ["-sf", cuiInAppPath, CUI_PATH], stdoutString: &output, errorDescription: &errorMessage)
                     }
                     if let errorMessage {
                         UtilityG.runErrorPanel(message: errorMessage as String)

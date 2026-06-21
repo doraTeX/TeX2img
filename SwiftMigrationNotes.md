@@ -107,15 +107,28 @@ TeX2img と tex2img が Swift ソースを共有しているため、Xcode が `
 
 ### `@objc` 整理（完了）
 
-不要な `@objc` を削除。残存は以下の理由によるもののみ:
+不要な `@objc` をすべて削除。**Swift ソース上の明示的 `@objc` は 0 箇所**。
 
-| 残存箇所 | 理由 |
+主な変更（コミット `4557d8a`）:
+
+| 変更前 | 変更後 |
 |---|---|
-| `@objc(ControllerG)` / `@objc(TeXTextView)` / `@objc(ProfileController)` / `@objc(MyGlyphPopoverController)` / `@objc(Converter)` | XIB の `customClass` 接続 |
-| `NSNotification` オブザーバターゲット / `IBAction` | セレクタベースの呼び出し |
-| `@objc(compileAndConvertWith*)` on Converter | `Thread.detachNewThreadSelector` |
-| `@objc dynamic` on MyGlyphPopoverController | XIB バインディング |
-| `@objc enum ExitStatus` / `@objc protocol DnDDelegate` | OutputController / DnD 連携 |
-| `TeXTextView.textViewDidChangeSelection` | `Selector("textViewDidChangeSelection:")` 経由の通知 |
+| XIB `customClass` のみ | `customModule="TeX2img"` 追加 → クラスレベル `@objc` 削除 |
+| `NotificationCenter.addObserver(selector:)` | `addObserver(forName:queue:using:)` + token 保持 |
+| `Thread.detachNewThreadSelector(compileAndConvert...)` | `DispatchQueue.global().async` |
+| `performSelector(onMainThread:runAppleScript...)` | `DispatchQueue.main.async` |
+| `Selector("textViewDidChangeSelection:")` | `TeXTextView` 内の block observer + `refreshSelectionHighlighting()` |
+| `@objc dynamic` on MyGlyphPopoverController | XIB バインディング廃止 → `loadView()` で IBOutlet 更新 |
 
-削除済み: 全 Foundation/AppKit/PDF/NSString 拡張、Utility/UtilityC/UtilityG、Converter 初期化子・BBox ヘルパー、ControllerG のプロファイル/文字表示 API 等（約 120 箇所）
+`#selector` / `@IBAction` は AppKit の動的メニュー・ボタンアクション用に残るが、これらは暗黙の ObjC 露出であり明示的 `@objc` 注釈ではない。
+
+### 小さめの現代化（完了）
+
+| 項目 | 変更内容 |
+|---|---|
+| `NSTemporaryDirectory()` | `FileManager.default.temporaryDirectory.path`（`ControllerG` 7 箇所） |
+| GlyphPopover XIB バインディング | IBOutlet + `updateFields()` に置換、`@objc dynamic` 除去 |
+
+### 型の現代化（未着手）
+
+`NSString` / `NSArray` / `NSDictionary` → Swift 標準型への置き換えはこれから。中心は `GlobalConstants.swift` の `typealias Profile = NSDictionary` と、それに依存する `ControllerG` / `ProfileController` / `Converter` / `UtilityG` / `mainc.swift`。

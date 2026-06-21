@@ -132,13 +132,17 @@ private final class UnicodeInfo: NSObject {
 }
 
 class MyGlyphPopoverController: NSViewController {
-    @objc dynamic var glyph = ""
-    @objc dynamic var unicodeName = ""
-    @objc dynamic var unicodeBlockName = ""
-    @objc dynamic var unicode = ""
+    private var glyph = ""
+    private var unicodeName = ""
+    private var unicodeBlockName = ""
+    private var unicode = ""
+    private var needsMultiUnicodeLayout = false
 
-    @IBOutlet private var unicodesTextView: NSTextView!
+    @IBOutlet private var glyphField: NSTextField!
+    @IBOutlet private var unicodeNameField: NSTextField!
     @IBOutlet private var unicodeBlockNameField: NSTextField!
+    @IBOutlet private var unicodeField: NSTextField!
+    @IBOutlet private var unicodesTextView: NSTextView!
 
     init?(character: String) {
         let numberOfComposedCharacters = character.numberOfComposedCharacters()
@@ -250,25 +254,7 @@ class MyGlyphPopoverController: NSViewController {
 
                 unicodeName = String(format: NSLocalizedString("%lu letters, %lu words, %lu lines", comment: ""),
                                      numberOfComposedCharacters, numberOfWords, numberOfLines)
-
-                let originalFrame = view.frame
-                let oldHeight = originalFrame.size.height
-
-                unicodesTextView.isHorizontallyResizable = true
-                unicodesTextView.isVerticallyResizable = true
-                let aStr = unicodesTextView.textStorage?.attributedSubstring(from: NSRange(location: 0, length: unicodesTextView.textStorage?.length ?? 0))
-                let newStorage = MyGlyphPopoverUnicodesTextStorage(copying: aStr)
-                unicodesTextView.layoutManager?.replaceTextStorage(newStorage)
-
-                unicodesTextView.sizeToFit()
-                let rect = unicodesTextView.layoutManager?.usedRect(for: unicodesTextView.textContainer!) ?? .zero
-                var newHeight = rect.size.height + 50
-                newHeight = newHeight < oldHeight ? oldHeight : min(newHeight, 300)
-
-                view.frame = NSRect(x: originalFrame.origin.x,
-                                    y: originalFrame.origin.y,
-                                    width: originalFrame.size.width,
-                                    height: newHeight)
+                needsMultiUnicodeLayout = true
             }
         } else {
             let theChar = nsCharacter.character(at: 0)
@@ -299,10 +285,47 @@ class MyGlyphPopoverController: NSViewController {
 
     override func loadView() {
         super.loadView()
+        updateFields()
+        if needsMultiUnicodeLayout {
+            adjustMultiUnicodeLayout()
+        }
+    }
+
+    private func updateFields() {
+        glyphField?.stringValue = glyph
+        unicodeNameField?.stringValue = unicodeName
+        unicodeField?.stringValue = unicode
 
         if unicodeBlockName.isEmpty {
             unicodeBlockNameField?.removeFromSuperview()
+        } else {
+            unicodeBlockNameField?.stringValue = unicodeBlockName
         }
+
+        unicodesTextView?.string = unicode
+    }
+
+    private func adjustMultiUnicodeLayout() {
+        guard let unicodesTextView else { return }
+
+        let originalFrame = view.frame
+        let oldHeight = originalFrame.size.height
+
+        unicodesTextView.isHorizontallyResizable = true
+        unicodesTextView.isVerticallyResizable = true
+        let aStr = unicodesTextView.textStorage?.attributedSubstring(from: NSRange(location: 0, length: unicodesTextView.textStorage?.length ?? 0))
+        let newStorage = MyGlyphPopoverUnicodesTextStorage(copying: aStr)
+        unicodesTextView.layoutManager?.replaceTextStorage(newStorage)
+
+        unicodesTextView.sizeToFit()
+        let rect = unicodesTextView.layoutManager?.usedRect(for: unicodesTextView.textContainer!) ?? .zero
+        var newHeight = rect.size.height + 50
+        newHeight = newHeight < oldHeight ? oldHeight : min(newHeight, 300)
+
+        view.frame = NSRect(x: originalFrame.origin.x,
+                            y: originalFrame.origin.y,
+                            width: originalFrame.size.width,
+                            height: newHeight)
     }
 
     func showPopover(relativeTo positioningRect: NSRect, of parentView: NSView) {
