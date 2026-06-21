@@ -5,7 +5,7 @@
 #import "Converter.h"
 #import "ControllerC.h"
 #import "global.h"
-#import "UtilityC.h"
+
 
 
 #import "tex2img-Swift.h"
@@ -98,7 +98,7 @@ void usage()
 NSInteger strtoi(const char * _Nullable str)
 {
     if (str == NULL) {
-        printStdErr("error : Not a number.\n");
+        [UtilityC printStdErr:@"error : Not a number.\n"];
         exit(ExitStatusFailed);
     }
     
@@ -110,12 +110,12 @@ NSInteger strtoi(const char * _Nullable str)
     
     if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
         || (errno != 0 && val == 0)) {
-        printStdErr("error : %s cannot be converted to a number.\n", str);
+        [UtilityC printStdErr:[NSString stringWithFormat:@"error : %s cannot be converted to a number.\n", str]];
         exit(ExitStatusFailed);
     }
     
     if (*endptr != '\0') {
-        printStdErr("error : %s is not a number.\n", str);
+        [UtilityC printStdErr:[NSString stringWithFormat:@"error : %s is not a number.\n", str]];
         exit(ExitStatusFailed);
     }
     
@@ -143,7 +143,7 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
         kanji = [@" -kanji=" stringByAppendingString:encoding];
     }
     
-    printf("LaTeX compiler: %s%s %s\n", getPath(latex.programName).UTF8String, kanji.UTF8String, latex.argumentsString.UTF8String);
+    printf("LaTeX compiler: %s%s %s\n", [UtilityC getPath:latex.programName].UTF8String, kanji.UTF8String, latex.argumentsString.UTF8String);
     
     printf("Auto detection of the number of compilation: ");
     if ([aProfile boolForKey:GuessCompilationKey]) {
@@ -155,17 +155,17 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
     }
     
     NSString *dviDriver = [aProfile stringForKey:DviDriverPathKey];
-    printf("DVI Driver: %s %s\n", getPath(dviDriver.programName).UTF8String, dviDriver.argumentsString.UTF8String);
+    printf("DVI Driver: %s %s\n", [UtilityC getPath:dviDriver.programName].UTF8String, dviDriver.argumentsString.UTF8String);
     
     NSString *gs = [aProfile stringForKey:GsPathKey];
-    printf("Ghostscript: %s %s\n", getPath(gs.programName).UTF8String, gs.argumentsString.UTF8String);
+    printf("Ghostscript: %s %s\n", [UtilityC getPath:gs.programName].UTF8String, gs.argumentsString.UTF8String);
     
-    printf("epstopdf: %s\n", getPath([aProfile stringForKey:EpstopdfPathKey]).UTF8String);
+    printf("epstopdf: %s\n", [UtilityC getPath:[aProfile stringForKey:EpstopdfPathKey]].UTF8String);
     
-    NSString *mudrawPath = getPath([aProfile stringForKey:MudrawPathKey]);
+    NSString *mudrawPath = [UtilityC getPath:[aProfile stringForKey:MudrawPathKey]];
     printf("mudraw: %s\n", mudrawPath ? mudrawPath.UTF8String : "NOT FOUND");
     
-    NSString *pdftopsPath = getPath([aProfile stringForKey:PdftopsPathKey]);
+    NSString *pdftopsPath = [UtilityC getPath:[aProfile stringForKey:PdftopsPathKey]];
     printf("pdftops: %s\n", pdftopsPath ? pdftopsPath.UTF8String : "NOT FOUND");
     
     printf("Working directory: ");
@@ -1035,16 +1035,16 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
         version();
     }
     if (![NSFileManager.defaultManager fileExistsAtPath:inputFilePath]) {
-        printStdErr("tex2img : No such file or directory - %s\n", inputFilePath.UTF8String);
+        [UtilityC printStdErr:[NSString stringWithFormat:@"tex2img : No such file or directory - %s\n", inputFilePath.UTF8String]];
         exit(ExitStatusFailed);
     }
     if (![InputExtensionsArray containsObject:inputFilePath.pathExtension]) {
-        printStdErr("tex2img : Invalid input file type - %s\n", inputFilePath.UTF8String);
+        [UtilityC printStdErr:[NSString stringWithFormat:@"tex2img : Invalid input file type - %s\n", inputFilePath.UTF8String]];
         exit(ExitStatusFailed);
     }
     
     if (!((leftMargin >= 0) && (rightMargin >= 0) && (topMargin >= 0) && (bottomMargin >= 0))) {
-        printStdErr("tex2img : Margins must not be negative.\n");
+        [UtilityC printStdErr:@"tex2img : Margins must not be negative.\n"];
         exit(ExitStatusFailed);
     }
     
@@ -1056,19 +1056,19 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     ControllerC *controller = [ControllerC new];
     
     // 実行プログラムのパスチェック
-    NSString *latexPath = getPath(latex.programPath);
-    NSString *dviDriverPath = getPath(dviDriver.programPath);
-    NSString *gsPath = getPath(gs.programPath);
-    NSString *epstopdfPath = getPath(@"epstopdf");
-    NSString *mudrawPath = getPath(@"mudraw");
-    NSString *pdftopsPath = getPath(@"xpdf-pdftops");
+    NSString *latexPath = [UtilityC getPath:latex.programPath];
+    NSString *dviDriverPath = [UtilityC getPath:dviDriver.programPath];
+    NSString *gsPath = [UtilityC getPath:gs.programPath];
+    NSString *epstopdfPath = [UtilityC getPath:@"epstopdf"];
+    NSString *mudrawPath = [UtilityC getPath:@"mudraw"];
+    NSString *pdftopsPath = [UtilityC getPath:@"xpdf-pdftops"];
     if (!pdftopsPath) {
-        pdftopsPath = getPath(@"pdftops");
+        pdftopsPath = [UtilityC getPath:@"pdftops"];
     }
     
     if (!latexPath) {
         [controller showNotFoundError:latex.programName];
-        suggestLatexOption();
+        [UtilityC suggestLatexOption];
         exit(ExitStatusFailed);
     }
     if (!dviDriverPath) {

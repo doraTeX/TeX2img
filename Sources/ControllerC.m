@@ -1,7 +1,7 @@
 #import <stdio.h>
 #import <stdarg.h>
 #import "ControllerC.h"
-#import "UtilityC.h"
+
 #import "tex2img-Swift.h"
 #import <sys/syslimits.h>
 
@@ -59,16 +59,16 @@
 
 - (BOOL)latexExistsAtPath:(NSString*)latexPath dviDriverPath:(NSString*)dviDriverPath gsPath:(NSString*)gsPath
 {
-	if (!checkWhich(latexPath)) {
+	if (![UtilityC checkWhich:latexPath]) {
 		[self showNotFoundError:latexPath.programName];
-        suggestLatexOption();
+        [UtilityC suggestLatexOption];
 		return NO;
 	}
-	if (!checkWhich(dviDriverPath)) {
+	if (![UtilityC checkWhich:dviDriverPath]) {
 		[self showNotFoundError:dviDriverPath.programName];
 		return NO;
 	}
-	if (!checkWhich(gsPath)) {
+	if (![UtilityC checkWhich:gsPath]) {
 		[self showNotFoundError:gsPath.programName];
 		return NO;
 	}
@@ -77,7 +77,7 @@
 
 - (BOOL)epstopdfExists;
 {
-	if (!checkWhich(@"epstopdf")) {
+	if (![UtilityC checkWhich:@"epstopdf"]) {
 		[self showNotFoundError:@"epstopdf"];
 		return NO;
 	}
@@ -87,7 +87,7 @@
 
 - (BOOL)mudrawExists;
 {
-    if (!checkWhich(@"mudraw")) {
+    if (![UtilityC checkWhich:@"mudraw"]) {
         [self showNotFoundError:@"mudraw"];
         return NO;
     }
@@ -97,9 +97,9 @@
 
 - (BOOL)pdftopsExists;
 {
-    if (!checkWhich(@"xpdf-pdftops") && !checkWhich(@"pdftops")) {
+    if (![UtilityC checkWhich:@"xpdf-pdftops"] && ![UtilityC checkWhich:@"pdftops"]) {
         [self showNotFoundError:@"pdftops"];
-        printStdErr("tex2img: [Error] Place GUI app (TeX2img.app) in /Applications.\n");
+        [UtilityC printStdErr:@"tex2img: [Error] Place GUI app (TeX2img.app) in /Applications.\n"];
         return NO;
     }
     
@@ -108,47 +108,47 @@
 
 - (void)showNotFoundError:(NSString*)aPath
 {
-    printStdErr("tex2img: [Error] Command \"%s\" cannot be found.\nCheck the environment variable $PATH.\n", aPath.UTF8String);
+    [UtilityC printStdErr:[NSString stringWithFormat:@"tex2img: [Error] Command \"%s\" cannot be found.\nCheck the environment variable $PATH.\n", aPath.UTF8String]];
 }
 
 - (void)showExtensionError
 {
-    printStdErr("tex2img: [Error] The extention of output file must be either eps/pdf/jpg/png/gif/tiff/bmp/svg.\n");
+    [UtilityC printStdErr:@"tex2img: [Error] The extention of output file must be either eps/pdf/jpg/png/gif/tiff/bmp/svg.\n"];
 }
 
 - (void)showFileFormatError:(NSString*)aPath
 {
-    printStdErr("tex2img: [Error] Invalid file format: %s\n", aPath.UTF8String);
+    [UtilityC printStdErr:[NSString stringWithFormat:@"tex2img: [Error] Invalid file format: %s\n", aPath.UTF8String]];
 }
 
 - (void)showFileGenerationError:(NSString*)aPath
 {
-	printStdErr("tex2img: [Error] %s cannot be created, and so generation has been aborted.\nCheck permission.\n", aPath.UTF8String);
+	[UtilityC printStdErr:[NSString stringWithFormat:@"tex2img: [Error] %s cannot be created, and so generation has been aborted.\nCheck permission.\n", aPath.UTF8String]];
 }
 
 - (void)showExecError:(NSString*)command
 {
-	printStdErr("tex2img: [Error] %s cannot be executed.\nCheck errors in the source code.\n", command.UTF8String);
+	[UtilityC printStdErr:[NSString stringWithFormat:@"tex2img: [Error] %s cannot be executed.\nCheck errors in the source code.\n", command.UTF8String]];
 }
 
 - (void)showCannotOverwriteError:(NSString*)path
 {
-	printStdErr("tex2img: [Error] %s cannot be overwritten.\n", path.UTF8String);
+	[UtilityC printStdErr:[NSString stringWithFormat:@"tex2img: [Error] %s cannot be overwritten.\n", path.UTF8String]];
 }
 
 - (void)showCannotCreateDirectoryError:(NSString*)dir
 {
-    printStdErr("tex2img: [Error] Directory %s cannot be overwritten.\n", dir.UTF8String);
+    [UtilityC printStdErr:[NSString stringWithFormat:@"tex2img: [Error] Directory %s cannot be overwritten.\n", dir.UTF8String]];
 }
 
 - (void)showCompileError
 {
-	printStdErr("tex2img: [Error] A TeX compile error occurred.\nCheck errors in the source code.\n");
+	[UtilityC printStdErr:@"tex2img: [Error] A TeX compile error occurred.\nCheck errors in the source code.\n"];
 }
 
 - (void)showImageSizeError
 {
-    printStdErr("tex2img: [Error] An image format error occurred.\nThe image size may be too large.\nTry lower the resolution level.\n");
+    [UtilityC printStdErr:@"tex2img: [Error] An image format error occurred.\nThe image size may be too large.\nTry lower the resolution level.\n"];
 }
 
 - (void)appendOutputAndScroll:(NSString*)str quiet:(BOOL)quiet
@@ -160,24 +160,24 @@
 
 - (void)showErrorsIgnoredWarning
 {
-    printStdErr("tex2img: [Warning] Some errors were ignored. The result may be different from what you expected.\n");
+    [UtilityC printStdErr:@"tex2img: [Warning] Some errors were ignored. The result may be different from what you expected.\n"];
 }
 
 - (void)showPageSkippedWarning:(NSArray<NSNumber*>*)pages
 {
     if (pages.count > 1) {
-        printStdErr("tex2img: [Warning] Page %s were empty and they were skipped.\n", [pages componentsJoinedByString:@", "].UTF8String);
+        [UtilityC printStdErr:[NSString stringWithFormat:@"tex2img: [Warning] Page %s were empty and they were skipped.\n", [pages componentsJoinedByString:@", "].UTF8String]];
     } else {
-        printStdErr("tex2img: [Warning] Page %d was empty and it was skipped.\n", pages[0].integerValue);
+        [UtilityC printStdErr:[NSString stringWithFormat:@"tex2img: [Warning] Page %ld was empty and it was skipped.\n", pages[0].integerValue]];
     }
 }
 
 - (void)showWhitePageWarning:(NSArray<NSNumber*>*)pages
 {
     if (pages.count > 1) {
-        printStdErr("tex2img: [Warning] Page %s were empty and white pages were generated.\n", [pages componentsJoinedByString:@", "].UTF8String);
+        [UtilityC printStdErr:[NSString stringWithFormat:@"tex2img: [Warning] Page %s were empty and white pages were generated.\n", [pages componentsJoinedByString:@", "].UTF8String]];
     } else {
-        printStdErr("tex2img: [Warning] Page %d was empty and a white page was generated.\n", pages[0].integerValue);
+        [UtilityC printStdErr:[NSString stringWithFormat:@"tex2img: [Warning] Page %ld was empty and a white page was generated.\n", pages[0].integerValue]];
     }
 }
 
