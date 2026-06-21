@@ -1,4 +1,4 @@
-import Foundation
+import AppKit
 
 @objc extension NSColor {
     var serializedString: String {

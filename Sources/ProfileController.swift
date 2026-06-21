@@ -94,7 +94,7 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         let selectedIndex = profilesTableView.selectedRow
         guard selectedIndex != -1 else { return }
 
-        controllerG.adoptProfile(profiles[selectedIndex] as? [String: Any] ?? [:])
+        controllerG.adoptProfile(profiles[selectedIndex])
         profilesWindow.close()
     }
 

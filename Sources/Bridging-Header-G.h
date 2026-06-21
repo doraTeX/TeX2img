@@ -1,7 +1,5 @@
 #import "typedef.h"
-#import "Converter.h"
-#import "ControllerG.h"
-#import "TeXTextView.h"
+#import "global.h"
 #ifndef U_DISABLE_RENAMING
 #define U_DISABLE_RENAMING 1
 #endif

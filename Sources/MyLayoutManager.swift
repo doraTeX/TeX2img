@@ -29,12 +29,12 @@ class MyLayoutManager: NSLayoutManager {
     override func drawGlyphs(forGlyphRange inGlyphRange: NSRange, at inContainerOrigin: NSPoint) {
         
         guard let controller = self.controller,
-              let invisibleColor = controller.invisibleColor(),
               let textStorage = self.textStorage,
               let theFont = textStorage.font else {
             super.drawGlyphs(forGlyphRange: inGlyphRange, at: inContainerOrigin)
             return
         }
+        let invisibleColor = controller.invisibleColor()
         
         let theCompleteStr = textStorage.string
         let theLengthToRedraw = NSMaxRange(inGlyphRange)

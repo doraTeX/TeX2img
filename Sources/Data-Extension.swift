@@ -10,7 +10,7 @@ extension Data {
     }
     
     @discardableResult
-    func write(toFile path: String) -> Bool {
+    func writeToPath(_ path: String) -> Bool {
         do {
             try self.write(to: URL(fileURLWithPath: path))
             return true

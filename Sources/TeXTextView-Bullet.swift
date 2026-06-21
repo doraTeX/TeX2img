@@ -1,10 +1,12 @@
+import AppKit
+
 // Control bullets (based on TeXShop, translated into Swift by Yusuke Terada)
 
 fileprivate let placeholderString = "\u{2022}" // "•"
 fileprivate let startCommentString = "\u{2022}\u{2039}" // "•‹"
 fileprivate let endCommentString = "\u{203A}" // "›"
 
-@objc extension TeXTextView {
+extension TeXTextView {
     @IBAction func doNextBullet(_ sender: Any) {  // modified by (HS)
         let text = self.string as NSString
         var tempRange = self.selectedRange
