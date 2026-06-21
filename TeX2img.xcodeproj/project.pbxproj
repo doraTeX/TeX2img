@@ -63,7 +63,7 @@
 		349276B01BFA19FB00C0BD99 /* NSColor-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.swift */; };
 		34A5C70B251B700000FCF7BA /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C70C251B700000FCF7BA /* Utility.swift */; };
 		34A5C70D251B700000FCF7BA /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C70C251B700000FCF7BA /* Utility.swift */; };
-		349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349927381B786546009BD5F1 /* MyGlyphPopoverController.m */; };
+		34A5C715251B700000FCF7BB /* MyGlyphPopoverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C714251B700000FCF7BB /* MyGlyphPopoverController.swift */; };
 		3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */; };
 		3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */; };
 		34A5C63B251B170B00FCF7BA /* Converter-BoundingBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */; };
@@ -176,8 +176,7 @@
 		348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-Colorize.m"; sourceTree = "<group>"; };
 		348D72A1125A57B8003AF902 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
 		34A5C70C251B700000FCF7BA /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
-		349927371B786546009BD5F1 /* MyGlyphPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyGlyphPopoverController.h; sourceTree = "<group>"; };
-		349927381B786546009BD5F1 /* MyGlyphPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyGlyphPopoverController.m; sourceTree = "<group>"; };
+		34A5C714251B700000FCF7BB /* MyGlyphPopoverController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyGlyphPopoverController.swift; sourceTree = "<group>"; };
 		3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverMulti.xib; sourceTree = "<group>"; };
 		3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverSingle.xib; sourceTree = "<group>"; };
 		34A5C638251B170A00FCF7BA /* Bridging-Header-G.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header-G.h"; sourceTree = "<group>"; };
@@ -261,8 +260,7 @@
 				CEB04B27225226FB005EED2C /* AppDelegate.swift */,
 				3408DF35252ED251002A9D9F /* MyLayoutManager.swift */,
 				3486591F252659A600B8B190 /* MyATSTypesetter.swift */,
-				349927371B786546009BD5F1 /* MyGlyphPopoverController.h */,
-				349927381B786546009BD5F1 /* MyGlyphPopoverController.m */,
+				34A5C714251B700000FCF7BB /* MyGlyphPopoverController.swift */,
 				34A5C712251B700000FCF7BA /* ProfileController.swift */,
 				3419976F25282F9D0022F53C /* PDFPageBox.swift */,
 				3402126C2534D272002D1545 /* UserNotificationDelegate.swift */,
@@ -661,7 +659,7 @@
 				34DBA5841D9A4F3A00951297 /* NSString-Conversion.m in Sources */,
 				34A5C713251B700000FCF7BA /* ProfileController.swift in Sources */,
 				34A5C70B251B700000FCF7BA /* Utility.swift in Sources */,
-				349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */,
+				34A5C715251B700000FCF7BB /* MyGlyphPopoverController.swift in Sources */,
 				34A5C700251B700000FCF7BA /* NSArray-Extension.swift in Sources */,
 				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,
 				34A5C705251B700000FCF7BA /* NSMutableString-Extension.swift in Sources */,

@@ -4,7 +4,6 @@
 
 #import "NSString-Conversion.h"
 
-#import "MyGlyphPopoverController.h"
 #import "UtilityG.h"
 #import "TeX2img-Swift.h"
 
