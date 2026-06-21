@@ -1,5 +1,5 @@
 #import "UtilityG.h"
-#import "NSDictionary-Extension.h"
+
 #import "TeX2img-Swift.h"
 
 void runOkPanel(NSString *title, NSString *message, ...)

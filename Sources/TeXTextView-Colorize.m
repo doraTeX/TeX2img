@@ -1,5 +1,5 @@
 #import "TeXTextView.h"
-#import "NSDictionary-Extension.h"
+
 #import "UtilityG.h"
 #import "TeX2img-Swift.h"
 

@@ -7,7 +7,7 @@
 #import "global.h"
 #import "UtilityC.h"
 #import "NSString-Extension.h"
-#import "NSDictionary-Extension.h"
+
 #import "tex2img-Swift.h"
 
 #define OPTION_NUM 54

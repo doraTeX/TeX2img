@@ -1,5 +1,5 @@
 #import "ProfileController.h"
-#import "NSDictionary-Extension.h"
+#import "TeX2img-Swift.h"
 #import "ControllerG.h"
 #import "UtilityG.h"
 

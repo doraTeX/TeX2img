@@ -1,6 +1,6 @@
 #import "TeXTextView.h"
 #import "UtilityG.h"
-#import "NSDictionary-Extension.h"
+
 #import "TeX2img-Swift.h"
 
 static NSString *placeholderString = @"•";

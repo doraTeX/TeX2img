@@ -3,7 +3,7 @@
 #import "ControllerG.h"
 #import "TeX2img-Swift.h"
 
-#import "NSDictionary-Extension.h"
+
 #import "NSString-Extension.h"
 #import "NSMutableString-Extension.h"
 #import "TeXTextView.h"

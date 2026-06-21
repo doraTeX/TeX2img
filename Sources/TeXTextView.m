@@ -1,6 +1,6 @@
 #import <Quartz/Quartz.h>
 #import "TeXTextView.h"
-#import "NSDictionary-Extension.h"
+
 #import "NSString-Extension.h"
 #import "NSString-Unicode.h"
 #import "NSString-Conversion.h"
