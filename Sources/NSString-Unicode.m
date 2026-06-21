@@ -1,4 +1,4 @@
-#import "NSString-Extension.h"
+#import "TeX2img-Swift.h"
 #import "NSString-Unicode.h"
 #import "icu/unorm2.h"
 #import "icu/ustring.h"

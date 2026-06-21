@@ -2,7 +2,7 @@
 #import <stdarg.h>
 #import "ControllerC.h"
 #import "UtilityC.h"
-#import "NSString-Extension.h"
+#import "tex2img-Swift.h"
 #import <sys/syslimits.h>
 
 @implementation ControllerC

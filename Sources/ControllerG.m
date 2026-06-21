@@ -4,7 +4,7 @@
 #import "TeX2img-Swift.h"
 
 
-#import "NSString-Extension.h"
+
 
 #import "TeXTextView.h"
 #import "UtilityG.h"

@@ -32,7 +32,7 @@
  */
 
 #import "MyGlyphPopoverController.h"
-#import "NSString-Extension.h"
+
 #import "NSString-Unicode.h"
 #import "TeX2img-Swift.h"
 #import "UtilityG.h"

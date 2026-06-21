@@ -6,7 +6,7 @@
 #import "ControllerC.h"
 #import "global.h"
 #import "UtilityC.h"
-#import "NSString-Extension.h"
+
 
 #import "tex2img-Swift.h"
 
