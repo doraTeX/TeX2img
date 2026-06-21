@@ -164,8 +164,8 @@
     BOOL copyAsRichText = [profile boolForKey:RichTextKey];
     
     if (copyAsRichText) {
-        NSColor *foregroundColor = foregroundColorInProfile(profile);
-        NSColor *backgroundColor = backgroundColorInProfile(profile);
+        NSColor *foregroundColor = [UtilityG foregroundColorInProfile:profile];
+        NSColor *backgroundColor = [UtilityG backgroundColorInProfile:profile];
         
         NSMutableAttributedString *destStr = [NSMutableAttributedString new]; // コピー先文字列
         NSRange selectedRange = self.selectedRange;
@@ -727,7 +727,7 @@
     NSRange selectedRange = self.selectedRange;
     
     if (selectedRange.length <= 0) {
-        if (runConfirmPanel(localizedString(@"Do you apply it to the entire document?"))) {
+        if ([UtilityG runConfirmPanelWithMessage:localizedString(@"Do you apply it to the entire document?")]) {
             [self selectAll:self];
             selectedRange = self.selectedRange;
         } else {
@@ -808,7 +808,7 @@
     NSRange selectedRange = self.selectedRange;
     
     if (selectedRange.length <= 0) {
-        if (runConfirmPanel(localizedString(@"Do you apply it to the entire document?"))) {
+        if ([UtilityG runConfirmPanelWithMessage:localizedString(@"Do you apply it to the entire document?")]) {
             [self selectAll:self];
             selectedRange = self.selectedRange;
         } else {

@@ -18,13 +18,13 @@
 	
     Profile *profile = controller.currentProfile;
     
-    self.textColor = foregroundColorInProfile(profile);
-    self.backgroundColor = backgroundColorInProfile(profile);
-    self.insertionPointColor = cursorColorInProfile(profile);
+    self.textColor = [UtilityG foregroundColorInProfile:profile];
+    self.backgroundColor = [UtilityG backgroundColorInProfile:profile];
+    self.insertionPointColor = [UtilityG cursorColorInProfile:profile];
     
-    NSDictionary<NSString*,id> *commandColorAttribute = @{NSForegroundColorAttributeName: commandColorInProfile(profile)};
-    NSDictionary<NSString*,id> *commentColorAttribute = @{NSForegroundColorAttributeName: commentColorInProfile(profile)};
-    NSDictionary<NSString*,id> *braceColorAttribute = @{NSForegroundColorAttributeName: braceColorInProfile(profile)};
+    NSDictionary<NSString*,id> *commandColorAttribute = @{NSForegroundColorAttributeName: [UtilityG commandColorInProfile:profile]};
+    NSDictionary<NSString*,id> *commentColorAttribute = @{NSForegroundColorAttributeName: [UtilityG commentColorInProfile:profile]};
+    NSDictionary<NSString*,id> *braceColorAttribute = @{NSForegroundColorAttributeName: [UtilityG braceColorInProfile:profile]};
 	
 	layoutManager = self.layoutManager;
 	textString = self.string;
@@ -88,7 +88,7 @@
 
 - (void)resetBackgroundColorOfTextView:(id)sender
 {
-    self.backgroundColor = backgroundColorInProfile(controller.currentProfile);
+    self.backgroundColor = [UtilityG backgroundColorInProfile:controller.currentProfile];
 }
 
 - (void)resetBackgroundColor:(id)sender
@@ -101,7 +101,7 @@
 - (void)highlightContent:(NSString*)range
 {
 	contentHighlighting = YES;
-	[self.layoutManager addTemporaryAttributes:@{NSBackgroundColorAttributeName: enclosedContentBackgroundColorInProfile(controller.currentProfile)}
+	[self.layoutManager addTemporaryAttributes:@{NSBackgroundColorAttributeName: [UtilityG enclosedContentBackgroundColorInProfile:controller.currentProfile]}
                              forCharacterRange:NSRangeFromString(range)];
 }
 
@@ -121,7 +121,7 @@
 		[self resetHighlight:nil];
 	}
 
-	highlightBracesColorDict = @{NSForegroundColorAttributeName: highlightedBraceColorInProfile(profile)};
+	highlightBracesColorDict = @{NSForegroundColorAttributeName: [UtilityG highlightedBraceColorInProfile:profile]};
 	unichar k_braceCharList[] = {0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E}; // == ()[]{}<>
     
 	NSString *theString = self.textStorage.string;
@@ -239,7 +239,7 @@
         NSBeep();
     }
 	if ([profile boolForKey:FlashBackgroundKey]) {
-        self.backgroundColor = flashingBackgroundColorInProfile(profile);
+        self.backgroundColor = [UtilityG flashingBackgroundColorInProfile:profile];
 		[self performSelector:@selector(resetBackgroundColorOfTextView:) 
 				   withObject:nil
                    afterDelay:0.20];

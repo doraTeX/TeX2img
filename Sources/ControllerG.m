@@ -519,9 +519,9 @@ typedef enum {
     Profile *currentProfile = self.currentProfile;
 
     [self refreshTextView:outputTextView
-          foregroundColor:consoleForegroundColorInProfile(currentProfile)
-          backgroundColor:consoleBackgroundColorInProfile(currentProfile)
-              cursorColor:cursorColorInProfile(currentProfile)];
+          foregroundColor:[UtilityG consoleForegroundColorInProfile:currentProfile]
+          backgroundColor:[UtilityG consoleBackgroundColorInProfile:currentProfile]
+              cursorColor:[UtilityG cursorColorInProfile:currentProfile]];
 
     [outputTextView scrollRangeToVisible:NSMakeRange(outputTextView.string.length, 0)]; // 最下部までスクロール
     outputTextView.font = sourceFont;
@@ -617,7 +617,7 @@ typedef enum {
 
 - (void)showExtensionErrorOnMainThread
 {
-    runErrorPanel(localizedString(@"extensionErrMsg"));
+    [UtilityG runErrorPanelWithMessage:localizedString(@"extensionErrMsg")];
 }
 
 - (void)showExtensionError
@@ -627,7 +627,7 @@ typedef enum {
 
 - (void)showNotFoundErrorOnMainThread:(NSString*)aPath
 {
-    runErrorPanel(localizedString(@"programNotFoundErrorMsg"), aPath);
+    [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"programNotFoundErrorMsg"), aPath]];
 }
 
 - (void)showNotFoundError:(NSString*)aPath
@@ -672,7 +672,7 @@ typedef enum {
 
 - (void)showFileFormatErrorOnMainThread:(NSString*)aPath
 {
-    runErrorPanel(localizedString(@"fileFormatErrorMsg"), aPath);
+    [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"fileFormatErrorMsg"), aPath]];
 }
 
 - (void)showFileFormatError:(NSString*)aPath
@@ -682,7 +682,7 @@ typedef enum {
 
 - (void)showFileGenerationErrorOnMainThread:(NSString*)aPath
 {
-    runErrorPanel(localizedString(@"fileGenerationErrorMsg"), aPath);
+    [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"fileGenerationErrorMsg"), aPath]];
 }
 
 - (void)showFileGenerationError:(NSString*)aPath
@@ -692,7 +692,7 @@ typedef enum {
 
 - (void)showExecErrorOnMainThread:(NSString*)command
 {
-    runErrorPanel(localizedString(@"execErrorMsg"), command);
+    [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"execErrorMsg"), command]];
 }
 
 - (void)showExecError:(NSString*)command
@@ -702,7 +702,7 @@ typedef enum {
 
 - (void)showCannotOverwriteErrorOnMainThread:(NSString*)path
 {
-    runErrorPanel(localizedString(@"cannotOverwriteErrorMsg"), path);
+    [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"cannotOverwriteErrorMsg"), path]];
 }
 
 - (void)showCannotOverwriteError:(NSString*)path
@@ -712,7 +712,7 @@ typedef enum {
 
 - (void)showCannotCreateDirectoryErrorOnMainThread:(NSString*)dir
 {
-    runErrorPanel(localizedString(@"cannotCreateDirectoryErrorMsg"), dir);
+    [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"cannotCreateDirectoryErrorMsg"), dir]];
 }
 
 - (void)showCannotCreateDirectoryError:(NSString*)dir
@@ -722,7 +722,7 @@ typedef enum {
 
 - (void)showCompileErrorOnMainThread
 {
-    runErrorPanel(localizedString(@"compileErrorMsg"));
+    [UtilityG runErrorPanelWithMessage:localizedString(@"compileErrorMsg")];
 }
 
 - (void)showCompileError
@@ -732,7 +732,7 @@ typedef enum {
 
 - (void)showImageSizeErrorOnMainThread
 {
-    runErrorPanel(localizedString(@"imageSizeErrorMsg"));
+    [UtilityG runErrorPanelWithMessage:localizedString(@"imageSizeErrorMsg")];
 }
 
 - (void)showImageSizeError
@@ -742,7 +742,7 @@ typedef enum {
 
 - (void)showErrorsIgnoredWarningOnMainThread
 {
-    runWarningPanel(localizedString(@"errorsIgnoredWarning"));
+    [UtilityG runWarningPanelWithMessage:localizedString(@"errorsIgnoredWarning")];
 }
 
 - (void)showErrorsIgnoredWarning
@@ -1272,9 +1272,9 @@ typedef enum {
     }
     
     [self refreshTextView:outputTextView
-          foregroundColor:consoleForegroundColorInProfile(aProfile)
-          backgroundColor:consoleBackgroundColorInProfile(aProfile)
-              cursorColor:cursorColorInProfile(aProfile)];
+          foregroundColor:[UtilityG consoleForegroundColorInProfile:aProfile]
+          backgroundColor:[UtilityG consoleBackgroundColorInProfile:aProfile]
+              cursorColor:[UtilityG cursorColorInProfile:aProfile]];
 }
 
 - (void)setInvisibleCharacterFont:(NSFont*)font
@@ -1555,11 +1555,11 @@ typedef enum {
     if (contents) {
         NSString *message = [NSString stringWithFormat:@"%@\n\n%@", localizedString(@"resotrePreambleMsg"), [contents stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]];
         
-        if (runConfirmPanel(message)) {
+        if ([UtilityG runConfirmPanelWithMessage:message]) {
             [preambleTextView replaceEntireContentsWithString:contents];
         }
     } else {
-        runErrorPanel(localizedString(@"cannotReadErrorMsg"), templatePath);
+        [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), templatePath]];
         return;
     }
 }
@@ -1572,7 +1572,7 @@ typedef enum {
 
 - (IBAction)restoreDefaultTemplates:(id)sender
 {
-    if (runConfirmPanel(localizedString(@"restoreTemplatesConfirmationMsg"))) {
+    if ([UtilityG runConfirmPanelWithMessage:localizedString(@"restoreTemplatesConfirmationMsg")]) {
         [self restoreDefaultTemplatesLogic];
     }
 }
@@ -1845,7 +1845,7 @@ typedef enum {
 {
     NSString *modeName = localizedString((sender.tag == LIGHTMODE_TAG) ? @"Light Mode" : @"Dark Mode");
     
-    if (sender && !runConfirmPanel([NSString stringWithFormat:localizedString(@"restoreColorsConfirmationMsg"), modeName])) {
+    if (sender && ![UtilityG runConfirmPanelWithMessage:[NSString stringWithFormat:localizedString(@"restoreColorsConfirmationMsg"), modeName]]) {
         return;
     }
     
@@ -1918,14 +1918,13 @@ typedef enum {
 
 - (void)showAutoDetectionResult:(NSDictionary<NSString*,NSString*>*)parameters
 {
-    runOkPanel(parameters[@"Title"],
-               @"%@\n%@\n%@\n%@\n%@",
-               parameters[@"Msg1"],
-               parameters[LatexPathKey],
-               parameters[DviDriverPathKey],
-               parameters[GsPathKey],
-               parameters[@"Msg2"]
-               );
+    [UtilityG runOkPanelWithTitle:parameters[@"Title"]
+                          message:[NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",
+                                   parameters[@"Msg1"],
+                                   parameters[LatexPathKey],
+                                   parameters[DviDriverPathKey],
+                                   parameters[GsPathKey],
+                                   parameters[@"Msg2"]]];
 }
 
 - (void)applicationWillTerminate:(NSNotification*)aNotification
@@ -2065,13 +2064,13 @@ typedef enum {
     
     PDFPage *page = [document pageAtIndex:0];
     if (!page) {
-        runErrorPanel(localizedString(@"doesNotContainSource"), [document description]);
+        [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"doesNotContainSource"), [document description]]];
         return nil;
     }
     
     NSArray<PDFAnnotation*> *annotations = page.annotations;
     if (!annotations) {
-        runErrorPanel(localizedString(@"doesNotContainSource"), [document description]);
+        [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"doesNotContainSource"), [document description]]];
         return nil;
     }
     
@@ -2109,12 +2108,12 @@ typedef enum {
                     PDFDocument *doc = [[PDFDocument alloc] initWithFilePath:inputPath];
                     contents = [self extractTeXSourceStringFromAnnotationOfPDF:doc];
                     if (!contents) {
-                        runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
+                        [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"doesNotContainSource"), inputPath]];
                         return NO;
                     }
                     outputFilePath = inputPath;
                 } else {
-                    runErrorPanel(localizedString(@"doesNotContainSource"), inputPath);
+                    [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"doesNotContainSource"), inputPath]];
                     return NO;
                 }
             } else { // ソース情報が含まれる画像ファイルの場合はそれをEAから取得して contents にセット（EAに保存されたソースは常にUTF8）
@@ -2128,23 +2127,23 @@ typedef enum {
     } else if ([input isKindOfClass:PDFDocument.class]) { // PDFからのインポート
         contents = [self extractTeXSourceStringFromAnnotationOfPDF:input];
         if (!contents) {
-            runErrorPanel(localizedString(@"doesNotContainSource"), [input description]);
+            [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"doesNotContainSource"), [input description]]];
             return NO;
         }
     } else {
-        runErrorPanel(localizedString(@"doesNotContainSource"), [input description]);
+        [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"doesNotContainSource"), [input description]]];
         return NO;
     }
     
     if (contents) {
-        if (skipConfirm || runConfirmPanel(localizedString(@"overwriteContentsWarningMsg"))) {
+        if (skipConfirm || [UtilityG runConfirmPanelWithMessage:localizedString(@"overwriteContentsWarningMsg")]) {
             [self placeImportedSource:contents];
             if (outputFilePath) {
                 outputFileTextField.stringValue = outputFilePath;
             }
         }
     } else {
-        runErrorPanel(localizedString(@"cannotReadErrorMsg"), [input description]);
+        [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"cannotReadErrorMsg"), [input description]]];
         return NO;
     }
     return YES;
@@ -2187,7 +2186,7 @@ typedef enum {
             NSStringEncoding encoding = [self stringEncodingFromEncodingOption:[self.currentProfile stringForKey:EncodingKey]];
             
             if (![contents writeToFile:outputPath atomically:YES encoding:encoding error:nil]) {
-                runErrorPanel(localizedString(@"cannotWriteErrorMsg"), outputPath);
+                [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"cannotWriteErrorMsg"), outputPath]];
             }
         }
     }];
@@ -2435,13 +2434,13 @@ typedef enum {
         NSString *filePath = [self.templateDirectoryPath stringByAppendingPathComponent:[title stringByAppendingPathExtension:@"tex"]];
         
         if ([fileManager fileExistsAtPath:filePath]
-            && (!runConfirmPanel(localizedString(@"profileOverwriteMsg")))) {
+            && (![UtilityG runConfirmPanelWithMessage:localizedString(@"profileOverwriteMsg")])) {
             [self saveAsTemplate:title];
         } else {
             NSString *preamble = preambleTextView.textStorage.mutableString;
             BOOL success = [preamble writeToFile:filePath atomically:NO encoding:NSUTF8StringEncoding error:nil];
             if (!success) {
-                runErrorPanel(localizedString(@"cannotWriteErrorMsg"), filePath);
+                [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"cannotWriteErrorMsg"), filePath]];
             }
         }
     }
@@ -2729,9 +2728,9 @@ typedef enum {
     Profile *currentProfile = self.currentProfile;
     
     [self refreshTextView:outputTextView
-          foregroundColor:consoleForegroundColorInProfile(currentProfile)
-          backgroundColor:consoleBackgroundColorInProfile(currentProfile)
-              cursorColor:cursorColorInProfile(currentProfile)];
+          foregroundColor:[UtilityG consoleForegroundColorInProfile:currentProfile]
+          backgroundColor:[UtilityG consoleBackgroundColorInProfile:currentProfile]
+              cursorColor:[UtilityG cursorColorInProfile:currentProfile]];
     
     outputTextView.font = sourceFont;
 }
@@ -2948,11 +2947,11 @@ typedef enum {
                 if ([InputExtensionsArray containsObject:inputSourceFilePath.pathExtension]) {
                     [NSThread detachNewThreadSelector:@selector(compileAndConvertWithInputPath:) toTarget:converter withObject:inputSourceFilePath];
                 } else {
-                    runErrorPanel(localizedString(@"inputFileTypeErrorMsg"), inputSourceFilePath);
+                    [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"inputFileTypeErrorMsg"), inputSourceFilePath]];
                     [self generationDidFinish:ExitStatusFailed];
                 }
             } else {
-                runErrorPanel(localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath);
+                [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"inputFileNotFoundErrorMsg"), inputSourceFilePath]];
                 [self generationDidFinish:ExitStatusFailed];
             }
             break;
@@ -2979,7 +2978,7 @@ typedef enum {
             }
             [label sendAction:label.action to:label.target]; // アクションを実行してスライダーやステッパーに反映
         } else { // 入力値が数値に解釈されなかった場合
-            runErrorPanel(localizedString(@"formatErrorMsg"), label.toolTip);
+            [UtilityG runErrorPanelWithMessage:[NSString stringWithFormat:localizedString(@"formatErrorMsg"), label.toolTip]];
             valid = NO;
         }
     }];
@@ -3028,7 +3027,7 @@ typedef enum {
               atRightOf:sender
                    view:preferenceWindow.contentView
                 offsetX:32
-                      y:preferenceWindow.frame.size.height - (isJapaneseLanguage() ? 313 : 300)];
+                      y:preferenceWindow.frame.size.height - ([UtilityG isJapaneseLanguage] ? 313 : 300)];
                 // Japanese.lproj と English.lproj の MainMenu.xib の違いに対応
 }
 
@@ -3068,7 +3067,7 @@ typedef enum {
     if ([fileManager fileExistsAtPath:CUI_PATH]) { // アンインストール
         NSString *message = [NSString stringWithFormat:localizedString(@"Uninstall CUI Confirmation"), CUI_PATH];
         
-        if (runConfirmPanel(message)) {
+        if ([UtilityG runConfirmPanelWithMessage:message]) {
             NSError *error = nil;
             [fileManager removeItemAtPath:CUI_PATH error:&error]; // まずは管理者権限なしでやってみる
             
@@ -3082,7 +3081,7 @@ typedef enum {
                  errorDescription:&errorMessage];
                 
                 if (errorMessage) {
-                    runErrorPanel(errorMessage);
+                    [UtilityG runErrorPanelWithMessage:errorMessage];
                 }
             }
         }
@@ -3090,7 +3089,7 @@ typedef enum {
     } else { // インストール
         NSString *message = [NSString stringWithFormat:localizedString(@"Install CUI Confirmation"), CUI_PATH];
         
-        if (runConfirmPanel(message)) {
+        if ([UtilityG runConfirmPanelWithMessage:message]) {
             NSString *cuiInAppPath = [[[[NSBundle mainBundle] sharedSupportPath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:@"tex2img"];
 
             NSError *error = nil;
@@ -3111,7 +3110,7 @@ typedef enum {
                  errorDescription:&errorMessage];
                 
                 if (errorMessage) {
-                    runErrorPanel(errorMessage);
+                    [UtilityG runErrorPanelWithMessage:errorMessage];
                 }
             }
         }
@@ -3211,6 +3210,6 @@ typedef enum {
 
 - (NSColor*)invisibleColor
 {
-    return invisibleColorInProfile(self.currentProfile);
+    return [UtilityG invisibleColorInProfile:self.currentProfile];
 }
 @end

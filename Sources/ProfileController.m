@@ -92,7 +92,7 @@
 	
 	if ([newProfileName isEqualToString:@""]) {
 		NSBeep();
-        runErrorPanel(localizedString(@"emptyProfileNameErrMsg"));
+        [UtilityG runErrorPanelWithMessage:localizedString(@"emptyProfileNameErrMsg")];
 	} else {
 		NSUInteger aIndex = [profileNames indexOfObject:newProfileName];
 		if (aIndex == NSNotFound) {
@@ -100,7 +100,7 @@
 			saveAsTextField.stringValue = @"";
 			[profilesWindow makeFirstResponder:saveAsTextField]; // フォーカスを入力欄に
 		} else {
-			if (runConfirmPanel(localizedString(@"profileOverwriteMsg"))) {
+			if ([UtilityG runConfirmPanelWithMessage:localizedString(@"profileOverwriteMsg")]) {
 				[self updateProfile:[controllerG currentProfile] forName:newProfileName];
 				saveAsTextField.stringValue = @"";
 			} else {

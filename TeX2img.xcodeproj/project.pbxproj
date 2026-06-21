@@ -76,7 +76,7 @@
 		34CB9281251F93500045CE9E /* NSColor-DefaultColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34CB9280251F93500045CE9E /* NSColor-DefaultColor.swift */; };
 		34CB92922525627E0045CE9E /* ControllerG-UserNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */; };
 		34CCBB071A964E8A0061842E /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = 34CCBB061A964E8A0061842E /* Templates */; };
-		34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */ = {isa = PBXBuildFile; fileRef = 34CEA1931AB970CE00F98258 /* UtilityG.m */; };
+		34A5C710251B700000FCF7BA /* UtilityG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C711251B700000FCF7BA /* UtilityG.swift */; };
 		34A5C704251B700000FCF7BA /* NSDictionary-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C702251B700000FCF7BA /* NSDictionary-Extension.swift */; };
 		34A5C70E251B700000FCF7BA /* UtilityC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C70F251B700000FCF7BA /* UtilityC.swift */; };
 		34A5C708251B700000FCF7BA /* NSString-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C709251B700000FCF7BA /* NSString-Extension.swift */; };
@@ -193,7 +193,7 @@
 		34CB9280251F93500045CE9E /* NSColor-DefaultColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSColor-DefaultColor.swift"; sourceTree = "<group>"; };
 		34CB92912525627E0045CE9E /* ControllerG-UserNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControllerG-UserNotification.swift"; sourceTree = "<group>"; };
 		34CCBB061A964E8A0061842E /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
-		34CEA1931AB970CE00F98258 /* UtilityG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilityG.m; sourceTree = "<group>"; };
+		34A5C711251B700000FCF7BA /* UtilityG.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilityG.swift; sourceTree = "<group>"; };
 		34CEA1951AB970F600F98258 /* UtilityG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityG.h; sourceTree = "<group>"; };
 		34A5C702251B700000FCF7BA /* NSDictionary-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDictionary-Extension.swift"; sourceTree = "<group>"; };
 		34A5C70F251B700000FCF7BA /* UtilityC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilityC.swift; sourceTree = "<group>"; };
@@ -337,7 +337,7 @@
 			children = (
 				34A5C70C251B700000FCF7BA /* Utility.swift */,
 				34CEA1951AB970F600F98258 /* UtilityG.h */,
-				34CEA1931AB970CE00F98258 /* UtilityG.m */,
+				34A5C711251B700000FCF7BA /* UtilityG.swift */,
 				34A5C70F251B700000FCF7BA /* UtilityC.swift */,
 				348D72A1125A57B8003AF902 /* global.h */,
 				34A5C65B251B661800FCF7BA /* typedef.h */,
@@ -657,7 +657,7 @@
 				3402126D2534D273002D1545 /* UserNotificationDelegate.swift in Sources */,
 				3408DF36252ED251002A9D9F /* MyLayoutManager.swift in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
-				34CEA1941AB970CE00F98258 /* UtilityG.m in Sources */,
+				34A5C710251B700000FCF7BA /* UtilityG.swift in Sources */,
 				3424A8E30E4F2DC1003C9F96 /* ControllerG.m in Sources */,
 				347314FB1B89CFDC00F285A3 /* NSString-Unicode.m in Sources */,
 				348BB5190F08C3850063003D /* Converter.m in Sources */,
