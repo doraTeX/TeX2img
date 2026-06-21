@@ -1,7 +1,7 @@
 #import <Quartz/Quartz.h>
 #import <sys/xattr.h>
 #import "TeX2img-Swift.h"
-#import "Utility.h"
+
 
 #define RESOLUTION_SCALE 5.0
 #define EMPTY_BBOX @"%%BoundingBox: 0 0 0 0\n"
@@ -2222,7 +2222,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
         
         NSString *outputDir = outputFilePath.stringByDeletingLastPathComponent;
         for (NSUInteger i=1; i<=pageCount; i++) {
-            if (![getFullPath(outputDir) isEqualToString:getFullPath(workingDirectory)]) {
+            if (![[Utility getFullPath:outputDir] isEqualToString:[Utility getFullPath:workingDirectory]]) {
                 [fileManager removeItemAtPath:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
             } else if ([MergeableExtensionsArray containsObject:outputFilePath.pathExtension] && mergeOutputsFlag && (i>=2)) {
                 [fileManager removeItemAtPath:[workingDirectory stringByAppendingPathComponent:[outputFileName pathStringByAppendingPageNumber:i]] error:nil];
@@ -2290,7 +2290,7 @@ intermediateOutlinedFileName:intermediateOutlinedFileName
 {
     @autoreleasepool {
         BOOL isDir;
-        additionalInputPath = getFullPath(sourcePath).stringByDeletingLastPathComponent;
+        additionalInputPath = [Utility getFullPath:sourcePath].stringByDeletingLastPathComponent;
         if (workingDirectoryType == WorkingDirectoryFile) {
             workingDirectory = additionalInputPath;
         }

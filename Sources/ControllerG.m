@@ -799,7 +799,7 @@ typedef enum {
         }
 
     } else {
-        previewFiles(files, app);
+        [Utility previewFiles:files app:app];
     }
 }
 
@@ -2077,7 +2077,7 @@ typedef enum {
     
     // TeX2img によって埋め込まれたソース情報が含まれるかどうかのチェック
     for (PDFAnnotation *annotation in annotations) {
-        if (isTeX2imgAnnotation(annotation)) {
+        if ([Utility isTeX2imgAnnotation:annotation]) {
             contents = [[annotation.contents stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"] substringFromIndex:[AnnotationHeader length]];
             break;
         }

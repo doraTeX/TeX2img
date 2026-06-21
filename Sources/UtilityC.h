@@ -1,4 +1,4 @@
-#import "Utility.h"
+#import "global.h"
 
 #ifndef TeX2img_UtilityC_h
 #define TeX2img_UtilityC_h

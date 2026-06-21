@@ -61,8 +61,8 @@
 		348D729D125A56D9003AF902 /* TeXTextView-Colorize.m in Sources */ = {isa = PBXBuildFile; fileRef = 348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */; };
 		348E08831C3DE76F004CFB4B /* UnicodeBlocks.strings in Resources */ = {isa = PBXBuildFile; fileRef = 348E08811C3DE76F004CFB4B /* UnicodeBlocks.strings */; };
 		349276B01BFA19FB00C0BD99 /* NSColor-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348BBF951B795AB900EDE00C /* NSColor-Extension.swift */; };
-		349564B81ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
-		349564B91ABFF3D1004B9C1D /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 349564B71ABFF3D1004B9C1D /* Utility.m */; };
+		34A5C70B251B700000FCF7BA /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C70C251B700000FCF7BA /* Utility.swift */; };
+		34A5C70D251B700000FCF7BA /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C70C251B700000FCF7BA /* Utility.swift */; };
 		349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 349927381B786546009BD5F1 /* MyGlyphPopoverController.m */; };
 		3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */; };
 		3499273D1B7867D5009BD5F1 /* GlyphPopoverSingle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3499273B1B7867D5009BD5F1 /* GlyphPopoverSingle.xib */; };
@@ -177,8 +177,7 @@
 		348D7280125A566A003AF902 /* TeXTextView-CommandCompletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-CommandCompletion.m"; sourceTree = "<group>"; };
 		348D729C125A56D9003AF902 /* TeXTextView-Colorize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TeXTextView-Colorize.m"; sourceTree = "<group>"; };
 		348D72A1125A57B8003AF902 /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global.h; sourceTree = "<group>"; };
-		349564B71ABFF3D1004B9C1D /* Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utility.m; sourceTree = "<group>"; };
-		349564BA1ABFF3E5004B9C1D /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
+		34A5C70C251B700000FCF7BA /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		349927371B786546009BD5F1 /* MyGlyphPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyGlyphPopoverController.h; sourceTree = "<group>"; };
 		349927381B786546009BD5F1 /* MyGlyphPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyGlyphPopoverController.m; sourceTree = "<group>"; };
 		3499273A1B7867D5009BD5F1 /* GlyphPopoverMulti.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GlyphPopoverMulti.xib; sourceTree = "<group>"; };
@@ -337,8 +336,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				349564BA1ABFF3E5004B9C1D /* Utility.h */,
-				349564B71ABFF3D1004B9C1D /* Utility.m */,
+				34A5C70C251B700000FCF7BA /* Utility.swift */,
 				34CEA1951AB970F600F98258 /* UtilityG.h */,
 				34CEA1931AB970CE00F98258 /* UtilityG.m */,
 				34D2A63F1AB9BC260040B4A5 /* UtilityC.h */,
@@ -615,7 +613,7 @@
 				34865902252643BE00B8B190 /* NSIndexSet-Extension.swift in Sources */,
 				3419977125282F9D0022F53C /* PDFPageBox.swift in Sources */,
 				348658F62526402E00B8B190 /* NSDate-Extension.swift in Sources */,
-				349564B91ABFF3D1004B9C1D /* Utility.m in Sources */,
+				34A5C70D251B700000FCF7BA /* Utility.swift in Sources */,
 				34A5C704251B700000FCF7BA /* NSDictionary-Extension.swift in Sources */,
 				705DC7A50F1197E90052AFA5 /* ControllerC.m in Sources */,
 				34D2A63E1AB9BC0F0040B4A5 /* UtilityC.m in Sources */,
@@ -668,7 +666,7 @@
 				34A5C703251B700000FCF7BA /* NSDictionary-Extension.swift in Sources */,
 				34DBA5841D9A4F3A00951297 /* NSString-Conversion.m in Sources */,
 				34821EC810282CF9008DEB1F /* ProfileController.m in Sources */,
-				349564B81ABFF3D1004B9C1D /* Utility.m in Sources */,
+				34A5C70B251B700000FCF7BA /* Utility.swift in Sources */,
 				349927391B786546009BD5F1 /* MyGlyphPopoverController.m in Sources */,
 				34A5C700251B700000FCF7BA /* NSArray-Extension.swift in Sources */,
 				70254EF010353485000D6D05 /* TeXTextView.m in Sources */,

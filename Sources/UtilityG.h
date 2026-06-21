@@ -1,5 +1,5 @@
 #import <stdarg.h>
-#import "Utility.h"
+#import "global.h"
 #ifndef TeX2img_UtilityG_h
 #define TeX2img_UtilityG_h
 

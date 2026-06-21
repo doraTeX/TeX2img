@@ -183,7 +183,7 @@
 
 - (void)previewFiles:(NSArray<NSString*>*)files withApplication:(NSString*)app
 {
-    previewFiles(files, app);
+    [Utility previewFiles:files app:app];
 }
 
 - (void)printResult:(NSArray<NSString*>*)generatedFiles quiet:(BOOL)quiet

@@ -1102,7 +1102,7 @@
 
         // TeX2img によって埋め込まれたソース情報が含まれるかどうかのチェック
         for (PDFAnnotation *annotation in annotations) {
-            if (isTeX2imgAnnotation(annotation)) {
+            if ([Utility isTeX2imgAnnotation:annotation]) {
                 self.draggingState = YES;
                 return currentDragOperation;
             }

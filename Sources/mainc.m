@@ -174,7 +174,7 @@ void printCurrentStatus(NSString *inputFilePath, Profile *aProfile)
             printf("%s", NSTemporaryDirectory().UTF8String);
             break;
         case WorkingDirectoryFile:
-            printf("%s", getFullPath(inputFilePath).stringByDeletingLastPathComponent.UTF8String);
+            printf("%s", [Utility getFullPath:inputFilePath].stringByDeletingLastPathComponent.UTF8String);
             break;
         case WorkingDirectoryCurrent:
             printf("%s", NSFileManager.defaultManager.currentDirectoryPath.UTF8String);
@@ -1029,7 +1029,7 @@ NSArray<id>* generateConverter (int argc, char *argv[]) {
     }
     
     NSString *inputFilePath = @(argv[0]);
-    NSString *outputFilePath = getFullPath(@(argv[1]));
+    NSString *outputFilePath = [Utility getFullPath:@(argv[1])];
     
     if (!quietFlag) {
         version();
