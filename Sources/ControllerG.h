@@ -1,9 +1,8 @@
 #import <Cocoa/Cocoa.h>
 #import <UserNotifications/UserNotifications.h>
 #import "Converter.h"
-#import "ProfileController.h"
-
 @class TeXTextView;
+@class ProfileController;
 
 @protocol DnDDelegate <NSObject>
 - (void)textViewDroppedFile:(id)file;
