@@ -76,8 +76,8 @@ private let c1ControlCharNames = [
 
 private let normalizationFactor = 256
 
-@objc extension NSString {
-    @objc func unicodeName() -> String {
+extension NSString {
+    func unicodeName() -> String {
         let mutableUnicodeName = NSMutableString(string: self)
         CFStringTransform(mutableUnicodeName, nil, "Any-Name" as CFString, false)
 
@@ -87,14 +87,14 @@ private let normalizationFactor = 256
         return mutableUnicodeName.substring(with: firstMatch!.range(at: 1))
     }
 
-    @objc func blockName() -> String {
+    func blockName() -> String {
         let utf32char = utf32char()
         let prop = u_getIntPropertyValue(Int32(utf32char), UCHAR_BLOCK)
         let blockNameChars = u_getPropertyValueName(UCHAR_BLOCK, prop, U_LONG_PROPERTY_NAME)
         return String(cString: blockNameChars!).replacingOccurrences(of: "_", with: " ")
     }
 
-    @objc func localizedBlockName() -> String {
+    func localizedBlockName() -> String {
         var blockName = blockName()
         blockName = NSString.sanitizeBlockName(blockName)
         return NSLocalizedString(blockName, tableName: "UnicodeBlocks", bundle: .main, value: "", comment: "")
@@ -132,11 +132,11 @@ private let normalizationFactor = 256
         return result as String
     }
 
-    @objc func normalizedStringWithModifiedNFC() -> String {
+    func normalizedStringWithModifiedNFC() -> String {
         return normalizedStringConsideringCompositionExclusions { $0.precomposedStringWithCanonicalMapping }
     }
 
-    @objc func normalizedStringWithModifiedNFD() -> String {
+    func normalizedStringWithModifiedNFD() -> String {
         let sourceStr = self as CFString
         let bufferLength = CFStringGetMaximumSizeOfFileSystemRepresentation(sourceStr)
         let destStr = UnsafeMutablePointer<CChar>.allocate(capacity: bufferLength)
@@ -149,7 +149,7 @@ private let normalizationFactor = 256
         return self as String
     }
 
-    @objc func normalizedStringWithNFKC_CF() -> String {
+    func normalizedStringWithNFKC_CF() -> String {
         var error = U_ZERO_ERROR
 
         guard let normalizer = unorm2_getInstance(UnsafeMutablePointer<CChar>(bitPattern: 0), "nfkc_cf", UNORM2_COMPOSE, &error) else {
@@ -196,7 +196,6 @@ private let normalizationFactor = 256
         }
     }
 
-    @objc(controlCharacterNameWithCharacter:)
     static func controlCharacterName(withCharacter character: unichar) -> String? {
         if character <= 0x0020 {
             return c0ControlCharNames[Int(character)]

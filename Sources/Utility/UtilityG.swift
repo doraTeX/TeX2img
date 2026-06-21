@@ -1,9 +1,7 @@
 import AppKit
 import Foundation
 
-@objc(UtilityG)
 class UtilityG: NSObject {
-    @objc(runOkPanelWithTitle:message:)
     static func runOkPanel(title: String, message: String) {
         let alert = NSAlert()
         alert.messageText = title
@@ -13,7 +11,6 @@ class UtilityG: NSObject {
         alert.runModal()
     }
 
-    @objc(runErrorPanelWithMessage:)
     static func runErrorPanel(message: String) {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Error", comment: "")
@@ -23,7 +20,6 @@ class UtilityG: NSObject {
         alert.runModal()
     }
 
-    @objc(runWarningPanelWithMessage:)
     static func runWarningPanel(message: String) {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Warning", comment: "")
@@ -33,7 +29,6 @@ class UtilityG: NSObject {
         alert.runModal()
     }
 
-    @objc(runConfirmPanelWithMessage:)
     static func runConfirmPanel(message: String) -> Bool {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Confirm", comment: "")
@@ -44,7 +39,7 @@ class UtilityG: NSObject {
         return alert.runModal() == .alertFirstButtonReturn
     }
 
-    @objc static func isJapaneseLanguage() -> Bool {
+    static func isJapaneseLanguage() -> Bool {
         struct Cache {
             static let value: Bool = {
                 guard let locale = Locale.preferredLanguages.first else { return false }
@@ -62,7 +57,6 @@ class UtilityG: NSObject {
         return profile.colorForKey(key) ?? defaultColor
     }
 
-    @objc(foregroundColorInProfile:)
     static func foregroundColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "foregroundColor",
@@ -70,7 +64,6 @@ class UtilityG: NSObject {
                   defaultColor: .defaultForegroundColor)
     }
 
-    @objc(backgroundColorInProfile:)
     static func backgroundColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "backgroundColor",
@@ -78,7 +71,6 @@ class UtilityG: NSObject {
                   defaultColor: .defaultBackgroundColor)
     }
 
-    @objc(cursorColorInProfile:)
     static func cursorColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "cursorColor",
@@ -86,7 +78,6 @@ class UtilityG: NSObject {
                   defaultColor: .defaultCursorColor)
     }
 
-    @objc(braceColorInProfile:)
     static func braceColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "braceColor",
@@ -94,7 +85,6 @@ class UtilityG: NSObject {
                   defaultColor: .defaultBraceColor)
     }
 
-    @objc(commentColorInProfile:)
     static func commentColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "commentColor",
@@ -102,7 +92,6 @@ class UtilityG: NSObject {
                   defaultColor: .defaultCommentColor)
     }
 
-    @objc(commandColorInProfile:)
     static func commandColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "commandColor",
@@ -110,7 +99,6 @@ class UtilityG: NSObject {
                   defaultColor: .defaultCommandColor)
     }
 
-    @objc(invisibleColorInProfile:)
     static func invisibleColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "invisibleColor",
@@ -118,7 +106,6 @@ class UtilityG: NSObject {
                   defaultColor: .defaultInvisibleColor)
     }
 
-    @objc(highlightedBraceColorInProfile:)
     static func highlightedBraceColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "highlightedBraceColor",
@@ -126,7 +113,6 @@ class UtilityG: NSObject {
                   defaultColor: .defaultHighlightedBraceColor)
     }
 
-    @objc(enclosedContentBackgroundColorInProfile:)
     static func enclosedContentBackgroundColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "enclosedContentBackgroundColor",
@@ -134,7 +120,6 @@ class UtilityG: NSObject {
                   defaultColor: .defaultEnclosedContentBackgroundColor)
     }
 
-    @objc(flashingBackgroundColorInProfile:)
     static func flashingBackgroundColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "flashingBackgroundColor",
@@ -142,7 +127,6 @@ class UtilityG: NSObject {
                   defaultColor: .defaultFlashingBackgroundColor)
     }
 
-    @objc(consoleForegroundColorInProfile:)
     static func consoleForegroundColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "consoleForegroundColor",
@@ -150,7 +134,6 @@ class UtilityG: NSObject {
                   defaultColor: .defaultConsoleForegroundColor)
     }
 
-    @objc(consoleBackgroundColorInProfile:)
     static func consoleBackgroundColor(inProfile profile: NSDictionary) -> NSColor {
         readColor(from: profile,
                   lightModeKey: "consoleBackgroundColor",

@@ -3,7 +3,7 @@ import UserNotifications
 
 
 extension ControllerG {
-    @objc func sendUserNotification(status: ExitStatus) {
+    func sendUserNotification(status: ExitStatus) {
         let title: String
         guard let body = (self.currentProfile()["outputFile"] as? NSString)?.lastPathComponent else { return }
         

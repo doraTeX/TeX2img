@@ -29,7 +29,7 @@ private enum EncodingTag: Int {
 @objc(ControllerG)
 class ControllerG: NSObject, OutputController, DnDDelegate {
     @IBOutlet var sourceTextView: TeXTextView!
-    @objc var commandCompletionList: NSMutableString?
+    var commandCompletionList: NSMutableString?
 
     @IBOutlet private var profileController: ProfileController!
     @IBOutlet private var mainWindow: NSWindow!
@@ -597,7 +597,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         well.saveColor(to: lastColorDict)
     }
 
-    @objc func adoptProfile(_ aProfile: NSDictionary) {
+    func adoptProfile(_ aProfile: NSDictionary) {
         guard aProfile.count > 0 else { return }
         let keys = aProfile.allKeys.compactMap { $0 as? String }
 
@@ -821,7 +821,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    @objc func refreshOutputTextView(usingProfile aProfile: NSDictionary?) {
+    func refreshOutputTextView(usingProfile aProfile: NSDictionary?) {
         let profile = aProfile ?? currentProfile()
         refreshTextView(outputTextView,
                         foregroundColor: UtilityG.consoleForegroundColor(inProfile: profile),
@@ -860,7 +860,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         return true
     }
 
-    @objc func currentProfile() -> NSMutableDictionary {
+    func currentProfile() -> NSMutableDictionary {
         let currentProfile = NSMutableDictionary()
         do {
             currentProfile[TeX2imgVersionKey] = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")
@@ -1423,7 +1423,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         return nil
     }
 
-    @objc func importSource(fromFilePathOrPDFDocument input: Any, skipConfirm: Bool) -> Bool {
+    func importSource(fromFilePathOrPDFDocument input: Any, skipConfirm: Bool) -> Bool {
         NSApp.activate(ignoringOtherApps: true)
 
         var contents: String?
@@ -2269,39 +2269,39 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         preambleTextView.colorizeText()
     }
 
-    @objc func spaceCharacter() -> String {
+    func spaceCharacter() -> String {
         (spaceCharacterKindMatrix.selectedCell() as? NSButton)?.title ?? ""
     }
 
-    @objc func fullwidthSpaceCharacter() -> String {
+    func fullwidthSpaceCharacter() -> String {
         (fullwidthSpaceCharacterKindMatrix.selectedCell() as? NSButton)?.title ?? ""
     }
 
-    @objc func returnCharacter() -> String {
+    func returnCharacter() -> String {
         (returnCharacterKindMatrix.selectedCell() as? NSButton)?.title ?? ""
     }
 
-    @objc func tabCharacter() -> String {
+    func tabCharacter() -> String {
         (tabCharacterKindMatrix.selectedCell() as? NSButton)?.title ?? ""
     }
 
-    @objc func showTabCharacterEnabled() -> Bool {
+    func showTabCharacterEnabled() -> Bool {
         currentProfile().boolForKey(ShowTabCharacterKey)
     }
 
-    @objc func showNewLineCharacterEnabled() -> Bool {
+    func showNewLineCharacterEnabled() -> Bool {
         currentProfile().boolForKey(ShowNewLineCharacterKey)
     }
 
-    @objc func showFullwidthSpaceCharacterEnabled() -> Bool {
+    func showFullwidthSpaceCharacterEnabled() -> Bool {
         currentProfile().boolForKey(ShowFullwidthSpaceCharacterKey)
     }
 
-    @objc func showSpaceCharacterEnabled() -> Bool {
+    func showSpaceCharacterEnabled() -> Bool {
         currentProfile().boolForKey(ShowSpaceCharacterKey)
     }
 
-    @objc func invisibleColor() -> NSColor {
+    func invisibleColor() -> NSColor {
         UtilityG.invisibleColor(inProfile: currentProfile())
     }
 }

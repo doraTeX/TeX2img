@@ -1,6 +1,5 @@
 import Foundation
 
-@objc(UtilityC)
 class UtilityC: NSObject {
     private static let whichPath = "/usr/bin/which"
     private static let resourcesDir = "TeX2img.app/Contents/Resources"
@@ -35,16 +34,16 @@ class UtilityC: NSObject {
         return environment
     }
 
-    @objc static func printStdErr(_ message: String) {
+    static func printStdErr(_ message: String) {
         guard let data = message.data(using: .utf8) else { return }
         FileHandle.standardError.write(data)
     }
 
-    @objc static func suggestLatexOption() {
+    static func suggestLatexOption() {
         printStdErr("If you want to use another LaTeX compiler, specify it by using --latex option.\n")
     }
 
-    @objc static func checkWhich(_ cmdName: String) -> Bool {
+    static func checkWhich(_ cmdName: String) -> Bool {
         let task = Process()
         task.executableURL = URL(fileURLWithPath: whichPath)
         task.arguments = [cmdName]
@@ -56,7 +55,7 @@ class UtilityC: NSObject {
         return task.terminationStatus == 0
     }
 
-    @objc static func getPath(_ cmdName: String) -> String? {
+    static func getPath(_ cmdName: String) -> String? {
         let task = Process()
         let pipe = Pipe()
         task.executableURL = URL(fileURLWithPath: whichPath)

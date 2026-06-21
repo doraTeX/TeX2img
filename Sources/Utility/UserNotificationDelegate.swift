@@ -1,7 +1,7 @@
 import Cocoa
 import UserNotifications
 
-@objc class UserNotificationDelegate: NSObject, UNUserNotificationCenterDelegate, NSUserNotificationCenterDelegate {
+class UserNotificationDelegate: NSObject, UNUserNotificationCenterDelegate, NSUserNotificationCenterDelegate {
     public func userNotificationCenter(_ center: NSUserNotificationCenter, didDeliver: NSUserNotification) {
         
     }

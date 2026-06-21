@@ -1,13 +1,13 @@
 import Foundation
 
-@objc extension NSArray {
-    @objc func indexesOfTrueValue() -> IndexSet {
+extension NSArray {
+    func indexesOfTrueValue() -> IndexSet {
         indexesOfObjects { obj, _, _ in
             (obj as? NSNumber)?.boolValue == true
         }
     }
 
-    @objc func mapUsingBlock(_ block: @escaping (Any) -> Any) -> NSArray {
+    func mapUsingBlock(_ block: @escaping (Any) -> Any) -> NSArray {
         var result = [Any]()
         result.reserveCapacity(count)
         for item in self {

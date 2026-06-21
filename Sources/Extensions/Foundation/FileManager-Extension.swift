@@ -30,7 +30,7 @@ extension FileManager {
         }
         return values.isDirectory == false
     }
-    @objc var applicationSupportDirectory: String? {
+    var applicationSupportDirectory: String? {
         guard let executableName = Bundle.main.infoDictionary?["CFBundleExecutable"] as? String else { return nil }
         
         do {

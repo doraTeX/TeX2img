@@ -1,7 +1,7 @@
 import Quartz
 
 extension PDFPage {
-    @objc var pageBox: PDFPageBox {
+    var pageBox: PDFPageBox {
         return PDFPageBox(pdfPage: self)
     }
 }

@@ -17,7 +17,7 @@ extension NSPopover {
         show(relativeTo: newRect, of: view, preferredEdge: .maxX)
     }
 
-    @objc class func show(with controller: NSViewController,
+    class func show(with controller: NSViewController,
                           atRightOf button: NSButton,
                           view: NSView,
                           offsetX x: CGFloat,

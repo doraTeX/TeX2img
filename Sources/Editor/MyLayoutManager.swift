@@ -10,7 +10,7 @@ class MyLayoutManager: NSLayoutManager {
         self.typesetter = MyATSTypesetter()
     }
     
-    @objc init(controller: ControllerG) {
+    init(controller: ControllerG) {
         self.controller = controller
         super.init()
         self.typesetter = MyATSTypesetter()

@@ -10,7 +10,7 @@ class PDFPageBox: NSObject {
         super.init()
     }
     
-    @objc convenience init?(filePath path: String, page: Int) {
+    convenience init?(filePath path: String, page: Int) {
         guard page > 0 else { return nil }
         let index = page - 1
         guard let pdfPage = PDFDocument(filePath: path)?.page(at: index) else { return nil }
@@ -27,7 +27,7 @@ class PDFPageBox: NSObject {
     var trimBoxRect: NSRect { self.boxRect(.trimBox) }
     var artBoxRect: NSRect { self.boxRect(.artBox) }
     
-    @objc func bboxString(of box: CGPDFBox, hires: Bool, addHeader: Bool) -> String {
+    func bboxString(of box: CGPDFBox, hires: Bool, addHeader: Bool) -> String {
         let mediaBoxRect = self.mediaBoxRect
         var rect = self.boxRect(box).intersection(mediaBoxRect) // MediaBox でクリップ
         

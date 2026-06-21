@@ -1,6 +1,6 @@
 import AppKit
 
-@objc extension NSColor {
+extension NSColor {
     
     // MARK: - Light Mode Defaults
     static var defaultForegroundColorForLightMode: NSColor { NSColor.black }

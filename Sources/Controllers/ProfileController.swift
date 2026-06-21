@@ -15,12 +15,12 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     @IBOutlet private var saveAsTextField: NSTextField!
     @IBOutlet private var controllerG: ControllerG!
 
-    @objc func profileForName(_ profileName: String) -> NSMutableDictionary? {
+    func profileForName(_ profileName: String) -> NSMutableDictionary? {
         guard let targetIndex = profileNames.firstIndex(of: profileName) else { return nil }
         return NSMutableDictionary(dictionary: profiles[targetIndex])
     }
 
-    @objc func loadProfilesFromPlist() {
+    func loadProfilesFromPlist() {
         let defaults = UserDefaults.standard
         if let names = defaults.array(forKey: profileNamesKey) as? [String] {
             profileNames = names
@@ -30,18 +30,18 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         }
     }
 
-    @objc func initProfiles() {
+    func initProfiles() {
         profileNames = []
         profiles = []
     }
 
-    @objc func removeProfileForName(_ profileName: String) {
+    func removeProfileForName(_ profileName: String) {
         guard let targetIndex = profileNames.firstIndex(of: profileName) else { return }
         profileNames.remove(at: targetIndex)
         profiles.remove(at: targetIndex)
     }
 
-    @objc func updateProfile(_ aProfile: NSDictionary, forName profileName: String) {
+    func updateProfile(_ aProfile: NSDictionary, forName profileName: String) {
         if let targetIndex = profileNames.firstIndex(of: profileName) {
             profileNames[targetIndex] = profileName
             profiles[targetIndex] = aProfile
@@ -51,7 +51,7 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         }
     }
 
-    @objc func saveProfiles() {
+    func saveProfiles() {
         let defaults = UserDefaults.standard
         defaults.set(profileNames, forKey: profileNamesKey)
         defaults.set(profiles, forKey: profilesKey)
@@ -123,7 +123,7 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         saveAsTextField.stringValue = profileNames[selectedIndex]
     }
 
-    @objc func showProfileWindow() {
+    func showProfileWindow() {
         profilesWindow.makeKeyAndOrderFront(nil)
     }
 

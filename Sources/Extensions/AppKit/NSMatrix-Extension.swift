@@ -1,7 +1,7 @@
 import Cocoa
 
 extension NSMatrix {
-    @objc func setCellColor(_ color: NSColor) {
+    func setCellColor(_ color: NSColor) {
         for case let cell as NSButtonCell in self.cells {
             let title = NSMutableAttributedString(attributedString: cell.attributedTitle)
 
@@ -14,7 +14,7 @@ extension NSMatrix {
         }
     }
 
-    @objc func setCellFont(_ font: NSFont) {
+    func setCellFont(_ font: NSFont) {
         for case let cell as NSButtonCell in self.cells {
             let title = NSMutableAttributedString(attributedString: cell.attributedTitle)
 

@@ -26,7 +26,7 @@ extension Converter {
     /// - Parameters:
     ///   - bboxFilePath: gsが出力したbboxファイルのパス
     /// - Returns: @[Pageの行, BoundingBoxの行, HiResBoundingBoxの行, ... ]
-    @objc func extractBoundingBoxLines(from bboxFilePath: String) -> NSArray? {
+    func extractBoundingBoxLines(from bboxFilePath: String) -> NSArray? {
         guard let bboxFileData = Data(filePath: bboxFilePath) else { return nil }
         
         var result: [String] = []
@@ -72,7 +72,7 @@ extension Converter {
     ///   - epsPath: EPSのパス
     ///   - boundingBox: 新しいBoundingBoxの内容
     ///   - hiresBoundingBox: 新しいHiResBoundingBoxの内容
-    @objc func replaceBBoxOf(epsPath: String, boundingBox: String, hiresBoundingBox: String) {
+    func replaceBBoxOf(epsPath: String, boundingBox: String, hiresBoundingBox: String) {
         guard var epsData = Data(filePath: epsPath),
               let bboxData = boundingBox.data(using: .utf8),
               let hiresBboxData = hiresBoundingBox.data(using: .utf8) else { return }
@@ -89,7 +89,7 @@ extension Converter {
     }
 
     
-    @objc func enlargeBoundingBox(of epsPath: String) {
+    func enlargeBoundingBox(of epsPath: String) {
         
         enum BoundingBoxType {
             case boundingBox
@@ -235,7 +235,7 @@ extension Converter {
     ///   - outputPath: 出力PDFパス
     ///   - addMargin: 余白付与するか
     /// - Returns: 成功・失敗
-    @objc func generateCroppedPDF(of inputPath: String, page: Int, to outputPath: String, addMargin: Bool) -> Bool {
+    func generateCroppedPDF(of inputPath: String, page: Int, to outputPath: String, addMargin: Bool) -> Bool {
         guard let inputDoc = PDFDocument(filePath: inputPath) else { return false }
         let totalPageCount = inputDoc.pageCount
         let targetPages = (page==0) ? [Int](1...totalPageCount) : [page]

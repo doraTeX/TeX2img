@@ -1,7 +1,7 @@
 import Cocoa
 
 extension NSBitmapImageRep {
-    @objc func representation(usingType type: CFString, usingDPI dpi: Int) -> Data? {
+    func representation(usingType type: CFString, usingDPI dpi: Int) -> Data? {
         let prop = [
             kCGImageDestinationLossyCompressionQuality as String: 1.0,
             kCGImagePropertyDPIWidth as String: NSNumber(value: dpi),

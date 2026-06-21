@@ -1,21 +1,21 @@
 import CoreFoundation
 import Foundation
 
-@objc extension NSString {
-    @objc static func UUIDString() -> String {
+extension NSString {
+    static func UUIDString() -> String {
         let uuid = CFUUIDCreate(kCFAllocatorDefault)!
         return CFUUIDCreateString(kCFAllocatorDefault, uuid)! as String
     }
 
-    @objc var programPath: String {
+    var programPath: String {
         return components(separatedBy: " ").first ?? ""
     }
 
-    @objc var programName: String {
+    var programName: String {
         return (programPath as NSString).lastPathComponent
     }
 
-    @objc var argumentsString: String {
+    var argumentsString: String {
         var components = self.components(separatedBy: " ")
         if !components.isEmpty {
             components.removeFirst()
@@ -23,7 +23,7 @@ import Foundation
         return components.joined(separator: " ")
     }
 
-    @objc func pathStringByAppendingPageNumber(_ page: UInt) -> String {
+    func pathStringByAppendingPageNumber(_ page: UInt) -> String {
         if page == 1 { return self as String }
         let path = self as String
         let directory = (path as NSString).deletingLastPathComponent
@@ -33,32 +33,31 @@ import Foundation
         return (directory as NSString).appendingPathComponent("\(basename)-\(page)\(suffix)")
     }
 
-    @objc func stringByReplacingPathExtension(_ extension: String) -> String {
+    func stringByReplacingPathExtension(_ extension: String) -> String {
         return ((self as String as NSString).deletingPathExtension as NSString).appendingPathExtension(`extension`) ?? (self as String)
     }
 
-    @objc(stringByAppendingStringSeparetedBySpace:)
     func stringByAppendingStringSepareted(bySpace string: String) -> String {
         if string.isEmpty { return self as String }
         return "\(self) \(string)"
     }
 
-    @objc func stringByDeletingLastReturnCharacters() -> String {
+    func stringByDeletingLastReturnCharacters() -> String {
         guard let regex = try? NSRegularExpression(pattern: "^(.*?)(?:\\r|\\n|\\r\\n)*$", options: .dotMatchesLineSeparators) else { return self as String }
         let range = NSRange(location: 0, length: length)
         guard let match = regex.firstMatch(in: self as String, range: range) else { return self as String }
         return substring(with: match.range(at: 1))
     }
 
-    @objc func stringByQuotingWithDoubleQuotations() -> String {
+    func stringByQuotingWithDoubleQuotations() -> String {
         return "\"\(self)\""
     }
 
-    @objc func dataUsingUTF8StringEncoding() -> Data {
+    func dataUsingUTF8StringEncoding() -> Data {
         return (self as String).data(using: .utf8) ?? Data()
     }
 
-    @objc func numberOfComposedCharacters() -> UInt {
+    func numberOfComposedCharacters() -> UInt {
         let normalized = (self as String).precomposedStringWithCanonicalMapping
         var count: UInt = 0
         normalized.enumerateSubstrings(in: normalized.startIndex..<normalized.endIndex, options: [.byComposedCharacterSequences, .substringNotRequired]) { _, _, _, _ in
@@ -67,7 +66,7 @@ import Foundation
         return count
     }
 
-    @objc func utf32char() -> UTF32Char {
+    func utf32char() -> UTF32Char {
         var outputChar: UTF32Char = 0
         var usedLength = 0
         let success = getBytes(&outputChar,
@@ -83,12 +82,12 @@ import Foundation
         return outputChar
     }
 
-    @objc static func stringWithUTF32Char(_ character: UTF32Char) -> String {
+    static func stringWithUTF32Char(_ character: UTF32Char) -> String {
         var littleEndianCharacter = CFSwapInt32HostToLittle(character)
         return String(data: Data(bytes: &littleEndianCharacter, count: MemoryLayout<UTF32Char>.size), encoding: .utf32LittleEndian) ?? ""
     }
 
-    @objc static func stringWithAutoEncodingDetectionOfData(_ data: Data, detectedEncoding encoding: UnsafeMutablePointer<UInt>) -> String? {
+    static func stringWithAutoEncodingDetectionOfData(_ data: Data, detectedEncoding encoding: UnsafeMutablePointer<UInt>) -> String? {
         let stringEncodingList: [CFStringEncoding] = [
             0x0800_0100, // UTF-8
             0xFFFF_FFFF, // separator

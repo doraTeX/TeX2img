@@ -1,6 +1,6 @@
 import AppKit
 
-@objc extension NSColorWell {
+extension NSColorWell {
     func saveColor(to dictionary: NSMutableDictionary) {
         dictionary[self.description] = self.color
     }

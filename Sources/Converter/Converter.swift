@@ -106,7 +106,6 @@ class Converter: NSObject {
 
     // MARK: - Initialization
 
-    @objc(initWithProfile:)
     init(profile aProfile: NSDictionary) {
         super.init()
         pageCount = 1
@@ -175,12 +174,10 @@ class Converter: NSObject {
         bboxDictionary = [:]
     }
 
-    @objc(converterWithProfile:)
     static func converter(withProfile aProfile: NSDictionary) -> Converter {
         return Converter(profile: aProfile)
     }
 
-    @objc(convenienceInitWithProfileDictionary:)
     convenience init(profileDictionary: [String: Any]) {
         self.init(profile: profileDictionary as NSDictionary)
     }
@@ -316,7 +313,6 @@ class Converter: NSObject {
         return status
     }
 
-    @objc(bboxStringOfPdf:page:hires:)
     func bboxString(ofPdf pdfPath: String, page: Int, hires: Bool) -> String? {
         let key = String(format: "%@-%ld-%d", (pdfPath as NSString).lastPathComponent, page, hires ? 1 : 0)
 
@@ -1706,7 +1702,7 @@ class Converter: NSObject {
         return status
     }
 
-    @objc func deleteTemporaryFiles() {
+    func deleteTemporaryFiles() {
         guard deleteTmpFileFlag else { return }
 
         let outputFileName = (outputFilePath as NSString).lastPathComponent

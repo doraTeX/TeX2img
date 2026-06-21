@@ -1,6 +1,6 @@
 import AppKit
 
-@objc extension NSColor {
+extension NSColor {
     var serializedString: String {
         guard let export = self.usingColorSpace(.deviceRGB) else { return "0:0:0:1" }
         

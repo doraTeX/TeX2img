@@ -1,11 +1,11 @@
 import Quartz
 
 extension PDFDocument {
-    @objc convenience init?(filePath path: String) {
+    convenience init?(filePath path: String) {
         self.init(url: URL(fileURLWithPath: path))
     }
 
-    @objc convenience init?(merging paths: [String]) {
+    convenience init?(merging paths: [String]) {
         let docs = paths.map { PDFDocument(filePath: $0) }
         if docs.contains(nil) {
             return nil
@@ -43,12 +43,11 @@ extension PDFDocument {
     // 1ページのみの PDF の MediaBox の背景を指定された色で塗りつぶす（複数ページPDFは未対応）。
     // 日本語の埋め込みテキストは壊れてしまう。
     @discardableResult
-    @objc(writeToFilePath:)
     func writeToFilePath(_ path: String) -> Bool {
         return write(to: URL(fileURLWithPath: path))
     }
 
-    @objc class func fillBackground(of path: String, with fillColor: NSColor) {
+    class func fillBackground(of path: String, with fillColor: NSColor) {
         guard let doc = PDFDocument(filePath: path) else { return }
         let fillColorRef = fillColor.cgColor
 

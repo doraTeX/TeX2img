@@ -97,7 +97,18 @@ TeX2img と tex2img が Swift ソースを共有しているため、Xcode が `
 - `NSString-Conversion+CIDTable.swift` の実行時ロード化（`Resources/cidToUnicode.json`）
 - 一部 `@objc` 整理（`NSString-Conversion` 全メソッド、`Converter` プロパティ、`searchProgram`）
 
-### 未着手（優先度低）
+### `@objc` 整理（完了）
 
-- 残存 `@objc` の精査（`OutputController` プロトコル、`performSelector` ターゲット、XIB `IBAction`/`IBOutlet` に必要な分は維持）
-- `NSString-Unicode` 等の NSString 拡張の `@objc` 整理
+不要な `@objc` を削除。残存は以下の理由によるもののみ:
+
+| 残存箇所 | 理由 |
+|---|---|
+| `@objc(ControllerG)` / `@objc(TeXTextView)` / `@objc(ProfileController)` / `@objc(MyGlyphPopoverController)` / `@objc(Converter)` | XIB の `customClass` 接続 |
+| `@objc protocol OutputController` + 実装メソッド（ControllerG/C） | バックグラウンドスレッドからの動的ディスパッチ |
+| `performSelector` / `NSNotification` オブザーバターゲット | セレクタベースの呼び出し |
+| `@objc(compileAndConvertWith*)` on Converter | `Thread.detachNewThreadSelector` |
+| `@objc dynamic` on MyGlyphPopoverController | XIB バインディング |
+| `@objc enum ExitStatus` / `@objc protocol DnDDelegate` | OutputController / DnD 連携 |
+| `TeXTextView.textViewDidChangeSelection` | `Selector("textViewDidChangeSelection:")` 経由の通知 |
+
+削除済み: 全 Foundation/AppKit/PDF/NSString 拡張、Utility/UtilityC/UtilityG、Converter 初期化子・BBox ヘルパー、ControllerG のプロファイル/文字表示 API 等（約 120 箇所）
