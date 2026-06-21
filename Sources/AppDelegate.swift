@@ -1,5 +1,6 @@
 import Cocoa
 
+@main
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var observer: Any!
 

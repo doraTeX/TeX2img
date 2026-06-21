@@ -9,4 +9,14 @@ typedef NS_ENUM(NSInteger, ExitStatus) {
     ExitStatusAborted = 2
 };
 
+typedef enum {
+    FLASH = 0,
+    SOLID = 1,
+    NOHIGHLIGHT = 2
+} HighlightPattern;
+
+@protocol DnDDelegate <NSObject>
+- (void)textViewDroppedFile:(id)file;
+@end
+
 #endif /* typedef_h */

@@ -404,9 +404,7 @@ struct Tex2imgCommand: ParsableCommand {
             printCurrentStatus(inputFilePath: inputFile, profile: profile)
         }
 
-        guard let converter = Converter(profile: profile as! [String: Any]) else {
-            throw Tex2imgCLIError.failed
-        }
+        let converter = Converter(profileDictionary: profile as! [String: Any])
         let success = converter.compileAndConvert(withInputPath: inputFile)
         return success ? Int32(ExitStatus.succeeded.rawValue) : Int32(ExitStatus.failed.rawValue)
     }
