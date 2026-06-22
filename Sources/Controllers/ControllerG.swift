@@ -207,7 +207,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private var sourceFont: NSFont?
     private var userNotificationDelegate: UserNotificationDelegate?
     private var notificationObservers = [NSObjectProtocol]()
-    private var outputDataObserver: NSObjectProtocol?
 
     private func observeNotification(forName name: Notification.Name,
                                      object: Any? = nil,
@@ -299,17 +298,35 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         task.arguments = ["-c", cmdline]
         taskKilled = false
 
-        pipe.fileHandleForReading.readInBackgroundAndNotify()
+        let handle = pipe.fileHandleForReading
+        handle.readabilityHandler = { [weak self] source in
+            guard let self else {
+                source.readabilityHandler = nil
+                return
+            }
+            let data = self.readPipeChunk(from: source)
+            if data.isEmpty {
+                source.readabilityHandler = nil
+                return
+            }
+            if let str = String(data: data, encoding: .utf8) {
+                self.appendOutputAndScroll(str, quiet: quiet)
+            }
+        }
 
         do {
             try task.run()
         } catch {
+            handle.readabilityHandler = nil
+            outputPipe = nil
             return false
         }
 
         task.waitUntilExit()
+        handle.readabilityHandler = nil
         performOnMainThread {
-            self.drainRemainingOutputPipe()
+            self.flushPipe(handle)
+            self.outputPipe = nil
         }
         appendOutputAndScroll("\n", quiet: quiet)
         if exitCurrentThreadIfTaskKilled() { return false }
@@ -364,20 +381,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     func prepareOutputTextView() {
-        outputDataObserver = NotificationCenter.default.addObserver(
-            forName: FileHandle.readCompletionNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] notification in
-            self?.readOutputData(notification)
-        }
     }
 
     func releaseOutputTextView() {
-        if let outputDataObserver {
-            NotificationCenter.default.removeObserver(outputDataObserver)
-            self.outputDataObserver = nil
-        }
     }
 
     private func presentOutputWindow() {
@@ -1372,9 +1378,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     deinit {
         notificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
-        if let outputDataObserver {
-            NotificationCenter.default.removeObserver(outputDataObserver)
-        }
     }
 
     private func closeOtherWindows() {
@@ -1400,20 +1403,22 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         showMainWindow()
     }
 
-    private func drainRemainingOutputPipe() {
-        guard let outputPipe else { return }
-        var data = outputPipe.fileHandleForReading.availableData
-        while !data.isEmpty {
-            if let str = String(data: data, encoding: .utf8) {
-                appendOutputOnMainThread(str)
-            }
-            data = outputPipe.fileHandleForReading.availableData
+    private func readPipeChunk(from handle: FileHandle) -> Data {
+        if #available(macOS 10.15.4, *) {
+            return (try? handle.read(upToCount: 65_536)) ?? Data()
         }
+        return handle.availableData
     }
 
-    private func readOutputData(_ notification: Notification) {
-        drainRemainingOutputPipe()
-        outputPipe?.fileHandleForReading.readInBackgroundAndNotify()
+    private func flushPipe(_ handle: FileHandle) {
+        let data: Data
+        if #available(macOS 10.15.4, *) {
+            data = (try? handle.readToEnd()) ?? Data()
+        } else {
+            data = handle.readDataToEndOfFile()
+        }
+        guard !data.isEmpty, let str = String(data: data, encoding: .utf8) else { return }
+        appendOutputOnMainThread(str)
     }
 
     // MARK: - Import / Export
