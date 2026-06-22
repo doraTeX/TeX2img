@@ -6,6 +6,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var controllerG: ControllerG!
 
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+        true
+    }
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         if #available(macOS 10.14, *) {
             // アウトプットウィンドウだけはライトモード・ダークモードの変更検出を自力でできないので，AppDelegate で変更を検知して ControllerG に対応を依頼する
