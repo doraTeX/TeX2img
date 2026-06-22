@@ -607,6 +607,32 @@ class Converter: NSObject {
         return gif89aData as Data
     }
 
+    private func mainScreenBackingScaleFactor() -> CGFloat {
+        if Thread.isMainThread {
+            return NSScreen.main?.backingScaleFactor ?? 1.0
+        }
+        var factor: CGFloat = 1.0
+        DispatchQueue.main.sync {
+            factor = NSScreen.main?.backingScaleFactor ?? 1.0
+        }
+        return factor
+    }
+
+    private func copyFilePathsToPasteboard(_ paths: [String]) {
+        guard !paths.isEmpty else { return }
+        let urls = paths.map { NSURL(fileURLWithPath: $0) }
+        let work = {
+            let pboard = NSPasteboard.general
+            pboard.declareTypes([.fileURL], owner: nil)
+            pboard.clearContents()
+            pboard.writeObjects(urls)
+        }
+        if Thread.isMainThread {
+            work()
+        } else {
+            DispatchQueue.main.sync(execute: work)
+        }
+    }
 
     private func pdf2image(_ pdfFilePath: String, outputFileName: String, page: UInt, crop: Bool) -> Bool {
         let extension_ = outputFileName.pathExtension.lowercased()
@@ -657,7 +683,7 @@ class Converter: NSObject {
             thisTopMargin *= CGFloat(resolutionLevel)
             thisBottomMargin *= CGFloat(resolutionLevel)
         } else {
-            let factor = NSScreen.main?.backingScaleFactor ?? 1.0
+            let factor = mainScreenBackingScaleFactor()
             thisLeftMargin /= factor
             thisRightMargin /= factor
             thisTopMargin /= factor
@@ -1574,10 +1600,7 @@ class Converter: NSObject {
                 }
 
                 if copyToClipboard {
-                    let pboard = NSPasteboard.general
-                    pboard.declareTypes([.fileURL], owner: nil)
-                    pboard.clearContents()
-                    pboard.writeObjects([NSURL(fileURLWithPath: outputFilePath)])
+                    copyFilePathsToPasteboard([outputFilePath])
                 }
             }
         } else {
@@ -1604,10 +1627,7 @@ class Converter: NSObject {
             }
 
             if copyToClipboard && !destURLs.isEmpty {
-                let pboard = NSPasteboard.general
-                pboard.declareTypes([.fileURL], owner: nil)
-                pboard.clearContents()
-                pboard.writeObjects(destURLs)
+                copyFilePathsToPasteboard(destURLs.compactMap { $0.path })
             }
         }
 
