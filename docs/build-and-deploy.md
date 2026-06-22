@@ -271,6 +271,36 @@ ls -la ~/Developer/DerivedData/TeX2img/Build/Products/Debug/TeX2img.app/Contents
 
 網羅的な変換テストは `te st/` ディレクトリを参照（`te st/verified-tests.md`）。
 
+## pdftops の Universal 化（Apple Silicon 対応）
+
+`Resources/pdftops/` は Poppler **20.09.0** の x86_64 バンドルです。Apple Silicon ネイティブ対応には arm64 スライスを追加し、32 個の Mach-O すべてを `lipo` で結合します。
+
+```bash
+# 依存: cmake pkg-config dylibbundler + Poppler 依存ライブラリ（Homebrew 等）
+scripts/build-pdftops-universal.sh all
+scripts/build-pdftops-universal.sh install   # Resources/pdftops を置換（自動バックアップ）
+```
+
+### arm64 の最低 macOS 版（重要）
+
+arm64 スライスは **`ARM64_MIN_OS=11.0`（macOS 11+）** を既定とします。  
+`MACOSX_DEPLOYMENT_TARGET` / `CMAKE_OSX_DEPLOYMENT_TARGET` を指定しないと、**ビルドホストの OS 版**（例: 15.x / 26.x）が `minos` に入り、動作要件が不必要に厳しくなります。
+
+`mudraw` や `TeX2img` 本体の arm64 スライスも同様に `minos 11.0` です（x86_64 は 10.9 / 10.13 のまま）。
+
+検証:
+
+```bash
+scripts/verify-universal.sh Resources/pdftops
+# またはビルド後の universal ツリー
+scripts/verify-universal.sh build/pdftops-build/universal
+```
+
+`verify-universal.sh` は次を確認します。
+
+- 全 Mach-O が universal（arm64 + x86_64）であること
+- arm64 スライスの `minos` が **11.0** であること（11.0 より大きい値はエラー）
+
 ## スクリプト一覧
 
 | スクリプト | 説明 |
@@ -286,6 +316,8 @@ ls -la ~/Developer/DerivedData/TeX2img/Build/Products/Debug/TeX2img.app/Contents
 | `scripts/publish-gui.sh` | DMG の Sparkle Appcast 更新 |
 | `scripts/release-gui.sh` | Archive → 公証 → DMG → Appcast の一括リリース |
 | `scripts/ExportOptions.plist` | `-exportArchive` 用（Developer ID） |
+| `scripts/build-pdftops-universal.sh` | pdftops arm64 ビルド + lipo で universal 化 |
+| `scripts/verify-universal.sh` | Mach-O の universal / arm64 min OS 検証 |
 
 ## トラブルシューティング
 
@@ -296,3 +328,5 @@ ls -la ~/Developer/DerivedData/TeX2img/Build/Products/Debug/TeX2img.app/Contents
 | リンクエラー・変なシンボル | `safe-build.sh` の順序付きビルドを使う。`xcodebuild -jobs 1` |
 | `deploy-gui.sh` が DMG テンプレートで失敗 | `../TeX2imgDmg/Disk Image.dmg` を用意し、最新 app を反映 |
 | テストで pdftops が動かない | バンドル内 `pdftops` の codesign。`te st/run_verified_tests.py` 参照 |
+| Apple Silicon で pdftops が動かない | `Resources/pdftops` が x86_64 のみ。`build-pdftops-universal.sh` で universal 化 |
+| arm64 pdftops の min OS が高すぎる | `ARM64_MIN_OS=11.0` を指定して再ビルド。`verify-universal.sh` で確認 |
