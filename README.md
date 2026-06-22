@@ -6,7 +6,7 @@
 - EPS ファイル（フォントをアウトライン化）
 - PDF ファイル（フォントをアウトライン化 または テキストを保持）
 - SVG ファイル（フォントをアウトライン化，かつテキスト保持も可能）
-- [SMIL](https://developer.mozilla.org/ja/docs/Web/SVG/SVG_animation_with_SMIL) を利用したSVGによるベクターグラフィックスアニメーション（フォントをアウトライン化）[[サンプル]](http://island.geocities.jp/loveinequality/oscillation.svgz)
+- [SMIL](https://developer.mozilla.org/ja/docs/Web/SVG/SVG_animation_with_SMIL) を利用したSVGによるベクターグラフィックスアニメーション（フォントをアウトライン化）[[サンプル]](sample/oscillation.svg)
 - SVGZ ファイル（圧縮SVG形式）
 - EMF ファイル（フォントをアウトライン化）※Windows版のみ
 
