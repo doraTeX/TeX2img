@@ -11,6 +11,8 @@ private let eaKey = "com.loveinequality.TeX2img"
 private let targetExtensions = ["eps", "pdf", "svg", "svgz", "jpg", "png", "gif", "tiff", "bmp"]
 private let importExtensions = ["eps", "pdf", "svg", "svgz", "jpg", "png", "gif", "tiff", "bmp", "tex"]
 private let inputExtensions = ["tex", "pdf", "ps", "eps"]
+private let outputFlushInterval: TimeInterval = 0.05
+private let maximumOutputTextLength = 200_000
 private enum InputMethod: Int {
     case direct = 0
     case fromFile = 1
@@ -207,6 +209,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private var sourceFont: NSFont?
     private var userNotificationDelegate: UserNotificationDelegate?
     private var notificationObservers = [NSObjectProtocol]()
+    private let outputBufferLock = NSLock()
+    private var pendingOutput = ""
+    private var outputFlushScheduled = false
 
     private func observeNotification(forName name: Notification.Name,
                                      object: Any? = nil,
@@ -325,6 +330,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         task.waitUntilExit()
         handle.readabilityHandler = nil
         performOnMainThread {
+            self.flushPendingOutputOnMainThread()
             self.flushPipe(handle)
             self.outputPipe = nil
         }
@@ -355,35 +361,88 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         textView.backgroundColor = backgroundColor!
         textView.insertionPointColor = cursorColor!
 
-        let entireRange = NSRange(location: 0, length: textView.string.count)
+        let entireRange = NSRange(location: 0, length: textView.string.nsLength)
         textView.textStorage?.setAttributes([
             .foregroundColor: foregroundColor!,
             .backgroundColor: backgroundColor!
         ], range: entireRange)
     }
 
-    private func appendOutputOnMainThread(_ str: String) {
-        outputTextView.textStorage?.mutableString.append(str)
-
+    private func outputTextAttributes() -> [NSAttributedString.Key: Any] {
         let profile = currentProfile()
-        refreshTextView(outputTextView,
-                        foregroundColor: UtilityG.consoleForegroundColor(inProfile: profile),
-                        backgroundColor: UtilityG.consoleBackgroundColor(inProfile: profile),
-                        cursorColor: UtilityG.cursorColor(inProfile: profile))
+        var attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UtilityG.consoleForegroundColor(inProfile: profile) ?? .defaultForegroundColor,
+            .backgroundColor: UtilityG.consoleBackgroundColor(inProfile: profile) ?? .defaultBackgroundColor
+        ]
+        if let sourceFont {
+            attributes[.font] = sourceFont
+        }
+        return attributes
+    }
 
-        outputTextView.scrollRangeToVisible(NSRange(location: outputTextView.string.count, length: 0))
-        outputTextView.font = sourceFont
+    private func appendOutputOnMainThread(_ str: String) {
+        guard !str.isEmpty else { return }
+
+        if let textStorage = outputTextView.textStorage {
+            textStorage.beginEditing()
+            textStorage.append(NSAttributedString(string: str, attributes: outputTextAttributes()))
+            if textStorage.length > maximumOutputTextLength {
+                textStorage.deleteCharacters(in: NSRange(location: 0, length: textStorage.length - maximumOutputTextLength))
+            }
+            textStorage.endEditing()
+        } else {
+            outputTextView.string += str
+            if outputTextView.string.nsLength > maximumOutputTextLength {
+                outputTextView.string = outputTextView.string.substring(from: outputTextView.string.nsLength - maximumOutputTextLength)
+            }
+        }
+
+        outputTextView.scrollRangeToVisible(NSRange(location: outputTextView.string.nsLength, length: 0))
+    }
+
+    private func flushPendingOutputOnMainThread() {
+        outputBufferLock.lock()
+        let str = pendingOutput
+        pendingOutput = ""
+        outputFlushScheduled = false
+        outputBufferLock.unlock()
+
+        appendOutputOnMainThread(str)
+    }
+
+    private func resetPendingOutput() {
+        outputBufferLock.lock()
+        pendingOutput = ""
+        outputFlushScheduled = false
+        outputBufferLock.unlock()
     }
 
     func appendOutputAndScroll(_ str: String, quiet: Bool) {
         guard !quiet, !str.isEmpty else { return }
-        performOnMainThread { self.appendOutputOnMainThread(str) }
+
+        var shouldScheduleFlush = false
+        outputBufferLock.lock()
+        pendingOutput += str
+        if !outputFlushScheduled {
+            outputFlushScheduled = true
+            shouldScheduleFlush = true
+        }
+        outputBufferLock.unlock()
+
+        if shouldScheduleFlush {
+            DispatchQueue.main.asyncAfter(deadline: .now() + outputFlushInterval) { [weak self] in
+                self?.flushPendingOutputOnMainThread()
+            }
+        }
     }
 
     func prepareOutputTextView() {
     }
 
     func releaseOutputTextView() {
+        performOnMainThread {
+            self.flushPendingOutputOnMainThread()
+        }
     }
 
     private func presentOutputWindow() {
@@ -1138,6 +1197,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     // MARK: - Lifecycle / notifications
 
     override func awakeFromNib() {
+        outputTextView.layoutManager?.allowsNonContiguousLayout = true
+
         userNotificationDelegate = UserNotificationDelegate()
         if #available(macOS 10.14, *) {
             UNUserNotificationCenter.current().delegate = userNotificationDelegate
@@ -1428,6 +1489,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             data = handle.readDataToEndOfFile()
         }
         guard !data.isEmpty, let str = String(data: data, encoding: .utf8) else { return }
+        flushPendingOutputOnMainThread()
         appendOutputOnMainThread(str)
     }
 
@@ -2170,6 +2232,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         profile[ControllerKey] = self
 
         converter = Converter.converter(withProfile: profile)
+        resetPendingOutput()
         outputTextView.textStorage?.mutableString.setString("")
         printCurrentStatus(profile)
 
