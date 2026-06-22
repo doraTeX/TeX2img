@@ -59,5 +59,15 @@ if [[ -f "$STANDALONE" ]]; then
     fi
 fi
 
+PDFTOPS="$APP/Contents/Resources/pdftops/pdftops"
+if [[ -f "$PDFTOPS" ]]; then
+    pdftops_cs="$(codesign -dv --verbose=4 "$PDFTOPS" 2>&1 || true)"
+    if ! printf '%s\n' "$pdftops_cs" | grep -q 'flags=0x10000(runtime)'; then
+        echo "ERROR: pdftops lacks Hardened Runtime (notarization will fail): $PDFTOPS" >&2
+        echo "Rebuild with a Developer ID identity so sign-bundled-tools.sh runs." >&2
+        exit 1
+    fi
+fi
+
 echo "OK: $CUI_IN_BUNDLE"
 echo "    $BUNDLE_VERSION"

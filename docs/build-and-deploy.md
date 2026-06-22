@@ -316,6 +316,7 @@ scripts/verify-universal.sh Resources/pdftops
 | 公証で認証エラー | `NOTARY_KEYCHAIN_PROFILE` または `NOTARY_APPLE_ID` 等を設定 |
 | DMG はできたが Gatekeeper で弾かれる | `release-gui.sh` で公証済み DMG を配布しているか確認 |
 | Apple Silicon で pdftops が動かない | `build-pdftops-universal.sh` で universal 化 |
+| 公証で `pdftops` must be rebuilt with Hardened Runtime | Archive 前に Release ビルドを実行。ビルドフェーズ **Sign Bundled Tools** が `pdftops` と dylib を再署名する |
 
 ---
 
