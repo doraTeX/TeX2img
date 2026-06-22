@@ -832,9 +832,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
         switch InputMethod(rawValue: aProfile.integerForKey(InputMethodKey)) ?? .direct {
         case .direct:
-            sourceSettingChanged(directInputButton)
+            sourceSettingChanged(directInputButton!)
         case .fromFile:
-            sourceSettingChanged(inputSourceFileButton)
+            sourceSettingChanged(inputSourceFileButton!)
         }
     }
 
@@ -1173,7 +1173,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
         observeNotification(forName: NSControl.textDidChangeNotification, object: tabWidthTextField) { [weak self] _ in
             guard let self else { return }
-            self.refreshTextView(self.tabWidthTextField)
+            self.refreshTextView(self.tabWidthTextField!)
         }
         observeNotification(forName: NSControl.textDidChangeNotification, object: outputFileTextField) { [weak self] _ in
             self?.outputFilePathChanged(nil)
@@ -1185,7 +1185,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         lastActiveWindow = mainWindow
 
         colorPalleteColorWell.color = .red
-        colorPalleteColorSet(colorPalleteColorWell)
+        colorPalleteColorSet(colorPalleteColorWell!)
 
         autoDetectionTargetMatrix.setCellColor(.textColor)
         spaceCharacterKindMatrix.setCellColor(.textColor)
@@ -1443,7 +1443,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         if !parts[1].isEmpty {
             sourceTextView.replaceEntireContents(with: parts[1])
         }
-        sourceSettingChanged(directInputButton)
+        sourceSettingChanged(directInputButton!)
     }
 
     private func stringEncoding(from option: String?) -> String.Encoding {
@@ -1541,7 +1541,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         openPanel.allowedFileTypes = importExtensions
         openPanel.beginSheetModal(for: mainWindow) { returnCode in
             if returnCode == .OK, let path = openPanel.url?.path {
-                self.importSource(fromFilePathOrPDFDocument: path, skipConfirm: false)
+                _ = self.importSource(fromFilePathOrPDFDocument: path, skipConfirm: false)
             }
         }
     }
@@ -1573,7 +1573,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     func textViewDroppedFile(_ file: Any) {
-        importSource(fromFilePathOrPDFDocument: file, skipConfirm: false)
+        _ = importSource(fromFilePathOrPDFDocument: file, skipConfirm: false)
     }
 
     // MARK: - Color palette
@@ -2018,7 +2018,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         let engineName = templateName.lowercased().components(separatedBy: " ").first ?? ""
         let dviDriverName = templateName.range(of: "dvips") == nil ? "dvipdfmx" : "dvips"
 
-        var latexPath = searchProgram(engineName) ?? ""
+        let latexPath = searchProgram(engineName) ?? ""
         if latexPath.isEmpty { showNotFoundError(engineName) }
 
         var dviDriverPath = searchProgram(dviDriverName) ?? ""
@@ -2030,7 +2030,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             dviDriverPath += " -Ppdf"
         }
 
-        var gsPath = searchProgram("gs") ?? ""
+        let gsPath = searchProgram("gs") ?? ""
         if gsPath.isEmpty { showNotFoundError("Ghostscript") }
 
         latexPathTextField.stringValue = latexPath
@@ -2165,7 +2165,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         case .direct:
             let body = sourceTextView.textStorage?.string ?? ""
             DispatchQueue.global(qos: .userInitiated).async { [converter] in
-                converter?.compileAndConvert(withBody: body)
+                _ = converter?.compileAndConvert(withBody: body)
             }
         case .fromFile:
             let inputSourceFilePath = profile.stringForKey(InputSourceFilePathKey)?.standardizingPath ?? ""
@@ -2173,7 +2173,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                 let ext = inputSourceFilePath.pathExtension
                 if inputExtensions.contains(ext) {
                     DispatchQueue.global(qos: .userInitiated).async { [converter] in
-                        converter?.compileAndConvert(withInputPath: inputSourceFilePath)
+                        _ = converter?.compileAndConvert(withInputPath: inputSourceFilePath)
                     }
                 } else {
                     UtilityG.runErrorPanel(message: String(format: NSLocalizedString("inputFileTypeErrorMsg", comment: ""), inputSourceFilePath))
@@ -2325,19 +2325,19 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     func spaceCharacter() -> String {
-        (spaceCharacterKindMatrix.selectedCell() as? NSButton)?.title ?? ""
+        spaceCharacterKindMatrix.selectedCell()?.title ?? ""
     }
 
     func fullwidthSpaceCharacter() -> String {
-        (fullwidthSpaceCharacterKindMatrix.selectedCell() as? NSButton)?.title ?? ""
+        fullwidthSpaceCharacterKindMatrix.selectedCell()?.title ?? ""
     }
 
     func returnCharacter() -> String {
-        (returnCharacterKindMatrix.selectedCell() as? NSButton)?.title ?? ""
+        returnCharacterKindMatrix.selectedCell()?.title ?? ""
     }
 
     func tabCharacter() -> String {
-        (tabCharacterKindMatrix.selectedCell() as? NSButton)?.title ?? ""
+        tabCharacterKindMatrix.selectedCell()?.title ?? ""
     }
 
     func showTabCharacterEnabled() -> Bool {
