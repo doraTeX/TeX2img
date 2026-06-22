@@ -8,6 +8,13 @@
 # Environment:
 #   ARM64_MIN_OS=11.0   — arm64 スライスがこの版以上を要求していないか（上限も同値で検査）
 #   REQUIRE_UNIVERSAL=1 — thin バイナリをエラーにする（デフォルト 1）
+#   X86_REFERENCE_DIR   — x86 側に存在しない arm64-only ヘルパーを許容する参照ツリー
+#                         （未指定時は Resources/pdftops.backup.* の最新を自動採用）
+#
+# Thin で許容する例外:
+#   - libswift*.dylib (x86_64 のみ) — Intel / 低い macOS 向けレガシー Swift 同梱。
+#     arm64 は /usr/lib/swift を参照するため同梱不要。将来の最低 OS 引き上げで消える。
+#   - pdftops-lib 内の arm64-only ヘルパー — X86_REFERENCE_DIR に無いもの
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -19,6 +26,10 @@ TARGET="${1:-}"
 ARM64_MIN_OS="${ARM64_MIN_OS:-11.0}"
 REQUIRE_UNIVERSAL="${REQUIRE_UNIVERSAL:-1}"
 
+if [[ -z "${X86_REFERENCE_DIR:-}" ]]; then
+    X86_REFERENCE_DIR="$(find "$PROJECT_DIR/Resources" -maxdepth 1 -type d -name 'pdftops.backup.*' 2>/dev/null | sort | tail -1)"
+fi
+
 if [[ -z "$TARGET" ]]; then
     DERIVED_DATA="${DERIVED_DATA:-$HOME/Developer/DerivedData/TeX2img}"
     TARGET="$DERIVED_DATA/Build/Products/Release/TeX2img.app"
@@ -29,25 +40,46 @@ is_macho() {
     file -b "$1" 2>/dev/null | grep -q Mach-O
 }
 
+minos_from_macho() {
+    local file="$1"
+    local minos=""
+    if minos="$(vtool -show-build "$file" 2>/dev/null | awk '/minos/{print $2; exit}')"; then
+        :
+    elif minos="$(xcrun llvm-otool -l "$file" 2>/dev/null | awk '/version/{print $2; exit}')"; then
+        :
+    fi
+    [[ -n "$minos" ]] || return 1
+    echo "$minos"
+}
+
 minos_for_slice() {
     local file="$1"
     local arch="$2"
-    local thin
+    local thin=""
+    local probe="$file"
+
     thin="$(mktemp -t "verify-${arch}.XXXXXX")"
-    if ! lipo -thin "$arch" "$file" -output "$thin" 2>/dev/null; then
-        rm -f "$thin"
-        return 1
+    if lipo -thin "$arch" "$file" -output "$thin" 2>/dev/null; then
+        probe="$thin"
+    else
+        local sole
+        sole="$(arch_list "$file")"
+        [[ "$sole" == "$arch" ]] || { rm -f "$thin"; return 1; }
     fi
 
     local minos=""
-    if minos="$(vtool -show-build "$thin" 2>/dev/null | awk '/minos/{print $2; exit}')"; then
-        :
-    elif minos="$(xcrun llvm-otool -l "$thin" 2>/dev/null | awk '/version/{print $2; exit}')"; then
-        :
-    fi
+    minos="$(minos_from_macho "$probe")" || { rm -f "$thin"; return 1; }
     rm -f "$thin"
-    [[ -n "$minos" ]] || return 1
     echo "$minos"
+}
+
+is_legacy_swift_lib() {
+    local rel="$1"
+    local has_arm64="$2"
+    local has_x86="$3"
+    local base
+    base="$(basename "$rel")"
+    [[ "$has_arm64" == 0 && "$has_x86" == 1 && "$base" == libswift*.dylib ]]
 }
 
 arch_list() {
@@ -94,12 +126,15 @@ errors=0
 checked=0
 universal_ok=0
 thin_ok=0
+legacy_swift_ok=0
+arm64_helper_ok=0
 arm64_minos_pass=0
 arm64_minos_bad=0
 
 echo "=== Universal / min OS verification ==="
 echo "Target:         $TARGET"
 echo "ARM64_MIN_OS:   $ARM64_MIN_OS"
+[[ -n "${X86_REFERENCE_DIR:-}" ]] && echo "X86 reference:  $X86_REFERENCE_DIR"
 echo ""
 
 while IFS= read -r file; do
@@ -122,10 +157,21 @@ while IFS= read -r file; do
         thin_ok=$((thin_ok + 1))
         status="thin($archs)"
         if [[ "$REQUIRE_UNIVERSAL" == "1" ]]; then
+            if is_legacy_swift_lib "$rel" "$has_arm64" "$has_x86"; then
+                legacy_swift_ok=$((legacy_swift_ok + 1))
+                echo "  OK  $rel — x86_64-only legacy Swift embed (arm64 uses /usr/lib/swift)"
+                continue
+            fi
             x86_ref="${X86_REFERENCE_DIR:-}"
             if [[ -n "$x86_ref" && "$has_arm64" == 1 && "$has_x86" == 0 \
                   && ! -f "$x86_ref/$rel" ]]; then
-                echo "  OK  $rel — arm64-only helper (not in x86 reference)"
+                arm64_helper_ok=$((arm64_helper_ok + 1))
+                minos="$(minos_for_slice "$file" arm64 || true)"
+                if [[ -n "$minos" ]]; then
+                    echo "  OK  $rel — arm64-only helper (not in x86 reference) arm64_min=$minos"
+                else
+                    echo "  OK  $rel — arm64-only helper (not in x86 reference)"
+                fi
                 continue
             fi
             echo "ERROR: not universal: $rel ($archs)" >&2
@@ -176,6 +222,8 @@ echo "=== Summary ==="
 echo "Mach-O checked:     $checked"
 echo "Universal:          $universal_ok"
 echo "Thin:               $thin_ok"
+echo "Legacy Swift embed: $legacy_swift_ok"
+echo "arm64-only helper:  $arm64_helper_ok"
 echo "arm64 min OS OK:    $arm64_minos_pass"
 echo "arm64 min OS error: $arm64_minos_bad"
 
