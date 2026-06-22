@@ -1474,6 +1474,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         return nil
     }
 
+    @discardableResult
     func importSource(fromFilePathOrPDFDocument input: Any, skipConfirm: Bool) -> Bool {
         NSApp.activate(ignoringOtherApps: true)
 
@@ -1541,7 +1542,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         openPanel.allowedFileTypes = importExtensions
         openPanel.beginSheetModal(for: mainWindow) { returnCode in
             if returnCode == .OK, let path = openPanel.url?.path {
-                _ = self.importSource(fromFilePathOrPDFDocument: path, skipConfirm: false)
+                self.importSource(fromFilePathOrPDFDocument: path, skipConfirm: false)
             }
         }
     }
@@ -1573,7 +1574,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     func textViewDroppedFile(_ file: Any) {
-        _ = importSource(fromFilePathOrPDFDocument: file, skipConfirm: false)
+        importSource(fromFilePathOrPDFDocument: file, skipConfirm: false)
     }
 
     // MARK: - Color palette
@@ -2165,7 +2166,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         case .direct:
             let body = sourceTextView.textStorage?.string ?? ""
             DispatchQueue.global(qos: .userInitiated).async { [converter] in
-                _ = converter?.compileAndConvert(withBody: body)
+                converter?.compileAndConvert(withBody: body)
             }
         case .fromFile:
             let inputSourceFilePath = profile.stringForKey(InputSourceFilePathKey)?.standardizingPath ?? ""
@@ -2173,7 +2174,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                 let ext = inputSourceFilePath.pathExtension
                 if inputExtensions.contains(ext) {
                     DispatchQueue.global(qos: .userInitiated).async { [converter] in
-                        _ = converter?.compileAndConvert(withInputPath: inputSourceFilePath)
+                        converter?.compileAndConvert(withInputPath: inputSourceFilePath)
                     }
                 } else {
                     UtilityG.runErrorPanel(message: String(format: NSLocalizedString("inputFileTypeErrorMsg", comment: ""), inputSourceFilePath))

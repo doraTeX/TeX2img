@@ -1819,6 +1819,7 @@ class Converter: NSObject {
         try? fileManager.removeItem(atPath: "\(basePath).synctex.gz(busy)")
     }
 
+    @discardableResult
     func compileAndConvert(withSource texSourceStr: String) -> Bool {
         let tempTeXFilePath = String(format: "%@.tex", workingDirectory.appendingPathComponent(tempFileBaseName))
 
@@ -1831,6 +1832,7 @@ class Converter: NSObject {
         return compileAndConvertWithCheck()
     }
 
+    @discardableResult
     func compileAndConvert(withBody texBodyStr: String) -> Bool {
         autoreleasepool {
             let texSourceStr = String(format: "%@\n\\begin{document}\n%@\n\\end{document}", preambleStr, texBodyStr)
@@ -1838,6 +1840,7 @@ class Converter: NSObject {
         }
     }
 
+    @discardableResult
     func compileAndConvert(withInputPath sourcePath: String) -> Bool {
         autoreleasepool {
             additionalInputPath = Utility.getFullPath(sourcePath)?.deletingLastPathComponent
