@@ -371,8 +371,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private func outputTextAttributes() -> [NSAttributedString.Key: Any] {
         let profile = currentProfile()
         var attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UtilityG.consoleForegroundColor(inProfile: profile) ?? .defaultForegroundColor,
-            .backgroundColor: UtilityG.consoleBackgroundColor(inProfile: profile) ?? .defaultBackgroundColor
+            .foregroundColor: UtilityG.consoleForegroundColor(inProfile: profile),
+            .backgroundColor: UtilityG.consoleBackgroundColor(inProfile: profile)
         ]
         if let sourceFont {
             attributes[.font] = sourceFont
