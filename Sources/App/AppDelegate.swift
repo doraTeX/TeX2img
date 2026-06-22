@@ -21,7 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func application(_ sender: NSApplication, openFiles filenames: [String]) {
         guard let filename = filenames.first else { return }
-        controllerG.importSource(fromFilePathOrPDFDocument: filename, skipConfirm: false)
+        _ = controllerG.importSource(fromFilePathOrPDFDocument: filename, skipConfirm: false)
     }
 }
 
