@@ -696,7 +696,10 @@ class Converter: NSObject {
             if !transparentFlag {
                 imageRep = fillBackground(imageRep)
             }
-            outputData = gif89aData(fromGIF87aData: imageRep.representation(using: .gif, properties: [:]))
+            if let pngData = imageRep.representation(usingType: kUTTypePNG, usingDPI: dpi),
+               let decodedRep = NSBitmapImageRep(data: pngData) {
+                outputData = gif89aData(fromGIF87aData: decodedRep.representation(using: .gif, properties: [:]))
+            }
         } else if extension_ == "tiff" {
             if !transparentFlag {
                 imageRep = fillBackground(imageRep)
