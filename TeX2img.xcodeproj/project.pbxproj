@@ -655,8 +655,10 @@
 			files = (
 			);
 			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).app/Contents/Resources/pdftops/pdftops",
 			);
 			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).app/Contents/Resources/pdftops/xpdf-pdftops",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -668,8 +670,10 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/Resources/Info.plist",
 			);
 			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/deploy.sh",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/ruby;
@@ -681,8 +685,10 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/Sources/CLI/mainc.swift",
 			);
 			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/deployc.sh",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
