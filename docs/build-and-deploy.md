@@ -81,6 +81,13 @@ scripts/safe-build.sh all     [Debug|Release]
 | `tex2img` | `tex2img CUI` のみ |
 | `all` | 先に `TeX2img GUI` → 次に `tex2img CUI` |
 
+`TeX2img` と `all` で順序が逆になるのは、目的と起きうる不具合が違うためです。
+
+- **`TeX2img`（GUI 目的）** — GUI ビルドは `tex2img` ターゲットに依存します。CUI を先に単独ビルドしておくと、GUI 側の並列ビルドで Swift のリンクファイルリスト（SwiftFileList）が混ざるのを防げます。
+- **`all`（両方の成果物が欲しい）** — 逆に CUI を先にビルドすると、共有ソースのリンクファイルリストに CUI 専用の `mainc.o` が残り、続く GUI ビルドへ混入することがあります。そのため GUI を先にビルドし、最後に standalone の `tex2img` を改めてビルドします。
+
+日常開発・配布では `all` より `TeX2img` または `tex2img` を個別に使う方が分かりやすいです。
+
 **配布用 GUI を作るときは `TeX2img`（または `build.sh TeX2img`）を使い、`verify-bundle.sh` で同梱を確認してください。**
 
 ### DerivedData の場所
