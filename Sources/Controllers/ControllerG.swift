@@ -308,6 +308,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
 
         task.waitUntilExit()
+        performOnMainThread {
+            self.drainRemainingOutputPipe()
+        }
         appendOutputAndScroll("\n", quiet: quiet)
         if exitCurrentThreadIfTaskKilled() { return false }
         return task.terminationStatus == 0
@@ -1397,19 +1400,20 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         showMainWindow()
     }
 
-    private func readOutputData(_ notification: Notification) {
+    private func drainRemainingOutputPipe() {
         guard let outputPipe else { return }
-        do {
-            var data = outputPipe.fileHandleForReading.availableData
-            while !data.isEmpty {
-                if let str = String(data: data, encoding: .utf8) {
-                    appendOutputAndScroll(str, quiet: false)
-                }
-                data = outputPipe.fileHandleForReading.availableData
+        var data = outputPipe.fileHandleForReading.availableData
+        while !data.isEmpty {
+            if let str = String(data: data, encoding: .utf8) {
+                appendOutputOnMainThread(str)
             }
-        } catch {
+            data = outputPipe.fileHandleForReading.availableData
         }
-        outputPipe.fileHandleForReading.readInBackgroundAndNotify()
+    }
+
+    private func readOutputData(_ notification: Notification) {
+        drainRemainingOutputPipe()
+        outputPipe?.fileHandleForReading.readInBackgroundAndNotify()
     }
 
     // MARK: - Import / Export
@@ -2078,9 +2082,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     func generationDidFinish(_ status: ExitStatus) {
         performOnMainThread {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self.completeGenerationDidFinish(status)
-            }
+            self.completeGenerationDidFinish(status)
         }
     }
 
