@@ -557,6 +557,7 @@
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
 				345854881C24556F001B64AC /* ShellScript */,
+				34SIGN012F50000100A1FA01 /* Sign Bundled Tools */,
 				34850826125AC99A0058A26B /* フレームワークをコピー */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
@@ -643,6 +644,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		34SIGN012F50000100A1FA01 /* Sign Bundled Tools */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/scripts/sign-bundled-tools.sh",
+				"$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).app/Contents/Resources/pdftops/pdftops",
+			);
+			name = "Sign Bundled Tools";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/sign-bundled-tools.stamp",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/scripts/sign-bundled-tools.sh\"\n";
+		};
 		345854881C24556F001B64AC /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
