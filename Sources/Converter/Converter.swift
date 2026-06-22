@@ -753,20 +753,63 @@ class Converter: NSObject {
         return success
     }
 
+    private func normalizedGIFFrame(from rep: NSBitmapImageRep, canvasWidth: Int, canvasHeight: Int) -> NSBitmapImageRep? {
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        guard let context = CGContext(data: nil,
+                                      width: canvasWidth,
+                                      height: canvasHeight,
+                                      bitsPerComponent: 8,
+                                      bytesPerRow: 0,
+                                      space: colorSpace,
+                                      bitmapInfo: bitmapInfo.rawValue),
+              let sourceImage = rep.cgImage else {
+            return nil
+        }
+
+        if !transparentFlag {
+            let bgColor = fillColor.usingColorSpace(.deviceRGB) ?? fillColor
+            context.setFillColor(bgColor.cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: canvasWidth, height: canvasHeight))
+        }
+
+        let x = (canvasWidth - rep.pixelsWide) / 2
+        let y = (canvasHeight - rep.pixelsHigh) / 2
+        context.draw(sourceImage,
+                     in: CGRect(x: x, y: y, width: rep.pixelsWide, height: rep.pixelsHigh))
+
+        guard let resultImage = context.makeImage() else { return nil }
+        return NSBitmapImageRep(cgImage: resultImage)
+    }
+
     private func generateAnimatedGIF(from sourcePaths: [String], toPath destPath: String) -> Bool {
         let frameProperties: [String: Any] = [kCGImagePropertyGIFDictionary as String: [kCGImagePropertyGIFDelayTime as String: delay]]
         let gifProperties: [String: Any] = [kCGImagePropertyGIFDictionary as String: [kCGImagePropertyGIFLoopCount as String: loopCount]]
 
+        var reps = [NSBitmapImageRep]()
+        var maxWidth = 0
+        var maxHeight = 0
+        for path in sourcePaths {
+            guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
+                  let rep = NSBitmapImageRep(data: data) else {
+                return false
+            }
+            reps.append(rep)
+            maxWidth = max(maxWidth, rep.pixelsWide)
+            maxHeight = max(maxHeight, rep.pixelsHigh)
+        }
+
+        guard maxWidth > 0, maxHeight > 0 else { return false }
+
         var gifData = CFDataCreateMutable(kCFAllocatorDefault, 0)!
-        let destination = CGImageDestinationCreateWithData(gifData, kUTTypeGIF, sourcePaths.count, nil)!
+        let destination = CGImageDestinationCreateWithData(gifData, kUTTypeGIF, reps.count, nil)!
         CGImageDestinationSetProperties(destination, gifProperties as CFDictionary)
 
         var success = true
 
-        for path in sourcePaths {
-            guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
-                  let rep = NSBitmapImageRep(data: data),
-                  let cgImage = rep.cgImage else {
+        for rep in reps {
+            guard let normalizedRep = normalizedGIFFrame(from: rep, canvasWidth: maxWidth, canvasHeight: maxHeight),
+                  let cgImage = normalizedRep.cgImage else {
                 success = false
                 break
             }
