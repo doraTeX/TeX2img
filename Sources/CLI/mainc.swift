@@ -306,8 +306,8 @@ struct Tex2imgCommand: ParsableCommand {
             throw Tex2imgCLIError.failed
         }
 
-        var mudrawPath = UtilityC.mudrawPath() ?? "mudraw"
-        var pdftopsPath = UtilityC.getPath("xpdf-pdftops") ?? UtilityC.getPath("pdftops") ?? "pdftops"
+        let mudrawPath = UtilityC.mudrawPath() ?? "mudraw"
+        let pdftopsPath = UtilityC.getPath("xpdf-pdftops") ?? UtilityC.getPath("pdftops") ?? "pdftops"
         controller.mudrawPath = mudrawPath
 
         guard let outputFilePath = Utility.getFullPath(outputFile) else {
