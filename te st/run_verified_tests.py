@@ -14,6 +14,9 @@ from pathlib import Path
 WORKDIR = Path(__file__).resolve().parent
 TEX2IMG = WORKDIR / "tex2img"
 TEST_SH = WORKDIR / "test.sh"
+MESH_SHADING_SH = WORKDIR / "mesh-shading-known-issue.sh"
+MESH_SHADING_INPUT = WORKDIR / "pgfplots-surf.pdf"
+MESH_SHADING_OUTPUT = WORKDIR / "mesh-shading" / "out.pdf"
 RESULTS_JSON = WORKDIR / "test_results.json"
 RESULTS_MD = WORKDIR / "test_results.md"
 
@@ -315,6 +318,105 @@ def verify_eps(files: list[Path], test: TestCase) -> list[str]:
     return issues or ["ok"]
 
 
+def pdf_shading_counts(path: Path) -> tuple[int, int] | None:
+    if not path.is_file():
+        return None
+    text = path.read_bytes().decode("latin1", errors="replace")
+    return text.count("ShadingType 4"), text.count("PatternType 1")
+
+
+def run_mesh_shading_known_issue() -> dict:
+    """pgfplots surf: PDFKit 再シリアライズによる既知問題（保留・80 件の合否に含めない）。"""
+    name = "mesh-shading (pgfplots-surf, --with-text)"
+    if not MESH_SHADING_INPUT.is_file():
+        return {
+            "name": name,
+            "status": "SKIP",
+            "issues": [f"missing input: {MESH_SHADING_INPUT.name}"],
+        }
+    if not MESH_SHADING_SH.is_file():
+        return {
+            "name": name,
+            "status": "SKIP",
+            "issues": [f"missing script: {MESH_SHADING_SH.name}"],
+        }
+
+    out_dir = MESH_SHADING_OUTPUT.parent
+    out_dir.mkdir(parents=True, exist_ok=True)
+    if MESH_SHADING_OUTPUT.exists():
+        MESH_SHADING_OUTPUT.unlink()
+
+    cmd = f"sh {MESH_SHADING_SH.name}"
+    rc, log_tail = run_command(cmd)
+    log_tail = "\n".join(log_tail.splitlines()[-12:])
+    if rc != 0:
+        return {
+            "name": name,
+            "status": "FAIL",
+            "command": cmd,
+            "exit_code": rc,
+            "issues": [f"exit code {rc}"],
+            "log_tail": log_tail,
+        }
+
+    ref = pdf_shading_counts(MESH_SHADING_INPUT)
+    out = pdf_shading_counts(MESH_SHADING_OUTPUT)
+    if ref is None or out is None:
+        return {
+            "name": name,
+            "status": "FAIL",
+            "command": cmd,
+            "exit_code": rc,
+            "issues": ["could not read input or output PDF"],
+            "log_tail": log_tail,
+        }
+
+    ref_s4, ref_p1 = ref
+    out_s4, out_p1 = out
+    detail = (
+        f"input S4={ref_s4} P1={ref_p1}; "
+        f"output S4={out_s4} P1={out_p1}"
+    )
+
+    # 修正後: 出力も ShadingType 4 を保持する
+    if ref_s4 > 0 and out_s4 > 0 and out_p1 == 0:
+        return {
+            "name": name,
+            "status": "FIXED?",
+            "command": cmd,
+            "exit_code": rc,
+            "issues": [
+                "output preserves ShadingType 4 — known PDFKit issue may be fixed; "
+                "update verified-tests.md and this check",
+                detail,
+            ],
+            "log_tail": log_tail,
+        }
+
+    # 既知の保留状態: 入力は S4、出力は P1 に置換
+    if ref_s4 > 0 and out_s4 == 0 and out_p1 > 0:
+        return {
+            "name": name,
+            "status": "DEFERRED",
+            "command": cmd,
+            "exit_code": rc,
+            "issues": [
+                "known PDFKit mesh-shading regression (documented, fix deferred)",
+                detail,
+            ],
+            "log_tail": log_tail,
+        }
+
+    return {
+        "name": name,
+        "status": "WARN",
+        "command": cmd,
+        "exit_code": rc,
+        "issues": [f"unexpected shading structure: {detail}"],
+        "log_tail": log_tail,
+    }
+
+
 def verify_outputs(test: TestCase, files: list[Path]) -> list[str]:
     ext = test.flags["ext"]
     if ext == "pdf":
@@ -363,8 +465,6 @@ def main() -> int:
         status = "FAIL" if issues != ["ok"] or rc != 0 else "OK"
         print(f"[{status}] test {test.number:02d} ({test.flags['ext']}) -> {issues}")
 
-    RESULTS_JSON.write_text(json.dumps(results, ensure_ascii=False, indent=2))
-
     lines = ["# tex2img verified test results", "", f"Total: {len(results)}, Failures: {failures}", ""]
     for r in results:
         status = "OK" if r["issues"] == ["ok"] and r["exit_code"] == 0 else "FAIL"
@@ -381,7 +481,36 @@ def main() -> int:
         lines.append("")
     RESULTS_MD.write_text("\n".join(lines))
 
+    mesh = run_mesh_shading_known_issue()
+    mesh_status = mesh["status"]
+    print(
+        f"[{mesh_status}] {mesh['name']} -> {mesh.get('issues', [])}"
+    )
+
+    RESULTS_JSON.write_text(
+        json.dumps(
+            {"regression_tests": results, "known_issue_mesh_shading": mesh},
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
+
+    lines.extend(["", "## Known issue (deferred): mesh shading", ""])
+    lines.append(f"**Status:** {mesh_status}")
+    if mesh.get("command"):
+        lines.append("```")
+        lines.append(mesh["command"])
+        lines.append("```")
+    lines.append(f"- issues: {', '.join(mesh.get('issues', []))}")
+    if mesh_status not in {"DEFERRED", "SKIP"} and mesh.get("log_tail"):
+        lines.append("```")
+        lines.append(mesh["log_tail"])
+        lines.append("```")
+    lines.append("")
+    RESULTS_MD.write_text("\n".join(lines))
+
     print(f"\nSummary: {len(results) - failures}/{len(results)} passed, {failures} failed")
+    print(f"Mesh shading known issue: {mesh_status} (not counted in regression pass/fail)")
     print(f"Results: {RESULTS_MD}")
     return 1 if failures else 0
 

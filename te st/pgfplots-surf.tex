@@ -1,0 +1,27 @@
+% LuaLaTeX + pgfplots 3D surf の例
+% TeX2img では --with-text（テキスト埋め込み PDF）を有効にしないと
+% アウトライン化 PDF 経路になり、塗りつぶし面が失われることがあります。
+\documentclass{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[axis lines=center, axis equal image, hide axis]
+\addplot3 [
+    domain=0:360,
+    domain y=-180:180,
+    samples=40,
+    samples y=40,
+    surf,
+    shader=faceted interp,
+    thin,
+    z buffer=sort,
+    colormap/greenyellow
+](
+    {(3+sin(x))*cos(y)},
+    {(3+sin(x))*sin(y)},
+    {cos(x)}
+);
+\end{axis}
+\end{tikzpicture}
+\end{document}
