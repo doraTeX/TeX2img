@@ -254,7 +254,7 @@ class Converter: NSObject {
             let relaxData = "\\relax \n".data(using: .utf8)!
             if oldAuxData == relaxData { return success }
 
-            for i in 1..<numberOfCompilation {
+            for _ in 1..<numberOfCompilation {
                 success = compile(withArguments: arguments)
                 if !success && !ignoreErrorsFlag { return false }
                 guard let newAuxData = try? Data(contentsOf: URL(fileURLWithPath: auxFilePath)) else { return success }
@@ -560,12 +560,12 @@ class Converter: NSObject {
         let exportPath = gsPath.programPath.deletingLastPathComponent
         let command = String(format: "export PATH=\"%@\";/usr/bin/perl \"%@\"", exportPath, epstopdfPath)
 
-        controller?.execCommand(command,
-                              atDirectory: workingDirectory,
-                              withArguments: [String(format: "--outfile=%@", temporaryOutputPdfFileName.quotingWithDoubleQuotations()),
-                                              hiresOption,
-                                              epsName],
-                              quiet: quietFlag)
+        _ = controller?.execCommand(command,
+                                    atDirectory: workingDirectory,
+                                    withArguments: [String(format: "--outfile=%@", temporaryOutputPdfFileName.quotingWithDoubleQuotations()),
+                                                    hiresOption,
+                                                    epsName],
+                                    quiet: quietFlag)
 
         let outFilePath = workingDirectory.appendingPathComponent(pdfName.lastPathComponent)
         try? fileManager.removeItem(atPath: outFilePath)
@@ -600,8 +600,8 @@ class Converter: NSObject {
     }
 
     private func gif89aData(fromGIF87aData gif87aData: Data?) -> Data? {
-        guard var gif87aData else { return nil }
-        var gif89aData = NSMutableData(data: gif87aData)
+        guard let gif87aData else { return nil }
+        let gif89aData = NSMutableData(data: gif87aData)
         var gif89a: CChar = CChar(UnicodeScalar("9").value)
         gif89aData.replaceBytes(in: NSRange(location: 4, length: 1), withBytes: &gif89a, length: 1)
         return gif89aData as Data
@@ -801,7 +801,7 @@ class Converter: NSObject {
 
         guard maxWidth > 0, maxHeight > 0 else { return false }
 
-        var gifData = CFDataCreateMutable(kCFAllocatorDefault, 0)!
+        let gifData = CFDataCreateMutable(kCFAllocatorDefault, 0)!
         let destination = CGImageDestinationCreateWithData(gifData, kUTTypeGIF, reps.count, nil)!
         CGImageDestinationSetProperties(destination, gifProperties as CFDictionary)
 
@@ -862,7 +862,7 @@ class Converter: NSObject {
             svgIds.append("#\(svgId)")
 
             let mstr = NSMutableString(string: svg)
-            mstr.replaceFirstOccuarnce(ofString: "<svg ", replacment: "<svg id=\"\(svgId)\" ")
+            _ = mstr.replaceFirstOccuarnce(ofString: "<svg ", replacment: "<svg id=\"\(svgId)\" ")
             result += mstr as String
         }
 
@@ -1114,7 +1114,7 @@ class Converter: NSObject {
             guard let doc = PDFDocument(filePath: filePath),
                   let page = doc.page(at: 0) else { return }
 
-            let annotation = PDFAnnotationText(bounds: .zero)
+            let annotation = PDFAnnotation(bounds: .zero, forType: .text, withProperties: nil)
             annotation.shouldDisplay = false
             annotation.shouldPrint = false
             annotation.contents = AnnotationHeader + contents
@@ -1124,7 +1124,7 @@ class Converter: NSObject {
         }
 
         let target = filePath.withCString { $0 }
-        contents.withCString { val in
+        _ = contents.withCString { val in
             setxattr(target, eaKey, val, strlen(val), 0, 0)
         }
     }
@@ -1205,7 +1205,7 @@ class Converter: NSObject {
         let pdfFileName = tempFileBaseName + ".pdf"
         let outputEpsFileName = tempFileBaseName + ".eps"
         var outputFileName = outputFilePath.lastPathComponent
-        var extension_ = outputFilePath.pathExtension.lowercased()
+        let extension_ = outputFilePath.pathExtension.lowercased()
 
         if extension_ == "svgz" {
             outputFileName = outputFileName.replacingPathExtension("svg")
