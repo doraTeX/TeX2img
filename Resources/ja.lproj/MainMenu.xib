@@ -2303,11 +2303,11 @@ DQ
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lKh-Be-EPj">
-                                            <rect key="frame" x="220" y="179" width="144" height="19"/>
+                                            <rect key="frame" x="220" y="179" width="117" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="roundRect" title="システム環境設定を開く..." bezelStyle="roundedRect" image="buttonCell:ouV-Bq-D8d:image" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ouV-Bq-D8d">
+                                            <buttonCell key="cell" type="roundRect" title="システム設定を開く..." bezelStyle="roundedRect" image="buttonCell:ouV-Bq-D8d:image" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ouV-Bq-D8d">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" size="11" name=".HiraKakuInterface-W4"/>
                                             </buttonCell>
                                             <connections>
                                                 <action selector="openSystemPreferencePane:" target="450" id="dC5-Bh-QQL"/>
