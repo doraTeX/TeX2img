@@ -475,8 +475,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     func epstopdfExists() -> Bool { true }
     func mudrawExists() -> Bool {
-        let path = currentProfile().stringForKey(MudrawPathKey) ?? ""
-        if !path.isEmpty, FileManager.default.isExecutableFile(atPath: path) {
+        if UtilityG.bundledToolPath("mudraw", in: "mupdf") != nil {
             return true
         }
         performOnMainThread {
@@ -884,6 +883,17 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     func currentProfile() -> Profile {
+        if Thread.isMainThread {
+            return buildCurrentProfile()
+        }
+        var profile: Profile = [:]
+        DispatchQueue.main.sync {
+            profile = self.buildCurrentProfile()
+        }
+        return profile
+    }
+
+    private func buildCurrentProfile() -> Profile {
         var currentProfile: Profile = [:]
         do {
             currentProfile[TeX2imgVersionKey] = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")
@@ -2154,12 +2164,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private func generateImage() {
         var profile = currentProfile()
         profile[EpstopdfPathKey] = Bundle.main.path(forResource: "epstopdf", ofType: nil)
-        if let mupdfPath = Bundle.main.path(forResource: "mupdf", ofType: nil) {
-            profile[MudrawPathKey] = mupdfPath.appendingPathComponent("mudraw")
-        }
-        if let pdftopsBase = Bundle.main.path(forResource: "pdftops", ofType: nil) {
-            profile[PdftopsPathKey] = pdftopsBase.appendingPathComponent("pdftops")
-        }
+        profile[MudrawPathKey] = UtilityG.bundledToolPath("mudraw", in: "mupdf")
+        profile[PdftopsPathKey] = UtilityG.bundledToolPath("pdftops", in: "pdftops")
         profile[QuietKey] = false
         profile[ControllerKey] = self
 

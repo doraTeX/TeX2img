@@ -140,4 +140,16 @@ class UtilityG: NSObject {
                   darkModeKey: "consoleBackgroundColorForDarkMode",
                   defaultColor: .defaultConsoleBackgroundColor)
     }
+
+    /// Bundled command-line tool inside `Contents/Resources/<resourceDirectory>/`.
+    static func bundledToolPath(_ name: String, in resourceDirectory: String) -> String? {
+        guard let directory = Bundle.main.path(forResource: resourceDirectory, ofType: nil) else {
+            return nil
+        }
+        let path = directory.appendingPathComponent(name).standardizingPath
+        guard FileManager.default.isExecutableFile(atPath: path) else {
+            return nil
+        }
+        return path
+    }
 }
