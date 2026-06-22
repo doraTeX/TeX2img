@@ -67,3 +67,13 @@ htmlcov/
 .nox/
 cython_debug/
 
+# Signing keys and credentials (never commit)
+*.pem
+*.p12
+*.pfx
+*.key
+*.cer
+*.mobileprovision
+.env
+.env.*
+
