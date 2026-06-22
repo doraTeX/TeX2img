@@ -31,7 +31,7 @@
 		342C6196101E637F00E29FEB /* epstopdf in Resources */ = {isa = PBXBuildFile; fileRef = 342C6194101E637F00E29FEB /* epstopdf */; };
 		34522C121BAC550800DE1B86 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 34522C111BAC550800DE1B86 /* libicucore.tbd */; };
 		346225661AB558AB00F632AD /* mupdf in Resources */ = {isa = PBXBuildFile; fileRef = 346225651AB558AB00F632AD /* mupdf */; };
-		34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 34670DD5125B7AC3002308EF /* dsa_pub.pem */; };
+
 		34675B2B251CE443000EBBA3 /* TeXTextView-Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */; };
 		348507F8125AC21E0058A26B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; };
 		34850828125AC9E30058A26B /* Sparkle.framework in フレームワークをコピー */ = {isa = PBXBuildFile; fileRef = 348507F7125AC21E0058A26B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -174,7 +174,7 @@
 		343A66DD2249CABC0026CFA3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		34522C111BAC550800DE1B86 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		346225651AB558AB00F632AD /* mupdf */ = {isa = PBXFileReference; lastKnownFileType = folder; path = mupdf; sourceTree = "<group>"; };
-		34670DD5125B7AC3002308EF /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
+
 		34675B29251CE3F8000EBBA3 /* TeXTextView-Bullet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TeXTextView-Bullet.swift"; sourceTree = "<group>"; };
 		348507F7125AC21E0058A26B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		348658F42526402E00B8B190 /* NSDate-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDate-Extension.swift"; sourceTree = "<group>"; };
@@ -320,7 +320,7 @@
 				34BF70F91BD1C6FC00AB76A9 /* pdftops */,
 				346225651AB558AB00F632AD /* mupdf */,
 				34CCBB061A964E8A0061842E /* Templates */,
-				34670DD5125B7AC3002308EF /* dsa_pub.pem */,
+
 				34E058F323DDA2CD0038DC90 /* TeX2img.entitlements */,
 				342C6194101E637F00E29FEB /* epstopdf */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -635,7 +635,7 @@
 				34CID0012F40000100A1FA01 /* cidToUnicode.json in Resources */,
 				34B5E70420995B2F0071BBE9 /* Images.xcassets in Resources */,
 				346225661AB558AB00F632AD /* mupdf in Resources */,
-				34670DD6125B7AC3002308EF /* dsa_pub.pem in Resources */,
+
 				3499273C1B7867D5009BD5F1 /* GlyphPopoverMulti.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

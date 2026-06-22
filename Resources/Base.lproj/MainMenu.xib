@@ -2619,7 +2619,7 @@ DQ
                 <outlet property="saveAsTextField" destination="678" id="695"/>
             </connections>
         </customObject>
-        <customObject id="769" customClass="SUUpdater"/>
+        <customObject id="769" customClass="SPUStandardUpdaterController"/>
         <userDefaultsController representsSharedInstance="YES" id="781"/>
         <window title="Color Picker" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="r0I-g2-mDW">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>

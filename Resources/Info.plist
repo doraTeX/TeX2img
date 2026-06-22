@@ -191,8 +191,8 @@
 	<true/>
 	<key>SUFeedURL</key>
 	<string>https://tex2img.tech/TeX2img_Appcast.xml</string>
-	<key>SUPublicDSAKeyFile</key>
-	<string>dsa_pub.pem</string>
+	<key>SUPublicEDKey</key>
+	<string>Lv1Ty7+dakXZs0ztvp7bsbXOFp2TyAozrvPhJaquD9s=</string>
 	<key>SUShowReleaseNotes</key>
 	<false/>
 </dict>

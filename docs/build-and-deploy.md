@@ -93,7 +93,8 @@ export NOTARY_TEAM_ID=86GWZ48925
 | パス | 用途 | 必要なフロー |
 |------|------|-------------|
 | `../TeX2img_Appcast/TeX2img_Appcast.xml` | Sparkle 用 Appcast | GUI 配布 |
-| `../設定/証明書/Sparkle/dsa_priv.pem` | Sparkle DSA 署名鍵 | GUI 配布 |
+| `../設定/証明書/Sparkle/ed_priv.pem` | Sparkle EdDSA 署名鍵 | GUI 配布 |
+| `ThirdParty/Sparkle-2.9.3/bin/sign_update` | Appcast 署名ツール | GUI 配布 |
 
 ### ビルド成果物の場所
 

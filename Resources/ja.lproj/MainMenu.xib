@@ -2600,7 +2600,7 @@ DQ
                 <outlet property="saveAsTextField" destination="676" id="696"/>
             </connections>
         </customObject>
-        <customObject id="802" customClass="SUUpdater"/>
+        <customObject id="802" customClass="SPUStandardUpdaterController"/>
         <userDefaultsController representsSharedInstance="YES" id="813"/>
         <window title="色入力支援" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="LNT-gN-QW9">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>

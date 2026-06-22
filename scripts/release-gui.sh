@@ -5,7 +5,7 @@
 #   Developer ID Application certificate in Keychain
 #   Notarization credentials (see docs/build-and-deploy.md)
 #   ../TeX2img_Appcast/TeX2img_Appcast.xml
-#   ../設定/証明書/Sparkle/dsa_priv.pem
+#   ../設定/証明書/Sparkle/ed_priv.pem
 #
 # Usage:
 #   scripts/release-gui.sh
@@ -137,9 +137,10 @@ publish_gui_appcast() {
     local dmg="$1"
     [[ -f "$dmg" ]] || { echo "ERROR: DMG not found: $dmg" >&2; exit 1; }
     [[ -f "$APPCAST_XML" ]] || { echo "ERROR: Appcast not found: $APPCAST_XML" >&2; exit 1; }
-    [[ -f "$DSA_PRIVATE_KEY" ]] || { echo "ERROR: Sparkle DSA private key not found: $DSA_PRIVATE_KEY" >&2; exit 1; }
+    [[ -x "$SPARKLE_SIGN_UPDATE" ]] || { echo "ERROR: Sparkle sign_update not found: $SPARKLE_SIGN_UPDATE" >&2; exit 1; }
+    [[ -f "$ED_PRIVATE_KEY" ]] || { echo "ERROR: Sparkle EdDSA private key not found: $ED_PRIVATE_KEY" >&2; exit 1; }
 
-    local basename version signature length tmp
+    local basename version signature_attrs ed_signature length tmp
     basename="$(basename "$dmg")"
     version="${basename#${PRODUCT_NAME}_}"
     version="${version%.dmg}"
@@ -148,14 +149,14 @@ publish_gui_appcast() {
     echo "    DMG:     $dmg"
     echo "    version: $version"
 
-    signature=$("$OPENSSL" dgst -sha1 -binary < "$dmg" \
-        | "$OPENSSL" dgst -dss1 -sign "$DSA_PRIVATE_KEY" \
-        | "$OPENSSL" enc -base64 | tr -d '\n')
-    length=$(stat -f%z "$dmg")
+    signature_attrs=$("$SPARKLE_SIGN_UPDATE" --ed-key-file "$ED_PRIVATE_KEY" "$dmg")
+    ed_signature=$(printf '%s' "$signature_attrs" | sed -n 's/.*sparkle:edSignature="\([^"]*\)".*/\1/p')
+    length=$(printf '%s' "$signature_attrs" | sed -n 's/.*length="\([^"]*\)".*/\1/p')
+    [[ -n "$ed_signature" && -n "$length" ]] || { echo "ERROR: Failed to sign DMG for appcast: $signature_attrs" >&2; exit 1; }
 
     tmp="${APPCAST_XML%.xml}2.xml"
     sed \
-        -e "s|dsaSignature=\".*\"|dsaSignature=\"$signature\"|" \
+        -e "s|sparkle:edSignature=\".*\"|sparkle:edSignature=\"$ed_signature\"|" \
         -e "s|length=\".*\"|length=\"$length\"|" \
         -e "s|${PRODUCT_NAME}_.*\\.dmg|${basename}|" \
         -e "s|sparkle:version=\".*\"|sparkle:version=\"$version\"|" \
