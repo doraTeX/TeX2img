@@ -122,6 +122,12 @@ while IFS= read -r file; do
         thin_ok=$((thin_ok + 1))
         status="thin($archs)"
         if [[ "$REQUIRE_UNIVERSAL" == "1" ]]; then
+            x86_ref="${X86_REFERENCE_DIR:-}"
+            if [[ -n "$x86_ref" && "$has_arm64" == 1 && "$has_x86" == 0 \
+                  && ! -f "$x86_ref/$rel" ]]; then
+                echo "  OK  $rel — arm64-only helper (not in x86 reference)"
+                continue
+            fi
             echo "ERROR: not universal: $rel ($archs)" >&2
             errors=$((errors + 1))
         fi

@@ -23,6 +23,9 @@ POPPLER_PREFIX="${POPPLER_PREFIX:-$WORK_ROOT/install-arm64}"
 PDFTOPS_RPATH="@executable_path/pdftops-lib"
 
 apply_arm64_deployment_target() {
+    if [[ -d /opt/local/lib/pkgconfig ]]; then
+        export PKG_CONFIG_PATH="/opt/local/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+    fi
     export MACOSX_DEPLOYMENT_TARGET="$ARM64_MIN_OS"
     export CMAKE_OSX_DEPLOYMENT_TARGET="$ARM64_MIN_OS"
     export CMAKE_OSX_ARCHITECTURES=arm64
