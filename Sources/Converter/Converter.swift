@@ -865,10 +865,13 @@ class Converter: NSObject {
         var svgIds = [String]()
 
         for (idx, path) in sourcePaths.enumerated() {
-            guard var svg = try? String(contentsOfFile: path, encoding: .utf8) else { continue }
+            guard var svg = try? String(contentsOfFile: path, encoding: .utf8),
+                  !svg.isEmpty else { continue }
 
             var lines = svg.components(separatedBy: "\n")
-            if lines.count >= 2 {
+            if lines.count >= 2,
+               lines[0].hasPrefix("<?xml"),
+               lines[1].hasPrefix("<!DOCTYPE") {
                 lines.removeSubrange(0..<2)
             }
             svg = lines.joined(separator: "\n")
@@ -880,7 +883,7 @@ class Converter: NSObject {
             svg = svg.replacingOccurrences(of: " id=\"", with: " id=\"\(idPrefix)")
 
             if let regex = try? NSRegularExpression(pattern: "(?<!\\&)\\#(?![0-9a-f]{6}(?![0-9a-f]))") {
-                let range = NSRange(location: 0, length: svg.count)
+                let range = NSRange(location: 0, length: svg.nsLength)
                 svg = regex.stringByReplacingMatches(in: svg, options: [], range: range, withTemplate: "#\(idPrefix)")
             }
 
@@ -892,7 +895,9 @@ class Converter: NSObject {
             result += mstr as String
         }
 
-        let dur = Float(sourcePaths.count) * delay
+        guard !svgIds.isEmpty else { return false }
+
+        let dur = Float(svgIds.count) * delay
         let repeatCount = loopCount == 0 ? "indefinite" : String(loopCount)
         let svgIdRefs = svgIds.joined(separator: ";")
 
@@ -1801,13 +1806,12 @@ class Converter: NSObject {
         }
 
         let outputDir = outputFilePath.deletingLastPathComponent
+        let outputFullPath = Utility.getFullPath(outputDir) ?? outputDir
+        let workingFullPath = Utility.getFullPath(workingDirectory) ?? workingDirectory
         for i in 1...pageCount {
-            let outputFullPath = Utility.getFullPath(outputDir) ?? outputDir
-            let workingFullPath = Utility.getFullPath(workingDirectory) ?? workingDirectory
-
             if outputFullPath != workingFullPath {
                 try? fileManager.removeItem(atPath: workingDirectory.appendingPathComponent(outputFileName.pathStringByAppendingPageNumber(UInt(i))))
-            } else if mergeableExtensions.contains(outputFilePath.pathExtension) && mergeOutputsFlag && i >= 2 {
+            } else if mergeableExtensions.contains(extension_) && mergeOutputsFlag && i >= 2 {
                 try? fileManager.removeItem(atPath: workingDirectory.appendingPathComponent(outputFileName.pathStringByAppendingPageNumber(UInt(i))))
             }
 
