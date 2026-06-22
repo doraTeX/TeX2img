@@ -17,6 +17,19 @@ if [[ ! -d "$APP" ]]; then
     exit 1
 fi
 
+# A valid .app bundle root must contain only Contents/. Stray files or symlinks
+# (often from manual ln -sf during testing) break CodeSign with:
+#   "unsealed contents present in the bundle root"
+for item in "$APP"/*; do
+    [[ "$(basename "$item")" == "Contents" ]] && continue
+    echo "ERROR: Unexpected item in app bundle root (breaks CodeSign): $item" >&2
+    if [[ -L "$item" ]]; then
+        echo "  symlink target: $(readlink "$item")" >&2
+    fi
+    echo "Remove it, then rebuild (Product > Clean Build Folder in Xcode also works)." >&2
+    exit 1
+done
+
 if [[ ! -f "$CUI_IN_BUNDLE" ]]; then
     echo "ERROR: Bundled tex2img missing: $CUI_IN_BUNDLE" >&2
     echo "Expected path: Contents/SharedSupport/bin/tex2img" >&2
