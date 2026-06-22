@@ -68,7 +68,12 @@ extension String {
     }
 
     func replacingPathExtension(_ extension: String) -> String {
-        deletingLastPathComponent.appendingPathExtension(`extension`) ?? self
+        let basename = (deletingPathExtension as NSString).appendingPathExtension(`extension`) ?? deletingPathExtension
+        let directory = deletingLastPathComponent
+        if directory.isEmpty || directory == "." {
+            return basename
+        }
+        return directory.appendingPathComponent(basename)
     }
 
     func replacingYenWithBackslash() -> String {

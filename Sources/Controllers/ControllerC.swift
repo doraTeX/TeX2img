@@ -1,6 +1,7 @@
 import Foundation
 
 class ControllerC: NSObject, OutputController {
+    var mudrawPath = "mudraw"
     func execCommand(_ command: String,
                            atDirectory path: String,
                            withArguments arguments: [String],
@@ -85,11 +86,14 @@ class ControllerC: NSObject, OutputController {
     }
 
     func mudrawExists() -> Bool {
-        if !UtilityC.checkWhich("mudraw") {
-            showNotFoundError("mudraw")
-            return false
+        if FileManager.default.isExecutableFile(atPath: mudrawPath) {
+            return true
         }
-        return true
+        if UtilityC.checkWhich("mudraw") {
+            return true
+        }
+        showNotFoundError("mudraw")
+        return false
     }
 
     func pdftopsExists() -> Bool {
@@ -191,6 +195,7 @@ class ControllerC: NSObject, OutputController {
     func generationDidFinish(_ status: ExitStatus) {
     }
 
-    func exitCurrentThreadIfTaskKilled() {
+    func exitCurrentThreadIfTaskKilled() -> Bool {
+        false
     }
 }

@@ -37,7 +37,7 @@ protocol OutputController: AnyObject {
     func previewFiles(_ files: [String], withApplication app: String)
     func printResult(_ generatedFiles: [String], quiet: Bool)
     func generationDidFinish(_ status: ExitStatus)
-    func exitCurrentThreadIfTaskKilled()
+    func exitCurrentThreadIfTaskKilled() -> Bool
 }
 
 class Converter: NSObject {
@@ -179,13 +179,13 @@ class Converter: NSObject {
 
     // MARK: - Thread control
 
-    private func exitCurrentThread() {
-        Thread.current.cancel()
-        if Thread.current.isCancelled {
+    @discardableResult
+    private func exitCurrentThread() -> Bool {
+        if controller?.exitCurrentThreadIfTaskKilled() == true {
             deleteTemporaryFiles()
-            controller?.generationDidFinish(.aborted)
-            Thread.exit()
+            return true
         }
+        return false
     }
 
     // MARK: - TeX source writing
@@ -587,10 +587,11 @@ class Converter: NSObject {
         let srcImage = NSImage()
         srcImage.addRepresentation(bitmapRep)
         let size = srcImage.size
+        let bgColor = fillColor.usingColorSpace(.deviceRGB) ?? fillColor
 
         let backgroundImage = NSImage(size: size)
         backgroundImage.lockFocus()
-        fillColor.set()
+        bgColor.set()
         NSBezierPath.fill(NSRect(x: 0, y: 0, width: size.width, height: size.height))
         srcImage.draw(at: .zero, from: .zero, operation: .sourceOver, fraction: 1.0)
         backgroundImage.unlockFocus()
@@ -670,6 +671,11 @@ class Converter: NSObject {
 
         let image = NSImage(size: size)
         image.lockFocus()
+        if extension_ == "bmp" || !transparentFlag {
+            let bgColor = fillColor.usingColorSpace(.deviceRGB) ?? fillColor
+            bgColor.set()
+            NSBezierPath.fill(NSRect(x: 0, y: 0, width: size.width, height: size.height))
+        }
         pdfImageRep.draw(in: NSRect(x: thisLeftMargin, y: thisBottomMargin,
                                     width: width * CGFloat(resolutionLevel),
                                     height: height * CGFloat(resolutionLevel)))
@@ -697,8 +703,13 @@ class Converter: NSObject {
             }
             outputData = imageRep.representation(usingType: kUTTypeTIFF, usingDPI: dpi)
         } else if extension_ == "bmp" {
-            imageRep = fillBackground(imageRep)
-            outputData = imageRep.representation(usingType: kUTTypeBMP, usingDPI: dpi)
+            if !transparentFlag {
+                imageRep = fillBackground(imageRep)
+            }
+            if let pngData = imageRep.representation(usingType: kUTTypePNG, usingDPI: dpi),
+               let decodedRep = NSBitmapImageRep(data: pngData) {
+                outputData = decodedRep.representation(using: .bmp, properties: [:])
+            }
         }
 
         let outputPath = workingDirectory.appendingPathComponent(outputFileName)
@@ -848,7 +859,8 @@ class Converter: NSObject {
                                               quiet: quietFlag) ?? false
         if !success { return false }
 
-        let outputtedSvgPath = svgFilePath.deletingPathExtension.appendingPathComponent("\(page)").appendingPathExtension("svg")!
+        let outputExtension = (svgFilePath as NSString).pathExtension
+        let outputtedSvgPath = "\(svgFilePath.deletingPathExtension)\(page).\(outputExtension)"
         if fileManager.fileExists(atPath: outputtedSvgPath) {
             try? fileManager.removeItem(atPath: svgFilePath)
             do {
@@ -965,7 +977,10 @@ class Converter: NSObject {
         let outlinedPdfFileName = tempFileBaseName + "-outline.pdf"
 
         if emptyPageFlags.isEmpty {
-            exitCurrentThread()
+            return false
+        }
+        if exitCurrentThread() {
+            return false
         }
 
         if skipEmptyPage && page > 0 && page <= UInt(emptyPageFlags.count) && emptyPageFlags[Int(page) - 1] {
@@ -1102,7 +1117,7 @@ class Converter: NSObject {
             keepPageSizeFlag = originalKeepPageSizeFlag
 
             _ = pdf2svg(outlinedPdfFileName, outputFileName: svgFilePath, page: 1, skipEmptyPage: false)
-            controller?.exitCurrentThreadIfTaskKilled()
+            if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
         } else {
             if !pdfcrop(pdfFilePath, outputFileName: croppedPdfFileName, page: page, addMargin: false, useCache: true, fillBackground: false) {
                 return false
@@ -1119,7 +1134,7 @@ class Converter: NSObject {
             }
 
             _ = pdf2svg(trimmedPdfFileName, outputFileName: svgFilePath, page: 1, skipEmptyPage: false)
-            controller?.exitCurrentThreadIfTaskKilled()
+            if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
         }
 
         return true
@@ -1172,7 +1187,7 @@ class Converter: NSObject {
                     return false
                 }
             }
-            controller?.exitCurrentThreadIfTaskKilled()
+            if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
             compilationSucceeded = false
             requireDviDriver = false
@@ -1209,7 +1224,7 @@ class Converter: NSObject {
                         return false
                     }
                 }
-                controller?.exitCurrentThreadIfTaskKilled()
+                if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
                 compilationSucceeded = false
                 requireGS = false
@@ -1246,7 +1261,7 @@ class Converter: NSObject {
                     return false
                 }
             }
-            controller?.exitCurrentThreadIfTaskKilled()
+            if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
             compilationSucceeded = false
 
@@ -1263,7 +1278,7 @@ class Converter: NSObject {
             }
         }
 
-        controller?.exitCurrentThreadIfTaskKilled()
+        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
         guard let pdfDocument = PDFDocument(filePath: pdfFilePath) else {
             controller?.showFileFormatError(pdfFilePath)
@@ -1295,7 +1310,7 @@ class Converter: NSObject {
                 success = pdf2image(pdfFilePath,
                                     outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                     page: UInt(i), crop: true)
-                controller?.exitCurrentThreadIfTaskKilled()
+                if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                 if !success { return success }
             }
         } else if extension_ == "pdf" && leaveTextFlag {
@@ -1303,7 +1318,7 @@ class Converter: NSObject {
                 success = pdfcrop(pdfFilePath,
                                   outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                   page: UInt(i), addMargin: true, useCache: false, fillBackground: !transparentFlag)
-                controller?.exitCurrentThreadIfTaskKilled()
+                if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                 if !success { return success }
             }
         } else if (extension_ == "svg" || extension_ == "svgz") && leaveTextFlag {
@@ -1311,29 +1326,29 @@ class Converter: NSObject {
             if !(mergeOutputsFlag && (pageCount - skippedCount > 1)) {
                 if transparentFlag {
                     _ = pdfcrop(pdfFilePath, outputFileName: croppedPdfFilePath, page: 0, addMargin: true, useCache: true, fillBackground: false)
-                    controller?.exitCurrentThreadIfTaskKilled()
+                    if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
                     for i in 1...pageCount {
                         success = pdf2svg(croppedPdfFilePath,
                                           outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                           page: UInt(i), skipEmptyPage: true)
-                        controller?.exitCurrentThreadIfTaskKilled()
+                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                         if !success { return success }
                     }
                 } else {
                     _ = pdfcrop(pdfFilePath, outputFileName: croppedPdfFilePath, page: 1, addMargin: true, useCache: false, fillBackground: true)
-                    controller?.exitCurrentThreadIfTaskKilled()
+                    if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
                     for i in 1...pageCount {
                         _ = pdfcrop(pdfFilePath,
                                     outputFileName: croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i)),
                                     page: UInt(i), addMargin: true, useCache: false, fillBackground: true)
-                        controller?.exitCurrentThreadIfTaskKilled()
+                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
                         success = pdf2svg(croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i)),
                                           outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                           page: 1, skipEmptyPage: false)
-                        controller?.exitCurrentThreadIfTaskKilled()
+                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                         if !success { return success }
                     }
                 }
@@ -1346,7 +1361,7 @@ class Converter: NSObject {
                         success = convertPDF(pdfFileName,
                                              toOutlinedSVG: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                              page: UInt(i))
-                        controller?.exitCurrentThreadIfTaskKilled()
+                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                         if !success { return success }
                     }
                 } else if isUsingNewGS() {
@@ -1355,13 +1370,13 @@ class Converter: NSObject {
                             if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
                             let croppedFile = croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i))
                             _ = pdfcrop(pdfFilePath, outputFileName: croppedFile, page: UInt(i), addMargin: false, useCache: false, fillBackground: false)
-                            controller?.exitCurrentThreadIfTaskKilled()
+                            if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
                             success = convertPDF(croppedFile.lastPathComponent,
                                                  intermediateOutlinedFileName: outputEpsFileName.pathStringByAppendingPageNumber(UInt(i)),
                                                  outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                                  page: 1, useCache: false, skipEmptyPage: false)
-                            controller?.exitCurrentThreadIfTaskKilled()
+                            if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                             if !success { return success }
                         }
                     } else {
@@ -1370,7 +1385,7 @@ class Converter: NSObject {
                                                  intermediateOutlinedFileName: outputEpsFileName.pathStringByAppendingPageNumber(UInt(i)),
                                                  outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                                  page: UInt(i), useCache: true, skipEmptyPage: true)
-                            controller?.exitCurrentThreadIfTaskKilled()
+                            if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                             if !success { return success }
                         }
                     }
@@ -1379,13 +1394,13 @@ class Converter: NSObject {
                         if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
                         let croppedFile = croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i))
                         _ = pdfcrop(pdfFilePath, outputFileName: croppedFile, page: UInt(i), addMargin: false, useCache: false, fillBackground: false)
-                        controller?.exitCurrentThreadIfTaskKilled()
+                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
                         success = convertPDF(croppedFile.lastPathComponent,
                                              intermediateOutlinedFileName: outputEpsFileName.pathStringByAppendingPageNumber(UInt(i)),
                                              outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                              page: 1, useCache: false, skipEmptyPage: false)
-                        controller?.exitCurrentThreadIfTaskKilled()
+                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                         if !success { return success }
                     }
                 }
@@ -1395,13 +1410,13 @@ class Converter: NSObject {
                         if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
                         let croppedFile = croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i))
                         _ = pdfcrop(pdfFilePath, outputFileName: croppedFile, page: UInt(i), addMargin: true, useCache: false, fillBackground: true)
-                        controller?.exitCurrentThreadIfTaskKilled()
+                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
                         success = convertPDF(croppedFile.lastPathComponent,
                                              intermediateOutlinedFileName: outputEpsFileName.pathStringByAppendingPageNumber(UInt(i)),
                                              outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                              page: 1, useCache: false, skipEmptyPage: false)
-                        controller?.exitCurrentThreadIfTaskKilled()
+                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                         if !success { return success }
                     }
                 } else if extension_ == "pdf" {
@@ -1416,13 +1431,13 @@ class Converter: NSObject {
                             _ = pdfcrop(pdfFilePath,
                                         outputFileName: croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i)),
                                         page: UInt(i), addMargin: false, useCache: false, fillBackground: false)
-                            controller?.exitCurrentThreadIfTaskKilled()
+                            if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
                             success = convertPDF(croppedPdfFilePath.lastPathComponent.pathStringByAppendingPageNumber(UInt(i)),
                                                  intermediateOutlinedFileName: outputEpsFileName.pathStringByAppendingPageNumber(UInt(i)),
                                                  outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                                  page: 1, useCache: false, skipEmptyPage: false)
-                            controller?.exitCurrentThreadIfTaskKilled()
+                            if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                             if !success { return success }
                         }
                     }
@@ -1432,7 +1447,7 @@ class Converter: NSObject {
                         success = convertPDF(pdfFileName,
                                              toOutlinedSVG: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                              page: UInt(i))
-                        controller?.exitCurrentThreadIfTaskKilled()
+                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                         if !success { return success }
                     }
                 }

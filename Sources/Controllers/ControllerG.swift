@@ -203,6 +203,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private var runningTask: Process?
     private var outputPipe: Pipe?
     private var taskKilled = false
+    private var generationAborted = false
     private var sourceFont: NSFont?
     private var userNotificationDelegate: UserNotificationDelegate?
     private var notificationObservers = [NSObjectProtocol]()
@@ -260,24 +261,24 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    func exitCurrentThreadIfTaskKilled() {
+    func exitCurrentThreadIfTaskKilled() -> Bool {
         if taskKilled {
             taskKilled = false
-            Thread.current.cancel()
-            appendOutputAndScroll(String(format: "\n\nTeX2img: %@\n\n", NSLocalizedString("processAborted", comment: "")), quiet: false)
+            if !generationAborted {
+                generationAborted = true
+                appendOutputAndScroll(String(format: "\n\nTeX2img: %@\n\n", NSLocalizedString("processAborted", comment: "")), quiet: false)
+                generationDidFinish(.aborted)
+            }
+            return true
         }
-
-        if Thread.current.isCancelled {
-            generationDidFinish(.aborted)
-            Thread.exit()
-        }
+        return generationAborted
     }
 
     func execCommand(_ command: String,
                      atDirectory path: String,
                      withArguments arguments: [String],
                      quiet: Bool) -> Bool {
-        exitCurrentThreadIfTaskKilled()
+        if exitCurrentThreadIfTaskKilled() { return false }
 
         var cmdline = command + " "
         for argument in arguments {
@@ -308,7 +309,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
         task.waitUntilExit()
         appendOutputAndScroll("\n", quiet: quiet)
-        exitCurrentThreadIfTaskKilled()
+        if exitCurrentThreadIfTaskKilled() { return false }
         return task.terminationStatus == 0
     }
 
@@ -464,7 +465,16 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     func epstopdfExists() -> Bool { true }
-    func mudrawExists() -> Bool { true }
+    func mudrawExists() -> Bool {
+        let path = currentProfile().stringForKey(MudrawPathKey) ?? ""
+        if !path.isEmpty, FileManager.default.isExecutableFile(atPath: path) {
+            return true
+        }
+        performOnMainThread {
+            self.showNotFoundError("mudraw")
+        }
+        return false
+    }
     func pdftopsExists() -> Bool { true }
 
     func showFileFormatError(_ aPath: String) {
@@ -2059,6 +2069,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         generateMenuItem.isEnabled = true
         abortMenuItem.isEnabled = false
         taskKilled = false
+        generationAborted = false
 
         if currentProfile().boolForKey(SendNotificationKey) {
             sendUserNotification(status: status)
@@ -2199,6 +2210,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         if showOutputWindowCheckBox.state == .on {
             showOutputWindow()
         }
+        generationAborted = false
+        taskKilled = false
         generateButton.title = NSLocalizedString("Abort", comment: "")
         generateButton.action = #selector(abortCompilation(_:))
         generateMenuItem.isEnabled = false
@@ -2208,11 +2221,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     @IBAction func abortCompilation(_ sender: Any) {
         taskKilled = true
-        if let runningTask, runningTask.isRunning {
-            runningTask.terminate()
-            self.runningTask = nil
-            generationDidFinish(.aborted)
-        }
+        runningTask?.terminate()
+        runningTask = nil
     }
 
     @IBAction func showAutoDetectionTargetSettingPopover(_ sender: NSButton) {

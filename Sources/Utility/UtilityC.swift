@@ -55,6 +55,32 @@ class UtilityC: NSObject {
         return task.terminationStatus == 0
     }
 
+    static func bundledToolPath(_ toolName: String, in subdirectory: String) -> String? {
+        let executablePath = URL(fileURLWithPath: CommandLine.arguments[0]).standardizedFileURL
+        let executableDirectory = executablePath.deletingLastPathComponent().path
+        let candidates = [
+            executableDirectory.appendingPathComponent(subdirectory).appendingPathComponent(toolName),
+            executableDirectory.appendingPathComponent("../Resources/\(subdirectory)/\(toolName)"),
+            executableDirectory.appendingPathComponent("../../Resources/\(subdirectory)/\(toolName)"),
+            executableDirectory.appendingPathComponent("TeX2img.app/Contents/Resources/\(subdirectory)/\(toolName)"),
+        ]
+
+        for candidate in candidates {
+            let standardized = candidate.standardizingPath
+            if FileManager.default.isExecutableFile(atPath: standardized) {
+                return standardized
+            }
+        }
+        return nil
+    }
+
+    static func mudrawPath() -> String? {
+        if let path = getPath("mudraw") {
+            return path
+        }
+        return bundledToolPath("mudraw", in: "mupdf")
+    }
+
     static func getPath(_ cmdName: String) -> String? {
         let task = Process()
         let pipe = Pipe()
