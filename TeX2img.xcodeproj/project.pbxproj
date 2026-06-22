@@ -543,7 +543,6 @@
 			buildPhases = (
 				705DC79E0F1197DC0052AFA5 /* Sources */,
 				705DC79F0F1197DC0052AFA5 /* Frameworks */,
-				34A517301B8CBB790028FA5F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -567,7 +566,6 @@
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				34A5C669251BD4F800FCF7BA /* Copy Command Line Tools */,
-				34670E17125B7F6F002308EF /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -664,36 +662,8 @@
 			shellPath = /bin/sh;
 			shellScript = "cd \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/Contents/Resources/pdftops\"\nln -sf pdftops xpdf-pdftops\nchmod +x xpdf-pdftops\n";
 		};
-		34670E17125B7F6F002308EF /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Resources/Info.plist",
-			);
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/deploy.sh",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /usr/bin/ruby;
-			shellScript = "# coding: utf-8\nEncoding.default_external = 'utf-8'\nEncoding.default_internal = 'utf-8'\n\nrequire 'pathname'\nVER = `cat Resources/Info.plist |tr -d '\\012'| perl -e \"while(<>){if (\\\\$_ =~ /CFBundleVersion\\\\<\\\\/key\\\\>\\\\t\\\\<string\\\\>(.+?)\\<\\\\/string\\\\>/) {print \\\\$1;}}\"`\nBUILT_PRODUCTS_DIR = ENV['BUILT_PRODUCTS_DIR']\nPRODUCT_NAME = ENV['PRODUCT_NAME']\nORIG_DMG = Pathname.pwd.parent.join('TeX2imgDmg/Disk Image.dmg').to_s\nDMG = \"#{BUILT_PRODUCTS_DIR}/#{PRODUCT_NAME}_#{VER}.dmg\"\nAPPCAST = Pathname.pwd.parent.join(\"#{PRODUCT_NAME}_Appcast\").to_s\nOUTPUT = \"#{BUILT_PRODUCTS_DIR}/deploy.sh\"\nOPENSSL = \"/usr/bin/openssl\"\n\nscript = <<EOS\n#!/bin/bash\nAPPCAST=\"#{APPCAST}\"\nif [ -e \"#{DMG}\" ]; then rm \"#{DMG}\"; fi\nif [ -e \"${APPCAST}2.xml\" ]; then rm \"${APPCAST}2.xml\"; fi\n\n#hdiutil create -ov -srcfolder \"#{BUILT_PRODUCTS_DIR}/#{PRODUCT_NAME}.app\" -fs HFS+ -format UDZO -imagekey zlib-level=9 -volname \"#{PRODUCT_NAME}\" \"#{DMG}\"\nmv \"#{ORIG_DMG}\" \"#{DMG}\"\n\nif ! [ $? -eq 0 ]; then\n    echo ERROR\n    exit 1\nfi\n\ncodesign --force -s \"Developer ID Application: Yusuke Terada (86GWZ48925)\" \"#{DMG}\"\n\nSIGNATURE=$(\"#{OPENSSL}\" dgst -sha1 -binary < \"#{DMG}\" | \"#{OPENSSL}\" dgst -dss1 -sign \"#{Pathname.pwd.parent.parent.join(\"設定/証明書/Sparkle/dsa_priv.pem\").to_s}\" |\"#{OPENSSL}\" enc -base64)\nLENGTH=$(ls -l \"#{DMG}\" | sed -e 's/  */ /g' | cut -d ' ' -f5  | tr -d '\\012')\n\nsed -e \"s|dsaSignature=\\\\\".*\\\\\"|dsaSignature=\\\\\"$SIGNATURE\\\\\"|\" -e \"s/length=\\\\\".*\\\\\"/length=\\\\\"$LENGTH\\\\\"/\" -e \"s/#{PRODUCT_NAME}_.*\\\\.dmg/#{PRODUCT_NAME}_#{VER}.dmg/\" -e 's/sparkle:version=\".*\"/sparkle:version=\"#{VER}\"/' \"${APPCAST}.xml\" > \"${APPCAST}2.xml\"\n\nmv \"${APPCAST}2.xml\" \"${APPCAST}.xml\"\necho Created: #{DMG}\necho Updated: \"${APPCAST}.xml\"\nEOS\n\nopen(OUTPUT, \"w\"){|f| f.write script}\nsystem(\"chmod +x #{OUTPUT}\")\n";
-		};
-		34A517301B8CBB790028FA5F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Sources/CLI/mainc.swift",
-			);
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/deployc.sh",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "VER=`grep 'let tex2imgVersion' Sources/CLI/mainc.swift | sed 's/.*= \"\\(.*\\)\"/\\1/'`\ncd $BUILT_PRODUCTS_DIR\necho \"#!/bin/sh\" > deployc.sh\necho zip tex2imgcMac$VER.zip tex2img >> deployc.sh\nchmod +x deployc.sh\n";
-		};
+
+
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */

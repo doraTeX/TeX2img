@@ -3,26 +3,21 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 DERIVED_DATA="${DERIVED_DATA:-$HOME/Developer/DerivedData/TeX2img}"
 PRODUCTS="$DERIVED_DATA/Build/Products/Release"
 
 "$SCRIPT_DIR/build.sh" tex2img Release
 
-if [[ ! -f "$PRODUCTS/deployc.sh" ]]; then
-    echo "ERROR: deployc.sh was not generated in $PRODUCTS" >&2
-    exit 1
-fi
+VERSION=$(grep 'let tex2imgVersion' "$PROJECT_DIR/Sources/CLI/mainc.swift" \
+    | sed 's/.*= "\(.*\)"/\1/')
+ZIP="$PRODUCTS/tex2imgcMac${VERSION}.zip"
 
 (
     cd "$PRODUCTS"
-    ./deployc.sh
+    rm -f "$ZIP"
+    zip "$ZIP" tex2img
 )
 
-ZIP="$(ls -1 "$PRODUCTS"/tex2imgcMac*.zip 2>/dev/null | tail -1)"
-if [[ -n "$ZIP" && -f "$ZIP" ]]; then
-    echo ""
-    echo "Created: $ZIP"
-else
-    echo "ERROR: zip file not found in $PRODUCTS" >&2
-    exit 1
-fi
+echo ""
+echo "Created: $ZIP"

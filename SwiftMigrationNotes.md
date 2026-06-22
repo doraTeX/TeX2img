@@ -72,7 +72,7 @@ TeX2img と tex2img が Swift ソースを共有しているため、Xcode が `
 - getopt のオプション最短マッチ（prefix abbreviation）は再現しない。フルオプション名（または定義した短縮形）が必要。
 - シノニムオプション（`--compiler` / `--latex`、`--dviware` / `--dvidriver` / `--dvipdfmx`）は Argument Parser の複数名で維持。
 - `--[no-]xxx` 形式のフラグは正/負ペアの `@Flag` で実装。両方指定時はコマンドライン上の後勝ち。
-- バージョン文字列は `let tex2imgVersion`（deployc.sh のシェルスクリプトも参照先を更新）。
+- バージョン文字列は `let tex2imgVersion`（`deploy-cui.sh` の zip 名も参照）。
 - tex2img ターゲットに Swift Argument Parser（SPM）を追加。
 - Profile キー定数は `GlobalConstants.swift` に移行済み。tex2img はブリッジングヘッダ不要のため `Bridging-Header-C.h` を削除。
 
