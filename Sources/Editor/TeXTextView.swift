@@ -287,7 +287,7 @@ class TeXTextView: NSTextView {
         self.typingAttributes = typingAttributes
 
         let rangeOfChange = NSRange(location: 0, length: string.count)
-        shouldChangeText(in: rangeOfChange, replacementString: nil)
+        _ = shouldChangeText(in: rangeOfChange, replacementString: nil)
         textStorage?.setAttributes(typingAttributes, range: rangeOfChange)
         didChangeText()
     }
@@ -328,7 +328,7 @@ class TeXTextView: NSTextView {
             "undoKey": key,
         ]
         undoManager.registerUndo(withTarget: self) { target in
-            (target as? TeXTextView)?.undoSpecial(dictionary)
+            target.undoSpecial(dictionary)
         }
         undoManager.setActionName(key)
     }
@@ -339,7 +339,7 @@ class TeXTextView: NSTextView {
               let newString = theDictionary["oldString"] as? String,
               let undoKey = theDictionary["undoKey"] as? String else { return }
 
-        var undoRange = NSRange(location: Int(oldLocation), length: Int(oldLength))
+        let undoRange = NSRange(location: Int(oldLocation), length: Int(oldLength))
         if undoRange.location + undoRange.length > string.count { return }
 
         let oldString = string.substring(with: undoRange)
@@ -419,7 +419,7 @@ class TeXTextView: NSTextView {
         if type == .string, currentProfile.boolForKey(ConvertYenMarkKey) {
             guard let pasteboardString = pboard.string(forType: .string) else { return false }
             let string = NSMutableString(string: pasteboardString)
-            string.replaceYenWithBackSlash()
+            _ = string.replaceYenWithBackSlash()
 
             let selectedRange = self.selectedRange
             if shouldChangeText(in: selectedRange, replacementString: string as String) {

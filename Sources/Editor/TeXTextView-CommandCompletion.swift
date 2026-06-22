@@ -177,7 +177,7 @@ extension TeXTextView {
                     )
                 }
 
-                var mutableString = NSMutableString(string: foundString)
+                let mutableString = NSMutableString(string: foundString)
                 mutableString.replaceOccurrences(
                     of: "#RET#",
                     with: "\n",
