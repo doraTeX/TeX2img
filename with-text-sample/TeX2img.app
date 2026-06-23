@@ -1,1 +1,0 @@
-/tmp/tex2img-build/Build/Products/Debug/TeX2img.app

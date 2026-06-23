@@ -67,6 +67,10 @@ htmlcov/
 .nox/
 cython_debug/
 
+# Internal docs and local samples (do not publish)
+with-text-sample/
+SwiftMigration*.md
+
 # Signing keys and credentials (never commit)
 *.pem
 *.p12
