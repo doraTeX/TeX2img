@@ -186,8 +186,7 @@ extension String {
     // MARK: - UUID / encoding detection
 
     static func uuidString() -> String {
-        let uuid = CFUUIDCreate(kCFAllocatorDefault)!
-        return CFUUIDCreateString(kCFAllocatorDefault, uuid)! as String
+        UUID().uuidString
     }
 
     static func stringWithAutoEncodingDetectionOfData(_ data: Data, detectedEncoding encoding: UnsafeMutablePointer<UInt>) -> String? {

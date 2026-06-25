@@ -655,8 +655,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             alert.addButton(withTitle: "OK")
             alert.addButton(withTitle: NSLocalizedString("Open in App Store", comment: ""))
             let result = alert.runModal()
-            if result == .alertSecondButtonReturn {
-                NSWorkspace.shared.open(URL(string: GAPPLIN_URL)!)
+            if result == .alertSecondButtonReturn, let url = URL(string: GAPPLIN_URL) {
+                NSWorkspace.shared.open(url)
             }
         } else {
             Utility.previewFiles(files, app: app)

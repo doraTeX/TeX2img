@@ -240,7 +240,8 @@ class Converter: NSObject {
 
         arguments.append(texFilePath.quotingWithDoubleQuotations())
 
-        let auxFilePath = workingDirectory.appendingPathComponent(tempFileBaseName).appendingPathExtension("aux")!
+        let auxFileBasePath = workingDirectory.appendingPathComponent(tempFileBaseName)
+        let auxFilePath = auxFileBasePath.appendingPathExtension("aux") ?? "\(auxFileBasePath).aux"
 
         if fileManager.fileExists(atPath: auxFilePath) && !((try? fileManager.removeItem(atPath: auxFilePath)) != nil) {
             return false
@@ -383,7 +384,7 @@ class Converter: NSObject {
                          fillBackground: Bool) -> Bool {
         let cropFileBasePath = String(format: "%@-pdfcrop-%ld%d",
                                       workingDirectory.appendingPathComponent(tempFileBaseName), page, addMargin ? 1 : 0)
-        let cropPdfSourcePath = cropFileBasePath.appendingPathExtension("pdf")!
+        let cropPdfSourcePath = cropFileBasePath.appendingPathExtension("pdf") ?? "\(cropFileBasePath).pdf"
 
         if useCache && fileManager.fileExists(atPath: cropPdfSourcePath) {
             try? fileManager.removeItem(atPath: outputFileName)
@@ -1208,7 +1209,7 @@ class Converter: NSObject {
         let outlinedPdfFileName = baseName + "-outline.pdf"
         let croppedPdfFileName = baseName + "-crop.pdf"
         let trimmedPdfFileName = baseName + "-trim.pdf"
-        let tempEpsFileName = baseName.appendingPathExtension("eps")!
+        let tempEpsFileName = baseName.appendingPathExtension("eps") ?? "\(baseName).eps"
 
         if isUsingNewGS() {
             if !pdfcrop(pdfFilePath, outputFileName: croppedPdfFileName, page: page, addMargin: true, useCache: true, fillBackground: false) {
@@ -1928,21 +1929,21 @@ class Converter: NSObject {
                     return false
                 }
 
-                let tempPdfFilePath = basePath.appendingPathExtension("pdf")!
+                let tempPdfFilePath = basePath.appendingPathExtension("pdf") ?? "\(basePath).pdf"
                 guard (try? fileManager.copyItem(atPath: sourcePath, toPath: tempPdfFilePath)) != nil else {
                     controller?.showFileGenerationError(tempPdfFilePath)
                     controller?.generationDidFinish(.failed)
                     return false
                 }
             } else if psInputMode {
-                let tempPsFilePath = basePath.appendingPathExtension("ps")!
+                let tempPsFilePath = basePath.appendingPathExtension("ps") ?? "\(basePath).ps"
                 guard (try? fileManager.copyItem(atPath: sourcePath, toPath: tempPsFilePath)) != nil else {
                     controller?.showFileGenerationError(tempPsFilePath)
                     controller?.generationDidFinish(.failed)
                     return false
                 }
             } else {
-                let tempTeXFilePath = basePath.appendingPathExtension("tex")!
+                let tempTeXFilePath = basePath.appendingPathExtension("tex") ?? "\(basePath).tex"
                 guard (try? fileManager.copyItem(atPath: sourcePath, toPath: tempTeXFilePath)) != nil else {
                     controller?.showFileGenerationError(tempTeXFilePath)
                     controller?.generationDidFinish(.failed)
