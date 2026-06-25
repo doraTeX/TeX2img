@@ -310,9 +310,7 @@ struct Tex2imgCommand: ParsableCommand {
         let pdftopsPath = UtilityC.getPath("xpdf-pdftops") ?? UtilityC.getPath("pdftops") ?? "pdftops"
         controller.mudrawPath = mudrawPath
 
-        guard let outputFilePath = Utility.getFullPath(outputFile) else {
-            throw Tex2imgCLIError.failed
-        }
+        guard let outputFilePath = Utility.getFullPath(outputFile) else { throw Tex2imgCLIError.failed }
 
         var profile: Profile = [:]
         profile[LatexPathKey] = latexPath.appendingStringSeparatedBySpace(latex.argumentsString)
@@ -323,7 +321,7 @@ struct Tex2imgCommand: ParsableCommand {
         profile[PdftopsPathKey] = pdftopsPath
         profile[OutputFileKey] = outputFilePath
         profile[EncodingKey] = encoding
-        profile[NumberOfCompilationKey] = numberOfCompilation!
+        profile[NumberOfCompilationKey] = numberOfCompilation ?? 1
         profile[ResolutionKey] = resolution
         profile[DPIKey] = dpi
         profile[LeftMarginKey] = leftMargin

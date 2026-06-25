@@ -104,13 +104,13 @@ extension Converter {
                 }
             }
             
-            var regex: NSRegularExpression {
-                return try! NSRegularExpression(pattern: self.regexPattern, options: [])
+            var regex: NSRegularExpression? {
+                try? NSRegularExpression(pattern: regexPattern, options: [])
             }
             
             func checkingResultOf(content: String) -> NSTextCheckingResult? {
                 let range = NSRange(location: 0, length: content.nsLength)
-                return self.regex.firstMatch(in: content, options: [], range: range)
+                return regex?.firstMatch(in: content, options: [], range: range)
             }
         }
         

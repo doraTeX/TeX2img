@@ -452,11 +452,11 @@ class Converter: NSObject {
         guard let bbStr = bboxString(ofPdf: pdfName, page: Int(page), hires: false) else { return false }
         if bbStr == emptyBBox { return true }
 
-        var hiresBbStr = bboxString(ofPdf: pdfName, page: Int(page), hires: true)
+        let hiresBbStr = bboxString(ofPdf: pdfName, page: Int(page), hires: true)?
+            .replacingOccurrences(of: "%%HiResBoundingBox: ", with: "")
         let bbContent = bbStr.replacingOccurrences(of: "%%BoundingBox: ", with: "")
-        hiresBbStr = hiresBbStr?.replacingOccurrences(of: "%%HiResBoundingBox: ", with: "") ?? bbContent
 
-        replaceBBoxOf(epsPath: epsPath, boundingBox: bbContent, hiresBoundingBox: hiresBbStr!)
+        replaceBBoxOf(epsPath: epsPath, boundingBox: bbContent, hiresBoundingBox: hiresBbStr ?? bbContent)
         return true
     }
 

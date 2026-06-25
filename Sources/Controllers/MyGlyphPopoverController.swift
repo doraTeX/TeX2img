@@ -318,7 +318,7 @@ class MyGlyphPopoverController: NSViewController {
         unicodesTextView.layoutManager?.replaceTextStorage(newStorage)
 
         unicodesTextView.sizeToFit()
-        let rect = unicodesTextView.layoutManager?.usedRect(for: unicodesTextView.textContainer!) ?? .zero
+        let rect = unicodesTextView.textContainer.flatMap { unicodesTextView.layoutManager?.usedRect(for: $0) } ?? .zero
         var newHeight = rect.size.height + 50
         newHeight = newHeight < oldHeight ? oldHeight : min(newHeight, 300)
 

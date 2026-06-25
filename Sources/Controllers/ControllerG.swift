@@ -385,22 +385,18 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                                  foregroundColor: NSColor?,
                                  backgroundColor: NSColor?,
                                  cursorColor: NSColor?) {
-        var foregroundColor = foregroundColor
-        var backgroundColor = backgroundColor
-        var cursorColor = cursorColor
+        let foregroundColor = foregroundColor ?? .defaultForegroundColor
+        let backgroundColor = backgroundColor ?? .defaultBackgroundColor
+        let cursorColor = cursorColor ?? .defaultCursorColor
 
-        if foregroundColor == nil { foregroundColor = .defaultForegroundColor }
-        if backgroundColor == nil { backgroundColor = .defaultBackgroundColor }
-        if cursorColor == nil { cursorColor = .defaultCursorColor }
-
-        textView.textColor = foregroundColor!
-        textView.backgroundColor = backgroundColor!
-        textView.insertionPointColor = cursorColor!
+        textView.textColor = foregroundColor
+        textView.backgroundColor = backgroundColor
+        textView.insertionPointColor = cursorColor
 
         let entireRange = NSRange(location: 0, length: textView.string.nsLength)
         textView.textStorage?.setAttributes([
-            .foregroundColor: foregroundColor!,
-            .backgroundColor: backgroundColor!
+            .foregroundColor: foregroundColor,
+            .backgroundColor: backgroundColor
         ], range: entireRange)
     }
 
@@ -495,7 +491,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         outputWindowMenuItem.state = .on
 
         let outputWindowRect = outputWindow.frame
-        let screen = mainWindow.screen ?? NSScreen.main!
+        guard let screen = mainWindow.screen ?? NSScreen.main else { return }
         let outputWindowNewOriginY = max(mainWindow.frame.minY, screen.visibleFrame.minY)
         let outputWindowNewHeight = max(mainWindow.frame.maxY - outputWindowNewOriginY, outputWindow.minSize.height)
 
@@ -932,9 +928,13 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
         switch InputMethod(rawValue: aProfile.integerForKey(InputMethodKey)) ?? .direct {
         case .direct:
-            sourceSettingChanged(directInputButton!)
+            if let directInputButton {
+                sourceSettingChanged(directInputButton)
+            }
         case .fromFile:
-            sourceSettingChanged(inputSourceFileButton!)
+            if let inputSourceFileButton {
+                sourceSettingChanged(inputSourceFileButton)
+            }
         }
     }
 
@@ -1285,8 +1285,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             }
         }
         observeNotification(forName: NSControl.textDidChangeNotification, object: tabWidthTextField) { [weak self] _ in
-            guard let self else { return }
-            self.refreshTextView(self.tabWidthTextField!)
+            guard let self, let tabWidthTextField = self.tabWidthTextField else { return }
+            self.refreshTextView(tabWidthTextField)
         }
         observeNotification(forName: NSControl.textDidChangeNotification, object: outputFileTextField) { [weak self] _ in
             self?.outputFilePathChanged(nil)
@@ -1298,7 +1298,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         lastActiveWindow = mainWindow
 
         colorPalleteColorWell.color = .red
-        colorPalleteColorSet(colorPalleteColorWell!)
+        if let colorPalleteColorWell {
+            colorPalleteColorSet(colorPalleteColorWell)
+        }
 
         autoDetectionTargetMatrix.setCellColor(.textColor)
         spaceCharacterKindMatrix.setCellColor(.textColor)
@@ -1556,7 +1558,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         if !parts[1].isEmpty {
             sourceTextView.replaceEntireContents(with: parts[1])
         }
-        sourceSettingChanged(directInputButton!)
+        if let directInputButton {
+            sourceSettingChanged(directInputButton)
+        }
     }
 
     private func stringEncoding(from option: String?) -> String.Encoding {
@@ -2041,7 +2045,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         } else {
             preambleWindowMenuItem.state = .on
             let preambleWindowRect = preambleWindow.frame
-            let screen = mainWindow.screen ?? NSScreen.main!
+            guard let screen = mainWindow.screen ?? NSScreen.main else { return }
             let preambleWindowNewOriginY = max(mainWindow.frame.minY, screen.visibleFrame.minY)
             let preambleWindowNewHeight = max(mainWindow.frame.maxY - preambleWindowNewOriginY, preambleWindow.minSize.height)
 
@@ -2347,16 +2351,19 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     @IBAction func showAutoDetectionTargetSettingPopover(_ sender: NSButton) {
-        NSPopover.show(with: autoDetectionTargetSettingViewController, atRightOf: sender, view: preferenceWindow.contentView!, offsetX: 25, y: 24)
+        guard let contentView = preferenceWindow.contentView else { return }
+        NSPopover.show(with: autoDetectionTargetSettingViewController, atRightOf: sender, view: contentView, offsetX: 25, y: 24)
     }
 
     @IBAction func showPageBoxSettingPopover(_ sender: NSButton) {
+        guard let contentView = preferenceWindow.contentView else { return }
         let y = preferenceWindow.frame.size.height - (UtilityG.isJapaneseLanguage() ? 313 : 300)
-        NSPopover.show(with: pageBoxSettingViewController, atRightOf: sender, view: preferenceWindow.contentView!, offsetX: 32, y: y)
+        NSPopover.show(with: pageBoxSettingViewController, atRightOf: sender, view: contentView, offsetX: 32, y: y)
     }
 
     @IBAction func showAnimationParameterSettingPopover(_ sender: NSButton) {
-        NSPopover.show(with: animationParameterSettingViewController, atRightOf: sender, view: preferenceWindow.contentView!, offsetX: 32, y: preferenceWindow.frame.size.height - 446)
+        guard let contentView = preferenceWindow.contentView else { return }
+        NSPopover.show(with: animationParameterSettingViewController, atRightOf: sender, view: contentView, offsetX: 32, y: preferenceWindow.frame.size.height - 446)
     }
 
     @IBAction func extensionPopUpButtonChanged(_ sender: NSPopUpButton) {

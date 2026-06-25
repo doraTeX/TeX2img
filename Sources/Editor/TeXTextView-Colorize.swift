@@ -68,7 +68,7 @@ extension TeXTextView {
     func resetBackgroundColor(_ sender: Any?) {
         layoutManager?.removeTemporaryAttribute(
             .backgroundColor,
-            forCharacterRange: NSRange(location: 0, length: textStorage!.length)
+            forCharacterRange: NSRange(location: 0, length: textStorage?.length ?? 0)
         )
         contentHighlighting = false
     }
@@ -111,10 +111,11 @@ extension TeXTextView {
             resetHighlight(nil)
         }
 
-        highlightBracesColorDict = [.foregroundColor: UtilityG.highlightedBraceColor(inProfile: profile)]
+        let highlightAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UtilityG.highlightedBraceColor(inProfile: profile)]
+        highlightBracesColorDict = highlightAttributes
         let braceCharList: [unichar] = [0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E]
 
-        let theString = textStorage!.string
+        guard let theString = textStorage?.string else { return }
         let theStringLength = theString.length
         guard theStringLength > 0 else { return }
 
@@ -196,11 +197,11 @@ extension TeXTextView {
                     if highlightPattern != NOHIGHLIGHT {
                         braceHighlighting = true
                         layoutManager.addTemporaryAttributes(
-                            highlightBracesColorDict!,
+                            highlightAttributes,
                             forCharacterRange: NSRange(location: location, length: 1)
                         )
                         layoutManager.addTemporaryAttributes(
-                            highlightBracesColorDict!,
+                            highlightAttributes,
                             forCharacterRange: NSRange(location: originalLocation, length: 1)
                         )
                         display()
@@ -251,7 +252,7 @@ extension TeXTextView {
 
         guard let replacementString, replacementString.count == 1 else { return true }
 
-        let rightpar = replacementString.utf16.first!
+        guard let rightpar = replacementString.utf16.first else { return true }
         let profile = controller.currentProfile()
         let highlightPattern = SOLID
         let checkBrace = profile.boolForKey(CheckBraceKey)

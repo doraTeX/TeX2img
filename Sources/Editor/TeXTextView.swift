@@ -230,12 +230,10 @@ class TeXTextView: NSTextView {
                 length: srcRange.length - (srcLocation - srcRange.location)
             )
 
-            if fgColor == nil {
-                fgColor = foregroundColor
-            }
+            if fgColor == nil { fgColor = foregroundColor }
 
             let attr: [NSAttributedString.Key: Any] = [
-                .foregroundColor: fgColor!,
+                .foregroundColor: fgColor ?? foregroundColor,
                 .backgroundColor: backgroundColor,
             ]
 
@@ -616,7 +614,7 @@ class TeXTextView: NSTextView {
     }
 
     func replaceEntireContents(with contents: String) {
-        insertText(contents, replacementRange: NSRange(location: 0, length: textStorage!.length))
+        insertText(contents, replacementRange: NSRange(location: 0, length: string.nsLength))
         selectedRange = NSRange(location: 0, length: 0)
         scrollRangeToVisible(NSRange(location: 0, length: 0))
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
@@ -632,7 +630,7 @@ class TeXTextView: NSTextView {
 
         let oldRange = selectedRange
         let regex = try? NSRegularExpression(pattern: #"\\(begin|end)\{(.*?)\}"#, options: [])
-        let target = textStorage!.string.substring(to: oldRange.location)
+        let target = string.substring(to: oldRange.location)
         let matches = regex?.matches(in: target, options: [], range: NSRange(location: 0, length: target.nsLength)) ?? []
 
         var newString: String?
@@ -687,8 +685,9 @@ class TeXTextView: NSTextView {
         let selectedString = string.substring(with: selectedRange)
         guard let popoverController = MyGlyphPopoverController(character: selectedString) else { return }
 
-        let glyphRange = layoutManager!.glyphRange(forCharacterRange: selectedRange, actualCharacterRange: nil)
-        var selectedRect = layoutManager!.boundingRect(forGlyphRange: glyphRange, in: textContainer!)
+        guard let layoutManager, let textContainer else { return }
+        let glyphRange = layoutManager.glyphRange(forCharacterRange: selectedRange, actualCharacterRange: nil)
+        var selectedRect = layoutManager.boundingRect(forGlyphRange: glyphRange, in: textContainer)
         let containerOrigin = textContainerOrigin
         selectedRect.origin.x += containerOrigin.x
         selectedRect.origin.y += containerOrigin.y - 6.0
@@ -838,7 +837,7 @@ class TeXTextView: NSTextView {
 
     func indentStringForCurrentLocation() -> String {
         let selectedRange = self.selectedRange
-        let stringToCurrentLocation = "\n" + textStorage!.string.substring(to: selectedRange.location)
+        let stringToCurrentLocation = "\n" + string.substring(to: selectedRange.location)
         let regex = try? NSRegularExpression(pattern: "\\n([ \t]*)[^\\n]*$", options: [])
         let match = regex?.firstMatch(in: stringToCurrentLocation, options: [], range: NSRange(location: 0, length: stringToCurrentLocation.nsLength))
         guard let match else { return "" }
