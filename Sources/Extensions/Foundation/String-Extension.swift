@@ -95,15 +95,22 @@ extension String {
     }
 
     func substring(with range: NSRange) -> String {
-        (self as NSString).substring(with: range)
+        guard range.location != NSNotFound,
+              range.location >= 0,
+              range.length >= 0,
+              range.location <= nsLength,
+              range.length <= nsLength - range.location else { return "" }
+        return (self as NSString).substring(with: range)
     }
 
     func substring(from offset: Int) -> String {
-        (self as NSString).substring(from: offset)
+        guard offset >= 0, offset <= nsLength else { return "" }
+        return (self as NSString).substring(from: offset)
     }
 
     func substring(to offset: Int) -> String {
-        (self as NSString).substring(to: offset)
+        guard offset >= 0, offset <= nsLength else { return "" }
+        return (self as NSString).substring(to: offset)
     }
 
     func getLineStart(
@@ -112,7 +119,10 @@ extension String {
         contentsEnd: UnsafeMutablePointer<Int>?,
         for range: NSRange
     ) {
-        (self as NSString).getLineStart(start, end: end, contentsEnd: contentsEnd, for: range)
+        let location = min(max(range.location, 0), nsLength)
+        let length = min(max(range.length, 0), nsLength - location)
+        (self as NSString).getLineStart(start, end: end, contentsEnd: contentsEnd,
+                                        for: NSRange(location: location, length: length))
     }
 
     func rangeOfCharacter(
@@ -120,26 +130,53 @@ extension String {
         options: NSString.CompareOptions = [],
         range searchRange: NSRange
     ) -> NSRange {
-        (self as NSString).rangeOfCharacter(from: searchSet, options: options, range: searchRange)
+        guard searchRange.location != NSNotFound,
+              searchRange.location >= 0,
+              searchRange.length >= 0,
+              searchRange.location <= nsLength,
+              searchRange.length <= nsLength - searchRange.location else {
+            return NSRange(location: NSNotFound, length: 0)
+        }
+        return (self as NSString).rangeOfCharacter(from: searchSet, options: options, range: searchRange)
     }
 
     func range(of searchString: String, options: NSString.CompareOptions = [], range searchRange: NSRange? = nil) -> NSRange {
         if let searchRange {
+            guard searchRange.location != NSNotFound,
+                  searchRange.location >= 0,
+                  searchRange.length >= 0,
+                  searchRange.location <= nsLength,
+                  searchRange.length <= nsLength - searchRange.location else {
+                return NSRange(location: NSNotFound, length: 0)
+            }
             return (self as NSString).range(of: searchString, options: options, range: searchRange)
         }
         return (self as NSString).range(of: searchString, options: options)
     }
 
     func character(at index: Int) -> unichar {
-        (self as NSString).character(at: index)
+        guard index >= 0, index < nsLength else { return 0 }
+        return (self as NSString).character(at: index)
     }
 
     func lineRange(for range: NSRange) -> NSRange {
-        (self as NSString).lineRange(for: range)
+        guard range.location != NSNotFound,
+              range.location >= 0,
+              range.length >= 0,
+              range.location <= nsLength,
+              range.length <= nsLength - range.location else {
+            return NSRange(location: min(max(range.location, 0), nsLength), length: 0)
+        }
+        return (self as NSString).lineRange(for: range)
     }
 
     func replacingCharacters(in range: NSRange, with replacement: String) -> String {
-        (self as NSString).replacingCharacters(in: range, with: replacement)
+        guard range.location != NSNotFound,
+              range.location >= 0,
+              range.length >= 0,
+              range.location <= nsLength,
+              range.length <= nsLength - range.location else { return self }
+        return (self as NSString).replacingCharacters(in: range, with: replacement)
     }
 
     func canBeConverted(to encoding: UInt) -> Bool {

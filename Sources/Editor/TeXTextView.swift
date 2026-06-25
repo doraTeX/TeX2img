@@ -286,7 +286,7 @@ class TeXTextView: NSTextView {
         typingAttributes[.font] = font
         self.typingAttributes = typingAttributes
 
-        let rangeOfChange = NSRange(location: 0, length: string.count)
+        let rangeOfChange = NSRange(location: 0, length: string.nsLength)
         _ = shouldChangeText(in: rangeOfChange, replacementString: nil)
         textStorage?.setAttributes(typingAttributes, range: rangeOfChange)
         didChangeText()
@@ -340,11 +340,11 @@ class TeXTextView: NSTextView {
               let undoKey = theDictionary["undoKey"] as? String else { return }
 
         let undoRange = NSRange(location: Int(oldLocation), length: Int(oldLength))
-        if undoRange.location + undoRange.length > string.count { return }
+        if undoRange.location + undoRange.length > string.nsLength { return }
 
         let oldString = string.substring(with: undoRange)
         replaceCharacters(in: undoRange, with: newString)
-        registerUndo(with: oldString, location: UInt(undoRange.location), length: UInt(newString.count), key: undoKey)
+        registerUndo(with: oldString, location: UInt(undoRange.location), length: UInt(newString.nsLength), key: undoKey)
         resetBackgroundColor(nil)
     }
 
@@ -362,7 +362,7 @@ class TeXTextView: NSTextView {
 
         let newString = stringBuf
         replaceCharacters(in: oldRange, with: newString)
-        registerUndo(with: oldString, location: UInt(oldRange.location), length: UInt(newString.count), key: key)
+        registerUndo(with: oldString, location: UInt(oldRange.location), length: UInt(newString.nsLength), key: key)
 
         colorizeText()
 
@@ -633,7 +633,7 @@ class TeXTextView: NSTextView {
         let oldRange = selectedRange
         let regex = try? NSRegularExpression(pattern: #"\\(begin|end)\{(.*?)\}"#, options: [])
         let target = textStorage!.string.substring(to: oldRange.location)
-        let matches = regex?.matches(in: target, options: [], range: NSRange(location: 0, length: target.count)) ?? []
+        let matches = regex?.matches(in: target, options: [], range: NSRange(location: 0, length: target.nsLength)) ?? []
 
         var newString: String?
         var environmentStack = [String: Int]()
@@ -756,9 +756,9 @@ class TeXTextView: NSTextView {
         }
 
         replaceCharacters(in: selectedRange, with: newString)
-        registerUndo(with: selectedString as String, location: UInt(selectedRange.location), length: UInt(newString.count), key: undoKey)
+        registerUndo(with: selectedString as String, location: UInt(selectedRange.location), length: UInt(newString.nsLength), key: undoKey)
         undoManager?.setActionName(undoKey)
-        self.selectedRange = NSRange(location: selectedRange.location, length: newString.count)
+        self.selectedRange = NSRange(location: selectedRange.location, length: newString.nsLength)
     }
 
     @IBAction func normalizeSelectedString(_ sender: NSMenuItem) {
@@ -807,9 +807,9 @@ class TeXTextView: NSTextView {
         }
 
         replaceCharacters(in: selectedRange, with: newString)
-        registerUndo(with: selectedString as String, location: UInt(selectedRange.location), length: UInt(newString.count), key: undoKey)
+        registerUndo(with: selectedString as String, location: UInt(selectedRange.location), length: UInt(newString.nsLength), key: undoKey)
         undoManager?.setActionName(undoKey)
-        self.selectedRange = NSRange(location: selectedRange.location, length: newString.count)
+        self.selectedRange = NSRange(location: selectedRange.location, length: newString.nsLength)
         showCharacterInfo(nil)
     }
 
@@ -820,7 +820,7 @@ class TeXTextView: NSTextView {
         let oldString = string.substring(with: currentRange)
 
         replaceCharacters(in: currentRange, with: textToInsert)
-        registerUndo(with: oldString, location: UInt(currentRange.location), length: UInt(textToInsert.count), key: actionName)
+        registerUndo(with: oldString, location: UInt(currentRange.location), length: UInt(textToInsert.nsLength), key: actionName)
         colorizeText()
     }
 
@@ -840,7 +840,7 @@ class TeXTextView: NSTextView {
         let selectedRange = self.selectedRange
         let stringToCurrentLocation = "\n" + textStorage!.string.substring(to: selectedRange.location)
         let regex = try? NSRegularExpression(pattern: "\\n([ \t]*)[^\\n]*$", options: [])
-        let match = regex?.firstMatch(in: stringToCurrentLocation, options: [], range: NSRange(location: 0, length: stringToCurrentLocation.count))
+        let match = regex?.firstMatch(in: stringToCurrentLocation, options: [], range: NSRange(location: 0, length: stringToCurrentLocation.nsLength))
         guard let match else { return "" }
         return stringToCurrentLocation.substring(with: match.range(at: 1))
     }

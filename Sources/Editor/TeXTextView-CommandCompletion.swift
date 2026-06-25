@@ -140,11 +140,20 @@ extension TeXTextView {
             while true {
                 let searchRange: NSRange
                 if !event.modifierFlags.isEmpty && wasCompleted {
+                    guard completionListLocation > 0 else {
+                        foundCandidate = false
+                        break
+                    }
                     searchRange = NSRange(location: 0, length: Int(completionListLocation) - 1)
                 } else {
+                    let completionListLength = commandCompletionList.nsLength
+                    guard completionListLocation <= UInt(completionListLength) else {
+                        foundCandidate = false
+                        break
+                    }
                     searchRange = NSRange(
                         location: Int(completionListLocation),
-                        length: commandCompletionList.count - Int(completionListLocation)
+                        length: completionListLength - Int(completionListLocation)
                     )
                 }
 
@@ -173,7 +182,7 @@ extension TeXTextView {
                 let spaceRange = foundString.range(of: ":=")
                 if spaceRange.location != NSNotFound {
                     foundString = foundString.substring(
-                        with: NSRange(location: spaceRange.location + 2, length: foundString.count - spaceRange.location - 2)
+                        with: NSRange(location: spaceRange.location + 2, length: foundString.nsLength - spaceRange.location - 2)
                     )
                 }
 
@@ -211,7 +220,7 @@ extension TeXTextView {
                 completionListLocation = UInt(NSNotFound)
             } else if let currentString {
                 newString = "\(currentString)\n\(indentString)\(Character(UnicodeScalar(texChar)!))end\(latexString)\n"
-                insRange = NSRange(location: currentString.count, length: 0)
+                insRange = NSRange(location: currentString.nsLength, length: 0)
             }
         }
 
@@ -221,21 +230,21 @@ extension TeXTextView {
             registerUndo(
                 with: originalString ?? "",
                 location: UInt(replaceLocation),
-                length: UInt(newString.count),
+                length: UInt(newString.nsLength),
                 key: localizedCompletionString("Completion")
             )
             resetBackgroundColor(nil)
             currentString = newString
             wasCompleted = true
 
-            selectedRange = NSRange(location: replaceLocation, length: newString.count)
+            selectedRange = NSRange(location: replaceLocation, length: newString.nsLength)
             display()
             Thread.sleep(forTimeInterval: 0.05)
 
             if insRange.location != NSNotFound {
                 textLocation = replaceLocation + insRange.location
             } else {
-                textLocation = replaceLocation + newString.count
+                textLocation = replaceLocation + newString.nsLength
             }
             selectedRange = NSRange(location: textLocation, length: selectlength)
             scrollRangeToVisible(NSRange(location: textLocation, length: selectlength))

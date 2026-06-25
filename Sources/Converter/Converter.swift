@@ -435,7 +435,7 @@ class Converter: NSObject {
 
         if let versionString,
            let regex = try? NSRegularExpression(pattern: "\\d+(?:\\.\\d+)?"),
-           let match = regex.firstMatch(in: versionString, range: NSRange(location: 0, length: versionString.count)) {
+           let match = regex.firstMatch(in: versionString, range: NSRange(location: 0, length: versionString.nsLength)) {
             let versionSubstring = versionString.substring(with: match.range(at: 0))
             let version = Double(versionSubstring) ?? 0
             if version < 9.15 {
@@ -583,7 +583,7 @@ class Converter: NSObject {
         }
     }
 
-    private func fillBackground(_ bitmapRep: NSBitmapImageRep) -> NSBitmapImageRep {
+    private func fillBackground(_ bitmapRep: NSBitmapImageRep) -> NSBitmapImageRep? {
         let srcImage = NSImage()
         srcImage.addRepresentation(bitmapRep)
         let size = srcImage.size
@@ -596,11 +596,12 @@ class Converter: NSObject {
         srcImage.draw(at: .zero, from: .zero, operation: .sourceOver, fraction: 1.0)
         backgroundImage.unlockFocus()
 
-        return NSBitmapImageRep(data: backgroundImage.tiffRepresentation!)!
+        guard let tiffRepresentation = backgroundImage.tiffRepresentation else { return nil }
+        return NSBitmapImageRep(data: tiffRepresentation)
     }
 
     private func gif89aData(fromGIF87aData gif87aData: Data?) -> Data? {
-        guard let gif87aData else { return nil }
+        guard let gif87aData, gif87aData.count >= 5 else { return nil }
         let gif89aData = NSMutableData(data: gif87aData)
         var gif89a: CChar = CChar(UnicodeScalar("9").value)
         gif89aData.replaceBytes(in: NSRange(location: 4, length: 1), withBytes: &gif89a, length: 1)
@@ -690,10 +691,19 @@ class Converter: NSObject {
             thisBottomMargin /= factor
         }
 
-        let size = NSSize(width: Int(width * CGFloat(resolutionLevel)) + Int(thisLeftMargin + thisRightMargin),
-                          height: Int(height * CGFloat(resolutionLevel)) + Int(thisTopMargin + thisBottomMargin))
-
-        guard size.height > 0 && size.width > 0 else { return false }
+        let pixelWidth = width * CGFloat(resolutionLevel) + thisLeftMargin + thisRightMargin
+        let pixelHeight = height * CGFloat(resolutionLevel) + thisTopMargin + thisBottomMargin
+        let maximumBitmapDimension: CGFloat = 32_768
+        guard pixelWidth.isFinite,
+              pixelHeight.isFinite,
+              pixelWidth > 0,
+              pixelHeight > 0,
+              pixelWidth <= maximumBitmapDimension,
+              pixelHeight <= maximumBitmapDimension else {
+            controller?.showImageSizeError()
+            return false
+        }
+        let size = NSSize(width: Int(pixelWidth), height: Int(pixelHeight))
 
         let image = NSImage(size: size)
         image.lockFocus()
@@ -707,20 +717,36 @@ class Converter: NSObject {
                                     height: height * CGFloat(resolutionLevel)))
         image.unlockFocus()
 
-        var imageRep = NSBitmapImageRep(data: image.tiffRepresentation!)!
+        guard let tiffRepresentation = image.tiffRepresentation,
+              var imageRep = NSBitmapImageRep(data: tiffRepresentation) else {
+            controller?.showImageSizeError()
+            return false
+        }
 
         var outputData: Data?
         if extension_ == "jpg" {
-            imageRep = fillBackground(imageRep)
+            guard let backgroundRep = fillBackground(imageRep) else {
+                controller?.showImageSizeError()
+                return false
+            }
+            imageRep = backgroundRep
             outputData = imageRep.representation(usingType: kUTTypeJPEG, usingDPI: dpi)
         } else if extension_ == "png" {
             if !transparentFlag {
-                imageRep = fillBackground(imageRep)
+                guard let backgroundRep = fillBackground(imageRep) else {
+                    controller?.showImageSizeError()
+                    return false
+                }
+                imageRep = backgroundRep
             }
             outputData = imageRep.representation(usingType: kUTTypePNG, usingDPI: dpi)
         } else if extension_ == "gif" {
             if !transparentFlag {
-                imageRep = fillBackground(imageRep)
+                guard let backgroundRep = fillBackground(imageRep) else {
+                    controller?.showImageSizeError()
+                    return false
+                }
+                imageRep = backgroundRep
             }
             if let pngData = imageRep.representation(usingType: kUTTypePNG, usingDPI: dpi),
                let decodedRep = NSBitmapImageRep(data: pngData) {
@@ -728,12 +754,20 @@ class Converter: NSObject {
             }
         } else if extension_ == "tiff" {
             if !transparentFlag {
-                imageRep = fillBackground(imageRep)
+                guard let backgroundRep = fillBackground(imageRep) else {
+                    controller?.showImageSizeError()
+                    return false
+                }
+                imageRep = backgroundRep
             }
             outputData = imageRep.representation(usingType: kUTTypeTIFF, usingDPI: dpi)
         } else if extension_ == "bmp" {
             if !transparentFlag {
-                imageRep = fillBackground(imageRep)
+                guard let backgroundRep = fillBackground(imageRep) else {
+                    controller?.showImageSizeError()
+                    return false
+                }
+                imageRep = backgroundRep
             }
             if let pngData = imageRep.representation(usingType: kUTTypePNG, usingDPI: dpi),
                let decodedRep = NSBitmapImageRep(data: pngData) {
@@ -827,8 +861,10 @@ class Converter: NSObject {
 
         guard maxWidth > 0, maxHeight > 0 else { return false }
 
-        let gifData = CFDataCreateMutable(kCFAllocatorDefault, 0)!
-        let destination = CGImageDestinationCreateWithData(gifData, kUTTypeGIF, reps.count, nil)!
+        guard let gifData = CFDataCreateMutable(kCFAllocatorDefault, 0),
+              let destination = CGImageDestinationCreateWithData(gifData, kUTTypeGIF, reps.count, nil) else {
+            return false
+        }
         CGImageDestinationSetProperties(destination, gifProperties as CFDictionary)
 
         var success = true
@@ -843,7 +879,9 @@ class Converter: NSObject {
         }
 
         if success {
-            CGImageDestinationFinalize(destination)
+            success = CGImageDestinationFinalize(destination)
+        }
+        if success {
             let animatedData = gif89aData(fromGIF87aData: gifData as Data)
             if let animatedData {
                 let tempOutPath = workingDirectory.appendingPathComponent(tempFileBaseName + "-out.gif")
@@ -951,7 +989,7 @@ class Converter: NSObject {
             if var mstr = try? String(contentsOfFile: svgFilePath, encoding: .utf8) {
                 let pattern = "width=\".+?\" height=\".+?\" "
                 if let regex = try? NSRegularExpression(pattern: pattern),
-                   let match = regex.firstMatch(in: mstr, range: NSRange(location: 0, length: mstr.count)) {
+                   let match = regex.firstMatch(in: mstr, range: NSRange(location: 0, length: mstr.nsLength)) {
                     let nsstr = NSMutableString(string: mstr)
                     nsstr.replaceCharacters(in: match.range, with: "")
                     mstr = nsstr as String

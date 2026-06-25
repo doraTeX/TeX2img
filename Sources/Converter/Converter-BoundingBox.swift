@@ -48,13 +48,13 @@ extension Converter {
                let hiresBboxEndIndex = bboxFileData.range(of: returnCharData, options: [], in: hiresBboxHeaderRange.upperBound..<bboxFileData.endIndex)?.startIndex {
                 
                 let pageContentRange = pageHeaderRange.startIndex.advanced(by: 1)..<pageContentEndIndex
-                let pageLine = String(data: bboxFileData.subdata(in: pageContentRange), encoding: .utf8)!
+                guard let pageLine = String(data: bboxFileData.subdata(in: pageContentRange), encoding: .utf8) else { return nil }
                 
                 let bboxContentRange = bboxHeaderRange.startIndex..<bboxEndIndex
-                let bboxLine = String(data: bboxFileData.subdata(in: bboxContentRange), encoding: .utf8)!
+                guard let bboxLine = String(data: bboxFileData.subdata(in: bboxContentRange), encoding: .utf8) else { return nil }
                 
                 let hiresBboxContentRange = hiresBboxHeaderRange.startIndex..<hiresBboxEndIndex
-                let hiresBboxLine = String(data: bboxFileData.subdata(in: hiresBboxContentRange), encoding: .utf8)!
+                guard let hiresBboxLine = String(data: bboxFileData.subdata(in: hiresBboxContentRange), encoding: .utf8) else { return nil }
                 
                 result += [pageLine, bboxLine, hiresBboxLine]
                 
@@ -109,7 +109,7 @@ extension Converter {
             }
             
             func checkingResultOf(content: String) -> NSTextCheckingResult? {
-                let range = NSRange(location: 0, length: content.count)
+                let range = NSRange(location: 0, length: content.nsLength)
                 return self.regex.firstMatch(in: content, options: [], range: range)
             }
         }
@@ -119,12 +119,16 @@ extension Converter {
         if let bbArea = bboxOf(data: epsData, hires: false),
            let match = BoundingBoxType.boundingBox.checkingResultOf(content: bbArea.content) {
             
-            let matchingAt = { Int(bbArea.content.substring(with: match.range(at: $0)))! }
+            let matchingAt = { Int(bbArea.content.substring(with: match.range(at: $0))) }
+            guard let match1 = matchingAt(1),
+                  let match2 = matchingAt(2),
+                  let match3 = matchingAt(3),
+                  let match4 = matchingAt(4) else { return }
 
-            let llx = matchingAt(1) - leftMargin
-            let lly = matchingAt(2) - bottomMargin
-            let urx = matchingAt(3) + rightMargin
-            let ury = matchingAt(4) + topMargin
+            let llx = match1 - leftMargin
+            let lly = match2 - bottomMargin
+            let urx = match3 + rightMargin
+            let ury = match4 + topMargin
             let newContent = "\(llx) \(lly) \(urx) \(ury)"
             guard let newData = newContent.data(using: .utf8) else { return }
 
@@ -134,12 +138,16 @@ extension Converter {
         if let hiresBbArea = bboxOf(data: epsData, hires: true),
            let match = BoundingBoxType.hiresBoundingBox.checkingResultOf(content: hiresBbArea.content) {
             
-            let matchingAt = { Double(hiresBbArea.content.substring(with: match.range(at: $0)))! }
+            let matchingAt = { Double(hiresBbArea.content.substring(with: match.range(at: $0))) }
+            guard let match1 = matchingAt(1),
+                  let match2 = matchingAt(2),
+                  let match3 = matchingAt(3),
+                  let match4 = matchingAt(4) else { return }
 
-            let llx = matchingAt(1) - Double(leftMargin)
-            let lly = matchingAt(2) - Double(bottomMargin)
-            let urx = matchingAt(3) + Double(rightMargin)
-            let ury = matchingAt(4) + Double(topMargin)
+            let llx = match1 - Double(leftMargin)
+            let lly = match2 - Double(bottomMargin)
+            let urx = match3 + Double(rightMargin)
+            let ury = match4 + Double(topMargin)
             let newContent = "\(llx) \(lly) \(urx) \(ury)"
             guard let newData = newContent.data(using: .utf8) else { return }
 
@@ -178,10 +186,13 @@ extension Converter {
             return nil
         }
 
-        let bbox = bbStr.replacingOccurrences(of: "%%BoundingBox: ", with: "")
+        let bboxComponents = bbStr.replacingOccurrences(of: "%%BoundingBox: ", with: "")
             .replacingOccurrences(of: "\n", with: "")
-            .components(separatedBy: .whitespaces)
-            .map{ CGFloat(Int($0)!) }
+            .components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+        guard bboxComponents.count == 4 else { return nil }
+        let bbox = bboxComponents.compactMap { Int($0).map(CGFloat.init) }
+        guard bbox.count == bboxComponents.count else { return nil }
         let (bboxLx, bboxLy, bboxUx, bboxUy) = (bbox[0], bbox[1], bbox[2], bbox[3])
         
         let mediaBox = pdfPage.pageBox.mediaBoxRect
@@ -238,26 +249,25 @@ extension Converter {
     func generateCroppedPDF(of inputPath: String, page: Int, to outputPath: String, addMargin: Bool) -> Bool {
         guard let inputDoc = PDFDocument(filePath: inputPath) else { return false }
         let totalPageCount = inputDoc.pageCount
-        let targetPages = (page==0) ? [Int](1...totalPageCount) : [page]
-        let outputDocs = (0..<targetPages.count).map { _ in PDFDocument() }
-
-        var success = true
-        
-        DispatchQueue.concurrentPerform(iterations: outputDocs.count) { i in
-            let targetPage = targetPages[i]
-            guard let croppedPage = self.cropPage(of: inputPath,
-                                                  page: targetPage,
-                                                  from: inputDoc,
-                                                  addMargin: addMargin) else {
-                success = false
-                return
-            }
-            outputDocs[i].append(croppedPage)
+        guard totalPageCount > 0 else { return false }
+        let targetPages: [Int]
+        if page == 0 {
+            targetPages = Array(1...totalPageCount)
+        } else {
+            guard page > 0, page <= totalPageCount else { return false }
+            targetPages = [page]
         }
-        
-        PDFDocument(merging: outputDocs).writeToFilePath(outputPath)
-        
-        return success
+
+        let outputDocument = PDFDocument()
+        for targetPage in targetPages {
+            guard let croppedPage = cropPage(of: inputPath,
+                                             page: targetPage,
+                                             from: inputDoc,
+                                             addMargin: addMargin) else { return false }
+            outputDocument.append(croppedPage)
+        }
+
+        return outputDocument.writeToFilePath(outputPath)
     }
 
 }

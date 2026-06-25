@@ -2,9 +2,9 @@ import Cocoa
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
-    private var observer: Any!
+    private var observer: NSKeyValueObservation?
 
-    @IBOutlet weak var controllerG: ControllerG!
+    @IBOutlet weak var controllerG: ControllerG?
 
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
         true
@@ -13,19 +13,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         if #available(macOS 10.14, *) {
             // アウトプットウィンドウだけはライトモード・ダークモードの変更検出を自力でできないので，AppDelegate で変更を検知して ControllerG に対応を依頼する
-            self.observer = NSApp.observe(\.effectiveAppearance) { _, _ in
-                self.controllerG.refreshOutputTextView(usingProfile: nil)
+            observer = NSApp.observe(\.effectiveAppearance) { [weak self] _, _ in
+                self?.controllerG?.refreshOutputTextView(usingProfile: nil)
             }
         }
     }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        observer?.invalidate()
+        observer = nil
+    }
     
     func application(_ sender: NSApplication, openFile filename: String) -> Bool {
-        return controllerG.importSource(fromFilePathOrPDFDocument: filename, skipConfirm: true)
+        controllerG?.importSource(fromFilePathOrPDFDocument: filename, skipConfirm: true) ?? false
     }
 
     func application(_ sender: NSApplication, openFiles filenames: [String]) {
         guard let filename = filenames.first else { return }
-        controllerG.importSource(fromFilePathOrPDFDocument: filename, skipConfirm: false)
+        controllerG?.importSource(fromFilePathOrPDFDocument: filename, skipConfirm: false)
     }
 }
-

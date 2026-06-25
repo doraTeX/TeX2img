@@ -15,7 +15,8 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     @IBOutlet private var controllerG: ControllerG!
 
     func profileForName(_ profileName: String) -> Profile? {
-        guard let targetIndex = profileNames.firstIndex(of: profileName) else { return nil }
+        guard let targetIndex = profileNames.firstIndex(of: profileName),
+              profiles.indices.contains(targetIndex) else { return nil }
         return profiles[targetIndex]
     }
 
@@ -27,6 +28,13 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         if let storedProfiles = defaults.array(forKey: profilesKey) as? [Profile] {
             profiles = storedProfiles
         }
+        let validCount = min(profileNames.count, profiles.count)
+        if profileNames.count != validCount {
+            profileNames.removeSubrange(validCount...)
+        }
+        if profiles.count != validCount {
+            profiles.removeSubrange(validCount...)
+        }
     }
 
     func initProfiles() {
@@ -35,13 +43,15 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     }
 
     func removeProfileForName(_ profileName: String) {
-        guard let targetIndex = profileNames.firstIndex(of: profileName) else { return }
+        guard let targetIndex = profileNames.firstIndex(of: profileName),
+              profiles.indices.contains(targetIndex) else { return }
         profileNames.remove(at: targetIndex)
         profiles.remove(at: targetIndex)
     }
 
     func updateProfile(_ aProfile: Profile, forName profileName: String) {
         if let targetIndex = profileNames.firstIndex(of: profileName) {
+            guard profiles.indices.contains(targetIndex) else { return }
             profileNames[targetIndex] = profileName
             profiles[targetIndex] = aProfile
         } else {
@@ -62,7 +72,8 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     }
 
     func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row rowIndex: Int) -> Any? {
-        profileNames[rowIndex]
+        guard profileNames.indices.contains(rowIndex) else { return nil }
+        return profileNames[rowIndex]
     }
 
     @IBAction func addProfile(_ sender: Any) {
@@ -91,7 +102,7 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
 
     @IBAction func loadProfile(_ sender: Any) {
         let selectedIndex = profilesTableView.selectedRow
-        guard selectedIndex != -1 else { return }
+        guard profiles.indices.contains(selectedIndex) else { return }
 
         controllerG.adoptProfile(profiles[selectedIndex])
         profilesWindow.close()
@@ -99,7 +110,8 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
 
     @IBAction func removeProfile(_ sender: Any) {
         let selectedIndex = profilesTableView.selectedRow
-        guard selectedIndex != -1 else { return }
+        guard profileNames.indices.contains(selectedIndex),
+              profiles.indices.contains(selectedIndex) else { return }
 
         profileNames.remove(at: selectedIndex)
         profiles.remove(at: selectedIndex)
@@ -117,7 +129,7 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
 
     @IBAction func setSelectedProfileName(_ sender: Any) {
         let selectedIndex = profilesTableView.selectedRow
-        guard selectedIndex != -1 else { return }
+        guard profileNames.indices.contains(selectedIndex) else { return }
 
         saveAsTextField.stringValue = profileNames[selectedIndex]
     }
@@ -152,6 +164,9 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     private func moveObjects<T>(in array: inout [T],
                                 fromIndexes: IndexSet,
                                 toIndex insertIndex: Int) -> IndexSet {
+        guard fromIndexes.allSatisfy(array.indices.contains),
+              insertIndex >= 0,
+              insertIndex <= array.count else { return [] }
         let adjustedInsertIndex = insertIndex - fromIndexes.count(in: 0..<insertIndex)
         let objectsToMove = fromIndexes.map { array[$0] }
         for index in fromIndexes.reversed() {

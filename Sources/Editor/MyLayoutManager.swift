@@ -49,7 +49,7 @@ class MyLayoutManager: NSLayoutManager {
         
         for theGlyphIndex in inGlyphRange.location..<theLengthToRedraw  {
             let theCharIndex = self.characterIndexForGlyph(at: theGlyphIndex)
-            let theCharacter = theCompleteStr.utf16[safe: theCharIndex]!
+            guard let theCharacter = theCompleteStr.utf16[safe: theCharIndex] else { continue }
             let thePointToDraw = self.point(toDrawGlyphAt: theGlyphIndex, adjust: theSize)
             
             if theCharacter == "\t".utf16.first,
