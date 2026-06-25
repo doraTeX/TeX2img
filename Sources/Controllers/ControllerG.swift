@@ -209,6 +209,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private var sourceFont: NSFont?
     private var userNotificationDelegate: UserNotificationDelegate?
     private var notificationObservers = [NSObjectProtocol]()
+    private let taskStateLock = NSLock()
     private let outputBufferLock = NSLock()
     private var pendingOutput = ""
     private var outputFlushScheduled = false
@@ -265,17 +266,51 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
+    private func beginTracking(_ task: Process) {
+        taskStateLock.lock()
+        runningTask = task
+        taskKilled = false
+        taskStateLock.unlock()
+    }
+
+    private func stopTracking(_ task: Process) {
+        taskStateLock.lock()
+        if runningTask === task {
+            runningTask = nil
+        }
+        taskStateLock.unlock()
+    }
+
+    private func resetTaskState() {
+        taskStateLock.lock()
+        runningTask = nil
+        taskKilled = false
+        generationAborted = false
+        taskStateLock.unlock()
+    }
+
     func exitCurrentThreadIfTaskKilled() -> Bool {
+        var shouldNotifyAbort = false
+        let shouldExit: Bool
+
+        taskStateLock.lock()
         if taskKilled {
             taskKilled = false
             if !generationAborted {
                 generationAborted = true
-                appendOutputAndScroll(String(format: "\n\nTeX2img: %@\n\n", NSLocalizedString("processAborted", comment: "")), quiet: false)
-                generationDidFinish(.aborted)
+                shouldNotifyAbort = true
             }
-            return true
+            shouldExit = true
+        } else {
+            shouldExit = generationAborted
         }
-        return generationAborted
+        taskStateLock.unlock()
+
+        if shouldNotifyAbort {
+            appendOutputAndScroll(String(format: "\n\nTeX2img: %@\n\n", NSLocalizedString("processAborted", comment: "")), quiet: false)
+            generationDidFinish(.aborted)
+        }
+        return shouldExit
     }
 
     func execCommand(_ command: String,
@@ -294,14 +329,13 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         let task = Process()
         let pipe = Pipe()
         outputPipe = pipe
-        runningTask = task
 
         task.currentDirectoryURL = URL(fileURLWithPath: path)
         task.executableURL = URL(fileURLWithPath: "/bin/sh")
         task.standardOutput = pipe
         task.standardError = pipe
         task.arguments = ["-c", cmdline]
-        taskKilled = false
+        beginTracking(task)
 
         let handle = pipe.fileHandleForReading
         handle.readabilityHandler = { [weak self] source in
@@ -324,10 +358,12 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         } catch {
             handle.readabilityHandler = nil
             outputPipe = nil
+            stopTracking(task)
             return false
         }
 
         task.waitUntilExit()
+        stopTracking(task)
         handle.readabilityHandler = nil
         performOnMainThread {
             self.flushPendingOutputOnMainThread()
@@ -2156,8 +2192,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         generateButton.action = #selector(generate(_:))
         generateMenuItem.isEnabled = true
         abortMenuItem.isEnabled = false
-        taskKilled = false
-        generationAborted = false
+        resetTaskState()
 
         if currentProfile().boolForKey(SendNotificationKey) {
             sendUserNotification(status: status)
@@ -2293,8 +2328,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         if showOutputWindowCheckBox.state == .on {
             showOutputWindow()
         }
-        generationAborted = false
-        taskKilled = false
+        resetTaskState()
         generateButton.title = NSLocalizedString("Abort", comment: "")
         generateButton.action = #selector(abortCompilation(_:))
         generateMenuItem.isEnabled = false
@@ -2303,9 +2337,13 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     @IBAction func abortCompilation(_ sender: Any) {
+        let task: Process?
+        taskStateLock.lock()
         taskKilled = true
-        runningTask?.terminate()
+        task = runningTask
         runningTask = nil
+        taskStateLock.unlock()
+        task?.terminate()
     }
 
     @IBAction func showAutoDetectionTargetSettingPopover(_ sender: NSButton) {
