@@ -4,9 +4,10 @@ class PDFPageBox: NSObject {
     let pdfPage: PDFPage
     let cgPdfPage: CGPDFPage
     
-    init(pdfPage: PDFPage) {
+    init?(pdfPage: PDFPage) {
+        guard let pageRef = pdfPage.pageRef else { return nil }
         self.pdfPage = pdfPage
-        self.cgPdfPage = pdfPage.pageRef!
+        self.cgPdfPage = pageRef
         super.init()
     }
     

@@ -195,7 +195,7 @@ extension Converter {
         guard bbox.count == bboxComponents.count else { return nil }
         let (bboxLx, bboxLy, bboxUx, bboxUy) = (bbox[0], bbox[1], bbox[2], bbox[3])
         
-        let mediaBox = pdfPage.pageBox.mediaBoxRect
+        guard let mediaBox = pdfPage.pageBox?.mediaBoxRect else { return nil }
         let (mboxLx, mboxLy, mboxUx, mboxUy) = (mediaBox.minX, mediaBox.minY, mediaBox.minX + mediaBox.width, mediaBox.minY + mediaBox.height)
         
         let rotation = pdfPage.rotation

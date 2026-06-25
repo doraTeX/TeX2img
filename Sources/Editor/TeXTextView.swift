@@ -32,7 +32,7 @@ class TeXTextView: NSTextView {
     var replaceLocation = NSNotFound
     var completionListLocation: UInt = 0
     var textLocation = NSNotFound
-    private var selectionChangeObserver: NSObjectProtocol?
+    private var notificationObservers = [NSObjectProtocol]()
 
     func refreshSelectionHighlighting() {
         textViewDidChangeSelection(Notification(name: NSTextView.didChangeSelectionNotification, object: self))
@@ -71,29 +71,29 @@ class TeXTextView: NSTextView {
 
         registerForDraggedTypes([legacyFilenamesType, .pdf])
 
-        selectionChangeObserver = NotificationCenter.default.addObserver(
+        notificationObservers.append(NotificationCenter.default.addObserver(
             forName: NSTextView.didChangeSelectionNotification,
             object: self,
             queue: .main
         ) { [weak self] notification in
             self?.textViewDidChangeSelection(notification)
-        }
+        })
 
         if let undoManager = undoManager {
-            NotificationCenter.default.addObserver(
+            notificationObservers.append(NotificationCenter.default.addObserver(
                 forName: .NSUndoManagerDidUndoChange,
                 object: undoManager,
                 queue: .main
             ) { [weak self] _ in
                 self?.colorizeAfterUndoAndRedo()
-            }
-            NotificationCenter.default.addObserver(
+            })
+            notificationObservers.append(NotificationCenter.default.addObserver(
                 forName: .NSUndoManagerDidRedoChange,
                 object: undoManager,
                 queue: .main
             ) { [weak self] _ in
                 self?.colorizeAfterUndoAndRedo()
-            }
+            })
         }
 
         guard let menu = menu else { return }
@@ -1044,7 +1044,8 @@ class TeXTextView: NSTextView {
                   let doc = PDFDocument(data: data) else { return false }
             dropDelegate?.textViewDroppedFile(doc)
         } else {
-            dropDelegate?.textViewDroppedFile(filelist(in: sender)[0])
+            guard let file = filelist(in: sender).first else { return false }
+            dropDelegate?.textViewDroppedFile(file)
         }
         return true
     }
@@ -1056,6 +1057,10 @@ class TeXTextView: NSTextView {
     var draggingState: Bool {
         get { dragging }
         set { setDraggingState(newValue) }
+    }
+
+    deinit {
+        notificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
     }
 
     private func setDraggingState(_ draggingState: Bool) {

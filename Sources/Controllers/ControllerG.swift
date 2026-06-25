@@ -1576,14 +1576,20 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                 outputFilePath = inputPath
             } else {
                 let bufferLength = getxattr(inputPath, eaKey, nil, 0, 0, 0)
-                if bufferLength < 0 {
+                if bufferLength <= 0 {
                     UtilityG.runErrorPanel(message: String(format: NSLocalizedString("doesNotContainSource", comment: ""), inputPath))
                     return false
                 }
-                let buffer = UnsafeMutablePointer<CChar>.allocate(capacity: bufferLength)
-                defer { buffer.deallocate() }
-                getxattr(inputPath, eaKey, buffer, bufferLength, 0, 0)
-                contents = String(bytesNoCopy: buffer, length: bufferLength, encoding: .utf8, freeWhenDone: false)
+                var data = Data(count: bufferLength)
+                let bytesRead = data.withUnsafeMutableBytes { buffer in
+                    getxattr(inputPath, eaKey, buffer.baseAddress, bufferLength, 0, 0)
+                }
+                guard bytesRead > 0, bytesRead <= bufferLength else {
+                    UtilityG.runErrorPanel(message: String(format: NSLocalizedString("doesNotContainSource", comment: ""), inputPath))
+                    return false
+                }
+                data.removeSubrange(bytesRead..<data.count)
+                contents = String(data: data, encoding: .utf8)
                 outputFilePath = inputPath
             }
         } else if let document = input as? PDFDocument {

@@ -83,15 +83,15 @@ extension NSString {
 
         let regex = try? NSRegularExpression(pattern: "\\{(.+?)\\}", options: [])
         let range = NSRange(location: 0, length: mutableUnicodeName.length)
-        let firstMatch = regex?.firstMatch(in: mutableUnicodeName as String, options: [], range: range)
-        return mutableUnicodeName.substring(with: firstMatch!.range(at: 1))
+        guard let firstMatch = regex?.firstMatch(in: mutableUnicodeName as String, options: [], range: range) else { return self as String }
+        return mutableUnicodeName.substring(with: firstMatch.range(at: 1))
     }
 
     func blockName() -> String {
         let utf32char = utf32char()
         let prop = u_getIntPropertyValue(Int32(utf32char), UCHAR_BLOCK)
-        let blockNameChars = u_getPropertyValueName(UCHAR_BLOCK, prop, U_LONG_PROPERTY_NAME)
-        return String(cString: blockNameChars!).replacingOccurrences(of: "_", with: " ")
+        guard let blockNameChars = u_getPropertyValueName(UCHAR_BLOCK, prop, U_LONG_PROPERTY_NAME) else { return "" }
+        return String(cString: blockNameChars).replacingOccurrences(of: "_", with: " ")
     }
 
     func localizedBlockName() -> String {
