@@ -407,7 +407,7 @@ class TeXTextView: NSTextView {
         insertText(aString, replacementRange: selectedRange)
 
         guard let theString = aString as? String else { return }
-        let length = theString.count
+        let length = theString.utf16.count
         showFindIndicator(for: NSRange(location: selectedRange.location - length, length: length))
     }
 
