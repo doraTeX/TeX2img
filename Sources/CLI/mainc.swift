@@ -3,7 +3,7 @@ import ArgumentParser
 import Foundation
 import Quartz
 
-let tex2imgVersion = "3.0.0"
+let tex2imgVersion = "3.0.1"
 
 private let defaultMaximalNumberOfCompilation = 3
 private let enabledStatus = "enabled"
