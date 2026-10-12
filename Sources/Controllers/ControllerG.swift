@@ -28,6 +28,9 @@ private enum EncodingTag: Int {
 }
 
 class ControllerG: NSObject, OutputController, DnDDelegate {
+    // 保存パネルのアクセサリは別ウインドウに配置される場合がある。
+    private weak var outputSavePanel: NSSavePanel?
+
     @IBOutlet var sourceTextView: TeXTextView!
     var commandCompletionList: String?
 
@@ -1965,6 +1968,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         accessoryView.addSubview(label)
 
         let savePanel = NSSavePanel()
+        outputSavePanel = savePanel
         savePanel.allowedContentTypes = targetExtensions.compactMap { UTType(filenameExtension: $0) }
         savePanel.isExtensionHidden = false
         savePanel.canSelectHiddenExtension = false
@@ -1980,6 +1984,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         savePanel.directoryURL = URL(fileURLWithPath: defaultFilePath.deletingLastPathComponent)
 
         savePanel.beginSheetModal(for: mainWindow) { returnCode in
+            self.outputSavePanel = nil
             if returnCode == .OK, let path = savePanel.url?.path {
                 self.outputFileTextField.stringValue = path
                 self.outputFilePathChanged(nil)
@@ -1988,7 +1993,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     @IBAction private func extensionPopUpButtonInSavePanelChanged(_ sender: NSPopUpButton) {
-        guard let savePanel = sender.window as? NSSavePanel else { return }
+        guard let savePanel = outputSavePanel else { return }
         let oldName = savePanel.nameFieldStringValue
         let extensionLower = sender.selectedItem?.title.lowercased() ?? ""
         savePanel.nameFieldStringValue = oldName.deletingPathExtension.appendingPathExtension(extensionLower) ?? oldName
