@@ -2,6 +2,7 @@ import AppKit
 import Foundation
 import Quartz
 import UserNotifications
+import UniformTypeIdentifiers
 
 private let enabledLabel = "enabled"
 private let disabledLabel = "disabled"
@@ -1236,11 +1237,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         outputTextView.layoutManager?.allowsNonContiguousLayout = true
 
         userNotificationDelegate = UserNotificationDelegate()
-        if #available(macOS 10.14, *) {
-            UNUserNotificationCenter.current().delegate = userNotificationDelegate
-        } else {
-            NSUserNotificationCenter.default.delegate = userNotificationDelegate
-        }
+        UNUserNotificationCenter.current().delegate = userNotificationDelegate
 
         observeNotification(forName: NSApplication.didBecomeActiveNotification, object: NSApp) { [weak self] _ in
             self?.showMainWindow()
@@ -1662,7 +1659,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         openPanel.canChooseDirectories = false
         openPanel.canChooseFiles = true
         openPanel.allowsMultipleSelection = false
-        openPanel.allowedFileTypes = importExtensions
+        openPanel.allowedContentTypes = importExtensions.compactMap { UTType(filenameExtension: $0) }
         openPanel.beginSheetModal(for: mainWindow) { returnCode in
             if returnCode == .OK, let path = openPanel.url?.path {
                 self.importSource(fromFilePathOrPDFDocument: path, skipConfirm: false)
@@ -1672,7 +1669,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     @IBAction func exportSource(_ sender: Any) {
         let savePanel = NSSavePanel()
-        savePanel.allowedFileTypes = ["tex"]
+        savePanel.allowedContentTypes = ["tex"].compactMap { UTType(filenameExtension: $0) }
         savePanel.isExtensionHidden = false
         savePanel.canSelectHiddenExtension = true
 
@@ -1903,11 +1900,11 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     @IBAction func openTemplateDirectory(_ sender: Any) {
-        NSWorkspace.shared.openFile(templateDirectoryPath, withApplication: "Finder")
+        Utility.openFolderInFinder(templateDirectoryPath)
     }
 
     @IBAction func openTempDir(_ sender: Any) {
-        NSWorkspace.shared.openFile(FileManager.default.temporaryDirectory.path, withApplication: "Finder")
+        Utility.openFolderInFinder(FileManager.default.temporaryDirectory.path)
     }
 
     @IBAction func showPreferenceWindow(_ sender: Any) {
@@ -1943,7 +1940,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         openPanel.canChooseDirectories = false
         openPanel.canChooseFiles = true
         openPanel.allowsMultipleSelection = false
-        openPanel.allowedFileTypes = inputExtensions
+        openPanel.allowedContentTypes = inputExtensions.compactMap { UTType(filenameExtension: $0) }
         openPanel.beginSheetModal(for: mainWindow) { returnCode in
             if returnCode == .OK {
                 self.inputSourceFileTextField.stringValue = openPanel.url?.path ?? ""
@@ -1968,7 +1965,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         accessoryView.addSubview(label)
 
         let savePanel = NSSavePanel()
-        savePanel.allowedFileTypes = targetExtensions
+        savePanel.allowedContentTypes = targetExtensions.compactMap { UTType(filenameExtension: $0) }
         savePanel.isExtensionHidden = false
         savePanel.canSelectHiddenExtension = false
         savePanel.accessoryView = accessoryView
@@ -1995,7 +1992,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         let oldName = savePanel.nameFieldStringValue
         let extensionLower = sender.selectedItem?.title.lowercased() ?? ""
         savePanel.nameFieldStringValue = oldName.deletingPathExtension.appendingPathExtension(extensionLower) ?? oldName
-        savePanel.allowedFileTypes = [extensionLower] + (savePanel.allowedFileTypes ?? [])
+        if let type = UTType(filenameExtension: extensionLower) {
+            savePanel.allowedContentTypes = [type] + savePanel.allowedContentTypes.filter { $0 != type }
+        }
     }
 
     @IBAction func toggleMenuItem(_ sender: Any) {

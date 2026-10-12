@@ -21,17 +21,19 @@ class Utility: NSObject {
     }
 
     static func previewFiles(_ files: [String], app: String) {
-        if #available(macOS 10.15, *) {
-            let targetURLs = files.map { URL(fileURLWithPath: $0) }
-            NSWorkspace.shared.open(targetURLs,
-                                    withApplicationAt: URL(fileURLWithPath: app),
-                                    configuration: NSWorkspace.OpenConfiguration(),
-                                    completionHandler: nil)
-        } else {
-            for path in files {
-                NSWorkspace.shared.openFile(path, withApplication: app)
-            }
-        }
+        let targetURLs = files.map { URL(fileURLWithPath: $0) }
+        NSWorkspace.shared.open(targetURLs,
+                                withApplicationAt: URL(fileURLWithPath: app),
+                                configuration: NSWorkspace.OpenConfiguration(),
+                                completionHandler: nil)
+    }
+
+    static func openFolderInFinder(_ path: String) {
+        guard let finderURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.finder") else { return }
+        NSWorkspace.shared.open([URL(fileURLWithPath: path, isDirectory: true)],
+                                withApplicationAt: finderURL,
+                                configuration: NSWorkspace.OpenConfiguration(),
+                                completionHandler: nil)
     }
 
     static func isTeX2imgAnnotation(_ annotation: PDFAnnotation) -> Bool {

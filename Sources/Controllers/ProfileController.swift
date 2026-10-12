@@ -143,7 +143,7 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
                    to pboard: NSPasteboard) -> Bool {
         pboard.declareTypes([movedRowsPasteboardType], owner: self)
         if let rowIndexesArchive = try? NSKeyedArchiver.archivedData(withRootObject: rowIndexes,
-                                                                     requiringSecureCoding: false) {
+                                                                     requiringSecureCoding: true) {
             pboard.setData(rowIndexesArchive, forType: movedRowsPasteboardType)
         }
         return true
@@ -191,7 +191,7 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
             let optionKeyPressed = NSApp.currentEvent?.modifierFlags.contains(.option) == true
             if !optionKeyPressed,
                let rowsData = info.draggingPasteboard.data(forType: movedRowsPasteboardType),
-               let indexSet = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(rowsData) as? IndexSet {
+               let indexSet = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSIndexSet.self, from: rowsData) as IndexSet? {
                 let newIndexes = moveObjects(in: &profileNames, fromIndexes: indexSet, toIndex: row)
                 _ = moveObjects(in: &profiles, fromIndexes: indexSet, toIndex: row)
                 tableView.selectRowIndexes(newIndexes, byExtendingSelection: false)

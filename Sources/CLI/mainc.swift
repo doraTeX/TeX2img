@@ -514,8 +514,8 @@ struct Tex2imgCommand: ParsableCommand {
                let match = regex.firstMatch(in: colorValue, range: NSRange(colorValue.startIndex..., in: colorValue)),
                let hexRange = Range(match.range(at: 1), in: colorValue) {
                 let hex = String(colorValue[hexRange])
-                var result: UInt32 = 0
-                Scanner(string: hex).scanHexInt32(&result)
+                // 正規表現で検証済みの3桁または6桁の16進数。
+                var result = UInt32(hex, radix: 16) ?? 0
 
                 let r: Int
                 let g: Int

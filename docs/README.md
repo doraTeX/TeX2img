@@ -8,6 +8,8 @@
 
 ## 移行・保守メモ — `migration/`
 
+- [macOS 12向け非推奨API対応](migration/macos12-api-update.md)
+
 ローカルの移行資料は `migration/SwiftMigrationNotes.md` と `migration/SwiftMigrationGuide.md` に配置する。既存の `.gitignore` に従い、この2件はGit管理対象外であり、クローン直後には存在しない。
 
 ## ビルド・配布

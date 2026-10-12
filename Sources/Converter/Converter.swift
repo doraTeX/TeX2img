@@ -2,7 +2,7 @@ import AppKit
 import Foundation
 import ImageIO
 import Quartz
-import CoreServices
+import UniformTypeIdentifiers
 
 private let resolutionScale = 5.0
 private let emptyBBox = "%%BoundingBox: 0 0 0 0\n"
@@ -731,7 +731,7 @@ class Converter: NSObject {
                 return false
             }
             imageRep = backgroundRep
-            outputData = imageRep.representation(usingType: kUTTypeJPEG, usingDPI: dpi)
+            outputData = imageRep.representation(usingType: UTType.jpeg.identifier as CFString, usingDPI: dpi)
         } else if extension_ == "png" {
             if !transparentFlag {
                 guard let backgroundRep = fillBackground(imageRep) else {
@@ -740,7 +740,7 @@ class Converter: NSObject {
                 }
                 imageRep = backgroundRep
             }
-            outputData = imageRep.representation(usingType: kUTTypePNG, usingDPI: dpi)
+            outputData = imageRep.representation(usingType: UTType.png.identifier as CFString, usingDPI: dpi)
         } else if extension_ == "gif" {
             if !transparentFlag {
                 guard let backgroundRep = fillBackground(imageRep) else {
@@ -749,7 +749,7 @@ class Converter: NSObject {
                 }
                 imageRep = backgroundRep
             }
-            if let pngData = imageRep.representation(usingType: kUTTypePNG, usingDPI: dpi),
+            if let pngData = imageRep.representation(usingType: UTType.png.identifier as CFString, usingDPI: dpi),
                let decodedRep = NSBitmapImageRep(data: pngData) {
                 outputData = gif89aData(fromGIF87aData: decodedRep.representation(using: .gif, properties: [:]))
             }
@@ -761,7 +761,7 @@ class Converter: NSObject {
                 }
                 imageRep = backgroundRep
             }
-            outputData = imageRep.representation(usingType: kUTTypeTIFF, usingDPI: dpi)
+            outputData = imageRep.representation(usingType: UTType.tiff.identifier as CFString, usingDPI: dpi)
         } else if extension_ == "bmp" {
             if !transparentFlag {
                 guard let backgroundRep = fillBackground(imageRep) else {
@@ -770,7 +770,7 @@ class Converter: NSObject {
                 }
                 imageRep = backgroundRep
             }
-            if let pngData = imageRep.representation(usingType: kUTTypePNG, usingDPI: dpi),
+            if let pngData = imageRep.representation(usingType: UTType.png.identifier as CFString, usingDPI: dpi),
                let decodedRep = NSBitmapImageRep(data: pngData) {
                 outputData = decodedRep.representation(using: .bmp, properties: [:])
             }
@@ -863,7 +863,7 @@ class Converter: NSObject {
         guard maxWidth > 0, maxHeight > 0 else { return false }
 
         guard let gifData = CFDataCreateMutable(kCFAllocatorDefault, 0),
-              let destination = CGImageDestinationCreateWithData(gifData, kUTTypeGIF, reps.count, nil) else {
+              let destination = CGImageDestinationCreateWithData(gifData, UTType.gif.identifier as CFString, reps.count, nil) else {
             return false
         }
         CGImageDestinationSetProperties(destination, gifProperties as CFDictionary)

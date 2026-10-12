@@ -16,22 +16,24 @@ extension ControllerG {
             title = NSLocalizedString("Completed", comment: "")
         }
         
-        if #available(macOS 10.14, *) {
-            UNUserNotificationCenter.current().requestAuthorization(options: [.sound, .badge, .alert]) { (_, _) in }
-            
-            let content = UNMutableNotificationContent()
-            content.title = title
-            content.body = body
-            
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+
+        let center = UNUserNotificationCenter.current()
+        // 初回の許可確認が完了してから登録する。通知音は従来どおり設定しない。
+        center.requestAuthorization(options: [.sound, .badge, .alert]) { [weak self] granted, error in
+            if let error = error {
+                self?.appendOutputAndScroll("Notification authorization failed: \(error.localizedDescription)\n", quiet: false)
+                return
+            }
+            guard granted else { return }
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-            
-        } else {
-            let notification = NSUserNotification()
-            notification.title = title
-            notification.informativeText = body
-            
-            NSUserNotificationCenter.default.deliver(notification)
+            center.add(request) { [weak self] error in
+                if let error = error {
+                    self?.appendOutputAndScroll("Notification delivery failed: \(error.localizedDescription)\n", quiet: false)
+                }
+            }
         }
     }
 }

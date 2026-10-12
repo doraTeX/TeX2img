@@ -1,23 +1,8 @@
 import Cocoa
 import UserNotifications
 
-class UserNotificationDelegate: NSObject, UNUserNotificationCenterDelegate, NSUserNotificationCenterDelegate {
-    public func userNotificationCenter(_ center: NSUserNotificationCenter, didDeliver: NSUserNotification) {
-        
-    }
-    
-    public func userNotificationCenter(_ center: NSUserNotificationCenter, didActivate: NSUserNotification) {
-        
-    }
-    
-    public func userNotificationCenter(_ center: NSUserNotificationCenter, shouldPresent notification: NSUserNotification) -> Bool {
-        return true
-    }
-}
-
-@available(macOS 10.14, *)
-extension UserNotificationDelegate {
+class UserNotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.sound, .alert, .badge])
+        completionHandler([.sound, .banner, .list, .badge])
     }
 }
