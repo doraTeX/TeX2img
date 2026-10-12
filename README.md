@@ -28,3 +28,6 @@
 - [Windows版の配布サイト](https://www.ms.u-tokyo.ac.jp/~abenori/soft/index.html#TEX2IMG)
 - [Windows版のソース](https://github.com/abenori/TeX2img)
 
+## 開発用ドキュメント
+
+ビルド・配布手順、移行メモ、監査報告、テストの記録は[ドキュメント一覧](docs/README.md)を参照してください。
