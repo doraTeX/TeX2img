@@ -470,6 +470,8 @@ class TeXTextView: NSTextView {
         let tabWidth = aProfile.integerForKey(TabWidthKey)
 
         repeat {
+            // Swift の String は値型なので、前の行を編集した後に取り直す。
+            let text = string
             modifyRange = NSRange(location: lineStart, length: 0)
             var lineEnd = 0
             var lineContentsEnd = 0
@@ -553,8 +555,8 @@ class TeXTextView: NSTextView {
                         lineEnd -= 1
                         increment -= 1
                         i += 1
-                        if lineStart + 1 < text.length {
-                            nextChar = text.character(at: lineStart + 1)
+                        if lineStart + i < text.length {
+                            nextChar = text.character(at: lineStart + i)
                         }
                     }
                     if oldRange.location == blockStart && firstLine {

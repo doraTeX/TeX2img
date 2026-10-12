@@ -68,12 +68,8 @@ extension String {
     }
 
     func replacingPathExtension(_ extension: String) -> String {
-        let basename = (deletingPathExtension as NSString).appendingPathExtension(`extension`) ?? deletingPathExtension
-        let directory = deletingLastPathComponent
-        if directory.isEmpty || directory == "." {
-            return basename
-        }
-        return directory.appendingPathComponent(basename)
+        // deletingPathExtension は親フォルダも保持するため、再連結しない。
+        (deletingPathExtension as NSString).appendingPathExtension(`extension`) ?? deletingPathExtension
     }
 
     func replacingYenWithBackslash() -> String {

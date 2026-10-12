@@ -1,0 +1,45 @@
+import Cocoa
+let CommentOutTag=1,UncommentTag=2,ShiftRightTag=3,ShiftLeftTag=4
+let TabIndentKey="tab",TabWidthKey="width"
+func localizedString(_ s:String)->String{s}
+struct Profile{let useTab:Bool;func boolForKey(_ k:String)->Bool{useTab};func integerForKey(_ k:String)->Int{4}}
+class FakeController{var useTab=true;func currentProfile()->Profile{Profile(useTab:useTab)}}
+class ProbeView:NSTextView {
+override var selectedRange: NSRange { get { super.selectedRange() } set { super.setSelectedRange(newValue) } }
+let controller=FakeController()
+func registerUndo(with:String,location:UInt,length:UInt,key:String) {}
+var changes=0
+override func replaceCharacters(in range:NSRange,with value:String){ changes += 1; precondition(changes <= 20, "編集ループが終了しません"); super.replaceCharacters(in:range,with:value) }
+func colorizeText(){}
+__METHOD__
+}
+@main struct Test {
+    static func main() {
+        var cases = 0
+        for newline in ["\n", "\r\n"] {
+            for trailing in [false, true] {
+                let suffix = trailing ? newline : ""
+                let plain = "日本e\u{301}😀" + newline + "b" + suffix
+                let commented = "%日本e\u{301}😀" + newline + "%b" + suffix
+                let indented = "\t日本e\u{301}😀" + newline + "\tb" + suffix
+                for (input, tag, expected) in [(plain,1,commented),(commented,2,plain),(plain,3,indented),(indented,4,plain)] {
+                    let view = ProbeView(frame:NSRect(x:0,y:0,width:200,height:100))
+                    view.string = input
+                    view.setSelectedRange(NSRange(location:0,length:input.utf16.count))
+                    let item=NSMenuItem(); item.tag=tag
+                    view.doCommentOrIndent(item)
+                    precondition(view.string == expected, "tag=\(tag) expected=\(expected.debugDescription) actual=\(view.string.debugDescription)")
+                    cases += 1
+                }
+            }
+        }
+        for input in ["  a\n    b\n", " a\n b", "   a\n    b"] {
+            let v=ProbeView(frame:NSRect(x:0,y:0,width:200,height:100));v.controller.useTab=false
+            v.string=input;v.setSelectedRange(NSRange(location:0,length:input.utf16.count))
+            let item=NSMenuItem();item.tag=4;v.doCommentOrIndent(item)
+            precondition(v.string == "a\nb" + (input.hasSuffix("\n") ? "\n" : ""), v.string.debugDescription)
+            cases += 1
+        }
+        print("エディタのコメント化・解除・インデント: \(cases)ケース成功")
+    }
+}

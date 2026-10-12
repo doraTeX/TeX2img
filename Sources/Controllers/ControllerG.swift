@@ -630,7 +630,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             appendOutputAndScroll(String(format: NSLocalizedString("pagesSkippedWarning", comment: ""),
                                          pages.map(String.init).joined(separator: ", ")), quiet: false)
         } else if let page = pages.first {
-            appendOutputAndScroll(String(format: NSLocalizedString("pageSkippedWarning", comment: ""), page), quiet: false)
+            appendOutputAndScroll(String(format: NSLocalizedString("pageSkippedWarning", comment: ""), String(page)), quiet: false)
         }
         appendOutputAndScroll("\n", quiet: false)
     }
@@ -641,7 +641,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             appendOutputAndScroll(String(format: NSLocalizedString("whitePagesWarning", comment: ""),
                                          pages.map(String.init).joined(separator: ", ")), quiet: false)
         } else if let page = pages.first {
-            appendOutputAndScroll(String(format: NSLocalizedString("whitePageWarning", comment: ""), page), quiet: false)
+            appendOutputAndScroll(String(format: NSLocalizedString("whitePageWarning", comment: ""), String(page)), quiet: false)
         }
         appendOutputAndScroll("\n", quiet: false)
     }
