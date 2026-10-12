@@ -140,10 +140,17 @@ publish_gui_appcast() {
     [[ -x "$SPARKLE_SIGN_UPDATE" ]] || { echo "ERROR: Sparkle sign_update not found: $SPARKLE_SIGN_UPDATE" >&2; exit 1; }
     [[ -f "$ED_PRIVATE_KEY" ]] || { echo "ERROR: Sparkle EdDSA private key not found: $ED_PRIVATE_KEY" >&2; exit 1; }
 
-    local basename version signature_attrs ed_signature length tmp
+    local basename version signature_attrs ed_signature length tmp minimum_system_version
     basename="$(basename "$dmg")"
     version="${basename#${PRODUCT_NAME}_}"
     version="${version%.dmg}"
+    minimum_system_version=$(/usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' "$ARCHIVED_APP/Contents/Info.plist")
+    [[ -n "$minimum_system_version" ]] || { echo "ERROR: Minimum macOS version is missing from the app" >&2; exit 1; }
+    # 古いOSへ互換性のない更新を配信しないよう、ビルド成果物の値を使う。
+    grep -q '<sparkle:minimumSystemVersion>[^<]*</sparkle:minimumSystemVersion>' "$APPCAST_XML" || {
+        echo "ERROR: Appcast is missing sparkle:minimumSystemVersion" >&2
+        exit 1
+    }
 
     echo "=== Updating Sparkle appcast ==="
     echo "    DMG:     $dmg"
@@ -156,6 +163,7 @@ publish_gui_appcast() {
 
     tmp="${APPCAST_XML%.xml}2.xml"
     sed \
+        -e "s|<sparkle:minimumSystemVersion>[^<]*</sparkle:minimumSystemVersion>|<sparkle:minimumSystemVersion>$minimum_system_version</sparkle:minimumSystemVersion>|" \
         -e "s|sparkle:edSignature=\".*\"|sparkle:edSignature=\"$ed_signature\"|" \
         -e "s|length=\".*\"|length=\"$length\"|" \
         -e "s|${PRODUCT_NAME}_.*\\.dmg|${basename}|" \

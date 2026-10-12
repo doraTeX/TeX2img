@@ -192,6 +192,8 @@ scripts/release-gui.sh
 | 5 | DMG 公証 + staple | 公証済み `.dmg` |
 | 6 | Sparkle Appcast 更新 | `../TeX2img_Appcast/TeX2img_Appcast.xml` |
 
+Appcast更新時は、アーカイブ済みアプリの`LSMinimumSystemVersion`を`<sparkle:minimumSystemVersion>`へ反映します。既存Appcastにこの要素がない場合は更新を中止します。
+
 完了後の主な成果物:
 
 ```
