@@ -34,5 +34,6 @@ echo ""
 echo "Build products:"
 [[ -d "$PRODUCTS/TeX2img.app" ]] && echo "  GUI:  $PRODUCTS/TeX2img.app"
 [[ -f "$PRODUCTS/tex2img" ]] && echo "  CUI:  $PRODUCTS/tex2img"
-[[ -f "$PRODUCTS/TeX2img.app/Contents/SharedSupport/bin/tex2img" ]] && \
+if [[ -f "$PRODUCTS/TeX2img.app/Contents/SharedSupport/bin/tex2img" ]]; then
     echo "  CUI in bundle: $PRODUCTS/TeX2img.app/Contents/SharedSupport/bin/tex2img"
+fi
