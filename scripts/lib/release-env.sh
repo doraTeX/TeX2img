@@ -18,7 +18,7 @@ PRODUCTS_RELEASE="$DERIVED_DATA/Build/Products/Release"
 APPCAST_DIR="$PROJECT_DIR/../TeX2img_Appcast"
 APPCAST_XML="$APPCAST_DIR/TeX2img_Appcast.xml"
 ED_PRIVATE_KEY="$PROJECT_DIR/../設定/証明書/Sparkle/ed_priv.pem"
-SPARKLE_BIN_DIR="$PROJECT_DIR/ThirdParty/Sparkle-2.9.4/bin"
+SPARKLE_BIN_DIR="$PROJECT_DIR/ThirdParty/Sparkle-2.10.0/bin"
 SPARKLE_SIGN_UPDATE="$SPARKLE_BIN_DIR/sign_update"
 
 # Notarization auth (one of):
