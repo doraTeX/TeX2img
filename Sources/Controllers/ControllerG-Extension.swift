@@ -18,6 +18,7 @@ extension ControllerG {
             "/Applications/UpTeX.app/teTeX/bin",
             "/Applications/pTeX.app/teTeX/bin",
             "/usr/local/teTeX/bin",
+            "/opt/homebrew/bin", // Apple Silicon版Homebrewの標準配置
             "/usr/local/bin",
             "/opt/local/bin",
             "/sw/bin"
