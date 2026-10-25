@@ -1,0 +1,50 @@
+--- a/utils/pdftops.cc
++++ b/utils/pdftops.cc
+@@ -182,6 +182,10 @@
+     {}
+ };
+ 
++#include <fontconfig/fontconfig.h>
++#include <mach-o/dyld.h>
++#include <filesystem>
++
+ int main(int argc, char *argv[])
+ {
+     std::unique_ptr<PDFDoc> doc;
+@@ -245,8 +249,35 @@
+     mode = doEPS ? psModeEPS : doForm ? psModeForm : psModePS;
+     fileName = new GooString(argv[1]);
+ 
++    // TeX2img: 配布先にビルド時のFontconfig設定パスは存在しない。
++    // 明示的なユーザー設定がなければ、macOS標準のフォントを探索する。
++    if (!getenv("FONTCONFIG_FILE") && !getenv("FONTCONFIG_PATH")) {
++        const char *configXml = R"(<?xml version="1.0"?>
++<fontconfig>
++  <dir>/System/Library/Fonts</dir>
++  <dir>/Library/Fonts</dir>
++  <dir>~/Library/Fonts</dir>
++  <cachedir prefix="xdg">fontconfig</cachedir>
++</fontconfig>)";
++        FcConfig *config = FcConfigCreate();
++        if (!config || !FcConfigParseAndLoadFromMemory(config, reinterpret_cast<const FcChar8 *>(configXml), FcTrue) || !FcConfigBuildFonts(config) || !FcConfigSetCurrent(config)) {
++            if (config) FcConfigDestroy(config);
++            fprintf(stderr, "Error: could not initialize bundled font configuration.\n");
++            return 1;
++        }
++        FcConfigDestroy(config);
++    }
++
+     // read config file
+-    globalParams = std::make_unique<GlobalParams>();
++    // 日本語等のCMapも実行ファイルと一緒に移動できるようにする。
++    uint32_t executablePathSize = 4096;
++    std::vector<char> executablePath(executablePathSize);
++    if (_NSGetExecutablePath(executablePath.data(), &executablePathSize) != 0) {
++        executablePath.resize(executablePathSize);
++        if (_NSGetExecutablePath(executablePath.data(), &executablePathSize) != 0) return 1;
++    }
++    const auto dataPath = std::filesystem::path(executablePath.data()).parent_path() / "poppler-data";
++    globalParams = std::make_unique<GlobalParams>(dataPath.c_str());
+     if (origPageSizes) {
+         paperWidth = paperHeight = -1;
+     }

@@ -59,14 +59,23 @@ if [[ -f "$STANDALONE" ]]; then
     fi
 fi
 
-PDFTOPS="$APP/Contents/Resources/pdftops/pdftops"
-if [[ -f "$PDFTOPS" ]]; then
-    pdftops_cs="$(codesign -dv --verbose=4 "$PDFTOPS" 2>&1 || true)"
-    if ! printf '%s\n' "$pdftops_cs" | grep -q 'flags=0x10000(runtime)'; then
-        echo "ERROR: pdftops lacks Hardened Runtime (notarization will fail): $PDFTOPS" >&2
-        echo "Rebuild with a Developer ID identity so sign-bundled-tools.sh runs." >&2
+for tool in "$APP/Contents/Resources/pdftops/pdftops" "$APP/Contents/Resources/mupdf/mudraw"; do
+    [[ -f "$tool" ]] || { echo "ERROR: Missing bundled tool: $tool" >&2; exit 1; }
+    tool_cs="$(codesign -dv --verbose=4 "$tool" 2>&1 || true)"
+    if ! printf '%s\n' "$tool_cs" | grep -q 'flags=0x10000(runtime)'; then
+        echo "ERROR: Bundled tool lacks Hardened Runtime: $tool" >&2
         exit 1
     fi
+done
+# Debug本体はthinでも、配布する変換ツールは常に両CPUを検査する。
+"$SCRIPT_DIR/verify-universal.sh" "$APP/Contents/Resources/pdftops"
+"$SCRIPT_DIR/verify-universal.sh" "$APP/Contents/Resources/mupdf"
+if [[ -d "$APP/Contents/Resources/pdftops/pdftops-lib" ]]; then
+    echo "ERROR: Obsolete pdftops dylibs remain; clean the build directory." >&2
+    exit 1
+fi
+if [[ "$CONFIGURATION" == Release ]]; then
+    "$SCRIPT_DIR/verify-universal.sh" "$APP"
 fi
 
 echo "OK: $CUI_IN_BUNDLE"

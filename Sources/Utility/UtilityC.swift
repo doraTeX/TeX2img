@@ -44,19 +44,11 @@ class UtilityC: NSObject {
     }
 
     static func checkWhich(_ cmdName: String) -> Bool {
-        let task = Process()
-        task.executableURL = URL(fileURLWithPath: whichPath)
-        task.arguments = [cmdName]
-        task.environment = processEnvironment()
-        task.standardOutput = FileHandle.nullDevice
-        task.standardError = FileHandle.nullDevice
-        try? task.run()
-        task.waitUntilExit()
-        return task.terminationStatus == 0
+        return getPath(cmdName) != nil
     }
 
     static func bundledToolPath(_ toolName: String, in subdirectory: String) -> String? {
-        let executablePath = URL(fileURLWithPath: CommandLine.arguments[0]).standardizedFileURL
+        let executablePath = URL(fileURLWithPath: CommandLine.arguments[0]).standardizedFileURL.resolvingSymlinksInPath()
         let executableDirectory = executablePath.deletingLastPathComponent().path
         let candidates = [
             executableDirectory.appendingPathComponent(subdirectory).appendingPathComponent(toolName),
@@ -75,13 +67,25 @@ class UtilityC: NSObject {
     }
 
     static func mudrawPath() -> String? {
-        if let path = getPath("mudraw") {
-            return path
-        }
-        return bundledToolPath("mudraw", in: "mupdf")
+        return getPath("mudraw")
     }
 
     static func getPath(_ cmdName: String) -> String? {
+        // 別の場所に残る旧TeX2imgのライブラリを使わないよう、実行中の配布物を優先する。
+        // 絶対パス等を明示された場合はこの分岐に入らず、指定を尊重する。
+        let bundled: String?
+        switch cmdName {
+        case "mudraw":
+            bundled = bundledToolPath("mudraw", in: "mupdf")
+        case "pdftops", "xpdf-pdftops":
+            bundled = bundledToolPath("pdftops", in: "pdftops")
+        case "epstopdf":
+            bundled = bundledToolPath("epstopdf", in: "")
+        default:
+            bundled = nil
+        }
+        if let bundled = bundled { return bundled }
+
         let task = Process()
         let pipe = Pipe()
         task.executableURL = URL(fileURLWithPath: whichPath)

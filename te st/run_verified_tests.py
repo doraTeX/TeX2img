@@ -212,12 +212,15 @@ def color_close(c, target, tol=40):
 def bitmap_has_content(path: Path) -> bool:
     script = f'''
 import AppKit
-let img = NSImage(contentsOfFile: "{path}")!
-for rep in img.representations {{
-  guard let bmp = rep as? NSBitmapImageRep else {{ continue }}
-  let w = bmp.pixelsWide, h = bmp.pixelsHigh
-  for y in stride(from: 0, to: h, by: max(1, h / 40)) {{
-    for x in stride(from: 0, to: w, by: max(1, w / 40)) {{
+import ImageIO
+let url = URL(fileURLWithPath: "{path}")
+guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else {{ print("no"); exit(1) }}
+// GIFの先頭が透明でも、後続フレームをすべて検査する。
+for frame in 0..<CGImageSourceGetCount(source) {{
+  guard let image = CGImageSourceCreateImageAtIndex(source, frame, nil) else {{ continue }}
+  let bmp = NSBitmapImageRep(cgImage: image)
+  for y in 0..<bmp.pixelsHigh {{
+    for x in 0..<bmp.pixelsWide {{
       if let c = bmp.colorAt(x: x, y: y), c.alphaComponent > 0.5 {{ print("yes"); exit(0) }}
     }}
   }}

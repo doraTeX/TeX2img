@@ -1212,7 +1212,9 @@ class Converter: NSObject {
         let tempEpsFileName = baseName.appendingPathExtension("eps") ?? "\(baseName).eps"
 
         if isUsingNewGS() {
-            if !pdfcrop(pdfFilePath, outputFileName: croppedPdfFileName, page: page, addMargin: true, useCache: true, fillBackground: false) {
+            // 背景合成はアウトライン化より先に行い、Quartzによる再描画で
+            // GhostscriptのExtGState参照が壊れるのを防ぐ。
+            if !pdfcrop(pdfFilePath, outputFileName: croppedPdfFileName, page: page, addMargin: true, useCache: false, fillBackground: true) {
                 return false
             }
 
@@ -1225,14 +1227,14 @@ class Converter: NSObject {
                            page: 1,
                            addMargin: false,
                            useCache: false,
-                           fillBackground: true) {
+                           fillBackground: false) {
                 keepPageSizeFlag = originalKeepPageSizeFlag
                 return false
             }
 
             keepPageSizeFlag = originalKeepPageSizeFlag
 
-            _ = pdf2svg(outlinedPdfFileName, outputFileName: svgFilePath, page: 1, skipEmptyPage: false)
+            guard pdf2svg(outlinedPdfFileName, outputFileName: svgFilePath, page: 1, skipEmptyPage: false) else { return false }
             if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
         } else {
             if !pdfcrop(pdfFilePath, outputFileName: croppedPdfFileName, page: page, addMargin: false, useCache: true, fillBackground: false) {
@@ -1249,7 +1251,7 @@ class Converter: NSObject {
                 return false
             }
 
-            _ = pdf2svg(trimmedPdfFileName, outputFileName: svgFilePath, page: 1, skipEmptyPage: false)
+            guard pdf2svg(trimmedPdfFileName, outputFileName: svgFilePath, page: 1, skipEmptyPage: false) else { return false }
             if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
         }
 
@@ -1369,6 +1371,8 @@ class Converter: NSObject {
         }
 
         if psInputMode || requireGS {
+            // PS/EPS直接入力ではDVI変換を通らないため、ここで入力日時を取得する。
+            psDate = fileModificationDate(atPath: psFilePath)
             success = ps2pdf(psFilePath, outputFile: pdfFilePath)
             if !success {
                 if ignoreErrorsFlag {

@@ -22,6 +22,13 @@
 - `1/` … `80/` — 各テストの出力ディレクトリ
 - `mesh-shading/` — メッシュシェーディング既知問題テストの出力
 
+## 2026-10-25の追加検証
+
+[ライブラリ更新後の本機検証](../docs/audits/comprehensive-tests-2026-10-25.md)を参照。
+CPUを固定して実行するランナーは `tests/run_universal_conversion_suite.py`。
+透明な先頭フレームを持つGIFもImageIOで全フレームを検査する。
+80ケースの合格とは別に、PDFKitの構造警告・描画状態参照の問題を記録している。
+
 ## 前提条件
 
 - macOS

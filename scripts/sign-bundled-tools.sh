@@ -51,5 +51,9 @@ if [[ -f "$PDFTOPS_DIR/pdftops" ]]; then
     sign_macho "$PDFTOPS_DIR/pdftops"
 fi
 
+if [[ -f "$APP/Contents/Resources/mupdf/mudraw" ]]; then
+    sign_macho "$APP/Contents/Resources/mupdf/mudraw"
+fi
+
 write_stamp
 echo "Bundled tool signing complete."

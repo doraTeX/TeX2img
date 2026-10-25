@@ -1,0 +1,135 @@
+{
+  "brotli": {
+    "version": "1.2.1",
+    "url": "https://github.com/google/brotli/archive/refs/tags/v1.2.1.tar.gz",
+    "archive": "brotli-1.2.1.tar.gz",
+    "source": "brotli-1.2.1",
+    "sha256": "98d35d11a78dc453aebb7d10c3748f3f73ff78c8267c0dc697b8631f67bf7e8f",
+    "licenses": [
+      "LICENSE"
+    ]
+  },
+  "zlib": {
+    "version": "1.3.2",
+    "url": "https://zlib.net/zlib-1.3.2.tar.gz",
+    "archive": "zlib-1.3.2.tar.gz",
+    "source": "zlib-1.3.2",
+    "sha256": "bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16",
+    "licenses": [
+      "LICENSE"
+    ]
+  },
+  "libpng": {
+    "version": "1.6.59",
+    "url": "https://download.sourceforge.net/libpng/libpng-1.6.59.tar.xz",
+    "archive": "libpng-1.6.59.tar.xz",
+    "source": "libpng-1.6.59",
+    "sha256": "d80dd2a38a37f803cb9b6ac7b14bd6e74ddc3b654780a8380bdf93523fdb4389",
+    "licenses": [
+      "LICENSE"
+    ]
+  },
+  "freetype": {
+    "version": "2.15.0",
+    "url": "https://downloads.sourceforge.net/project/freetype/freetype2/2.15.0/freetype-2.15.0.tar.xz",
+    "archive": "freetype-2.15.0.tar.xz",
+    "source": "freetype-2.15.0",
+    "sha256": "93cd47eb719c325107f2d3cf087d06299e944c3b48a40b55537302304dea1dd5",
+    "licenses": [
+      "LICENSE.TXT",
+      "docs/FTL.TXT",
+      "docs/GPLv2.TXT"
+    ]
+  },
+  "expat": {
+    "version": "2.9.0",
+    "url": "https://github.com/libexpat/libexpat/releases/download/R_2_9_0/expat-2.9.0.tar.xz",
+    "archive": "expat-2.9.0.tar.xz",
+    "source": "expat-2.9.0",
+    "sha256": "1e6371862cc31999b368c3b89b49994f0677e1bab5f1b2b85ae3741f5d803051",
+    "licenses": [
+      "COPYING"
+    ]
+  },
+  "fontconfig": {
+    "version": "2.18.3",
+    "url": "https://gitlab.freedesktop.org/fontconfig/fontconfig/-/archive/2.18.3/fontconfig-2.18.3.tar.gz",
+    "archive": "fontconfig-2.18.3.tar.gz",
+    "source": "fontconfig-2.18.3",
+    "sha256": "9ae01e1d53acdef56010c5451cd34aa41d325b2faccd8606448d8fa01b2496b3",
+    "licenses": [
+      "COPYING"
+    ]
+  },
+  "jpeg": {
+    "version": "3.2.0",
+    "url": "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.2.0/libjpeg-turbo-3.2.0.tar.gz",
+    "archive": "libjpeg-turbo-3.2.0.tar.gz",
+    "source": "libjpeg-turbo-3.2.0",
+    "sha256": "6f30092cef9fb839779646608f4ee14ae3cbac989c47fa05e841b0841f09878e",
+    "licenses": [
+      "LICENSE.md",
+      "README.ijg"
+    ]
+  },
+  "openjpeg": {
+    "version": "2.5.4",
+    "url": "https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.5.4.tar.gz",
+    "archive": "openjpeg-2.5.4.tar.gz",
+    "source": "openjpeg-2.5.4",
+    "sha256": "a695fbe19c0165f295a8531b1e4e855cd94d0875d2f88ec4b61080677e27188a",
+    "licenses": [
+      "LICENSE"
+    ]
+  },
+  "lcms2": {
+    "version": "2.19.1",
+    "url": "https://downloads.sourceforge.net/project/lcms/lcms/2.19.1/lcms2-2.19.1.tar.gz",
+    "archive": "lcms2-2.19.1.tar.gz",
+    "source": "lcms2-2.19.1",
+    "sha256": "bfc54f7bab59fbc921012014a8032e4cba4abd46db47d46b76416a8c0b2815c8",
+    "licenses": [
+      "LICENSE"
+    ]
+  },
+  "poppler": {
+    "version": "26.10.0",
+    "url": "https://poppler.freedesktop.org/poppler-26.10.0.tar.xz",
+    "archive": "poppler-26.10.0.tar.xz",
+    "source": "poppler-26.10.0",
+    "sha256": "6792cb7c69205007ad87d2e936cecc5b3a31fac29ab54ffc3175fdb6b2a6ce35",
+    "licenses": [
+      "COPYING",
+      "COPYING3"
+    ]
+  },
+  "mupdf": {
+    "version": "1.28.5",
+    "url": "https://casper.mupdf.com/downloads/archive/mupdf-1.28.5-source.tar.gz",
+    "archive": "mupdf-1.28.5-source.tar.gz",
+    "source": "mupdf-1.28.5-source",
+    "sha256": "98a5c10cda20c3992cdf76ff6b2a1149c32bd79cc796d3f703230b1185b7e934",
+    "licenses": [
+      "COPYING",
+      "thirdparty/jbig2dec/LICENSE",
+      "thirdparty/jbig2dec/COPYING",
+      "resources/fonts/urw/OFL.txt",
+      "resources/fonts/sil/OFL.txt",
+      "resources/fonts/droid/NOTICE",
+      "resources/fonts/noto/COPYING",
+      "resources/fonts/han/LICENSE.txt"
+    ]
+  },
+  "poppler-data": {
+    "version": "0.4.12",
+    "url": "https://poppler.freedesktop.org/poppler-data-0.4.12.tar.gz",
+    "archive": "poppler-data-0.4.12.tar.gz",
+    "source": "poppler-data-0.4.12",
+    "sha256": "c835b640a40ce357e1b83666aabd95edffa24ddddd49b8daff63adb851cdab74",
+    "licenses": [
+      "COPYING",
+      "COPYING.adobe",
+      "COPYING.gpl2"
+    ]
+  }
+}

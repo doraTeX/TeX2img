@@ -1,0 +1,8 @@
+{
+  "version": "2.36",
+  "revision": "71777",
+  "url": "https://raw.githubusercontent.com/TeX-Live/texlive-source/f17cbe24319484726b48137f44af7484a5fd7e27/texk/texlive/linked_scripts/epstopdf/epstopdf.pl",
+  "source_sha256": "2b4205fb8244133378bfeea3b6632d62d995924a60e1395fd8c25fac873bdcdf",
+  "bundled_sha256": "0828a6dc77d1cb297d63ce6860748ecf083412e6c773d570a80a0a096989958e",
+  "modification": "Removed trailing spaces in one comment; no functional changes."
+}

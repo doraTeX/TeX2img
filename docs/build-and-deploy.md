@@ -268,20 +268,39 @@ TeX2img.app/
 
 ---
 
-## 6. pdftops の Universal 化（Apple Silicon 対応）
+## 6. 同梱PDF変換ツールの更新
 
-`Resources/pdftops/` は Poppler **20.09.0** のバンドルです。Apple Silicon ネイティブ対応には arm64 スライスを追加します。
+Poppler 26.10.0 / MuPDF 1.28.5 と依存ライブラリを同じ固定ソースから両CPU向けにビルドする。
+最低OSはどちらのスライスも macOS 12.0。既存Intelバイナリの再利用や `vtool` による最低OSの書き換えはしない。
+ソースURL・SHA-256・ライセンスは `ThirdParty/bundled-sources.json` に固定している。
+
+必要なビルドツール: Xcode、Python 3.9以上、CMake 3.28以上、Meson、Ninja、pkg-config。
+ホストのライブラリではなく、指定した作業ディレクトリ内で依存をビルドし静的リンクする。
+MuPDFのMakefile制約により作業ディレクトリのパスに空白を含めない。
 
 ```bash
-scripts/build-pdftops-universal.sh all
-scripts/build-pdftops-universal.sh install   # Resources/pdftops を置換（自動バックアップ）
-```
-
-arm64 スライスは **`ARM64_MIN_OS=11.0`（macOS 11+）** を既定とします。
-
-```bash
+DEPS_WORK=$(mktemp -d /tmp/tex2img-deps.XXXXXX)
+python3 scripts/build-bundled-tools.py --work-root "$DEPS_WORK"
+# 検査後、Resourcesのツール・CMap・ライセンス・ビルド情報を更新
+python3 scripts/build-bundled-tools.py --work-root "$DEPS_WORK" --install
+python3 tests/test_brotli_security.py --work-root "$DEPS_WORK"
+python3 tests/test_bundled_converters.py --work-root "$DEPS_WORK"
+python3 tests/test_universal_verifier.py
+python3 tests/test_bundled_tool_paths.py
 scripts/verify-universal.sh Resources/pdftops
+scripts/verify-universal.sh Resources/mupdf
 ```
+
+`--install` は旧 `pdftops-lib` を削除する。既存バイナリはGitから復元できる。
+更新後は古いdylibが残らないクリーンなDerivedDataでReleaseをビルドする。
+`verify-bundle.sh` は旧dylibディレクトリの残存、両ツールの署名、両CPUの最低OSを検査する。
+ReleaseではSparkleの補助プロセスとCLIを含むアプリ全体も検査する。
+
+
+アプリ全体の変換テストは `python3 tests/test_bundled_app.py --app /path/to/TeX2img.app`（テスト用Pythonにpypdf・Pillowが必要）。ツールの版だけでなく、CLIログに出る実際の呼び出し先も検査する。
+
+Brotliの修正確認、無効化したオプション機能、最低OS判定の範囲は
+[2026-10-25の更新・検証記録](audits/bundled-libraries-2026-10-25.md)を参照。
 
 ---
 
@@ -302,7 +321,8 @@ scripts/verify-universal.sh Resources/pdftops
 
 | スクリプト | 説明 |
 |-----------|------|
-| `scripts/build-pdftops-universal.sh` | pdftops universal 化 |
+| `scripts/build-bundled-tools.py` | 依存を含むpdftops・mudrawの両CPUビルド |
+| `scripts/build-pdftops-universal.sh` | 上記への互換入口（all / install） |
 | `scripts/verify-universal.sh` | Mach-O の universal / arm64 min OS 検証 |
 | `scripts/generate_cid_table.py` 等 | ソース生成用（配布とは無関係） |
 
