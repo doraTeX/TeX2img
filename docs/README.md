@@ -4,6 +4,7 @@
 
 ## 監査・不具合調査 — `audits/`
 
+- [PDFKit保存経路の追調査・限定的な修正と保留範囲](audits/pdfkit-preservation-2026-10-25.md)
 - [Ghostscript 10.07.1インストール後の実機検証](audits/ghostscript-10.07.1-2026-10-25.md)
 - [本機での網羅テスト・残存するPDFKit問題（2026-10-25）](audits/comprehensive-tests-2026-10-25.md)
 - [同梱ライブラリ更新・Brotli修正確認（2026-10-25）](audits/bundled-libraries-2026-10-25.md)

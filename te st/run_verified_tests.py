@@ -329,7 +329,7 @@ def pdf_shading_counts(path: Path) -> tuple[int, int] | None:
 
 
 def run_mesh_shading_known_issue() -> dict:
-    """pgfplots surf: PDFKit 再シリアライズによる既知問題（保留・80 件の合否に含めない）。"""
+    """pgfplots surf単一ページの保持を別枠で確認する。"""
     name = "mesh-shading (pgfplots-surf, --with-text)"
     if not MESH_SHADING_INPUT.is_file():
         return {
@@ -385,12 +385,11 @@ def run_mesh_shading_known_issue() -> dict:
     if ref_s4 > 0 and out_s4 > 0 and out_p1 == 0:
         return {
             "name": name,
-            "status": "FIXED?",
+            "status": "PASS",
             "command": cmd,
             "exit_code": rc,
             "issues": [
-                "output preserves ShadingType 4 — known PDFKit issue may be fixed; "
-                "update verified-tests.md and this check",
+                "output preserves ShadingType 4 (single page, transparent, with text)",
                 detail,
             ],
             "log_tail": log_tail,
@@ -498,7 +497,7 @@ def main() -> int:
         )
     )
 
-    lines.extend(["", "## Known issue (deferred): mesh shading", ""])
+    lines.extend(["", "## Mesh shading (separate check)", ""])
     lines.append(f"**Status:** {mesh_status}")
     if mesh.get("command"):
         lines.append("```")

@@ -7,10 +7,10 @@
 | ファイル | 説明 |
 |----------|------|
 | `in put.pdf` | 入力 PDF（全 8 ページ。空ページは 1, 3, 5） |
-| `pgfplots-surf.pdf` | pgfplots 3D `surf` の参照 PDF（メッシュシェーディング検証用。下記「既知の保留事項」） |
+| `pgfplots-surf.pdf` | pgfplots 3D `surf` の参照 PDF（メッシュシェーディング検証用。下記「pgfplotsメッシュ」） |
 | `pgfplots-surf.tex` | 上記 PDF の元 TeX（`with-text-sample/sample.tex` と同内容） |
 | `test.sh` | 80 件のテストコマンド（**丸ごと実行しないこと**） |
-| `mesh-shading-known-issue.sh` | メッシュシェーディング既知問題の再現コマンド（**保留・別枠**） |
+| `mesh-shading-known-issue.sh` | 単一ページのメッシュ保持を確認するコマンド（別枠） |
 | `github-comment-mesh-shading.md` | GitHub issue 用コメント（調査結果・保留理由） |
 | `list.xlsx` | 各テストの仕様一覧（日本語） |
 | `run_verified_tests.py` | **推奨** — `test.sh` を 1 件ずつ実行し、生成物を自動検証 |
@@ -150,49 +150,24 @@ no-merge 時のファイル名:
 
 merge 時は各ページの GIF を**等倍・中央配置**（レターボックス）で結合する。ページごとにサイズが異なるため、キャンバスは全フレームの最大幅×最大高さになる。数式本体が引き伸ばされていないかは、個別出力（例: 57 vs 61）のコンテンツ bbox で比較するとよい。
 
-## 既知の保留事項: pgfplots 3D surf のワイヤーフレーム化（PDFKit）
+## pgfplotsメッシュ: 単一ページの改善と残る保留範囲
 
-`pgfplots-surf.pdf` は LuaLaTeX + pgfplots の 3D `surf`（トーラス）を 1 ページにした参照 PDF です。Preview で開くと**面の塗り**が表示されますが、TeX2img の `--with-text` 経路（および PNG 等の途中で `pdfcrop()` → `generateCroppedPDF()` を通る経路）では **ワイヤーフレーム状**に見えることがあります。
+`pgfplots-surf.pdf` はLuaLaTeX + pgfplotsのトーラスを1ページにした参照PDF。
+2026-10-25の追調査で、読み込んだ文書のページ構成を維持した保存ならメッシュ・余白変更・原稿注釈を保持できることが分かった。
+`generateCroppedPDF`を修正し、単一ページ・透過・`--with-text`の基本ケースは改善した。
 
-### 原因（調査済み・**対処保留**）
-
-| 項目 | 内容 |
-|------|------|
-| 根本原因 | **PDFKit / Core Graphics による PDF の再シリアライズ**（`PDFDocument.write` や `CGContext.drawPDFPage`） |
-| 破壊の内容 | 入力の **ShadingType 4**（メッシュシェーディング）が **PatternType 1** に変換され、PDF 1.7 → 1.3 相当に下がる |
-| TeX2img 上の該当箇所 | `generateCroppedPDF` → `writeToFilePath`、`embedTeXSource` → `doc.write`、`PDFDocument.fillBackground` |
-| Ghostscript / LuaLaTeX | 原因ではない（`gs pdfwrite` や TeX Live `pdfcrop` CLI は面を保持） |
-| Preview.app「書き出し」 | 保持する（Apple 内部の別経路） |
-
-**PDFKit の公開 API では PDF バージョン指定や ShadingType 4 保持の回避策がなく**、crop・背景塗り・PDF 結合・ソース埋め込みの各段階で `write` を避ける大規模な置き換え（qpdf / ストリーム注入など）が必要になるため、**現時点では修正を保留**とする。
-
-### 再現用ファイル
-
-| パス | 説明 |
-|------|------|
-| `te st/pgfplots-surf.pdf` | 参照入力（ShadingType 4 あり） |
-| `te st/mesh-shading-known-issue.sh` | `--with-text` で PDF 出力する再現コマンド |
-| `with-text-sample/pdfkit-repro/` | PDFKit 単体での最小再現（`rewrite` だけで再現） |
-
-手動再現:
+新規文書へのページ挿入、複数ページからの抽出、Core Graphicsでの背景合成、複数PDFの結合には問題が残る。
+詳細と保留理由は[追調査報告](../docs/audits/pdfkit-preservation-2026-10-25.md)を参照。
 
 ```bash
 cd "$TEST_ROOT/te st"
 ./mesh-shading-known-issue.sh
-python3 -c "
-t=open('pgfplots-surf.pdf','rb').read().decode('latin1')
-u=open('mesh-shading/out.pdf','rb').read().decode('latin1')
-print('input  S4', t.count('ShadingType 4'), 'P1', t.count('PatternType 1'))
-print('output S4', u.count('ShadingType 4'), 'P1', u.count('PatternType 1'))
-"
 ```
 
-期待される**現状の既知状態**（バグが残っているとき）:
-
-- 入力: `ShadingType 4` が多数（例: 1500 前後）、`PatternType 1` は 0
-- 出力: `ShadingType 4` が 0、`PatternType 1` が多数
-
-`run_verified_tests.py` は 80 件の後にこのチェックを**別枠**で実行する。構造が上記のとおりなら `[DEFERRED]` と表示し、**80 件の合否には含めない**。将来修正して出力が ShadingType 4 を保持するようになったら `[FIXED?]` と表示する（ドキュメントと実装の更新が必要）。
+修正後の基本ケースの期待値は、入力・出力ともShadingType 4が1,521個、PatternType 1が0個。
+`run_verified_tests.py`は80件の後にこのチェックを別枠で実行し、保持できれば`[PASS]`と表示する。
+旧状態を再現した場合は`[DEFERRED]`と表示するため、80件の合格とは別に確認する。
+`tests/test_pdfkit_page_preservation.py`は到達可能なメッシュ、原稿、回転も検査し、保持できなければ失敗する。
 
 ## 既知の環境トラブル
 
@@ -211,7 +186,7 @@ print('output S4', u.count('ShadingType 4'), 'P1', u.count('PatternType 1'))
 3. `python3 run_verified_tests.py` を実行（**test.sh 一括実行は禁止**）
 4. 失敗があれば `test_results.md` のログを読み、個別コマンドを手動再現
 5. 修正後は該当テスト番号だけ再実行してからフルスイートを回す
-6. 末尾の `[DEFERRED] mesh-shading` は pgfplots surf の PDFKit 既知問題（**保留・合否に含めない**）。`[FIXED?]` が出たら修正済みの可能性あり
+6. 末尾のメッシュ検査は `[PASS]` が期待値。`[DEFERRED]`なら単一ページの旧問題が再現しているため調べる。背景・抽出・結合の一般対応は引き続き保留。
 
 ## 関連するソース修正（参考）
 

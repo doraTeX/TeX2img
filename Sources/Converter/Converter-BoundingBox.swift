@@ -258,13 +258,18 @@ extension Converter {
             targetPages = [page]
         }
 
-        let outputDocument = PDFDocument()
+        // ページ構成を変えない場合は元文書を保存する。新規文書へのinsertは
+        // PDFKitの再描画を起こし、メッシュや描画状態の参照を壊すことがある。
+        let preservesPageTree = targetPages.count == totalPageCount
+        let outputDocument = preservesPageTree ? inputDoc : PDFDocument()
         for targetPage in targetPages {
             guard let croppedPage = cropPage(of: inputPath,
                                              page: targetPage,
                                              from: inputDoc,
                                              addMargin: addMargin) else { return false }
-            outputDocument.append(croppedPage)
+            if !preservesPageTree {
+                outputDocument.append(croppedPage)
+            }
         }
 
         return outputDocument.writeToFilePath(outputPath)

@@ -1,93 +1,33 @@
-## 調査結果: pgfplots 3D `surf` がワイヤーフレーム化する問題（PDFKit 起因・修正保留）
+## pgfplotsメッシュ問題の追調査（2026-10-25）
 
-### 現象
+詳細は [PDFKit保存経路の調査報告](../docs/audits/pdfkit-preservation-2026-10-25.md) を参照。
 
-LuaLaTeX + pgfplots の 3D `surf`（例: トーラス）を TeX2img で変換すると、Preview で開いたときに**面の塗りが失われ、ワイヤーフレーム状**に見える。
+### 原因の切り分けを更新
 
-- 同じ PDF を Preview.app で「書き出し」すると**面は保持される**
-- LuaLaTeX 直出力の PDF は正常
+PDFKit保存全般で必ず壊れるわけではなかった。
+読み込んだ文書をそのまま編集・保存する場合は、MediaBox/CropBoxや非表示の原稿注釈を変更してもメッシュを保持できた。
+新規PDFDocumentへページをinsertする、複数ページからremovePageで抽出する、PDFPage.dataRepresentationを使う、Core Graphicsで描き直す場合に問題を再現した。
 
-### 根本原因（調査済み）
+再描画後にはShadingType 4が画像パターンへ変わり、パターンのBBoxには約±8.99×10^307の異常な座標が入る。
+Quartzで読むと面が失われ、別のレンダラーで面が見えても画像化による劣化が残る。
 
-**PDFKit / Core Graphics による PDF の再シリアライズ**が原因。TeX2img・Ghostscript・pgfplots のバグではない。
+### 今回改善した範囲
 
-pgfplots 3D `surf` は PDF の **ShadingType 4**（メッシュシェーディング）で面を描画している。`PDFDocument.write(to:)` や `CGContext.drawPDFPage` で PDF を書き直すと、Apple の PDF writer がこれを **PatternType 1** に変換する。Preview では格子状のワイヤーフレームに見える。
-
-| 経路 | ShadingType 4 | PatternType 1 | Preview での見え方 |
-|------|:-------------:|:-------------:|-------------------|
-| LuaLaTeX 直出力 / Preview 書き出し | あり | なし | 面あり |
-| `PDFDocument.write` のみ（`rewrite`） | なし | あり | ワイヤーフレーム |
-| TeX2img `--with-text` PDF 出力 | なし | あり | ワイヤーフレーム |
-| TeX Live `pdfcrop` CLI / `qpdf` / `gs pdfwrite` | あり | なし | 面あり |
-
-### TeX2img 上の該当箇所
-
-`pdfcrop()` は TeX Live の `pdfcrop` コマンドではなく、内部で `generateCroppedPDF()` → `PDFDocument.writeToFilePath()` を呼んでいる。
-
-- `Sources/Converter/Converter-BoundingBox.swift` — `generateCroppedPDF`
-- `Sources/Converter/Converter.swift` — `pdfcrop()`, `embedTeXSource()`
-- `Sources/Extensions/PDF/PDFDocument-Extension.swift` — `fillBackground`（`drawPDFPage`）
-
-**影響範囲**
-
-- `--with-text` + PDF 最終出力 — crop と embed の両方で `write` が走る
-- PNG 等の最終出力 — 途中の `pdfcrop()` でも `write` が走る（ラスター化前の中間 PDF が壊れる）
-
-### PDFKit で回避できない理由
-
-`PDFDocument.write(to:withOptions:)` の公開オプションに、**出力 PDF バージョンの指定や ShadingType 4 保持の設定はない**。非公開キー（`SaveWithCorePDFLayout` 等）や `dataRepresentation()` でも同じ変換が起きる（`with-text-sample/pdfkit-repro/test-write-options.m` で確認済み）。
-
-### 修正を保留とする理由
-
-crop だけを `qpdf` 等に置き換えても不十分。次も PDFKit `write` / `drawPDFPage` 経路のため、別途置き換えが必要。
-
-1. **背景塗り** — `PDFDocument.fillBackground`（PDF/SVG/EPS + 背景色の一部経路）
-2. **PDF 結合** — `PDFDocument(merging:).writeToFilePath`（merge PDF 等）
-3. **TeX ソース埋め込み** — `embedTeXSource` → `doc.write()`
-
-既存 80 件の回帰テスト（`te st/test.sh`）はこのケースをカバーしていない。修正には qpdf 同梱と複数箇所の非 PDFKit 化が必要なため、**現時点では修正を保留**とする。
-
-### 再現手順
+`generateCroppedPDF`でページ構成を変えない場合は元の文書を保存するよう修正した。
+既存の単一ページ・透過・`--with-text`の再現ケースは、1,521個のメッシュを保持する。
+余白指定、アウトライン化、回転・非ゼロ原点、日本語の原稿埋め込みと再取得も検査している。
 
 ```bash
-cd "te st"
 ./tex2img --resolution 6 --workingdir current --with-text pgfplots-surf.pdf ./mesh-shading/out.pdf
 ```
 
-```bash
-python3 -c "
-for p in 'pgfplots-surf.pdf', 'mesh-shading/out.pdf':
-  t = open(p, 'rb').read().decode('latin1')
-  print(p, 'ver', t[:8], 'S4', t.count('ShadingType 4'), 'P1', t.count('PatternType 1'))
-"
-```
+この基本ケースは `run_verified_tests.py` で80ケースとは別枠の `PASS` として確認する。
 
-**既知状態（バグが残っているとき）**
+### 保留する範囲
 
-- 入力 `pgfplots-surf.pdf`: ShadingType 4 が多数、PatternType 1 は 0
-- 出力 `mesh-shading/out.pdf`: ShadingType 4 は 0、PatternType 1 が多数
+背景合成、複数ページからの抽出、複数PDFの結合には依然として再描画経路が残る。
+同梱MuPDFで抽出・結合できることは確認したが、単純な結合置換では元のText注釈が失われた。
+原稿・注釈、ページ参照、回転、色管理などを維持する設計と検査が必要なため、一般対応は保留する。
 
-### リポジトリ内の参照
-
-| パス | 内容 |
-|------|------|
-| `te st/pgfplots-surf.pdf` | 参照入力 PDF |
-| `te st/pgfplots-surf.tex` | 元 TeX |
-| `te st/mesh-shading-known-issue.sh` | 再現コマンド |
-| `te st/verified-tests.md` | 既知の保留事項として文書化 |
-| `with-text-sample/pdfkit-repro/` | PDFKit 単体の最小再現（`rewrite` だけで再現） |
-
-`run_verified_tests.py` は 80 件の後にこのチェックを `[DEFERRED]` として別枠実行する（回帰合否には含めない）。
-
-### 将来の修正方針（参考）
-
-| 処理 | 案 |
-|------|-----|
-| crop | TeX Live `pdfcrop` または qpdf による MediaBox 変更（ストリーム保持） |
-| merge | `qpdf --pages` |
-| 背景塗り | コンテンツストリーム先頭への矩形注入、または GS 下敷き |
-| embed | xattr のみ、または qpdf での注釈注入 |
-
----
-
-**ステータス:** 既知の問題として文書化済み。修正は保留（`wontfix` / `known-issue` 相当）。
+汎用対応でも、qpdfの追加同梱が必須とは限らない。
+現在の同梱MuPDFを活用できる可能性があり、元文書の構成を維持する保存では原稿注釈も保持できる。

@@ -1193,9 +1193,11 @@ class Converter: NSObject {
             doc.write(to: URL(fileURLWithPath: filePath))
         }
 
-        let target = filePath.withCString { $0 }
-        _ = contents.withCString { val in
-            setxattr(target, eaKey, val, strlen(val), 0, 0)
+        // withCStringの外へポインタを持ち出すと、原稿の拡張属性保存に失敗する。
+        _ = filePath.withCString { target in
+            contents.withCString { val in
+                setxattr(target, eaKey, val, strlen(val), 0, 0)
+            }
         }
     }
 
