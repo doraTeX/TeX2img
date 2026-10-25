@@ -1,7 +1,7 @@
 #!/bin/bash
 # Sign bundled helper binaries with Hardened Runtime for notarization.
 #
-# pdftops and its dylibs ship adhoc-signed in Resources/. Re-sign them here
+# pdftops and mudraw ship adhoc-signed in Resources/. Re-sign them here
 # after they are copied into the app bundle (Xcode Run Script phase).
 #
 # Usage:

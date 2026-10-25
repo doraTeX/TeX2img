@@ -105,3 +105,39 @@ macOS 12実機/VM・Intel実機での実行確認はしていない。最低OS�
 既存80ケース×両CPU、GUI、入力形式、生成物の構造検査を追加実施した。
 検査中のSVG・PS/EPS修正と、残存するPDFKitの構造警告・メッシュ問題については
 [本機での網羅テスト報告](comprehensive-tests-2026-10-25.md)を参照。
+
+
+## 公開後の著作権表示・外部監査の再確認
+
+2026-10-25、3.0.3公開後にCredits.rtfと同梱版の原文を照合した。
+次の表示修正は初回公開した3.0.3のバイナリには含まれていなかった。
+これらを反映したGUI配布物を、バージョン番号3.0.3で再作成する。
+
+- 本体の著作権表示を2007–2026へ更新（Credits.rtf、日英InfoPlist.strings）。
+- MuPDF 1.28.5のREADMEに合わせ、Artifexの表記を2006–2026へ更新。
+- pdftopsのクレジットをPoppler 26.10.0として記載。実行時の版表示と合わせ、Poppler Developersは2005–2026、由来となるGlyph & Cogは1996–2011, 2022とした。
+- Xpdf.licenseに残っていたXpdf 4.02のREADMEを、実際に使用したPoppler 26.10.0のREADME-XPDFとバイト単位で一致する原文へ置換。再ビルド時にも同じ原文をコピーする。
+- epstopdf 2.36の原文に合わせ、Gerben Wierdaは2002–2009、Karl Berryは2009–2024とした。ライセンスをRevised BSDと明記。
+- Sparkle 2.10.0とその内包コンポーネントの著作権・ライセンス全文をCredits.rtfに追加。上流LICENSEの著作権年を採用。
+- 静的リンクしたライブラリとデータ・フォント、および同梱ライセンスの所在をCredits.rtfに追記。
+
+`ThirdParty/bundled-sources.json`に列挙した12コンポーネントの25ライセンスファイルは、
+`Resources/pdftops/licenses`とビルド時のソースで全件バイト同一だった。
+RTFをtextutilで再読込し、Sparkleの全文と著作権表示を検査。
+日英InfoPlist.stringsはplutilで構文検証した。
+
+Fableの監査指摘に関して、ビルド手順の旧dylib再署名の説明を修正した。
+SVGの失敗伝播は、描画エラーを含む出力を成功として扱わないための処理である。
+MuPDF 1.28.5のmudraw.cでは、警告のflushとは別にcookie->errorsを終了状態へ反映している。
+単純な矩形の正常PDFはarm64/x86_64とも終了0、未定義のExtGStateを使用するPDFは両CPUとも
+「page may not be correct」の診断を伴って終了1となることを再確認した。
+一般の警告をすべてエラー扱いするという説明は正確ではない。
+
+macOS 12実機・Intel実機での未検証、およびPDFKitの複数ページ抽出・結合・背景合成に関する
+既存の制約は、前掲の監査記録を参照。Issue #128への完了報告とクローズは別途公開操作となる。
+
+再配布の準備としてReleaseビルドを実行し、9個のMach-Oが両CPU・最低OS≦12.0の検査に合格した。
+ビルド後のCredits.rtfとXpdf.licenseは修正済みソースとバイト同一。
+日英InfoPlist.stringsはXcodeでの形式変換後の辞書内容がソースと一致した。
+アプリ内Credits.rtfにSparkleのライセンス全文が含まれることも再読込して確認した。
+Archive・公証・DMG生成は開発者が実施する。

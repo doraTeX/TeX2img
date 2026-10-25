@@ -174,6 +174,7 @@ if args.arch == 'all':
             shutil.copytree(out / name, dest)
         shutil.copy2(out / 'build-info.json', PROJECT / 'Resources/pdftops/build-info.json')
         shutil.copy2(source('mupdf') / 'COPYING', PROJECT / 'Resources/mupdf/MuPDF.license')
+        shutil.copy2(source('poppler') / 'README-XPDF', PROJECT / 'Resources/pdftops/Xpdf.license')
         shutil.copy2(out / 'pdftops', PROJECT / 'Resources/pdftops/pdftops')
         shutil.copy2(out / 'mudraw', PROJECT / 'Resources/mupdf/mudraw')
         old = PROJECT / 'Resources/pdftops/pdftops-lib'
