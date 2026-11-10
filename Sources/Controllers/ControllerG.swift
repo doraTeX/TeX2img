@@ -1183,6 +1183,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         ThemeLibrary.shared.prepare()
         buildSettingsWindow()
         outputTextView.layoutManager?.allowsNonContiguousLayout = true
+        // Long sources are laid out only where needed (TeXShop 5.60).
+        sourceTextView.layoutManager?.allowsNonContiguousLayout = true
+        preambleTextView.layoutManager?.allowsNonContiguousLayout = true
 
         userNotificationDelegate = UserNotificationDelegate()
         UNUserNotificationCenter.current().delegate = userNotificationDelegate

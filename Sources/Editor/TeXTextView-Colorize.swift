@@ -115,7 +115,7 @@ extension TeXTextView {
         highlightBracesColorDict = highlightAttributes
         let braceCharList: [unichar] = [0x0028, 0x0029, 0x005B, 0x005D, 0x007B, 0x007D, 0x003C, 0x003E]
 
-        guard let theString = textStorage?.string else { return }
+        guard let theString = textStorage?.string as NSString? else { return }
         let theStringLength = theString.length
         guard theStringLength > 0 else { return }
 
@@ -188,6 +188,8 @@ extension TeXTextView {
         while true {
             location += inc
             guard location >= 0 && location < theStringLength else { break }
+            // A far or missing partner does not stall cursor movement in long sources (TeXShop 5.60).
+            if abs(location - checkLocation) > 2_000_000 { return }
             let uchar = theString.character(at: location)
             let prev = location > 0 ? theString.character(at: location - 1) : 0
             let notControlSequence = prev != "\\".utf16.first! && prev != 0x00a5
