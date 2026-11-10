@@ -41,8 +41,13 @@ class TeXTextView: NSTextView {
     override func awakeFromNib() {
         let autoCompletionPath = "~/Library/TeXShop/Keyboard/autocompletion.plist".expandingTildeInPath
         if FileManager.default.fileExists(atPath: autoCompletionPath) {
-            if let dict = NSDictionary(contentsOfFile: autoCompletionPath) as? [String: String] {
-                autocompletionDictionary = dict
+            // An entry that is not a string pair is skipped; the others still work.
+            if let dict = NSDictionary(contentsOfFile: autoCompletionPath) {
+                var completions = [String: String]()
+                for (key, value) in dict {
+                    if let key = key as? String, let value = value as? String { completions[key] = value }
+                }
+                autocompletionDictionary = completions
             }
         } else {
             autocompletionDictionary = nil
@@ -413,7 +418,7 @@ class TeXTextView: NSTextView {
 
         if theString == "¥", currentProfile.boolForKey(ConvertYenMarkKey) {
             super.insertText("\\", replacementRange: replacementRange)
-        } else if theString.count == 1,
+        } else if theString.nsLength == 1, // one UTF-16 unit, as in Objective-C: not an emoji
                   currentProfile.boolForKey(AutoCompleteKey),
                   let autocompletionDictionary,
                   let firstChar = theString.utf16.first {

@@ -278,7 +278,7 @@ extension TeXTextView {
     override func shouldChangeText(in affectedCharRange: NSRange, replacementString: String?) -> Bool {
         _ = super.shouldChangeText(in: affectedCharRange, replacementString: replacementString)
 
-        guard let replacementString, replacementString.count == 1 else { return true }
+        guard let replacementString, replacementString.nsLength == 1 else { return true }
 
         guard let rightpar = replacementString.utf16.first else { return true }
         let profile = controller.currentProfile()

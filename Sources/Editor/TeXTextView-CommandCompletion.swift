@@ -46,14 +46,15 @@ extension TeXTextView {
     }
 
     private func handleCommandCompletion(event: NSEvent, commandCompletionList: String, texChar: unichar) {
-        let textString = string
+        // The text storage itself, not a copy: it changes with the undo and redo below (as self.string did in Objective-C).
+        let textString: NSString = textStorage?.mutableString ?? (string as NSString)
         var selectedLocation = selectedRange.location
         var latexString: String?
 
         if selectedLocation > 0,
            textString.character(at: selectedLocation - 1) == "}".utf16.first!,
            !latexSpecial {
-            let charSet = CharacterSet(charactersIn: "\n \t.,;;{}()%\(Character(UnicodeScalar(texChar)!))")
+            let charSet = CharacterSet(charactersIn: "\n \t.,;;{}()\(Character(UnicodeScalar(texChar)!))")
             let foundRange = textString.rangeOfCharacter(
                 from: charSet,
                 options: .backwards,
@@ -73,7 +74,7 @@ extension TeXTextView {
         }
 
         if wasCompleted {
-            let currentLength = currentString?.count ?? 0
+            let currentLength = currentString?.nsLength ?? 0
             if selectedLocation == textLocation,
                textString.length >= replaceLocation + currentLength,
                let currentString,
@@ -100,7 +101,7 @@ extension TeXTextView {
         }
 
         if !wasCompleted && !latexSpecial {
-            let charSet = CharacterSet(charactersIn: "\n \t.,;;{}()%\(Character(UnicodeScalar(texChar)!))")
+            let charSet = CharacterSet(charactersIn: "\n \t.,;;{}()\(Character(UnicodeScalar(texChar)!))")
             let foundRange = textString.rangeOfCharacter(
                 from: charSet,
                 options: .backwards,
