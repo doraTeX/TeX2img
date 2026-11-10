@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		348D584BD5174A3704C074C8 /* ShortcutPaneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348ADEB4B0BAAC187EB5E55E /* ShortcutPaneController.swift */; };
+		34C757B62ED415957ABE89FC /* KeyboardShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3462623E0B8DD5A391EF5A69 /* KeyboardShortcuts.swift */; };
 		34D0D596777D08134C74BD06 /* SettingsUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BBCC5033A3922EA47F1AD5 /* SettingsUI.swift */; };
 		34A35042392694E9140FF3F4 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3479DE6EDBF7AC5AFBFBB0FF /* SettingsWindowController.swift */; };
 		34547A9A90F4F2A3735BEADE /* ThemeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BE2C29C9ADEC5F499ED929 /* ThemeStore.swift */; };
@@ -151,6 +153,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		348ADEB4B0BAAC187EB5E55E /* ShortcutPaneController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShortcutPaneController.swift"; sourceTree = "<group>"; };
+		3462623E0B8DD5A391EF5A69 /* KeyboardShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardShortcuts.swift"; sourceTree = "<group>"; };
 		34BBCC5033A3922EA47F1AD5 /* SettingsUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsUI.swift"; sourceTree = "<group>"; };
 		3479DE6EDBF7AC5AFBFBB0FF /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsWindowController.swift"; sourceTree = "<group>"; };
 		34BE2C29C9ADEC5F499ED929 /* ThemeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemeStore.swift"; sourceTree = "<group>"; };
@@ -412,6 +416,8 @@
 		343A4B13690A5D04F984EEC9 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				348ADEB4B0BAAC187EB5E55E /* ShortcutPaneController.swift */,
+				3462623E0B8DD5A391EF5A69 /* KeyboardShortcuts.swift */,
 				34BBCC5033A3922EA47F1AD5 /* SettingsUI.swift */,
 				3479DE6EDBF7AC5AFBFBB0FF /* SettingsWindowController.swift */,
 				34BE2C29C9ADEC5F499ED929 /* ThemeStore.swift */,
@@ -743,6 +749,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				348D584BD5174A3704C074C8 /* ShortcutPaneController.swift in Sources */,
+				34C757B62ED415957ABE89FC /* KeyboardShortcuts.swift in Sources */,
 				34D0D596777D08134C74BD06 /* SettingsUI.swift in Sources */,
 				34A35042392694E9140FF3F4 /* SettingsWindowController.swift in Sources */,
 				34547A9A90F4F2A3735BEADE /* ThemeStore.swift in Sources */,

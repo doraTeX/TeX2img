@@ -18,6 +18,8 @@ SOURCES = [
     "Sources/Settings/ThemeStore.swift",
     "Sources/Settings/ThemeSettingsController.swift",
     "Sources/Settings/ControllerG+Settings.swift",
+    "Sources/Settings/KeyboardShortcuts.swift",
+    "Sources/Settings/ShortcutPaneController.swift",
     "Sources/Editor/AutoSelectTextField.swift",
     "Sources/Extensions/AppKit/NSColor-DefaultColor.swift",
     "Sources/Extensions/AppKit/NSColor-Extension.swift",

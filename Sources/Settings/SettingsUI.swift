@@ -358,6 +358,21 @@ enum SettingsUI {
         return row
     }
 
+    /// A row whose content spans the whole width of the card.
+    static func fillRow(_ content: NSView, searchTitle: String = "") -> SettingsRowView {
+        let row = SettingsRowView(title: nil, note: nil, accessory: nil, indent: 0, wideAccessory: false)
+        row.searchTitle = searchTitle
+        content.translatesAutoresizingMaskIntoConstraints = false
+        row.addSubview(content)
+        NSLayoutConstraint.activate([
+            content.leadingAnchor.constraint(equalTo: row.leadingAnchor),
+            content.trailingAnchor.constraint(equalTo: row.trailingAnchor),
+            content.topAnchor.constraint(equalTo: row.topAnchor),
+            content.bottomAnchor.constraint(equalTo: row.bottomAnchor),
+        ])
+        return row
+    }
+
     /// Buttons aligned to the trailing edge of a row.
     static func buttonRow(_ buttons: [NSView], searchTitle: String = "") -> SettingsRowView {
         let row = SettingsRowView(title: nil, note: nil, accessory: hstack(buttons), indent: 0, wideAccessory: false)

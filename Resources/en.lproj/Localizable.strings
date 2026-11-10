@@ -241,3 +241,36 @@
 "Previous Light Mode Colors" = "Previous Light Mode Colors";
 "Previous Dark Mode Colors" = "Previous Dark Mode Colors";
 "Formatting" = "Formatting";
+
+/* Keyboard shortcuts */
+"Keyboard" = "Keyboard";
+"Keyboard summary" = "Set up command completion and the shortcuts of menu commands.";
+"Command Completion" = "Command Completion";
+"Menu Shortcuts" = "Menu Shortcuts";
+"Search by Function" = "Search by Function";
+"Search by Key" = "Search by Key";
+"Search commands" = "Search commands";
+"Press a key" = "Press a key";
+"Command" = "Command";
+"Shortcut" = "Shortcut";
+"Change…" = "Change…";
+"Remove Shortcut" = "Remove Shortcut";
+"Restore Default" = "Restore Default";
+"Restore All…" = "Restore All…";
+"Change Shortcut" = "Change Shortcut";
+"New shortcut" = "New shortcut";
+"Apply" = "Apply";
+"Shortcut Unavailable" = "Shortcut Unavailable";
+"This command is no longer available." = "This command is no longer available.";
+"This key cannot be used as a shortcut. Use Command or Control with a key, or F1–F20." = "This key cannot be used as a shortcut. Use Command or Control with a key, or F1–F20.";
+"This shortcut is already used by “%@”." = "This shortcut is already used by “%@”.";
+"This shortcut is already used by:\n%@" = "This shortcut is already used by:\n%@";
+"This key is reserved for command completion." = "This key is reserved for command completion.";
+"This key cannot be assigned to a new shortcut." = "This key cannot be assigned to a new shortcut.";
+"No command uses this key." = "No command uses this key.";
+"Matches: %ld" = "Matches: %ld";
+"Assigned" = "Assigned";
+"This shortcut is inactive because it conflicts with “%@” (%@)." = "This shortcut is inactive because it conflicts with “%@” (%@).";
+"Restore all keyboard shortcuts?" = "Restore all keyboard shortcuts?";
+"Custom menu shortcuts will be removed." = "Custom menu shortcuts will be removed.";
+"Restore All" = "Restore All";

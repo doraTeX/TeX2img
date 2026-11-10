@@ -164,6 +164,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     var themeSettings: ThemeSettingsController!
     var updateCheckSwitch: NSSwitch!
     var settingsDependentRows: [SettingsDependentRow: SettingsRowView] = [:]
+    var shortcutPane: ShortcutPaneController!
 
     var cuiToolInstallButton: NSButton!
     var cuiToolStatusView: NSImageView!

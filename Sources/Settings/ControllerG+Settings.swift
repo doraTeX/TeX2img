@@ -212,7 +212,6 @@ extension ControllerG {
                 SettingsUI.row(label("Tab width"), SettingsUI.numberAccessory(field: tabWidthTextField, stepper: tabWidthStepper, unit: label("characters"))),
                 SettingsUI.row(label("Indent with tabs"), tabIndentCheckBox),
             ]),
-            SettingsUI.group(label("Input"), [SettingsUI.row(label("Command completion key"), commandCompletionKeyPopUp)]),
             SettingsUI.group(label("Syntax Coloring"), [SettingsUI.row(label("Treat @ as part of command names"), note: label("As after \\makeatletter."), makeatletterEnabledCheckBox)]),
             SettingsUI.group(label("Matching Brackets"), [
                 SettingsUI.row(label("Brackets to match"), SettingsUI.hstack([checkBraceCheckBox, checkParenCheckBox, checkSquareCheckBox, checkBracketCheckBox], spacing: 14)),
@@ -229,6 +228,15 @@ extension ControllerG {
             ]),
         ])
 
+        // MARK: Keyboard
+        shortcutPane = ShortcutPaneController()
+        shortcutPane.completionUsesTab = { [weak self] in self?.commandCompletionKeyPopUp.selectedTag() == 2 }
+        let keyboard = SettingsUI.pane(header: header("Keyboard"), groups: [
+            SettingsUI.group(label("Command Completion"), [SettingsUI.row(label("Command completion key"), commandCompletionKeyPopUp)]),
+            SettingsUI.group(label("Menu Shortcuts"), [SettingsUI.fillRow(shortcutPane.view, searchTitle: [
+                label("Search by Function"), label("Search by Key"), label("Restore All…")].joined(separator: "\n"))]),
+        ])
+
         // MARK: Appearance
         themeSettings = ThemeSettingsController(library: ThemeLibrary.shared)
         themeSettings.colorsChanged = { [weak self] in self?.themeColorsChanged() }
@@ -236,13 +244,27 @@ extension ControllerG {
 
         settingsDependentRows = [.pageBox: pageBoxRow, .animationDelay: delayRow, .animationLoop: loopRow, .autoPaste: autoPasteRow, .ungroup: ungroupRow]
         let views: [String: NSView] = ["General": general, "Image": image, "Conversion": conversion, "After Generation": afterGeneration,
-                                       "Editor": editor, "Appearance": appearance]
+                                       "Editor": editor, "Appearance": appearance, "Keyboard": keyboard]
         settingsWindowController = SettingsWindowController(categories: Self.settingsCategoryDesign.map { design in
             SettingsCategory(identifier: design.identifier, title: label(design.identifier), summary: label(design.identifier + " summary"),
                              symbol: design.symbol, color: SettingsCategory.rgb(design.color), startsGroup: design.startsGroup,
                              view: views[design.identifier]!)
         })
         themeSettings.window = settingsWindowController.window
+        shortcutPane.window = settingsWindowController.window
+        settingsWindowController.keyEventHandler = { [weak self] event in
+            guard let self, self.settingsWindowController.currentIdentifier == "Keyboard" else { return false }
+            return self.shortcutPane.handleKeySearchEvent(event)
+        }
+        settingsWindowController.willDisplayCategory = { [weak self] _ in self?.shortcutPane.stopKeySearch() }
+        settingsWindowController.commandSearch = ("Keyboard", { [weak self] in self?.shortcutPane.commandPaths() ?? [] },
+                                                  { [weak self] path in self?.shortcutPane.showCommand(path) })
+    }
+
+    /// Applies the saved menu shortcuts once the main menu is in place.
+    func startKeyboardShortcuts() {
+        guard shortcutPane.store == nil, let menu = NSApp.mainMenu else { return }
+        shortcutPane.store = ShortcutStore(menu: menu, defaults: .standard)
     }
 
     /// Sidebar order, symbols and colors; the palette is TeXShop's.
@@ -253,6 +275,7 @@ extension ControllerG {
         ("After Generation", "square.and.arrow.up", 0x1D9E75, false),
         ("Editor", "character.cursor.ibeam", 0xBA7517, true),
         ("Appearance", "paintpalette", 0x7F77DD, false),
+        ("Keyboard", "keyboard", 0x5F5E5A, false),
     ]
 
     private func header(_ identifier: String) -> NSView {

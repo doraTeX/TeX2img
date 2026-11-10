@@ -21,6 +21,8 @@ struct SettingsSearchResult {
     let category: String
     let title: String
     weak var row: SettingsRowView?
+    /// A menu command found in the Keyboard category.
+    var command: String? = nil
 }
 
 /// The settings window in the manner of System Settings: a sidebar with search,
@@ -45,6 +47,12 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
     private var selectedResult: Int?
     private var highlights: [NSView] = []
     private var synchronizingSelection = false
+    /// Gets every key press first while a pane records keys (search by key).
+    var keyEventHandler: ((NSEvent) -> Bool)?
+    /// Called before another category is shown.
+    var willDisplayCategory: ((String) -> Void)?
+    /// Menu command names offered by the search field, in the given category.
+    var commandSearch: (category: String, names: () -> [String], show: (String) -> Void)?
 
     var currentIdentifier: String? { history.indices.contains(historyIndex) ? history[historyIndex] : nil }
 
@@ -216,6 +224,7 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
 
     private func displayCurrentCategory() {
         guard let identifier = currentIdentifier, let category = category(identifier) else { return }
+        willDisplayCategory?(identifier)
         clearHighlights()
         let pane = category.view
         let document = SettingsDocumentView()
@@ -415,6 +424,13 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
                     searchResults.append(SettingsSearchResult(category: category.identifier, title: entry.title, row: entry.row))
                 }
             }
+            if let commandSearch, let category = category(commandSearch.category) {
+                for name in commandSearch.names() {
+                    let haystack = Self.normalized(name + " " + category.title)
+                    guard tokens.allSatisfy({ haystack.contains($0) }) else { continue }
+                    searchResults.append(SettingsSearchResult(category: category.identifier, title: name, row: nil, command: name))
+                }
+            }
         }
         searchStatus.isHidden = tokens.isEmpty
         searchStatusHeight.isActive = tokens.isEmpty
@@ -456,8 +472,12 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
     private func applyHighlight() {
         clearHighlights()
         guard let selectedResult, searchResults.indices.contains(selectedResult),
-              searchResults[selectedResult].category == currentIdentifier,
-              let row = searchResults[selectedResult].row else { return }
+              searchResults[selectedResult].category == currentIdentifier else { return }
+        if let command = searchResults[selectedResult].command {
+            commandSearch?.show(command)
+            return
+        }
+        guard let row = searchResults[selectedResult].row else { return }
         row.superview?.layoutSubtreeIfNeeded()
         let overlay = SettingsSearchHighlight(frame: row.bounds)
         overlay.autoresizingMask = [.width, .height]
@@ -480,8 +500,15 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
 final class SettingsWindow: NSWindow {
     weak var settingsController: SettingsWindowController?
 
+    // While a pane searches by key, it gets keys before the table's type selection and the menus.
+    override func sendEvent(_ event: NSEvent) {
+        if event.type == .keyDown, isKeyWindow, attachedSheet == nil, settingsController?.keyEventHandler?(event) == true { return }
+        super.sendEvent(event)
+    }
+
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
         let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        if isKeyWindow, attachedSheet == nil, settingsController?.keyEventHandler?(event) == true { return true }
         if flags == .command, attachedSheet == nil, let controller = settingsController {
             switch event.charactersIgnoringModifiers {
             case "[": controller.goBack(self); return true

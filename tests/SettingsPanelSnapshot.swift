@@ -80,6 +80,7 @@ final class ControllerG: NSObject {
     var themeSettings: ThemeSettingsController!
     var updateCheckSwitch: NSSwitch!
     var settingsDependentRows: [SettingsDependentRow: SettingsRowView] = [:]
+    var shortcutPane: ShortcutPaneController!
     var cuiToolInstallButton: NSButton!
     var cuiToolStatusView: NSImageView!
     var cuiToolStatusTextField: NSTextField!
@@ -150,7 +151,7 @@ let controller = ControllerG()
 controller.buildSettingsWindow()
 let settings = controller.settingsWindowController!
 check(settings.window?.isVisible == false, "the settings window stays hidden")
-check(settings.categories.map(\.identifier) == ["General", "Image", "Conversion", "After Generation", "Editor", "Appearance"], "category order")
+check(settings.categories.map(\.identifier) == ["General", "Image", "Conversion", "After Generation", "Editor", "Appearance", "Keyboard"], "category order")
 
 controller.themeSettings.prepareForDisplay(dark: false)
 
@@ -254,6 +255,66 @@ if let content = settings.window?.contentView {
         try! rep.representation(using: .png, properties: [:])!.write(to: output.appendingPathComponent("\(language)-window-\(appearance == .aqua ? "light" : "dark").png"))
     }
 }
+
+// Menu shortcuts: a menu that is never shown, and defaults in the test home.
+let menu = NSMenu(title: "Main")
+func add(_ title: String, _ submenu: NSMenu) -> NSMenu {
+    let item = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+    item.submenu = submenu
+    submenu.title = title
+    menu.addItem(item)
+    return submenu
+}
+let file = add("File", NSMenu())
+let save = file.addItem(withTitle: "Save", action: #selector(NSDocument.save(_:)), keyEquivalent: "s")
+let open = file.addItem(withTitle: "Open", action: #selector(NSDocumentController.openDocument(_:)), keyEquivalent: "o")
+let edit = add("Edit", NSMenu())
+let copy = edit.addItem(withTitle: "Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
+let print_ = file.addItem(withTitle: "Print", action: #selector(NSView.printView(_:)), keyEquivalent: "P")
+let defaults = UserDefaults(suiteName: "tex2img.shortcut.test")!
+defaults.removeObject(forKey: ShortcutStore.overridesKey)
+// A new store reads the defaults from the menu, as at launch.
+func relaunch() -> ShortcutStore {
+    for (item, key) in [(save, "s"), (open, "o"), (copy, "c")] {
+        item.keyEquivalent = key
+        item.keyEquivalentModifierMask = .command
+    }
+    return ShortcutStore(menu: menu, defaults: defaults)
+}
+var shortcutStore = relaunch()
+check(shortcutStore.commands.count == 4, "customizable commands")
+check(save.identifier?.rawValue == "TSShortcut.saveDocument:.0", "TeXShop's identifier scheme")
+check(shortcutStore.commands.first { $0.item === print_ }.map { ShortcutBinding($0.defaultKey, $0.defaultModifiers) } == ShortcutBinding("p", [.command, .shift]),
+      "an upper-case key is Shift and the letter")
+let saveCommand = shortcutStore.commands.first { $0.item === save }!
+check(shortcutStore.setKey("o", modifiers: .command, for: saveCommand) != nil && save.keyEquivalent == "s", "a key used by another command is refused")
+check(shortcutStore.setKey("x", modifiers: [], for: saveCommand) != nil, "a plain key is refused")
+check(ShortcutKeys.isAllowed(key: String(UnicodeScalar(UInt8(0))), modifiers: .command) == false, "control characters are refused")
+check(shortcutStore.setKey("k", modifiers: [.command, .option], for: saveCommand) == nil && save.keyEquivalent == "k"
+      && save.keyEquivalentModifierMask == [.command, .option], "a new key is applied to the menu")
+check(defaults.dictionary(forKey: ShortcutStore.overridesKey)?["TSShortcut.saveDocument:.0"] != nil, "the assignment is saved")
+shortcutStore = relaunch()
+check(save.keyEquivalent == "k", "a saved assignment is applied at launch")
+check(ShortcutKeys.display(key: "k", modifiers: [.command, .option]) == "⌥⌘K" && ShortcutKeys.display(key: "P", modifiers: .command) == "⇧⌘P",
+      "displayed keys")
+// A saved key that a menu item now uses stays inactive and is listed as unavailable.
+for (item, key) in [(save, "s"), (open, "o")] { item.keyEquivalent = key; item.keyEquivalentModifierMask = .command }
+copy.keyEquivalent = "k"
+copy.keyEquivalentModifierMask = [.command, .option]
+shortcutStore = ShortcutStore(menu: menu, defaults: defaults)
+check(save.keyEquivalent == "s" && shortcutStore.unavailableCommands == ["File › Save"], "a colliding saved key is inactive")
+shortcutStore = relaunch()
+let restored = shortcutStore.commands.first { $0.item === save }!
+check(shortcutStore.restore(restored) == nil && save.keyEquivalent == "s" && defaults.object(forKey: ShortcutStore.overridesKey) == nil,
+      "restore the default")
+_ = shortcutStore.setKey("", modifiers: [], for: shortcutStore.commands.first { $0.item === open }!)
+check(open.keyEquivalent == "" && shortcutStore.hasCustomShortcuts, "remove a shortcut")
+shortcutStore.restoreAll()
+check(open.keyEquivalent == "o" && !shortcutStore.hasCustomShortcuts, "restore all")
+let event = NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: .command, timestamp: 0, windowNumber: 0, context: nil,
+                             characters: "c", charactersIgnoringModifiers: "c", isARepeat: false, keyCode: 8)!
+check(shortcutStore.matches(for: event).map(\.path) == ["Edit › Copy"] && shortcutStore.matches(for: event).first?.winner == true, "search by key")
+defaults.removePersistentDomain(forName: "tex2img.shortcut.test")
 
 print(report.joined(separator: "\n"))
 print("Settings panel checks passed")

@@ -11,6 +11,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        controllerG?.startKeyboardShortcuts()
         if #available(macOS 10.14, *) {
             // アウトプットウィンドウだけはライトモード・ダークモードの変更検出を自力でできないので，AppDelegate で変更を検知して ControllerG に対応を依頼する
             observer = NSApp.observe(\.effectiveAppearance) { [weak self] _, _ in

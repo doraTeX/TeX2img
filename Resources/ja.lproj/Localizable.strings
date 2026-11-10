@@ -241,3 +241,36 @@
 "Previous Light Mode Colors" = "以前のライトモードの色";
 "Previous Dark Mode Colors" = "以前のダークモードの色";
 "Formatting" = "書式";
+
+/* Keyboard shortcuts */
+"Keyboard" = "キーボード";
+"Keyboard summary" = "コマンド補完とメニューのショートカットを設定します。";
+"Command Completion" = "コマンド補完";
+"Menu Shortcuts" = "メニューのショートカット";
+"Search by Function" = "機能で検索";
+"Search by Key" = "キーで検索";
+"Search commands" = "コマンドを検索";
+"Press a key" = "キーを押してください";
+"Command" = "コマンド";
+"Shortcut" = "ショートカット";
+"Change…" = "変更…";
+"Remove Shortcut" = "ショートカットを削除";
+"Restore Default" = "デフォルトに戻す";
+"Restore All…" = "すべてデフォルトに戻す…";
+"Change Shortcut" = "ショートカットを変更";
+"New shortcut" = "新しいショートカット";
+"Apply" = "適用";
+"Shortcut Unavailable" = "使えないショートカット";
+"This command is no longer available." = "このコマンドは使えなくなりました。";
+"This key cannot be used as a shortcut. Use Command or Control with a key, or F1–F20." = "このキーはショートカットに使えません。Command または Control とキーの組み合わせか，F1〜F20 を使ってください。";
+"This shortcut is already used by “%@”." = "このショートカットは「%@」で使われています。";
+"This shortcut is already used by:\n%@" = "このショートカットは次のコマンドで使われています：\n%@";
+"This key is reserved for command completion." = "このキーはコマンド補完に使われています。";
+"This key cannot be assigned to a new shortcut." = "このキーは新しいショートカットに割り当てられません。";
+"No command uses this key." = "このキーを使うコマンドはありません。";
+"Matches: %ld" = "該当：%ld 件";
+"Assigned" = "割り当て中";
+"This shortcut is inactive because it conflicts with “%@” (%@)." = "「%@」（%@）と重なるため，このショートカットは働きません。";
+"Restore all keyboard shortcuts?" = "すべてのキーボードショートカットをデフォルトに戻しますか？";
+"Custom menu shortcuts will be removed." = "変更したメニューのショートカットは削除されます。";
+"Restore All" = "すべて戻す";
