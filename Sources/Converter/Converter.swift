@@ -1177,7 +1177,8 @@ class Converter: NSObject {
         guard let data = try? Data(contentsOf: URL(fileURLWithPath: texFilePath)) else { return }
 
         var detectedEncoding: UInt = 0
-        guard let contents = String.stringWithAutoEncodingDetectionOfData(data, detectedEncoding: &detectedEncoding) else { return }
+        guard let contents = String.stringWithAutoEncodingDetectionOfData(data, detectedEncoding: &detectedEncoding,
+            url: URL(fileURLWithPath: texFilePath), preferred: EncodingDetector.preferredEncoding(forKanji: encoding)) else { return }
 
         let extension_ = filePath.pathExtension.lowercased()
         if extension_ == "pdf" {

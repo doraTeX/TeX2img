@@ -1403,6 +1403,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     private func placeImportedSource(_ contents: String) {
+        // Windows (CRLF) and old Mac (CR) line breaks become LF, as TeXShop does when opening a file.
+        let contents = contents.replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\r", with: "\n")
         let parts = analyzeContents(contents)
         if !parts[0].isEmpty {
             preambleTextView.replaceEntireContents(with: parts[0])
@@ -1455,7 +1457,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             if extensionLower == "tex" {
                 if let data = try? Data(contentsOf: URL(fileURLWithPath: inputPath)) {
                     var detectedEncoding: UInt = 0
-                    contents = String.stringWithAutoEncodingDetectionOfData(data, detectedEncoding: &detectedEncoding)
+                    contents = String.stringWithAutoEncodingDetectionOfData(data, detectedEncoding: &detectedEncoding,
+                        url: URL(fileURLWithPath: inputPath), preferred: EncodingDetector.preferredEncoding(forKanji: currentProfile().stringForKey(EncodingKey)))
                 }
                 lastSavedPath = inputPath
             } else if extensionLower == "pdf" {
@@ -1541,7 +1544,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             let contents = "\(preamble)\n\\begin{document}\n\(body)\n\\end{document}\n"
             let encoding = self.stringEncoding(from: self.currentProfile().stringForKey(EncodingKey))
             do {
-                try contents.write(toFile: outputPath, atomically: true, encoding: encoding)
+                try EncodingDetector.textForSaving(contents, encoding: encoding).write(toFile: outputPath, atomically: true, encoding: encoding)
             } catch {
                 UtilityG.runErrorPanel(message: String(format: NSLocalizedString("cannotWriteErrorMsg", comment: ""), outputPath))
             }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		34BCBE042F958FB19AC1F20D /* EncodingDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 342AAA2AF321A20442F5C3DB /* EncodingDetector.swift */; };
+		343ECC82E0E6FCBC66E80875 /* EncodingDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 342AAA2AF321A20442F5C3DB /* EncodingDetector.swift */; };
 		342D0E59AAFD9FBCA7B77968 /* ConsoleOutputDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EC7EB0DA530D59780FDDBF /* ConsoleOutputDecoder.swift */; };
 		348F0E27A9FF963A36BC9C41 /* ConsoleOutputDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EC7EB0DA530D59780FDDBF /* ConsoleOutputDecoder.swift */; };
 		348D584BD5174A3704C074C8 /* ShortcutPaneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348ADEB4B0BAAC187EB5E55E /* ShortcutPaneController.swift */; };
@@ -155,6 +157,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		342AAA2AF321A20442F5C3DB /* EncodingDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncodingDetector.swift"; sourceTree = "<group>"; };
 		34EC7EB0DA530D59780FDDBF /* ConsoleOutputDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConsoleOutputDecoder.swift"; sourceTree = "<group>"; };
 		348ADEB4B0BAAC187EB5E55E /* ShortcutPaneController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShortcutPaneController.swift"; sourceTree = "<group>"; };
 		3462623E0B8DD5A391EF5A69 /* KeyboardShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardShortcuts.swift"; sourceTree = "<group>"; };
@@ -411,6 +414,7 @@
 				34A5C70C251B700000FCF7BA /* Utility.swift */,
 				34A5C70F251B700000FCF7BA /* UtilityC.swift */,
 				34A5C711251B700000FCF7BA /* UtilityG.swift */,
+				342AAA2AF321A20442F5C3DB /* EncodingDetector.swift */,
 				34EC7EB0DA530D59780FDDBF /* ConsoleOutputDecoder.swift */,
 				3402126C2534D272002D1545 /* UserNotificationDelegate.swift */,
 			);
@@ -717,6 +721,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				343ECC82E0E6FCBC66E80875 /* EncodingDetector.swift in Sources */,
 				348F0E27A9FF963A36BC9C41 /* ConsoleOutputDecoder.swift in Sources */,
 				3486590C2526473500B8B190 /* NSBitmapImageRep-Extension.swift in Sources */,
 				349276B01BFA19FB00C0BD99 /* NSColor-Extension.swift in Sources */,
@@ -754,6 +759,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34BCBE042F958FB19AC1F20D /* EncodingDetector.swift in Sources */,
 				342D0E59AAFD9FBCA7B77968 /* ConsoleOutputDecoder.swift in Sources */,
 				348D584BD5174A3704C074C8 /* ShortcutPaneController.swift in Sources */,
 				34C757B62ED415957ABE89FC /* KeyboardShortcuts.swift in Sources */,
