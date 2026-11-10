@@ -2246,22 +2246,22 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     func showTabCharacterEnabled() -> Bool {
-        currentProfile().boolForKey(ShowTabCharacterKey)
+        showTabCharacterCheckBox.state == .on
     }
 
     func showNewLineCharacterEnabled() -> Bool {
-        currentProfile().boolForKey(ShowNewLineCharacterKey)
+        showNewLineCharacterCheckBox.state == .on
     }
 
     func showFullwidthSpaceCharacterEnabled() -> Bool {
-        currentProfile().boolForKey(ShowFullwidthSpaceCharacterKey)
+        showFullwidthSpaceCharacterCheckBox.state == .on
     }
 
     func showSpaceCharacterEnabled() -> Bool {
-        currentProfile().boolForKey(ShowSpaceCharacterKey)
+        showSpaceCharacterCheckBox.state == .on
     }
 
     func invisibleColor() -> NSColor {
-        UtilityG.invisibleColor(inProfile: currentProfile())
+        ThemeLibrary.shared.color(.invisible, lightTitle: themeSettings.lightTitle, darkTitle: themeSettings.darkTitle, dark: NSApp.isDarkMode)
     }
 }
