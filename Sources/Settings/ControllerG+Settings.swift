@@ -266,6 +266,46 @@ extension ControllerG {
         settingsWindowController.willDisplayCategory = { [weak self] _ in self?.shortcutPane.stopKeySearch() }
         settingsWindowController.commandSearch = ("Keyboard", { [weak self] in self?.shortcutPane.commandPaths() ?? [] },
                                                   { [weak self] path in self?.shortcutPane.showCommand(path) })
+        applyDefaultSettingValues()
+    }
+
+    /// The values that the settings window of TeX2img 2.x (MainMenu.xib) started with. A fresh installation uses
+    /// them, and so does a saved profile for any setting it does not have.
+    func applyDefaultSettingValues() {
+        for control in [autoRestoreCheckBox, previewCheckBox, sendNotificationCheckBox, deleteTmpFileCheckBox, embedSourceCheckBox,
+                        showOutputWindowCheckBox, transparentCheckBox, guessCompilationButton, flashInMovingCheckBox,
+                        highlightContentCheckBox, beepCheckBox, flashBackgroundCheckBox, makeatletterEnabledCheckBox,
+                        tabIndentCheckBox, wrapLineCheckBox, showSpaceCharacterCheckBox, showFullwidthSpaceCharacterCheckBox,
+                        showNewLineCharacterCheckBox, showTabCharacterCheckBox] as [NSSwitch?] {
+            control?.state = .on
+        }
+        for control in [checkBraceCheckBox, checkBracketCheckBox, checkParenCheckBox, checkSquareCheckBox] {
+            control?.state = .on
+        }
+        for control in [toClipboardCheckBox, autoPasteCheckBox, embedInIllustratorCheckBox, ungroupCheckBox, plainTextCheckBox,
+                        textPdfCheckBox, deleteDisplaySizeCheckBox, mergeOutputsCheckBox, keepPageSizeCheckBox, ignoreErrorCheckBox,
+                        utfExportCheckBox, workInInputFileDirectoryCheckBox] as [NSSwitch?] {
+            control?.state = .off
+        }
+        let numbers: [(NSTextField?, NSStepper?, Double)] = [
+            (resolutionTextField, resolutionStepper, 5), (dpiTextField, dpiStepper, 72), (numberOfCompilationTextField, numberOfCompilationStepper, 3),
+            (tabWidthTextField, tabWidthStepper, 4), (delayTextField, delayStepper, 1), (loopCountTextField, loopCountStepper, 0),
+            (topMarginTextField, topMarginStepper, 0), (bottomMarginTextField, bottomMarginStepper, 0),
+            (leftMarginTextField, leftMarginStepper, 0), (rightMarginTextField, rightMarginStepper, 0),
+        ]
+        for (field, stepper, value) in numbers {
+            field?.doubleValue = value
+            stepper?.doubleValue = value
+        }
+        let tags: [(NSPopUpButton?, Int)] = [
+            (unitPopUp, Int(PX_UNIT_TAG)), (pageBoxPopUp, Int(CGPDFBox.cropBox.rawValue)), (priorityPopUp, Int(QUALITY_PRIORITY_TAG)),
+            (autoDetectionTargetPopUp, 2), (encodingPopUpButton, 0), (autoPasteDestinationPopUpButton, 1), (commandCompletionKeyPopUp, 1),
+            (spaceCharacterKindPopUp, 1), (fullwidthSpaceCharacterKindPopUp, 1), (returnCharacterKindPopUp, 1), (tabCharacterKindPopUp, 1),
+        ]
+        for (popup, tag) in tags {
+            popup?.selectItem(withTag: tag)
+        }
+        fillColorWell?.color = NSColor(calibratedRed: 1, green: 1, blue: 1, alpha: 1)
     }
 
     /// Applies the saved menu shortcuts once the main menu is in place.

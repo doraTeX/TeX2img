@@ -45,7 +45,7 @@ def main():
         with open(os.path.join(ROOT, "Sources/Core/GlobalConstants.swift")) as source, open(constants, "w") as target:
             target.write("import Foundation\n")
             for line in source:
-                if re.match(r'(let \w+Key = "[^"]*"|typealias Profile)', line):
+                if re.match(r'(let \w+Key = "[^"]*"|typealias Profile|let (PX_UNIT_TAG|QUALITY_PRIORITY_TAG) = )', line):
                     target.write(line)
         subprocess.run(["xcrun", "swiftc", "-O", "-module-name", "SettingsSnapshot",
                         *[os.path.join(ROOT, s) for s in SOURCES], main_file, constants, "-o", binary], check=True)

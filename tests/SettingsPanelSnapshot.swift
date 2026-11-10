@@ -150,6 +150,31 @@ ThemeLibrary.shared.prepare()
 let controller = ControllerG()
 controller.buildSettingsWindow()
 let settings = controller.settingsWindowController!
+
+// A fresh installation starts with the values of the settings window of TeX2img 2.x (its MainMenu.xib).
+let defaultFields: [NSTextField] = [controller.resolutionTextField, controller.dpiTextField, controller.numberOfCompilationTextField,
+    controller.tabWidthTextField, controller.delayTextField, controller.loopCountTextField, controller.topMarginTextField, controller.leftMarginTextField]
+let defaultNumbers: [Double] = defaultFields.map { $0.doubleValue }
+check(defaultNumbers == [5, 72, 3, 4, 1, 0, 0, 0], "default numbers: \(defaultNumbers)")
+check(controller.resolutionStepper.doubleValue == 5 && controller.numberOfCompilationStepper.doubleValue == 3, "default stepper values")
+check(controller.autoDetectionTargetPopUp.titleOfSelectedItem == "pLaTeX + dvipdfmx", "default compiler")
+check(controller.pageBoxPopUp.titleOfSelectedItem == "CropBox", "default page box")
+check(controller.unitPopUp.titleOfSelectedItem == "px" && controller.priorityPopUp.selectedTag() == 1, "default unit and priority")
+let defaultOn: [NSSwitch] = [controller.transparentCheckBox, controller.previewCheckBox, controller.sendNotificationCheckBox,
+    controller.deleteTmpFileCheckBox, controller.embedSourceCheckBox, controller.showOutputWindowCheckBox, controller.guessCompilationButton,
+    controller.autoRestoreCheckBox, controller.wrapLineCheckBox, controller.tabIndentCheckBox, controller.showSpaceCharacterCheckBox,
+    controller.showTabCharacterCheckBox, controller.showNewLineCharacterCheckBox, controller.showFullwidthSpaceCharacterCheckBox,
+    controller.makeatletterEnabledCheckBox, controller.flashInMovingCheckBox, controller.highlightContentCheckBox, controller.beepCheckBox,
+    controller.flashBackgroundCheckBox]
+check(defaultOn.allSatisfy { $0.state == .on }, "switches on by default")
+let defaultBrackets: [NSButton] = [controller.checkBraceCheckBox, controller.checkBracketCheckBox, controller.checkParenCheckBox,
+    controller.checkSquareCheckBox]
+check(defaultBrackets.allSatisfy { $0.state == .on }, "brackets to match by default")
+let defaultOff: [NSSwitch] = [controller.toClipboardCheckBox, controller.mergeOutputsCheckBox, controller.textPdfCheckBox,
+    controller.ignoreErrorCheckBox, controller.utfExportCheckBox, controller.keepPageSizeCheckBox]
+check(defaultOff.allSatisfy { $0.state == .off }, "switches off by default")
+check(controller.fillColorWell.color.usingColorSpace(.sRGB).map { $0.redComponent > 0.99 && $0.greenComponent > 0.99 && $0.blueComponent > 0.99 } == true,
+      "white fill by default")
 check(settings.window?.isVisible == false, "the settings window stays hidden")
 check(settings.categories.map(\.identifier) == ["General", "Image", "Conversion", "After Generation", "Editor", "Appearance", "Keyboard"], "category order")
 
