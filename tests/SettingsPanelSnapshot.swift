@@ -174,6 +174,9 @@ for category in settings.categories {
         render(pane, width: 640, appearance: appearance, to: output.appendingPathComponent(name))
     }
 }
+let invisibleWidths = Set([controller.spaceCharacterKindPopUp, controller.fullwidthSpaceCharacterKindPopUp,
+                            controller.returnCharacterKindPopUp, controller.tabCharacterKindPopUp].map { $0!.frame.width })
+check(invisibleWidths.count == 1, "the invisible-character menus share one width")
 // Check boxes remain only for the brackets to match, as in TeXShop.
 let editorBoxes = all(NSButton.self, in: settings.category("Editor")!.view).filter { ["{ }", "( )", "[ ]", "< >"].contains($0.title) }
 check(editorBoxes.count == 4, "bracket check boxes")

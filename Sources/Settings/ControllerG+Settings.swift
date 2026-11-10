@@ -199,6 +199,13 @@ extension ControllerG {
         fullwidthSpaceCharacterKindPopUp = invisible(["□", "■", "•", "⊠"])
         returnCharacterKindPopUp = invisible(["↵", "↩", "⏎", "¶"])
         tabCharacterKindPopUp = invisible(["‣", "▹", "⇥", "¬"])
+        // The four menus share the width of the widest one (TeXShop 5.60).
+        let invisibleMenus = [spaceCharacterKindPopUp!, fullwidthSpaceCharacterKindPopUp!, returnCharacterKindPopUp!, tabCharacterKindPopUp!]
+        let menuWidth = invisibleMenus.map { $0.fittingSize.width }.max() ?? 0
+        for menu in invisibleMenus {
+            menu.translatesAutoresizingMaskIntoConstraints = false
+            menu.widthAnchor.constraint(equalToConstant: ceil(menuWidth)).isActive = true
+        }
         showSpaceCharacterCheckBox = makeSwitch(refresh)
         showFullwidthSpaceCharacterCheckBox = makeSwitch(refresh)
         showNewLineCharacterCheckBox = makeSwitch(refresh)
