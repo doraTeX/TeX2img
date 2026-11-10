@@ -33,6 +33,30 @@ for encoding in [String.Encoding.utf8, shiftJIS, .japaneseEUC, .iso2022JP] {
         check(output.range(of: #"^a\\CID\{[0-9]+\}b"#, options: .regularExpression) != nil, "\(output) falls back to \\CID in \(encoding)")
     }
 }
+// A line break, tab or other control character before a combining mark is kept (it was lost with the mark in
+// a \CID), and the line still gets its % at the end.
+for control in ["\n", "\t", "\u{2028}", "\r\n"] {
+    for mark in ["\u{0301}", "\u{3099}", "\u{20DD}"] {
+        let output = "あ\(control)\(mark)い".stringByReplacingUnicodeCharactersWithUTF()
+        check(output == "あ\(control)\\UTF{\(hex(mark))}い", "\(hex(control)) before \(hex(mark)): \(output)")
+    }
+}
+check("a\n\u{0301}b\n髙\nc".stringByReplacingUnicodeCharactersWithUTF().hasSuffix("\\UTF{9AD9}%\nc"), "% after a line that starts with a mark")
+// \CID is read in one pass: what one replacement gives is not read again.
+check("\\CID{97}CID{17}".stringByReplacingUTFWithUnicodeCharacters() == "\\CID{97}CID{17}".stringByReplacingUTFWithUnicodeCharacters(), "stable")
+for _ in 0..<5 {
+    // CID 18 is "1": the \\CID{11} that this gives is not read again.
+    check("\\CID{1\\CID{18}}".stringByReplacingUTFWithUnicodeCharacters() == "\\CID{11}", "\\CID{1\\CID{18}} is \\CID{11}")
+}
+check("\\CID{99999}\\CID{999999999999999999999999}".stringByReplacingUTFWithUnicodeCharacters() == "\\CID{99999}\\CID{999999999999999999999999}",
+      "unknown CIDs are kept")
+// ajmacros: circled days of the week are \ajMaruYobi (they were written as \ajKakkoYobi), and 9 is ㊡.
+let maruYobi = "\u{3290}\u{328A}\u{328B}\u{328C}\u{328D}\u{328E}\u{328F}\u{3297}\u{32A1}"
+check(maruYobi.stringByReplacingUnicodeCharactersWithAjMacros() == (1...9).map { "\\ajMaruYobi{\($0)}" }.joined(),
+      "circled days: \(maruYobi.stringByReplacingUnicodeCharactersWithAjMacros())")
+check(maruYobi.stringByReplacingUnicodeCharactersWithAjMacros().stringByReplacingAjMacrosWithUnicodeCharacters() == maruYobi, "circled days back")
+let kakkoYobi = "\u{3230}\u{322A}\u{322B}\u{322C}\u{322D}\u{322E}\u{322F}\u{3237}\u{3241}"
+check(kakkoYobi.stringByReplacingUnicodeCharactersWithAjMacros().stringByReplacingAjMacrosWithUnicodeCharacters() == kakkoYobi, "days in parentheses back")
 // \CID back to a character beyond the BMP (it was deleted before).
 check("\\CID{13706}".stringByReplacingUTFWithUnicodeCharacters() == "𠮷", "\\CID{13706} reads back as 𠮷")
 // M-3: surrogate code points are not characters.

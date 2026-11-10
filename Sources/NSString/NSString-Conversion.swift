@@ -20,10 +20,23 @@ extension String {
         var contentsEnd = 0
 
         while charRange.location < nsSelf.length {
-            if charRange.location == endLine {
+            if charRange.location >= endLine {
                 nsSelf.getLineStart(&startLine, end: &endLine, contentsEnd: &contentsEnd, for: charRange)
             }
             charRange = nsSelf.rangeOfComposedCharacterSequence(at: charRange.location)
+            // A line break (CR LF too), tab or other control character takes a following combining mark into its
+            // sequence. The control characters are kept as they are, and the marks are converted on their own.
+            if charRange.length > 1, Self.isControlOrSeparator(nsSelf.character(at: charRange.location)) {
+                let end = NSMaxRange(charRange)
+                var marks = charRange.location
+                while marks < end && Self.isControlOrSeparator(nsSelf.character(at: marks)) { marks += 1 }
+                newString.append(nsSelf.substring(with: NSRange(location: charRange.location, length: marks - charRange.location)))
+                if marks == end {
+                    charRange = NSRange(location: end, length: 1)
+                    continue
+                }
+                charRange = NSRange(location: marks, length: end - marks)
+            }
             let subString = nsSelf.substring(with: charRange)
 
             if !subString.canBeConverted(to: iso2022jp) {
@@ -83,11 +96,24 @@ extension String {
         }
         str.append(source.substring(from: offset))
 
-        for (cid, codePoint) in cidToUnicode {
-            replaceCID(cid, codePoint: codePoint, in: str)
+        // One pass over the \CID commands, as TeXShop does: the result does not depend on the order of the table.
+        let cidPattern = try! NSRegularExpression(pattern: #"\\CID\{([0-9]+)\}"#)
+        let afterUTF = str as String
+        let afterUTFString = afterUTF as NSString
+        let decoded = NSMutableString()
+        var cidOffset = 0
+        for match in cidPattern.matches(in: afterUTF, range: NSRange(location: 0, length: afterUTFString.length)) {
+            decoded.append(afterUTFString.substring(with: NSRange(location: cidOffset, length: match.range.location - cidOffset)))
+            if let cid = Int(afterUTFString.substring(with: match.range(at: 1))), let codePoint = cidToUnicode[cid],
+               let character = Self.scalarString(codePoint) {
+                decoded.append(character)
+            } else {
+                decoded.append(afterUTFString.substring(with: match.range))
+            }
+            cidOffset = NSMaxRange(match.range)
         }
-
-        return str as String
+        decoded.append(afterUTFString.substring(from: cidOffset))
+        return decoded as String
     }
 
     // MARK: - Hiragana / Katakana
@@ -508,31 +534,31 @@ extension String {
 
     func stringByReplacingMaruYobiWithAjMaruYobi() -> String {
         let str = NSMutableString(string: self)
-        replaceSingleCharacter(in: str, source: 0x3290, destination: "\\ajKakkoYobi{1}", addingPercent: true)
+        replaceSingleCharacter(in: str, source: 0x3290, destination: "\\ajMaruYobi{1}", addingPercent: true)
         for index in 2...7 {
-            replaceSingleCharacter(in: str, source: UInt32(0x328A + index - 2), destination: "\\ajKakkoYobi{\(index)}", addingPercent: true)
+            replaceSingleCharacter(in: str, source: UInt32(0x328A + index - 2), destination: "\\ajMaruYobi{\(index)}", addingPercent: true)
         }
-        replaceSingleCharacter(in: str, source: 0x3297, destination: "\\ajKakkoYobi{8}", addingPercent: true)
-        replaceSingleCharacter(in: str, source: 0x3297, destination: "\\ajKakkoYobi{9}", addingPercent: true)
+        replaceSingleCharacter(in: str, source: 0x3297, destination: "\\ajMaruYobi{8}", addingPercent: true)
+        replaceSingleCharacter(in: str, source: 0x32A1, destination: "\\ajMaruYobi{9}", addingPercent: true)
         return str as String
     }
 
     func stringByReplacingAjMaruYobiWithMaruYobi() -> String {
         let str = NSMutableString(string: self)
         let firstDestination = Self.string(fromCodePoint: 0x3290)
-        replaceAll(in: str, source: "\\ajKakkoYobi{1}", destination: firstDestination, addingPercent: false)
-        replaceAll(in: str, source: "\\ajKakkoYobi1", destination: firstDestination, addingPercent: false)
+        replaceAll(in: str, source: "\\ajMaruYobi{1}", destination: firstDestination, addingPercent: false)
+        replaceAll(in: str, source: "\\ajMaruYobi1", destination: firstDestination, addingPercent: false)
         for index in 2...7 {
             let destination = Self.string(fromCodePoint: UInt32(0x328A + index - 2))
-            replaceAll(in: str, source: "\\ajKakkoYobi{\(index)}", destination: destination, addingPercent: false)
-            replaceAll(in: str, source: "\\ajKakkoYobi\(index)", destination: destination, addingPercent: false)
+            replaceAll(in: str, source: "\\ajMaruYobi{\(index)}", destination: destination, addingPercent: false)
+            replaceAll(in: str, source: "\\ajMaruYobi\(index)", destination: destination, addingPercent: false)
         }
         let eighthDestination = Self.string(fromCodePoint: 0x3297)
-        replaceAll(in: str, source: "\\ajKakkoYobi{8}", destination: eighthDestination, addingPercent: false)
-        replaceAll(in: str, source: "\\ajKakkoYobi8", destination: eighthDestination, addingPercent: false)
-        let ninthDestination = Self.string(fromCodePoint: 0x3297)
-        replaceAll(in: str, source: "\\ajKakkoYobi{9}", destination: ninthDestination, addingPercent: false)
-        replaceAll(in: str, source: "\\ajKakkoYobi9", destination: ninthDestination, addingPercent: false)
+        replaceAll(in: str, source: "\\ajMaruYobi{8}", destination: eighthDestination, addingPercent: false)
+        replaceAll(in: str, source: "\\ajMaruYobi8", destination: eighthDestination, addingPercent: false)
+        let ninthDestination = Self.string(fromCodePoint: 0x32A1)
+        replaceAll(in: str, source: "\\ajMaruYobi{9}", destination: ninthDestination, addingPercent: false)
+        replaceAll(in: str, source: "\\ajMaruYobi9", destination: ninthDestination, addingPercent: false)
         return str as String
     }
 
@@ -701,6 +727,11 @@ private extension String {
         scalarString(codePoint) ?? ""
     }
 
+    /// A control character or a line or paragraph separator.
+    static func isControlOrSeparator(_ unit: unichar) -> Bool {
+        unit < 0x20 || (0x7F...0x9F).contains(unit) || unit == 0x2028 || unit == 0x2029
+    }
+
     /// Whether the backslash at location starts a command: it follows an even number of backslashes.
     static func startsCommand(_ string: NSString, at location: Int) -> Bool {
         var count = 0
@@ -729,7 +760,8 @@ private extension String {
         for index in glyphs.location..<NSMaxRange(glyphs) {
             let glyph = layout.cgGlyph(at: index)
             let property = layout.propertyForGlyph(at: index)
-            if property.contains(.null) || property.contains(.controlCharacter) { continue }
+            if property.contains(.controlCharacter) { return nil } // a control character is not part of a CID
+            if property.contains(.null) { continue } // a variation selector
             if cid != nil { return nil } // more than one glyph
             cid = Int(glyph)
         }
@@ -750,11 +782,6 @@ private extension String {
     }
 
     static let hiraginoFont = NSFont(name: "HiraginoSans-W3", size: 12) ?? NSFont(name: "HiraKakuProN-W3", size: 12)
-
-    func replaceCID(_ cid: Int, codePoint: UInt32, in string: NSMutableString) {
-        guard let destination = Self.scalarString(codePoint) else { return }
-        string.replaceAllOccurrences(ofString: "\\CID{\(cid)}", withString: destination, addingPercentForEndOfLine: false)
-    }
 
     func replaceMappedCharacters(
         in string: NSMutableString,
