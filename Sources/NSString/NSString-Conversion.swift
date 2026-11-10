@@ -36,6 +36,9 @@ extension String {
                     continue
                 }
                 charRange = NSRange(location: marks, length: end - marks)
+                if charRange.location >= endLine {
+                    nsSelf.getLineStart(&startLine, end: &endLine, contentsEnd: &contentsEnd, for: charRange)
+                }
             }
             let subString = nsSelf.substring(with: charRange)
 

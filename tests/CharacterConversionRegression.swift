@@ -42,6 +42,7 @@ for control in ["\n", "\t", "\u{2028}", "\r\n"] {
     }
 }
 check("a\n\u{0301}b\n髙\nc".stringByReplacingUnicodeCharactersWithUTF().hasSuffix("\\UTF{9AD9}%\nc"), "% after a line that starts with a mark")
+check("\n\u{0301}\nx".stringByReplacingUnicodeCharactersWithUTF() == "\n\\UTF{0301}%\nx", "% after a mark alone on its line")
 // \CID is read in one pass: what one replacement gives is not read again.
 check("\\CID{97}CID{17}".stringByReplacingUTFWithUnicodeCharacters() == "\\CID{97}CID{17}".stringByReplacingUTFWithUnicodeCharacters(), "stable")
 for _ in 0..<5 {
