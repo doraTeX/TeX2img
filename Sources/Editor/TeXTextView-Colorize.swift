@@ -2,7 +2,20 @@ import AppKit
 import Foundation
 
 extension TeXTextView {
-    func colorizeText() {
+    /// The characters of the lines shown in the view; the text outside is laid out and colored when it is scrolled into view.
+    var visibleCharacterRange: NSRange {
+        let length = (string as NSString).length
+        guard let layoutManager, let textContainer, window != nil, !visibleRect.isEmpty else { return NSRange(location: 0, length: 0) }
+        var rect = visibleRect
+        rect.origin.x -= textContainerOrigin.x
+        rect.origin.y -= textContainerOrigin.y
+        let glyphs = layoutManager.glyphRange(forBoundingRect: rect, in: textContainer)
+        let characters = layoutManager.characterRange(forGlyphRange: glyphs, actualGlyphRange: nil)
+        return NSIntersectionRange(characters, NSRange(location: 0, length: length))
+    }
+
+    /// Colors the given characters, or the visible ones, line by line (TeXShop colors the visible area only).
+    func colorizeText(range requested: NSRange? = nil) {
         guard let controller else { return }
         let profile = controller.currentProfile()
 
@@ -22,12 +35,14 @@ extension TeXTextView {
         let fullwidthAttributes = UtilityG.fullwidthAttributes(inProfile: profile)
 
         guard let layoutManager else { return }
-        let textString = string
+        let textString = string as NSString
         let length = textString.length
+        let range = NSIntersectionRange(requested ?? visibleCharacterRange, NSRange(location: 0, length: length))
+        guard length > 0, range.location < length else { return }
 
         var aLineStart: Int = 0
         var aLineEnd: Int = 0
-        textString.getLineStart(&aLineStart, end: &aLineEnd, contentsEnd: nil, for: NSRange(location: 0, length: length))
+        textString.getLineStart(&aLineStart, end: &aLineEnd, contentsEnd: nil, for: range)
 
         var colorRange = NSRange(location: aLineStart, length: aLineEnd - aLineStart)
         layoutManager.removeTemporaryAttribute(.foregroundColor, forCharacterRange: colorRange)

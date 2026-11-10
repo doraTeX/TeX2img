@@ -59,6 +59,13 @@ class TeXTextView: NSTextView {
 
         let layoutManager = MyLayoutManager(controller: controller)
         textContainer?.replaceLayoutManager(layoutManager)
+        // Color the lines that scrolling or resizing brings into view.
+        if let clipView = enclosingScrollView?.contentView {
+            clipView.postsBoundsChangedNotifications = true
+            NotificationCenter.default.addObserver(self, selector: #selector(visibleAreaChanged(_:)), name: NSView.boundsDidChangeNotification, object: clipView)
+        }
+        postsFrameChangedNotifications = true
+        NotificationCenter.default.addObserver(self, selector: #selector(visibleAreaChanged(_:)), name: NSView.frameDidChangeNotification, object: self)
 
         isContinuousSpellCheckingEnabled = false
         smartInsertDeleteEnabled = false
@@ -193,7 +200,7 @@ class TeXTextView: NSTextView {
     func isValidTeXCommandChar(_ c: unichar) -> Bool {
         if c >= 65 && c <= 90 { return true }
         if c >= 97 && c <= 122 { return true }
-        if c == 64, let controller, controller.currentProfile().boolForKey(MakeatletterEnabledKey) { return true }
+        if c == 64, let controller, controller.makeatletterEnabledCheckBox.state == .on { return true }
         return false
     }
 
@@ -228,6 +235,8 @@ class TeXTextView: NSTextView {
 
         let destStr = NSMutableAttributedString()
         let selectedRange = self.selectedRange
+        // Only the visible lines are colored; color the copied ones first.
+        colorizeText(range: selectedRange)
         guard let textStorage else { return }
         destStr.setAttributedString(textStorage.attributedSubstring(from: selectedRange))
         let entireDestLength = destStr.length
@@ -634,6 +643,10 @@ class TeXTextView: NSTextView {
         modifyRange = NSRange(location: blockStart, length: blockEnd - blockStart)
         selectedRange = modifyRange
 
+        colorizeText()
+    }
+
+    @objc func visibleAreaChanged(_ notification: Notification) {
         colorizeText()
     }
 
