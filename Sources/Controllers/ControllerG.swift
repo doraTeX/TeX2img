@@ -768,6 +768,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
         if let light = aProfile.stringForKey(LightThemeKey), let dark = aProfile.stringForKey(DarkThemeKey) {
             themeSettings.select(light: light, dark: dark)
+        } else if keys.contains(ForegroundColorForLightModeKey) {
+            // A profile saved before themes (the one saved at quitting, or one saved with a name).
+            migrateLegacyColors(from: aProfile)
         }
 
         if keys.contains(ColorPalleteColorKey) {
@@ -921,9 +924,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private func adoptProfileDuringLauching() -> Bool {
         guard let aProfile = profileController.profileForName(autoSavedProfileName) else { return false }
         adoptProfile(aProfile)
-        if aProfile.stringForKey(LightThemeKey) == nil {
-            migrateLegacyColors(from: aProfile)
-        }
 
         let x = aProfile.floatForKey(XKey)
         let y = aProfile.floatForKey(YKey)
