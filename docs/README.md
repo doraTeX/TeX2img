@@ -17,6 +17,11 @@
 
 ローカルの移行資料は `migration/SwiftMigrationNotes.md` と `migration/SwiftMigrationGuide.md` に配置する。既存の `.gitignore` に従い、この2件はGit管理対象外であり、クローン直後には存在しない。
 
+## 機能の設計
+
+- [設定ウインドウとカラーテーマ](settings-and-themes.md)
+- [エンジン検出](engine-discovery.md)
+
 ## ビルド・配布
 
 - [ビルド・配布手順](build-and-deploy.md)

@@ -54,27 +54,27 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     @IBOutlet private var autoCompleteMenuItem: NSMenuItem!
     @IBOutlet private var autoIndentMenuItem: NSMenuItem!
 
-    @IBOutlet private var flashInMovingCheckBox: NSButton!
-    @IBOutlet private var highlightContentCheckBox: NSButton!
-    @IBOutlet private var beepCheckBox: NSButton!
-    @IBOutlet private var flashBackgroundCheckBox: NSButton!
-    @IBOutlet private var checkBraceCheckBox: NSButton!
-    @IBOutlet private var checkBracketCheckBox: NSButton!
-    @IBOutlet private var checkSquareCheckBox: NSButton!
-    @IBOutlet private var checkParenCheckBox: NSButton!
+    var flashInMovingCheckBox: NSSwitch!
+    var highlightContentCheckBox: NSSwitch!
+    var beepCheckBox: NSSwitch!
+    var flashBackgroundCheckBox: NSSwitch!
+    var checkBraceCheckBox: NSButton!
+    var checkBracketCheckBox: NSButton!
+    var checkSquareCheckBox: NSButton!
+    var checkParenCheckBox: NSButton!
 
-    @IBOutlet private var fontTextField: NSTextField!
-    @IBOutlet private var tabWidthTextField: NSTextField!
-    @IBOutlet private var tabWidthStepper: NSStepper!
-    @IBOutlet private var tabIndentCheckBox: NSButton!
-    @IBOutlet private var wrapLineCheckBox: NSButton!
+    var fontTextField: NSTextField!
+    var tabWidthTextField: NSTextField!
+    var tabWidthStepper: NSStepper!
+    var tabIndentCheckBox: NSSwitch!
+    var wrapLineCheckBox: NSSwitch!
 
-    @IBOutlet private var showTabCharacterCheckBox: NSButton!
-    @IBOutlet private var showSpaceCharacterCheckBox: NSButton!
-    @IBOutlet private var showNewLineCharacterCheckBox: NSButton!
-    @IBOutlet private var showFullwidthSpaceCharacterCheckBox: NSButton!
+    var showTabCharacterCheckBox: NSSwitch!
+    var showSpaceCharacterCheckBox: NSSwitch!
+    var showNewLineCharacterCheckBox: NSSwitch!
+    var showFullwidthSpaceCharacterCheckBox: NSSwitch!
 
-    @IBOutlet private var commandCompletionKeyMatrix: NSMatrix!
+    var commandCompletionKeyPopUp: NSPopUpButton!
 
     @IBOutlet private var colorPalleteWindow: NSWindow!
     @IBOutlet private var colorPalleteWindowMenuItem: NSMenuItem!
@@ -89,119 +89,85 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     @IBOutlet private var generateButton: NSButton!
 
-    @IBOutlet private var autoRestoreCheckBox: NSButton!
-    @IBOutlet private var transparentCheckBox: NSButton!
-    @IBOutlet private var plainTextCheckBox: NSButton!
-    @IBOutlet private var deleteDisplaySizeCheckBox: NSButton!
-    @IBOutlet private var mergeOutputsCheckBox: NSButton!
-    @IBOutlet private var keepPageSizeCheckBox: NSButton!
-    @IBOutlet private var showOutputWindowCheckBox: NSButton!
-    @IBOutlet private var sendNotificationCheckBox: NSButton!
-    @IBOutlet private var previewCheckBox: NSButton!
-    @IBOutlet private var deleteTmpFileCheckBox: NSButton!
-    @IBOutlet private var toClipboardCheckBox: NSButton!
-    @IBOutlet private var embedSourceCheckBox: NSButton!
-    @IBOutlet private var autoPasteCheckBox: NSButton!
-    @IBOutlet private var autoPasteDestinationPopUpButton: NSPopUpButton!
-    @IBOutlet private var embedInIllustratorCheckBox: NSButton!
-    @IBOutlet private var ungroupCheckBox: NSButton!
-    @IBOutlet private var keepPageSizeAdvancedButton: NSButton!
-    @IBOutlet private var mergeOutputAdvancedButton: NSButton!
+    var autoRestoreCheckBox: NSSwitch!
+    var transparentCheckBox: NSSwitch!
+    var plainTextCheckBox: NSSwitch!
+    var deleteDisplaySizeCheckBox: NSSwitch!
+    var mergeOutputsCheckBox: NSSwitch!
+    var keepPageSizeCheckBox: NSSwitch!
+    var showOutputWindowCheckBox: NSSwitch!
+    var sendNotificationCheckBox: NSSwitch!
+    var previewCheckBox: NSSwitch!
+    var deleteTmpFileCheckBox: NSSwitch!
+    var toClipboardCheckBox: NSSwitch!
+    var embedSourceCheckBox: NSSwitch!
+    var autoPasteCheckBox: NSSwitch!
+    var autoPasteDestinationPopUpButton: NSPopUpButton!
+    var embedInIllustratorCheckBox: NSSwitch!
+    var ungroupCheckBox: NSSwitch!
 
-    @IBOutlet private var preferenceWindow: NSWindow!
 
-    @IBOutlet private var resolutionTextField: NSTextField!
-    @IBOutlet private var dpiTextField: NSTextField!
-    @IBOutlet private var leftMarginTextField: NSTextField!
-    @IBOutlet private var rightMarginTextField: NSTextField!
-    @IBOutlet private var topMarginTextField: NSTextField!
-    @IBOutlet private var bottomMarginTextField: NSTextField!
+    var resolutionTextField: NSTextField!
+    var dpiTextField: NSTextField!
+    var leftMarginTextField: NSTextField!
+    var rightMarginTextField: NSTextField!
+    var topMarginTextField: NSTextField!
+    var bottomMarginTextField: NSTextField!
 
-    @IBOutlet private var resolutionStepper: NSStepper!
-    @IBOutlet private var dpiStepper: NSStepper!
-    @IBOutlet private var leftMarginStepper: NSStepper!
-    @IBOutlet private var rightMarginStepper: NSStepper!
-    @IBOutlet private var topMarginStepper: NSStepper!
-    @IBOutlet private var bottomMarginStepper: NSStepper!
+    var resolutionStepper: NSStepper!
+    var dpiStepper: NSStepper!
+    var leftMarginStepper: NSStepper!
+    var rightMarginStepper: NSStepper!
+    var topMarginStepper: NSStepper!
+    var bottomMarginStepper: NSStepper!
 
-    @IBOutlet private var latexPathTextField: NSTextField!
-    @IBOutlet private var dviDriverPathTextField: NSTextField!
-    @IBOutlet private var gsPathTextField: NSTextField!
-    @IBOutlet private var guessCompilationButton: NSButton!
-    @IBOutlet private var numberOfCompilationTextField: NSTextField!
-    @IBOutlet private var numberOfCompilationStepper: NSStepper!
-    @IBOutlet private var textPdfCheckBox: NSButton!
-    @IBOutlet private var ignoreErrorCheckBox: NSButton!
-    @IBOutlet private var utfExportCheckBox: NSButton!
-    @IBOutlet private var encodingPopUpButton: NSPopUpButton!
-    @IBOutlet private var unitMatrix: NSMatrix!
-    @IBOutlet private var priorityMatrix: NSMatrix!
-    @IBOutlet private var workInInputFileDirectoryCheckBox: NSButton!
+    var latexPathTextField: NSTextField!
+    var dviDriverPathTextField: NSTextField!
+    var gsPathTextField: NSTextField!
+    var guessCompilationButton: NSSwitch!
+    var numberOfCompilationTextField: NSTextField!
+    var numberOfCompilationStepper: NSStepper!
+    var textPdfCheckBox: NSSwitch!
+    var ignoreErrorCheckBox: NSSwitch!
+    var utfExportCheckBox: NSSwitch!
+    var encodingPopUpButton: NSPopUpButton!
+    var unitPopUp: NSPopUpButton!
+    var priorityPopUp: NSPopUpButton!
+    var workInInputFileDirectoryCheckBox: NSSwitch!
 
-    @IBOutlet private var fillColorWell: NSColorWell!
+    var fillColorWell: NSColorWell!
 
-    @IBOutlet private var lightModeForegroundColorWell: NSColorWell!
-    @IBOutlet private var lightModeBackgroundColorWell: NSColorWell!
-    @IBOutlet private var lightModeCursorColorWell: NSColorWell!
-    @IBOutlet private var lightModeBraceColorWell: NSColorWell!
-    @IBOutlet private var lightModeCommentColorWell: NSColorWell!
-    @IBOutlet private var lightModeCommandColorWell: NSColorWell!
-    @IBOutlet private var lightModeInvisibleColorWell: NSColorWell!
-    @IBOutlet private var lightModeHighlightedBraceColorWell: NSColorWell!
-    @IBOutlet private var lightModeEnclosedContentBackgroundColorWell: NSColorWell!
-    @IBOutlet private var lightModeFlashingBackgroundColorWell: NSColorWell!
-    @IBOutlet private var lightModeConsoleForegroundColorWell: NSColorWell!
-    @IBOutlet private var lightModeConsoleBackgroundColorWell: NSColorWell!
 
-    @IBOutlet private var darkModeForegroundColorWell: NSColorWell!
-    @IBOutlet private var darkModeBackgroundColorWell: NSColorWell!
-    @IBOutlet private var darkModeCursorColorWell: NSColorWell!
-    @IBOutlet private var darkModeBraceColorWell: NSColorWell!
-    @IBOutlet private var darkModeCommentColorWell: NSColorWell!
-    @IBOutlet private var darkModeCommandColorWell: NSColorWell!
-    @IBOutlet private var darkModeInvisibleColorWell: NSColorWell!
-    @IBOutlet private var darkModeHighlightedBraceColorWell: NSColorWell!
-    @IBOutlet private var darkModeEnclosedContentBackgroundColorWell: NSColorWell!
-    @IBOutlet private var darkModeFlashingBackgroundColorWell: NSColorWell!
-    @IBOutlet private var darkModeConsoleForegroundColorWell: NSColorWell!
-    @IBOutlet private var darkModeConsoleBackgroundColorWell: NSColorWell!
 
-    @IBOutlet private var makeatletterEnabledCheckBox: NSButton!
+    var makeatletterEnabledCheckBox: NSSwitch!
 
-    @IBOutlet private var autoDetectionTargetSettingViewController: NSViewController!
-    @IBOutlet private var autoDetectionTargetMatrix: NSMatrix!
+    var autoDetectionTargetPopUp: NSPopUpButton!
 
-    @IBOutlet private var invisibleCharacterBox: NSBox!
 
-    @IBOutlet private var spaceCharacterKindButton: NSButton!
-    @IBOutlet private var fullwidthSpaceCharacterKindButton: NSButton!
-    @IBOutlet private var returnCharacterKindButton: NSButton!
-    @IBOutlet private var tabCharacterKindButton: NSButton!
 
-    @IBOutlet private var spaceCharacterKindSettingViewController: NSViewController!
-    @IBOutlet private var spaceCharacterKindMatrix: NSMatrix!
+    var spaceCharacterKindPopUp: NSPopUpButton!
 
-    @IBOutlet private var fullwidthSpaceCharacterKindSettingViewController: NSViewController!
-    @IBOutlet private var fullwidthSpaceCharacterKindMatrix: NSMatrix!
+    var fullwidthSpaceCharacterKindPopUp: NSPopUpButton!
 
-    @IBOutlet private var returnCharacterKindSettingViewController: NSViewController!
-    @IBOutlet private var returnCharacterKindMatrix: NSMatrix!
+    var returnCharacterKindPopUp: NSPopUpButton!
 
-    @IBOutlet private var tabCharacterKindSettingViewController: NSViewController!
-    @IBOutlet private var tabCharacterKindMatrix: NSMatrix!
+    var tabCharacterKindPopUp: NSPopUpButton!
 
-    @IBOutlet private var pageBoxSettingViewController: NSViewController!
-    @IBOutlet private var pageBoxMatrix: NSMatrix!
+    var pageBoxPopUp: NSPopUpButton!
 
-    @IBOutlet private var animationParameterSettingViewController: NSViewController!
-    @IBOutlet private var delayTextField: NSTextField!
-    @IBOutlet private var delayStepper: NSStepper!
-    @IBOutlet private var loopCountTextField: NSTextField!
-    @IBOutlet private var loopCountStepper: NSStepper!
+    var delayTextField: NSTextField!
+    var delayStepper: NSStepper!
+    var loopCountTextField: NSTextField!
+    var loopCountStepper: NSStepper!
 
-    @IBOutlet private var cuiToolInstallButton: NSButton!
-    @IBOutlet private var cuiToolStatusView: NSImageView!
-    @IBOutlet private var cuiToolStatusTextField: NSTextField!
+    var settingsWindowController: SettingsWindowController!
+    var themeSettings: ThemeSettingsController!
+    var updateCheckSwitch: NSSwitch!
+    var settingsDependentRows: [SettingsDependentRow: SettingsRowView] = [:]
+
+    var cuiToolInstallButton: NSButton!
+    var cuiToolStatusView: NSImageView!
+    var cuiToolStatusTextField: NSTextField!
 
     private var lastSavedPath: String?
     private var lastActiveWindow: NSWindow?
@@ -787,31 +753,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
         loadColorWell(fillColorWell, from: aProfile, key: FillColorKey, defaultColor: .white)
 
-        loadColorWell(lightModeForegroundColorWell, from: aProfile, key: ForegroundColorForLightModeKey, defaultColor: .defaultForegroundColorForLightMode)
-        loadColorWell(lightModeBackgroundColorWell, from: aProfile, key: BackgroundColorForLightModeKey, defaultColor: .defaultBackgroundColorForLightMode)
-        loadColorWell(lightModeCursorColorWell, from: aProfile, key: CursorColorForLightModeKey, defaultColor: .defaultCursorColorForLightMode)
-        loadColorWell(lightModeBraceColorWell, from: aProfile, key: BraceColorForLightModeKey, defaultColor: .defaultBraceColorForLightMode)
-        loadColorWell(lightModeCommentColorWell, from: aProfile, key: CommentColorForLightModeKey, defaultColor: .defaultCommentColorForLightMode)
-        loadColorWell(lightModeCommandColorWell, from: aProfile, key: CommandColorForLightModeKey, defaultColor: .defaultCommandColorForLightMode)
-        loadColorWell(lightModeInvisibleColorWell, from: aProfile, key: InvisibleColorForLightModeKey, defaultColor: .defaultInvisibleColorForLightMode)
-        loadColorWell(lightModeHighlightedBraceColorWell, from: aProfile, key: HighlightedBraceColorForLightModeKey, defaultColor: .defaultHighlightedBraceColorForLightMode)
-        loadColorWell(lightModeEnclosedContentBackgroundColorWell, from: aProfile, key: EnclosedContentBackgroundColorForLightModeKey, defaultColor: .defaultEnclosedContentBackgroundColorForLightMode)
-        loadColorWell(lightModeFlashingBackgroundColorWell, from: aProfile, key: FlashingBackgroundColorForLightModeKey, defaultColor: .defaultFlashingBackgroundColorForLightMode)
-        loadColorWell(lightModeConsoleForegroundColorWell, from: aProfile, key: ConsoleForegroundColorForLightModeKey, defaultColor: .defaultConsoleForegroundColorForLightMode)
-        loadColorWell(lightModeConsoleBackgroundColorWell, from: aProfile, key: ConsoleBackgroundColorForLightModeKey, defaultColor: .defaultConsoleBackgroundColorForLightMode)
-
-        loadColorWell(darkModeForegroundColorWell, from: aProfile, key: ForegroundColorForDarkModeKey, defaultColor: .defaultForegroundColorForDarkMode)
-        loadColorWell(darkModeBackgroundColorWell, from: aProfile, key: BackgroundColorForDarkModeKey, defaultColor: .defaultBackgroundColorForDarkMode)
-        loadColorWell(darkModeCursorColorWell, from: aProfile, key: CursorColorForDarkModeKey, defaultColor: .defaultCursorColorForDarkMode)
-        loadColorWell(darkModeBraceColorWell, from: aProfile, key: BraceColorForDarkModeKey, defaultColor: .defaultBraceColorForDarkMode)
-        loadColorWell(darkModeCommentColorWell, from: aProfile, key: CommentColorForDarkModeKey, defaultColor: .defaultCommentColorForDarkMode)
-        loadColorWell(darkModeCommandColorWell, from: aProfile, key: CommandColorForDarkModeKey, defaultColor: .defaultCommandColorForDarkMode)
-        loadColorWell(darkModeInvisibleColorWell, from: aProfile, key: InvisibleColorForDarkModeKey, defaultColor: .defaultInvisibleColorForDarkMode)
-        loadColorWell(darkModeHighlightedBraceColorWell, from: aProfile, key: HighlightedBraceColorForDarkModeKey, defaultColor: .defaultHighlightedBraceColorForDarkMode)
-        loadColorWell(darkModeEnclosedContentBackgroundColorWell, from: aProfile, key: EnclosedContentBackgroundColorForDarkModeKey, defaultColor: .defaultEnclosedContentBackgroundColorForDarkMode)
-        loadColorWell(darkModeFlashingBackgroundColorWell, from: aProfile, key: FlashingBackgroundColorForDarkModeKey, defaultColor: .defaultFlashingBackgroundColorForDarkMode)
-        loadColorWell(darkModeConsoleForegroundColorWell, from: aProfile, key: ConsoleForegroundColorForDarkModeKey, defaultColor: .defaultConsoleForegroundColorForDarkMode)
-        loadColorWell(darkModeConsoleBackgroundColorWell, from: aProfile, key: ConsoleBackgroundColorForDarkModeKey, defaultColor: .defaultConsoleBackgroundColorForDarkMode)
+        if let light = aProfile.stringForKey(LightThemeKey), let dark = aProfile.stringForKey(DarkThemeKey) {
+            themeSettings.select(light: light, dark: dark)
+        }
 
         if keys.contains(ColorPalleteColorKey) {
             colorPalleteColorWell.color = aProfile.colorForKey(ColorPalleteColorKey) ?? .red
@@ -869,26 +813,26 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         numberOfCompilationTextField.integerValue = max(1, aProfile.integerForKey(NumberOfCompilationKey))
         numberOfCompilationStepper.integerValue = numberOfCompilationTextField.integerValue
 
-        unitMatrix.selectCell(withTag: aProfile.integerForKey(UnitKey))
-        priorityMatrix.selectCell(withTag: aProfile.integerForKey(PriorityKey))
+        unitPopUp.selectItem(withTag: aProfile.integerForKey(UnitKey))
+        priorityPopUp.selectItem(withTag: aProfile.integerForKey(PriorityKey))
 
         if keys.contains(AutoDetectionTargetKey) {
-            autoDetectionTargetMatrix.selectCell(withTag: aProfile.integerForKey(AutoDetectionTargetKey))
+            autoDetectionTargetPopUp.selectItem(withTag: aProfile.integerForKey(AutoDetectionTargetKey))
         }
         if keys.contains(SpaceCharacterKindKey) {
-            spaceCharacterKindMatrix.selectCell(withTag: aProfile.integerForKey(SpaceCharacterKindKey))
+            spaceCharacterKindPopUp.selectItem(withTag: aProfile.integerForKey(SpaceCharacterKindKey))
         }
         if keys.contains(FullwidthSpaceCharacterKindKey) {
-            fullwidthSpaceCharacterKindMatrix.selectCell(withTag: aProfile.integerForKey(FullwidthSpaceCharacterKindKey))
+            fullwidthSpaceCharacterKindPopUp.selectItem(withTag: aProfile.integerForKey(FullwidthSpaceCharacterKindKey))
         }
         if keys.contains(ReturnCharacterKindKey) {
-            returnCharacterKindMatrix.selectCell(withTag: aProfile.integerForKey(ReturnCharacterKindKey))
+            returnCharacterKindPopUp.selectItem(withTag: aProfile.integerForKey(ReturnCharacterKindKey))
         }
         if keys.contains(TabCharacterKindKey) {
-            tabCharacterKindMatrix.selectCell(withTag: aProfile.integerForKey(TabCharacterKindKey))
+            tabCharacterKindPopUp.selectItem(withTag: aProfile.integerForKey(TabCharacterKindKey))
         }
         if keys.contains(PageBoxKey) {
-            pageBoxMatrix.selectCell(withTag: aProfile.integerForKey(PageBoxKey))
+            pageBoxPopUp.selectItem(withTag: aProfile.integerForKey(PageBoxKey))
         }
         if keys.contains(DelayKey) {
             delayTextField.floatValue = max(0, aProfile.floatForKey(DelayKey))
@@ -899,7 +843,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             loopCountStepper.integerValue = loopCountTextField.integerValue
         }
         if keys.contains(CommandCompletionKeyKey) {
-            commandCompletionKeyMatrix.selectCell(withTag: aProfile.integerForKey(CommandCompletionKeyKey))
+            commandCompletionKeyPopUp.selectItem(withTag: aProfile.integerForKey(CommandCompletionKeyKey))
         }
 
         invisibleCharacterKindChanged(nil)
@@ -924,7 +868,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         preambleTextView.refreshWordWrap()
 
         if let sourceFont {
-            let displayFont = NSFont(name: sourceFont.fontName, size: spaceCharacterKindButton.font?.pointSize ?? sourceFont.pointSize)
+            let displayFont = NSFont(name: sourceFont.fontName, size: NSFont.systemFontSize)
             setInvisibleCharacterFont(displayFont)
         }
 
@@ -942,6 +886,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                 sourceSettingChanged(inputSourceFileButton)
             }
         }
+        updateSettingsDependencies()
+        themeColorsChanged()
     }
 
     func refreshOutputTextView(usingProfile aProfile: Profile?) {
@@ -954,19 +900,17 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     private func setInvisibleCharacterFont(_ font: NSFont?) {
         guard let font else { return }
-        spaceCharacterKindMatrix.setCellFont(font)
-        fullwidthSpaceCharacterKindMatrix.setCellFont(font)
-        returnCharacterKindMatrix.setCellFont(font)
-        tabCharacterKindMatrix.setCellFont(font)
-        spaceCharacterKindButton.font = font
-        fullwidthSpaceCharacterKindButton.font = font
-        returnCharacterKindButton.font = font
-        tabCharacterKindButton.font = font
+        for popup in [spaceCharacterKindPopUp, fullwidthSpaceCharacterKindPopUp, returnCharacterKindPopUp, tabCharacterKindPopUp] {
+            popup?.font = font
+        }
     }
 
     private func adoptProfileDuringLauching() -> Bool {
         guard let aProfile = profileController.profileForName(autoSavedProfileName) else { return false }
         adoptProfile(aProfile)
+        if aProfile.stringForKey(LightThemeKey) == nil {
+            migrateLegacyColors(from: aProfile)
+        }
 
         let x = aProfile.floatForKey(XKey)
         let y = aProfile.floatForKey(YKey)
@@ -1038,15 +982,15 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             currentProfile[TabWidthKey] = tabWidth > 0 ? tabWidth : 4
             currentProfile[TabIndentKey] = tabIndentCheckBox.state.rawValue
             currentProfile[WrapLineKey] = wrapLineCheckBox.state.rawValue
-            currentProfile[UnitKey] = unitMatrix.selectedTag()
-            currentProfile[PriorityKey] = priorityMatrix.selectedTag()
-            currentProfile[CommandCompletionKeyKey] = commandCompletionKeyMatrix.selectedTag()
-            currentProfile[AutoDetectionTargetKey] = autoDetectionTargetMatrix.selectedTag()
-            currentProfile[SpaceCharacterKindKey] = spaceCharacterKindMatrix.selectedTag()
-            currentProfile[FullwidthSpaceCharacterKindKey] = fullwidthSpaceCharacterKindMatrix.selectedTag()
-            currentProfile[ReturnCharacterKindKey] = returnCharacterKindMatrix.selectedTag()
-            currentProfile[TabCharacterKindKey] = tabCharacterKindMatrix.selectedTag()
-            currentProfile[PageBoxKey] = pageBoxMatrix.selectedTag()
+            currentProfile[UnitKey] = unitPopUp.selectedTag()
+            currentProfile[PriorityKey] = priorityPopUp.selectedTag()
+            currentProfile[CommandCompletionKeyKey] = commandCompletionKeyPopUp.selectedTag()
+            currentProfile[AutoDetectionTargetKey] = autoDetectionTargetPopUp.selectedTag()
+            currentProfile[SpaceCharacterKindKey] = spaceCharacterKindPopUp.selectedTag()
+            currentProfile[FullwidthSpaceCharacterKindKey] = fullwidthSpaceCharacterKindPopUp.selectedTag()
+            currentProfile[ReturnCharacterKindKey] = returnCharacterKindPopUp.selectedTag()
+            currentProfile[TabCharacterKindKey] = tabCharacterKindPopUp.selectedTag()
+            currentProfile[PageBoxKey] = pageBoxPopUp.selectedTag()
             currentProfile[DelayKey] = delayTextField.floatValue
             currentProfile[LoopCountKey] = loopCountTextField.integerValue
             currentProfile[ConvertYenMarkKey] = convertYenMarkMenuItem.state.rawValue
@@ -1082,30 +1026,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             }
 
             currentProfile[FillColorKey] = fillColorWell.color.serializedString
-            currentProfile[ForegroundColorForLightModeKey] = lightModeForegroundColorWell.color.serializedString
-            currentProfile[BackgroundColorForLightModeKey] = lightModeBackgroundColorWell.color.serializedString
-            currentProfile[CursorColorForLightModeKey] = lightModeCursorColorWell.color.serializedString
-            currentProfile[BraceColorForLightModeKey] = lightModeBraceColorWell.color.serializedString
-            currentProfile[CommentColorForLightModeKey] = lightModeCommentColorWell.color.serializedString
-            currentProfile[CommandColorForLightModeKey] = lightModeCommandColorWell.color.serializedString
-            currentProfile[InvisibleColorForLightModeKey] = lightModeInvisibleColorWell.color.serializedString
-            currentProfile[HighlightedBraceColorForLightModeKey] = lightModeHighlightedBraceColorWell.color.serializedString
-            currentProfile[EnclosedContentBackgroundColorForLightModeKey] = lightModeEnclosedContentBackgroundColorWell.color.serializedString
-            currentProfile[FlashingBackgroundColorForLightModeKey] = lightModeFlashingBackgroundColorWell.color.serializedString
-            currentProfile[ConsoleForegroundColorForLightModeKey] = lightModeConsoleForegroundColorWell.color.serializedString
-            currentProfile[ConsoleBackgroundColorForLightModeKey] = lightModeConsoleBackgroundColorWell.color.serializedString
-            currentProfile[ForegroundColorForDarkModeKey] = darkModeForegroundColorWell.color.serializedString
-            currentProfile[BackgroundColorForDarkModeKey] = darkModeBackgroundColorWell.color.serializedString
-            currentProfile[CursorColorForDarkModeKey] = darkModeCursorColorWell.color.serializedString
-            currentProfile[BraceColorForDarkModeKey] = darkModeBraceColorWell.color.serializedString
-            currentProfile[CommentColorForDarkModeKey] = darkModeCommentColorWell.color.serializedString
-            currentProfile[CommandColorForDarkModeKey] = darkModeCommandColorWell.color.serializedString
-            currentProfile[InvisibleColorForDarkModeKey] = darkModeInvisibleColorWell.color.serializedString
-            currentProfile[HighlightedBraceColorForDarkModeKey] = darkModeHighlightedBraceColorWell.color.serializedString
-            currentProfile[EnclosedContentBackgroundColorForDarkModeKey] = darkModeEnclosedContentBackgroundColorWell.color.serializedString
-            currentProfile[FlashingBackgroundColorForDarkModeKey] = darkModeFlashingBackgroundColorWell.color.serializedString
-            currentProfile[ConsoleForegroundColorForDarkModeKey] = darkModeConsoleForegroundColorWell.color.serializedString
-            currentProfile[ConsoleBackgroundColorForDarkModeKey] = darkModeConsoleBackgroundColorWell.color.serializedString
+            currentProfile[LightThemeKey] = themeSettings.lightTitle
+            currentProfile[DarkThemeKey] = themeSettings.darkTitle
             currentProfile[MakeatletterEnabledKey] = makeatletterEnabledCheckBox.state.rawValue
             currentProfile[ColorPalleteColorKey] = colorPalleteColorWell.color.serializedString
         }
@@ -1239,7 +1161,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     // MARK: - Lifecycle / notifications
 
     override func awakeFromNib() {
-        if let content = preferenceWindow.contentView { installTeXShopColorButtons(in: content) }
+        ThemeLibrary.shared.prepare()
+        buildSettingsWindow()
         outputTextView.layoutManager?.allowsNonContiguousLayout = true
 
         userNotificationDelegate = UserNotificationDelegate()
@@ -1275,10 +1198,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         observeNotification(forName: NSWindow.didBecomeKeyNotification, object: preambleWindow) { [weak self] notification in
             self?.otherWindowsDidBecomeKey(notification)
         }
-        observeNotification(forName: NSWindow.didBecomeKeyNotification, object: preferenceWindow) { [weak self] notification in
+        observeNotification(forName: NSWindow.didBecomeKeyNotification, object: settingsWindowController.window) { [weak self] notification in
             self?.preferenceWindowDidBecomeKey(notification)
         }
-        observeNotification(forName: NSWindow.willCloseNotification, object: preferenceWindow) { [weak self] _ in
+        observeNotification(forName: SettingsWindowController.willCloseNotification, object: settingsWindowController) { [weak self] _ in
             self?.engineSearchGeneration += 1
         }
         observeNotification(forName: NSWindow.didBecomeKeyNotification, object: colorPalleteWindow) { [weak self] notification in
@@ -1308,13 +1231,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             colorPalleteColorSet(colorPalleteColorWell)
         }
 
-        autoDetectionTargetMatrix.setCellColor(.textColor)
-        spaceCharacterKindMatrix.setCellColor(.textColor)
-        fullwidthSpaceCharacterKindMatrix.setCellColor(.textColor)
-        returnCharacterKindMatrix.setCellColor(.textColor)
-        tabCharacterKindMatrix.setCellColor(.textColor)
-        pageBoxMatrix.setCellColor(.textColor)
-
         let fileManager = FileManager.default
         let bundleID = Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as? String ?? ""
         let plistFile = "\(NSHomeDirectory())/Library/Preferences/\(bundleID).plist"
@@ -1335,7 +1251,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                 "waitUntilDone": false
             ])
 
-            let templateName = autoDetectionTargetMatrix.selectedCell()?.title ?? ""
+            let templateName = autoDetectionTargetPopUp.titleOfSelectedItem ?? ""
             if let originalTemplateDirectory = Bundle.main.path(forResource: templateDirectoryName, ofType: nil) {
                 let templatePath = originalTemplateDirectory.appendingPathComponent(templateName).appendingPathExtension("tex") ?? ""
                 if let data = try? Data(contentsOf: URL(fileURLWithPath: templatePath)) {
@@ -1347,8 +1263,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             }
 
             loadDefaultFont()
-            loadDefaultColorsLogic(senderTag: -1)
+            makeatletterEnabledCheckBox.state = .on
             UserDefaults.standard.set(true, forKey: "SUEnableAutomaticChecks")
+            updateCheckSwitch.state = .on
         }
 
         let completionPath = "~/Library/TeXShop/CommandCompletion/CommandCompletion.txt".expandingTildeInPath.standardizingPath
@@ -1394,144 +1311,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    @IBAction func loadDefaultColors(_ sender: NSButton) {
-        loadDefaultColorsLogic(senderTag: sender.tag)
-    }
-
-    private func installTeXShopColorButtons(in view: NSView) {
-        // Both localized nibs put the light/dark Default buttons side by side.
-        if let tabs = view as? NSTabView {
-            for item in tabs.tabViewItems {
-                if let content = item.view { installTeXShopColorButtons(in: content) }
-            }
-            return
-        }
-        var installed = false
-        for child in view.subviews {
-            if let original = child as? NSButton, original.action == #selector(loadDefaultColors(_:)) {
-                guard !installed else { continue }
-                installed = true
-                let japanese = UtilityG.isJapaneseLanguage()
-                let button = NSPopUpButton(frame: .zero, pullsDown: true)
-                button.addItem(withTitle: japanese ? "TeXShopから読み込む…" : "Import from TeXShop…")
-                for (tag, title) in [(LIGHTMODE_TAG, japanese ? "ライトモード…" : "Light Mode…"),
-                                     (DARKMODE_TAG, japanese ? "ダークモード…" : "Dark Mode…")] {
-                    let item = NSMenuItem(title: title, action: #selector(importTeXShopColors(_:)), keyEquivalent: "")
-                    item.tag = tag
-                    item.target = self
-                    button.menu?.addItem(item)
-                }
-                button.bezelStyle = .rounded
-                button.controlSize = .small
-                button.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
-                button.frame = NSRect(x: 10, y: original.frame.minY, width: original.frame.minX - 20, height: original.frame.height)
-                button.autoresizingMask = original.autoresizingMask
-                view.addSubview(button)
-            } else {
-                installTeXShopColorButtons(in: child)
-            }
-        }
-    }
-
-    @objc private func importTeXShopColors(_ sender: NSMenuItem) {
-        let dark = sender.tag == DARKMODE_TAG
-        let japanese = UtilityG.isJapaneseLanguage()
-        guard UtilityG.runConfirmPanel(message: japanese ? "このモードの色をTeXShopから読み込みますか？" : "Import TeXShop colors for this mode?") else { return }
-        let settings = UserDefaults.standard.persistentDomain(forName: "TeXShop") ?? [:]
-        let directory = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/TeXShop/Themes")
-        let theme = TeXShopColors.theme(dark: dark, settings: settings, directory: directory)
-        let keys = ["EditorText", "EditorBackground", "EditorInsertionPoint", "SyntaxMarkerCurly", "SyntaxComment", "SyntaxCommand",
-                    "EditorInvisibleChar", "EditorHighlightBraces", "EditorHighlightContent", "EditorFlash", "ConsoleText", "ConsoleBackground"]
-        let wells: [NSColorWell?] = dark
-            ? [darkModeForegroundColorWell, darkModeBackgroundColorWell, darkModeCursorColorWell, darkModeBraceColorWell,
-               darkModeCommentColorWell, darkModeCommandColorWell, darkModeInvisibleColorWell, darkModeHighlightedBraceColorWell,
-               darkModeEnclosedContentBackgroundColorWell, darkModeFlashingBackgroundColorWell, darkModeConsoleForegroundColorWell, darkModeConsoleBackgroundColorWell]
-            : [lightModeForegroundColorWell, lightModeBackgroundColorWell, lightModeCursorColorWell, lightModeBraceColorWell,
-               lightModeCommentColorWell, lightModeCommandColorWell, lightModeInvisibleColorWell, lightModeHighlightedBraceColorWell,
-               lightModeEnclosedContentBackgroundColorWell, lightModeFlashingBackgroundColorWell, lightModeConsoleForegroundColorWell, lightModeConsoleBackgroundColorWell]
-        var count = 0
-        for (key, well) in zip(keys, wells) {
-            guard let well, let color = TeXShopColors.color(key: key, theme: theme, legacy: settings) else { continue }
-            well.color = color
-            well.saveColor(to: &lastColorDict)
-            count += 1
-        }
-        if count == 0 {
-            UtilityG.runOkPanel(title: "TeXShop", message: japanese ? "読み込める色設定が見つかりませんでした。" : "No readable color settings were found.")
-        }
-        sourceTextView.colorizeText()
-        preambleTextView.colorizeText()
-        recolorOutputView()
-    }
-
-    private func loadDefaultColorsLogic(senderTag: Int) {
-        if senderTag == LIGHTMODE_TAG || senderTag == DARKMODE_TAG {
-            let modeName = NSLocalizedString(senderTag == LIGHTMODE_TAG ? "Light Mode" : "Dark Mode", comment: "")
-            if !UtilityG.runConfirmPanel(message: String(format: NSLocalizedString("restoreColorsConfirmationMsg", comment: ""), modeName)) {
-                return
-            }
-        }
-
-        if senderTag < 0 || senderTag == LIGHTMODE_TAG {
-            lightModeForegroundColorWell.color = .defaultForegroundColorForLightMode
-            lightModeBackgroundColorWell.color = .defaultBackgroundColorForLightMode
-            lightModeCursorColorWell.color = .defaultCursorColorForLightMode
-            lightModeBraceColorWell.color = .defaultBraceColorForLightMode
-            lightModeCommentColorWell.color = .defaultCommentColorForLightMode
-            lightModeCommandColorWell.color = .defaultCommandColorForLightMode
-            lightModeInvisibleColorWell.color = .defaultInvisibleColorForLightMode
-            lightModeHighlightedBraceColorWell.color = .defaultHighlightedBraceColorForLightMode
-            lightModeEnclosedContentBackgroundColorWell.color = .defaultEnclosedContentBackgroundColorForLightMode
-            lightModeFlashingBackgroundColorWell.color = .defaultFlashingBackgroundColorForLightMode
-            lightModeConsoleForegroundColorWell.color = .defaultConsoleForegroundColorForLightMode
-            lightModeConsoleBackgroundColorWell.color = .defaultConsoleBackgroundColorForLightMode
-            lightModeForegroundColorWell.saveColor(to: &lastColorDict)
-            lightModeBackgroundColorWell.saveColor(to: &lastColorDict)
-            lightModeCursorColorWell.saveColor(to: &lastColorDict)
-            lightModeBraceColorWell.saveColor(to: &lastColorDict)
-            lightModeCommentColorWell.saveColor(to: &lastColorDict)
-            lightModeCommandColorWell.saveColor(to: &lastColorDict)
-            lightModeInvisibleColorWell.saveColor(to: &lastColorDict)
-            lightModeHighlightedBraceColorWell.saveColor(to: &lastColorDict)
-            lightModeEnclosedContentBackgroundColorWell.saveColor(to: &lastColorDict)
-            lightModeFlashingBackgroundColorWell.saveColor(to: &lastColorDict)
-            lightModeConsoleForegroundColorWell.saveColor(to: &lastColorDict)
-            lightModeConsoleBackgroundColorWell.saveColor(to: &lastColorDict)
-        }
-
-        if senderTag < 0 || senderTag == DARKMODE_TAG {
-            darkModeForegroundColorWell.color = .defaultForegroundColorForDarkMode
-            darkModeBackgroundColorWell.color = .defaultBackgroundColorForDarkMode
-            darkModeCursorColorWell.color = .defaultCursorColorForDarkMode
-            darkModeBraceColorWell.color = .defaultBraceColorForDarkMode
-            darkModeCommentColorWell.color = .defaultCommentColorForDarkMode
-            darkModeCommandColorWell.color = .defaultCommandColorForDarkMode
-            darkModeInvisibleColorWell.color = .defaultInvisibleColorForDarkMode
-            darkModeHighlightedBraceColorWell.color = .defaultHighlightedBraceColorForDarkMode
-            darkModeEnclosedContentBackgroundColorWell.color = .defaultEnclosedContentBackgroundColorForDarkMode
-            darkModeFlashingBackgroundColorWell.color = .defaultFlashingBackgroundColorForDarkMode
-            darkModeConsoleForegroundColorWell.color = .defaultConsoleForegroundColorForDarkMode
-            darkModeConsoleBackgroundColorWell.color = .defaultConsoleBackgroundColorForDarkMode
-            darkModeForegroundColorWell.saveColor(to: &lastColorDict)
-            darkModeBackgroundColorWell.saveColor(to: &lastColorDict)
-            darkModeCursorColorWell.saveColor(to: &lastColorDict)
-            darkModeBraceColorWell.saveColor(to: &lastColorDict)
-            darkModeCommentColorWell.saveColor(to: &lastColorDict)
-            darkModeCommandColorWell.saveColor(to: &lastColorDict)
-            darkModeInvisibleColorWell.saveColor(to: &lastColorDict)
-            darkModeHighlightedBraceColorWell.saveColor(to: &lastColorDict)
-            darkModeEnclosedContentBackgroundColorWell.saveColor(to: &lastColorDict)
-            darkModeFlashingBackgroundColorWell.saveColor(to: &lastColorDict)
-            darkModeConsoleForegroundColorWell.saveColor(to: &lastColorDict)
-            darkModeConsoleBackgroundColorWell.saveColor(to: &lastColorDict)
-        }
-
-        makeatletterEnabledCheckBox.state = .on
-        sourceTextView.colorizeText()
-        preambleTextView.colorizeText()
-        recolorOutputView()
-    }
-
     private func setupFontTextField(_ font: NSFont) {
         fontTextField.stringValue = String(format: "%@ - %.1fpt", font.displayName ?? font.fontName, font.pointSize)
     }
@@ -1554,7 +1333,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private func closeOtherWindows() {
         outputWindow.close()
         preambleWindow.close()
-        preferenceWindow.close()
+        settingsWindowController.close()
     }
 
     private func uncheckOutputWindowMenuItem() {
@@ -1819,16 +1598,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private func preferenceWindowDidBecomeKey(_ notification: Notification) {
         lastActiveWindow = notification.object as? NSWindow
         fillColorWell.restoreColor(from: lastColorDict)
-        lightModeForegroundColorWell.restoreColor(from: lastColorDict)
-        lightModeBackgroundColorWell.restoreColor(from: lastColorDict)
-        lightModeCursorColorWell.restoreColor(from: lastColorDict)
-        lightModeBraceColorWell.restoreColor(from: lastColorDict)
-        lightModeCommentColorWell.restoreColor(from: lastColorDict)
-        lightModeCommandColorWell.restoreColor(from: lastColorDict)
-        lightModeInvisibleColorWell.restoreColor(from: lastColorDict)
-        lightModeHighlightedBraceColorWell.restoreColor(from: lastColorDict)
-        lightModeEnclosedContentBackgroundColorWell.restoreColor(from: lastColorDict)
-        lightModeFlashingBackgroundColorWell.restoreColor(from: lastColorDict)
     }
 
     private func colorPalleteWindowDidBecomeKey(_ notification: Notification) {
@@ -1837,57 +1606,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     private func closeColorPanel() {
         fillColorWell.deactivate()
-        lightModeForegroundColorWell.deactivate()
-        lightModeBackgroundColorWell.deactivate()
-        lightModeCursorColorWell.deactivate()
-        lightModeBraceColorWell.deactivate()
-        lightModeCommentColorWell.deactivate()
-        lightModeCommandColorWell.deactivate()
-        lightModeInvisibleColorWell.deactivate()
-        lightModeHighlightedBraceColorWell.deactivate()
-        lightModeEnclosedContentBackgroundColorWell.deactivate()
-        lightModeFlashingBackgroundColorWell.deactivate()
-        lightModeConsoleForegroundColorWell.deactivate()
-        lightModeConsoleBackgroundColorWell.deactivate()
-        darkModeForegroundColorWell.deactivate()
-        darkModeBackgroundColorWell.deactivate()
-        darkModeCursorColorWell.deactivate()
-        darkModeBraceColorWell.deactivate()
-        darkModeCommentColorWell.deactivate()
-        darkModeCommandColorWell.deactivate()
-        darkModeInvisibleColorWell.deactivate()
-        darkModeHighlightedBraceColorWell.deactivate()
-        darkModeEnclosedContentBackgroundColorWell.deactivate()
-        darkModeFlashingBackgroundColorWell.deactivate()
-        darkModeConsoleForegroundColorWell.deactivate()
-        darkModeConsoleBackgroundColorWell.deactivate()
+        themeSettings.wells.values.forEach { $0.deactivate() }
         colorPalleteColorWell.deactivate()
         NSColorPanel.shared.perform(#selector(NSColorPanel.orderOut(_:)), with: self, afterDelay: 0)
         fillColorWell.restoreColor(from: lastColorDict)
-        lightModeForegroundColorWell.restoreColor(from: lastColorDict)
-        lightModeBackgroundColorWell.restoreColor(from: lastColorDict)
-        lightModeCursorColorWell.restoreColor(from: lastColorDict)
-        lightModeBraceColorWell.restoreColor(from: lastColorDict)
-        lightModeCommentColorWell.restoreColor(from: lastColorDict)
-        lightModeCommandColorWell.restoreColor(from: lastColorDict)
-        lightModeInvisibleColorWell.restoreColor(from: lastColorDict)
-        lightModeHighlightedBraceColorWell.restoreColor(from: lastColorDict)
-        lightModeEnclosedContentBackgroundColorWell.restoreColor(from: lastColorDict)
-        lightModeFlashingBackgroundColorWell.restoreColor(from: lastColorDict)
-        lightModeConsoleForegroundColorWell.restoreColor(from: lastColorDict)
-        lightModeConsoleBackgroundColorWell.restoreColor(from: lastColorDict)
-        darkModeForegroundColorWell.restoreColor(from: lastColorDict)
-        darkModeBackgroundColorWell.restoreColor(from: lastColorDict)
-        darkModeCursorColorWell.restoreColor(from: lastColorDict)
-        darkModeBraceColorWell.restoreColor(from: lastColorDict)
-        darkModeCommentColorWell.restoreColor(from: lastColorDict)
-        darkModeCommandColorWell.restoreColor(from: lastColorDict)
-        darkModeInvisibleColorWell.restoreColor(from: lastColorDict)
-        darkModeHighlightedBraceColorWell.restoreColor(from: lastColorDict)
-        darkModeEnclosedContentBackgroundColorWell.restoreColor(from: lastColorDict)
-        darkModeFlashingBackgroundColorWell.restoreColor(from: lastColorDict)
-        darkModeConsoleForegroundColorWell.restoreColor(from: lastColorDict)
-        darkModeConsoleBackgroundColorWell.restoreColor(from: lastColorDict)
         colorPalleteColorWell.restoreColor(from: lastColorDict)
     }
 
@@ -1973,7 +1695,12 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     @IBAction func showPreferenceWindow(_ sender: Any) {
-        preferenceWindow.makeKeyAndOrderFront(nil)
+        if settingsWindowController.window?.isVisible != true {
+            themeSettings.prepareForDisplay(dark: NSApp.isDarkMode)
+            updateCheckSwitch.state = UserDefaults.standard.bool(forKey: "SUEnableAutomaticChecks") ? .on : .off
+            updateCUIToolStatus()
+        }
+        settingsWindowController.show()
     }
 
     @IBAction func showProfilesWindow(_ sender: Any) {
@@ -2150,16 +1877,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     @IBAction func preferencesChanged(_ sender: Any) {
-        keepPageSizeAdvancedButton.isEnabled = keepPageSizeCheckBox.state == .on
-        mergeOutputAdvancedButton.isEnabled = mergeOutputsCheckBox.state == .on
-        if toClipboardCheckBox.state == .on {
-            autoPasteCheckBox.isEnabled = true
-            autoPasteDestinationPopUpButton.isEnabled = autoPasteCheckBox.state == .on
-        } else {
-            autoPasteCheckBox.isEnabled = false
-            autoPasteDestinationPopUpButton.isEnabled = false
-        }
-        ungroupCheckBox.isEnabled = embedInIllustratorCheckBox.state == .on
+        updateSettingsDependencies()
     }
 
     @IBAction func showFontPanelOfSource(_ sender: Any) {
@@ -2181,14 +1899,23 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         sourceTextView.font = font
         preambleTextView.font = font
         outputTextView.font = font
-        if let displayFont = NSFont(name: font.fontName, size: spaceCharacterKindButton.font?.pointSize ?? font.pointSize) {
+        if let displayFont = NSFont(name: font.fontName, size: NSFont.systemFontSize) {
             setInvisibleCharacterFont(displayFont)
         }
     }
 
     @IBAction func colorSettingChanged(_ sender: Any) {
-        guard preferenceWindow.isKeyWindow, let well = sender as? NSColorWell else { return }
+        guard settingsWindowController.window?.isKeyWindow == true, let well = sender as? NSColorWell else { return }
         well.saveColor(to: &lastColorDict)
+        sourceTextView.refreshSelectionHighlighting()
+        preambleTextView.refreshSelectionHighlighting()
+        recolorOutputView()
+    }
+
+    /// Recolors the editors and the output window after a theme or its colors change.
+    func themeColorsChanged() {
+        sourceTextView.colorizeText()
+        preambleTextView.colorizeText()
         sourceTextView.refreshSelectionHighlighting()
         preambleTextView.refreshSelectionHighlighting()
         recolorOutputView()
@@ -2204,7 +1931,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     func searchProgramsLogic(_ parameters: [String: Any]) {
-        let templateName = autoDetectionTargetMatrix.selectedCell()?.title ?? ""
+        let templateName = autoDetectionTargetPopUp.titleOfSelectedItem ?? ""
         let engineName = templateName.lowercased().components(separatedBy: " ").first ?? ""
         let dviDriverName = templateName.range(of: "dvips") == nil ? "dvipdfmx" : "dvips"
         let names = [engineName, dviDriverName, "gs"]
@@ -2223,8 +1950,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             DispatchQueue.main.async { [weak self] in
                 guard let self, generation == self.engineSearchGeneration,
                       fields.map(\.stringValue) == snapshot,
-                      self.autoDetectionTargetMatrix.selectedCell()?.title == templateName,
-                      initial || self.preferenceWindow.isVisible else { return }
+                      self.autoDetectionTargetPopUp.titleOfSelectedItem == templateName,
+                      initial || self.settingsWindowController.window?.isVisible == true else { return }
                 let japanese = UtilityG.isJapaneseLanguage()
                 let alert = NSAlert()
                 alert.messageText = parameters["Title"] as? String ?? ""
@@ -2253,7 +1980,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                 guard alert.runModal() == .alertFirstButtonReturn,
                       generation == self.engineSearchGeneration,
                       fields.map(\.stringValue) == snapshot,
-                      self.autoDetectionTargetMatrix.selectedCell()?.title == templateName else { return }
+                      self.autoDetectionTargetPopUp.titleOfSelectedItem == templateName else { return }
                 for i in names.indices {
                     let index = menus[i].indexOfSelectedItem
                     guard candidates[i].indices.contains(index) else { continue }
@@ -2438,22 +2165,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         task?.terminate()
     }
 
-    @IBAction func showAutoDetectionTargetSettingPopover(_ sender: NSButton) {
-        guard let contentView = preferenceWindow.contentView else { return }
-        NSPopover.show(with: autoDetectionTargetSettingViewController, atRightOf: sender, view: contentView, offsetX: 25, y: 24)
-    }
-
-    @IBAction func showPageBoxSettingPopover(_ sender: NSButton) {
-        guard let contentView = preferenceWindow.contentView else { return }
-        let y = preferenceWindow.frame.size.height - (UtilityG.isJapaneseLanguage() ? 313 : 300)
-        NSPopover.show(with: pageBoxSettingViewController, atRightOf: sender, view: contentView, offsetX: 32, y: y)
-    }
-
-    @IBAction func showAnimationParameterSettingPopover(_ sender: NSButton) {
-        guard let contentView = preferenceWindow.contentView else { return }
-        NSPopover.show(with: animationParameterSettingViewController, atRightOf: sender, view: contentView, offsetX: 32, y: preferenceWindow.frame.size.height - 446)
-    }
-
     @IBAction func extensionPopUpButtonChanged(_ sender: NSPopUpButton) {
         let ext = sender.selectedItem?.title.lowercased() ?? ""
         outputFileTextField.stringValue = outputFileTextField.stringValue.deletingPathExtension.appendingPathExtension(ext) ?? outputFileTextField.stringValue
@@ -2513,45 +2224,25 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         updateCUIToolStatus()
     }
 
-    @IBAction func showSpaceCharacterKindSettingPopover(_ sender: NSButton) {
-        NSPopover.show(with: spaceCharacterKindSettingViewController, atRightOf: sender, view: invisibleCharacterBox, offsetX: 2, y: 1)
-    }
-
-    @IBAction func showFullwidthSpaceCharacterKindSettingPopover(_ sender: NSButton) {
-        NSPopover.show(with: fullwidthSpaceCharacterKindSettingViewController, atRightOf: sender, view: invisibleCharacterBox, offsetX: 2, y: 1)
-    }
-
-    @IBAction func showReturnCharacterKindSettingPopover(_ sender: NSButton) {
-        NSPopover.show(with: returnCharacterKindSettingViewController, atRightOf: sender, view: invisibleCharacterBox, offsetX: 2, y: 1)
-    }
-
-    @IBAction func showTabCharacterKindSettingPopover(_ sender: NSButton) {
-        NSPopover.show(with: tabCharacterKindSettingViewController, atRightOf: sender, view: invisibleCharacterBox, offsetX: 2, y: 1)
-    }
-
     @IBAction func invisibleCharacterKindChanged(_ sender: Any?) {
-        spaceCharacterKindButton.title = spaceCharacter()
-        fullwidthSpaceCharacterKindButton.title = fullwidthSpaceCharacter()
-        returnCharacterKindButton.title = returnCharacter()
-        tabCharacterKindButton.title = tabCharacter()
         sourceTextView.colorizeText()
         preambleTextView.colorizeText()
     }
 
     func spaceCharacter() -> String {
-        spaceCharacterKindMatrix.selectedCell()?.title ?? ""
+        spaceCharacterKindPopUp.titleOfSelectedItem ?? ""
     }
 
     func fullwidthSpaceCharacter() -> String {
-        fullwidthSpaceCharacterKindMatrix.selectedCell()?.title ?? ""
+        fullwidthSpaceCharacterKindPopUp.titleOfSelectedItem ?? ""
     }
 
     func returnCharacter() -> String {
-        returnCharacterKindMatrix.selectedCell()?.title ?? ""
+        returnCharacterKindPopUp.titleOfSelectedItem ?? ""
     }
 
     func tabCharacter() -> String {
-        tabCharacterKindMatrix.selectedCell()?.title ?? ""
+        tabCharacterKindPopUp.titleOfSelectedItem ?? ""
     }
 
     func showTabCharacterEnabled() -> Bool {

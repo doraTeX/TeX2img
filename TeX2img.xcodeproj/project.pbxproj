@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		34D0D596777D08134C74BD06 /* SettingsUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BBCC5033A3922EA47F1AD5 /* SettingsUI.swift */; };
+		34A35042392694E9140FF3F4 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3479DE6EDBF7AC5AFBFBB0FF /* SettingsWindowController.swift */; };
+		34547A9A90F4F2A3735BEADE /* ThemeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BE2C29C9ADEC5F499ED929 /* ThemeStore.swift */; };
+		346D07535BA9ECB18BE27EBC /* ThemeSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34CE07527C76B90FF16E88DD /* ThemeSettingsController.swift */; };
+		34B021262624F8F226275295 /* ControllerG+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3472954DE3DD42CA9EB1C9B7 /* ControllerG+Settings.swift */; };
+		345CB637752C337F5B9C1468 /* Themes in Resources */ = {isa = PBXBuildFile; fileRef = 3436F2997071FCA6CA2C0B18 /* Themes */; };
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		3402125525341B29002D1545 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 3402125425341B29002D1545 /* Credits.rtf */; };
 		3402125A2534AF36002D1545 /* NSWindow-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340212592534AF36002D1545 /* NSWindow-Extension.swift */; };
@@ -145,6 +151,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		34BBCC5033A3922EA47F1AD5 /* SettingsUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsUI.swift"; sourceTree = "<group>"; };
+		3479DE6EDBF7AC5AFBFBB0FF /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsWindowController.swift"; sourceTree = "<group>"; };
+		34BE2C29C9ADEC5F499ED929 /* ThemeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemeStore.swift"; sourceTree = "<group>"; };
+		34CE07527C76B90FF16E88DD /* ThemeSettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemeSettingsController.swift"; sourceTree = "<group>"; };
+		3472954DE3DD42CA9EB1C9B7 /* ControllerG+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ControllerG+Settings.swift"; sourceTree = "<group>"; };
+		3436F2997071FCA6CA2C0B18 /* Themes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Themes; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -318,6 +330,7 @@
 				34BF70F91BD1C6FC00AB76A9 /* pdftops */,
 				346225651AB558AB00F632AD /* mupdf */,
 				34CCBB061A964E8A0061842E /* Templates */,
+				3436F2997071FCA6CA2C0B18 /* Themes */,
 				34E058F323DDA2CD0038DC90 /* TeX2img.entitlements */,
 				342C6194101E637F00E29FEB /* epstopdf */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -396,6 +409,18 @@
 			path = Utility;
 			sourceTree = "<group>";
 		};
+		343A4B13690A5D04F984EEC9 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				34BBCC5033A3922EA47F1AD5 /* SettingsUI.swift */,
+				3479DE6EDBF7AC5AFBFBB0FF /* SettingsWindowController.swift */,
+				34BE2C29C9ADEC5F499ED929 /* ThemeStore.swift */,
+				34CE07527C76B90FF16E88DD /* ThemeSettingsController.swift */,
+				3472954DE3DD42CA9EB1C9B7 /* ControllerG+Settings.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		34SRC47DC6F477BFA565885F5 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -406,6 +431,7 @@
 				34SRC7F5DC46D9DCE5E52A618 /* NSString */,
 				34SRC07C8D8DDBF275892A4D7 /* Extensions */,
 				34SRC3D1C39B515F35240AD88 /* Utility */,
+				343A4B13690A5D04F984EEC9 /* Settings */,
 				34SRC2D7EEA8EFF3F5626B12D /* CLI */,
 				34SRC2545F6F49BB45AFC80D9 /* Core */,
 				34SRC8DAFEA289C0658268CF0 /* icu */,
@@ -622,6 +648,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				34CCBB071A964E8A0061842E /* Templates in Resources */,
+				345CB637752C337F5B9C1468 /* Themes in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				CE4A31F10E5036500095D4FC /* Localizable.strings in Resources */,
@@ -716,6 +743,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34D0D596777D08134C74BD06 /* SettingsUI.swift in Sources */,
+				34A35042392694E9140FF3F4 /* SettingsWindowController.swift in Sources */,
+				34547A9A90F4F2A3735BEADE /* ThemeStore.swift in Sources */,
+				346D07535BA9ECB18BE27EBC /* ThemeSettingsController.swift in Sources */,
+				34B021262624F8F226275295 /* ControllerG+Settings.swift in Sources */,
 				3419977025282F9D0022F53C /* PDFPageBox.swift in Sources */,
 				348658FB2526421000B8B190 /* PDFPage-Extension.swift in Sources */,
 				34CB9281251F93500045CE9E /* NSColor-DefaultColor.swift in Sources */,

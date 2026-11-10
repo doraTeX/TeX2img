@@ -1,7 +1,7 @@
 import AppKit
 
 @main
-struct EngineAndThemeRegression {
+struct EngineDiscoveryRegression {
     static func main() throws {
         let fm = FileManager.default
         let root = fm.temporaryDirectory.appendingPathComponent(UUID().uuidString)
@@ -41,24 +41,6 @@ struct EngineAndThemeRegression {
         let dviOld = try script("old", "dvipdfmx", "echo 'This is dvipdfmx Version 20240305'")
         let dviNew = try script("new", "dvipdfmx", "echo 'This is dvipdfmx Version 20260305'")
         precondition(EnginePathDiscovery.candidates(program: "dvipdfmx", paths: paths).map(\.path) == [dviNew, dviOld])
-        let red: [NSNumber] = [1, 0, 0, 1], green: [NSNumber] = [0, 1, 0, 1]
-        func rgb(_ color: NSColor?) -> [CGFloat] {
-            guard let c = color?.usingColorSpace(.sRGB) else { return [] }
-            return [c.redComponent, c.greenComponent, c.blueComponent]
-        }
-        precondition(rgb(TeXShopColors.color(key: "SyntaxMarkerCurly", theme: ["SyntaxMarkerCurly": red, "SyntaxMarker": green])) == [1, 0, 0])
-        precondition(rgb(TeXShopColors.color(key: "SyntaxMarkerCurly", theme: ["SyntaxMarker": green])) == [0, 1, 0])
-        precondition(TeXShopColors.color(key: "SyntaxMarkerCurly", theme: ["SyntaxMarkerCurly": [], "SyntaxMarker": green]) == nil)
-        precondition(TeXShopColors.color(key: "SyntaxMarkerCurly", theme: ["SyntaxMarkerCurly": [Double.nan, 0, 0]]) == nil)
-        precondition(rgb(TeXShopColors.color(key: "SyntaxCommand", theme: [:], legacy: ["commandred": 1, "commandgreen": 0, "commandblue": 0])) == [1, 0, 0])
-        let data = try PropertyListSerialization.data(fromPropertyList: ["SyntaxMarkerCurly": green], format: .xml, options: 0)
-        try data.write(to: root.appendingPathComponent("LiteTheme.plist"))
-        let customData = try PropertyListSerialization.data(fromPropertyList: ["SyntaxMarkerCurly": red], format: .xml, options: 0)
-        try customData.write(to: root.appendingPathComponent("Custom.plist"))
-        let custom = TeXShopColors.theme(dark: false, settings: ["DefaultLiteTheme": "Custom"], directory: root)
-        precondition(rgb(TeXShopColors.color(key: "SyntaxMarkerCurly", theme: custom)) == [1, 0, 0])
-        precondition(!TeXShopColors.theme(dark: false, settings: ["DefaultLiteTheme": "Missing"], directory: root).isEmpty)
-        precondition(TeXShopColors.theme(dark: true, settings: [:], directory: root).isEmpty)
-        print("Engine and theme regression tests passed")
+        print("Engine discovery regression tests passed")
     }
 }
