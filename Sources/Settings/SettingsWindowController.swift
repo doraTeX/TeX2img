@@ -145,12 +145,14 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
         contentScroll.hasVerticalScroller = true
         contentScroll.autohidesScrollers = true
         contentScroll.drawsBackground = false
-        contentScroll.automaticallyAdjustsContentInsets = false
+        // As in System Settings, the content scrolls under the toolbar; AppKit insets it by the
+        // titlebar height and draws the scroll edge effect (macOS 26 and later).
+        contentScroll.automaticallyAdjustsContentInsets = true
         content.view.addSubview(contentScroll)
         NSLayoutConstraint.activate([
             contentScroll.leadingAnchor.constraint(equalTo: content.view.leadingAnchor),
             contentScroll.trailingAnchor.constraint(equalTo: content.view.trailingAnchor),
-            contentScroll.topAnchor.constraint(equalTo: content.view.safeAreaLayoutGuide.topAnchor),
+            contentScroll.topAnchor.constraint(equalTo: content.view.topAnchor),
             contentScroll.bottomAnchor.constraint(equalTo: content.view.bottomAnchor),
         ])
         let contentItem = NSSplitViewItem(viewController: content)
@@ -236,7 +238,6 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
         let width = document.widthAnchor.constraint(equalTo: contentScroll.contentView.widthAnchor)
         NSLayoutConstraint.activate([
             width,
-            document.topAnchor.constraint(equalTo: contentScroll.contentView.topAnchor),
             pane.leadingAnchor.constraint(equalTo: document.leadingAnchor),
             pane.trailingAnchor.constraint(equalTo: document.trailingAnchor),
             pane.topAnchor.constraint(equalTo: document.topAnchor),
@@ -244,13 +245,19 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
         ])
         window?.title = category.title
         document.setAccessibilityLabel(category.title)
-        contentScroll.contentView.scroll(to: .zero)
-        contentScroll.reflectScrolledClipView(contentScroll.contentView)
+        scrollContentToTop()
         UserDefaults.standard.set(identifier, forKey: Self.selectedCategoryKey)
         synchronizeSidebarSelection()
         updateNavigation()
         window?.recalculateKeyViewLoop()
         applyHighlight()
+    }
+
+    /// The top of the content is below the toolbar: the clip view starts above the document by the top inset.
+    private func scrollContentToTop() {
+        contentScroll.layoutSubtreeIfNeeded()
+        contentScroll.contentView.scroll(to: NSPoint(x: 0, y: -contentScroll.contentInsets.top))
+        contentScroll.reflectScrolledClipView(contentScroll.contentView)
     }
 
     private func updateNavigation() {

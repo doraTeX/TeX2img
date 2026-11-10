@@ -226,6 +226,12 @@ check(!themes.resetButton.isEnabled, "nothing to restore before editing")
 check(ThemePalette.components(["SyntaxMarker": [0.1, 0.2, 0.3, 1]], key: "SyntaxMarkerCurly") == [0.1, 0.2, 0.3, 1], "brace color inherits SyntaxMarker")
 check(ThemePalette.components(["EditorInvisibleChar": [1.235, 0.013, 0.011, 1]], key: "EditorInvisibleChar")?.first == 1, "out-of-range components are clamped")
 check(ThemePalette.components(["EditorText": [Double.nan, 0, 0]], key: "EditorText") == nil, "invalid components are ignored")
+let translucent: ThemeColors = ["EditorText": [1, 0, 0, 0.5], "EditorFlash": [0, 0, 1, 0.5]]
+check(ThemePalette.color(.text, in: translucent, dark: false).alphaComponent == 1, "opaque colors are drawn opaque")
+check(abs(ThemePalette.color(.flash, in: translucent, dark: false).alphaComponent - 0.5) < 0.001, "the flash keeps its opacity")
+if #available(macOS 14.0, *) {
+    check(themes.wells.allSatisfy { $0.value.supportsAlpha == $0.key.usesOpacity }, "only the flash well offers opacity")
+}
 check(store.url(forTitle: "../evil") == nil && store.url(forTitle: ".hidden") == nil && store.url(forTitle: "a:b") == nil, "unsafe theme names are refused")
 
 // Migration of customized colors from an earlier profile.

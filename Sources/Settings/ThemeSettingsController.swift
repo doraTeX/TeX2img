@@ -37,7 +37,7 @@ final class ThemeSettingsController: NSObject {
         newButton = SettingsUI.makeButton(NSLocalizedString("New Theme…", comment: ""), target: self, action: #selector(newTheme(_:)))
         for role in ThemeRole.allCases {
             let well = SettingsUI.makeColorWell(target: self, action: #selector(colorChanged(_:)))
-            if #available(macOS 14.0, *) { well.supportsAlpha = false }
+            if #available(macOS 14.0, *) { well.supportsAlpha = role.usesOpacity }
             wells[role] = well
         }
         reloadThemeMenus()
@@ -141,7 +141,7 @@ final class ThemeSettingsController: NSObject {
         let enabled = editingColors != nil
         let dark = editingIsDark
         for (role, well) in wells {
-            well.color = ThemePalette.color(role, in: editingColors, dark: dark).withAlphaComponent(1)
+            well.color = ThemePalette.color(role, in: editingColors, dark: dark)
             well.isEnabled = enabled
         }
         for label in colorLabels { label.isEnabled = enabled }
@@ -173,7 +173,7 @@ final class ThemeSettingsController: NSObject {
             sender.color = ThemePalette.color(role, in: editingColors, dark: editingIsDark)
             return
         }
-        ThemePalette.set(sender.color, for: role.key, in: &colors)
+        ThemePalette.set(role.usesOpacity ? sender.color : sender.color.withAlphaComponent(1), for: role.key, in: &colors)
         save(colors, title: title)
     }
 

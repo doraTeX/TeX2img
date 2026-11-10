@@ -10,6 +10,10 @@ enum ThemeRole: CaseIterable {
     case invisible, highlightedBrace, enclosedContent
     case consoleText, consoleBackground
 
+    /// Only the flashing background is drawn with its opacity; the other colors are drawn opaque,
+    /// and their wells offer no opacity (TeXShop's useOpaqueColorWells).
+    var usesOpacity: Bool { self == .flash }
+
     var key: String {
         switch self {
         case .text: return "EditorText"
@@ -137,7 +141,8 @@ enum ThemePalette {
 
     /// The color of a role in a theme, or the default of that mode when the theme lacks it.
     static func color(_ role: ThemeRole, in theme: ThemeColors?, dark: Bool) -> NSColor {
-        color(theme, key: role.key) ?? defaultColor(role, dark: dark)
+        let color = color(theme, key: role.key) ?? defaultColor(role, dark: dark)
+        return role.usesOpacity ? color : color.withAlphaComponent(1)
     }
 
     static func defaultColor(_ role: ThemeRole, dark: Bool) -> NSColor {
