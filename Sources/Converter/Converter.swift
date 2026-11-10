@@ -190,16 +190,8 @@ class Converter: NSObject {
 
     // MARK: - TeX source writing
 
-    private func substituteUTF(_ dataString: String) -> String {
-        dataString.stringByReplacingUnicodeCharactersWithUTF()
-    }
-
     private func writeStringWithYenBackslashConverting(_ targetString: String, toFile path: String) -> Bool {
         var output = targetString.replacingYenWithBackslash()
-        if utfExportFlag {
-            output = substituteUTF(output)
-        }
-
         let enc: UInt
         if encoding == PTEX_ENCODING_SJIS {
             enc = CFStringConvertEncodingToNSStringEncoding(CFStringEncoding(CFStringEncodings.dosJapanese.rawValue))
@@ -209,6 +201,10 @@ class Converter: NSObject {
             enc = CFStringConvertEncodingToNSStringEncoding(CFStringEncoding(CFStringEncodings.ISO_2022_JP.rawValue))
         } else {
             enc = CFStringConvertEncodingToNSStringEncoding(CFStringEncoding(CFStringBuiltInEncodings.UTF8.rawValue))
+        }
+
+        if utfExportFlag {
+            output = output.stringByReplacingUnicodeCharactersWithUTF(outputEncoding: String.Encoding(rawValue: enc))
         }
 
         return (try? output.write(toFile: path, atomically: false, encoding: String.Encoding(rawValue: enc))) != nil

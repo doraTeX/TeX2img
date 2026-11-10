@@ -19,6 +19,20 @@ for kept in ["😀", "👨‍👩‍👧‍👦", "🇯🇵"] {
 check("𠮷".stringByReplacingUnicodeCharactersWithUTF() == "\\CID{13706}", "𠮷 is \\CID{13706}")
 check("葛\u{E0100}".stringByReplacingUnicodeCharactersWithUTF().hasPrefix("\\CID{"), "an IVS sequence becomes \\CID")
 check("髙".stringByReplacingUnicodeCharactersWithUTF() == "\\UTF{9AD9}", "a BMP character outside JIS X 0208 is \\UTF")
+// Writing the source (\UTF output): a sequence without a CID is kept when the output encoding can hold it;
+// otherwise it falls back to the glyph number used before, so that a Shift_JIS/EUC/JIS file can still be written.
+let shiftJIS = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(CFStringEncoding(CFStringEncodings.dosJapanese.rawValue)))
+for encoding in [String.Encoding.utf8, shiftJIS, .japaneseEUC, .iso2022JP] {
+    let source = "a😀b\n𠮷髙"
+    let output = source.stringByReplacingUnicodeCharactersWithUTF(outputEncoding: encoding)
+    check(output.canBeConverted(to: encoding), "\(output) can be written in \(encoding)")
+    check(output.hasSuffix("\\CID{13706}\\UTF{9AD9}"), "\(output) keeps the CID of 𠮷 and \\UTF of 髙 in \(encoding)")
+    if encoding == .utf8 {
+        check(output.hasPrefix("a😀b"), "\(output) keeps 😀 in UTF-8")
+    } else {
+        check(output.range(of: #"^a\\CID\{[0-9]+\}b"#, options: .regularExpression) != nil, "\(output) falls back to \\CID in \(encoding)")
+    }
+}
 // \CID back to a character beyond the BMP (it was deleted before).
 check("\\CID{13706}".stringByReplacingUTFWithUnicodeCharacters() == "𠮷", "\\CID{13706} reads back as 𠮷")
 // M-3: surrogate code points are not characters.

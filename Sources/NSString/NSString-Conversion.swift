@@ -5,7 +5,11 @@ import Foundation
 extension String {
     // MARK: - UTF / CID
 
-    func stringByReplacingUnicodeCharactersWithUTF() -> String {
+    /// Characters outside JIS X 0208 become \UTF{xxxx}, and sequences with an Adobe-Japan1 CID become \CID{n}.
+    /// A sequence without one is kept as is, except when it is written in `outputEncoding` and that encoding
+    /// cannot hold it: then the glyph number of the default font is used, as before TeXShop 5.60, so that the
+    /// file can still be written.
+    func stringByReplacingUnicodeCharactersWithUTF(outputEncoding: String.Encoding? = nil) -> String {
         let nsSelf = self as NSString
         let iso2022jp = String.Encoding.iso2022JP.rawValue
         let newString = NSMutableString()
@@ -26,14 +30,19 @@ extension String {
                 let utfString: NSMutableString
                 if charRange.length > 1 {
                     // A sequence (a surrogate pair, a variation sequence) becomes \CID{n} only when it has an
-                    // Adobe-Japan1 CID; otherwise it is kept as is (TeXShop 5.60).
-                    guard let cid = Self.adobeJapan1CID(for: subString) else {
+                    // Adobe-Japan1 CID; otherwise it is kept as is, unless the output encoding cannot hold it
+                    // (TeXShop 5.60).
+                    if let cid = Self.adobeJapan1CID(for: subString) {
+                        utfString = NSMutableString(string: "\\CID{\(cid)}")
+                    } else if let outputEncoding, !subString.canBeConverted(to: outputEncoding),
+                              let glyph = Self.defaultFontGlyph(for: subString) {
+                        utfString = NSMutableString(string: "\\CID{\(glyph)}")
+                    } else {
                         newString.append(subString)
                         charRange.location += charRange.length
                         charRange.length = 1
                         continue
                     }
-                    utfString = NSMutableString(string: "\\CID{\(cid)}")
                 } else if subString.character(at: 0) == 0x2015 {
                     utfString = NSMutableString(format: "%C", 0x2014)
                 } else {
@@ -725,6 +734,19 @@ private extension String {
             cid = Int(glyph)
         }
         return cid == 0 ? nil : cid
+    }
+
+    /// The glyph number that the default font of a text view gives to the first character of a sequence:
+    /// what \UTF output wrote for every sequence before TeXShop 5.60. It is not a CID in general.
+    static func defaultFontGlyph(for sequence: String) -> Int? {
+        let length = (sequence as NSString).length
+        guard length > 0 else { return nil }
+        let storage = NSTextStorage(string: sequence)
+        let layout = NSLayoutManager()
+        layout.addTextContainer(NSTextContainer(size: NSSize(width: 1000, height: 1000)))
+        storage.addLayoutManager(layout)
+        guard layout.numberOfGlyphs > 0 else { return nil }
+        return Int(layout.cgGlyph(at: layout.glyphIndexForCharacter(at: 0)))
     }
 
     static let hiraginoFont = NSFont(name: "HiraginoSans-W3", size: 12) ?? NSFont(name: "HiraKakuProN-W3", size: 12)
