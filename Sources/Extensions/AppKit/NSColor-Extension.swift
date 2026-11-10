@@ -1,5 +1,45 @@
 import AppKit
 
+enum TeXShopColors {
+    static func theme(dark: Bool, settings: [String: Any], directory: URL) -> [String: Any] {
+        let fallback = dark ? "DarkTheme" : "LiteTheme"
+        let name = settings[dark ? "DefaultDarkTheme" : "DefaultLiteTheme"] as? String ?? fallback
+        for candidate in [name, fallback] where !candidate.contains("/") && candidate != ".." {
+            let url = directory.appendingPathComponent(candidate).appendingPathExtension("plist")
+            if let data = try? Data(contentsOf: url),
+               let dict = (try? PropertyListSerialization.propertyList(from: data, format: nil)) as? [String: Any] {
+                return dict
+            }
+        }
+        return [:]
+    }
+
+    static func color(key: String, theme: [String: Any], legacy: [String: Any] = [:]) -> NSColor? {
+        // Presence, not validity, controls fallback: never silently prefer obsolete colors.
+        var value = theme[key]
+        if value == nil && key == "SyntaxMarkerCurly" { value = theme["SyntaxMarker"] }
+        if value == nil {
+            let oldKeys: [String: [String]] = [
+                "SyntaxMarkerCurly": ["markerred", "markergreen", "markerblue"],
+                "SyntaxComment": ["commentred", "commentgreen", "commentblue"],
+                "SyntaxCommand": ["commandred", "commandgreen", "commandblue"],
+                "EditorHighlightBraces": ["highlightBracesRed", "highlightBracesGreen", "highlightBracesBlue"],
+                "EditorHighlightContent": ["highlightContentRed", "highlightContentGreen", "highlightContentBlue"],
+                "EditorInvisibleChar": ["invisibleCharRed", "invisibleCharGreen", "invisibleCharBlue"]
+            ]
+            if let keys = oldKeys[key] {
+                let components = keys.compactMap { legacy[$0] as? NSNumber }
+                if components.count == 3 { value = components }
+            }
+        }
+        guard let components = value as? [NSNumber], components.count >= 3,
+              components.prefix(3).allSatisfy({ $0.doubleValue.isFinite && (0...1).contains($0.doubleValue) }) else { return nil }
+        // TeXShop uses opaque RGB for editor and console syntax colors.
+        return NSColor(srgbRed: CGFloat(components[0].doubleValue), green: CGFloat(components[1].doubleValue),
+                       blue: CGFloat(components[2].doubleValue), alpha: 1)
+    }
+}
+
 extension NSColor {
     var serializedString: String {
         guard let export = self.usingColorSpace(.deviceRGB) else { return "0:0:0:1" }

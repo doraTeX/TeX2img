@@ -28,6 +28,7 @@ private enum EncodingTag: Int {
 }
 
 class ControllerG: NSObject, OutputController, DnDDelegate {
+    private var engineSearchGeneration = 0
     // 保存パネルのアクセサリは別ウインドウに配置される場合がある。
     private weak var outputSavePanel: NSSavePanel?
 
@@ -716,6 +717,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     func adoptProfile(_ aProfile: Profile) {
         guard aProfile.count > 0 else { return }
+        engineSearchGeneration += 1
         let keys = Array(aProfile.keys)
 
         loadStringSetting(for: outputFileTextField, from: aProfile, key: OutputFileKey)
@@ -1237,6 +1239,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     // MARK: - Lifecycle / notifications
 
     override func awakeFromNib() {
+        if let content = preferenceWindow.contentView { installTeXShopColorButtons(in: content) }
         outputTextView.layoutManager?.allowsNonContiguousLayout = true
 
         userNotificationDelegate = UserNotificationDelegate()
@@ -1274,6 +1277,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
         observeNotification(forName: NSWindow.didBecomeKeyNotification, object: preferenceWindow) { [weak self] notification in
             self?.preferenceWindowDidBecomeKey(notification)
+        }
+        observeNotification(forName: NSWindow.willCloseNotification, object: preferenceWindow) { [weak self] _ in
+            self?.engineSearchGeneration += 1
         }
         observeNotification(forName: NSWindow.didBecomeKeyNotification, object: colorPalleteWindow) { [weak self] notification in
             self?.colorPalleteWindowDidBecomeKey(notification)
@@ -1392,6 +1398,72 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         loadDefaultColorsLogic(senderTag: sender.tag)
     }
 
+    private func installTeXShopColorButtons(in view: NSView) {
+        // Both localized nibs put the light/dark Default buttons side by side.
+        if let tabs = view as? NSTabView {
+            for item in tabs.tabViewItems {
+                if let content = item.view { installTeXShopColorButtons(in: content) }
+            }
+            return
+        }
+        var installed = false
+        for child in view.subviews {
+            if let original = child as? NSButton, original.action == #selector(loadDefaultColors(_:)) {
+                guard !installed else { continue }
+                installed = true
+                let japanese = UtilityG.isJapaneseLanguage()
+                let button = NSPopUpButton(frame: .zero, pullsDown: true)
+                button.addItem(withTitle: japanese ? "TeXShopから読み込む…" : "Import from TeXShop…")
+                for (tag, title) in [(LIGHTMODE_TAG, japanese ? "ライトモード…" : "Light Mode…"),
+                                     (DARKMODE_TAG, japanese ? "ダークモード…" : "Dark Mode…")] {
+                    let item = NSMenuItem(title: title, action: #selector(importTeXShopColors(_:)), keyEquivalent: "")
+                    item.tag = tag
+                    item.target = self
+                    button.menu?.addItem(item)
+                }
+                button.bezelStyle = .rounded
+                button.controlSize = .small
+                button.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
+                button.frame = NSRect(x: 10, y: original.frame.minY, width: original.frame.minX - 20, height: original.frame.height)
+                button.autoresizingMask = original.autoresizingMask
+                view.addSubview(button)
+            } else {
+                installTeXShopColorButtons(in: child)
+            }
+        }
+    }
+
+    @objc private func importTeXShopColors(_ sender: NSMenuItem) {
+        let dark = sender.tag == DARKMODE_TAG
+        let japanese = UtilityG.isJapaneseLanguage()
+        guard UtilityG.runConfirmPanel(message: japanese ? "このモードの色をTeXShopから読み込みますか？" : "Import TeXShop colors for this mode?") else { return }
+        let settings = UserDefaults.standard.persistentDomain(forName: "TeXShop") ?? [:]
+        let directory = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/TeXShop/Themes")
+        let theme = TeXShopColors.theme(dark: dark, settings: settings, directory: directory)
+        let keys = ["EditorText", "EditorBackground", "EditorInsertionPoint", "SyntaxMarkerCurly", "SyntaxComment", "SyntaxCommand",
+                    "EditorInvisibleChar", "EditorHighlightBraces", "EditorHighlightContent", "EditorFlash", "ConsoleText", "ConsoleBackground"]
+        let wells: [NSColorWell?] = dark
+            ? [darkModeForegroundColorWell, darkModeBackgroundColorWell, darkModeCursorColorWell, darkModeBraceColorWell,
+               darkModeCommentColorWell, darkModeCommandColorWell, darkModeInvisibleColorWell, darkModeHighlightedBraceColorWell,
+               darkModeEnclosedContentBackgroundColorWell, darkModeFlashingBackgroundColorWell, darkModeConsoleForegroundColorWell, darkModeConsoleBackgroundColorWell]
+            : [lightModeForegroundColorWell, lightModeBackgroundColorWell, lightModeCursorColorWell, lightModeBraceColorWell,
+               lightModeCommentColorWell, lightModeCommandColorWell, lightModeInvisibleColorWell, lightModeHighlightedBraceColorWell,
+               lightModeEnclosedContentBackgroundColorWell, lightModeFlashingBackgroundColorWell, lightModeConsoleForegroundColorWell, lightModeConsoleBackgroundColorWell]
+        var count = 0
+        for (key, well) in zip(keys, wells) {
+            guard let well, let color = TeXShopColors.color(key: key, theme: theme, legacy: settings) else { continue }
+            well.color = color
+            well.saveColor(to: &lastColorDict)
+            count += 1
+        }
+        if count == 0 {
+            UtilityG.runOkPanel(title: "TeXShop", message: japanese ? "読み込める色設定が見つかりませんでした。" : "No readable color settings were found.")
+        }
+        sourceTextView.colorizeText()
+        preambleTextView.colorizeText()
+        recolorOutputView()
+    }
+
     private func loadDefaultColorsLogic(senderTag: Int) {
         if senderTag == LIGHTMODE_TAG || senderTag == DARKMODE_TAG {
             let modeName = NSLocalizedString(senderTag == LIGHTMODE_TAG ? "Light Mode" : "Dark Mode", comment: "")
@@ -1462,16 +1534,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     private func setupFontTextField(_ font: NSFont) {
         fontTextField.stringValue = String(format: "%@ - %.1fpt", font.displayName ?? font.fontName, font.pointSize)
-    }
-
-    private func presentAutoDetectionResult(_ parameters: [String: Any]) {
-        UtilityG.runOkPanel(title: parameters["Title"] as? String ?? "",
-                            message: String(format: "%@\n%@\n%@\n%@\n%@",
-                                            parameters["Msg1"] as? String ?? "",
-                                            parameters[LatexPathKey] as? String ?? "",
-                                            parameters[DviDriverPathKey] as? String ?? "",
-                                            parameters[GsPathKey] as? String ?? "",
-                                            parameters["Msg2"] as? String ?? ""))
     }
 
     private func applicationWillTerminate() {
@@ -2145,37 +2207,64 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         let templateName = autoDetectionTargetMatrix.selectedCell()?.title ?? ""
         let engineName = templateName.lowercased().components(separatedBy: " ").first ?? ""
         let dviDriverName = templateName.range(of: "dvips") == nil ? "dvipdfmx" : "dvips"
-
-        let latexPath = searchProgram(engineName) ?? ""
-        if latexPath.isEmpty { showNotFoundError(engineName) }
-
-        var dviDriverPath = searchProgram(dviDriverName) ?? ""
-        if dviDriverPath.isEmpty {
-            showNotFoundError(dviDriverName)
-        } else if dviDriverName == "dvipdfmx" {
-            dviDriverPath += " -vv"
-        } else if dviDriverName == "dvips" {
-            dviDriverPath += " -Ppdf"
-        }
-
-        let gsPath = searchProgram("gs") ?? ""
-        if gsPath.isEmpty { showNotFoundError("Ghostscript") }
-
-        latexPathTextField.stringValue = latexPath
-        dviDriverPathTextField.stringValue = dviDriverPath
-        gsPathTextField.stringValue = gsPath
-
-        let result: [String: Any] = [
-            "Title": parameters["Title"] as? String ?? "",
-            "Msg1": parameters["Msg1"] as? String ?? "",
-            "Msg2": parameters["Msg2"] as? String ?? "",
-            LatexPathKey: latexPath.isEmpty ? "LaTeX: Not Found" : latexPath,
-            DviDriverPathKey: dviDriverPath.isEmpty ? "DVI Driver: Not Found" : dviDriverPath,
-            GsPathKey: gsPath.isEmpty ? "Ghostscript: Not Found" : gsPath
-        ]
-        let waitUntilDone = (parameters["waitUntilDone"] as? Bool) ?? true
-        performOnMainThread(waitUntilDone: waitUntilDone) {
-            self.presentAutoDetectionResult(result)
+        let names = [engineName, dviDriverName, "gs"]
+        guard let latexPathTextField, let dviDriverPathTextField, let gsPathTextField else { return }
+        let fields = [latexPathTextField, dviDriverPathTextField, gsPathTextField]
+        let snapshot = fields.map(\.stringValue)
+        let initial = parameters["waitUntilDone"] as? Bool == false
+        engineSearchGeneration += 1
+        let generation = engineSearchGeneration
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            let paths = EnginePathDiscovery.systemSearchPaths()
+            let candidates = zip(names, snapshot).map { name, current in
+                EnginePathDiscovery.candidates(program: name, paths: paths,
+                    currentDirectory: current.programPath.deletingLastPathComponent)
+            }
+            DispatchQueue.main.async { [weak self] in
+                guard let self, generation == self.engineSearchGeneration,
+                      fields.map(\.stringValue) == snapshot,
+                      self.autoDetectionTargetMatrix.selectedCell()?.title == templateName,
+                      initial || self.preferenceWindow.isVisible else { return }
+                let japanese = UtilityG.isJapaneseLanguage()
+                let alert = NSAlert()
+                alert.messageText = parameters["Title"] as? String ?? ""
+                alert.informativeText = japanese
+                    ? "新しいバージョンを優先して選択しています。候補を変更できます。見つからない項目は現在の設定を保持します。"
+                    : "The newest detected versions are selected. You can choose other candidates. Missing programs keep their current settings."
+                let view = NSView(frame: NSRect(x: 0, y: 0, width: 600, height: 180))
+                var menus: [NSPopUpButton] = []
+                for i in names.indices {
+                    let y = CGFloat(2 - i) * 60
+                    let label = NSTextField(labelWithString: names[i])
+                    label.frame = NSRect(x: 0, y: y + 32, width: 600, height: 20)
+                    view.addSubview(label)
+                    let menu = NSPopUpButton(frame: NSRect(x: 0, y: y, width: 600, height: 30))
+                    menu.addItems(withTitles: candidates[i].map(\.label))
+                    if candidates[i].isEmpty {
+                        menu.addItem(withTitle: japanese ? "見つかりません（現在の設定を保持）" : "Not found (keep current setting)")
+                        menu.isEnabled = false
+                    }
+                    menus.append(menu)
+                    view.addSubview(menu)
+                }
+                alert.accessoryView = view
+                alert.addButton(withTitle: japanese ? "適用" : "Apply")
+                alert.addButton(withTitle: japanese ? "キャンセル" : "Cancel")
+                guard alert.runModal() == .alertFirstButtonReturn,
+                      generation == self.engineSearchGeneration,
+                      fields.map(\.stringValue) == snapshot,
+                      self.autoDetectionTargetMatrix.selectedCell()?.title == templateName else { return }
+                for i in names.indices {
+                    let index = menus[i].indexOfSelectedItem
+                    guard candidates[i].indices.contains(index) else { continue }
+                    let path = candidates[i][index].path
+                    guard EnginePathDiscovery.isExecutable(path) else { continue }
+                    fields[i].stringValue = path + (i == 1 ? (dviDriverName == "dvipdfmx" ? " -vv" : " -Ppdf") : "")
+                }
+                if !initial, let directory = Bundle.main.path(forResource: templateDirectoryName, ofType: nil) {
+                    self.adoptPreambleTemplate(directory.appendingPathComponent(templateName).appendingPathExtension("tex") ?? "")
+                }
+            }
         }
     }
 
@@ -2187,11 +2276,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             "waitUntilDone": true
         ])
 
-        let templateName = autoDetectionTargetMatrix.selectedCell()?.title ?? ""
-        if let originalTemplateDirectory = Bundle.main.path(forResource: templateDirectoryName, ofType: nil) {
-            let templatePath = originalTemplateDirectory.appendingPathComponent(templateName).appendingPathExtension("tex") ?? ""
-            adoptPreambleTemplate(templatePath)
-        }
     }
 
     private func completeGenerationDidFinish(_ status: ExitStatus) {
