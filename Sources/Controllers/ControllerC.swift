@@ -25,27 +25,21 @@ class ControllerC: NSObject, OutputController {
         task.standardOutput = pipe
         task.standardError = pipe
 
-        let handle = pipe.fileHandleForReading
         // Output in pieces that divide characters or lines is read whole (TeXShop's console reading).
-        let decoder = ConsoleOutputDecoder(encoding: outputEncoding)
-        handle.readabilityHandler = { [weak self] source in
-            let data = source.availableData
-            if data.isEmpty {
-                source.readabilityHandler = nil
-                return
-            }
-            self?.appendOutputAndScroll(decoder.append(data), quiet: quiet)
+        let reader = ConsolePipeReader(handle: pipe.fileHandleForReading, decoder: ConsoleOutputDecoder(encoding: outputEncoding),
+                                       showsPausedLine: false) { [weak self] text in
+            self?.appendOutputAndScroll(text, quiet: quiet)
         }
 
         do {
             try task.run()
         } catch {
+            reader.cancel()
             return false
         }
 
         task.waitUntilExit()
-        handle.readabilityHandler = nil
-        appendOutputAndScroll(decoder.append(handle.readDataToEndOfFile()) + decoder.finish(), quiet: quiet)
+        reader.finish()
         return task.terminationStatus == 0
     }
 

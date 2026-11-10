@@ -59,6 +59,19 @@ extension String {
         "\"\(self)\""
     }
 
+    /// One shell word with exactly this text: in single quotes, with each single quote written as '\''.
+    func quotingForShell() -> String {
+        "'" + replacingOccurrences(of: "'", with: "'\\''") + "'"
+    }
+
+    /// An AppleScript that runs a command with administrator privileges. Every argument stays one word,
+    /// whatever spaces or quotes it has.
+    static func administratorShellAppleScript(command: String, directory: String, arguments: [String]) -> String {
+        let shellScript = "cd \(directory.quotingForShell()) && " + ([command] + arguments).map { $0.quotingForShell() }.joined(separator: " ")
+        let literal = shellScript.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
+        return "do shell script \"\(literal)\" with administrator privileges"
+    }
+
     func pathStringByAppendingPageNumber(_ page: UInt) -> String {
         if page == 1 { return self }
         let basename = lastPathComponent.deletingPathExtension

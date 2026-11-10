@@ -11,6 +11,22 @@ extension NSColor {
                       export.alphaComponent)
     }
     
+    /// The RGB components for a \color[rgb] command: those of an RGB color as they are, the level of a gray
+    /// for all three, and those of a CMYK or named color in sRGB. Reading redComponent of a color that is not
+    /// RGB raises an exception.
+    var rgbComponentsForColorCommand: (red: CGFloat, green: CGFloat, blue: CGFloat)? {
+        let rgb: NSColor?
+        if type == .componentBased && colorSpace.colorSpaceModel == .rgb {
+            rgb = self
+        } else if type == .componentBased && colorSpace.colorSpaceModel == .gray {
+            return (whiteComponent, whiteComponent, whiteComponent)
+        } else {
+            rgb = usingColorSpace(.sRGB)
+        }
+        guard let rgb else { return nil }
+        return (rgb.redComponent, rgb.greenComponent, rgb.blueComponent)
+    }
+
     var descriptionString: String {
         let r: Int
         let g: Int

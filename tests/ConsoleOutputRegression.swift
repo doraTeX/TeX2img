@@ -45,4 +45,43 @@ check(partial.append(Data([0x61, 0xE3, 0x81])) == "a" && partial.flushPause().is
       "a divided character waits across a pause")
 // Latin 9 is the last resort.
 check(ConsoleOutputDecoder.displayString(Data([0xA4, 0x0A]), encoding: .utf8) == "€\n", "Latin 9")
+
+// ConsolePipeReader: the output of a running command is shown as it comes, in order, and a process that keeps
+// the pipe open does not stop the reading.
+final class Collected: @unchecked Sendable {
+    private let lock = NSLock()
+    private var text = ""
+    private var firstTime: Date?
+    func add(_ piece: String) {
+        lock.lock(); defer { lock.unlock() }
+        if firstTime == nil { firstTime = Date() }
+        text += piece
+    }
+    var value: (String, Date?) { lock.lock(); defer { lock.unlock() }; return (text, firstTime) }
+}
+func run(_ script: String, timeout: TimeInterval = 2) -> (output: String, first: TimeInterval?, total: TimeInterval) {
+    let task = Process()
+    let pipe = Pipe()
+    task.executableURL = URL(fileURLWithPath: "/bin/sh")
+    task.arguments = ["-c", script]
+    task.standardOutput = pipe
+    task.standardError = pipe
+    let collected = Collected()
+    let reader = ConsolePipeReader(handle: pipe.fileHandleForReading, decoder: ConsoleOutputDecoder(encoding: .utf8),
+                                   showsPausedLine: true) { collected.add($0) }
+    let start = Date()
+    try! task.run()
+    task.waitUntilExit()
+    reader.finish(timeout: timeout)
+    let (text, first) = collected.value
+    return (text, first.map { $0.timeIntervalSince(start) }, Date().timeIntervalSince(start))
+}
+let slow = run("echo first; sleep 1; echo second")
+check(slow.output == "first\nsecond\n", "slow output: \(slow.output)")
+check((slow.first ?? 9) < 0.7, "the first line is shown before the command ends (after \(slow.first ?? -1) s)")
+let many = run("i=1; while [ $i -le 20000 ]; do echo \"line $i 日本語\"; i=$((i+1)); done")
+check(many.output == (1...20000).map { "line \($0) 日本語\n" }.joined(), "20000 lines arrive whole and in order")
+let lingering = run("echo kept; (sleep 6 >/dev/null &) ; sleep 6 &", timeout: 0.5)
+check(lingering.output == "kept\n", "output before a lingering process: \(lingering.output)")
+check(lingering.total < 3, "a process that keeps the pipe open does not hold the reader (\(lingering.total) s)")
 print("Console output regression tests passed")

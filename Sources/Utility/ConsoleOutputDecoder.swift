@@ -250,3 +250,64 @@ final class ConsolePauseTimer {
         }
     }
 }
+
+/// Reads a command's output pipe as it comes and passes the decoded text on, in order. Only this reader reads
+/// the pipe: what is still in it when the command ends is read by the same handler up to the end of the file.
+final class ConsolePipeReader {
+    private let handle: FileHandle
+    private let decoder: ConsoleOutputDecoder
+    private let output: (String) -> Void
+    private let outputLock = NSLock()
+    private let endOfFile = DispatchSemaphore(value: 0)
+    private var pause: ConsolePauseTimer?
+
+    /// With `showsPausedLine`, an unfinished line is shown when no output comes for a while.
+    init(handle: FileHandle, decoder: ConsoleOutputDecoder, showsPausedLine: Bool, output: @escaping (String) -> Void) {
+        self.handle = handle
+        self.decoder = decoder
+        self.output = output
+        if showsPausedLine {
+            pause = ConsolePauseTimer { [weak self] in
+                guard let self else { return }
+                self.emit { $0.flushPause() }
+            }
+        }
+        handle.readabilityHandler = { [weak self] source in
+            // availableData returns what has come, without waiting for more (read(upToCount:) waits for all of it).
+            let data = source.availableData
+            guard let self else {
+                source.readabilityHandler = nil
+                return
+            }
+            if data.isEmpty {
+                source.readabilityHandler = nil
+                self.endOfFile.signal()
+                return
+            }
+            self.emit { $0.append(data) }
+            self.pause?.restart()
+        }
+    }
+
+    /// Waits for the rest of the output after the command has ended, then shows what is left. A process that the
+    /// command left running may keep the pipe open; the reader stops waiting for it after `timeout` seconds.
+    func finish(timeout: TimeInterval = 2) {
+        _ = endOfFile.wait(timeout: .now() + timeout)
+        handle.readabilityHandler = nil
+        pause?.cancel()
+        emit { $0.finish() }
+    }
+
+    /// Stops reading without waiting, for a command that could not be started.
+    func cancel() {
+        handle.readabilityHandler = nil
+        pause?.cancel()
+    }
+
+    private func emit(_ decode: (ConsoleOutputDecoder) -> String) {
+        outputLock.lock()
+        defer { outputLock.unlock() }
+        let text = decode(decoder)
+        if !text.isEmpty { output(text) }
+    }
+}

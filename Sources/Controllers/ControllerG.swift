@@ -178,6 +178,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private var outputPipe: Pipe?
     private var taskKilled = false
     private var generationAborted = false
+    /// Whether a conversion thread is running (main thread only).
+    private var generationThreadRunning = false
     private var sourceFont: NSFont?
     private var userNotificationDelegate: UserNotificationDelegate?
     private var notificationObservers = [NSObjectProtocol]()
@@ -185,7 +187,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private let outputBufferLock = NSLock()
     private var pendingOutput = ""
     private var outputFlushScheduled = false
-    private var consoleDecoder: ConsoleOutputDecoder?
 
     private func observeNotification(forName name: Notification.Name,
                                      object: Any? = nil,
@@ -203,9 +204,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                              withArguments arguments: [String],
                              stdoutString output: AutoreleasingUnsafeMutablePointer<NSString?>,
                              errorDescription: AutoreleasingUnsafeMutablePointer<NSString?>) -> Bool {
-        let arg = arguments.joined(separator: " ")
-        let shellscript = "cd '\(path)'; '\(command)' \(arg)".replacingOccurrences(of: "\"", with: "\\\"")
-        let script = "do shell script \"\(shellscript)\" with administrator privileges"
+        let script = String.administratorShellAppleScript(command: command, directory: path, arguments: arguments)
         var errorInfo: NSDictionary?
         let appleScript = NSAppleScript(source: script)
         let eventResult = appleScript?.executeAndReturnError(&errorInfo)
@@ -262,6 +261,12 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         taskStateLock.unlock()
     }
 
+    /// Whether the generation was aborted. An abort that has not been noticed yet is noticed here, so that
+    /// the failure that the abort causes is not reported as an error.
+    private func generationWasAborted() -> Bool {
+        exitCurrentThreadIfTaskKilled()
+    }
+
     func exitCurrentThreadIfTaskKilled() -> Bool {
         var shouldNotifyAbort = false
         let shouldExit: Bool
@@ -310,32 +315,16 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         task.arguments = ["-c", cmdline]
         beginTracking(task)
 
-        let handle = pipe.fileHandleForReading
         // Output in pieces that divide characters or lines is read whole (TeXShop's console reading).
         let decoder = ConsoleOutputDecoder(encoding: ConsoleOutputDecoder.encoding(forKanji: currentProfile().stringForKey(EncodingKey)))
-        consoleDecoder = decoder
-        let pause = ConsolePauseTimer { [weak self] in
-            let text = decoder.flushPause()
-            if !text.isEmpty { self?.appendOutputAndScroll(text, quiet: quiet) }
-        }
-        handle.readabilityHandler = { [weak self] source in
-            guard let self else {
-                source.readabilityHandler = nil
-                return
-            }
-            let data = self.readPipeChunk(from: source)
-            if data.isEmpty {
-                source.readabilityHandler = nil
-                return
-            }
-            self.appendOutputAndScroll(decoder.append(data), quiet: quiet)
-            pause.restart()
+        let reader = ConsolePipeReader(handle: pipe.fileHandleForReading, decoder: decoder, showsPausedLine: true) { [weak self] text in
+            self?.appendOutputAndScroll(text, quiet: quiet)
         }
 
         do {
             try task.run()
         } catch {
-            handle.readabilityHandler = nil
+            reader.cancel()
             outputPipe = nil
             stopTracking(task)
             return false
@@ -343,13 +332,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
         task.waitUntilExit()
         stopTracking(task)
-        handle.readabilityHandler = nil
-        pause.cancel()
+        reader.finish()
         performOnMainThread {
             self.flushPendingOutputOnMainThread()
-            self.flushPipe(handle)
             self.outputPipe = nil
-            self.consoleDecoder = nil
         }
         appendOutputAndScroll("\n", quiet: quiet)
         if exitCurrentThreadIfTaskKilled() { return false }
@@ -567,48 +553,56 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     func pdftopsExists() -> Bool { true }
 
     func showFileFormatError(_ aPath: String) {
+        if generationWasAborted() { return }
         performOnMainThread {
             UtilityG.runErrorPanel(message: String(format: NSLocalizedString("fileFormatErrorMsg", comment: ""), aPath))
         }
     }
 
     func showFileGenerationError(_ aPath: String) {
+        if generationWasAborted() { return }
         performOnMainThread {
             UtilityG.runErrorPanel(message: String(format: NSLocalizedString("fileGenerationErrorMsg", comment: ""), aPath))
         }
     }
 
     func showExecError(_ command: String) {
+        if generationWasAborted() { return }
         performOnMainThread {
             UtilityG.runErrorPanel(message: String(format: NSLocalizedString("execErrorMsg", comment: ""), command))
         }
     }
 
     func showCannotOverwriteError(_ path: String) {
+        if generationWasAborted() { return }
         performOnMainThread {
             UtilityG.runErrorPanel(message: String(format: NSLocalizedString("cannotOverwriteErrorMsg", comment: ""), path))
         }
     }
 
     func showCannotCreateDirectoryError(_ dir: String) {
+        if generationWasAborted() { return }
         performOnMainThread {
             UtilityG.runErrorPanel(message: String(format: NSLocalizedString("cannotCreateDirectoryErrorMsg", comment: ""), dir))
         }
     }
 
     func showCompileError() {
+        if generationWasAborted() { return }
         performOnMainThread {
             UtilityG.runErrorPanel(message: NSLocalizedString("compileErrorMsg", comment: ""))
         }
     }
 
     func showImageSizeError() {
+        if generationWasAborted() { return }
         performOnMainThread {
             UtilityG.runErrorPanel(message: NSLocalizedString("imageSizeErrorMsg", comment: ""))
         }
     }
 
     func showErrorsIgnoredWarning() {
+        if generationWasAborted() { return }
         performOnMainThread {
             UtilityG.runWarningPanel(message: NSLocalizedString("errorsIgnoredWarning", comment: ""))
         }
@@ -1375,26 +1369,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         showMainWindow()
     }
 
-    private func readPipeChunk(from handle: FileHandle) -> Data {
-        if #available(macOS 10.15.4, *) {
-            return (try? handle.read(upToCount: 65_536)) ?? Data()
-        }
-        return handle.availableData
-    }
-
-    private func flushPipe(_ handle: FileHandle) {
-        let data: Data
-        if #available(macOS 10.15.4, *) {
-            data = (try? handle.readToEnd()) ?? Data()
-        } else {
-            data = handle.readDataToEndOfFile()
-        }
-        let str = (consoleDecoder?.append(data) ?? String(decoding: data, as: UTF8.self)) + (consoleDecoder?.finish() ?? "")
-        guard !str.isEmpty else { return }
-        flushPendingOutputOnMainThread()
-        appendOutputOnMainThread(str)
-    }
-
     // MARK: - Import / Export
 
     private func analyzeContents(_ contents: String) -> [String] {
@@ -1458,6 +1432,19 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     @discardableResult
+    /// The source that TeX2img saved in the extended attribute of an image (always UTF-8), or nil.
+    private func sourceInExtendedAttribute(of path: String) -> String? {
+        let bufferLength = getxattr(path, eaKey, nil, 0, 0, 0)
+        guard bufferLength > 0 else { return nil }
+        var data = Data(count: bufferLength)
+        let bytesRead = data.withUnsafeMutableBytes { buffer in
+            getxattr(path, eaKey, buffer.baseAddress, bufferLength, 0, 0)
+        }
+        guard bytesRead > 0, bytesRead <= bufferLength else { return nil }
+        data.removeSubrange(bytesRead..<data.count)
+        return String(data: data, encoding: .utf8)
+    }
+
     func importSource(fromFilePathOrPDFDocument input: Any, skipConfirm: Bool) -> Bool {
         NSApp.activate(ignoringOtherApps: true)
 
@@ -1473,6 +1460,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                         url: URL(fileURLWithPath: inputPath), preferred: EncodingDetector.preferredEncoding(forKanji: currentProfile().stringForKey(EncodingKey)))
                 }
                 lastSavedPath = inputPath
+            } else if let source = sourceInExtendedAttribute(of: inputPath) {
+                // The source saved in the extended attribute comes first; a PDF also keeps it in an annotation.
+                contents = source
+                outputFilePath = inputPath
             } else if extensionLower == "pdf" {
                 let doc = PDFDocument(filePath: inputPath)
                 contents = extractTeXSourceString(fromAnnotationOf: doc)
@@ -1482,22 +1473,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                 }
                 outputFilePath = inputPath
             } else {
-                let bufferLength = getxattr(inputPath, eaKey, nil, 0, 0, 0)
-                if bufferLength <= 0 {
-                    UtilityG.runErrorPanel(message: String(format: NSLocalizedString("doesNotContainSource", comment: ""), inputPath))
-                    return false
-                }
-                var data = Data(count: bufferLength)
-                let bytesRead = data.withUnsafeMutableBytes { buffer in
-                    getxattr(inputPath, eaKey, buffer.baseAddress, bufferLength, 0, 0)
-                }
-                guard bytesRead > 0, bytesRead <= bufferLength else {
-                    UtilityG.runErrorPanel(message: String(format: NSLocalizedString("doesNotContainSource", comment: ""), inputPath))
-                    return false
-                }
-                data.removeSubrange(bytesRead..<data.count)
-                contents = String(data: data, encoding: .utf8)
-                outputFilePath = inputPath
+                UtilityG.runErrorPanel(message: String(format: NSLocalizedString("doesNotContainSource", comment: ""), inputPath))
+                return false
             }
         } else if let document = input as? PDFDocument {
             contents = extractTeXSourceString(fromAnnotationOf: document)
@@ -1585,10 +1562,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         let color = colorPalleteColorWell.color
 
         var formatString: String?
-        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0
-        r = color.redComponent
-        g = color.greenComponent
-        b = color.blueComponent
+        guard let (r, g, b) = color.rgbComponentsForColorCommand else { return }
         switch colorStyleMatrix.selectedTag() {
         case Int(COLOR_TAG):
             formatString = "\\color[rgb]{%lf,%lf,%lf}"
@@ -2035,12 +2009,21 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     private func completeGenerationDidFinish(_ status: ExitStatus) {
+        // After an abort the converter returns failures; the generation has already finished as aborted.
+        taskStateLock.lock()
+        let alreadyAborted = generationAborted && status != .aborted
+        runningTask = nil
+        taskKilled = false
+        taskStateLock.unlock()
+        if alreadyAborted { return }
+
         converter?.deleteTemporaryFiles()
         generateButton.title = NSLocalizedString("Generate", comment: "")
         generateButton.action = #selector(generate(_:))
-        generateMenuItem.isEnabled = true
+        // The aborted conversion may still be on its way out; a new one starts after it has returned.
+        generateButton.isEnabled = !generationThreadRunning
+        generateMenuItem.isEnabled = !generationThreadRunning
         abortMenuItem.isEnabled = false
-        resetTaskState()
 
         if currentProfile().boolForKey(SendNotificationKey) {
             sendUserNotification(status: status)
@@ -2128,17 +2111,13 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         switch InputMethod(rawValue: profile.integerForKey(InputMethodKey)) ?? .direct {
         case .direct:
             let body = sourceTextView.textStorage?.string ?? ""
-            DispatchQueue.global(qos: .userInitiated).async { [converter] in
-                converter?.compileAndConvert(withBody: body)
-            }
+            runGenerationThread { converter in converter?.compileAndConvert(withBody: body) }
         case .fromFile:
             let inputSourceFilePath = profile.stringForKey(InputSourceFilePathKey)?.standardizingPath ?? ""
             if FileManager.default.fileExists(atPath: inputSourceFilePath) {
                 let ext = inputSourceFilePath.pathExtension
                 if inputExtensions.contains(ext) {
-                    DispatchQueue.global(qos: .userInitiated).async { [converter] in
-                        converter?.compileAndConvert(withInputPath: inputSourceFilePath)
-                    }
+                    runGenerationThread { converter in converter?.compileAndConvert(withInputPath: inputSourceFilePath) }
                 } else {
                     UtilityG.runErrorPanel(message: String(format: NSLocalizedString("inputFileTypeErrorMsg", comment: ""), inputSourceFilePath))
                     generationDidFinish(.failed)
@@ -2150,7 +2129,22 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
+    private func runGenerationThread(_ work: @escaping (Converter?) -> Void) {
+        generationThreadRunning = true
+        DispatchQueue.global(qos: .userInitiated).async { [converter] in
+            work(converter)
+            DispatchQueue.main.async {
+                self.generationThreadRunning = false
+                if self.generateButton.action == #selector(self.generate(_:)) {
+                    self.generateButton.isEnabled = true
+                    self.generateMenuItem.isEnabled = true
+                }
+            }
+        }
+    }
+
     @IBAction func generate(_ sender: Any) {
+        if generationThreadRunning { return }
         var valid = true
         let fields: [NSTextField] = [leftMarginTextField, rightMarginTextField, topMarginTextField, bottomMarginTextField, resolutionTextField, dpiTextField, numberOfCompilationTextField, tabWidthTextField]
         for label in fields {
@@ -2240,10 +2234,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                     let cuiDir = CUI_PATH.deletingLastPathComponent
                     var output: NSString?
                     var errorMessage: NSString?
-                    _ = sudoCommand("/bin/mkdir", atDirectory: FileManager.default.temporaryDirectory.path, withArguments: ["-p", cuiDir], stdoutString: &output, errorDescription: &errorMessage)
-                    if errorMessage == nil {
-                        _ = sudoCommand("/bin/ln", atDirectory: FileManager.default.temporaryDirectory.path, withArguments: ["-sf", cuiInAppPath, CUI_PATH], stdoutString: &output, errorDescription: &errorMessage)
-                    }
+                    // One command, so that the password is asked once (as in TeX2img 2.x).
+                    let script = "mkdir -p \(cuiDir.quotingForShell()) && ln -sf \(cuiInAppPath.quotingForShell()) \(CUI_PATH.quotingForShell())"
+                    _ = sudoCommand("/bin/sh", atDirectory: FileManager.default.temporaryDirectory.path, withArguments: ["-c", script],
+                                    stdoutString: &output, errorDescription: &errorMessage)
                     if let errorMessage {
                         UtilityG.runErrorPanel(message: errorMessage as String)
                     }
