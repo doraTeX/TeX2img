@@ -247,18 +247,20 @@ class Converter: NSObject {
         if !success && !ignoreErrorsFlag { return false }
 
         if guessCompilation {
-            guard let oldAuxData = try? Data(contentsOf: URL(fileURLWithPath: auxFilePath)) else { return success }
+            guard var oldAuxData = try? Data(contentsOf: URL(fileURLWithPath: auxFilePath)) else { return success }
             let relaxData = "\\relax \n".data(using: .utf8)!
             if oldAuxData == relaxData { return success }
 
-            for _ in 1..<numberOfCompilation {
+            // stride, not 1..<n: a number of compilations below 1 (the CLI's --num 0) compiles once.
+            for _ in stride(from: 1, to: numberOfCompilation, by: 1) {
                 success = compile(withArguments: arguments)
                 if !success && !ignoreErrorsFlag { return false }
                 guard let newAuxData = try? Data(contentsOf: URL(fileURLWithPath: auxFilePath)) else { return success }
                 if newAuxData == oldAuxData { return success }
+                oldAuxData = newAuxData
             }
         } else {
-            for _ in 1..<numberOfCompilation {
+            for _ in stride(from: 1, to: numberOfCompilation, by: 1) {
                 success = compile(withArguments: arguments)
                 if !success && !ignoreErrorsFlag { return false }
             }
@@ -688,8 +690,11 @@ class Converter: NSObject {
             thisBottomMargin /= factor
         }
 
-        let pixelWidth = width * CGFloat(resolutionLevel) + thisLeftMargin + thisRightMargin
-        let pixelHeight = height * CGFloat(resolutionLevel) + thisTopMargin + thisBottomMargin
+        // As in TeX2img 2.x: the page is truncated to whole pixels, the margins are added as they are.
+        let scaledWidth = width * CGFloat(resolutionLevel)
+        let scaledHeight = height * CGFloat(resolutionLevel)
+        let pixelWidth = (scaledWidth.isFinite ? scaledWidth.rounded(.towardZero) : scaledWidth) + thisLeftMargin + thisRightMargin
+        let pixelHeight = (scaledHeight.isFinite ? scaledHeight.rounded(.towardZero) : scaledHeight) + thisTopMargin + thisBottomMargin
         let maximumBitmapDimension: CGFloat = 32_768
         guard pixelWidth.isFinite,
               pixelHeight.isFinite,
@@ -700,7 +705,7 @@ class Converter: NSObject {
             controller?.showImageSizeError()
             return false
         }
-        let size = NSSize(width: Int(pixelWidth), height: Int(pixelHeight))
+        let size = NSSize(width: pixelWidth, height: pixelHeight)
 
         let image = NSImage(size: size)
         image.lockFocus()
@@ -1440,36 +1445,35 @@ class Converter: NSObject {
                 if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
                 if !success { return success }
             }
-        } else if (extension_ == "svg" || extension_ == "svgz") && leaveTextFlag {
-            let skippedCount = emptyPageFlags.trueValueCount
-            if !(mergeOutputsFlag && (pageCount - skippedCount > 1)) {
-                if transparentFlag {
-                    _ = pdfcrop(pdfFilePath, outputFileName: croppedPdfFilePath, page: 0, addMargin: true, useCache: true, fillBackground: false)
+        } else if (extension_ == "svg" || extension_ == "svgz") && leaveTextFlag
+                    && !(mergeOutputsFlag && (pageCount - emptyPageFlags.trueValueCount > 1)) {
+            // Text-keeping SVG, unless the pages are merged into one file: that is the animated SVG below.
+            if transparentFlag {
+                _ = pdfcrop(pdfFilePath, outputFileName: croppedPdfFilePath, page: 0, addMargin: true, useCache: true, fillBackground: false)
+                if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
+
+                for i in 1...pageCount {
+                    success = pdf2svg(croppedPdfFilePath,
+                                      outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
+                                      page: UInt(i), skipEmptyPage: true)
+                    if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
+                    if !success { return success }
+                }
+            } else {
+                _ = pdfcrop(pdfFilePath, outputFileName: croppedPdfFilePath, page: 1, addMargin: true, useCache: false, fillBackground: true)
+                if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
+
+                for i in 1...pageCount {
+                    _ = pdfcrop(pdfFilePath,
+                                outputFileName: croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i)),
+                                page: UInt(i), addMargin: true, useCache: false, fillBackground: true)
                     if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
-                    for i in 1...pageCount {
-                        success = pdf2svg(croppedPdfFilePath,
-                                          outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
-                                          page: UInt(i), skipEmptyPage: true)
-                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
-                        if !success { return success }
-                    }
-                } else {
-                    _ = pdfcrop(pdfFilePath, outputFileName: croppedPdfFilePath, page: 1, addMargin: true, useCache: false, fillBackground: true)
+                    success = pdf2svg(croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i)),
+                                      outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
+                                      page: 1, skipEmptyPage: false)
                     if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
-
-                    for i in 1...pageCount {
-                        _ = pdfcrop(pdfFilePath,
-                                    outputFileName: croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i)),
-                                    page: UInt(i), addMargin: true, useCache: false, fillBackground: true)
-                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
-
-                        success = pdf2svg(croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i)),
-                                          outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
-                                          page: 1, skipEmptyPage: false)
-                        if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
-                        if !success { return success }
-                    }
+                    if !success { return success }
                 }
             }
         } else {
@@ -1764,15 +1768,15 @@ class Converter: NSObject {
             var script: String?
             switch autoPasteDestination {
             case 1:
-                script = appleScriptForWord(generatedFiles)
+                script = AutoPasteScript.word(generatedFiles)
             case 2:
-                script = appleScriptForPowerPoint(generatedFiles)
+                script = AutoPasteScript.powerPoint(generatedFiles)
             case 3:
-                script = appleScriptForiWork("Pages")
+                script = AutoPasteScript.iWork("Pages")
             case 4:
-                script = appleScriptForiWork("Numbers")
+                script = AutoPasteScript.iWork("Numbers")
             case 5:
-                script = appleScriptForiWork("Keynote")
+                script = AutoPasteScript.iWork("Keynote")
             default:
                 break
             }
@@ -1956,76 +1960,5 @@ class Converter: NSObject {
 
             return compileAndConvertWithCheck()
         }
-    }
-
-    private func appleScriptForWord(_ paths: [String]) -> String {
-        var script = """
-        tell application "Microsoft Word"
-        activate
-        if version < 15 then
-        tell selection
-        set myStart to selection start
-        set myEnd to selection end
-        end tell
-        tell active document
-        set theRange to create range start myStart end myEnd
-        """
-
-        for posixPath in paths.reversed() {
-            script += String(format: "make new inline picture at theRange with properties {file name:(POSIX file \"%@\") as Unicode text, save with document:true}\n", posixPath)
-        }
-
-        script += """
-        end tell
-        else
-        tell active document
-        tell application "System Events" to (keystroke "v" using command down)
-        end tell
-        end if
-        end tell
-        """
-        return script
-    }
-
-    private func appleScriptForPowerPoint(_ paths: [String]) -> String {
-        var script = """
-        tell application "Microsoft PowerPoint"
-        activate
-        if version < 15 then
-        set thisSlide to slide index of slide of view of active window
-        tell slide thisSlide of active presentation
-        """
-
-        for posixPath in paths {
-            script += String(format: "set thePicture to make new picture at end with properties {file name:(POSIX file \"%@\") as Unicode text, save with document:true}\n", posixPath)
-            script += """
-            tell thePicture
-            scale height factor 1 scale scale from top left with relative to original size
-            scale width factor 1 scale scale from top left with relative to original size
-            end tell
-            """
-        }
-
-        script += """
-        end tell
-        else
-        tell active presentation
-        tell application "System Events" to (keystroke "v" using command down)
-        end tell
-        end if
-        end tell
-        """
-        return script
-    }
-
-    private func appleScriptForiWork(_ appName: String) -> String {
-        return """
-        tell application "\(appName)"
-        activate
-        tell document
-        tell application "System Events" to (keystroke "v" using command down)
-        end tell
-        end tell
-        """
     }
 }

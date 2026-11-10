@@ -86,6 +86,8 @@
 		34A5C715251B700000FCF7BB /* MyGlyphPopoverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C714251B700000FCF7BB /* MyGlyphPopoverController.swift */; };
 		34A5C717251B700000FCF7BC /* ControllerC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C716251B700000FCF7BC /* ControllerC.swift */; };
 		34A5C718251B700000FCF7BD /* ControllerG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C719251B700000FCF7BD /* ControllerG.swift */; };
+		34A95CB1E7D04F2A9C3E00B1 /* AutoPasteScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A95CB1E7D04F2A9C3E00F1 /* AutoPasteScript.swift */; };
+		34A95CB1E7D04F2A9C3E00B2 /* AutoPasteScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A95CB1E7D04F2A9C3E00F1 /* AutoPasteScript.swift */; };
 		34A5C720251B700000FCF7BE /* Converter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C71F251B700000FCF7BE /* Converter.swift */; };
 		34A5C721251B700000FCF7BE /* Converter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C71F251B700000FCF7BE /* Converter.swift */; };
 		34A5C725251B700000FCF7BF /* NSString-Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5C722251B700000FCF7BF /* NSString-Conversion.swift */; };
@@ -224,6 +226,7 @@
 		34A5C714251B700000FCF7BB /* MyGlyphPopoverController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyGlyphPopoverController.swift; sourceTree = "<group>"; };
 		34A5C716251B700000FCF7BC /* ControllerC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerC.swift; sourceTree = "<group>"; };
 		34A5C719251B700000FCF7BD /* ControllerG.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerG.swift; sourceTree = "<group>"; };
+		34A95CB1E7D04F2A9C3E00F1 /* AutoPasteScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoPasteScript.swift; sourceTree = "<group>"; };
 		34A5C71F251B700000FCF7BE /* Converter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Converter.swift; sourceTree = "<group>"; };
 		34A5C722251B700000FCF7BF /* NSString-Conversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSString-Conversion.swift"; sourceTree = "<group>"; };
 		34A5C723251B700000FCF7BF /* NSString-Conversion+CIDTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSString-Conversion+CIDTable.swift"; sourceTree = "<group>"; };
@@ -457,6 +460,7 @@
 			isa = PBXGroup;
 			children = (
 				34A5C71F251B700000FCF7BE /* Converter.swift */,
+				34A95CB1E7D04F2A9C3E00F1 /* AutoPasteScript.swift */,
 				34A5C63A251B170B00FCF7BA /* Converter-BoundingBox.swift */,
 			);
 			path = Converter;
@@ -746,6 +750,7 @@
 				34A5C70E251B700000FCF7BA /* UtilityC.swift in Sources */,
 				34A5C701251B700000FCF7BA /* NSArray-Extension.swift in Sources */,
 				34A5C721251B700000FCF7BE /* Converter.swift in Sources */,
+				34A95CB1E7D04F2A9C3E00B2 /* AutoPasteScript.swift in Sources */,
 				34D0A0042F10000400A1FA04 /* mainc.swift in Sources */,
 				34A5C70A251B700000FCF7BA /* NSString-Extension.swift in Sources */,
 				34A5C707251B700000FCF7BA /* NSMutableString-Extension.swift in Sources */,
@@ -805,6 +810,7 @@
 				34A5C718251B700000FCF7BD /* ControllerG.swift in Sources */,
 				34A5C715251B700000FCF7BA /* NSString-Unicode.swift in Sources */,
 				34A5C720251B700000FCF7BE /* Converter.swift in Sources */,
+				34A95CB1E7D04F2A9C3E00B1 /* AutoPasteScript.swift in Sources */,
 				34A5C703251B700000FCF7BA /* NSDictionary-Extension.swift in Sources */,
 				34A5C725251B700000FCF7BF /* NSString-Conversion.swift in Sources */,
 				34A5C726251B700000FCF7BF /* NSString-Conversion+CIDTable.swift in Sources */,

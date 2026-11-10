@@ -189,6 +189,77 @@ struct Tex2imgCommand: ParsableCommand {
     @Argument(help: "Output file path")
     var outputFile: String?
 
+    /// The arguments as parsed: after the expansion of abbreviated options (see `getoptStyleArguments`).
+    nonisolated(unsafe) fileprivate static var parsedArguments = CommandLine.arguments
+
+    /// Parses the arguments as getopt_long did in TeX2img 2.x: an option may be abbreviated to a unique prefix,
+    /// an option that takes a value takes the next argument even when it starts with "-", and an error in the
+    /// arguments prints the usage and ends with status 1.
+    static func main() {
+        let arguments = getoptStyleArguments(Array(CommandLine.arguments.dropFirst()))
+        parsedArguments = [CommandLine.arguments.first ?? "tex2img"] + arguments
+        var command: Tex2imgCommand
+        do {
+            command = try parse(arguments)
+        } catch {
+            UtilityC.printStdErr("tex2img: \(message(for: error))\n")
+            printUsage()
+            Foundation.exit(1)
+        }
+        do {
+            try command.run()
+        } catch {
+            exit(withError: error)
+        }
+    }
+
+    /// The long options and whether each takes a value, read from the help that ArgumentParser makes.
+    private static func longOptions() -> [String: Bool] {
+        let help = helpMessage(columns: 10_000)
+        var options = [String: Bool]()
+        let pattern = try! NSRegularExpression(pattern: #"--([A-Za-z0-9][A-Za-z0-9-]*)( <[^>]+>)?"#)
+        for match in pattern.matches(in: help, range: NSRange(help.startIndex..., in: help)) {
+            guard let name = Range(match.range(at: 1), in: help).map({ String(help[$0]) }) else { continue }
+            options[name] = (options[name] ?? false) || match.range(at: 2).location != NSNotFound
+        }
+        return options
+    }
+
+    static func getoptStyleArguments(_ arguments: [String]) -> [String] {
+        let options = longOptions()
+        var result = [String]()
+        var index = 0
+        while index < arguments.count {
+            let argument = arguments[index]
+            index += 1
+            if argument == "--" {
+                result += arguments[(index - 1)...]
+                break
+            }
+            guard argument.hasPrefix("--"), argument.count > 2 else {
+                result.append(argument)
+                continue
+            }
+            let body = argument.dropFirst(2)
+            let name = String(body.prefix { $0 != "=" })
+            let value = body.firstIndex(of: "=").map { String(body[body.index(after: $0)...]) }
+            let candidates = options[name] != nil ? [name] : options.keys.filter { $0.hasPrefix(name) }
+            guard candidates.count == 1, let fullName = candidates.first, let takesValue = options[fullName] else {
+                result.append(argument) // unknown or ambiguous: ArgumentParser reports it
+                continue
+            }
+            if let value {
+                result.append("--\(fullName)=\(value)")
+            } else if takesValue && index < arguments.count {
+                result.append("--\(fullName)=\(arguments[index])")
+                index += 1
+            } else {
+                result.append("--\(fullName)")
+            }
+        }
+        return result
+    }
+
     mutating func run() throws {
         if showVersion {
             printVersion()
@@ -240,14 +311,20 @@ struct Tex2imgCommand: ParsableCommand {
             throw Tex2imgCLIError.failed
         }
 
-        var leftMargin = leftMarginOption ?? 0
-        var rightMargin = rightMarginOption ?? 0
-        var topMargin = topMarginOption ?? 0
-        var bottomMargin = bottomMarginOption ?? 0
-
+        // Options apply in the order they are given, as with getopt in TeX2img 2.x: --margins sets the margins
+        // given before it, and a margin given after it wins.
+        var leftMargin = 0
+        var rightMargin = 0
+        var topMargin = 0
+        var bottomMargin = 0
+        let marginsIndex = lastArgumentIndex("margins")
         if let margins {
             try applyMargins(margins, left: &leftMargin, right: &rightMargin, top: &topMargin, bottom: &bottomMargin)
         }
+        if let leftMarginOption, lastArgumentIndex("left-margin") > marginsIndex { leftMargin = leftMarginOption }
+        if let rightMarginOption, lastArgumentIndex("right-margin") > marginsIndex { rightMargin = rightMarginOption }
+        if let topMarginOption, lastArgumentIndex("top-margin") > marginsIndex { topMargin = topMarginOption }
+        if let bottomMarginOption, lastArgumentIndex("bottom-margin") > marginsIndex { bottomMargin = bottomMarginOption }
 
         guard leftMargin >= 0, rightMargin >= 0, topMargin >= 0, bottomMargin >= 0 else {
             UtilityC.printStdErr("tex2img : Margins must not be negative.\n")
@@ -271,19 +348,22 @@ struct Tex2imgCommand: ParsableCommand {
         var fillColor = NSColor.white
 
         if let backgroundColor {
-            transparentFlag = false
             fillColor = try parseBackgroundColor(backgroundColor)
+            // --background-color turns transparency off, unless --transparent comes after it.
+            if lastArgumentIndex("background-color") > max(lastArgumentIndex("transparent"), lastArgumentIndex("no-transparent")) {
+                transparentFlag = false
+            }
         }
 
         let delay = animationDelay ?? 1
         if delay < 0 {
-            print("error: --animation-delay is invalid.\n")
+            print("error: --animation-delay is invalid.")
             throw Tex2imgCLIError.failed
         }
 
         let loopCount = animationLoop ?? 0
         if loopCount < 0 {
-            print("error: --animation-loop is invalid.\n")
+            print("error: --animation-loop is invalid.")
             throw Tex2imgCLIError.failed
         }
 
@@ -388,7 +468,7 @@ struct Tex2imgCommand: ParsableCommand {
         let plainTextFlag = resolveFlag(positive: "plain-text", negative: "no-plain-text",
                                         positiveSet: plainText, negativeSet: noPlainText, defaultValue: false)
         profile[PlainTextKey] = plainTextFlag
-        profile[PageBoxKey] = pageBoxType
+        profile[PageBoxKey] = Int(pageBoxType.rawValue) // the profile holds numbers: a CGPDFBox is read as 0
         profile[LoopCountKey] = loopCount
         profile[DelayKey] = delay
         profile[WorkingDirectoryTypeKey] = workingDirectoryType
@@ -401,7 +481,8 @@ struct Tex2imgCommand: ParsableCommand {
         }
 
         let converter = Converter(profile: profile)
-        let success = converter.compileAndConvert(withInputPath: inputFile)
+        // Converter holds the controller weakly; it must live until the conversion has finished.
+        let success = withExtendedLifetime(controller) { converter.compileAndConvert(withInputPath: inputFile) }
         return success ? Int32(ExitStatus.succeeded.rawValue) : Int32(ExitStatus.failed.rawValue)
     }
 
@@ -416,7 +497,7 @@ struct Tex2imgCommand: ParsableCommand {
             return kanji
         }
 
-        print("error: --kanji is invalid. It must be no/utf8/sjis/jis/euc.\n")
+        print("error: --kanji is invalid. It must be no/utf8/sjis/jis/euc.")
         throw Tex2imgCLIError.failed
     }
 
@@ -430,7 +511,7 @@ struct Tex2imgCommand: ParsableCommand {
             return Int(BP_UNIT_TAG)
         }
 
-        print("error: --unit is invalid. It must be \"px\" or \"bp\".\n")
+        print("error: --unit is invalid. It must be \"px\" or \"bp\".")
         throw Tex2imgCLIError.failed
     }
 
@@ -449,7 +530,7 @@ struct Tex2imgCommand: ParsableCommand {
         case "art":
             return .artBox
         default:
-            print("error: --pagebox is invalid. It must be media/crop/bleed/trim/art.\n")
+            print("error: --pagebox is invalid. It must be media/crop/bleed/trim/art.")
             throw Tex2imgCLIError.failed
         }
     }
@@ -465,7 +546,7 @@ struct Tex2imgCommand: ParsableCommand {
         case "current":
             return Int(WorkingDirectoryCurrent)
         default:
-            print("error: --workingdir is invalid. It must be tmp/file/current.\n")
+            print("error: --workingdir is invalid. It must be tmp/file/current.")
             throw Tex2imgCLIError.failed
         }
     }
@@ -497,7 +578,7 @@ struct Tex2imgCommand: ParsableCommand {
             right = try parseInteger(values[2])
             bottom = try parseInteger(values[3])
         default:
-            print("error: The number of \"--margins\" values must be 1, 2 or 4.\n")
+            print("error: The number of \"--margins\" values must be 1, 2 or 4.")
             throw Tex2imgCLIError.failed
         }
     }
@@ -546,7 +627,7 @@ struct Tex2imgCommand: ParsableCommand {
             }
 
             guard let color = NSColor(cssName: colorValue) else {
-                print("error: --background-color is invalid.\n")
+                print("error: --background-color is invalid.")
                 throw Tex2imgCLIError.failed
             }
             return color
@@ -556,7 +637,7 @@ struct Tex2imgCommand: ParsableCommand {
             let regex = try? NSRegularExpression(pattern: #"^\d+$"#, options: .caseInsensitive)
             let range = NSRange(rgb.startIndex..., in: rgb)
             guard regex?.firstMatch(in: rgb, range: range) != nil else {
-                print("error: --background-color is invalid.\n")
+                print("error: --background-color is invalid.")
                 throw Tex2imgCLIError.failed
             }
 
@@ -564,7 +645,7 @@ struct Tex2imgCommand: ParsableCommand {
             let g = Int(values[1]) ?? -1
             let b = Int(values[2]) ?? -1
             guard r >= 0, g >= 0, b >= 0, r <= 255, g <= 255, b <= 255 else {
-                print("error: --background-color is invalid. Each RGB value must be less than 256.\n")
+                print("error: --background-color is invalid. Each RGB value must be less than 256.")
                 throw Tex2imgCLIError.failed
             }
             return NSColor(deviceRed: CGFloat(r) / 255,
@@ -573,7 +654,7 @@ struct Tex2imgCommand: ParsableCommand {
                            alpha: 1.0)
 
         default:
-            print("error: The number of --background-color values must be 1 or 3.\n")
+            print("error: The number of --background-color values must be 1 or 3.")
             throw Tex2imgCLIError.failed
         }
     }
@@ -584,7 +665,7 @@ struct Tex2imgCommand: ParsableCommand {
                              negativeSet: Bool,
                              defaultValue: Bool) -> Bool {
         if positiveSet && negativeSet {
-            let args = CommandLine.arguments
+            let args = Self.parsedArguments
             var lastPositive = -1
             var lastNegative = -1
             for (index, arg) in args.enumerated() {
@@ -600,6 +681,14 @@ struct Tex2imgCommand: ParsableCommand {
         if positiveSet { return true }
         if negativeSet { return false }
         return defaultValue
+    }
+
+    /// The position of the last `--name` or `--name=value` on the command line, or -1.
+    private func lastArgumentIndex(_ name: String) -> Int {
+        let args = Self.parsedArguments
+        // Arguments after "--" are not options.
+        let end = args.firstIndex(of: "--") ?? args.count
+        return args[..<end].lastIndex { $0 == "--\(name)" || $0.hasPrefix("--\(name)=") } ?? -1
     }
 }
 
@@ -749,7 +838,7 @@ private func printCurrentStatus(inputFilePath: String, profile: Profile) {
     print("Working directory: ", terminator: "")
     switch profile.integerForKey(WorkingDirectoryTypeKey) {
     case Int(WorkingDirectoryTmp):
-        print(FileManager.default.temporaryDirectory.path, terminator: "")
+        print(NSTemporaryDirectory(), terminator: "")
     case Int(WorkingDirectoryFile):
         if let fullPath = Utility.getFullPath(inputFilePath) {
             print(fullPath.deletingLastPathComponent, terminator: "")
@@ -761,7 +850,7 @@ private func printCurrentStatus(inputFilePath: String, profile: Profile) {
     }
     print("")
 
-    print("Resolution level: \(profile.floatForKey(ResolutionKey))")
+    print(String(format: "Resolution level: %f", profile.floatForKey(ResolutionKey)))
     print("DPI: \(profile.integerForKey(DPIKey))")
 
     let ext = outputFilePath.pathExtension
