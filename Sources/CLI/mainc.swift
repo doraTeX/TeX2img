@@ -362,6 +362,7 @@ struct Tex2imgCommand: ParsableCommand {
         profile[QuietKey] = quietFlag
         profile[GuessCompilationKey] = guessFlag
         profile[ControllerKey] = controller
+        controller.outputEncoding = ConsoleOutputDecoder.encoding(forKanji: profile.stringForKey(EncodingKey))
         profile[UnitKey] = unitTag
 
         let quickFlag = resolveFlag(positive: "quick", negative: "no-quick",

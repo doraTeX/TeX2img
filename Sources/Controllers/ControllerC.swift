@@ -2,6 +2,8 @@ import Foundation
 
 class ControllerC: NSObject, OutputController {
     var mudrawPath = "mudraw"
+    /// The encoding of TeX's output, from the kanji encoding.
+    var outputEncoding: String.Encoding = .utf8
     func execCommand(_ command: String,
                            atDirectory path: String,
                            withArguments arguments: [String],
@@ -24,15 +26,15 @@ class ControllerC: NSObject, OutputController {
         task.standardError = pipe
 
         let handle = pipe.fileHandleForReading
+        // Output in pieces that divide characters or lines is read whole (TeXShop's console reading).
+        let decoder = ConsoleOutputDecoder(encoding: outputEncoding)
         handle.readabilityHandler = { [weak self] source in
             let data = source.availableData
             if data.isEmpty {
                 source.readabilityHandler = nil
                 return
             }
-            if let str = String(data: data, encoding: .utf8) {
-                self?.appendOutputAndScroll(str, quiet: quiet)
-            }
+            self?.appendOutputAndScroll(decoder.append(data), quiet: quiet)
         }
 
         do {
@@ -43,6 +45,7 @@ class ControllerC: NSObject, OutputController {
 
         task.waitUntilExit()
         handle.readabilityHandler = nil
+        appendOutputAndScroll(decoder.append(handle.readDataToEndOfFile()) + decoder.finish(), quiet: quiet)
         return task.terminationStatus == 0
     }
 

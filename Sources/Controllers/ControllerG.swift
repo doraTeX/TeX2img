@@ -185,6 +185,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private let outputBufferLock = NSLock()
     private var pendingOutput = ""
     private var outputFlushScheduled = false
+    private var consoleDecoder: ConsoleOutputDecoder?
 
     private func observeNotification(forName name: Notification.Name,
                                      object: Any? = nil,
@@ -310,6 +311,13 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         beginTracking(task)
 
         let handle = pipe.fileHandleForReading
+        // Output in pieces that divide characters or lines is read whole (TeXShop's console reading).
+        let decoder = ConsoleOutputDecoder(encoding: ConsoleOutputDecoder.encoding(forKanji: currentProfile().stringForKey(EncodingKey)))
+        consoleDecoder = decoder
+        let pause = ConsolePauseTimer { [weak self] in
+            let text = decoder.flushPause()
+            if !text.isEmpty { self?.appendOutputAndScroll(text, quiet: quiet) }
+        }
         handle.readabilityHandler = { [weak self] source in
             guard let self else {
                 source.readabilityHandler = nil
@@ -320,9 +328,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                 source.readabilityHandler = nil
                 return
             }
-            if let str = String(data: data, encoding: .utf8) {
-                self.appendOutputAndScroll(str, quiet: quiet)
-            }
+            self.appendOutputAndScroll(decoder.append(data), quiet: quiet)
+            pause.restart()
         }
 
         do {
@@ -337,10 +344,12 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         task.waitUntilExit()
         stopTracking(task)
         handle.readabilityHandler = nil
+        pause.cancel()
         performOnMainThread {
             self.flushPendingOutputOnMainThread()
             self.flushPipe(handle)
             self.outputPipe = nil
+            self.consoleDecoder = nil
         }
         appendOutputAndScroll("\n", quiet: quiet)
         if exitCurrentThreadIfTaskKilled() { return false }
@@ -1368,7 +1377,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         } else {
             data = handle.readDataToEndOfFile()
         }
-        guard !data.isEmpty, let str = String(data: data, encoding: .utf8) else { return }
+        let str = (consoleDecoder?.append(data) ?? String(decoding: data, as: UTF8.self)) + (consoleDecoder?.finish() ?? "")
+        guard !str.isEmpty else { return }
         flushPendingOutputOnMainThread()
         appendOutputOnMainThread(str)
     }
