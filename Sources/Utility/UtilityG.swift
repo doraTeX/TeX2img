@@ -102,6 +102,11 @@ class UtilityG: NSObject {
         readColor(from: profile, role: .consoleBackground)
     }
 
+    static func fullwidthAttributes(inProfile profile: Profile) -> [NSAttributedString.Key: Any]? {
+        ThemeLibrary.shared.fullwidthAttributes(lightTitle: profile.stringForKey(LightThemeKey), darkTitle: profile.stringForKey(DarkThemeKey),
+                                                dark: NSApp.isDarkMode)
+    }
+
     /// Bundled command-line tool inside `Contents/Resources/<resourceDirectory>/`.
     static func bundledToolPath(_ name: String, in resourceDirectory: String) -> String? {
         guard let directory = Bundle.main.path(forResource: resourceDirectory, ofType: nil) else { return nil }

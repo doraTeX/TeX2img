@@ -80,6 +80,8 @@ final class ThemeSettingsController: NSObject {
                 (.highlightedBrace, NSLocalizedString("Highlighted Brackets", comment: "")),
                 (.enclosedContent, NSLocalizedString("Enclosed Contents", comment: "")),
                 (.invisible, NSLocalizedString("Invisible Characters", comment: "")),
+                (.fullwidthSymbol, NSLocalizedString("Fullwidth Letters and Symbols", comment: "")),
+                (.fullwidthBackground, NSLocalizedString("Fullwidth Letters and Symbols Background", comment: "")),
             ]),
             colorGroup(NSLocalizedString("Colors: Output Window", comment: ""), [
                 (.consoleText, NSLocalizedString("Text", comment: "")),

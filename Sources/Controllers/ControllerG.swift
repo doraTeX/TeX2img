@@ -1940,6 +1940,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     /// Recolors the editors and the output window after a theme or its colors change.
     func themeColorsChanged() {
+        // Backgrounds of the previous theme (fullwidth characters) go before coloring again.
+        sourceTextView.resetBackgroundColor(nil)
+        preambleTextView.resetBackgroundColor(nil)
         sourceTextView.colorizeText()
         preambleTextView.colorizeText()
         sourceTextView.refreshSelectionHighlighting()

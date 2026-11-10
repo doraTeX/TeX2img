@@ -274,3 +274,5 @@
 "Restore all keyboard shortcuts?" = "すべてのキーボードショートカットをデフォルトに戻しますか？";
 "Custom menu shortcuts will be removed." = "変更したメニューのショートカットは削除されます。";
 "Restore All" = "すべて戻す";
+"Fullwidth Letters and Symbols" = "全角英数記号";
+"Fullwidth Letters and Symbols Background" = "全角英数記号の背景";

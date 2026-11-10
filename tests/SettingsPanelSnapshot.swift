@@ -226,6 +226,13 @@ check(!themes.resetButton.isEnabled, "nothing to restore before editing")
 check(ThemePalette.components(["SyntaxMarker": [0.1, 0.2, 0.3, 1]], key: "SyntaxMarkerCurly") == [0.1, 0.2, 0.3, 1], "brace color inherits SyntaxMarker")
 check(ThemePalette.components(["EditorInvisibleChar": [1.235, 0.013, 0.011, 1]], key: "EditorInvisibleChar")?.first == 1, "out-of-range components are clamped")
 check(ThemePalette.components(["EditorText": [Double.nan, 0, 0]], key: "EditorText") == nil, "invalid components are ignored")
+// Fullwidth letters and symbols are colored only by themes that define them.
+check(ThemeLibrary.isHighlightedFullwidthCharacter(0xFF21) && ThemeLibrary.isHighlightedFullwidthCharacter(0x2212)
+      && !ThemeLibrary.isHighlightedFullwidthCharacter(0xFF0C) && !ThemeLibrary.isHighlightedFullwidthCharacter(0x3042), "fullwidth characters")
+check(ThemeLibrary.shared.fullwidthAttributes(lightTitle: ThemeStore.defaultLightTitle, darkTitle: nil, dark: false)?[.backgroundColor] != nil,
+      "TeX2img Lite colors fullwidth characters")
+try! store.write(["EditorText": [0, 0, 0, 1]], title: "No Fullwidth")
+check(ThemeLibrary.shared.fullwidthAttributes(lightTitle: "No Fullwidth", darkTitle: nil, dark: false) == nil, "a theme without the keys colors nothing")
 let translucent: ThemeColors = ["EditorText": [1, 0, 0, 0.5], "EditorFlash": [0, 0, 1, 0.5]]
 check(ThemePalette.color(.text, in: translucent, dark: false).alphaComponent == 1, "opaque colors are drawn opaque")
 check(abs(ThemePalette.color(.flash, in: translucent, dark: false).alphaComponent - 0.5) < 0.001, "the flash keeps its opacity")

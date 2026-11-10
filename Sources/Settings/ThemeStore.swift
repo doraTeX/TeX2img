@@ -9,10 +9,12 @@ enum ThemeRole: CaseIterable {
     case comment, command, marker
     case invisible, highlightedBrace, enclosedContent
     case consoleText, consoleBackground
+    /// Fullwidth letters, digits and symbols and the minus sign, easily mistaken for ASCII (TeXShop 5.60).
+    case fullwidthSymbol, fullwidthBackground
 
     /// Only the flashing background is drawn with its opacity; the other colors are drawn opaque,
     /// and their wells offer no opacity (TeXShop's useOpaqueColorWells).
-    var usesOpacity: Bool { self == .flash }
+    var usesOpacity: Bool { self == .flash || self == .fullwidthBackground }
 
     var key: String {
         switch self {
@@ -28,6 +30,8 @@ enum ThemeRole: CaseIterable {
         case .enclosedContent: return "EditorHighlightContent"
         case .consoleText: return "ConsoleText"
         case .consoleBackground: return "ConsoleBackground"
+        case .fullwidthSymbol: return "EditorHighlightZenkakuSymbol"
+        case .fullwidthBackground: return "EditorHighlightZenkakuSymbolBackground"
         }
     }
 }
@@ -141,6 +145,9 @@ enum ThemePalette {
 
     /// The color of a role in a theme, or the default of that mode when the theme lacks it.
     static func color(_ role: ThemeRole, in theme: ThemeColors?, dark: Bool) -> NSColor {
+        // A theme without the fullwidth colors shows those characters like other text.
+        if role == .fullwidthSymbol, color(theme, key: role.key) == nil { return color(.text, in: theme, dark: dark) }
+        if role == .fullwidthBackground, color(theme, key: role.key) == nil { return color(.background, in: theme, dark: dark) }
         let color = color(theme, key: role.key) ?? defaultColor(role, dark: dark)
         return role.usesOpacity ? color : color.withAlphaComponent(1)
     }
@@ -171,6 +178,8 @@ enum ThemePalette {
         case (.enclosedContent, true): return .defaultEnclosedContentBackgroundColorForDarkMode
         case (.consoleText, true): return .defaultConsoleForegroundColorForDarkMode
         case (.consoleBackground, true): return .defaultConsoleBackgroundColorForDarkMode
+        case (.fullwidthSymbol, _): return defaultColor(.text, dark: dark)
+        case (.fullwidthBackground, _): return defaultColor(.background, dark: dark)
         }
     }
 
@@ -216,6 +225,23 @@ final class ThemeLibrary {
 
     func invalidate(title: String? = nil) {
         if let title { cache[title] = nil } else { cache.removeAll() }
+    }
+
+    /// Attributes for fullwidth letters, digits and symbols, or nil when the theme does not color them.
+    /// A transparent background adds none.
+    func fullwidthAttributes(lightTitle: String?, darkTitle: String?, dark: Bool) -> [NSAttributedString.Key: Any]? {
+        let title = (dark ? darkTitle : lightTitle) ?? (dark ? ThemeStore.defaultDarkTitle : ThemeStore.defaultLightTitle)
+        let theme = colors(title: title) ?? colors(title: dark ? ThemeStore.defaultDarkTitle : ThemeStore.defaultLightTitle)
+        var attributes: [NSAttributedString.Key: Any] = [:]
+        if let text = ThemePalette.color(theme, key: ThemeRole.fullwidthSymbol.key) { attributes[.foregroundColor] = text.withAlphaComponent(1) }
+        if let background = ThemePalette.color(theme, key: ThemeRole.fullwidthBackground.key), background.alphaComponent > 0 {
+            attributes[.backgroundColor] = background
+        }
+        return attributes.isEmpty ? nil : attributes
+    }
+
+    static func isHighlightedFullwidthCharacter(_ c: unichar) -> Bool {
+        (0xFF01...0xFF0B).contains(c) || c == 0xFF0D || (0xFF0F...0xFF5D).contains(c) || c == 0x2212
     }
 
     /// Falls back to the default theme of the mode when the selected file cannot be read.

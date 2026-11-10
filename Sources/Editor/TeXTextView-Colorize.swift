@@ -19,6 +19,7 @@ extension TeXTextView {
         let braceColorAttribute: [NSAttributedString.Key: Any] = [
             .foregroundColor: UtilityG.braceColor(inProfile: profile),
         ]
+        let fullwidthAttributes = UtilityG.fullwidthAttributes(inProfile: profile)
 
         guard let layoutManager else { return }
         let textString = string
@@ -35,7 +36,11 @@ extension TeXTextView {
         while location < aLineEnd {
             let theChar = textString.character(at: location)
 
-            if theChar == "{".utf16.first! || theChar == "}".utf16.first! || theChar == "$".utf16.first! {
+            if let fullwidthAttributes, ThemeLibrary.isHighlightedFullwidthCharacter(theChar) {
+                // Fullwidth letters, digits and symbols are easily mistaken for ASCII (TeXShop 5.60).
+                layoutManager.addTemporaryAttributes(fullwidthAttributes, forCharacterRange: NSRange(location: location, length: 1))
+                location += 1
+            } else if theChar == "{".utf16.first! || theChar == "}".utf16.first! || theChar == "$".utf16.first! {
                 colorRange = NSRange(location: location, length: 1)
                 layoutManager.addTemporaryAttributes(braceColorAttribute, forCharacterRange: colorRange)
                 location += 1
@@ -71,6 +76,12 @@ extension TeXTextView {
             forCharacterRange: NSRange(location: 0, length: textStorage?.length ?? 0)
         )
         contentHighlighting = false
+        // The background of fullwidth letters and symbols belongs to the theme, not to a highlight.
+        guard let controller, let layoutManager, let text = textStorage?.string as NSString?,
+              let background = UtilityG.fullwidthAttributes(inProfile: controller.currentProfile())?[.backgroundColor] else { return }
+        for location in 0..<text.length where ThemeLibrary.isHighlightedFullwidthCharacter(text.character(at: location)) {
+            layoutManager.addTemporaryAttribute(.backgroundColor, value: background, forCharacterRange: NSRange(location: location, length: 1))
+        }
     }
 
     private func resetHighlight(_ sender: Any?) {
