@@ -23,17 +23,17 @@ extension String {
             let subString = nsSelf.substring(with: charRange)
 
             if !subString.canBeConverted(to: iso2022jp) {
-                let textView = NSTextView()
-                textView.textStorage?.setAttributedString(NSAttributedString(string: subString))
-
-                var effectiveRange = NSRange()
-                let glyph = textView.textStorage?.attribute(.glyphInfo, at: 0, effectiveRange: &effectiveRange) as? NSGlyphInfo
-
                 let utfString: NSMutableString
-                if let glyph {
-                    utfString = NSMutableString(format: "%CID{%ld}", texChar, glyph.characterIdentifier)
-                } else if charRange.length > 1, let layout = textView.layoutManager {
-                    utfString = NSMutableString(format: "%CID{%d}", texChar, layout.glyph(at: 0))
+                if charRange.length > 1 {
+                    // A sequence (a surrogate pair, a variation sequence) becomes \CID{n} only when it has an
+                    // Adobe-Japan1 CID; otherwise it is kept as is (TeXShop 5.60).
+                    guard let cid = Self.adobeJapan1CID(for: subString) else {
+                        newString.append(subString)
+                        charRange.location += charRange.length
+                        charRange.length = 1
+                        continue
+                    }
+                    utfString = NSMutableString(string: "\\CID{\(cid)}")
                 } else if subString.character(at: 0) == 0x2015 {
                     utfString = NSMutableString(format: "%C", 0x2014)
                 } else {
@@ -56,16 +56,23 @@ extension String {
     }
 
     func stringByReplacingUTFWithUnicodeCharacters() -> String {
-        let str = NSMutableString(string: self)
-
-        str.replaceAllOccurrences(ofPattern: #"\\UTF\{([0-9A-Fa-z]{4})\}"#) { match, groups in
-            let hex = groups[0]
-            guard hex.count == 4,
-                  let high = UInt8(hex.prefix(2), radix: 16),
-                  let low = UInt8(hex.suffix(2), radix: 16) else { return match }
-            let codePoint = UInt32(high) * 256 + UInt32(low)
-            return Self.string(fromCodePoint: codePoint)
+        // Only a command is converted: not an escaped backslash (\\UTF{...}), and not a surrogate code point,
+        // which is not a character (TeXShop 5.60).
+        let source = self as NSString
+        let str = NSMutableString()
+        var offset = 0
+        let pattern = try! NSRegularExpression(pattern: #"\\UTF\{([0-9A-Fa-f]{4})\}"#)
+        for match in pattern.matches(in: self, range: NSRange(location: 0, length: source.length)) {
+            str.append(source.substring(with: NSRange(location: offset, length: match.range.location - offset)))
+            let value = UInt32(source.substring(with: match.range(at: 1)), radix: 16) ?? 0xD800
+            if Self.startsCommand(source, at: match.range.location), let character = Self.scalarString(value) {
+                str.append(character)
+            } else {
+                str.append(source.substring(with: match.range))
+            }
+            offset = NSMaxRange(match.range)
         }
+        str.append(source.substring(from: offset))
 
         for (cid, codePoint) in cidToUnicode {
             replaceCID(cid, codePoint: codePoint, in: str)
@@ -297,7 +304,7 @@ extension String {
     func stringByReplacingKakkoAlphWithAjKakkoAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
-            let source = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD10 + index - 1))
+            let source = Self.string(fromCodePoint: UInt32(0x1F110 + index - 1))
             replaceAll(in: str, source: source, destination: "\\ajKakkoAlph{\(index)}", addingPercent: true)
         }
         for index in 1...26 {
@@ -309,11 +316,11 @@ extension String {
     func stringByReplacingAjKakkoAlphWithKakkoAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
-            let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD10 + index - 1))
+            let destination = Self.string(fromCodePoint: UInt32(0x1F110 + index - 1))
             replaceAll(in: str, source: "\\ajKakkoAlph{\(index)}", destination: destination, addingPercent: false)
         }
         for index in 1...9 {
-            let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD10 + index - 1))
+            let destination = Self.string(fromCodePoint: UInt32(0x1F110 + index - 1))
             replaceAll(in: str, source: "\\ajKakkoAlph\(index)", destination: destination, addingPercent: false)
         }
         for index in 1...26 {
@@ -332,7 +339,7 @@ extension String {
     func stringByReplacingKuroMaruAlphWithAjKuroMaruAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
-            let source = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD50 + index - 1))
+            let source = Self.string(fromCodePoint: UInt32(0x1F150 + index - 1))
             replaceAll(in: str, source: source, destination: "\\ajKuroMaruAlph{\(index)}", addingPercent: true)
         }
         return str as String
@@ -341,11 +348,11 @@ extension String {
     func stringByReplacingAjKuroMaruAlphWithKuroMaruAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
-            let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD50 + index - 1))
+            let destination = Self.string(fromCodePoint: UInt32(0x1F150 + index - 1))
             replaceAll(in: str, source: "\\ajKuroMaruAlph{\(index)}", destination: destination, addingPercent: false)
         }
         for index in 1...9 {
-            let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD50 + index - 1))
+            let destination = Self.string(fromCodePoint: UInt32(0x1F150 + index - 1))
             replaceAll(in: str, source: "\\ajKuroMaruAlph\(index)", destination: destination, addingPercent: false)
         }
         return str as String
@@ -356,7 +363,7 @@ extension String {
     func stringByReplacingKakuAlphWithAjKakuAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
-            let source = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD30 + index - 1))
+            let source = Self.string(fromCodePoint: UInt32(0x1F130 + index - 1))
             replaceAll(in: str, source: source, destination: "\\ajKakuAlph{\(index)}", addingPercent: true)
         }
         return str as String
@@ -365,11 +372,11 @@ extension String {
     func stringByReplacingAjKakuAlphWithKakuAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
-            let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD30 + index - 1))
+            let destination = Self.string(fromCodePoint: UInt32(0x1F130 + index - 1))
             replaceAll(in: str, source: "\\ajKakuAlph{\(index)}", destination: destination, addingPercent: false)
         }
         for index in 1...9 {
-            let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD30 + index - 1))
+            let destination = Self.string(fromCodePoint: UInt32(0x1F130 + index - 1))
             replaceAll(in: str, source: "\\ajKakuAlph\(index)", destination: destination, addingPercent: false)
         }
         return str as String
@@ -380,7 +387,7 @@ extension String {
     func stringByReplacingKuroKakuAlphWithAjKuroKakuAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
-            let source = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD70 + index - 1))
+            let source = Self.string(fromCodePoint: UInt32(0x1F170 + index - 1))
             replaceAll(in: str, source: source, destination: "\\ajKuroKakuAlph{\(index)}", addingPercent: true)
         }
         return str as String
@@ -389,11 +396,11 @@ extension String {
     func stringByReplacingAjKuroKakuAlphWithKuroKakuAlph() -> String {
         let str = NSMutableString(string: self)
         for index in 1...26 {
-            let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD70 + index - 1))
+            let destination = Self.string(fromCodePoint: UInt32(0x1F170 + index - 1))
             replaceAll(in: str, source: "\\ajKuroKakuAlph{\(index)}", destination: destination, addingPercent: false)
         }
         for index in 1...9 {
-            let destination = Self.string(fromCodePoint: 0xD83C) + Self.string(fromCodePoint: UInt32(0xDD70 + index - 1))
+            let destination = Self.string(fromCodePoint: UInt32(0x1F170 + index - 1))
             replaceAll(in: str, source: "\\ajKuroKakuAlph\(index)", destination: destination, addingPercent: false)
         }
         return str as String
@@ -675,21 +682,56 @@ extension String {
 // MARK: - Helpers
 
 private extension String {
-    static func string(fromCodePoint codePoint: UInt32) -> String {
-        if codePoint <= 0xFFFF, let scalar = UnicodeScalar(codePoint) {
-            return String(scalar)
-        }
-        let value = codePoint - 0x10000
-        let high = UInt32(value / 0x400 + 0xD800)
-        let low = UInt32(value % 0x400 + 0xDC00)
-        guard let highScalar = UnicodeScalar(high), let lowScalar = UnicodeScalar(low) else { return "" }
-        return String(highScalar) + String(lowScalar)
+    /// The character of a Unicode scalar value; nil for surrogate code points and values beyond U+10FFFF.
+    static func scalarString(_ codePoint: UInt32) -> String? {
+        UnicodeScalar(codePoint).map { String($0) }
     }
 
+    /// The character of a code point in the conversion tables, which are all Unicode scalars.
+    static func string(fromCodePoint codePoint: UInt32) -> String {
+        scalarString(codePoint) ?? ""
+    }
+
+    /// Whether the backslash at location starts a command: it follows an even number of backslashes.
+    static func startsCommand(_ string: NSString, at location: Int) -> Bool {
+        var count = 0
+        while location - count - 1 >= 0 && string.character(at: location - count - 1) == 0x5C { count += 1 }
+        return count % 2 == 0
+    }
+
+    /// The Adobe-Japan1 CID of a character sequence, or nil. Hiragino is CID-keyed Adobe-Japan1, so its glyph
+    /// numbers are CIDs. A sequence that Hiragino does not draw as one glyph of its own (emoji, joined sequences,
+    /// combining marks it cannot compose) has no CID; the glyph number of another font is not one (TeXShop 5.60).
+    static func adobeJapan1CID(for sequence: String) -> Int? {
+        guard let font = hiraginoFont, !sequence.isEmpty else { return nil }
+        let length = (sequence as NSString).length
+        let storage = NSTextStorage(string: sequence, attributes: [.font: font])
+        let layout = NSLayoutManager()
+        let container = NSTextContainer(size: NSSize(width: 1000, height: 1000))
+        layout.addTextContainer(container)
+        storage.addLayoutManager(layout)
+        layout.ensureLayout(forCharacterRange: NSRange(location: 0, length: length))
+        storage.fixAttributes(in: NSRange(location: 0, length: length))
+        var run = NSRange()
+        let used = storage.attribute(.font, at: 0, effectiveRange: &run) as? NSFont
+        guard used?.fontName == font.fontName, run.length >= length else { return nil }
+        let glyphs = layout.glyphRange(forCharacterRange: NSRange(location: 0, length: length), actualCharacterRange: nil)
+        var cid: Int?
+        for index in glyphs.location..<NSMaxRange(glyphs) {
+            let glyph = layout.cgGlyph(at: index)
+            let property = layout.propertyForGlyph(at: index)
+            if property.contains(.null) || property.contains(.controlCharacter) { continue }
+            if cid != nil { return nil } // more than one glyph
+            cid = Int(glyph)
+        }
+        return cid == 0 ? nil : cid
+    }
+
+    static let hiraginoFont = NSFont(name: "HiraginoSans-W3", size: 12) ?? NSFont(name: "HiraKakuProN-W3", size: 12)
+
     func replaceCID(_ cid: Int, codePoint: UInt32, in string: NSMutableString) {
-        let source = "\\CID{\(cid)}"
-        let destination = Self.string(fromCodePoint: codePoint)
-        string.replaceAllOccurrences(ofString: source, withString: destination, addingPercentForEndOfLine: false)
+        guard let destination = Self.scalarString(codePoint) else { return }
+        string.replaceAllOccurrences(ofString: "\\CID{\(cid)}", withString: destination, addingPercentForEndOfLine: false)
     }
 
     func replaceMappedCharacters(
