@@ -81,42 +81,28 @@ extension String {
     }
 
     func stringByReplacingUTFWithUnicodeCharacters() -> String {
-        // Only a command is converted: not an escaped backslash (\\UTF{...}), and not a surrogate code point,
-        // which is not a character (TeXShop 5.60).
+        // One pass over the original text for both commands, as TeXShop does: what a replacement gives is not read
+        // again, and a command after an escaped backslash (\\UTF{...}, \\CID{...}) is left as it is. A surrogate
+        // code point is not a character, and an unknown CID has no character (TeXShop 5.60).
         let source = self as NSString
         let str = NSMutableString()
         var offset = 0
-        let pattern = try! NSRegularExpression(pattern: #"\\UTF\{([0-9A-Fa-f]{4})\}"#)
+        let pattern = try! NSRegularExpression(pattern: #"\\(?:UTF\{([0-9A-Fa-f]{4})\}|CID\{([0-9]+)\})"#)
         for match in pattern.matches(in: self, range: NSRange(location: 0, length: source.length)) {
             str.append(source.substring(with: NSRange(location: offset, length: match.range.location - offset)))
-            let value = UInt32(source.substring(with: match.range(at: 1)), radix: 16) ?? 0xD800
-            if Self.startsCommand(source, at: match.range.location), let character = Self.scalarString(value) {
-                str.append(character)
-            } else {
-                str.append(source.substring(with: match.range))
+            var character: String?
+            if Self.startsCommand(source, at: match.range.location) {
+                if match.range(at: 1).location != NSNotFound {
+                    character = UInt32(source.substring(with: match.range(at: 1)), radix: 16).flatMap(Self.scalarString)
+                } else if let cid = Int(source.substring(with: match.range(at: 2))), let codePoint = cidToUnicode[cid] {
+                    character = Self.scalarString(codePoint)
+                }
             }
+            str.append(character ?? source.substring(with: match.range))
             offset = NSMaxRange(match.range)
         }
         str.append(source.substring(from: offset))
-
-        // One pass over the \CID commands, as TeXShop does: the result does not depend on the order of the table.
-        let cidPattern = try! NSRegularExpression(pattern: #"\\CID\{([0-9]+)\}"#)
-        let afterUTF = str as String
-        let afterUTFString = afterUTF as NSString
-        let decoded = NSMutableString()
-        var cidOffset = 0
-        for match in cidPattern.matches(in: afterUTF, range: NSRange(location: 0, length: afterUTFString.length)) {
-            decoded.append(afterUTFString.substring(with: NSRange(location: cidOffset, length: match.range.location - cidOffset)))
-            if let cid = Int(afterUTFString.substring(with: match.range(at: 1))), let codePoint = cidToUnicode[cid],
-               let character = Self.scalarString(codePoint) {
-                decoded.append(character)
-            } else {
-                decoded.append(afterUTFString.substring(with: match.range))
-            }
-            cidOffset = NSMaxRange(match.range)
-        }
-        decoded.append(afterUTFString.substring(from: cidOffset))
-        return decoded as String
+        return str as String
     }
 
     // MARK: - Hiragana / Katakana

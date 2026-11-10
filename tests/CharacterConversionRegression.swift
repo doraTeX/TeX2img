@@ -83,4 +83,11 @@ check("\\ajMaru{1}".stringByReplacingAjMacrosWithUnicodeCharacters() == "①", "
 check("\u{1F110}".stringByReplacingUnicodeCharactersWithAjMacros() != "\u{1F110}", "U+1F110 becomes an ajmacro")
 check("\u{1F110}".stringByReplacingUnicodeCharactersWithAjMacros().stringByReplacingAjMacrosWithUnicodeCharacters() == "\u{1F110}",
       "U+1F110 round trip")
+// \UTF and \CID are read in one pass over the original text: an escaped backslash does not start either command,
+// and what a \UTF command gives does not start a \CID command.
+check("\\\\CID{100}".stringByReplacingUTFWithUnicodeCharacters() == "\\\\CID{100}", "\\\\CID{100} is kept")
+check("\\\\\\CID{100}".stringByReplacingUTFWithUnicodeCharacters() == "\\\\~", "\\\\\\CID{100} converts its command")
+check("\\UTF{005C}CID{100}".stringByReplacingUTFWithUnicodeCharacters() == "\\CID{100}", "\\UTF{005C}CID{100} is \\CID{100}")
+check("\\UTF{005C}UTF{0041}".stringByReplacingUTFWithUnicodeCharacters() == "\\UTF{0041}", "\\UTF{005C}UTF{0041} is \\UTF{0041}")
+check("\\CID{100}\\UTF{9AD9}\\CID{13706}".stringByReplacingUTFWithUnicodeCharacters() == "~髙𠮷", "both commands")
 print("Character conversion regression tests passed")
