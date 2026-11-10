@@ -152,7 +152,7 @@ class TeXTextView: NSTextView {
             (Int(HiraganaToKatakana_Tag), localizedString("Hiragana to Katakana")),
             (Int(KatakanaToHiragana_Tag), localizedString("Katakana to Hiragana")),
             (Int(FullwidthDigitsToHalfwidthDigits_Tag), localizedString("Fullwidth Digits to Halfwidth Digits")),
-            (Int(HalfwidthDigitsToFullwidthDigits_Tag), localizedString("Halfwidth Digits to Halfwidth Digits")),
+            (Int(HalfwidthDigitsToFullwidthDigits_Tag), localizedString("Halfwidth Digits to Fullwidth Digits")),
             (Int(FullwidthAlphabetsToHalfwidthAlphabets_Tag), localizedString("Fullwidth Alphabets to Halfwidth Alphabets")),
             (Int(HalfwidthAlphabetsToFullwidthAlphabets_Tag), localizedString("Halfwidth Alphabets to Fullwidth Alphabets")),
             (Int(UnicodeCharactersToAJMacros_Tag), localizedString("Unicode Characters to AJ Macros")),
@@ -184,6 +184,9 @@ class TeXTextView: NSTextView {
         if menuItem.action == #selector(showCharacterInfo(_:)) {
             return selectedRange.length > 0
         }
+        if menuItem.action == #selector(exchangePaste(_:)) {
+            return isEditable && NSPasteboard.general.canReadObject(forClasses: [NSString.self], options: nil)
+        }
         return super.validateMenuItem(menuItem)
     }
 
@@ -192,6 +195,23 @@ class TeXTextView: NSTextView {
         if c >= 97 && c <= 122 { return true }
         if c == 64, let controller, controller.currentProfile().boolForKey(MakeatletterEnabledKey) { return true }
         return false
+    }
+
+    /// Replaces the selection with the text on the clipboard and puts the replaced text on the clipboard,
+    /// so that two pieces of text can be swapped. With nothing selected this is an ordinary paste (TeXShop 5.60).
+    @IBAction func exchangePaste(_ sender: Any?) {
+        let general = NSPasteboard.general
+        var replaced: String?
+        if selectedRange.length > 0, general.canReadObject(forClasses: [NSString.self], options: nil) {
+            let selection = NSPasteboard(name: NSPasteboard.Name(UUID().uuidString))
+            if writeSelection(to: selection, types: [.string]) { replaced = selection.string(forType: .string) }
+            selection.releaseGlobally()
+        }
+        paste(sender)
+        if let replaced {
+            general.clearContents()
+            general.setString(replaced, forType: .string)
+        }
     }
 
     override func copy(_ sender: Any?) {
@@ -352,6 +372,8 @@ class TeXTextView: NSTextView {
         let oldString = string.substring(with: oldRange)
 
         stringBuf = stringBuf.replacingOccurrences(of: "#SEL#", with: oldString)
+        // #PASTE# stands for the text on the clipboard, or nothing (TeXShop 5.60).
+        stringBuf = stringBuf.replacingOccurrences(of: "#PASTE#", with: NSPasteboard.general.string(forType: .string) ?? "")
 
         var searchRange = stringBuf.range(of: "#INS#", options: .literal)
         if searchRange.location != NSNotFound {
@@ -699,119 +721,73 @@ class TeXTextView: NSTextView {
         showFindIndicator(for: selectedRange)
     }
 
+    /// Replaces the text in range with its converted form as one undoable edit (TeXShop's replaceRange:usingConversion:).
+    private func replace(_ range: NSRange, using conversion: (String) -> String, actionName: String) {
+        var range = range
+        let oldString = string.substring(with: range)
+        let newString = conversion(oldString)
+        if newString != oldString, shouldChangeText(in: range, replacementString: newString) {
+            replaceCharacters(in: range, with: newString)
+            didChangeText()
+            undoManager?.setActionName(actionName)
+            range.length = newString.nsLength
+        }
+        selectedRange = range
+    }
+
+    /// Converts the selection; with nothing selected, the whole document after the user agrees.
+    private func convertSelection(using conversion: (String) -> String, actionName: String) -> Bool {
+        let range = selectedRange
+        if range.length > 0 {
+            replace(range, using: conversion, actionName: actionName)
+            return true
+        }
+        guard string.nsLength > 0 else {
+            NSSound.beep()
+            return false
+        }
+        guard UtilityG.runConfirmPanel(message: localizedString("Do you apply it to the entire document?")), isEditable else { return false }
+        replace(NSRange(location: 0, length: string.nsLength), using: conversion, actionName: actionName)
+        return true
+    }
+
     @IBAction func convertCharacterType(_ sender: NSMenuItem) {
-        var selectedRange = self.selectedRange
-
-        if selectedRange.length <= 0 {
-            guard UtilityG.runConfirmPanel(message: localizedString("Do you apply it to the entire document?")) else { return }
-            selectAll(sender)
-            selectedRange = self.selectedRange
-        }
-
-        let selectedString = string.substring(with: selectedRange)
-        let newString: String
-        let undoKey: String?
-
+        let conversion: (String) -> String
         switch sender.tag {
-        case Int(HiraganaToKatakana_Tag):
-            newString = selectedString.stringByReplacingHiraganaWithKatakana()
-            undoKey = localizedString("Hiragana to Katakana")
-        case Int(KatakanaToHiragana_Tag):
-            newString = selectedString.stringByReplacingKatakanaWithHiragana()
-            undoKey = localizedString("Katakana to Hiragana")
-        case Int(FullwidthDigitsToHalfwidthDigits_Tag):
-            newString = selectedString.stringByReplacingFullwidthDigitsWithHalfwidthDigits()
-            undoKey = localizedString("Fullwidth Digits to Halfwidth Digits")
-        case Int(HalfwidthDigitsToFullwidthDigits_Tag):
-            newString = selectedString.stringByReplacingHalfwidthDigitsWithFullwidthDigits()
-            undoKey = localizedString("Halfwidth Digits to Fullwidth Digits")
-        case Int(FullwidthAlphabetsToHalfwidthAlphabets_Tag):
-            newString = selectedString.stringByReplacingFullwidthAlphabetsWithHalfwidthAlphabets()
-            undoKey = localizedString("Fullwidth Alphabets to Halfwidth Alphabets")
-        case Int(HalfwidthAlphabetsToFullwidthAlphabets_Tag):
-            newString = selectedString.stringByReplacingHalfwidthAlphabetsWithFullwidthAlphabets()
-            undoKey = localizedString("Halfwidth Alphabets to Fullwidth Alphabets")
-        case Int(UnicodeCharactersToAJMacros_Tag):
-            newString = selectedString.stringByReplacingUnicodeCharactersWithAjMacros()
-            undoKey = localizedString("Unicode Characters to AJ Macros")
-        case Int(AJMacrosToUnicodeCharacters_Tag):
-            newString = selectedString.stringByReplacingAjMacrosWithUnicodeCharacters()
-            undoKey = localizedString("AJ Macros to Unicode Characters")
-        case Int(UnicodeCharactersToUTF_Tag):
-            newString = selectedString.stringByReplacingUnicodeCharactersWithUTF()
-            undoKey = localizedString("Unicode Characters to UTF")
-        case Int(UTFToUnicodeCharacters_Tag):
-            newString = selectedString.stringByReplacingUTFWithUnicodeCharacters()
-            undoKey = localizedString("UTF to Unicode Characters")
-        case Int(FullwidthQuotesToHalfwidthQuotes_Tag):
-            newString = selectedString.stringByReplacingFullwidthQuotesWithHalfwidthQuotes()
-            undoKey = localizedString("Fullwidth Quotes to Halfwidth Quotes")
+        case Int(HiraganaToKatakana_Tag): conversion = { $0.stringByReplacingHiraganaWithKatakana() }
+        case Int(KatakanaToHiragana_Tag): conversion = { $0.stringByReplacingKatakanaWithHiragana() }
+        case Int(FullwidthDigitsToHalfwidthDigits_Tag): conversion = { $0.stringByReplacingFullwidthDigitsWithHalfwidthDigits() }
+        case Int(HalfwidthDigitsToFullwidthDigits_Tag): conversion = { $0.stringByReplacingHalfwidthDigitsWithFullwidthDigits() }
+        case Int(FullwidthAlphabetsToHalfwidthAlphabets_Tag): conversion = { $0.stringByReplacingFullwidthAlphabetsWithHalfwidthAlphabets() }
+        case Int(HalfwidthAlphabetsToFullwidthAlphabets_Tag): conversion = { $0.stringByReplacingHalfwidthAlphabetsWithFullwidthAlphabets() }
+        case Int(UnicodeCharactersToAJMacros_Tag): conversion = { $0.stringByReplacingUnicodeCharactersWithAjMacros() }
+        case Int(AJMacrosToUnicodeCharacters_Tag): conversion = { $0.stringByReplacingAjMacrosWithUnicodeCharacters() }
+        case Int(UnicodeCharactersToUTF_Tag): conversion = { $0.stringByReplacingUnicodeCharactersWithUTF() }
+        case Int(UTFToUnicodeCharacters_Tag): conversion = { $0.stringByReplacingUTFWithUnicodeCharacters() }
+        case Int(FullwidthQuotesToHalfwidthQuotes_Tag): conversion = { $0.stringByReplacingFullwidthQuotesWithHalfwidthQuotes() }
         default:
-            newString = selectedString as String
-            undoKey = nil
-        }
-
-        guard let undoKey else {
             NSSound.beep()
             return
         }
-
-        replaceCharacters(in: selectedRange, with: newString)
-        registerUndo(with: selectedString as String, location: UInt(selectedRange.location), length: UInt(newString.nsLength), key: undoKey)
-        undoManager?.setActionName(undoKey)
-        self.selectedRange = NSRange(location: selectedRange.location, length: newString.nsLength)
+        _ = convertSelection(using: conversion, actionName: sender.title)
     }
 
     @IBAction func normalizeSelectedString(_ sender: NSMenuItem) {
-        var selectedRange = self.selectedRange
-
-        if selectedRange.length <= 0 {
-            guard UtilityG.runConfirmPanel(message: localizedString("Do you apply it to the entire document?")) else { return }
-            selectAll(sender)
-            selectedRange = self.selectedRange
-        }
-
-        let selectedString = string.substring(with: selectedRange)
-        let newString: String
-        let undoKey: String?
-
+        let conversion: (String) -> String
         switch sender.tag {
-        case Int(NFC_Tag):
-            newString = selectedString.precomposedStringWithCanonicalMapping
-            undoKey = "NFC"
-        case Int(Modified_NFC_Tag):
-            newString = selectedString.normalizedStringWithModifiedNFC()
-            undoKey = "Modified NFC"
-        case Int(NFD_Tag):
-            newString = selectedString.decomposedStringWithCanonicalMapping
-            undoKey = "NFD"
-        case Int(Modified_NFD_Tag):
-            newString = selectedString.normalizedStringWithModifiedNFD()
-            undoKey = "Modified NFD"
-        case Int(NFKC_Tag):
-            newString = selectedString.precomposedStringWithCompatibilityMapping
-            undoKey = "NFKC"
-        case Int(NFKD_Tag):
-            newString = selectedString.decomposedStringWithCompatibilityMapping
-            undoKey = "NFKD"
-        case Int(NFKC_CF_Tag):
-            newString = selectedString.normalizedStringWithNFKC_CF()
-            undoKey = "NFKC Casefold"
+        case Int(NFC_Tag): conversion = { $0.precomposedStringWithCanonicalMapping }
+        case Int(Modified_NFC_Tag): conversion = { $0.normalizedStringWithModifiedNFC() }
+        case Int(NFD_Tag): conversion = { $0.decomposedStringWithCanonicalMapping }
+        case Int(Modified_NFD_Tag): conversion = { $0.normalizedStringWithModifiedNFD() }
+        case Int(NFKC_Tag): conversion = { $0.precomposedStringWithCompatibilityMapping }
+        case Int(NFKD_Tag): conversion = { $0.decomposedStringWithCompatibilityMapping }
+        case Int(NFKC_CF_Tag): conversion = { $0.normalizedStringWithNFKC_CF() }
         default:
-            newString = selectedString as String
-            undoKey = nil
-        }
-
-        guard let undoKey else {
             NSSound.beep()
             return
         }
-
-        replaceCharacters(in: selectedRange, with: newString)
-        registerUndo(with: selectedString as String, location: UInt(selectedRange.location), length: UInt(newString.nsLength), key: undoKey)
-        undoManager?.setActionName(undoKey)
-        self.selectedRange = NSRange(location: selectedRange.location, length: newString.nsLength)
-        showCharacterInfo(nil)
+        // The result looks the same as before, so show what the selection now contains.
+        if convertSelection(using: conversion, actionName: sender.title) { showCharacterInfo(nil) }
     }
 
     @IBAction func insertNewpage(_ sender: NSMenuItem) {

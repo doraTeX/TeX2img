@@ -140,6 +140,12 @@
                                     <action selector="paste:" target="-1" id="226"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="交換ペースト" id="TXc-xP-sw1">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="exchangePaste:" target="-1" id="TXc-xP-sw2"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="削除" id="202">
                                 <connections>
                                     <action selector="delete:" target="-1" id="235"/>
