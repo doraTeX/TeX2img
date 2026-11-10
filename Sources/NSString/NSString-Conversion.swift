@@ -1,5 +1,6 @@
 import AppKit
 import CoreFoundation
+import CoreText
 import Foundation
 
 extension String {
@@ -7,7 +8,8 @@ extension String {
 
     /// Characters outside JIS X 0208 become \UTF{xxxx}, and sequences with an Adobe-Japan1 CID become \CID{n}.
     /// A sequence without one is kept as is, except when it is written in `outputEncoding` and that encoding
-    /// cannot hold it: then the glyph number of the default font is used, as before TeXShop 5.60, so that the
+    /// cannot hold it: then a variation sequence that Hiragino does not register is written as its base character
+    /// alone, and another sequence as the glyph number of the default font, as before TeXShop 5.60, so that the
     /// file can still be written.
     func stringByReplacingUnicodeCharactersWithUTF(outputEncoding: String.Encoding? = nil) -> String {
         let nsSelf = self as NSString
@@ -48,17 +50,36 @@ extension String {
                     // A sequence (a surrogate pair, a variation sequence) becomes \CID{n} only when it has an
                     // Adobe-Japan1 CID; otherwise it is kept as is, unless the output encoding cannot hold it
                     // (TeXShop 5.60).
+                    var command: String?
                     if let cid = Self.adobeJapan1CID(for: subString) {
-                        utfString = NSMutableString(string: "\\CID{\(cid)}")
-                    } else if let outputEncoding, !subString.canBeConverted(to: outputEncoding),
-                              let glyph = Self.defaultFontGlyph(for: subString) {
-                        utfString = NSMutableString(string: "\\CID{\(glyph)}")
-                    } else {
+                        command = "\\CID{\(cid)}"
+                    } else if let outputEncoding, !subString.canBeConverted(to: outputEncoding) {
+                        if let base = Self.baseOfVariationSequence(subString) {
+                            // Hiragino does not register this variation sequence, and the encoding cannot keep the
+                            // selector: the base character alone is written, and pTeX's font draws it (TeXShop 5.60).
+                            if base.canBeConverted(to: iso2022jp) {
+                                // An ordinary character: no command, so no "%" at the line end.
+                                newString.append(base)
+                                charRange.location += charRange.length
+                                charRange.length = 1
+                                continue
+                            } else if (base as NSString).length == 1 {
+                                command = String(format: "%CUTF{%04X}", texChar, (base as NSString).character(at: 0))
+                            } else if let cid = Self.adobeJapan1CID(for: base) {
+                                command = "\\CID{\(cid)}"
+                            }
+                        }
+                        if command == nil, let glyph = Self.defaultFontGlyph(for: subString) {
+                            command = "\\CID{\(glyph)}"
+                        }
+                    }
+                    guard let command else {
                         newString.append(subString)
                         charRange.location += charRange.length
                         charRange.length = 1
                         continue
                     }
+                    utfString = NSMutableString(string: command)
                 } else if subString.character(at: 0) == 0x2015 {
                     utfString = NSMutableString(format: "%C", 0x2014)
                 } else {
@@ -728,11 +749,81 @@ private extension String {
         return count % 2 == 0
     }
 
+    static func isVariationSelector(_ value: UInt32) -> Bool {
+        (0xFE00...0xFE0F).contains(value) || (0xE0100...0xE01EF).contains(value)
+    }
+
+    /// The base of a sequence made of one character and one variation selector, or nil.
+    static func baseOfVariationSequence(_ sequence: String) -> String? {
+        let scalars = Array(sequence.unicodeScalars)
+        guard scalars.count == 2, !isVariationSelector(scalars[0].value), isVariationSelector(scalars[1].value) else { return nil }
+        return String(scalars[0])
+    }
+
+    /// The bytes of the cmap table of Hiragino, read once.
+    static let hiraginoCmap: [UInt8] = hiraginoFont.flatMap {
+        (CTFontCopyTable($0 as CTFont, CTFontTableTag(kCTFontTableCmap), []) as Data?).map { [UInt8]($0) }
+    } ?? []
+
+    /// The glyph that the format 14 cmap subtable of Hiragino registers for base + selector: a non-default UVS
+    /// glyph, `fallback` for a default UVS, or nil when the font does not register the sequence (the text system
+    /// would then ignore the selector).
+    static func variationGlyph(base: UInt32, selector: UInt32, fallback: Int?) -> Int? {
+        let bytes = hiraginoCmap
+        let n = bytes.count
+        func u16(_ o: Int) -> UInt32 { o + 2 <= n ? UInt32(bytes[o]) << 8 | UInt32(bytes[o + 1]) : 0 }
+        func u24(_ o: Int) -> UInt32 { o + 3 <= n ? UInt32(bytes[o]) << 16 | UInt32(bytes[o + 1]) << 8 | UInt32(bytes[o + 2]) : 0 }
+        func u32(_ o: Int) -> UInt32 { o + 4 <= n ? UInt32(bytes[o]) << 24 | UInt32(bytes[o + 1]) << 16 | UInt32(bytes[o + 2]) << 8 | UInt32(bytes[o + 3]) : 0 }
+        guard n >= 4 else { return nil }
+        var subtable = 0
+        for i in 0..<Int(u16(2)) {
+            let record = 4 + 8 * i
+            if u16(record) == 0 && u16(record + 2) == 5 { subtable = Int(u32(record + 4)); break }
+        }
+        guard subtable != 0, u16(subtable) == 14 else { return nil }
+        for i in 0..<Int(u32(subtable + 6)) {
+            let record = subtable + 10 + 11 * i
+            guard u24(record) == selector else { continue }
+            let defaults = Int(u32(record + 3)), nondefaults = Int(u32(record + 7))
+            if defaults != 0 {
+                let table = subtable + defaults
+                for r in 0..<Int(u32(table)) {
+                    let first = u24(table + 4 + 4 * r)
+                    let extra = table + 4 + 4 * r + 3 < n ? UInt32(bytes[table + 4 + 4 * r + 3]) : 0
+                    if base >= first && base <= first + extra { return fallback }
+                }
+            }
+            if nondefaults != 0 {
+                let table = subtable + nondefaults
+                for m in 0..<Int(u32(table)) where u24(table + 4 + 5 * m) == base {
+                    return Int(u16(table + 4 + 5 * m + 3))
+                }
+            }
+            return nil
+        }
+        return nil
+    }
+
     /// The Adobe-Japan1 CID of a character sequence, or nil. Hiragino is CID-keyed Adobe-Japan1, so its glyph
-    /// numbers are CIDs. A sequence that Hiragino does not draw as one glyph of its own (emoji, joined sequences,
-    /// combining marks it cannot compose) has no CID; the glyph number of another font is not one (TeXShop 5.60).
+    /// numbers are CIDs. A sequence has a CID when Hiragino draws it as one glyph of its own: a variation sequence
+    /// only when the font registers it, other sequences only when they become one glyph without help from another
+    /// font and without leaving out characters other than combining marks. The glyph number of another font
+    /// (emoji, joined sequences) is not a CID (TeXShop 5.60).
     static func adobeJapan1CID(for sequence: String) -> Int? {
         guard let font = hiraginoFont, !sequence.isEmpty else { return nil }
+        let scalars = Array(sequence.unicodeScalars)
+        if scalars.contains(where: { isVariationSelector($0.value) }) {
+            guard let base = baseOfVariationSequence(sequence) else { return nil }
+            var baseCID = adobeJapan1CID(for: base)
+            if baseCID == nil, (base as NSString).length == 1 {
+                // A BMP base drawn by Hiragino on its own: its glyph is its CID.
+                var character = (base as NSString).character(at: 0)
+                var glyph: CGGlyph = 0
+                if CTFontGetGlyphsForCharacters(font as CTFont, &character, &glyph, 1), glyph != 0 { baseCID = Int(glyph) }
+            }
+            let cid = variationGlyph(base: scalars[0].value, selector: scalars[1].value, fallback: baseCID)
+            return cid == 0 ? nil : cid
+        }
         let length = (sequence as NSString).length
         let storage = NSTextStorage(string: sequence, attributes: [.font: font])
         let layout = NSLayoutManager()
@@ -745,12 +836,18 @@ private extension String {
         let used = storage.attribute(.font, at: 0, effectiveRange: &run) as? NSFont
         guard used?.fontName == font.fontName, run.length >= length else { return nil }
         let glyphs = layout.glyphRange(forCharacterRange: NSRange(location: 0, length: length), actualCharacterRange: nil)
+        let marks = CharacterSet.nonBaseCharacters as NSCharacterSet
         var cid: Int?
         for index in glyphs.location..<NSMaxRange(glyphs) {
             let glyph = layout.cgGlyph(at: index)
             let property = layout.propertyForGlyph(at: index)
-            if property.contains(.controlCharacter) { return nil } // a control character is not part of a CID
-            if property.contains(.null) { continue } // a variation selector
+            if glyph == 0 || property.contains(.null) || property.contains(.controlCharacter) {
+                // Only the second half of a surrogate pair, or a combining mark composed into the preceding glyph,
+                // may be left out.
+                let character = (sequence as NSString).character(at: layout.characterIndexForGlyph(at: index))
+                if !CFStringIsSurrogateLowCharacter(character) && !marks.characterIsMember(character) { return nil }
+                continue
+            }
             if cid != nil { return nil } // more than one glyph
             cid = Int(glyph)
         }

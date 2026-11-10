@@ -83,6 +83,34 @@ check("\\ajMaru{1}".stringByReplacingAjMacrosWithUnicodeCharacters() == "①", "
 check("\u{1F110}".stringByReplacingUnicodeCharactersWithAjMacros() != "\u{1F110}", "U+1F110 becomes an ajmacro")
 check("\u{1F110}".stringByReplacingUnicodeCharactersWithAjMacros().stringByReplacingAjMacrosWithUnicodeCharacters() == "\u{1F110}",
       "U+1F110 round trip")
+// A variation sequence becomes \CID only when Hiragino's format 14 cmap registers it (TeXShop 5.60). Otherwise
+// the text system ignores the selector and draws the base glyph, so the selector would be lost in a \CID.
+for kept in ["あ\u{FE00}", "葛\u{FE00}", "辻\u{E0102}", "葛\u{E01EF}", "葛\u{FE0F}", "髙\u{E01EF}", "𠮷\u{E01EF}"] {
+    let output = kept.stringByReplacingUnicodeCharactersWithUTF()
+    check(output == kept, "unregistered \(hex(kept)) is kept, not \(output)")
+}
+check("葛\u{E0100}".stringByReplacingUnicodeCharactersWithUTF() == "\\CID{1481}", "registered 葛+E0100 is \\CID{1481}")
+check("辻\u{E0101}".stringByReplacingUnicodeCharactersWithUTF() == "\\CID{8267}", "registered 辻+E0101 is \\CID{8267}")
+check("e\u{0301}".stringByReplacingUnicodeCharactersWithUTF() == "\\CID{201}", "a combining sequence Hiragino composes is \\CID{201}")
+// Only a combining mark or the second half of a surrogate pair may be left out of the one glyph.
+for kept in ["a\u{200D}", "あ\u{200D}"] {
+    check(kept.stringByReplacingUnicodeCharactersWithUTF() == kept, "\(hex(kept)) is kept, not \(kept.stringByReplacingUnicodeCharactersWithUTF())")
+}
+// Writing the source: an unregistered variation sequence that the encoding cannot hold is written as its base
+// character alone (\UTF or \CID when the base needs one), not as the glyph number of another font.
+for encoding in [shiftJIS, .japaneseEUC, .iso2022JP] {
+    let cases: [(String, String)] = [
+        ("あ\u{FE00}x", "あx"), ("葛\u{E01EF}|葛\u{FE0F}", "葛|葛"), ("葛\u{E01EF}\nx", "葛\nx"), ("辻\u{E0102}", "辻"),
+        ("髙\u{E01EF}x", "\\UTF{9AD9}x"), ("髙\u{E01EF}\nx", "\\UTF{9AD9}%\nx"), ("𠮷\u{E01EF}x", "\\CID{13706}x"),
+        ("葛\u{E0100}\nx", "\\CID{1481}%\nx"), ("辻\u{E0101}", "\\CID{8267}"), ("e\u{0301}x", "\\CID{201}x"),
+    ]
+    for (source, expected) in cases {
+        let output = source.stringByReplacingUnicodeCharactersWithUTF(outputEncoding: encoding)
+        check(output == expected, "\(hex(source)) is written as \(expected) in \(encoding), not \(output)")
+    }
+}
+// In UTF-8 the sequence itself can be written, so it is kept.
+check("葛\u{E01EF}x".stringByReplacingUnicodeCharactersWithUTF(outputEncoding: .utf8) == "葛\u{E01EF}x", "kept in UTF-8")
 // \UTF and \CID are read in one pass over the original text: an escaped backslash does not start either command,
 // and what a \UTF command gives does not start a \CID command.
 check("\\\\CID{100}".stringByReplacingUTFWithUnicodeCharacters() == "\\\\CID{100}", "\\\\CID{100} is kept")
