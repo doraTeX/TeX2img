@@ -118,4 +118,25 @@ check("\\\\\\CID{100}".stringByReplacingUTFWithUnicodeCharacters() == "\\\\~", "
 check("\\UTF{005C}CID{100}".stringByReplacingUTFWithUnicodeCharacters() == "\\CID{100}", "\\UTF{005C}CID{100} is \\CID{100}")
 check("\\UTF{005C}UTF{0041}".stringByReplacingUTFWithUnicodeCharacters() == "\\UTF{0041}", "\\UTF{005C}UTF{0041} is \\UTF{0041}")
 check("\\CID{100}\\UTF{9AD9}\\CID{13706}".stringByReplacingUTFWithUnicodeCharacters() == "~髙𠮷", "both commands")
+// Reading a source back (importing from an image or a .tex file) decodes only what \UTF output writes, as TeXShop
+// does when it opens a file.
+let readCases: [(String, String)] = [
+    ("\\UTF{9AD9}", "髙"), ("\\UTFK{9AD9}\\UTFT{9AD9}\\UTFC{9AD9}", "髙髙髙"), ("\\UTF{9ad9}", "髙"),
+    ("\\UTF{9AD9}%\nx", "髙%\nx"),
+    ("\\UTF{FF5E}\\UTF{FF0D}", "\u{301C}\u{2212}"),
+    ("\\UTF{0041}\\UTF{3042}\\UTF{845B}", "\\UTF{0041}\\UTF{3042}\\UTF{845B}"), // characters in JIS X 0208 or ASCII
+    ("\\\\UTF{9AD9}", "\\\\UTF{9AD9}"), ("\\\\\\UTF{9AD9}", "\\\\髙"),
+    ("\\UTF{D800}\\UTF{DFFF}", "\\UTF{D800}\\UTF{DFFF}"), ("\\UTF{zz00}", "\\UTF{zz00}"),
+    ("\\CID{13706}\\CID{1481}", "\\CID{13706}\\CID{1481}"), ("\\UTFX{9AD9}", "\\UTFX{9AD9}"),
+    ("\\UTF{005C}UTF{9AD9}", "\\UTF{005C}UTF{9AD9}"),
+]
+for (source, expected) in readCases {
+    let output = source.stringByDecodingUTFCommandsForReading()
+    check(output == expected, "reading \(source) gives \(expected), not \(output)")
+}
+for encoding in [String.Encoding.utf8, shiftJIS] {
+    let source = "髙\n𠮷\u{301C}"
+    let written = source.stringByReplacingUnicodeCharactersWithUTF(outputEncoding: encoding)
+    check(written.stringByDecodingUTFCommandsForReading() == "髙%\n\\CID{13706}\u{301C}", "round trip in \(encoding): \(written)")
+}
 print("Character conversion regression tests passed")

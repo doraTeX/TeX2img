@@ -126,6 +126,35 @@ extension String {
         return str as String
     }
 
+    /// What reading a source back decodes, as TeXShop does when it opens a file: only what \UTF output writes,
+    /// that is \UTF, \UTFK, \UTFT and \UTFC commands (not after an escaped backslash) for characters outside
+    /// JIS X 0208, and for U+FF5E and U+FF0D, which become U+301C and U+2212. Literal examples such as
+    /// \verb|\UTF{0041}|, surrogate code points and \CID commands are left as they are.
+    func stringByDecodingUTFCommandsForReading() -> String {
+        let source = self as NSString
+        let str = NSMutableString()
+        var offset = 0
+        let pattern = try! NSRegularExpression(pattern: #"\\(?:UTF|UTFK|UTFT|UTFC)\{([0-9a-fA-F]{4})\}"#)
+        for match in pattern.matches(in: self, range: NSRange(location: 0, length: source.length)) {
+            str.append(source.substring(with: NSRange(location: offset, length: match.range.location - offset)))
+            let value = UInt32(source.substring(with: match.range(at: 1)), radix: 16) ?? 0xD800
+            let decoded = Self.scalarString(value)
+            let written = decoded.map { value == 0xFF5E || value == 0xFF0D || !$0.canBeConverted(to: .iso2022JP) } ?? false
+            if written, let decoded, Self.startsCommand(source, at: match.range.location) {
+                switch value {
+                case 0xFF5E: str.append("\u{301C}") // FULLWIDTH TILDE → WAVE DASH
+                case 0xFF0D: str.append("\u{2212}") // FULLWIDTH HYPHEN-MINUS → MINUS SIGN
+                default: str.append(decoded)
+                }
+            } else {
+                str.append(source.substring(with: match.range))
+            }
+            offset = NSMaxRange(match.range)
+        }
+        str.append(source.substring(from: offset))
+        return str as String
+    }
+
     // MARK: - Hiragana / Katakana
 
     func stringByReplacingHiraganaWithKatakana() -> String {

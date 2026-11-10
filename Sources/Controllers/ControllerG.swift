@@ -1390,7 +1390,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     private func placeImportedSource(_ contents: String) {
         // Windows (CRLF) and old Mac (CR) line breaks become LF, as TeXShop does when opening a file.
+        // \UTF commands that \UTF output wrote (TeX2img's embedded source, or a file saved by TeXShop) become
+        // characters again, as TeXShop does when opening a file; \CID commands are kept.
         let contents = contents.replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\r", with: "\n")
+            .stringByDecodingUTFCommandsForReading()
         let parts = analyzeContents(contents)
         if !parts[0].isEmpty {
             preambleTextView.replaceEntireContents(with: parts[0])

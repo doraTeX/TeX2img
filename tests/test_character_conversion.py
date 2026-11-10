@@ -10,7 +10,21 @@ import tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def check_import_decodes_utf():
+    """Importing a source (from an image or a .tex file) decodes the \\UTF commands that \\UTF output wrote."""
+    with open(os.path.join(ROOT, "Sources/Controllers/ControllerG.swift"), encoding="utf-8") as f:
+        source = f.read()
+    start = source.index("private func placeImportedSource(")
+    body = source[start:source.index("\n    }\n", start)]
+    if "stringByDecodingUTFCommandsForReading()" not in body:
+        print("FAIL: placeImportedSource does not decode \\UTF commands", file=sys.stderr)
+        return False
+    return True
+
+
 def main():
+    if not check_import_decodes_utf():
+        return 1
     work = tempfile.mkdtemp(prefix="tex2img-conversion-")
     try:
         main_file = os.path.join(work, "main.swift")
