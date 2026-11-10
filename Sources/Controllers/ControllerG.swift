@@ -393,24 +393,33 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         return attributes
     }
 
+    /// Appends at the end, never in place of the selection. While text is selected the selection is kept and
+    /// the view does not scroll; otherwise the view follows the output (TeXShop's TSAppendConsoleOutput).
     private func appendOutputOnMainThread(_ str: String) {
-        guard !str.isEmpty else { return }
-
-        if let textStorage = outputTextView.textStorage {
-            textStorage.beginEditing()
-            textStorage.append(NSAttributedString(string: str, attributes: outputTextAttributes()))
-            if textStorage.length > maximumOutputTextLength {
-                textStorage.deleteCharacters(in: NSRange(location: 0, length: textStorage.length - maximumOutputTextLength))
-            }
-            textStorage.endEditing()
-        } else {
-            outputTextView.string += str
-            if outputTextView.string.nsLength > maximumOutputTextLength {
-                outputTextView.string = outputTextView.string.substring(from: outputTextView.string.nsLength - maximumOutputTextLength)
-            }
+        guard !str.isEmpty, let textStorage = outputTextView.textStorage else { return }
+        let selection = outputTextView.selectedRanges.map(\.rangeValue)
+        let selecting = selection.contains { $0.length > 0 }
+        textStorage.beginEditing()
+        textStorage.append(NSAttributedString(string: str, attributes: outputTextAttributes()))
+        var removed = 0
+        if textStorage.length > maximumOutputTextLength {
+            removed = textStorage.length - maximumOutputTextLength
+            textStorage.deleteCharacters(in: NSRange(location: 0, length: removed))
         }
-
-        outputTextView.scrollRangeToVisible(NSRange(location: outputTextView.string.nsLength, length: 0))
+        textStorage.endEditing()
+        let end = textStorage.length
+        if selecting {
+            // Old output removed from the start moves the selection back with its text.
+            let kept = selection.compactMap { range -> NSValue? in
+                let start = max(0, range.location - removed)
+                let stop = max(0, NSMaxRange(range) - removed)
+                return stop > start || selection.count == 1 ? NSValue(range: NSRange(location: start, length: stop - start)) : nil
+            }
+            outputTextView.selectedRanges = kept.isEmpty ? [NSValue(range: NSRange(location: end, length: 0))] : kept
+        } else {
+            outputTextView.setSelectedRange(NSRange(location: end, length: 0))
+            outputTextView.scrollRangeToVisible(NSRange(location: end, length: 0))
+        }
     }
 
     private func flushPendingOutputOnMainThread() {
