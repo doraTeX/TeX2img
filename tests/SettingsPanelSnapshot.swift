@@ -369,6 +369,40 @@ check(open.keyEquivalent == "o" && !shortcutStore.hasCustomShortcuts, "restore a
 let event = NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: .command, timestamp: 0, windowNumber: 0, context: nil,
                              characters: "c", charactersIgnoringModifiers: "c", isARepeat: false, keyCode: 8)!
 check(shortcutStore.matches(for: event).map(\.path) == ["Edit › Copy"] && shortcutStore.matches(for: event).first?.winner == true, "search by key")
+// A match that does not run for the key shows its path and, below it, the reason as a settings warning.
+let copyAgain = edit.addItem(withTitle: "Copy Again", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
+let pane = ShortcutPaneController()
+pane.store = shortcutStore
+let paneWindow = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 560, height: 400), styleMask: [.titled], backing: .buffered, defer: true)
+paneWindow.contentView = pane.view
+pane.view.frame = paneWindow.contentView!.bounds
+paneWindow.contentView!.layoutSubtreeIfNeeded()
+_ = all(NSSegmentedControl.self, in: pane.view).first.map { control in
+    control.selectedSegment = 1
+    _ = control.target?.perform(control.action, with: control)
+}
+check(pane.searchingByKey && pane.handleKeySearchEvent(event), "start a key search")
+let keyTable = all(NSTableView.self, in: pane.view).first!
+check(keyTable.numberOfRows == 2, "two matches for the key: \(keyTable.numberOfRows)")
+let winnerCell = pane.tableView(keyTable, viewFor: keyTable.tableColumns[0], row: 0) as? NSTextField
+check(winnerCell?.stringValue.hasPrefix("Edit › Copy — ") == true && pane.tableView(keyTable, heightOfRow: 0) == keyTable.rowHeight,
+      "the match that runs keeps one line")
+let loserCell = pane.tableView(keyTable, viewFor: keyTable.tableColumns[0], row: 1)
+check(loserCell?.identifier?.rawValue == "shortcut.inactive-command", "the inactive match is a warning cell")
+let loserTexts = loserCell.map { all(NSTextField.self, in: $0).map(\.stringValue) } ?? []
+check(loserTexts.first == "Edit › Copy Again" && loserTexts.last?.contains("Edit › Copy") == true && loserTexts.count == 2,
+      "path above the reason: \(loserTexts)")
+check(loserCell.map { !all(NSImageView.self, in: $0).isEmpty } == true, "the warning has the triangle")
+let wideHeight = pane.tableView(keyTable, heightOfRow: 1)
+keyTable.tableColumns[0].width = 120
+let narrowHeight = pane.tableView(keyTable, heightOfRow: 1)
+check(wideHeight > keyTable.rowHeight && narrowHeight > wideHeight, "the row grows with the wrapped reason: \(wideHeight) \(narrowHeight)")
+keyTable.tableColumns[0].width = 330
+keyTable.noteHeightOfRows(withIndexesChanged: IndexSet(integersIn: 0..<keyTable.numberOfRows))
+for appearance in [NSAppearance.Name.aqua, .darkAqua] {
+    render(pane.view, width: 560, appearance: appearance, to: output.appendingPathComponent("key-search-\(language)-\(appearance == .aqua ? "light" : "dark").png"))
+}
+edit.removeItem(copyAgain)
 defaults.removePersistentDomain(forName: "tex2img.shortcut.test")
 
 print(report.joined(separator: "\n"))

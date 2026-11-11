@@ -295,18 +295,72 @@ final class ShortcutPaneController: NSObject, NSTableViewDataSource, NSTableView
         showsKeyResults ? searchMatches.count : visibleCommands.count
     }
 
+    /// Why a key-search match does not run for the searched key; nil for the match that runs.
+    private func inactiveReason(for match: ShortcutMatch) -> String? {
+        guard !match.winner, let owner = searchMatches.first(where: \.winner) else { return nil }
+        return String(format: NSLocalizedString("This shortcut is inactive because it conflicts with “%@” (%@).", comment: ""),
+                      owner.path, ShortcutKeys.display(key: owner.item.keyEquivalent, modifiers: owner.item.keyEquivalentModifierMask))
+    }
+
+    // Ordinary rows draw their text 2pt inside the cell; the warning row lines up with them.
+    private static let warningIndent: CGFloat = 2, warningGap: CGFloat = 2, warningBottom: CGFloat = 4, warningSpacing: CGFloat = 4
+
+    /// The warning line used elsewhere in the settings: yellow triangle, small label-colored text.
+    private func warningLine(_ text: String) -> NSStackView {
+        let font = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
+        let label = NSTextField(wrappingLabelWithString: text)
+        label.font = font
+        label.textColor = .labelColor
+        label.identifier = NSUserInterfaceItemIdentifier("shortcut.inactive-reason")
+        label.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(249), for: .horizontal)
+        let configuration = NSImage.SymbolConfiguration(pointSize: font.pointSize, weight: .regular)
+            .applying(.preferringMulticolor())
+        let icon = NSImageView()
+        icon.image = NSImage(systemSymbolName: "exclamationmark.triangle.fill", accessibilityDescription: nil)?
+            .withSymbolConfiguration(configuration)
+        icon.setAccessibilityElement(false)
+        let warning = NSStackView(views: [icon, label])
+        warning.orientation = .horizontal
+        warning.alignment = .firstBaseline
+        warning.spacing = Self.warningSpacing
+        warning.translatesAutoresizingMaskIntoConstraints = false
+        warning.identifier = NSUserInterfaceItemIdentifier("shortcut.inactive-warning")
+        return warning
+    }
+
+    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+        guard showsKeyResults, searchMatches.indices.contains(row), let reason = inactiveReason(for: searchMatches[row]) else {
+            return tableView.rowHeight
+        }
+        let warning = warningLine(reason)
+        guard let note = warning.arrangedSubviews.last as? NSTextField, let cell = note.cell else { return tableView.rowHeight }
+        let path = NSTextField(labelWithString: " ")
+        // The command cell is as wide as its column; the note's frame adds its own alignment insets.
+        let insets = note.alignmentRectInsets
+        let width = (tableView.tableColumns.first?.width ?? 0) - Self.warningIndent
+            - warning.arrangedSubviews[0].intrinsicContentSize.width - Self.warningSpacing + insets.left + insets.right
+        let height = cell.cellSize(forBounds: NSRect(x: 0, y: 0, width: max(width, 1), height: .greatestFiniteMagnitude)).height
+        return ceil(path.intrinsicContentSize.height + Self.warningGap + height + Self.warningBottom + tableView.intercellSpacing.height)
+    }
+
+    func tableViewColumnDidResize(_ notification: Notification) {
+        guard showsKeyResults, table.numberOfRows > 0 else { return }
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0
+            table.noteHeightOfRows(withIndexesChanged: IndexSet(integersIn: 0..<table.numberOfRows))
+        }
+    }
+
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let isCommand = tableColumn?.identifier.rawValue == "command"
         let text: String
+        var reason: String?
         if showsKeyResults {
             guard searchMatches.indices.contains(row) else { return nil }
             let match = searchMatches[row]
-            var status = NSLocalizedString("Assigned", comment: "")
-            if !match.winner, let owner = searchMatches.first(where: \.winner) {
-                status = String(format: NSLocalizedString("This shortcut is inactive because it conflicts with “%@” (%@).", comment: ""),
-                                owner.path, ShortcutKeys.display(key: owner.item.keyEquivalent, modifiers: owner.item.keyEquivalentModifierMask))
-            }
-            text = isCommand ? "\(match.path) — \(status)" : ShortcutKeys.display(key: match.item.keyEquivalent, modifiers: match.item.keyEquivalentModifierMask)
+            reason = inactiveReason(for: match)
+            text = !isCommand ? ShortcutKeys.display(key: match.item.keyEquivalent, modifiers: match.item.keyEquivalentModifierMask)
+                : reason == nil ? "\(match.path) — \(NSLocalizedString("Assigned", comment: ""))" : match.path
         } else {
             guard visibleCommands.indices.contains(row) else { return nil }
             let command = visibleCommands[row]
@@ -315,7 +369,23 @@ final class ShortcutPaneController: NSObject, NSTableViewDataSource, NSTableView
         let label = NSTextField(labelWithString: text)
         label.lineBreakMode = .byTruncatingMiddle
         label.toolTip = text
-        return label
+        guard isCommand, let reason else { return label }
+        let cell = NSView()
+        cell.identifier = NSUserInterfaceItemIdentifier("shortcut.inactive-command")
+        let warning = warningLine(reason)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(249), for: .horizontal)
+        cell.addSubview(label)
+        cell.addSubview(warning)
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: cell.topAnchor),
+            label.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: Self.warningIndent),
+            label.trailingAnchor.constraint(equalTo: cell.trailingAnchor),
+            warning.topAnchor.constraint(equalTo: label.bottomAnchor, constant: Self.warningGap),
+            warning.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: Self.warningIndent),
+            warning.trailingAnchor.constraint(equalTo: cell.trailingAnchor),
+        ])
+        return cell
     }
 
     private var selectedCommand: ShortcutCommand? {
