@@ -76,4 +76,30 @@ check(commandColor(line: 1500) != nil, "a requested range is colored")
 let comment = text.range(of: "% comment 1500")
 check(textView.layoutManager?.temporaryAttribute(.foregroundColor, atCharacterIndex: comment.location, effectiveRange: nil) != nil,
       "the rest of the requested line is colored")
+
+// Text being composed with an input method is not colored, and the visible text is not recolored while it
+// is there; both are colored once the composed text is committed (TeXShop 5.60).
+func color(at location: Int) -> NSColor? {
+    textView.layoutManager?.temporaryAttribute(.foregroundColor, atCharacterIndex: location, effectiveRange: nil) as? NSColor
+}
+textView.scrollRangeToVisible(NSRange(location: 0, length: 0))
+textView.colorizeText()
+textView.setSelectedRange(NSRange(location: 0, length: 0))
+textView.setMarkedText("\\composed", selectedRange: NSRange(location: 9, length: 0), replacementRange: NSRange(location: NSNotFound, length: 0))
+check(textView.hasMarkedText(), "text is being composed")
+let lineOne = (textView.string as NSString).range(of: "\\section{Line 1}")
+textView.layoutManager?.removeTemporaryAttribute(.foregroundColor, forCharacterRange: lineOne)
+textView.colorizeText()
+textView.visibleAreaChanged(Notification(name: NSView.frameDidChangeNotification, object: textView))
+textView.textViewDidChangeSelection(Notification(name: NSTextView.didChangeSelectionNotification, object: textView))
+RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+check(color(at: 0) == nil, "the composed text is not colored")
+check(color(at: lineOne.location) == nil, "the visible text is not recolored while text is composed")
+check(textView.coloringWaitsForMarkedText, "coloring waits for the composed text")
+textView.insertText("\\composed", replacementRange: textView.markedRange())
+check(!textView.hasMarkedText(), "the composed text is committed")
+RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+check(!textView.coloringWaitsForMarkedText, "coloring no longer waits after the commit")
+check(color(at: 0) != nil, "the committed command is colored")
+check(color(at: lineOne.location) != nil, "the visible text is colored after the commit")
 print("Editor coloring regression tests passed")

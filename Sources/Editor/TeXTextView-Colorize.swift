@@ -15,7 +15,12 @@ extension TeXTextView {
     }
 
     /// Colors the given characters, or the visible ones, line by line (TeXShop colors the visible area only).
+    /// Text being composed with an input method (marked text) is not colored: every keystroke can resize the
+    /// view, and coloring then would recolor the visible text each time and color the composed text itself.
+    /// Coloring waits, and colorAfterMarkedTextEnds colors the visible text once the composed text is
+    /// committed or removed (TeXShop 5.60).
     func colorizeText(range requested: NSRange? = nil) {
+        if waitsForMarkedText() { return }
         guard let controller else { return }
         let profile = controller.currentProfile()
 
@@ -99,7 +104,31 @@ extension TeXTextView {
         }
     }
 
+    /// True while text is being composed; the coloring asked for is then done by colorAfterMarkedTextEnds.
+    func waitsForMarkedText() -> Bool {
+        guard hasMarkedText() else { return false }
+        coloringWaitsForMarkedText = true
+        return true
+    }
+
+    /// Called when the selection changes, as it does whenever composed text changes, is committed or is
+    /// removed. It looks again once AppKit has finished with the keystroke.
+    func colorAfterMarkedTextEnds() {
+        guard coloringWaitsForMarkedText else { return }
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(colorWaitingForMarkedText), object: nil)
+        perform(#selector(colorWaitingForMarkedText), with: nil, afterDelay: 0)
+    }
+
+    @objc private func colorWaitingForMarkedText() {
+        guard coloringWaitsForMarkedText, !hasMarkedText() else { return }
+        coloringWaitsForMarkedText = false
+        colorizeText()
+    }
+
     private func resetHighlight(_ sender: Any?) {
+        // While text is composed, the brace highlight stays and nothing is colored. The change of the
+        // selection that commits or removes the composed text colors the visible text again.
+        if waitsForMarkedText() { return }
         colorizeText()
         braceHighlighting = false
     }
@@ -122,6 +151,7 @@ extension TeXTextView {
     }
 
     func textViewDidChangeSelection(_ notification: Notification) {
+        colorAfterMarkedTextEnds()
         guard let layoutManager else { return }
         let profile = controller.currentProfile()
 
