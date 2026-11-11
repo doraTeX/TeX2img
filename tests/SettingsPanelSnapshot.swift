@@ -254,6 +254,20 @@ check(!themes.resetButton.isEnabled, "nothing to restore before editing")
 check(ThemePalette.components(["SyntaxMarker": [0.1, 0.2, 0.3, 1]], key: "SyntaxMarkerCurly") == [0.1, 0.2, 0.3, 1], "brace color inherits SyntaxMarker")
 check(ThemePalette.components(["EditorInvisibleChar": [1.235, 0.013, 0.011, 1]], key: "EditorInvisibleChar")?.first == 1, "out-of-range components are clamped")
 check(ThemePalette.components(["EditorText": [Double.nan, 0, 0]], key: "EditorText") == nil, "invalid components are ignored")
+let solarized = store.read(title: "SolarizedDark") ?? [:]
+var withExpl = solarized
+withExpl["explFunction"] = [0.1, 0.2, 0.3, 1]
+check(ThemePalette.sameUsedColors(solarized, withExpl) && !ThemePalette.sameColors(solarized, withExpl), "colors TeX2img does not draw are ignored")
+var otherComment = solarized
+otherComment["SyntaxComment"] = [0.9, 0.1, 0.1, 1]
+check(!ThemePalette.sameUsedColors(solarized, otherComment), "a different comment color counts")
+// TeXShop's themes with expl3 colors are not offered again when TeX2img draws them the same.
+let texShopThemes = ThemeStore(directory: ThemeStore.texShopDirectory)
+try? FileManager.default.createDirectory(at: ThemeStore.texShopDirectory, withIntermediateDirectories: true)
+check(ThemeStore.texShopDirectory.path.contains("/settings-home/"), "the TeXShop theme folder is in the test home")
+try? texShopThemes.write(withExpl, title: "SolarizedDark")
+try? texShopThemes.write(otherComment, title: "Solarized Comment")
+check(themes.importableTeXShopThemes() == ["Solarized Comment"], "importable TeXShop themes: \(themes.importableTeXShopThemes())")
 // Fullwidth letters and symbols are colored only by themes that define them.
 check(ThemeLibrary.isHighlightedFullwidthCharacter(0xFF21) && ThemeLibrary.isHighlightedFullwidthCharacter(0x2212)
       && !ThemeLibrary.isHighlightedFullwidthCharacter(0xFF0C) && !ThemeLibrary.isHighlightedFullwidthCharacter(0x3042), "fullwidth characters")

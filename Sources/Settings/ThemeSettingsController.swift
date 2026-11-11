@@ -1,6 +1,6 @@
 import AppKit
 
-/// The Appearance category: choosing the light and dark themes and editing theme files.
+/// The Themes category (identifier "Appearance"): choosing the light and dark themes and editing theme files.
 /// Follows TeXShop's theme settings (TSPreferences-Color): a color change is written to the edited theme file at once.
 final class ThemeSettingsController: NSObject {
     let library: ThemeLibrary
@@ -273,7 +273,7 @@ final class ThemeSettingsController: NSObject {
         return texShop.titles().filter { title in
             guard let colors = texShop.read(title: title) else { return false }
             guard let own = library.store.read(title: title) else { return true }
-            return !ThemePalette.sameColors(colors, own)
+            return !ThemePalette.sameUsedColors(colors, own)
         }
     }
 

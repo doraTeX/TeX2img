@@ -199,6 +199,12 @@ enum ThemePalette {
         b["Title"] = nil
         return NSDictionary(dictionary: a).isEqual(to: b)
     }
+
+    /// Whether two themes agree in every color TeX2img draws. Keys that only TeXShop uses,
+    /// such as the expl3 colors, are ignored.
+    static func sameUsedColors(_ a: ThemeColors, _ b: ThemeColors) -> Bool {
+        ThemeRole.allCases.allSatisfy { components(a, key: $0.key) == components(b, key: $0.key) }
+    }
 }
 
 /// The selected light and dark themes, read once and refreshed when a theme file is saved.

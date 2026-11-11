@@ -249,5 +249,54 @@
 		<real>0.2</real>
 		<real>1</real>
 	</array>
+	<key>explFunction</key>
+	<array>
+		<real>0.149</real>
+		<real>0.5451</real>
+		<real>0.8235</real>
+		<real>1</real>
+	</array>
+	<key>explIntenseFunction</key>
+	<array>
+		<real>0.4235</real>
+		<real>0.4431</real>
+		<real>0.7686</real>
+		<real>1</real>
+	</array>
+	<key>explIntenseVariable</key>
+	<array>
+		<real>0.5765</real>
+		<real>0.6314</real>
+		<real>0.6314</real>
+		<real>1</real>
+	</array>
+	<key>explVariable</key>
+	<array>
+		<real>0.5216</real>
+		<real>0.6</real>
+		<real>0</real>
+		<real>1</real>
+	</array>
+	<key>explmsg</key>
+	<array>
+		<real>0.1647</real>
+		<real>0.6314</real>
+		<real>0.5961</real>
+		<real>1</real>
+	</array>
+	<key>explmykey</key>
+	<array>
+		<real>0.7961</real>
+		<real>0.2941</real>
+		<real>0.0863</real>
+		<real>1</real>
+	</array>
+	<key>explmykeyArgument</key>
+	<array>
+		<real>0.7098</real>
+		<real>0.5373</real>
+		<real>0</real>
+		<real>1</real>
+	</array>
 </dict>
 </plist>
