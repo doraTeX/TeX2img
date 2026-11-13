@@ -94,6 +94,7 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
         listScroll.translatesAutoresizingMaskIntoConstraints = false
         listScroll.drawsBackground = false
         listScroll.hasVerticalScroller = true
+        listScroll.horizontalScrollElasticity = .none
         categoryTable.style = .sourceList
         categoryTable.headerView = nil
         categoryTable.rowHeight = 30
@@ -107,6 +108,11 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
         column.width = 200
         categoryTable.addTableColumn(column)
         listScroll.documentView = categoryTable
+        // Keep the list as wide as its column, so that it never scrolls sideways when the
+        // sidebar is narrower than the list (the first column follows the table's width).
+        listScroll.contentView.postsFrameChangedNotifications = true
+        NotificationCenter.default.addObserver(self, selector: #selector(sidebarListViewportChanged(_:)),
+                                               name: NSView.frameDidChangeNotification, object: listScroll.contentView)
         searchField.translatesAutoresizingMaskIntoConstraints = false
         searchField.placeholderString = NSLocalizedString("Search Settings", comment: "")
         searchField.setAccessibilityLabel(searchField.placeholderString)
@@ -218,6 +224,13 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
         guard historyIndex < history.count - 1, window?.attachedSheet == nil, window?.makeFirstResponder(nil) ?? true else { return }
         historyIndex += 1
         displayCurrentCategory()
+    }
+
+    @objc private func sidebarListViewportChanged(_ notification: Notification) {
+        guard let width = categoryTable.enclosingScrollView?.contentView.bounds.width, width > 0 else { return }
+        if abs(categoryTable.frame.width - width) >= 0.5 {
+            categoryTable.setFrameSize(NSSize(width: width, height: categoryTable.frame.height))
+        }
     }
 
     @objc private func navigate(_ sender: NSSegmentedControl) {

@@ -311,6 +311,37 @@ if let content = settings.window?.contentView {
     }
 }
 
+// The sidebar list fits its column at every sidebar width and cannot be scrolled sideways
+// (as in TeXShop: a narrow sidebar used to leave the list wider than its column).
+if let window = settings.window, let split = window.contentViewController as? NSSplitViewController,
+   let table = all(NSTableView.self, in: split.splitViewItems[0].viewController.view).first,
+   let listScroll = table.enclosingScrollView {
+    let listClip = listScroll.contentView
+    // Resizing must not be saved as the window's frame: the next run would start at that size.
+    let autosaveName = window.frameAutosaveName
+    window.setFrameAutosaveName("")
+    let originalFrame = window.frame
+    defer { window.setFrame(originalFrame, display: false); window.setFrameAutosaveName(autosaveName) }
+    for windowWidth in [800.0, 1040.0] {
+        for sidebarWidth in [190.0, 300.0, 190.0, 250.0] {
+            window.setContentSize(NSSize(width: windowWidth, height: 700))
+            split.splitView.setPosition(sidebarWidth, ofDividerAt: 0)
+            window.contentView?.layoutSubtreeIfNeeded()
+            let place = "sidebar \(sidebarWidth), window \(windowWidth)"
+            check(table.frame.width <= listClip.bounds.width + 0.5,
+                  "sidebar list \(table.frame.width) fits its \(listClip.bounds.width)-point column, \(place)")
+            check(!listScroll.hasHorizontalScroller && listScroll.horizontalScrollElasticity == .none,
+                  "sidebar list has no horizontal scroller or horizontal bounce")
+            var shifted = listClip.bounds
+            shifted.origin.x = 60
+            check(abs(listClip.constrainBoundsRect(shifted).origin.x) < 0.5,
+                  "sidebar list cannot be scrolled sideways (\(listClip.constrainBoundsRect(shifted).origin.x)), \(place)")
+        }
+    }
+} else {
+    check(false, "the sidebar list is found")
+}
+
 // Menu shortcuts: a menu that is never shown, and defaults in the test home.
 let menu = NSMenu(title: "Main")
 func add(_ title: String, _ submenu: NSMenu) -> NSMenu {
