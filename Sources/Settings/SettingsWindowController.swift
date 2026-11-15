@@ -58,8 +58,13 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
 
     var currentIdentifier: String? { history.indices.contains(historyIndex) ? history[historyIndex] : nil }
 
-    init(categories: [SettingsCategory]) {
+    /// The narrowest the selected category may be; the window is at least as wide as that and the narrowest sidebar.
+    let minimumContentWidth: CGFloat
+    static let sidebarMinimumWidth: CGFloat = 190, sidebarWidth: CGFloat = 220
+
+    init(categories: [SettingsCategory], minimumContentWidth: CGFloat = 560) {
         self.categories = categories
+        self.minimumContentWidth = max(560, minimumContentWidth)
         let back = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: NSLocalizedString("Back", comment: "")) ?? NSImage()
         let forward = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: NSLocalizedString("Forward", comment: "")) ?? NSImage()
         navigationControl = NSSegmentedControl(images: [back, forward], trackingMode: .momentary, target: nil, action: nil)
@@ -72,13 +77,19 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
         window.delegate = self
         window.toolbarStyle = .unified
         window.titlebarSeparatorStyle = .automatic
-        window.contentMinSize = NSSize(width: 780, height: 480)
+        let minimumWidth = max(780, Self.sidebarMinimumWidth + 1 + self.minimumContentWidth)
+        let width = max(860, Self.sidebarWidth + 1 + self.minimumContentWidth)
+        window.contentMinSize = NSSize(width: minimumWidth, height: 480)
         window.tabbingMode = .disallowed
         window.collectionBehavior.insert(.fullScreenNone)
         buildContent()
-        window.setContentSize(NSSize(width: 860, height: 640))
+        window.setContentSize(NSSize(width: width, height: 640))
         window.center()
         window.setFrameAutosaveName("SettingsWindow")
+        // A frame saved by an earlier version may be narrower than the categories now need.
+        if let content = window.contentView, content.frame.width < minimumWidth {
+            window.setContentSize(NSSize(width: minimumWidth, height: content.frame.height))
+        }
         let saved = UserDefaults.standard.string(forKey: Self.selectedCategoryKey)
         let first = categories.contains { $0.identifier == saved } ? saved! : categories[0].identifier
         visit(first)
@@ -142,7 +153,7 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
             listScroll.bottomAnchor.constraint(equalTo: sidebar.view.bottomAnchor),
         ])
         let sidebarItem = NSSplitViewItem(sidebarWithViewController: sidebar)
-        sidebarItem.minimumThickness = 190
+        sidebarItem.minimumThickness = Self.sidebarMinimumWidth
         sidebarItem.maximumThickness = 300
         sidebarItem.canCollapse = false
         splitController.addSplitViewItem(sidebarItem)
@@ -164,7 +175,7 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
             contentScroll.bottomAnchor.constraint(equalTo: content.view.bottomAnchor),
         ])
         let contentItem = NSSplitViewItem(viewController: content)
-        contentItem.minimumThickness = 560
+        contentItem.minimumThickness = minimumContentWidth
         splitController.addSplitViewItem(contentItem)
         window.contentViewController = splitController
 

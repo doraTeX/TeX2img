@@ -256,7 +256,7 @@ extension ControllerG {
             SettingsCategory(identifier: design.identifier, title: label(design.identifier), summary: label(design.identifier + " summary"),
                              symbol: design.symbol, color: SettingsCategory.rgb(design.color), startsGroup: design.startsGroup,
                              view: views[design.identifier]!)
-        })
+        }, minimumContentWidth: themeSettings.minimumPaneWidth)
         themeSettings.window = settingsWindowController.window
         shortcutPane.window = settingsWindowController.window
         settingsWindowController.keyEventHandler = { [weak self] event in

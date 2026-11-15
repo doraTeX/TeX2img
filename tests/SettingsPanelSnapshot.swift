@@ -187,6 +187,17 @@ check(settings.categories.map(\.identifier) == ["General", "Image", "Conversion"
       "category order: Keyboard after Editor, as in TeXShop 6.00")
 
 controller.themeSettings.prepareForDisplay(dark: false)
+// The theme colors stand three to a row, in columns that line up from group to group (TeXShop 6.00); the window is
+// never too narrow for them.
+let colorGrids = all(NSGridView.self, in: settings.category("Appearance")!.view).filter { $0.identifier?.rawValue == "settings.color-grid" }
+check(colorGrids.count == 4 && colorGrids.allSatisfy { $0.numberOfColumns == 3 }, "four color groups of three columns")
+check(Set(colorGrids.map { $0.column(at: 0).width }).count == 1, "the columns line up from group to group")
+let paneWidth = max(640, settings.minimumContentWidth)
+check(settings.minimumContentWidth >= SettingsUI.colorGridWidth(columnWidth: colorGrids[0].column(at: 0).width) + SettingsUI.paneContentInsets,
+      "the narrowest pane holds three columns: \(settings.minimumContentWidth)")
+check(settings.window!.contentMinSize.width >= settings.minimumContentWidth + SettingsWindowController.sidebarMinimumWidth,
+      "the window is wide enough for the narrowest sidebar and pane: \(settings.window!.contentMinSize.width)")
+print("Narrowest pane: \(settings.minimumContentWidth), window: \(settings.window!.contentMinSize.width)")
 
 // Structure: a header card in each pane, every group has a heading and a card, toggles are switches.
 var report: [String] = []
@@ -204,12 +215,13 @@ for category in settings.categories {
     for appearance in [NSAppearance.Name.aqua, .darkAqua] {
         if category.identifier == "Appearance" { controller.themeSettings.prepareForDisplay(dark: appearance == .darkAqua) }
         let name = "\(language)-\(category.identifier.replacingOccurrences(of: " ", with: "_"))-\(appearance == .aqua ? "light" : "dark").png"
-        render(pane, width: 640, appearance: appearance, to: output.appendingPathComponent(name))
+        render(pane, width: paneWidth, appearance: appearance, to: output.appendingPathComponent(name))
     }
 }
 // Every label of the cards shows its whole text, at the default width and at the narrowest the window allows (TeXShop 6.00):
 // a one-line label is as wide as its text, a wrapping one as tall. Labels that are meant to truncate, and the lists, are left out.
-for width in [640.0, 590.0] {
+for width in [settings.minimumContentWidth + SettingsWindowController.sidebarWidth - SettingsWindowController.sidebarMinimumWidth,
+              settings.minimumContentWidth] {
     for category in settings.categories {
         if category.identifier == "Appearance" { controller.themeSettings.prepareForDisplay(dark: false) }
         _ = layOut(category.view, width: width)
@@ -401,7 +413,7 @@ if let window = settings.window, let split = window.contentViewController as? NS
     window.setFrameAutosaveName("")
     let originalFrame = window.frame
     defer { window.setFrame(originalFrame, display: false); window.setFrameAutosaveName(autosaveName) }
-    for windowWidth in [800.0, 1040.0] {
+    for windowWidth in [window.contentMinSize.width, 1040.0] {
         for sidebarWidth in [190.0, 300.0, 190.0, 250.0] {
             window.setContentSize(NSSize(width: windowWidth, height: 700))
             split.splitView.setPosition(sidebarWidth, ofDividerAt: 0)

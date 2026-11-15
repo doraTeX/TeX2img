@@ -13,6 +13,8 @@ final class ThemeSettingsController: NSObject {
     private(set) var wells: [ThemeRole: NSColorWell] = [:]
     private var editingColors: ThemeColors?
     private var colorLabels: [SettingsLabel] = []
+    /// The narrowest pane that shows the three columns of colors, known once the groups are made.
+    private(set) var minimumPaneWidth: CGFloat = 0
 
     /// Called after the selected themes or the colors of a selected theme change.
     var colorsChanged: (() -> Void)?
@@ -57,37 +59,43 @@ final class ThemeSettingsController: NSObject {
                                                NSLocalizedString("Restore Original Colors…", comment: ""),
                                                NSLocalizedString("New Theme…", comment: "")].joined(separator: "\n")),
         ])
-        func colorGroup(_ title: String, _ items: [(ThemeRole, String)]) -> NSView {
-            let (grid, labels) = SettingsUI.colorGrid(items.map { (wells[$0.0]!, $0.1) })
-            colorLabels += labels
-            let row = SettingsUI.contentRow(grid, searchTitle: items.map(\.1).joined(separator: "\n"))
-            return SettingsUI.group(title, [row])
-        }
-        return [
-            themes, editing,
-            colorGroup(NSLocalizedString("Colors: Source", comment: ""), [
+        let colorGroups: [(String, [(ThemeRole, String)])] = [
+            (NSLocalizedString("Colors: Source", comment: ""), [
                 (.text, NSLocalizedString("Text", comment: "")),
                 (.background, NSLocalizedString("Background", comment: "")),
                 (.cursor, NSLocalizedString("Cursor", comment: "")),
                 (.flash, NSLocalizedString("Flashing Background", comment: "")),
             ]),
-            colorGroup(NSLocalizedString("Colors: Syntax Highlighting", comment: ""), [
+            (NSLocalizedString("Colors: Syntax Highlighting", comment: ""), [
                 (.comment, NSLocalizedString("% Comment", comment: "")),
                 (.command, NSLocalizedString("\\command", comment: "")),
                 (.marker, NSLocalizedString("{ } and $", comment: "")),
             ]),
-            colorGroup(NSLocalizedString("Colors: Highlighting", comment: ""), [
+            (NSLocalizedString("Colors: Highlighting", comment: ""), [
                 (.highlightedBrace, NSLocalizedString("Highlighted Brackets", comment: "")),
                 (.enclosedContent, NSLocalizedString("Enclosed Contents", comment: "")),
                 (.invisible, NSLocalizedString("Invisible Characters", comment: "")),
                 (.fullwidthSymbol, NSLocalizedString("Fullwidth Letters and Symbols", comment: "")),
                 (.fullwidthBackground, NSLocalizedString("Fullwidth Letters and Symbols Background", comment: "")),
             ]),
-            colorGroup(NSLocalizedString("Colors: Output Window", comment: ""), [
+            (NSLocalizedString("Colors: Output Window", comment: ""), [
                 (.consoleText, NSLocalizedString("Text", comment: "")),
                 (.consoleBackground, NSLocalizedString("Background", comment: "")),
             ]),
         ]
+        // The columns line up from group to group: as wide as the longest name that does not take the empty columns
+        // after it.
+        let names = colorGroups.flatMap { _, items in
+            items.enumerated().filter { !SettingsUI.colorItemIsMerged($0.offset, count: items.count) }.map(\.element.1)
+        }
+        let columnWidth = SettingsUI.colorColumnWidth(names)
+        minimumPaneWidth = ceil(SettingsUI.colorGridWidth(columnWidth: columnWidth) + SettingsUI.paneContentInsets)
+        return [themes, editing] + colorGroups.map { title, items in
+            let (grid, labels) = SettingsUI.colorGrid(items.map { (wells[$0.0]!, $0.1) }, columnWidth: columnWidth)
+            colorLabels += labels
+            let row = SettingsUI.contentRow(grid, searchTitle: items.map(\.1).joined(separator: "\n"))
+            return SettingsUI.group(title, [row])
+        }
     }
 
     // MARK: Selection

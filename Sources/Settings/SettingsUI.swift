@@ -466,8 +466,30 @@ enum SettingsUI {
         return stack
     }
 
-    /// Color wells in two columns, each followed by its name (TeXShop's theme groups).
-    static func colorGrid(_ items: [(NSColorWell, String)]) -> (NSView, [SettingsLabel]) {
+    /// The horizontal insets of a pane around the content of a row: the pane's 24 points and the row's 12 on each side.
+    static let paneContentInsets: CGFloat = 2 * 24 + 2 * 12
+    static let colorColumns = 3, colorColumnSpacing: CGFloat = 20, colorNameSpacing: CGFloat = 10
+
+    /// Whether the last color of a group of `count` takes the empty columns after it.
+    static func colorItemIsMerged(_ index: Int, count: Int) -> Bool {
+        index == count - 1 && index % colorColumns < colorColumns - 1
+    }
+
+    /// The width of a color column that shows the well and the whole name of every color in it.
+    static func colorColumnWidth(_ names: [String]) -> CGFloat {
+        let well = makeColorWell(target: nil, action: nil).frame.width
+        let name = names.map { SettingsLabel(labelWithString: $0).intrinsicContentSize.width }.max() ?? 0
+        return ceil(well + colorNameSpacing + name)
+    }
+
+    /// The width of three color columns.
+    static func colorGridWidth(columnWidth: CGFloat) -> CGFloat {
+        CGFloat(colorColumns) * columnWidth + CGFloat(colorColumns - 1) * colorColumnSpacing
+    }
+
+    /// Color wells three to a row, each followed by its name, at the same places in every group (TeXShop 6.00's theme
+    /// groups). The last name of a group may use the empty columns after it.
+    static func colorGrid(_ items: [(NSColorWell, String)], columnWidth: CGFloat) -> (NSView, [SettingsLabel]) {
         var cells: [[NSView]] = []
         var labels: [SettingsLabel] = []
         var current: [NSView] = []
@@ -476,17 +498,25 @@ enum SettingsUI {
             label.translatesAutoresizingMaskIntoConstraints = false
             label.enabledTextColor = .labelColor
             labels.append(label)
-            current.append(hstack([well, label], spacing: 10))
-            if current.count == 2 { cells.append(current); current = [] }
+            current.append(hstack([well, label], spacing: colorNameSpacing))
+            if current.count == colorColumns { cells.append(current); current = [] }
         }
-        if !current.isEmpty { cells.append(current + [NSGridCell.emptyContentView]) }
+        if !current.isEmpty {
+            cells.append(current + Array(repeating: NSGridCell.emptyContentView, count: colorColumns - current.count))
+        }
         let grid = NSGridView(views: cells)
         grid.translatesAutoresizingMaskIntoConstraints = false
+        grid.identifier = NSUserInterfaceItemIdentifier("settings.color-grid")
         grid.rowSpacing = 10
-        grid.columnSpacing = 24
+        grid.columnSpacing = colorColumnSpacing
         grid.xPlacement = .leading
         grid.yPlacement = .center
-        for index in 0..<grid.numberOfColumns { grid.column(at: index).width = 220 }
+        for index in 0..<grid.numberOfColumns { grid.column(at: index).width = columnWidth }
+        let last = items.count - 1
+        if last >= 0, colorItemIsMerged(last, count: items.count) {
+            grid.mergeCells(inHorizontalRange: NSRange(location: last % colorColumns, length: colorColumns - last % colorColumns),
+                            verticalRange: NSRange(location: last / colorColumns, length: 1))
+        }
         return (grid, labels)
     }
 }
