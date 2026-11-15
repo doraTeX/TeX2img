@@ -811,6 +811,11 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         loadStringSetting(for: latexPathTextField, from: aProfile, key: LatexPathKey)
         loadStringSetting(for: dviDriverPathTextField, from: aProfile, key: DviDriverPathKey)
         loadStringSetting(for: gsPathTextField, from: aProfile, key: GsPathKey)
+        // Profiles of earlier versions may run TeX from /usr/texbin (TeXShop 6.00).
+        for field in [latexPathTextField, dviDriverPathTextField, gsPathTextField] as [NSTextField] {
+            let command = EnginePathDiscovery.replacingRetiredTeXBin(field.stringValue)
+            if command != field.stringValue { field.stringValue = command }
+        }
 
         loadNumberSetting(for: resolutionTextField, from: aProfile, key: ResolutionKey)
         loadNumberSetting(for: dpiTextField, from: aProfile, key: DPIKey)

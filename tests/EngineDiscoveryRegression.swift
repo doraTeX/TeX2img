@@ -26,6 +26,14 @@ struct EngineDiscoveryRegression {
         let found = EnginePathDiscovery.candidates(program: "gs", paths: paths)
         precondition(found.map(\.path) == [new, old, unknown])
         precondition(EnginePathDiscovery.normalizedPaths(["", ".", "relative", "/tmp", "/tmp/../tmp"]) == ["/tmp"])
+        // /usr/texbin of earlier profiles becomes /Library/TeX/texbin; other paths and the arguments stay.
+        precondition(EnginePathDiscovery.replacingRetiredTeXBin("/usr/texbin/platex -kanji=utf8") == "/Library/TeX/texbin/platex -kanji=utf8")
+        precondition(EnginePathDiscovery.replacingRetiredTeXBin("\"/usr/texbin/dvipdfmx\" -vv") == "\"/Library/TeX/texbin/dvipdfmx\" -vv")
+        precondition(EnginePathDiscovery.replacingRetiredTeXBin(" /usr/texbin/gs") == " /Library/TeX/texbin/gs")
+        for unchanged in ["/usr/texbinx/gs", "/usr/local/bin/gs", "platex /usr/texbin/x", "", "/usr/texbin"] {
+            precondition(EnginePathDiscovery.replacingRetiredTeXBin(unchanged) == unchanged, unchanged)
+        }
+        precondition(!EnginePathDiscovery.systemSearchPaths().contains(EnginePathDiscovery.retiredTeXBin))
         let stuck = try script("stuck", "gs", "while :; do :; done")
         let start = ProcessInfo.processInfo.systemUptime
         precondition(EnginePathDiscovery.versionOutput(stuck, timeout: 0.1) == nil)

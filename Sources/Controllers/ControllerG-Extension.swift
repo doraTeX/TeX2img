@@ -37,12 +37,30 @@ enum EnginePathDiscovery {
         }
     }
 
+    static let texBin = "/Library/TeX/texbin"
+    /// The link of MacTeX before OS X 10.11, which cannot exist on the macOS versions TeX2img runs on.
+    static let retiredTeXBin = "/usr/texbin"
+
+    /// A command saved with /usr/texbin runs from /Library/TeX/texbin instead, as TeXShop 6.00 does at launch.
+    /// The arguments, and a quote around the command, stay as they are.
+    static func replacingRetiredTeXBin(_ command: String) -> String {
+        let leading = command.prefix { $0 == " " || $0 == "\t" }
+        var rest = command.dropFirst(leading.count)
+        var quote = ""
+        if let first = rest.first, first == "\"" || first == "'" {
+            quote = String(first)
+            rest = rest.dropFirst()
+        }
+        guard rest.hasPrefix(retiredTeXBin + "/") else { return command }
+        return leading + quote + texBin + rest.dropFirst(retiredTeXBin.count)
+    }
+
     static func systemSearchPaths() -> [String] {
         let files = ["/etc/paths"] + ((try? FileManager.default.contentsOfDirectory(atPath: "/etc/paths.d")) ?? [])
             .sorted().map { "/etc/paths.d/\($0)" }
         var paths = files.flatMap { ((try? String(contentsOfFile: $0, encoding: .utf8)) ?? "").components(separatedBy: .newlines) }
         paths += (ProcessInfo.processInfo.environment["PATH"] ?? "").components(separatedBy: ":")
-        paths += ["/Library/TeX/texbin", "/usr/texbin", "/Applications/TeXLive/Library/mactexaddons/bin"]
+        paths += [texBin, "/Applications/TeXLive/Library/mactexaddons/bin"]
         paths += texLivePaths(roots: ["/Applications/TeXLive", "/Applications/TeXLive/Library/texlive", "/Applications/TeXLive/texlive", "/usr/local/texlive", "/opt/texlive"])
         paths += ["/Applications/UpTeX.app/Contents/Resources/TEX/texbin", "/Applications/UpTeX.app/Contents/Resources/texbin", "/Applications/UpTeX.app/teTeX/bin", "/Applications/pTeX.app/teTeX/bin", "/usr/local/teTeX/bin", "/opt/homebrew/bin", "/usr/local/bin", "/opt/local/bin", "/sw/bin"]
         return normalizedPaths(paths)
@@ -109,7 +127,7 @@ enum EnginePathDiscovery {
         guard !program.isEmpty, !program.contains("/") else { return [] }
         var seen = Set<String>()
         var matches: [(Int, Candidate)] = []
-        let preferred = paths.contains("/Library/TeX/texbin") ? ["/Library/TeX/texbin"] : []
+        let preferred = paths.contains(texBin) ? [texBin] : []
         for directory in normalizedPaths(preferred + [currentDirectory] + paths) {
             let path = (directory as NSString).appendingPathComponent(program)
             guard isExecutable(path) else { continue }
