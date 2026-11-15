@@ -46,9 +46,9 @@
 	</array>
 	<key>EditorHighlightContent</key>
 	<array>
-		<real>1</real>
-		<real>1</real>
-		<real>0</real>
+		<real>0.2</real>
+		<real>0.188235</real>
+		<real>0.039216</real>
 		<real>1</real>
 	</array>
 	<key>EditorHighlightZenkakuSymbol</key>
@@ -81,9 +81,9 @@
 	</array>
 	<key>EditorReverseSync</key>
 	<array>
-		<real>1</real>
-		<real>1</real>
-		<real>0</real>
+		<real>0.352941</real>
+		<real>0.121569</real>
+		<real>0.105882</real>
 		<real>1</real>
 	</array>
 	<key>EditorText</key>
@@ -95,9 +95,9 @@
 	</array>
 	<key>EntryColor</key>
 	<array>
-		<real>1</real>
-		<real>0</real>
-		<real>0.07932668179273605</real>
+		<real>0.027451</real>
+		<real>0.211765</real>
+		<real>0.258824</real>
 		<real>1</real>
 	</array>
 	<key>FootnoteColor</key>
@@ -230,8 +230,8 @@
 	</array>
 	<key>XMLSpecial</key>
 	<array>
-		<real>0</real>
-		<real>0.3</real>
+		<real>0.431373</real>
+		<real>0.607843</real>
 		<real>1</real>
 		<real>1</real>
 	</array>

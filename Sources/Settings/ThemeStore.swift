@@ -95,7 +95,19 @@ struct ThemeStore {
         var copy = colors
         copy["Title"] = title
         let data = try PropertyListSerialization.data(fromPropertyList: copy, format: .xml, options: 0)
-        try data.write(to: url, options: .atomic)
+        // Coordinated with the update of the bundled theme colors at the launch of another TeX2img.
+        var coordinationError: NSError?
+        var writeError: Error?
+        var written = false
+        NSFileCoordinator(filePresenter: nil).coordinate(writingItemAt: url, options: .forReplacing, error: &coordinationError) { url in
+            do {
+                try data.write(to: url, options: .atomic)
+                written = true
+            } catch {
+                writeError = error
+            }
+        }
+        if !written { throw writeError ?? coordinationError ?? CocoaError(.fileWriteUnknown) }
     }
 
     func contains(title: String) -> Bool {
@@ -117,6 +129,119 @@ struct ThemeStore {
                   !fileManager.fileExists(atPath: destination.path) else { continue }
             try? fileManager.copyItem(at: bundled.appendingPathComponent(name), to: destination)
         }
+    }
+}
+
+/// A color of a bundled theme that a later version changed (TeXShop's TSBundledThemeColorChanges).
+struct BundledThemeColorChange {
+    let update: Int
+    let theme: String
+    let key: String
+    let from: [Double]
+    let to: [Double]
+}
+
+extension ThemeStore {
+    static let bundledColorsUpdateKey = "BundledThemeColorsUpdate"
+
+    /// The themes in the theme folder are copies made when the folder was created. Each change belongs to an update;
+    /// the last update done is kept in the user defaults.
+    static let bundledColorChanges: [BundledThemeColorChange] = [
+        // TeXShop 6.00: the content of braces, the active line and the text found by SyncTeX are painted behind the text,
+        // which must stay readable on them; brackets, markers, index entries, XML and the commands of Manteuffel are made
+        // readable on the background of their themes. TeX2img draws the content of braces, the curly braces and the commands.
+        .init(update: 1, theme: "DarkTheme", key: "EditorHighlightContent", from: [0.4756349325, 0.4756467342, 0.4756404161], to: [0.270588, 0.25098, 0.176471]),
+        .init(update: 1, theme: "DarkTheme", key: "EntryColor", from: [0.6386525630950928, 0.1230164617300034, 0.1503929197788239], to: [0.258824, 0.258824, 0.258824]),
+        .init(update: 1, theme: "DarkTheme", key: "XMLSpecial", from: [0.0, 0.3, 1.0], to: [0.431373, 0.607843, 1.0]),
+        .init(update: 1, theme: "Dracula", key: "EditorHighlightContent", from: [0.4756349325, 0.4756467342, 0.4756404161], to: [0.25098, 0.243137, 0.172549]),
+        .init(update: 1, theme: "Dracula", key: "EditorReverseSync", from: [0.9872317910194397, 0.2329826056957245, 0.2662559449672699], to: [0.478431, 0.14902, 0.2]),
+        .init(update: 1, theme: "Dracula", key: "EntryColor", from: [1.0, 0.0, 0.0630970448255539], to: [0.180392, 0.188235, 0.243137]),
+        .init(update: 1, theme: "Dracula", key: "SyntaxMarkerCurly", from: [0.0, 0.0, 0.0], to: [0.9725490196078431, 0.9725490196078431, 0.9490196078431372]),
+        .init(update: 1, theme: "Dracula", key: "SyntaxMarkerParen", from: [0.0, 0.0, 0.0], to: [0.9725490196078431, 0.9725490196078431, 0.9490196078431372]),
+        .init(update: 1, theme: "Dracula", key: "SyntaxMarkerSquare", from: [0.0, 0.0, 0.0], to: [0.9725490196078431, 0.9725490196078431, 0.9490196078431372]),
+        .init(update: 1, theme: "Dracula", key: "XMLSpecial", from: [0.0, 0.3, 1.0], to: [0.431373, 0.607843, 1.0]),
+        .init(update: 1, theme: "GLG-Lite", key: "EditorReverseSync", from: [0.2000000029802322, 0.6000000238418579, 0.9900000095367432], to: [0.74902, 0.866667, 0.988235]),
+        .init(update: 1, theme: "GLG-Lite", key: "SyntaxIndex", from: [1.0, 1.0, 0.0], to: [0.541176, 0.427451, 0.0]),
+        .init(update: 1, theme: "GLG-Lite", key: "XMLParameter", from: [0.0, 1.0, 0.0], to: [0.0, 0.541176, 0.0]),
+        .init(update: 1, theme: "GLG-Lite", key: "XMLValue", from: [0.6, 0.6, 0.2], to: [0.478431, 0.478431, 0.121569]),
+        .init(update: 1, theme: "LiteTheme", key: "EditorHighlightContent", from: [0.8946298956871033, 0.241200892533709, 0.2138740761137153], to: [1.0, 0.956863, 0.768627]),
+        .init(update: 1, theme: "LiteTheme", key: "SyntaxIndex", from: [1.0, 0.9932006001472473, 0.0], to: [0.541176, 0.427451, 0.0]),
+        .init(update: 1, theme: "LiteTheme", key: "XMLParameter", from: [0.0, 1.0, 0.0], to: [0.0, 0.541176, 0.0]),
+        .init(update: 1, theme: "LiteTheme", key: "XMLValue", from: [0.6, 0.6, 0.2], to: [0.478431, 0.478431, 0.121569]),
+        .init(update: 1, theme: "Manteuffel", key: "SyntaxCommand", from: [0.08235294371843338, 0.7098039388656616, 0.9137254953384399], to: [0.043137, 0.52549, 0.701961]),
+        .init(update: 1, theme: "Manteuffel", key: "SyntaxIndex", from: [1.0, 1.0, 0.0], to: [0.541176, 0.427451, 0.0]),
+        .init(update: 1, theme: "Manteuffel", key: "XMLParameter", from: [0.0, 1.0, 0.0], to: [0.0, 0.541176, 0.0]),
+        .init(update: 1, theme: "Manteuffel", key: "XMLValue", from: [0.6, 0.6, 0.2], to: [0.478431, 0.478431, 0.121569]),
+        .init(update: 1, theme: "PreTeXt-Dark", key: "EditorHighlightContent", from: [0.4756349325, 0.4756467342, 0.4756404161], to: [0.239216, 0.227451, 0.156863]),
+        .init(update: 1, theme: "PreTeXt-Dark", key: "EntryColor", from: [1.0, 0.0, 0.0], to: [0.188235, 0.192157, 0.164706]),
+        .init(update: 1, theme: "PreTeXt-Dark", key: "XMLSpecial", from: [0.0, 0.3, 1.0], to: [0.431373, 0.607843, 1.0]),
+        .init(update: 1, theme: "SolarizedDark", key: "EditorHighlightContent", from: [1.0, 1.0, 0.0], to: [0.2, 0.188235, 0.039216]),
+        .init(update: 1, theme: "SolarizedDark", key: "EditorReverseSync", from: [1.0, 1.0, 0.0], to: [0.352941, 0.121569, 0.105882]),
+        .init(update: 1, theme: "SolarizedDark", key: "EntryColor", from: [1.0, 0.0, 0.07932668179273605], to: [0.027451, 0.211765, 0.258824]),
+        .init(update: 1, theme: "SolarizedDark", key: "XMLSpecial", from: [0.0, 0.3, 1.0], to: [0.431373, 0.607843, 1.0]),
+        .init(update: 1, theme: "SolarizedLite", key: "SyntaxMarker", from: [0.1650000065565109, 0.6299999952316284, 0.5960000157356262], to: [0.8299999833106995, 0.2099999934434891, 0.5099999904632568]),
+        .init(update: 1, theme: "SolarizedLite", key: "XMLParameter", from: [0.0, 1.0, 0.0], to: [0.0, 0.541176, 0.0]),
+        .init(update: 1, theme: "SolarizedLite", key: "XMLValue", from: [0.6, 0.6, 0.2], to: [0.478431, 0.478431, 0.121569]),
+        .init(update: 1, theme: "TransparentTheme", key: "EditorHighlightContent", from: [0.9816838723753915, 0.3395324724758731, 0.1522207877986456], to: [1.0, 0.956863, 0.768627]),
+        .init(update: 1, theme: "TransparentTheme", key: "SyntaxIndex", from: [1.0, 1.0, 0.0], to: [0.541176, 0.427451, 0.0]),
+        .init(update: 1, theme: "TransparentTheme", key: "SyntaxMarker", from: [1.0, 0.9703128892638841, 0.2354147580939638], to: [0.5, 0.4, 0.0]),
+        .init(update: 1, theme: "TransparentTheme", key: "XMLParameter", from: [0.0, 1.0, 0.0], to: [0.0, 0.541176, 0.0]),
+        .init(update: 1, theme: "TransparentTheme", key: "XMLValue", from: [0.6, 0.6, 0.2], to: [0.478431, 0.478431, 0.121569]),
+    ]
+
+    /// Gives the colors of the updates after the given one to a copy of a bundled theme, where it still has the old color.
+    /// The opacity, if any, stays.
+    static func applyBundledColorChanges(to colors: inout ThemeColors, theme: String, after update: Int) -> Bool {
+        var changed = false
+        for change in bundledColorChanges where change.update > update && change.theme == theme {
+            guard var color = colors[change.key] as? [Any], color.count >= 3 else { continue }
+            let unchanged = (0..<3).allSatisfy { index in
+                (color[index] as? NSNumber).map { abs($0.doubleValue - change.from[index]) < 0.0005 } ?? false
+            }
+            guard unchanged else { continue }
+            for index in 0..<3 { color[index] = NSNumber(value: change.to[index]) }
+            colors[change.key] = color
+            changed = true
+        }
+        return changed
+    }
+
+    /// Updates one theme file; false if it is there but could not be read or written. Another TeX2img may save the theme
+    /// at the same time: the file is coordinated with the theme saves, and replaced only if it still holds what was read;
+    /// otherwise it is read again, so that a color saved meanwhile is kept.
+    private func updateBundledThemeFile(_ url: URL, theme: String, after update: Int) -> Bool {
+        var done = false
+        var coordinationError: NSError?
+        NSFileCoordinator(filePresenter: nil).coordinate(writingItemAt: url, options: .forMerging, error: &coordinationError) { url in
+            for _ in 0..<5 {
+                guard let data = try? Data(contentsOf: url),
+                      var colors = (try? PropertyListSerialization.propertyList(from: data, format: nil)) as? ThemeColors else { return }
+                guard Self.applyBundledColorChanges(to: &colors, theme: theme, after: update) else { done = true; return }
+                guard let updated = try? PropertyListSerialization.data(fromPropertyList: colors, format: .xml, options: 0) else { return }
+                guard (try? Data(contentsOf: url)) == data else { continue }
+                done = (try? updated.write(to: url, options: .atomic)) != nil
+                return
+            }
+        }
+        return done
+    }
+
+    /// Returns the last update done: every update after the given one, or the given one if a theme that is there could
+    /// not be read or written, so that the update is tried again at the next launch. A theme that is not there, or is
+    /// reached through a symbolic link, is left alone; so are renamed copies and the user's own themes.
+    func updateBundledThemeColors(after update: Int) -> Int {
+        let last = Self.bundledColorChanges.map(\.update).max() ?? update
+        guard last > update else { return update }
+        var themes: [String] = []
+        for change in Self.bundledColorChanges where change.update > update && !themes.contains(change.theme) {
+            themes.append(change.theme)
+        }
+        var written = true
+        for theme in themes {
+            guard let url = url(forTitle: theme), FileManager.default.fileExists(atPath: url.path) else { continue }
+            if !updateBundledThemeFile(url, theme: theme, after: update) { written = false }
+        }
+        return written ? last : update
     }
 }
 
@@ -218,8 +343,13 @@ final class ThemeLibrary {
         self.store = store
     }
 
-    func prepare() {
+    /// Installs the bundled themes, and once gives earlier copies of them the colors of later versions.
+    func prepare(defaults: UserDefaults = .standard) {
         store.installBundledThemes(from: ThemeStore.bundledDirectory)
+        let update = defaults.integer(forKey: ThemeStore.bundledColorsUpdateKey)
+        let done = store.updateBundledThemeColors(after: update)
+        if done != update { defaults.set(done, forKey: ThemeStore.bundledColorsUpdateKey) }
+        invalidate()
     }
 
     func colors(title: String) -> ThemeColors? {

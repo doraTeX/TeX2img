@@ -46,9 +46,9 @@
 	</array>
 	<key>EditorHighlightContent</key>
 	<array>
-		<real>0.9816838723753915</real>
-		<real>0.3395324724758731</real>
-		<real>0.1522207877986456</real>
+		<real>1</real>
+		<real>0.956863</real>
+		<real>0.768627</real>
 		<real>1</real>
 	</array>
 	<key>EditorHighlightZenkakuSymbol</key>
@@ -179,16 +179,16 @@
 	</array>
 	<key>SyntaxIndex</key>
 	<array>
-		<integer>1</integer>
-		<integer>1</integer>
-		<integer>0</integer>
+		<real>0.541176</real>
+		<real>0.427451</real>
+		<real>0</real>
 		<integer>1</integer>
 	</array>
 	<key>SyntaxMarker</key>
 	<array>
-		<real>1</real>
-		<real>0.9703128892638841</real>
-		<real>0.2354147580939638</real>
+		<real>0.5</real>
+		<real>0.40000000000000002</real>
+		<real>0</real>
 		<real>1</real>
 	</array>
 	<key>SyntaxMarkerParen</key>
@@ -224,7 +224,7 @@
 	<key>XMLParameter</key>
 	<array>
 		<real>0</real>
-		<real>1</real>
+		<real>0.541176</real>
 		<real>0</real>
 		<real>1</real>
 	</array>
@@ -244,9 +244,9 @@
 	</array>
 	<key>XMLValue</key>
 	<array>
-		<real>0.6</real>
-		<real>0.6</real>
-		<real>0.2</real>
+		<real>0.478431</real>
+		<real>0.478431</real>
+		<real>0.121569</real>
 		<real>1</real>
 	</array>
 	<key>explFunction</key>

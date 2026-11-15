@@ -46,9 +46,9 @@
 	</array>
 	<key>EditorHighlightContent</key>
 	<array>
-		<real>0.4756349325</real>
-		<real>0.4756467342</real>
-		<real>0.4756404161</real>
+		<real>0.239216</real>
+		<real>0.227451</real>
+		<real>0.156863</real>
 		<real>1</real>
 	</array>
 	<key>EditorHighlightZenkakuSymbol</key>
@@ -95,9 +95,9 @@
 	</array>
 	<key>EntryColor</key>
 	<array>
-		<real>1</real>
-		<real>0</real>
-		<real>0</real>
+		<real>0.188235</real>
+		<real>0.192157</real>
+		<real>0.164706</real>
 		<real>1</real>
 	</array>
 	<key>FootnoteColor</key>
@@ -230,8 +230,8 @@
 	</array>
 	<key>XMLSpecial</key>
 	<array>
-		<real>0</real>
-		<real>0.3</real>
+		<real>0.431373</real>
+		<real>0.607843</real>
 		<real>1</real>
 		<real>1</real>
 	</array>

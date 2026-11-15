@@ -291,6 +291,52 @@ if #available(macOS 14.0, *) {
 }
 check(store.url(forTitle: "../evil") == nil && store.url(forTitle: ".hidden") == nil && store.url(forTitle: "a:b") == nil, "unsafe theme names are refused")
 
+// The bundled themes have the colors of TeXShop 6.00, and earlier copies get them once (TeXShop's updateBundledThemeColors).
+let bundledStore = ThemeStore(directory: ThemeStore.bundledDirectory!)
+func near(_ value: Any?, _ expected: [Double]) -> Bool {
+    guard let array = value as? [NSNumber], array.count >= 3 else { return false }
+    return (0..<3).allSatisfy { abs(array[$0].doubleValue - expected[$0]) < 0.0005 }
+}
+for change in ThemeStore.bundledColorChanges {
+    check(near(bundledStore.read(title: change.theme)?[change.key], change.to), "bundled \(change.theme) has the new \(change.key)")
+}
+check(near(bundledStore.read(title: "Dracula")?["SyntaxMarkerCurly"], [0.9725490196078431, 0.9725490196078431, 0.9490196078431372]),
+      "Dracula's braces are in its text color")
+// Copies as earlier versions installed them: the old colors, one of them changed by the user.
+func earlierCopy(_ theme: String) -> ThemeColors {
+    var colors = bundledStore.read(title: theme)!
+    for change in ThemeStore.bundledColorChanges where change.theme == theme {
+        var color = colors[change.key] as! [Any]
+        for index in 0..<3 { color[index] = NSNumber(value: change.from[index]) }
+        colors[change.key] = color
+    }
+    return colors
+}
+var oldDracula = earlierCopy("Dracula")
+oldDracula["SyntaxMarkerParen"] = [0.5, 0.25, 0.125, 1.0]
+try! store.write(oldDracula, title: "Dracula")
+try! store.write(earlierCopy("Dracula"), title: "My Dracula")
+try! store.write(earlierCopy("Manteuffel"), title: "Manteuffel")
+check(store.updateBundledThemeColors(after: 0) == 1, "the update is done")
+let updatedDracula = store.read(title: "Dracula")!
+check(near(updatedDracula["SyntaxMarkerCurly"], [0.9725490196078431, 0.9725490196078431, 0.9490196078431372])
+      && near(updatedDracula["EditorHighlightContent"], [0.25098, 0.243137, 0.172549]), "a copy gets the new colors")
+check(near(updatedDracula["SyntaxMarkerParen"], [0.5, 0.25, 0.125]), "a color the user chose stays")
+check(near(store.read(title: "My Dracula")?["SyntaxMarkerCurly"], [0, 0, 0]), "a renamed copy stays")
+check(near(store.read(title: "Manteuffel")?["SyntaxCommand"], [0.043137, 0.52549, 0.701961]), "Manteuffel's commands are readable")
+check(ThemeStore.applyBundledColorChanges(to: &oldDracula, theme: "Dracula", after: 1) == false, "nothing after the last update")
+// A theme that is there but cannot be read leaves the update for the next launch.
+try! Data("not a property list".utf8).write(to: store.url(forTitle: "LiteTheme")!)
+check(store.updateBundledThemeColors(after: 0) == 0, "an unreadable theme keeps the update pending")
+try! FileManager.default.removeItem(at: store.url(forTitle: "LiteTheme")!)
+let themeDefaults = UserDefaults(suiteName: "tex2img.shortcut.test")!
+themeDefaults.removeObject(forKey: ThemeStore.bundledColorsUpdateKey)
+try! store.write(earlierCopy("SolarizedDark"), title: "SolarizedDark")
+ThemeLibrary.shared.prepare(defaults: themeDefaults)
+check(themeDefaults.integer(forKey: ThemeStore.bundledColorsUpdateKey) == 1
+      && near(store.read(title: "SolarizedDark")?["EditorHighlightContent"], [0.2, 0.188235, 0.039216]), "launch updates the copies once")
+themeDefaults.removeObject(forKey: ThemeStore.bundledColorsUpdateKey)
+
 // Migration of customized colors from an earlier profile.
 var legacy: Profile = [:]
 legacy[CommentColorForLightModeKey] = NSColor(deviceRed: 0, green: 0.5, blue: 0, alpha: 1).serializedString

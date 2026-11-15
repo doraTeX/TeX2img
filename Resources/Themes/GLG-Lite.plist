@@ -81,9 +81,9 @@
 	</array>
 	<key>EditorReverseSync</key>
 	<array>
-		<real>0.2000000029802322</real>
-		<real>0.6000000238418579</real>
-		<real>0.9900000095367432</real>
+		<real>0.74902</real>
+		<real>0.866667</real>
+		<real>0.988235</real>
 		<real>1</real>
 	</array>
 	<key>EditorText</key>
@@ -179,8 +179,8 @@
 	</array>
 	<key>SyntaxIndex</key>
 	<array>
-		<real>1</real>
-		<real>1</real>
+		<real>0.541176</real>
+		<real>0.427451</real>
 		<real>0</real>
 		<real>1</real>
 	</array>
@@ -224,7 +224,7 @@
 	<key>XMLParameter</key>
 	<array>
 		<real>0</real>
-		<real>1</real>
+		<real>0.541176</real>
 		<real>0</real>
 		<real>1</real>
 	</array>
@@ -244,9 +244,9 @@
 	</array>
 	<key>XMLValue</key>
 	<array>
-		<real>0.6</real>
-		<real>0.6</real>
-		<real>0.2</real>
+		<real>0.478431</real>
+		<real>0.478431</real>
+		<real>0.121569</real>
 		<real>1</real>
 	</array>
 	<key>explFunction</key>
