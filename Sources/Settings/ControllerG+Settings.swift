@@ -321,8 +321,8 @@ extension ControllerG {
         ("Conversion", "hammer", 0x534AB7, false),
         ("After Generation", "square.and.arrow.up", 0x1D9E75, false),
         ("Editor", "character.cursor.ibeam", 0xBA7517, true),
-        ("Appearance", "paintpalette", 0x7F77DD, false),
         ("Keyboard", "keyboard", 0x5F5E5A, false),
+        ("Appearance", "paintpalette", 0x7F77DD, false),
     ]
 
     private func header(_ identifier: String) -> NSView {

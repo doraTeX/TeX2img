@@ -176,7 +176,8 @@ check(defaultOff.allSatisfy { $0.state == .off }, "switches off by default")
 check(controller.fillColorWell.color.usingColorSpace(.sRGB).map { $0.redComponent > 0.99 && $0.greenComponent > 0.99 && $0.blueComponent > 0.99 } == true,
       "white fill by default")
 check(settings.window?.isVisible == false, "the settings window stays hidden")
-check(settings.categories.map(\.identifier) == ["General", "Image", "Conversion", "After Generation", "Editor", "Appearance", "Keyboard"], "category order")
+check(settings.categories.map(\.identifier) == ["General", "Image", "Conversion", "After Generation", "Editor", "Keyboard", "Appearance"],
+      "category order: Keyboard after Editor, as in TeXShop 6.00")
 
 controller.themeSettings.prepareForDisplay(dark: false)
 
