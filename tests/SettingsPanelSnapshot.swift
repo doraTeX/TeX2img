@@ -207,6 +207,31 @@ for category in settings.categories {
         render(pane, width: 640, appearance: appearance, to: output.appendingPathComponent(name))
     }
 }
+// Every label of the cards shows its whole text, at the default width and at the narrowest the window allows (TeXShop 6.00):
+// a one-line label is as wide as its text, a wrapping one as tall. Labels that are meant to truncate, and the lists, are left out.
+for width in [640.0, 590.0] {
+    for category in settings.categories {
+        if category.identifier == "Appearance" { controller.themeSettings.prepareForDisplay(dark: false) }
+        _ = layOut(category.view, width: width)
+        for label in all(NSTextField.self, in: category.view) where !label.isEditable && !label.isBezeled && !label.isHiddenOrHasHiddenAncestor {
+            var ancestor = label.superview
+            while let view = ancestor, !(view is NSTableView) { ancestor = view.superview }
+            guard ancestor == nil, label.lineBreakMode != .byTruncatingTail, label.lineBreakMode != .byTruncatingMiddle,
+                  let cell = label.cell, !label.stringValue.isEmpty else { continue }
+            let place = "\(category.identifier) at \(width): “\(label.stringValue)”"
+            if cell.wraps {
+                let needed = cell.cellSize(forBounds: NSRect(x: 0, y: 0, width: label.frame.width, height: .greatestFiniteMagnitude)).height
+                check(label.frame.height >= needed - 1, "\(place) is \(label.frame.height) high for \(needed)")
+            } else {
+                check(label.frame.width >= cell.cellSize.width - 1, "\(place) is \(label.frame.width) wide for \(cell.cellSize.width)")
+            }
+            let frame = label.convert(label.bounds, to: category.view)
+            check(category.view.bounds.insetBy(dx: -0.5, dy: -0.5).contains(frame), "\(place) stays inside its pane")
+        }
+        category.view.removeFromSuperview()
+    }
+}
+
 let invisibleWidths = Set([controller.spaceCharacterKindPopUp, controller.fullwidthSpaceCharacterKindPopUp,
                             controller.returnCharacterKindPopUp, controller.tabCharacterKindPopUp].map { $0!.frame.width })
 check(invisibleWidths.count == 1, "the invisible-character menus share one width")
