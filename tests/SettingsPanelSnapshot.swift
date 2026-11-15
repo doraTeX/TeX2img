@@ -111,10 +111,9 @@ func all<T>(_ type: T.Type, in view: NSView) -> [T] {
     ((view as? T).map { [$0] } ?? []) + view.subviews.flatMap { all(type, in: $0) }
 }
 
-func render(_ view: NSView, width: CGFloat, appearance: NSAppearance.Name, to url: URL) {
+/// Lays a view out by its constraints at a width and its fitting height, as the settings window does.
+func layOut(_ view: NSView, width: CGFloat) -> NSView {
     let host = NSView(frame: NSRect(x: 0, y: 0, width: width, height: 100))
-    host.appearance = NSAppearance(named: appearance)
-    host.wantsLayer = true
     view.removeFromSuperview()
     view.translatesAutoresizingMaskIntoConstraints = false
     host.addSubview(view)
@@ -126,6 +125,14 @@ func render(_ view: NSView, width: CGFloat, appearance: NSAppearance.Name, to ur
     host.layoutSubtreeIfNeeded()
     let height = ceil(view.fittingSize.height)
     host.setFrameSize(NSSize(width: width, height: height))
+    host.layoutSubtreeIfNeeded()
+    return host
+}
+
+func render(_ view: NSView, width: CGFloat, appearance: NSAppearance.Name, to url: URL) {
+    let host = layOut(view, width: width)
+    host.appearance = NSAppearance(named: appearance)
+    host.wantsLayer = true
     host.layoutSubtreeIfNeeded()
     let rep = host.bitmapImageRepForCachingDisplay(in: host.bounds)!
     host.appearance!.performAsCurrentDrawingAppearance {
@@ -407,6 +414,7 @@ let pane = ShortcutPaneController()
 pane.store = shortcutStore
 let paneWindow = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 560, height: 400), styleMask: [.titled], backing: .buffered, defer: true)
 paneWindow.contentView = pane.view
+pane.window = paneWindow
 pane.view.frame = paneWindow.contentView!.bounds
 paneWindow.contentView!.layoutSubtreeIfNeeded()
 _ = all(NSSegmentedControl.self, in: pane.view).first.map { control in
@@ -435,7 +443,104 @@ for appearance in [NSAppearance.Name.aqua, .darkAqua] {
     render(pane.view, width: 560, appearance: appearance, to: output.appendingPathComponent("key-search-\(language)-\(appearance == .aqua ? "light" : "dark").png"))
 }
 edit.removeItem(copyAgain)
+
+// Recording in the list, as in Xcode and TeXShop 6.00: no sheet, the key goes into the row.
+// render() took the pane out of its window.
+func putPaneInWindow() {
+    paneWindow.contentView = pane.view
+    pane.view.frame = paneWindow.contentView!.bounds
+    paneWindow.contentView!.layoutSubtreeIfNeeded()
+}
+putPaneInWindow()
+pane.stopKeySearch()
+pane.reloadCommands()
+check(!all(NSButton.self, in: pane.view).contains { ["Change…", "Remove Shortcut", "変更…"].contains($0.title) }, "the recording sheet's buttons are gone")
+check(keyTable.usesAlternatingRowBackgroundColors, "the list has striped rows")
+func key(_ characters: String, _ flags: NSEvent.ModifierFlags = [], code: UInt16 = 0) -> NSEvent {
+    NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: flags, timestamp: 0, windowNumber: paneWindow.windowNumber, context: nil,
+                     characters: characters, charactersIgnoringModifiers: characters, isARepeat: false, keyCode: code)!
+}
+func statusText() -> String {
+    (all(NSTextField.self, in: pane.view).first { $0.identifier?.rawValue == "shortcut.status-text" })?.stringValue ?? "<missing>"
+}
+func statusWarns() -> Bool {
+    (all(NSStackView.self, in: pane.view).first { $0.identifier?.rawValue == "shortcut.status" })?.arrangedSubviews.first?.isHidden == false
+}
+func rowOf(_ item: NSMenuItem) -> Int {
+    (0..<keyTable.numberOfRows).first { (pane.tableView(keyTable, viewFor: keyTable.tableColumns[0], row: $0) as? NSTextField)?.stringValue.hasSuffix(item.title) == true } ?? -1
+}
+let saveRow = rowOf(save)
+check(saveRow >= 0, "Save is listed")
+keyTable.selectRowIndexes(IndexSet(integer: saveRow), byExtendingSelection: false)
+check(statusText() == String(format: NSLocalizedString("Default shortcut: %@", comment: ""), "⌘S") && !statusWarns(),
+      "the line under the list shows the default shortcut: \(statusText())")
+pane.beginRecording(at: saveRow)
+check(pane.isRecording && paneWindow.firstResponder?.isKind(of: NSView.self) == true
+      && (paneWindow.firstResponder as? NSView)?.identifier?.rawValue == "shortcut.recorder", "recording starts in the row")
+check(pane.tableView(keyTable, viewFor: keyTable.tableColumns[1], row: saveRow)?.identifier?.rawValue == "shortcut.recording",
+      "the shortcut cell is the recording field")
+// A key used by another command is refused; recording goes on with the reason under the list and the triangle in the row.
+check(pane.handleKeySearchEvent(key("o", .command, code: 31)) && pane.isRecording && save.keyEquivalent == "s", "a used key is refused")
+check(statusText().contains("File › Open") && statusWarns(), "the refusal names the command: \(statusText())")
+// Laid out by its constraints, as in the settings window, the line keeps its whole text.
+let statusPaneFrame = pane.view.frame
+_ = layOut(pane.view, width: 560)
+let statusField = all(NSTextField.self, in: pane.view).first { $0.identifier?.rawValue == "shortcut.status-text" }!
+check(statusField.frame.width >= ceil(statusField.attributedStringValue.size().width) - 1,
+      "the refusal shows its whole text: \(statusField.frame.width) for \(statusField.attributedStringValue.size().width)")
+pane.view.removeFromSuperview()
+paneWindow.contentView = pane.view
+pane.view.frame = statusPaneFrame
+paneWindow.makeFirstResponder(all(NSView.self, in: pane.view).first { $0.identifier?.rawValue == "shortcut.recorder" })
+let recordingWarning = all(NSImageView.self, in: pane.view).first { $0.identifier?.rawValue == "shortcut.recording-warning" }
+check(recordingWarning?.isHidden == false, "the row shows the triangle while a key is refused")
+check(pane.handleKeySearchEvent(key("x", code: 7)) && pane.isRecording && statusText().contains("F1"), "a plain key is refused")
+// A free key is assigned at once and ends recording.
+check(pane.handleKeySearchEvent(key("j", [.command, .option], code: 38)) && !pane.isRecording, "a free key ends recording")
+check(save.keyEquivalent == "j" && save.keyEquivalentModifierMask == [.command, .option], "a free key is assigned at once")
+check(!statusWarns() && statusText().contains("⌘S"), "the line shows the default again: \(statusText())")
+// Escape keeps the shortcut; Delete removes it.
+pane.beginRecording(at: rowOf(save))
+check(pane.handleKeySearchEvent(key("\u{1b}", code: 53)) && !pane.isRecording && save.keyEquivalent == "j", "Escape ends recording")
+pane.beginRecording(at: rowOf(save))
+check(pane.handleKeySearchEvent(key("\u{7f}", code: 51)) && !pane.isRecording && save.keyEquivalent == "", "Delete removes the shortcut")
+pane.beginRecording(at: rowOf(save))
+check(recordingWarning?.superview.flatMap { all(NSButton.self, in: $0).first { $0.identifier?.rawValue == "shortcut.recorder-remove" } }?.isHidden == true,
+      "no remove button for a command without a shortcut")
+// A click elsewhere ends recording.
+paneWindow.makeFirstResponder(keyTable)
+check(!pane.isRecording, "moving the focus ends recording")
+_ = shortcutStore.restore(shortcutStore.commands.first { $0.item === save }!)
+check(save.keyEquivalent == "s", "restored for the next checks")
+
+// Key search ends when the focus leaves the menu shortcut controls, and the field's cancel button forgets the key.
+let keyView = all(NSView.self, in: pane.view).first { $0.identifier?.rawValue == "shortcut.key" }!
+_ = all(NSSegmentedControl.self, in: pane.view).first.map { control in
+    control.selectedSegment = 1
+    _ = control.target?.perform(control.action, with: control)
+}
+check(pane.handleKeySearchEvent(event) && keyTable.numberOfRows == 1, "a key is searched")
+check(keyView.isAccessibilitySelectorAllowed(#selector(NSView.accessibilityPerformCancel)) && keyView.accessibilityPerformCancel(),
+      "the cancel button is offered while a key is shown")
+check(pane.searchingByKey && keyTable.numberOfRows == keyTable.numberOfRows && !keyView.isAccessibilitySelectorAllowed(#selector(NSView.accessibilityPerformCancel)),
+      "clearing forgets the key and stays in key search")
+pane.windowFirstResponderChanged(keyTable)
+check(pane.searchingByKey, "the list keeps key search")
+// The settings search field of the sidebar, outside the pane.
+pane.windowFirstResponderChanged(NSSearchField())
+check(!pane.searchingByKey, "another control ends key search")
+for appearance in [NSAppearance.Name.aqua, .darkAqua] {
+    putPaneInWindow()
+    keyTable.selectRowIndexes(IndexSet(integer: rowOf(save)), byExtendingSelection: false)
+    pane.beginRecording(at: rowOf(save))
+    _ = pane.handleKeySearchEvent(key("o", .command, code: 31))
+    render(pane.view, width: 560, appearance: appearance, to: output.appendingPathComponent("recording-\(language)-\(appearance == .aqua ? "light" : "dark").png"))
+    pane.endRecording()
+    putPaneInWindow()
+}
 defaults.removePersistentDomain(forName: "tex2img.shortcut.test")
+// The window remembers its category in the standard domain of this tool; leave nothing behind.
+UserDefaults.standard.removePersistentDomain(forName: ProcessInfo.processInfo.processName)
 
 print(report.joined(separator: "\n"))
 print("Settings panel checks passed")

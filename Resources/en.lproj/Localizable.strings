@@ -253,13 +253,12 @@
 "Press a key" = "Press a key";
 "Command" = "Command";
 "Shortcut" = "Shortcut";
-"Change…" = "Change…";
 "Remove Shortcut" = "Remove Shortcut";
 "Restore Default" = "Restore Default";
+"Default shortcut: %@" = "Default shortcut: %@";
+"Default shortcut: None" = "Default shortcut: None";
 "Restore All…" = "Restore All…";
 "Change Shortcut" = "Change Shortcut";
-"New shortcut" = "New shortcut";
-"Apply" = "Apply";
 "Shortcut Unavailable" = "Shortcut Unavailable";
 "This command is no longer available." = "This command is no longer available.";
 "This key cannot be used as a shortcut. Use Command or Control with a key, or F1–F20." = "This key cannot be used as a shortcut. Use Command or Control with a key, or F1–F20.";

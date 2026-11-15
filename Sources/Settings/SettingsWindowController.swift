@@ -51,6 +51,8 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
     var keyEventHandler: ((NSEvent) -> Bool)?
     /// Called before another category is shown.
     var willDisplayCategory: ((String) -> Void)?
+    /// Called after the focus moved to another view of the window.
+    var firstResponderChanged: ((NSResponder?) -> Void)?
     /// Menu command names offered by the search field, in the given category.
     var commandSearch: (category: String, names: () -> [String], show: (String) -> Void)?
 
@@ -524,6 +526,12 @@ final class SettingsWindow: NSWindow {
     override func sendEvent(_ event: NSEvent) {
         if event.type == .keyDown, isKeyWindow, attachedSheet == nil, settingsController?.keyEventHandler?(event) == true { return }
         super.sendEvent(event)
+    }
+
+    override func makeFirstResponder(_ responder: NSResponder?) -> Bool {
+        guard super.makeFirstResponder(responder) else { return false }
+        settingsController?.firstResponderChanged?(firstResponder)
+        return true
     }
 
     override func performKeyEquivalent(with event: NSEvent) -> Bool {

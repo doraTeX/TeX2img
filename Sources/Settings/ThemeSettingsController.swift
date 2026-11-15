@@ -257,7 +257,7 @@ final class ThemeSettingsController: NSObject {
         DispatchQueue.main.async {
             let alert = NSAlert()
             alert.messageText = String(format: NSLocalizedString("The theme “%@” already exists. Replace it?", comment: ""), title)
-            alert.addButton(withTitle: NSLocalizedString("Replace", comment: ""))
+            alert.addButton(withTitle: NSLocalizedString("Replace", comment: "")).hasDestructiveAction = true
             alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
             alert.beginSheetModal(for: window) { response in
                 if response == .alertFirstButtonReturn { write() }

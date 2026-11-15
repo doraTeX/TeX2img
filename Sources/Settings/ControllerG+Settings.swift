@@ -263,7 +263,14 @@ extension ControllerG {
             guard let self, self.settingsWindowController.currentIdentifier == "Keyboard" else { return false }
             return self.shortcutPane.handleKeySearchEvent(event)
         }
-        settingsWindowController.willDisplayCategory = { [weak self] _ in self?.shortcutPane.stopKeySearch() }
+        settingsWindowController.willDisplayCategory = { [weak self] _ in
+            self?.shortcutPane.endRecording()
+            self?.shortcutPane.stopKeySearch()
+        }
+        settingsWindowController.firstResponderChanged = { [weak self] responder in
+            guard let self, self.settingsWindowController.currentIdentifier == "Keyboard" else { return }
+            self.shortcutPane.windowFirstResponderChanged(responder)
+        }
         settingsWindowController.commandSearch = ("Keyboard", { [weak self] in self?.shortcutPane.commandPaths() ?? [] },
                                                   { [weak self] path in self?.shortcutPane.showCommand(path) })
         applyDefaultSettingValues()

@@ -253,13 +253,12 @@
 "Press a key" = "キーを押してください";
 "Command" = "コマンド";
 "Shortcut" = "ショートカット";
-"Change…" = "変更…";
 "Remove Shortcut" = "ショートカットを削除";
 "Restore Default" = "デフォルトに戻す";
+"Default shortcut: %@" = "デフォルトのショートカット：%@";
+"Default shortcut: None" = "デフォルトのショートカット：なし";
 "Restore All…" = "すべてデフォルトに戻す…";
 "Change Shortcut" = "ショートカットを変更";
-"New shortcut" = "新しいショートカット";
-"Apply" = "適用";
 "Shortcut Unavailable" = "使えないショートカット";
 "This command is no longer available." = "このコマンドは使えなくなりました。";
 "This key cannot be used as a shortcut. Use Command or Control with a key, or F1–F20." = "このキーはショートカットに使えません。CommandまたはControlとキーの組み合わせか，F1〜F20を使ってください。";
