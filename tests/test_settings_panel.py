@@ -5,6 +5,7 @@ Usage: python3 tests/test_settings_panel.py [output-directory]
 Images of every category (light and dark, English and Japanese) are written to the output directory.
 """
 import os
+import plistlib
 import re
 import shutil
 import subprocess
@@ -67,6 +68,18 @@ def main():
         print("Images:", output)
         return 0
     finally:
+        # The defaults of the test end up in the real preferences even with CFFIXED_USER_HOME; remove them.
+        # The emptied files are removed too; a file that still holds anything is left alone.
+        for domain in ("settings-snapshot", "tex2img.shortcut.test"):
+            subprocess.run(["defaults", "delete", domain], capture_output=True)
+            leftover = os.path.expanduser(f"~/Library/Preferences/{domain}.plist")
+            try:
+                with open(leftover, "rb") as file:
+                    empty = not plistlib.load(file)
+            except (OSError, plistlib.InvalidFileException):
+                empty = False
+            if empty:
+                os.remove(leftover)
         shutil.rmtree(os.path.join(work, "bin"), ignore_errors=True)
         shutil.rmtree(os.path.join(work, "settings-home"), ignore_errors=True)
 
