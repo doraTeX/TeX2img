@@ -720,14 +720,13 @@ class TeXTextView: NSTextView {
     }
 
     @IBAction func showCharacterInfo(_ sender: Any?) {
-        let selectedRange = self.selectedRange
-        guard selectedRange.length > 0 else {
+        // Every selected range counts, as in TeXShop 6.00; the popover points at the first one that holds text.
+        let ranges = selectedRanges.map(\.rangeValue)
+        guard let selectedRange = ranges.first(where: { $0.length > 0 }),
+              let popoverController = MyGlyphPopoverController(text: string, ranges: ranges) else {
             NSSound.beep()
             return
         }
-
-        let selectedString = string.substring(with: selectedRange)
-        guard let popoverController = MyGlyphPopoverController(character: selectedString) else { return }
 
         guard let layoutManager, let textContainer else { return }
         let glyphRange = layoutManager.glyphRange(forCharacterRange: selectedRange, actualCharacterRange: nil)

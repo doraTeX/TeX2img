@@ -50,7 +50,14 @@
 "Generate" = "Generate";
 "Abort" = "Abort";
 "Close Current Environment" = "Close Current Environment";
-"Base: %@ (%@ %@) <combining character sequence consisting of %lu characters>" = "Base: %@ (%@ %@) <combining character sequence consisting of %lu characters>";
+"Code Point:" = "Code Point:";
+"Block:" = "Block:";
+"Category:" = "Category:";
+"Version:" = "Version:";
+"Unknown" = "Unknown";
+"No Block" = "No Block";
+"deprecated" = "deprecated";
+"<a letter consisting of %d characters>" = "<a letter consisting of %d characters>";
 "%lu letters, %lu words, %lu lines" = "%lu letters, %lu words, %lu lines";
 "Emoji Style" = "Emoji Style";
 "Text Style" = "Text Style";
