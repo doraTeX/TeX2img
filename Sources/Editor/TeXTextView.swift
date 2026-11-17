@@ -68,6 +68,9 @@ class TeXTextView: NSTextView {
         currentDragOperation = []
 
         let layoutManager = MyLayoutManager(controller: controller)
+        // ControllerG may have set this on the layout manager that is replaced here (the order of awakeFromNib is
+        // not fixed): long sources are laid out only where needed (TeXShop 5.60).
+        layoutManager.allowsNonContiguousLayout = self.layoutManager?.allowsNonContiguousLayout ?? false
         textContainer?.replaceLayoutManager(layoutManager)
         // Color the lines that scrolling or resizing brings into view.
         if let clipView = enclosingScrollView?.contentView {
