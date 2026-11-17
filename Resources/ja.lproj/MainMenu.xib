@@ -489,19 +489,19 @@
                                     <action selector="toggleMenuItem:" target="450" id="RlQ-o3-Jdf"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="オートコンプリート" state="on" keyEquivalent="A" id="844">
+                            <menuItem title="オートコンプリート" state="on" keyEquivalent="A" tag="1" id="844">
                                 <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                 <connections>
                                     <action selector="toggleMenuItem:" target="450" id="845"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="入力された ¥ を \ に置換" state="on" id="760">
+                            <menuItem title="入力された ¥ を \ に置換" state="on" tag="2" id="760">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="toggleMenuItem:" target="450" id="763"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="リッチテキストとしてコピー" id="0hi-lG-OBu">
+                            <menuItem title="リッチテキストとしてコピー" tag="3" id="0hi-lG-OBu">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="toggleMenuItem:" target="450" id="a2y-yt-NxY"/>

@@ -489,19 +489,19 @@
                                     <action selector="toggleMenuItem:" target="450" id="KwE-LX-1hE"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Auto Complete" state="on" keyEquivalent="A" id="821">
+                            <menuItem title="Auto Complete" state="on" keyEquivalent="A" tag="1" id="821">
                                 <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                 <connections>
                                     <action selector="toggleMenuItem:" target="450" id="822"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Replace Inserted ¥ with \" state="on" id="730">
+                            <menuItem title="Replace Inserted ¥ with \" state="on" tag="2" id="730">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="toggleMenuItem:" target="450" id="732"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Copy as Rich Text" id="Nwx-d1-iXG">
+                            <menuItem title="Copy as Rich Text" tag="3" id="Nwx-d1-iXG">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="toggleMenuItem:" target="450" id="Ayr-J0-LvG"/>
