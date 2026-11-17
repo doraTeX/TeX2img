@@ -23,7 +23,8 @@ __METHOD__
             ("#cFc", [204,255,204]), ("CCFFCC", [204,255,204]),
             ("#123456", [18,52,86]), ("123", [17,34,51]),
             ("000", [0,0,0]), ("FFFFFF", [255,255,255]),
-            ("magenta", [255,0,255]), ("255 0 255", [255,0,255])
+            ("magenta", [255,0,255]), ("255 0 255", [255,0,255]),
+            ("indianred", [205,92,92]), ("IndianRed", [205,92,92]), ("indigo", [75,0,130])
         ]
         for (text, expected) in cases {
             let color = try parser.parseBackgroundColor(text).usingColorSpace(.deviceRGB)!
@@ -48,7 +49,7 @@ __METHOD__
             let decoded = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSIndexSet.self, from: data) as IndexSet?
             precondition(decoded == rows)
         }
-        print("色解析12ケース・11拡張子・新旧ドラッグデータの互換性: 成功")
+        print("色解析15ケース・11拡張子・新旧ドラッグデータの互換性: 成功")
     }
 }
 '''.replace('__METHOD__', method)

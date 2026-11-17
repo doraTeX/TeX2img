@@ -169,9 +169,9 @@ extension NSColor {
             self.init(deviceRed: 0.941176470588235, green: 1.0, blue: 0.941176470588235, alpha: 1.0)
         case "hotpink":
             self.init(deviceRed: 1.0, green: 0.411764705882353, blue: 0.705882352941177, alpha: 1.0)
-        case "indianred ":
+        case "indianred":
             self.init(deviceRed: 0.803921568627451, green: 0.36078431372549, blue: 0.36078431372549, alpha: 1.0)
-        case "indigo ":
+        case "indigo":
             self.init(deviceRed: 0.294117647058824, green: 0.0, blue: 0.509803921568627, alpha: 1.0)
         case "ivory":
             self.init(deviceRed: 1.0, green: 1.0, blue: 0.941176470588235, alpha: 1.0)
