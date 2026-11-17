@@ -21,6 +21,7 @@
 "execErrorMsg" = "%@ cannot be executed.\nCheck errors in the source code.";
 "formatErrorMsg" = "The value of \"%@\" in Settings is invalid.";
 "cannotOverwriteErrorMsg" = "%@ cannot be overwritten.";
+"sameInputOutputErrorMsg" = "The output file %@ is the input file. Specify another output file.";
 "cannotCreateDirectoryErrorMsg" = "%@ cannot be created as a folder.";
 "compileErrorMsg" = "A TeX compile error occurred.\nCheck errors in the source code.\nIf there are no errors in the source, check the encoding in Settings.";
 "imageSizeErrorMsg" = "An image format error occurred.\nThe image size may be too large.\nTry lower the resolution level.";

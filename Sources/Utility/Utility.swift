@@ -15,6 +15,15 @@ class Utility: NSObject {
         return pipe.stringValue
     }
 
+    /// Whether two paths name the same file, however they are written (/tmp and /private/tmp, symbolic links to
+    /// folders, ".."). A symbolic link at the end of a path is a file of its own: replacing it leaves its target.
+    static func isSameFile(_ path1: String, _ path2: String) -> Bool {
+        var status1 = stat()
+        var status2 = stat()
+        guard lstat(path1, &status1) == 0, lstat(path2, &status2) == 0 else { return false }
+        return status1.st_dev == status2.st_dev && status1.st_ino == status2.st_ino
+    }
+
     static func getFullPath(_ aPath: String) -> String? {
         guard !aPath.isEmpty else { return nil }
         return URL(fileURLWithPath: aPath).standardizedFileURL.path

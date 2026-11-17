@@ -22,6 +22,7 @@ protocol OutputController: AnyObject {
     func showFileGenerationError(_ aPath: String)
     func showExecError(_ command: String)
     func showCannotOverwriteError(_ path: String)
+    func showSameInputOutputError(_ path: String)
     func showCannotCreateDirectoryError(_ dir: String)
     func showCompileError()
     func showImageSizeError()
@@ -92,6 +93,7 @@ class Converter: NSObject {
     private var embedSource = false
     private var copyToClipboard = false
     private var additionalInputPath: String?
+    private var inputFilePath: String?
     private var pdfInputMode = false
     private var psInputMode = false
     private var errorsIgnored = false
@@ -803,14 +805,17 @@ class Converter: NSObject {
     private func mergeTIFFFiles(_ sourcePaths: [String], toPath destPath: String) -> Bool {
         var arguments = ["-cat"]
         arguments += sourcePaths.map { $0.quotingWithDoubleQuotations() }
-        arguments += ["-out", destPath.lastPathComponent.quotingWithDoubleQuotations()]
+        let mergedFileName = tempFileBaseName + "-out.tiff"
+        arguments += ["-out", mergedFileName.quotingWithDoubleQuotations()]
 
         var success = controller?.execCommand("/usr/bin/tiffutil",
                                               atDirectory: workingDirectory,
                                               withArguments: arguments,
                                               quiet: quietFlag) ?? false
         if success {
-            success = copyTarget(from: workingDirectory.appendingPathComponent(destPath.lastPathComponent), toPath: destPath)
+            success = copyTarget(from: workingDirectory.appendingPathComponent(mergedFileName), toPath: destPath)
+        } else {
+            controller?.showExecError("tiffutil")
         }
         return success
     }
@@ -1148,7 +1153,9 @@ class Converter: NSObject {
     }
 
     private func copyTarget(from sourcePath: String, toPath destPath: String) -> Bool {
-        if sourcePath == destPath { return true }
+        // The same file written another way (/tmp and /private/tmp, a symbolic link): removing the
+        // destination would remove the source.
+        if sourcePath == destPath || Utility.isSameFile(sourcePath, destPath) { return true }
 
         let fileExists = fileManager.fileExists(atPath: destPath)
 
@@ -1272,6 +1279,23 @@ class Converter: NSObject {
     }
 
 
+    /// The products are made in the working folder under temporary names, "<temp>-output.<ext>",
+    /// "<temp>-output-2.<ext>", … (SVG for SVGZ), and copied to the output files at the end. A file in the
+    /// working folder that has the name of an output file is not touched.
+    private var intermediateOutputFileName: String {
+        let extension_ = outputFilePath.pathExtension.lowercased()
+        return tempFileBaseName + "-output." + (extension_ == "svgz" ? "svg" : extension_)
+    }
+
+    /// The files that the conversion writes, before empty pages are known.
+    private func outputFilePaths() -> [String] {
+        let extension_ = outputFilePath.pathExtension.lowercased()
+        if mergeableExtensions.contains(extension_) && mergeOutputsFlag {
+            return [outputFilePath]
+        }
+        return stride(from: 1, through: pageCount, by: 1).map { outputFilePath.pathStringByAppendingPageNumber(UInt($0)) }
+    }
+
     private func compileAndConvert() -> Bool {
         let texFilePath = String(format: "%@.tex", workingDirectory.appendingPathComponent(tempFileBaseName))
         let dviFilePath = String(format: "%@.dvi", workingDirectory.appendingPathComponent(tempFileBaseName))
@@ -1280,12 +1304,8 @@ class Converter: NSObject {
         let croppedPdfFilePath = String(format: "%@-crop.pdf", workingDirectory.appendingPathComponent(tempFileBaseName))
         let pdfFileName = tempFileBaseName + ".pdf"
         let outputEpsFileName = tempFileBaseName + ".eps"
-        var outputFileName = outputFilePath.lastPathComponent
+        let outputFileName = intermediateOutputFileName
         let extension_ = outputFilePath.pathExtension.lowercased()
-
-        if extension_ == "svgz" {
-            outputFileName = outputFileName.replacingPathExtension("svg")
-        }
 
         var texDate: Date?
         var dviDate: Date?
@@ -1412,8 +1432,14 @@ class Converter: NSObject {
 
         pageCount = pdfDocument.pageCount
 
+        // An output file that is the input file (a page-numbered one too) would replace it.
+        if let inputFilePath, let samePath = outputFilePaths().first(where: { Utility.isSameFile($0, inputFilePath) }) {
+            controller?.showSameInputOutputError(samePath)
+            return false
+        }
+
         emptyPageFlags = []
-        for i in 1...pageCount {
+        for i in stride(from: 1, through: pageCount, by: 1) {
             var pageSuccess = true
             let isEmpty = willEmptyPageBeCreated(pdfFilePath, page: UInt(i), success: &pageSuccess)
             if !pageSuccess { return false }
@@ -1831,7 +1857,7 @@ class Converter: NSObject {
     func deleteTemporaryFiles() {
         guard deleteTmpFileFlag else { return }
 
-        let outputFileName = outputFilePath.lastPathComponent
+        let outputFileName = intermediateOutputFileName
         let basePath = workingDirectory.appendingPathComponent(tempFileBaseName)
         let extension_ = outputFilePath.pathExtension.lowercased()
 
@@ -1849,18 +1875,11 @@ class Converter: NSObject {
         if extension_ == "svgz" {
             try? fileManager.removeItem(atPath: "\(basePath)-out.svg")
             try? fileManager.removeItem(atPath: "\(basePath)-merge.svg")
-            try? fileManager.removeItem(atPath: workingDirectory.appendingPathComponent(outputFileName.replacingPathExtension("svg")))
         }
 
-        let outputDir = outputFilePath.deletingLastPathComponent
-        let outputFullPath = Utility.getFullPath(outputDir) ?? outputDir
-        let workingFullPath = Utility.getFullPath(workingDirectory) ?? workingDirectory
-        for i in 1...pageCount {
-            if outputFullPath != workingFullPath {
-                try? fileManager.removeItem(atPath: workingDirectory.appendingPathComponent(outputFileName.pathStringByAppendingPageNumber(UInt(i))))
-            } else if mergeableExtensions.contains(extension_) && mergeOutputsFlag && i >= 2 {
-                try? fileManager.removeItem(atPath: workingDirectory.appendingPathComponent(outputFileName.pathStringByAppendingPageNumber(UInt(i))))
-            }
+        for i in stride(from: 1, through: pageCount, by: 1) {
+            // The pages under temporary names; the output files are elsewhere or have other names.
+            try? fileManager.removeItem(atPath: workingDirectory.appendingPathComponent(outputFileName.pathStringByAppendingPageNumber(UInt(i))))
 
             let pageTempFiles = [
                 String(format: "%@-crop-%ld.pdf", basePath, i),
@@ -1873,11 +1892,6 @@ class Converter: NSObject {
             ]
             for path in pageTempFiles {
                 try? fileManager.removeItem(atPath: path)
-            }
-
-            if extension_ == "svgz" {
-                let svgPath = workingDirectory.appendingPathComponent(outputFileName.replacingPathExtension("svg"))
-                try? fileManager.removeItem(atPath: svgPath.pathStringByAppendingPageNumber(UInt(i)))
             }
         }
 
@@ -1921,6 +1935,14 @@ class Converter: NSObject {
 
             if fileManager.isDirectory(atPath: sourcePath) {
                 controller?.showFileFormatError(sourcePath)
+                controller?.generationDidFinish(.failed)
+                return false
+            }
+
+            // Absolute: the conversion changes the current folder.
+            inputFilePath = Utility.getFullPath(sourcePath)
+            if Utility.isSameFile(sourcePath, outputFilePath) {
+                controller?.showSameInputOutputError(outputFilePath)
                 controller?.generationDidFinish(.failed)
                 return false
             }

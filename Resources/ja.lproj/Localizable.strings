@@ -21,6 +21,7 @@
 "execErrorMsg" = "%@ の実行に失敗したので処理を中止します。\nソースコードにエラーがないか，確認してください。";
 "formatErrorMsg" = "「設定」の%@の値が不正です。";
 "cannotOverwriteErrorMsg" = "%@ を上書きできませんでした。";
+"sameInputOutputErrorMsg" = "出力ファイル %@ は入力ファイルです。別の出力ファイルを指定してください。";
 "cannotCreateDirectoryErrorMsg" = "%@ をフォルダとして作成できませんでした。";
 "compileErrorMsg" = "TeXのコンパイルエラーが生じています。\nソースコードにエラーがないか，確認してください。\nソースにエラーがない場合は，「設定」の文字コードも確認してください。";
 "imageSizeErrorMsg" = "画像生成に失敗しました。\n画像サイズが大きすぎる可能性があります。\n解像度レベルを下げてみてください。";

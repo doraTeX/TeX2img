@@ -55,6 +55,54 @@ with tempfile.TemporaryDirectory(prefix='tex2img-file-safety-') as tmp:
             check(result.returncode == 1 and 'Invalid file format' in result.stderr and not (root / output).exists(),
                   f'{source} to {output} ends with an error', result)
 
+    # The working folder and the output folder are one folder written two ways (a symbolic link): the image is
+    # made, also the second time (it was removed with the existing output, exit 1 without a message).
+    real = root / 'real'
+    real.mkdir()
+    (real / 'page.pdf').write_bytes((root / 'page.pdf').read_bytes())
+    link = root / 'link'
+    link.symlink_to(real)
+    for attempt in (1, 2):
+        result = run('--quiet', '--workingdir', 'current', 'page.pdf', str(link / 'out.png'), cwd=link)
+        check(result.returncode == 0 and (real / 'out.png').is_file(), f'output through a symbolic link, run {attempt}', result)
+
+    # The working folder is the input's folder and the output goes elsewhere: files in the working folder with
+    # the output's name are not replaced or removed (they were), the input among them.
+    source = root / 'src'
+    dest = root / 'dest'
+    source.mkdir()
+    dest.mkdir()
+    precious = b"the user's own file\n"
+    (source / 'fig.png').write_bytes(precious)
+    (source / 'fig.pdf').write_bytes((root / 'page.pdf').read_bytes())
+    original_input = (source / 'fig.pdf').read_bytes()
+    for workingdir, cwd in (('file', root), ('current', source)):
+        for output in ('fig.png', 'fig.pdf'):
+            result = run('--quiet', '--workingdir', workingdir, str(source / 'fig.pdf'), str(dest / output), cwd=cwd)
+            check(result.returncode == 0 and (dest / output).is_file(), f'--workingdir {workingdir} to {output}', result)
+            check(contents(source / 'fig.png') == precious, f'--workingdir {workingdir} to {output} kept src/fig.png')
+            check(contents(source / 'fig.pdf') == original_input, f'--workingdir {workingdir} to {output} kept the input')
+            (dest / output).unlink(missing_ok=True)
+
+    # The output file is the input file, however written: an error, and nothing is written.
+    for output in ('same.pdf', './same.pdf', 'real/../same.pdf', str(root / 'same.pdf')):
+        (root / 'same.pdf').write_bytes(original_input)
+        result = run('--quiet', 'same.pdf', output, cwd=root)
+        check(result.returncode == 1 and 'is the input file' in result.stderr
+              and contents(root / 'same.pdf') == original_input, f'input same.pdf, output {output}', result)
+    # A page-numbered output file (page 2 of fig.pdf is fig-2.pdf) that is the input: no page is written.
+    two = PdfWriter()
+    for _ in range(2):
+        two.add_page(PdfReader(root / 'page.pdf').pages[0])
+    two.write(root / 'fig-2.pdf')
+    two_bytes = (root / 'fig-2.pdf').read_bytes()
+    result = run('--quiet', 'fig-2.pdf', 'fig.pdf', cwd=root)
+    check(result.returncode == 1 and 'is the input file' in result.stderr and not (root / 'fig.pdf').exists()
+          and contents(root / 'fig-2.pdf') == two_bytes, 'a page-numbered output that is the input', result)
+    result = run('--quiet', '--merge-output-files', 'fig-2.pdf', 'fig.pdf', cwd=root)
+    check(result.returncode == 0 and (root / 'fig.pdf').is_file() and len(PdfReader(root / 'fig.pdf').pages) == 2,
+          'merged into fig.pdf', result)
+
 if failures:
     print('\n'.join('FAIL: ' + f for f in failures), file=sys.stderr)
     sys.exit(1)

@@ -126,6 +126,10 @@ class ControllerC: NSObject, OutputController {
         UtilityC.printStdErr(String(format: "tex2img: [Error] %@ cannot be overwritten.\n", path))
     }
 
+    func showSameInputOutputError(_ path: String) {
+        UtilityC.printStdErr(String(format: "tex2img: [Error] The output file %@ is the input file. Specify another output file.\n", path))
+    }
+
     func showCannotCreateDirectoryError(_ dir: String) {
         UtilityC.printStdErr(String(format: "tex2img: [Error] Directory %@ cannot be overwritten.\n", dir))
     }

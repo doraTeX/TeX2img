@@ -580,6 +580,13 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
+    func showSameInputOutputError(_ path: String) {
+        if generationWasAborted() { return }
+        performOnMainThread {
+            UtilityG.runErrorPanel(message: String(format: NSLocalizedString("sameInputOutputErrorMsg", comment: ""), path))
+        }
+    }
+
     func showCannotCreateDirectoryError(_ dir: String) {
         if generationWasAborted() { return }
         performOnMainThread {
