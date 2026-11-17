@@ -22,19 +22,19 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
 
     func loadProfilesFromPlist() {
         let defaults = UserDefaults.standard
-        if let names = defaults.array(forKey: profileNamesKey) as? [String] {
-            profileNames = names
+        // Entry by entry: one malformed name or profile drops that pair, not all the profiles (as? [String] of the
+        // whole array was nil for one wrong element, and the empty list was saved at quit).
+        let names: [Any] = defaults.array(forKey: profileNamesKey) ?? profileNames
+        let storedProfiles: [Any] = defaults.array(forKey: profilesKey) ?? profiles
+        var validNames = [String]()
+        var validProfiles = [Profile]()
+        for (name, profile) in zip(names, storedProfiles) {
+            guard let name = name as? String, let profile = profile as? Profile else { continue }
+            validNames.append(name)
+            validProfiles.append(profile)
         }
-        if let storedProfiles = defaults.array(forKey: profilesKey) as? [Profile] {
-            profiles = storedProfiles
-        }
-        let validCount = min(profileNames.count, profiles.count)
-        if profileNames.count != validCount {
-            profileNames.removeSubrange(validCount...)
-        }
-        if profiles.count != validCount {
-            profiles.removeSubrange(validCount...)
-        }
+        profileNames = validNames
+        profiles = validProfiles
     }
 
     func initProfiles() {
