@@ -100,7 +100,7 @@ extension TeXTextView {
             tempRange.location = markerRange.location
             tempRange.length = placeholderString.nsLength
             markerRange.length -= tempRange.length // deleting the bullet so selection is shorter
-            self.replaceCharacters(in: tempRange, with: "")
+            guard replaceTextUndoably(in: tempRange, with: "") else { return }
 
             // end delete bullet (marker)
             self.selectedRange = markerRange
@@ -138,7 +138,7 @@ extension TeXTextView {
             tempRange.location = markerRange.location
             tempRange.length = placeholderString.nsLength
             markerRange.length -= tempRange.length // deleting the bullet so selection is shorter
-            self.replaceCharacters(in: tempRange, with: "")
+            guard replaceTextUndoably(in: tempRange, with: "") else { return }
             
             // end delete bullet (marker)
             self.selectedRange = markerRange
@@ -152,7 +152,7 @@ extension TeXTextView {
     
     @IBAction func placeBullet(_ sender: Any) { // modified by (HS) to be a simple insertion (replacing the selection)
         var myRange = self.selectedRange
-        self.replaceCharacters(in: myRange, with: placeholderString) //" •\n" puts • on previous line
+        guard replaceTextUndoably(in: myRange, with: placeholderString) else { return } //" •\n" puts • on previous line
         myRange.location += placeholderString.nsLength //= end+2;//start puts • on previous line
         myRange.length = 0
         self.selectedRange = myRange
@@ -161,11 +161,20 @@ extension TeXTextView {
     
     @IBAction func placeComment(_ sender: Any) { // by (HS) to be a simple insertion (replacing the selection)
         var myRange = self.selectedRange
-        self.replaceCharacters(in: myRange, with: startCommentString) //" •\n" puts • on previous line
+        // One change, "•‹›", with the insertion point inside: Undo removes it at once.
+        guard replaceTextUndoably(in: myRange, with: startCommentString + endCommentString) else { return }
         myRange.location += startCommentString.nsLength //= end+2;//start puts • on previous line
         myRange.length = 0
-        self.replaceCharacters(in: myRange, with: endCommentString)
         self.selectedRange = myRange
+    }
+
+    /// Changes the text as typing does, so that Undo restores it (replaceCharacters alone is not recorded, and the
+    /// next Undo removed other characters).
+    private func replaceTextUndoably(in range: NSRange, with string: String) -> Bool {
+        guard shouldChangeText(in: range, replacementString: string) else { return false }
+        replaceCharacters(in: range, with: string)
+        didChangeText()
+        return true
     }
 
 }
