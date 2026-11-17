@@ -76,8 +76,6 @@ private let c1ControlCharNames = [
     "APPLICATION PROGRAM COMMAND",
 ]
 
-private let normalizationFactor = 256
-
 extension NSString {
     func unicodeName() -> String {
         let mutableUnicodeName = NSMutableString(string: self)
@@ -158,38 +156,25 @@ extension NSString {
             return self as String
         }
 
-        return (self as String).withCString { utf8Src in
-            let length = Int(strlen(utf8Src)) * normalizationFactor
-
-            let utf16Src = UnsafeMutablePointer<UChar>.allocate(capacity: length)
-            defer { utf16Src.deallocate() }
-
-            u_strFromUTF8(utf16Src, Int32(length), UnsafeMutablePointer<Int32>(bitPattern: 0), utf8Src, -1, &error)
-            if error.rawValue > 0 {
-                NSLog("u_strFromUTF8 failed - %s", u_errorName(error))
-                return self as String
-            }
-
-            let utf16Dest = UnsafeMutablePointer<UChar>.allocate(capacity: length)
-            defer { utf16Dest.deallocate() }
-
-            unorm2_normalize(normalizer, utf16Src, -1, utf16Dest, Int32(length), &error)
-            if error.rawValue > 0 {
-                NSLog("unorm2_normalize failed - %s", u_errorName(error))
-                return self as String
-            }
-
-            let utf8Dest = UnsafeMutablePointer<CChar>.allocate(capacity: length)
-            defer { utf8Dest.deallocate() }
-
-            u_strToUTF8(utf8Dest, Int32(length), UnsafeMutablePointer<Int32>(bitPattern: 0), utf16Dest, -1, &error)
-            if error.rawValue > 0 {
-                NSLog("u_strToUTF8 failed - %s", u_errorName(error))
-                return self as String
-            }
-
-            return String(cString: utf8Dest)
+        // UTF-16 with its length: no NUL ends the text early, and the buffer is as long as ICU says it must be
+        // (a guessed 256 times the UTF-8 length overflowed Int32 for long texts).
+        let source = Array((self as String).utf16)
+        guard !source.isEmpty, source.count <= Int(Int32.max) else { return self as String }
+        let length = unorm2_normalize(normalizer, source, Int32(source.count), nil, 0, &error)
+        if error == U_BUFFER_OVERFLOW_ERROR {
+            error = U_ZERO_ERROR
+        } else if error.rawValue > 0 {
+            NSLog("unorm2_normalize failed - %s", u_errorName(error))
+            return self as String
         }
+
+        var destination = [UChar](repeating: 0, count: Int(length))
+        let written = unorm2_normalize(normalizer, source, Int32(source.count), &destination, length, &error)
+        if error.rawValue > 0 {
+            NSLog("unorm2_normalize failed - %s", u_errorName(error))
+            return self as String
+        }
+        return String(utf16CodeUnits: destination, count: Int(written))
     }
 
     static func controlCharacterName(withCharacter character: unichar) -> String? {

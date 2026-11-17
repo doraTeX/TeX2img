@@ -1,4 +1,4 @@
-"""Modified NFC/NFD を実装そのものでコンパイルして確かめる（アプリは起動しない）。
+"""Modified NFC/NFD と NFKC_CF を実装そのものでコンパイルして確かめる（アプリは起動しない）。
 
 Modified NFC は CotEditor と同じく Full_Composition_Exclusion に当たらない区間だけを
 NFC にする。除外文字だけの文字列（互換漢字など）が空にならないことも確かめる。
@@ -28,6 +28,13 @@ func expect(_ name: String, _ got: String, _ expected: String) {
         expect("excluded combining mark", nfc("a\u{0340}"), "a\u{0340}")
         expect("controls kept", nfc("a\u{01}\tb\r\u{0C}"), "a\u{01}\tb\r\u{0C}")
         expect("empty", nfc(""), "")
+        // NFKC_CF: whole text with a NUL in it (it ended there), long text (the buffer size overflowed Int32 and crashed).
+        let nfkcCF = { (s: String) in (s as NSString).normalizedStringWithNFKC_CF() }
+        expect("NFKC_CF", nfkcCF("ＡＢｃ①ｶﾞ"), "abc1ガ")
+        expect("NFKC_CF with NUL", nfkcCF("AB\u{0}CD"), "ab\u{0}cd")
+        expect("NFKC_CF empty", nfkcCF(""), "")
+        let long = String(repeating: "A", count: 8_388_608)
+        guard nfkcCF(long) == long.lowercased() else { print("FAIL NFKC_CF of 8 MiB"); exit(1) }
         expect("modified NFD", nfd("が\u{FA19}\u{1F71}"), "か\u{3099}\u{FA19}\u{03B1}\u{0301}")
         expect("modified NFD keeps leading U+FEFF", nfd("\u{FEFF}a"), "\u{FEFF}a")
         let excluded = try! NSRegularExpression(pattern: #"^\p{Full_Composition_Exclusion}$"#)
