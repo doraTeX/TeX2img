@@ -565,13 +565,15 @@ class Converter: NSObject {
                                     atDirectory: workingDirectory,
                                     withArguments: [String(format: "--outfile=%@", temporaryOutputPdfFileName.quotingWithDoubleQuotations()),
                                                     hiresOption,
-                                                    epsName],
+                                                    epsName.quotingWithDoubleQuotations()],
                                     quiet: quietFlag)
 
-        let outFilePath = workingDirectory.appendingPathComponent(pdfName.lastPathComponent)
+        // A full path (the PDF that previews an output EPS) is kept as it is; a name is in the working folder.
+        let outFilePath = (pdfName as NSString).isAbsolutePath ? pdfName : workingDirectory.appendingPathComponent(pdfName.lastPathComponent)
+        let temporaryOutputPdfFilePath = workingDirectory.appendingPathComponent(temporaryOutputPdfFileName)
+        guard fileManager.fileExists(atPath: temporaryOutputPdfFilePath) else { return false }
         try? fileManager.removeItem(atPath: outFilePath)
-        try? fileManager.moveItem(atPath: workingDirectory.appendingPathComponent(temporaryOutputPdfFileName.lastPathComponent), toPath: outFilePath)
-        return true
+        return (try? fileManager.moveItem(atPath: temporaryOutputPdfFilePath, toPath: outFilePath)) != nil
     }
 
     private func eps2pdf(_ epsName: String, outputFileName pdfName: String, addMargin: Bool) -> Bool {
