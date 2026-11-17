@@ -1805,18 +1805,30 @@ class Converter: NSObject {
                 previewApp = fileManager.fileExists(atPath: "/System/Applications/Preview.app") ? "/System/Applications/Preview.app" : "/Applications/Preview.app"
             }
 
-            let pathsForPreview = generatedFiles.map { path -> String in
-                if #available(macOS 13, *) {
-                    if extension_ == "eps" {
-                        let pdfPathForPreview = fileManager.temporaryDirectory.path.appendingPathComponent(path.lastPathComponent.deletingPathExtension + ".pdf")
-                        _ = epstopdf(path, outputFileName: pdfPathForPreview)
+            var pathsForPreview = generatedFiles
+            if #available(macOS 13, *), extension_ == "eps" {
+                // Preview does not open EPS: each is converted to a PDF with its name, in a new folder of its own in
+                // the temporary folder. The name alone could be a file there (the input, for one), which epstopdf
+                // replaces. A PDF that is not made is not previewed (an older one could be opened).
+                let previewDirectory = fileManager.temporaryDirectory.path.appendingPathComponent(tempFileBaseName + "-preview")
+                if (try? fileManager.createDirectory(atPath: previewDirectory, withIntermediateDirectories: false)) == nil {
+                    controller?.showCannotCreateDirectoryError(previewDirectory)
+                    pathsForPreview = []
+                } else {
+                    pathsForPreview = generatedFiles.compactMap { path in
+                        let pdfPathForPreview = previewDirectory.appendingPathComponent(path.lastPathComponent.deletingPathExtension + ".pdf")
+                        guard epstopdf(path, outputFileName: pdfPathForPreview) else {
+                            controller?.showFileGenerationError(pdfPathForPreview)
+                            return nil
+                        }
                         return pdfPathForPreview
                     }
                 }
-                return path
             }
 
-            controller?.previewFiles(pathsForPreview, withApplication: previewApp)
+            if !pathsForPreview.isEmpty {
+                controller?.previewFiles(pathsForPreview, withApplication: previewApp)
+            }
         }
 
         if status && copyToClipboard && autoPasteFlag && autoPasteDestination != 0 && !generatedFiles.isEmpty {
