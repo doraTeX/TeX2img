@@ -1159,7 +1159,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             return
         }
 
-        let message = String(format: "%@\n\n%@", NSLocalizedString("resotrePreambleMsg", comment: ""), contents.replacingOccurrences(of: "%", with: "%%"))
+        let message = String(format: "%@\n\n%@", NSLocalizedString("resotrePreambleMsg", comment: ""), contents)
         if UtilityG.runConfirmPanel(message: message) {
             preambleTextView.replaceEntireContents(with: contents)
         }
