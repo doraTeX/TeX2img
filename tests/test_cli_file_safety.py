@@ -103,6 +103,16 @@ with tempfile.TemporaryDirectory(prefix='tex2img-file-safety-') as tmp:
     check(result.returncode == 0 and (root / 'fig.pdf').is_file() and len(PdfReader(root / 'fig.pdf').pages) == 2,
           'merged into fig.pdf', result)
 
+    # An output folder that cannot be written: an error message, not only the exit status.
+    locked_dir = root / 'readonly'
+    locked_dir.mkdir()
+    locked_dir.chmod(0o555)
+    try:
+        result = run('--quiet', 'page.pdf', str(locked_dir / 'out.png'), cwd=root)
+        check(result.returncode == 1 and 'cannot be created' in result.stderr, 'an output folder that cannot be written', result)
+    finally:
+        locked_dir.chmod(0o755)
+
 if failures:
     print('\n'.join('FAIL: ' + f for f in failures), file=sys.stderr)
     sys.exit(1)

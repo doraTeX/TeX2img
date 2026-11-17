@@ -859,6 +859,7 @@ class Converter: NSObject {
         for path in sourcePaths {
             guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
                   let rep = NSBitmapImageRep(data: data) else {
+                controller?.showFileGenerationError(destPath)
                 return false
             }
             reps.append(rep)
@@ -866,10 +867,10 @@ class Converter: NSObject {
             maxHeight = max(maxHeight, rep.pixelsHigh)
         }
 
-        guard maxWidth > 0, maxHeight > 0 else { return false }
-
-        guard let gifData = CFDataCreateMutable(kCFAllocatorDefault, 0),
+        guard maxWidth > 0, maxHeight > 0,
+              let gifData = CFDataCreateMutable(kCFAllocatorDefault, 0),
               let destination = CGImageDestinationCreateWithData(gifData, UTType.gif.identifier as CFString, reps.count, nil) else {
+            controller?.showFileGenerationError(destPath)
             return false
         }
         CGImageDestinationSetProperties(destination, gifProperties as CFDictionary)
@@ -888,21 +889,19 @@ class Converter: NSObject {
         if success {
             success = CGImageDestinationFinalize(destination)
         }
-        if success {
-            let animatedData = gif89aData(fromGIF87aData: gifData as Data)
-            if let animatedData {
-                let tempOutPath = workingDirectory.appendingPathComponent(tempFileBaseName + "-out.gif")
-                try? fileManager.removeItem(atPath: tempOutPath)
-                success = (try? animatedData.write(to: URL(fileURLWithPath: tempOutPath))) != nil
-                if success {
-                    success = copyTarget(from: tempOutPath, toPath: destPath)
-                }
-            } else {
-                success = false
-            }
+        let tempOutPath = workingDirectory.appendingPathComponent(tempFileBaseName + "-out.gif")
+        if success, let animatedData = gif89aData(fromGIF87aData: gifData as Data) {
+            try? fileManager.removeItem(atPath: tempOutPath)
+            success = (try? animatedData.write(to: URL(fileURLWithPath: tempOutPath))) != nil
+        } else {
+            success = false
+        }
+        guard success else {
+            controller?.showFileGenerationError(destPath)
+            return false
         }
 
-        return success
+        return copyTarget(from: tempOutPath, toPath: destPath)
     }
 
     private func generateAnimatedSVG(from sourcePaths: [String], toPath destPath: String) -> Bool {
@@ -940,7 +939,10 @@ class Converter: NSObject {
             result += mstr as String
         }
 
-        guard !svgIds.isEmpty else { return false }
+        guard !svgIds.isEmpty else {
+            controller?.showFileGenerationError(destPath)
+            return false
+        }
 
         let dur = Float(svgIds.count) * delay
         let repeatCount = loopCount == 0 ? "indefinite" : String(loopCount)
@@ -958,6 +960,7 @@ class Converter: NSObject {
         do {
             try output.write(toFile: tempOutPath, atomically: false, encoding: .utf8)
         } catch {
+            controller?.showFileGenerationError(destPath)
             return false
         }
 
@@ -979,7 +982,10 @@ class Converter: NSObject {
                                               atDirectory: workingDirectory,
                                               withArguments: arguments,
                                               quiet: quietFlag) ?? false
-        if !success { return false }
+        if !success {
+            controller?.showExecError("mudraw")
+            return false
+        }
 
         let outputExtension = (svgFilePath as NSString).pathExtension
         let outputtedSvgPath = "\(svgFilePath.deletingPathExtension)\(page).\(outputExtension)"
@@ -988,6 +994,7 @@ class Converter: NSObject {
             do {
                 try fileManager.moveItem(atPath: outputtedSvgPath, toPath: svgFilePath)
             } catch {
+                controller?.showFileGenerationError(svgFilePath)
                 return false
             }
         }
@@ -1175,7 +1182,11 @@ class Converter: NSObject {
             }
         }
 
-        return (try? fileManager.copyItem(atPath: sourcePath, toPath: destPath)) != nil
+        guard (try? fileManager.copyItem(atPath: sourcePath, toPath: destPath)) != nil else {
+            controller?.showFileGenerationError(destPath)
+            return false
+        }
+        return true
     }
 
     private func embedTeXSource(_ texFilePath: String, intoFile filePath: String) {
@@ -1226,6 +1237,7 @@ class Converter: NSObject {
             // 背景合成はアウトライン化より先に行い、Quartzによる再描画で
             // GhostscriptのExtGState参照が壊れるのを防ぐ。
             if !pdfcrop(pdfFilePath, outputFileName: croppedPdfFileName, page: page, addMargin: true, useCache: false, fillBackground: true) {
+                controller?.showFileGenerationError(svgFilePath)
                 return false
             }
 
@@ -1249,6 +1261,7 @@ class Converter: NSObject {
             if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
         } else {
             if !pdfcrop(pdfFilePath, outputFileName: croppedPdfFileName, page: page, addMargin: false, useCache: true, fillBackground: false) {
+                controller?.showFileGenerationError(svgFilePath)
                 return false
             }
 
@@ -1270,12 +1283,16 @@ class Converter: NSObject {
     }
 
     private func gzipSVG(_ svgPath: String, toSVGZ svgzPath: String) -> Bool {
-        return controller?.execCommand("/usr/bin/gzip",
-                                       atDirectory: workingDirectory,
-                                       withArguments: ["-cfq9",
-                                                       svgPath.quotingWithDoubleQuotations(),
-                                                       "> " + svgzPath.quotingWithDoubleQuotations()],
-                                       quiet: quietFlag) ?? false
+        let success = controller?.execCommand("/usr/bin/gzip",
+                                              atDirectory: workingDirectory,
+                                              withArguments: ["-cfq9",
+                                                              svgPath.quotingWithDoubleQuotations(),
+                                                              "> " + svgzPath.quotingWithDoubleQuotations()],
+                                              quiet: quietFlag) ?? false
+        if !success {
+            controller?.showFileGenerationError(svgzPath)
+        }
+        return success
     }
 
 
@@ -1470,7 +1487,10 @@ class Converter: NSObject {
                                   outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                   page: UInt(i), addMargin: true, useCache: false, fillBackground: !transparentFlag)
                 if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
-                if !success { return success }
+                if !success {
+                    controller?.showFileGenerationError(outputFilePath.pathStringByAppendingPageNumber(UInt(i)))
+                    return success
+                }
             }
         } else if (extension_ == "svg" || extension_ == "svgz") && leaveTextFlag
                     && !(mergeOutputsFlag && (pageCount - emptyPageFlags.trueValueCount > 1)) {
@@ -1629,6 +1649,8 @@ class Converter: NSObject {
                         success = PDFDocument(merging: outputFiles)?.writeToFilePath(tempOutPath) ?? false
                         if success {
                             success = copyTarget(from: tempOutPath, toPath: outputFilePath)
+                        } else {
+                            controller?.showFileGenerationError(outputFilePath)
                         }
                     } else {
                         success = copyTarget(from: outputFiles[0], toPath: outputFilePath)
