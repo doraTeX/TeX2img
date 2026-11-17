@@ -43,6 +43,12 @@ for control in ["\n", "\t", "\u{2028}", "\r\n"] {
 }
 check("a\n\u{0301}b\n髙\nc".stringByReplacingUnicodeCharactersWithUTF().hasSuffix("\\UTF{9AD9}%\nc"), "% after a line that starts with a mark")
 check("\n\u{0301}\nx".stringByReplacingUnicodeCharactersWithUTF() == "\n\\UTF{0301}%\nx", "% after a mark alone on its line")
+// TeX ends lines at CR and LF only: no "%" before U+2028, U+2029 or U+0085, which would comment out the rest.
+for separator in ["\u{2028}", "\u{2029}", "\u{0085}"] {
+    let output = "髙\(separator)x".stringByReplacingUnicodeCharactersWithUTF()
+    check(output == "\\UTF{9AD9}" + "\(separator)x".stringByReplacingUnicodeCharactersWithUTF(), "no % before \(separator.unicodeScalars.first!.value): \(output)")
+}
+check("髙\r\nx".stringByReplacingUnicodeCharactersWithUTF() == "\\UTF{9AD9}%\r\nx", "% before CRLF")
 // \CID is read in one pass: what one replacement gives is not read again.
 check("\\CID{97}CID{17}".stringByReplacingUTFWithUnicodeCharacters() == "\\CID{97}CID{17}".stringByReplacingUTFWithUnicodeCharacters(), "stable")
 for _ in 0..<5 {

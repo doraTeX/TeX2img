@@ -86,7 +86,9 @@ extension String {
                     utfString = NSMutableString(format: "%CUTF{%04X}", texChar, subString.character(at: 0))
                 }
 
-                if charRange.location + charRange.length == contentsEnd, charRange.location + charRange.length < nsSelf.length {
+                // TeX ends lines at CR and LF only: after U+2028, U+2029 or U+0085, a "%" would comment out the rest.
+                if charRange.location + charRange.length == contentsEnd, contentsEnd < nsSelf.length,
+                   [0x0A, 0x0D].contains(nsSelf.character(at: contentsEnd)) {
                     utfString.append("%")
                 }
                 newString.append(utfString as String)
