@@ -309,7 +309,8 @@ class TeXTextView: NSTextView {
 
         guard let paragraphStyle, let font else { return }
 
-        let charWidth = font.advancement(forGlyph: NSGlyph(" ".utf16.first!)).width
+        // The width of the space character; glyph number 32 is another glyph in most proportional fonts.
+        let charWidth = (" " as NSString).size(withAttributes: [.font: font]).width
         paragraphStyle.defaultTabInterval = charWidth * CGFloat(currentProfile.integerForKey(TabWidthKey))
         paragraphStyle.tabStops = []
 
