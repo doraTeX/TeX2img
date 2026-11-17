@@ -49,6 +49,13 @@ for separator in ["\u{2028}", "\u{2029}", "\u{0085}"] {
     check(output == "\\UTF{9AD9}" + "\(separator)x".stringByReplacingUnicodeCharactersWithUTF(), "no % before \(separator.unicodeScalars.first!.value): \(output)")
 }
 check("髙\r\nx".stringByReplacingUnicodeCharactersWithUTF() == "\\UTF{9AD9}%\r\nx", "% before CRLF")
+// ajmacros to Unicode: what TeX skips after a command word, no more (N4 of the 2026-11-17 audit).
+for (source, expected) in [("\\ajMasu\n\nNext", "〼\n\nNext"), ("\\ajMasu　です", "〼　です"), ("\\ajSunday", "\\ajSunday"),
+                           ("\\ajMasu \n  です", "〼です"), ("\\ajMasu  x", "〼x"), ("\\ajMasu\r\n\r\nx", "〼\r\n\r\nx"),
+                           ("\\ajMasu \n \nx", "〼\n \nx"), ("\\ajSun\\ajMasu", "☀〼")] {
+    let output = source.stringByReplacingAjLigWithLig()
+    check(output == expected, "\(source.debugDescription) becomes \(output.debugDescription), not \(expected.debugDescription)")
+}
 // \CID is read in one pass: what one replacement gives is not read again.
 check("\\CID{97}CID{17}".stringByReplacingUTFWithUnicodeCharacters() == "\\CID{97}CID{17}".stringByReplacingUTFWithUnicodeCharacters(), "stable")
 for _ in 0..<5 {
