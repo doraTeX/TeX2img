@@ -30,7 +30,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func application(_ sender: NSApplication, openFiles filenames: [String]) {
-        guard let filename = filenames.first else { return }
-        controllerG?.importSource(fromFilePathOrPDFDocument: filename, skipConfirm: false)
+        // The Apple Event that opened the files waits for this answer.
+        guard let filename = filenames.first else {
+            sender.reply(toOpenOrPrint: .failure)
+            return
+        }
+        let imported = controllerG?.importSource(fromFilePathOrPDFDocument: filename, skipConfirm: false) ?? false
+        sender.reply(toOpenOrPrint: imported ? .success : .failure)
     }
 }
