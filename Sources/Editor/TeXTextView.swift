@@ -110,7 +110,10 @@ class TeXTextView: NSTextView {
             })
         }
 
-        guard let menu = menu else { return }
+        // The menu of this view: menu is NSTextView.defaultMenu, which every text view (the output window, the
+        // fields of the settings) shares, and each source view added another separator to it.
+        guard let menu = menu?.copy() as? NSMenu else { return }
+        self.menu = menu
 
         let index = menu.items.firstIndex { $0.title.isEmpty } ?? menu.items.count
         addUnicodeNormalizationMenu(to: menu, at: index)
