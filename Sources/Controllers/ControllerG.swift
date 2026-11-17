@@ -2085,7 +2085,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         } else {
             output += FileManager.default.temporaryDirectory.path
         }
-        output += "\nResolution level: \(profile.floatForKey(ResolutionKey))\n"
+        output += String(format: "\nResolution level: %.1f\n", profile.floatForKey(ResolutionKey))
         output += "DPI: \(profile.integerForKey(DPIKey))\n"
         let ext = outputFilePath.pathExtension
         let unit = profile.integerForKey(UnitKey) == PX_UNIT_TAG && ["png", "gif", "tiff"].contains(ext) ? "px" : "bp"
