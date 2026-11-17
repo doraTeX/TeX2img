@@ -109,6 +109,29 @@ with tempfile.TemporaryDirectory(prefix='tex2img-file-safety-') as tmp:
     check(result.returncode == 0 and (root / 'fig.pdf').is_file() and len(PdfReader(root / 'fig.pdf').pages) == 2,
           'merged into fig.pdf', result)
 
+    # Symbolic links. An input that is a link to the output file (directly, through another link, or relative from
+    # another folder) reads the output: an error, and the file is not written. An output path that is a link is
+    # replaced by the product, and the file it pointed to (the input here) is kept; SVGZ was written through it.
+    links = root / 'links'
+    links.mkdir()
+    for name in ('target.pdf', 'source.pdf'):
+        (links / name).write_bytes(original_input)
+    (links / 'alias.pdf').symlink_to('target.pdf')
+    (links / 'alias2.pdf').symlink_to('alias.pdf')
+    (links / 'sub').mkdir()
+    (links / 'sub' / 'up.pdf').symlink_to('../target.pdf')
+    for source in ('alias.pdf', 'alias2.pdf', 'sub/up.pdf'):
+        result = run('--quiet', source, 'target.pdf', cwd=links)
+        check(result.returncode == 1 and 'is the input file' in result.stderr and contents(links / 'target.pdf') == original_input,
+              f'input {source} (a link to the output target.pdf)', result)
+    for output in ('out.pdf', 'out.png', 'out.svgz'):
+        (links / output).unlink(missing_ok=True)
+        (links / output).symlink_to('source.pdf')
+        result = run('--quiet', 'source.pdf', output, cwd=links)
+        check(result.returncode == 0 and contents(links / 'source.pdf') == original_input
+              and not (links / output).is_symlink() and (links / output).is_file(),
+              f'output {output} is a link to the input source.pdf: replaced, the input kept', result)
+
     # An output folder that cannot be written: an error message, not only the exit status.
     locked_dir = root / 'readonly'
     locked_dir.mkdir()

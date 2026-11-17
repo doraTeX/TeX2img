@@ -24,6 +24,19 @@ class Utility: NSObject {
         return status1.st_dev == status2.st_dev && status1.st_ino == status2.st_ino
     }
 
+    /// Whether writing the output path would replace the input. The output path is replaced as it is (a symbolic
+    /// link there is replaced, not its target); the input counts as the path itself and as the file that it reads
+    /// through symbolic links (alias.pdf → out.pdf: writing out.pdf replaces what alias.pdf is).
+    static func outputReplacesInput(output: String, input: String) -> Bool {
+        var outputStatus = stat()
+        guard lstat(output, &outputStatus) == 0 else { return false }
+        var inputStatus = stat()
+        if lstat(input, &inputStatus) == 0 && inputStatus.st_dev == outputStatus.st_dev && inputStatus.st_ino == outputStatus.st_ino {
+            return true
+        }
+        return stat(input, &inputStatus) == 0 && inputStatus.st_dev == outputStatus.st_dev && inputStatus.st_ino == outputStatus.st_ino
+    }
+
     static func getFullPath(_ aPath: String) -> String? {
         guard !aPath.isEmpty else { return nil }
         return URL(fileURLWithPath: aPath).standardizedFileURL.path

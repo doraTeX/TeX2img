@@ -1285,16 +1285,20 @@ class Converter: NSObject {
     }
 
     private func gzipSVG(_ svgPath: String, toSVGZ svgzPath: String) -> Bool {
+        // Into a file of its own, then copied as the other formats are: the shell's ">" writes through a symbolic
+        // link at the output path, into the file it points to (the input, for one).
+        let gzipFileName = tempFileBaseName + "-out.svgz"
         let success = controller?.execCommand("/usr/bin/gzip",
                                               atDirectory: workingDirectory,
                                               withArguments: ["-cfq9",
                                                               svgPath.quotingWithDoubleQuotations(),
-                                                              "> " + svgzPath.quotingWithDoubleQuotations()],
+                                                              "> " + gzipFileName.quotingWithDoubleQuotations()],
                                               quiet: quietFlag) ?? false
         if !success {
             controller?.showFileGenerationError(svgzPath)
+            return false
         }
-        return success
+        return copyTarget(from: workingDirectory.appendingPathComponent(gzipFileName), toPath: svgzPath)
     }
 
 
@@ -1452,7 +1456,7 @@ class Converter: NSObject {
         pageCount = pdfDocument.pageCount
 
         // An output file that is the input file (a page-numbered one too) would replace it.
-        if let inputFilePath, let samePath = outputFilePaths().first(where: { Utility.isSameFile($0, inputFilePath) }) {
+        if let inputFilePath, let samePath = outputFilePaths().first(where: { Utility.outputReplacesInput(output: $0, input: inputFilePath) }) {
             controller?.showSameInputOutputError(samePath)
             return false
         }
@@ -1973,7 +1977,7 @@ class Converter: NSObject {
 
             // Absolute: the conversion changes the current folder.
             inputFilePath = Utility.getFullPath(sourcePath)
-            if Utility.isSameFile(sourcePath, outputFilePath) {
+            if Utility.outputReplacesInput(output: outputFilePath, input: sourcePath) {
                 controller?.showSameInputOutputError(outputFilePath)
                 controller?.generationDidFinish(.failed)
                 return false
