@@ -936,6 +936,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                         foregroundColor: UtilityG.consoleForegroundColor(inProfile: profile),
                         backgroundColor: UtilityG.consoleBackgroundColor(inProfile: profile),
                         cursorColor: UtilityG.cursorColor(inProfile: profile))
+        // The new colors replace all the attributes, the font too (it became Helvetica 12 until the next run).
+        if let sourceFont {
+            outputTextView.font = sourceFont
+        }
     }
 
     private func setInvisibleCharacterFont(_ font: NSFont?) {
