@@ -186,8 +186,11 @@ final class ConsoleOutputDecoder {
         return result
     }
 
-    /// Unfinished lines with bytes beyond ASCII in another encoding wait for the rest; longer lines do not.
+    /// Unfinished lines that are not plain UTF-8 or ASCII wait for the rest, so that a line reads the same however
+    /// the pipe divided it: bytes beyond ASCII in another encoding, escape sequences of ISO-2022-JP, bytes that are
+    /// not UTF-8. Longer lines do not wait.
     private static let longestKeptLine = 4096
+    private static let iso2022JP = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(CFStringEncoding(CFStringEncodings.ISO_2022_JP.rawValue)))
 
     /// The number of bytes at the end to keep for the next piece of output.
     static func lengthToKeep(_ data: Data, encoding: String.Encoding, line: Bool) -> Int {
@@ -207,8 +210,13 @@ final class ConsoleOutputDecoder {
                 if split.present == split.needed { start += split.needed }
             }
         }
-        if line && encoding != .utf8 && length - start <= longestKeptLine && b[start...].contains(where: { $0 >= 0x80 }) {
-            return length - start
+        if line && length - start <= longestKeptLine {
+            if encoding != .utf8 && b[start...].contains(where: { $0 >= 0x80 }) { return length - start }
+            if encoding == iso2022JP && b[start...].contains(0x1B) { return length - start }
+            if encoding == .utf8 && b[start...].contains(where: { $0 >= 0x80 }) {
+                let unfinished = unfinishedUTF8Character(b[start...]).count
+                if !decodes(b[start..<(length - unfinished)], .utf8) { return length - start }
+            }
         }
         // The start of a UTF-8 character at the end of a line that is otherwise UTF-8.
         let unfinished = unfinishedUTF8Character(b[start...]).count

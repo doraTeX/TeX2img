@@ -36,6 +36,17 @@ for cut in 1..<japanese.count {
 // A line mostly in UTF-8 shows U+FFFD for the bad byte; a line without UTF-8 characters is read in Latin 9.
 let mixed = Array("ok\n".utf8) + Array("日".utf8) + [0xFF] + Array("本\n".utf8) + [0x61, 0xFF, 0x62, 0x0A] + Array("日本\n".utf8)
 check(ConsoleOutputDecoder.displayString(Data(mixed), encoding: .utf8) == "ok\n日\u{FFFD}本\naÿb\n日本\n", "invalid bytes stay on their line")
+// A line reads the same however the pipe divides it: ISO-2022-JP, and UTF-8 lines with bytes that are not UTF-8.
+let jis = ConsoleOutputDecoder.encoding(forKanji: PTEX_ENCODING_JIS)
+let jisText = "! 未定義のコマンド\nl.1 漢字\n"
+let jisBytes = Array(jisText.data(using: jis)!)
+for cut in 1..<jisBytes.count {
+    check(pieces([Array(jisBytes[..<cut]), Array(jisBytes[cut...])], encoding: jis) == jisText, "ISO-2022-JP divided at \(cut)")
+}
+let wholeMixed = ConsoleOutputDecoder.displayString(Data(mixed), encoding: .utf8)
+for cut in 1..<mixed.count {
+    check(pieces([Array(mixed[..<cut]), Array(mixed[cut...])], encoding: .utf8) == wholeMixed, "invalid UTF-8 divided at \(cut)")
+}
 // When output pauses, an unfinished Shift JIS line is shown; an unfinished character waits.
 let decoder = ConsoleOutputDecoder(encoding: sjis)
 check(decoder.append(Data("? 入力待ち".data(using: sjis)!)).isEmpty, "an unfinished line waits for the rest")
