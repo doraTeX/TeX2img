@@ -1404,7 +1404,8 @@ class Converter: NSObject {
 
         if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
-        guard let pdfDocument = PDFDocument(filePath: pdfFilePath) else {
+        // A PDF that needs a password to open has no pages for PDFKit.
+        guard let pdfDocument = PDFDocument(filePath: pdfFilePath), !pdfDocument.isLocked, pdfDocument.pageCount > 0 else {
             controller?.showFileFormatError(pdfFilePath)
             return false
         }
@@ -1420,7 +1421,7 @@ class Converter: NSObject {
         }
 
         whitePageFlags = []
-        for i in 1...pageCount {
+        for i in stride(from: 1, through: pageCount, by: 1) {
             var pageSuccess = true
             let isWhite = isEmptyPage(pdfFilePath, page: UInt(i), success: &pageSuccess)
             if !pageSuccess { return false }
@@ -1430,7 +1431,7 @@ class Converter: NSObject {
 
         // PDFから各形式に変換
         if bitmapExtensions.contains(extension_) && speedPriorityMode {
-            for i in 1...pageCount {
+            for i in stride(from: 1, through: pageCount, by: 1) {
                 success = pdf2image(pdfFilePath,
                                     outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                     page: UInt(i), crop: true)
@@ -1438,7 +1439,7 @@ class Converter: NSObject {
                 if !success { return success }
             }
         } else if extension_ == "pdf" && leaveTextFlag {
-            for i in 1...pageCount {
+            for i in stride(from: 1, through: pageCount, by: 1) {
                 success = pdfcrop(pdfFilePath,
                                   outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                   page: UInt(i), addMargin: true, useCache: false, fillBackground: !transparentFlag)
@@ -1452,7 +1453,7 @@ class Converter: NSObject {
                 _ = pdfcrop(pdfFilePath, outputFileName: croppedPdfFilePath, page: 0, addMargin: true, useCache: true, fillBackground: false)
                 if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
-                for i in 1...pageCount {
+                for i in stride(from: 1, through: pageCount, by: 1) {
                     success = pdf2svg(croppedPdfFilePath,
                                       outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
                                       page: UInt(i), skipEmptyPage: true)
@@ -1463,7 +1464,7 @@ class Converter: NSObject {
                 _ = pdfcrop(pdfFilePath, outputFileName: croppedPdfFilePath, page: 1, addMargin: true, useCache: false, fillBackground: true)
                 if controller?.exitCurrentThreadIfTaskKilled() == true { return false }
 
-                for i in 1...pageCount {
+                for i in stride(from: 1, through: pageCount, by: 1) {
                     _ = pdfcrop(pdfFilePath,
                                 outputFileName: croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i)),
                                 page: UInt(i), addMargin: true, useCache: false, fillBackground: true)
@@ -1479,7 +1480,7 @@ class Converter: NSObject {
         } else {
             if transparentFlag || bitmapExtensions.contains(extension_) {
                 if extension_ == "svg" || extension_ == "svgz" {
-                    for i in 1...pageCount {
+                    for i in stride(from: 1, through: pageCount, by: 1) {
                         if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
                         success = convertPDF(pdfFileName,
                                              toOutlinedSVG: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
@@ -1489,7 +1490,7 @@ class Converter: NSObject {
                     }
                 } else if isUsingNewGS() {
                     if extension_ == "eps" {
-                        for i in 1...pageCount {
+                        for i in stride(from: 1, through: pageCount, by: 1) {
                             if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
                             let croppedFile = croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i))
                             _ = pdfcrop(pdfFilePath, outputFileName: croppedFile, page: UInt(i), addMargin: false, useCache: false, fillBackground: false)
@@ -1503,7 +1504,7 @@ class Converter: NSObject {
                             if !success { return success }
                         }
                     } else {
-                        for i in 1...pageCount {
+                        for i in stride(from: 1, through: pageCount, by: 1) {
                             success = convertPDF(pdfFileName,
                                                  intermediateOutlinedFileName: outputEpsFileName.pathStringByAppendingPageNumber(UInt(i)),
                                                  outputFileName: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
@@ -1513,7 +1514,7 @@ class Converter: NSObject {
                         }
                     }
                 } else {
-                    for i in 1...pageCount {
+                    for i in stride(from: 1, through: pageCount, by: 1) {
                         if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
                         let croppedFile = croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i))
                         _ = pdfcrop(pdfFilePath, outputFileName: croppedFile, page: UInt(i), addMargin: false, useCache: false, fillBackground: false)
@@ -1529,7 +1530,7 @@ class Converter: NSObject {
                 }
             } else {
                 if extension_ == "eps" {
-                    for i in 1...pageCount {
+                    for i in stride(from: 1, through: pageCount, by: 1) {
                         if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
                         let croppedFile = croppedPdfFilePath.pathStringByAppendingPageNumber(UInt(i))
                         _ = pdfcrop(pdfFilePath, outputFileName: croppedFile, page: UInt(i), addMargin: true, useCache: false, fillBackground: true)
@@ -1543,7 +1544,7 @@ class Converter: NSObject {
                         if !success { return success }
                     }
                 } else if extension_ == "pdf" {
-                    for i in 1...pageCount {
+                    for i in stride(from: 1, through: pageCount, by: 1) {
                         if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
 
                         if i <= whitePageFlags.count && whitePageFlags[i - 1] {
@@ -1565,7 +1566,7 @@ class Converter: NSObject {
                         }
                     }
                 } else if extension_ == "svg" || extension_ == "svgz" {
-                    for i in 1...pageCount {
+                    for i in stride(from: 1, through: pageCount, by: 1) {
                         if i <= emptyPageFlags.count && emptyPageFlags[i - 1] { continue }
                         success = convertPDF(pdfFileName,
                                              toOutlinedSVG: outputFileName.pathStringByAppendingPageNumber(UInt(i)),
@@ -1579,7 +1580,7 @@ class Converter: NSObject {
 
         if mergeableExtensions.contains(extension_) && mergeOutputsFlag {
             var outputFiles = [String]()
-            for i in 1...pageCount {
+            for i in stride(from: 1, through: pageCount, by: 1) {
                 if i <= emptyPageFlags.count && !emptyPageFlags[i - 1] {
                     outputFiles.append(workingDirectory.appendingPathComponent(outputFileName.pathStringByAppendingPageNumber(UInt(i))))
                 }
@@ -1657,7 +1658,7 @@ class Converter: NSObject {
         } else {
             var destURLs = [NSURL]()
 
-            for i in 1...pageCount {
+            for i in stride(from: 1, through: pageCount, by: 1) {
                 if i <= emptyPageFlags.count && !emptyPageFlags[i - 1] {
                     let destPath = outputFilePath.pathStringByAppendingPageNumber(UInt(i))
                     destURLs.append(NSURL(fileURLWithPath: destPath))
@@ -1725,7 +1726,7 @@ class Converter: NSObject {
         if mergeableExtensions.contains(extension_) && mergeOutputsFlag && generatedPageCount > 0 {
             generatedFiles.append(outputFilePath)
         } else {
-            for i in 1...pageCount {
+            for i in stride(from: 1, through: pageCount, by: 1) {
                 if i <= emptyPageFlags.count && !emptyPageFlags[i - 1] {
                     generatedFiles.append(outputFilePath.pathStringByAppendingPageNumber(UInt(i)))
                 }
@@ -1930,7 +1931,7 @@ class Converter: NSObject {
             let basePath = workingDirectory.appendingPathComponent(tempFileBaseName)
 
             if pdfInputMode {
-                guard PDFDocument(filePath: sourcePath) != nil else {
+                guard let document = PDFDocument(filePath: sourcePath), !document.isLocked, document.pageCount > 0 else {
                     controller?.showFileFormatError(sourcePath)
                     controller?.generationDidFinish(.failed)
                     return false
