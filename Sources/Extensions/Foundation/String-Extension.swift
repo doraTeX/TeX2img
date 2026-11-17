@@ -55,21 +55,39 @@ extension String {
         return "\(self) \(string)"
     }
 
+    /// One shell word with exactly this text, in double quotes: \\, ", $ and ` are escaped, the characters that
+    /// keep a meaning there.
     func quotingWithDoubleQuotations() -> String {
-        "\"\(self)\""
+        "\"\(escapingForShellDoubleQuotes())\""
+    }
+
+    /// The text for the inside of a double-quoted shell word.
+    func escapingForShellDoubleQuotes() -> String {
+        var result = ""
+        for scalar in unicodeScalars {
+            if scalar == "\\" || scalar == "\"" || scalar == "$" || scalar == "`" { result += "\\" }
+            result.unicodeScalars.append(scalar)
+        }
+        return result
     }
 
     /// One shell word with exactly this text: in single quotes, with each single quote written as '\''.
+    /// Literal: a quote that a combining mark follows is replaced too.
     func quotingForShell() -> String {
-        "'" + replacingOccurrences(of: "'", with: "'\\''") + "'"
+        "'" + replacingOccurrences(of: "'", with: "'\\''", options: .literal) + "'"
+    }
+
+    /// An AppleScript string literal with exactly this text.
+    func quotingForAppleScript() -> String {
+        "\"" + replacingOccurrences(of: "\\", with: "\\\\", options: .literal)
+            .replacingOccurrences(of: "\"", with: "\\\"", options: .literal) + "\""
     }
 
     /// An AppleScript that runs a command with administrator privileges. Every argument stays one word,
     /// whatever spaces or quotes it has.
     static func administratorShellAppleScript(command: String, directory: String, arguments: [String]) -> String {
         let shellScript = "cd \(directory.quotingForShell()) && " + ([command] + arguments).map { $0.quotingForShell() }.joined(separator: " ")
-        let literal = shellScript.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
-        return "do shell script \"\(literal)\" with administrator privileges"
+        return "do shell script \(shellScript.quotingForAppleScript()) with administrator privileges"
     }
 
     func pathStringByAppendingPageNumber(_ page: UInt) -> String {
@@ -86,7 +104,7 @@ extension String {
     }
 
     func replacingYenWithBackslash() -> String {
-        replacingOccurrences(of: "\u{00A5}", with: "\\")
+        replacingOccurrences(of: "\u{00A5}", with: "\\", options: .literal)
     }
 
     func deletingLastReturnCharacters() -> String {

@@ -59,7 +59,9 @@ def main():
         with open(main_file, "w") as f:
             f.write(MAIN)
         binary = os.path.join(work, "autopaste")
-        subprocess.run(["xcrun", "swiftc", os.path.join(ROOT, "Sources/Converter/AutoPasteScript.swift"), main_file,
+        subprocess.run(["xcrun", "swiftc", os.path.join(ROOT, "Sources/Converter/AutoPasteScript.swift"),
+                        os.path.join(ROOT, "Sources/Extensions/Foundation/String-Extension.swift"),
+                        os.path.join(ROOT, "Sources/NSString/NSString-Extension.swift"), main_file,
                         "-o", binary], check=True)
         cases = [(["word"] + PATHS, expected_word(PATHS)), (["powerpoint"] + PATHS, expected_powerpoint(PATHS))]
         cases += [([app], expected_iwork(app)) for app in ("Pages", "Numbers", "Keynote")]

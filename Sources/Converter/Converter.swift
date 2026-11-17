@@ -218,7 +218,7 @@ class Converter: NSObject {
                              gsPath.programPath.deletingLastPathComponent.quotingWithDoubleQuotations())
 
         if let additionalInputPath {
-            cmdline += String(format: "export TEXINPUTS=\"%@:`kpsewhich -progname=%@ -expand-var=\\\\$TEXINPUTS`\";", additionalInputPath, latexPath.programName)
+            cmdline += String(format: "export TEXINPUTS=\"%@:`kpsewhich -progname=%@ -expand-var=\\\\$TEXINPUTS`\";", additionalInputPath.escapingForShellDoubleQuotes(), latexPath.programName)
         }
 
         return cmdline
@@ -559,7 +559,7 @@ class Converter: NSObject {
         }
 
         let exportPath = gsPath.programPath.deletingLastPathComponent
-        let command = String(format: "export PATH=\"%@\";/usr/bin/perl \"%@\"", exportPath, epstopdfPath)
+        let command = String(format: "export PATH=%@;/usr/bin/perl %@", exportPath.quotingWithDoubleQuotations(), epstopdfPath.quotingWithDoubleQuotations())
 
         _ = controller?.execCommand(command,
                                     atDirectory: workingDirectory,
@@ -1842,7 +1842,7 @@ class Converter: NSObject {
         if status && embedInIllustratorFlag && !generatedFiles.isEmpty {
             var script = "tell application \"Adobe Illustrator\"\nactivate\n"
             for filePath in generatedFiles {
-                script += String(format: "embed (make new placed item in current document with properties {file path:(POSIX file \"%@\")})\n", filePath)
+                script += String(format: "embed (make new placed item in current document with properties {file path:(POSIX file %@)})\n", filePath.quotingForAppleScript())
                 if ungroupFlag {
                     script += "move page items of selection of current document to end of current document\n"
                 }

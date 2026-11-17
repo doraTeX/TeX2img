@@ -15,7 +15,7 @@ enum AutoPasteScript {
             "set theRange to create range start myStart end myEnd",
         ]
         for posixPath in paths.reversed() {
-            lines.append("make new inline picture at theRange with properties {file name:(POSIX file \"\(posixPath)\") as Unicode text, save with document:true}")
+            lines.append("make new inline picture at theRange with properties {file name:(POSIX file \(posixPath.quotingForAppleScript())) as Unicode text, save with document:true}")
         }
         lines += [
             "end tell",
@@ -39,7 +39,7 @@ enum AutoPasteScript {
         ]
         for posixPath in paths {
             lines += [
-                "set thePicture to make new picture at end with properties {file name:(POSIX file \"\(posixPath)\") as Unicode text, save with document:true}",
+                "set thePicture to make new picture at end with properties {file name:(POSIX file \(posixPath.quotingForAppleScript())) as Unicode text, save with document:true}",
                 "tell thePicture",
                 "scale height factor 1 scale scale from top left with relative to original size",
                 "scale width factor 1 scale scale from top left with relative to original size",
