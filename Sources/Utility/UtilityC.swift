@@ -47,9 +47,16 @@ class UtilityC: NSObject {
         return getPath(cmdName) != nil
     }
 
+    /// The folder of this executable, with symbolic links resolved. Not from argv[0]: when the shell finds
+    /// tex2img on PATH, argv[0] is only the typed name, and it would be read from the current folder.
+    private static let executableDirectory: String? = {
+        var buffer = [CChar](repeating: 0, count: 4 * Int(MAXPATHLEN)) // PROC_PIDPATHINFO_MAXSIZE
+        guard proc_pidpath(getpid(), &buffer, UInt32(buffer.count)) > 0 else { return nil }
+        return URL(fileURLWithPath: String(cString: buffer)).resolvingSymlinksInPath().deletingLastPathComponent().path
+    }()
+
     static func bundledToolPath(_ toolName: String, in subdirectory: String) -> String? {
-        let executablePath = URL(fileURLWithPath: CommandLine.arguments[0]).standardizedFileURL.resolvingSymlinksInPath()
-        let executableDirectory = executablePath.deletingLastPathComponent().path
+        guard let executableDirectory else { return nil }
         let candidates = [
             executableDirectory.appendingPathComponent(subdirectory).appendingPathComponent(toolName),
             executableDirectory.appendingPathComponent("../Resources/\(subdirectory)/\(toolName)"),

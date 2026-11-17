@@ -38,3 +38,11 @@ with tempfile.TemporaryDirectory(prefix='bundled tool paths ') as tmp:
     subprocess.run([str(exe),str(resources)],env=env,check=True)
     link=root/'probe-link';link.symlink_to(exe)
     subprocess.run([str(link),str(resources)],env=env,check=True)
+    # Started by name through PATH (argv[0] is "probe"): tools in the current folder are never run.
+    cwd=root/'unpacked archive';cwd.mkdir()
+    for name in ['mupdf/mudraw','pdftops/pdftops','epstopdf','TeX2img.app/Contents/Resources/mupdf/mudraw']:
+        file=cwd/name;file.parent.mkdir(parents=True,exist_ok=True)
+        file.write_text('#!/bin/sh\nexit 98\n');file.chmod(0o755)
+    env['PATH']=str(exe.parent)+':'+env['PATH']
+    subprocess.run(['probe',str(resources)],env=env,cwd=cwd,check=True)
+    print('PASS: tools in the current folder are not used when started through PATH')
