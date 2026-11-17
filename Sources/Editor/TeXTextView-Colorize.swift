@@ -306,7 +306,10 @@ extension TeXTextView {
     }
 
     override func shouldChangeText(in affectedCharRange: NSRange, replacementString: String?) -> Bool {
-        _ = super.shouldChangeText(in: affectedCharRange, replacementString: replacementString)
+        // A read-only source (input from a file) is not changed by the color palette, conversions and so on.
+        guard super.shouldChangeText(in: affectedCharRange, replacementString: replacementString) || replacingEntireContents else {
+            return false
+        }
 
         guard let replacementString, replacementString.nsLength == 1 else { return true }
 

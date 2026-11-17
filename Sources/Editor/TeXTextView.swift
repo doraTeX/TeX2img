@@ -25,6 +25,9 @@ class TeXTextView: NSTextView {
     var autocompletionDictionary: [String: String]?
     var dragging = false
     var currentDragOperation: NSDragOperation = []
+    /// TeX2img itself is replacing the text (an import, a restored source), which it may do while the source is
+    /// read-only ("input from a file").
+    var replacingEntireContents = false
 
     // Command completion state (converted from static variables in the original implementation)
     var wasCompleted = false
@@ -662,7 +665,9 @@ class TeXTextView: NSTextView {
     }
 
     func replaceEntireContents(with contents: String) {
+        replacingEntireContents = true
         insertText(contents, replacementRange: NSRange(location: 0, length: string.nsLength))
+        replacingEntireContents = false
         selectedRange = NSRange(location: 0, length: 0)
         scrollRangeToVisible(NSRange(location: 0, length: 0))
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
