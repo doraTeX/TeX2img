@@ -291,6 +291,17 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         return shouldExit
     }
 
+    /// TeX2img 2.x ran the commands with PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin. An app opened from
+    /// the Finder has no /usr/local/bin in its PATH, where programs that TeX runs (shell escape) often are.
+    /// Those folders come first; the rest of the environment is kept.
+    private static let commandEnvironment: [String: String] = {
+        var environment = ProcessInfo.processInfo.environment
+        let folders = ["/usr/local/bin", "/usr/bin", "/bin", "/usr/sbin", "/sbin"]
+        let inherited = (environment["PATH"] ?? "").split(separator: ":").map(String.init).filter { !folders.contains($0) }
+        environment["PATH"] = (folders + inherited).joined(separator: ":")
+        return environment
+    }()
+
     func execCommand(_ command: String,
                      atDirectory path: String,
                      withArguments arguments: [String],
@@ -310,6 +321,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
         task.currentDirectoryURL = URL(fileURLWithPath: path)
         task.executableURL = URL(fileURLWithPath: "/bin/sh")
+        task.environment = Self.commandEnvironment
         task.standardOutput = pipe
         task.standardError = pipe
         task.arguments = ["-c", cmdline]
