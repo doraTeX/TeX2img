@@ -2,6 +2,36 @@ import Foundation
 
 class ControllerC: NSObject, OutputController {
     var mudrawPath = "mudraw"
+    private static let runningTaskLock = NSLock()
+    private static var runningTask: Process?
+    private static var signalSources: [DispatchSourceSignal] = []
+
+    /// Ctrl-C (and a termination or hang-up signal) stops the running command with what it started, then
+    /// tex2img. The commands run in process groups of their own, which Ctrl-C to tex2img's group does not reach.
+    static func stopRunningCommandOnSignals() {
+        for signalNumber in [SIGINT, SIGTERM, SIGHUP] {
+            signal(signalNumber, SIG_IGN)
+            let source = DispatchSource.makeSignalSource(signal: signalNumber, queue: .global())
+            source.setEventHandler {
+                runningTaskLock.lock()
+                let task = runningTask
+                runningTaskLock.unlock()
+                // As the GUI's Abort: terminate() stops the process group of the command (SIGTERM; TeX can
+                // take Ctrl-C as an interruption and go on).
+                task?.terminate()
+                exit(128 + signalNumber)
+            }
+            source.resume()
+            signalSources.append(source)
+        }
+    }
+
+    private static func setRunningTask(_ task: Process?) {
+        runningTaskLock.lock()
+        runningTask = task
+        runningTaskLock.unlock()
+    }
+
     /// The encoding of TeX's output, from the kanji encoding.
     var outputEncoding: String.Encoding = .utf8
     func execCommand(_ command: String,
@@ -37,8 +67,10 @@ class ControllerC: NSObject, OutputController {
             reader.cancel()
             return false
         }
+        Self.setRunningTask(task)
 
         task.waitUntilExit()
+        Self.setRunningTask(nil)
         reader.finish()
         return task.terminationStatus == 0
     }

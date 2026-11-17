@@ -368,6 +368,7 @@ struct Tex2imgCommand: ParsableCommand {
         }
 
         let controller = ControllerC()
+        ControllerC.stopRunningCommandOnSignals()
         guard let latexPath = UtilityC.getPath(latex.programPath) else {
             controller.showNotFoundError(latex.programName)
             UtilityC.suggestLatexOption()
