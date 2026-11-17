@@ -1949,6 +1949,14 @@ class Converter: NSObject {
         }
     }
 
+    /// Whether a file begins as a PDF does ("%PDF-" in its first 1024 bytes). CoreGraphics in the Intel build,
+    /// under Rosetta, can crash on a file that is not a PDF.
+    private static func looksLikePDF(_ path: String) -> Bool {
+        guard let handle = FileHandle(forReadingAtPath: path) else { return false }
+        defer { try? handle.close() }
+        return handle.readData(ofLength: 1024).range(of: Data("%PDF-".utf8)) != nil
+    }
+
     @discardableResult
     func compileAndConvert(withInputPath sourcePath: String) -> Bool {
         autoreleasepool {
@@ -1977,7 +1985,8 @@ class Converter: NSObject {
             let basePath = workingDirectory.appendingPathComponent(tempFileBaseName)
 
             if pdfInputMode {
-                guard let document = PDFDocument(filePath: sourcePath), !document.isLocked, document.pageCount > 0 else {
+                guard Self.looksLikePDF(sourcePath), let document = PDFDocument(filePath: sourcePath), !document.isLocked,
+                      document.pageCount > 0 else {
                     controller?.showFileFormatError(sourcePath)
                     controller?.generationDidFinish(.failed)
                     return false
