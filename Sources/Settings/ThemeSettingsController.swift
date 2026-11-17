@@ -1,7 +1,8 @@
 import AppKit
 
 /// The Themes category (identifier "Appearance"): choosing the light and dark themes and editing theme files.
-/// Follows TeXShop's theme settings (TSPreferences-Color): a color change is written to the edited theme file at once.
+/// Follows TeXShop's theme settings (TSPreferences-Color): a color change is written to the edited theme file at once
+/// (the changes of one drag in the color panel together).
 final class ThemeSettingsController: NSObject {
     let library: ThemeLibrary
     let lightPopup = NSPopUpButton(frame: .zero, pullsDown: false)
@@ -12,6 +13,11 @@ final class ThemeSettingsController: NSObject {
     private(set) var newButton: NSButton!
     private(set) var wells: [ThemeRole: NSColorWell] = [:]
     private var editingColors: ThemeColors?
+    /// Colors changed in the color panel and not yet written: a drag in the panel changes the color many times
+    /// a second, and each write rereads and recolors the source.
+    private var pendingColors: [ThemeRole: NSColor] = [:]
+    private var pendingTitle: String?
+    private static let saveDelay: TimeInterval = 0.2
     private var colorLabels: [SettingsLabel] = []
     /// The narrowest pane that shows the three columns of colors, known once the groups are made.
     private(set) var minimumPaneWidth: CGFloat = 0
@@ -43,6 +49,8 @@ final class ThemeSettingsController: NSObject {
             wells[role] = well
         }
         reloadThemeMenus()
+        NotificationCenter.default.addObserver(self, selector: #selector(savePendingColors),
+                                               name: NSApplication.willTerminateNotification, object: nil)
     }
 
     // MARK: Groups
@@ -101,6 +109,7 @@ final class ThemeSettingsController: NSObject {
     // MARK: Selection
 
     func reloadThemeMenus() {
+        savePendingColors()
         library.invalidate()
         let titles = library.store.titles()
         let light = lightPopup.titleOfSelectedItem ?? ThemeStore.defaultLightTitle
@@ -147,6 +156,7 @@ final class ThemeSettingsController: NSObject {
     }
 
     private func loadEditingTheme() {
+        savePendingColors()
         editingColors = editingTitle.flatMap { library.store.read(title: $0) }
         let enabled = editingColors != nil
         let dark = editingIsDark
@@ -183,8 +193,35 @@ final class ThemeSettingsController: NSObject {
             sender.color = ThemePalette.color(role, in: editingColors, dark: editingIsDark)
             return
         }
-        ThemePalette.set(role.usesOpacity ? sender.color : sender.color.withAlphaComponent(1), for: role.key, in: &colors)
+        if pendingTitle != title { savePendingColors() }
+        let color = role.usesOpacity ? sender.color : sender.color.withAlphaComponent(1)
+        ThemePalette.set(color, for: role.key, in: &colors)
+        editingColors = colors
+        pendingTitle = title
+        pendingColors[role] = color
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(savePendingColors), object: nil)
+        perform(#selector(savePendingColors), with: nil, afterDelay: Self.saveDelay)
+    }
+
+    /// Writes the changed colors into the theme file as it is now: the file may have changed since it was read
+    /// (another TeX2img, the one-time update of the bundled colors), and only the changed colors replace its own.
+    @objc private func savePendingColors() {
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(savePendingColors), object: nil)
+        guard let title = pendingTitle, !pendingColors.isEmpty else { return }
+        let changed = pendingColors
+        pendingColors = [:]
+        pendingTitle = nil
+        library.invalidate(title: title)
+        guard var colors = library.store.read(title: title) ?? (title == editingTitle ? editingColors : nil) else { return }
+        for (role, color) in changed {
+            ThemePalette.set(color, for: role.key, in: &colors)
+        }
         save(colors, title: title)
+        if title == editingTitle {
+            for (role, well) in wells where changed[role] == nil {
+                well.color = ThemePalette.color(role, in: colors, dark: editingIsDark)
+            }
+        }
     }
 
     private func save(_ colors: ThemeColors, title: String) {
@@ -203,6 +240,7 @@ final class ThemeSettingsController: NSObject {
     }
 
     @objc private func restoreBundledTheme(_ sender: Any?) {
+        savePendingColors()
         guard let title = editingTitle, let original = bundledColors(title: title), let window else { return }
         let alert = NSAlert()
         alert.messageText = String(format: NSLocalizedString("Restore the original colors of “%@”?", comment: ""), title)
@@ -216,6 +254,7 @@ final class ThemeSettingsController: NSObject {
     }
 
     @objc private func newTheme(_ sender: Any?) {
+        savePendingColors()
         guard let colors = editingColors else { return }
         requestTitle(for: colors)
     }
@@ -241,6 +280,7 @@ final class ThemeSettingsController: NSObject {
 
     /// Saves a new theme file, asking before an existing theme is replaced.
     private func store(_ colors: ThemeColors, as title: String) {
+        savePendingColors()
         guard library.store.url(forTitle: title) != nil else {
             DispatchQueue.main.async {
                 self.showError(NSLocalizedString("Choose another theme name. Names beginning with a dot, path separators, control characters, and symbolic links are not allowed.", comment: ""))
