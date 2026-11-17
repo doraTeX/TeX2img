@@ -1996,6 +1996,8 @@ class Converter: NSObject {
             }
 
             let ext = sourcePath.pathExtension.lowercased()
+            // The contents are copied, not a symbolic link: a relative link would point into the working folder.
+            let readPath = URL(fileURLWithPath: sourcePath).resolvingSymlinksInPath().path
             pdfInputMode = ext == "pdf"
             psInputMode = ext == "ps" || ext == "eps"
             let basePath = workingDirectory.appendingPathComponent(tempFileBaseName)
@@ -2009,21 +2011,21 @@ class Converter: NSObject {
                 }
 
                 let tempPdfFilePath = basePath.appendingPathExtension("pdf") ?? "\(basePath).pdf"
-                guard (try? fileManager.copyItem(atPath: sourcePath, toPath: tempPdfFilePath)) != nil else {
+                guard (try? fileManager.copyItem(atPath: readPath, toPath: tempPdfFilePath)) != nil else {
                     controller?.showFileGenerationError(tempPdfFilePath)
                     controller?.generationDidFinish(.failed)
                     return false
                 }
             } else if psInputMode {
                 let tempPsFilePath = basePath.appendingPathExtension("ps") ?? "\(basePath).ps"
-                guard (try? fileManager.copyItem(atPath: sourcePath, toPath: tempPsFilePath)) != nil else {
+                guard (try? fileManager.copyItem(atPath: readPath, toPath: tempPsFilePath)) != nil else {
                     controller?.showFileGenerationError(tempPsFilePath)
                     controller?.generationDidFinish(.failed)
                     return false
                 }
             } else {
                 let tempTeXFilePath = basePath.appendingPathExtension("tex") ?? "\(basePath).tex"
-                guard (try? fileManager.copyItem(atPath: sourcePath, toPath: tempTeXFilePath)) != nil else {
+                guard (try? fileManager.copyItem(atPath: readPath, toPath: tempTeXFilePath)) != nil else {
                     controller?.showFileGenerationError(tempTeXFilePath)
                     controller?.generationDidFinish(.failed)
                     return false

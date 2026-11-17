@@ -132,6 +132,22 @@ with tempfile.TemporaryDirectory(prefix='tex2img-file-safety-') as tmp:
               and not (links / output).is_symlink() and (links / output).is_file(),
               f'output {output} is a link to the input source.pdf: replaced, the input kept', result)
 
+    # A relative link to the input in another folder: the input is read, not a file of the same name in the
+    # working folder (F2 of the 1st audit). The link is copied as its target's contents.
+    relative = root / 'relative'
+    (relative / 'input').mkdir(parents=True)
+    (relative / 'work').mkdir()
+    (relative / 'output').mkdir()
+    (relative / 'input' / 'source.pdf').write_bytes(original_input)  # one page
+    (relative / 'input' / 'alias.pdf').symlink_to('source.pdf')
+    (relative / 'work' / 'source.pdf').write_bytes(two_bytes)  # two pages, another PDF
+    for workingdir in ('current', 'file'):
+        output = relative / 'output' / f'{workingdir}.pdf'
+        result = run('--quiet', '--merge-output-files', '--workingdir', workingdir, str(relative / 'input' / 'alias.pdf'),
+                     str(output), cwd=relative / 'work')
+        pages = len(PdfReader(output).pages) if output.is_file() else None
+        check(result.returncode == 0 and pages == 1, f'relative link input, --workingdir {workingdir}: {pages} page(s), not 1', result)
+
     # An output folder that cannot be written: an error message, not only the exit status.
     locked_dir = root / 'readonly'
     locked_dir.mkdir()
