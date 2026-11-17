@@ -4,8 +4,11 @@ Converter with a controller that records what would be previewed (nothing is ope
 
 The PDF that previews the EPS goes to the temporary folder; a PDF with that name next to the input is kept.
 Needs gs on PATH.
+
+The converter writes the preview PDF to NSTemporaryDirectory(), the shared temporary folder whatever TMPDIR is.
+Its name is the output's, which is the name of this test's own folder: unique. The test removes exactly that file
+and checks that it is gone; everything else is in the test's folder.
 """
-import os
 from pathlib import Path
 import re
 import shutil
@@ -78,29 +81,36 @@ with tempfile.TemporaryDirectory(prefix='tex2img-eps-preview-') as tmp:
     writer = PdfWriter()
     writer.add_page(PdfReader(ROOT / 'te st/in put.pdf').pages[1])
     writer.write(source / 'input.pdf')
-    precious = source / 'fig.pdf'
+    name = root.name  # unique
+    precious = source / f'{name}.pdf'
     precious.write_bytes(b'%PDF-1.4 the user\'s own fig.pdf\n')
     output_dir = root / 'out'
     output_dir.mkdir()
+    output = output_dir / f'{name}.eps'
+    for path in (source, precious, output):
+        assert path.resolve().is_relative_to(root.resolve()), path
     gs = shutil.which('gs')
     if not gs:
         sys.exit('gs is needed on PATH')
-    result = subprocess.run([str(root / 'convert'), str(source / 'input.pdf'), str(output_dir / 'fig.eps'), gs,
+    result = subprocess.run([str(root / 'convert'), str(source / 'input.pdf'), str(output), gs,
                              str(ROOT / 'Resources/epstopdf')], capture_output=True, text=True, timeout=300)
     log = result.stdout + result.stderr
-    if 'success: true' not in result.stdout or not (output_dir / 'fig.eps').is_file():
+    if 'success: true' not in result.stdout or not output.is_file():
         failures.append('the conversion to EPS failed\n' + log)
     if precious.read_bytes() != b'%PDF-1.4 the user\'s own fig.pdf\n':
-        failures.append('fig.pdf next to the input was replaced by the preview PDF')
+        failures.append('the PDF next to the input was replaced by the preview PDF')
     previewed = re.findall(r'^previewed: (.+)$', result.stdout, re.M)
     if len(previewed) != 1 or not Path(previewed[0]).is_file() or Path(previewed[0]).suffix != '.pdf' \
             or len(PdfReader(previewed[0]).pages) != 1:
         failures.append(f'the preview PDF was not made: {previewed}\n' + log)
     elif Path(previewed[0]).resolve().parent == source.resolve():
         failures.append('the preview PDF is next to the input')
-    for path in previewed:
-        if Path(path).exists() and Path(path).resolve().parent != source.resolve():
-            os.remove(path)
+    # Remove the preview PDF: only a file with this test's unique name, outside the input's folder.
+    for path in map(Path, previewed):
+        if path.name == f'{name}.pdf' and path.resolve().parent != source.resolve() and path.is_file():
+            path.unlink()
+            if path.exists():
+                failures.append(f'{path} is left')
 
 if failures:
     print('\n'.join('FAIL: ' + f for f in failures), file=sys.stderr)

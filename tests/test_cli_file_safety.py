@@ -21,6 +21,11 @@ failures = []
 
 
 def run(*arguments, cwd):
+    # The working folder is the test's own (--workingdir current), unless a case chooses one: the default is the
+    # shared temporary folder, which NSTemporaryDirectory() gives whatever TMPDIR is.
+    if '--workingdir' not in arguments:
+        arguments = ('--workingdir', 'current', *arguments)
+    assert Path(cwd).resolve().is_relative_to(ROOT_TMP.resolve()), cwd
     return subprocess.run([cli, '--no-preview', *arguments], capture_output=True, text=True, timeout=300, cwd=cwd)
 
 
@@ -35,6 +40,7 @@ def check(condition, message, result=None):
 
 with tempfile.TemporaryDirectory(prefix='tex2img-file-safety-') as tmp:
     root = Path(tmp)
+    ROOT_TMP = root
     writer = PdfWriter()
     writer.add_page(PdfReader(ROOT / 'te st/in put.pdf').pages[1])
     writer.write(root / 'page.pdf')

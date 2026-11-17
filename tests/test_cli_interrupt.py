@@ -33,7 +33,9 @@ with tempfile.TemporaryDirectory(prefix='tex2img-interrupt-') as tmp:
     fake.chmod(0o755)
     (root / 'a.tex').write_text('\\documentclass{article}\\begin{document}x\\end{document}\n')
     for signal_number in (signal.SIGINT, signal.SIGTERM):
-        process = subprocess.Popen([cli, '--no-preview', '--latex', str(fake), '--dvidriver', str(fake), 'a.tex', 'a.png'],
+        # --workingdir current: the files of the stopped run stay in the test's folder, not the shared temporary one.
+        process = subprocess.Popen([cli, '--no-preview', '--workingdir', 'current', '--latex', str(fake), '--dvidriver', str(fake),
+                                    'a.tex', 'a.png'],
                                    cwd=root, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         for _ in range(100):
             if tex_running():
