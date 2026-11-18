@@ -242,13 +242,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    private func beginTracking(_ task: Process) {
-        taskStateLock.lock()
-        runningTask = task
-        taskKilled = false
-        taskStateLock.unlock()
-    }
-
     private func stopTracking(_ task: Process) {
         taskStateLock.lock()
         if runningTask === task {
@@ -331,7 +324,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         task.standardOutput = pipe
         task.standardError = pipe
         task.arguments = ["-c", cmdline]
-        beginTracking(task)
 
         // Output in pieces that divide characters or lines is read whole (TeXShop's console reading).
         let decoder = ConsoleOutputDecoder(encoding: ConsoleOutputDecoder.encoding(forKanji: currentProfile().stringForKey(EncodingKey)))
@@ -339,19 +331,28 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             self?.appendOutputAndScroll(text, quiet: quiet)
         }
 
-        do {
-            try task.run()
-        } catch {
-            reader.cancel()
-            outputPipe = nil
-            stopTracking(task)
-            return false
-        }
+        // The launch and Abort take the same lock: an Abort that comes before the launch keeps the command from running
+        // (it could come while the output was being prepared), and one that comes after it finds the command with its
+        // process group.
+        var launched = false
         taskStateLock.lock()
-        if runningTask === task {
-            runningGroup = Utility.processGroup(of: task)
+        let aborted = taskKilled || generationAborted
+        if !aborted {
+            runningTask = task
+            if (try? task.run()) != nil {
+                launched = true
+                runningGroup = Utility.processGroup(of: task)
+            } else {
+                runningTask = nil
+            }
         }
         taskStateLock.unlock()
+        guard launched else {
+            reader.cancel()
+            outputPipe = nil
+            if aborted { _ = exitCurrentThreadIfTaskKilled() }
+            return false
+        }
 
         task.waitUntilExit()
         stopTracking(task)

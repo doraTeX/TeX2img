@@ -5,6 +5,8 @@ class ControllerC: NSObject, OutputController {
     private static let runningTaskLock = NSLock()
     private static var runningTask: Process?
     private static var runningGroup: pid_t = 0
+    /// A signal came: no further command is launched (tex2img is ending).
+    private static var interrupted = false
     private static var signalSources: [DispatchSourceSignal] = []
 
     /// Ctrl-C (and a termination or hang-up signal) stops the running command with what it started, then
@@ -15,6 +17,7 @@ class ControllerC: NSObject, OutputController {
             let source = DispatchSource.makeSignalSource(signal: signalNumber, queue: .global())
             source.setEventHandler {
                 runningTaskLock.lock()
+                interrupted = true
                 let task = runningTask
                 let group = runningGroup
                 runningTaskLock.unlock()
@@ -28,6 +31,17 @@ class ControllerC: NSObject, OutputController {
             source.resume()
             signalSources.append(source)
         }
+    }
+
+    /// Launches a command and records it, under the lock that the signal handler takes: a signal before the launch keeps
+    /// the command from running, and one after it finds the command with its process group.
+    private static func launch(_ task: Process) -> Bool {
+        runningTaskLock.lock()
+        defer { runningTaskLock.unlock() }
+        guard !interrupted, (try? task.run()) != nil else { return false }
+        runningTask = task
+        runningGroup = Utility.processGroup(of: task)
+        return true
     }
 
     private static func setRunningTask(_ task: Process?) {
@@ -66,13 +80,10 @@ class ControllerC: NSObject, OutputController {
             self?.appendOutputAndScroll(text, quiet: quiet)
         }
 
-        do {
-            try task.run()
-        } catch {
+        guard Self.launch(task) else {
             reader.cancel()
             return false
         }
-        Self.setRunningTask(task)
 
         task.waitUntilExit()
         Self.setRunningTask(nil)
