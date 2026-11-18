@@ -16,6 +16,9 @@ class TeXTextView: NSTextView {
 
     var autoCompleting = false
     var contentHighlighting = false
+    /// The enclosed contents being highlighted: the coloring gives the highlight again over the fullwidth characters
+    /// inside, whatever colored the text again (an edit, a resize, a scroll, a change of settings or of theme).
+    var highlightedContentRange: NSRange?
     var braceHighlighting = false
     /// Set when coloring was skipped because text is being composed with an input method.
     var coloringWaitsForMarkedText = false

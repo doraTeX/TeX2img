@@ -118,6 +118,11 @@ extension TeXTextView {
                 layoutManager.addTemporaryAttributes(highlight, forCharacterRange: braceRange)
             }
         }
+        // The fullwidth characters inside highlighted enclosed contents were just given their own background; the
+        // highlight is the background there while it lasts.
+        if contentHighlighting, let contentRange = highlightedContentRange, NSMaxRange(contentRange) <= length {
+            applyContentHighlight(contentRange, profile: profile)
+        }
     }
 
     /// Removes the fullwidth backgrounds that the coloring gave (marked with fullwidthBackgroundMark); other
@@ -145,6 +150,7 @@ extension TeXTextView {
         )
         layoutManager?.removeTemporaryAttribute(.fullwidthBackgroundMark, forCharacterRange: NSRange(location: 0, length: textStorage?.length ?? 0))
         contentHighlighting = false
+        highlightedContentRange = nil
         // The background of fullwidth letters and symbols belongs to the theme, not to a highlight. It is given where
         // colorizeText gives it: not in comments, nor as the character of a command.
         guard let controller, let layoutManager, let text = textStorage?.string as NSString?,
@@ -217,7 +223,11 @@ extension TeXTextView {
 
     private func highlightContent(_ range: NSRange) {
         contentHighlighting = true
-        let profile = controller.currentProfile()
+        highlightedContentRange = range
+        applyContentHighlight(range, profile: controller.currentProfile())
+    }
+
+    private func applyContentHighlight(_ range: NSRange, profile: Profile) {
         layoutManager?.addTemporaryAttributes(
             [.backgroundColor: UtilityG.enclosedContentBackgroundColor(inProfile: profile)],
             forCharacterRange: range

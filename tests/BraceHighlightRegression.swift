@@ -213,6 +213,38 @@ do {
     NSApp.appearance = nil
 }
 
+// 7. The bundled themes: the highlight of enclosed contents stays on a fullwidth character inside when the text is
+// colored again without a selection change (the view is resized, scrolled, or colored after a setting change), and
+// the fullwidth character outside keeps the fullwidth background (3rd audit of the port, F5).
+for appearance in [NSAppearance.Name.aqua, .darkAqua] {
+    NSApp.appearance = NSAppearance(named: appearance)
+    controller.profile[HighlightContentKey] = true
+    func background(_ i: Int) -> NSColor? { lm.temporaryAttribute(.backgroundColor, atCharacterIndex: i, effectiveRange: nil) as? NSColor }
+    let content = UtilityG.enclosedContentBackgroundColor(inProfile: controller.profile)
+    let fullwidth = UtilityG.fullwidthAttributes(inProfile: controller.profile)?[.backgroundColor] as? NSColor
+    for (trigger, recolor) in [("resize", { textView.setFrameSize(NSSize(width: textView.frame.width + 10, height: textView.frame.height)) }),
+                               ("scroll", { textView.visibleAreaChanged(Notification(name: NSView.boundsDidChangeNotification, object: nil)) }),
+                               ("coloring", { textView.colorizeText() })] as [(String, () -> Void)] {
+        start("x{a１b}z２", at: 1)
+        textView.setSelectedRange(NSRange(location: 2, length: 0))
+        spin()
+        let mode = "\(appearance.rawValue) \(trigger)"
+        expect(background(2) == content && background(3) == content && background(4) == content, "\(mode): the enclosed contents are highlighted")
+        expect(fullwidth != nil && background(7) == fullwidth, "\(mode): the fullwidth digit outside has the fullwidth background")
+        recolor()
+        spin()
+        expect(background(2) == content && background(3) == content && background(4) == content,
+               "\(mode): the highlight of the enclosed contents broke under the fullwidth digit: \(String(describing: background(3)))")
+        expect(background(7) == fullwidth, "\(mode): the fullwidth digit outside lost its background")
+        // Moving away ends the highlight; the fullwidth digit inside gets its own background back.
+        textView.setSelectedRange(NSRange(location: 8, length: 0))
+        spin()
+        expect(background(2) == nil && background(3) == fullwidth, "\(mode): after the highlight ends")
+    }
+    controller.profile[HighlightContentKey] = false
+}
+NSApp.appearance = nil
+
 // 4. The background flash for a brace without a partner is seen, and a flash that a later one started is not ended
 // by the earlier timer (the 2nd audit of the TeX2eps port, F3, which TeX2img shares).
 controller.profile[FlashBackgroundKey] = true
