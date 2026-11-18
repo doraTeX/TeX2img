@@ -128,7 +128,7 @@ let recolorings: [(String, () -> Void)] = [
     ("whole text", { textView.colorizeEntireText() }),
     ("resize", { textView.setFrameSize(NSSize(width: textView.frame.width + 10, height: textView.frame.height)) }),
     ("visible area", { textView.visibleAreaChanged(Notification(name: NSView.boundsDidChangeNotification, object: nil)) }),
-    ("theme change", { textView.resetBackgroundColor(nil); textView.colorizeText() }),
+    ("theme change", { textView.recolorForThemeChange() }),  // ControllerG.themeColorsChanged
     ("appearance", { textView.viewDidChangeEffectiveAppearance() }),
     ("typing at the start", {
         textView.setSelectedRange(NSRange(location: 0, length: 0))
@@ -217,8 +217,7 @@ for appearance in [NSAppearance.Name.aqua, .darkAqua] {
     NSApp.appearance = NSAppearance(named: appearance)
     let content = UtilityG.enclosedContentBackgroundColor(inProfile: controller.profile)
     let braceColor = UtilityG.highlightedBraceColor(inProfile: controller.profile)
-    // A theme change ends the highlight of enclosed contents (ControllerG.themeColorsChanged), with the switch on or off.
-    for (name, recolor) in recolorings.prefix(6) where name != "theme change" {
+    for (name, recolor) in recolorings.prefix(6) {
         let place = "\(appearance.rawValue) contents \(name)"
         // "x{a１b}z２": the cursor after "{" highlights "{a１b}".
         start("x{a１b}z２", at: 1)
@@ -305,8 +304,7 @@ do {
                         background: ThemePalette.color(theme, key: "EditorHighlightZenkakuSymbolBackground"), mark: true)
     expect(look(1) == expected, "on: the edited colors: \(look(1)) vs \(expected)")
     setSwitch(false)
-    textView.resetBackgroundColor(nil)  // ControllerG.themeColorsChanged
-    textView.colorizeText()
+    textView.recolorForThemeChange()  // ControllerG.themeColorsChanged
     expect(look(1) == look(0) && !anyMark(), "off: a theme change colors nothing: \(look(1))")
     controller.profile[LightThemeKey] = nil
     NSApp.appearance = nil

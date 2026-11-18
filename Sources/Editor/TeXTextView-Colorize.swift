@@ -113,7 +113,8 @@ extension TeXTextView {
             highlightedBraceRanges = []
         }
         if braceHighlighting {
-            let highlight = highlightBracesColorDict ?? [.foregroundColor: UtilityG.highlightedBraceColor(inProfile: profile)]
+            // The color of the current theme and appearance, also when they changed while the braces are highlighted.
+            let highlight: [NSAttributedString.Key: Any] = [.foregroundColor: UtilityG.highlightedBraceColor(inProfile: profile)]
             for braceRange in highlightedBraceRanges where NSMaxRange(braceRange) <= length {
                 layoutManager.addTemporaryAttributes(highlight, forCharacterRange: braceRange)
             }
@@ -128,6 +129,12 @@ extension TeXTextView {
     /// Colors every line, also those out of view (the switch of fullwidth letters and symbols changed).
     func colorizeEntireText() {
         colorizeText(range: NSRange(location: 0, length: (string as NSString).length))
+    }
+
+    /// After the theme or one of its colors changed: every line is colored in the new colors, and the highlights of
+    /// the braces and of the enclosed contents stay, drawn in the new colors.
+    func recolorForThemeChange() {
+        colorizeEntireText()
     }
 
     /// Removes the fullwidth backgrounds that the coloring gave (marked with fullwidthBackgroundMark); other

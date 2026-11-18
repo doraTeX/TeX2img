@@ -949,6 +949,11 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             }
         }
         updateSettingsDependencies()
+        // Another profile: the highlights of brackets and enclosed contents in the text that was there end.
+        for textView in [sourceTextView!, preambleTextView!] {
+            textView.resetBackgroundColor(nil)
+            textView.refreshSelectionHighlighting()
+        }
         themeColorsChanged()
     }
 
@@ -1985,15 +1990,11 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         recolorOutputView()
     }
 
-    /// Recolors the editors and the output window after a theme or its colors change.
+    /// Recolors the editors and the output window after a theme or its colors change. The highlights of brackets
+    /// and enclosed contents stay, in the new colors, so that a theme can be adjusted while looking at them.
     func themeColorsChanged() {
-        // Backgrounds of the previous theme (fullwidth characters) go before coloring again.
-        sourceTextView.resetBackgroundColor(nil)
-        preambleTextView.resetBackgroundColor(nil)
-        sourceTextView.colorizeText()
-        preambleTextView.colorizeText()
-        sourceTextView.refreshSelectionHighlighting()
-        preambleTextView.refreshSelectionHighlighting()
+        sourceTextView.recolorForThemeChange()
+        preambleTextView.recolorForThemeChange()
         recolorOutputView()
     }
 
