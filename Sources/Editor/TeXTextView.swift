@@ -25,6 +25,8 @@ class TeXTextView: NSTextView {
     var autocompletionDictionary: [String: String]?
     var dragging = false
     var currentDragOperation: NSDragOperation = []
+    /// The braces being highlighted, kept so that the coloring that follows an edit does not remove the highlight.
+    var highlightedBraceRanges: [NSRange] = []
     /// TeX2img itself is replacing the text (an import, a restored source), which it may do while the source is
     /// read-only ("input from a file").
     var replacingEntireContents = false

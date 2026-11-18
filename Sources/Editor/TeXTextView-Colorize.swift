@@ -91,6 +91,15 @@ extension TeXTextView {
                 location += 1
             }
         }
+
+        // The brace highlight is given when the selection changes, which NSTextView reports before the didChangeText
+        // of the edit; the coloring after an edit gives it again, so that a typed brace stays highlighted.
+        if braceHighlighting {
+            let highlight = highlightBracesColorDict ?? [.foregroundColor: UtilityG.highlightedBraceColor(inProfile: profile)]
+            for braceRange in highlightedBraceRanges where NSMaxRange(braceRange) <= length {
+                layoutManager.addTemporaryAttributes(highlight, forCharacterRange: braceRange)
+            }
+        }
     }
 
     /// Removes the fullwidth background of the light and the dark theme (the appearance may have changed since).
@@ -172,6 +181,7 @@ extension TeXTextView {
         // While text is composed, the brace highlight stays and nothing is colored. The change of the
         // selection that commits or removes the composed text colors the visible text again.
         if waitsForMarkedText() { return }
+        highlightedBraceRanges = []
         colorizeText()
         braceHighlighting = false
     }
@@ -217,6 +227,15 @@ extension TeXTextView {
         guard let theString = textStorage?.string as NSString? else { return }
         let theStringLength = theString.length
         guard theStringLength > 0 else { return }
+
+        // No brace is highlighted while text is composed with an input method. The place before the composed text is
+        // kept as the last one, so that a committed brace is highlighted as a typed one (the cursor moved by one).
+        if hasMarkedText() {
+            let marked = markedRange()
+            lastCursorLocation = UInt(max(marked.location, 0))
+            lastStringLength = UInt(max(theStringLength - marked.length, 0))
+            return
+        }
 
         let theSelectedRange = selectedRange
         let theLocation = theSelectedRange.location
@@ -297,6 +316,7 @@ extension TeXTextView {
                 if skipMatchingBrace == 0 {
                     if highlightPattern != NOHIGHLIGHT {
                         braceHighlighting = true
+                        highlightedBraceRanges = [NSRange(location: location, length: 1), NSRange(location: originalLocation, length: 1)]
                         layoutManager.addTemporaryAttributes(
                             highlightAttributes,
                             forCharacterRange: NSRange(location: location, length: 1)

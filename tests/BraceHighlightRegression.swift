@@ -1,7 +1,8 @@
 import AppKit
 
 // Runs the product's TeXTextView in a window that is never shown, with a stand-in for ControllerG, and checks the
-// background of fullwidth characters while editing (the 1st audit of the TeX2img port, F5). Run through tests/test_brace_highlight.py.
+// highlight of matching braces and the background of fullwidth characters while editing (the 1st audit of the
+// TeX2eps port, F1 and F2, which TeX2img shares). Run through tests/test_brace_highlight.py.
 
 final class ControllerG: NSObject, DnDDelegate {
     var commandCompletionList: String?
@@ -71,6 +72,41 @@ var failures = 0
 func expect(_ condition: Bool, _ message: String) {
     if !condition { FileHandle.standardError.write(Data("FAIL: \(message)\n".utf8)); failures += 1 }
 }
+
+// 1. A brace being composed with an input method (marked text) is not highlighted; once committed, it is.
+start("}", at: 0)
+textView.setMarkedText("{", selectedRange: NSRange(location: 1, length: 0), replacementRange: NSRange(location: NSNotFound, length: 0))
+spin()
+expect(textView.hasMarkedText() && textView.string == "{}", "marked: \(textView.string)")
+expect(!highlighted(0) && !highlighted(1), "the marked brace is highlighted")
+textView.insertText("{", replacementRange: textView.markedRange())
+spin()
+expect(!textView.hasMarkedText() && textView.string == "{}", "committed: \(textView.string)")
+expect(highlighted(0) && highlighted(1), "the committed brace is not highlighted")
+// Composed text that is removed highlights nothing.
+start("}", at: 0)
+textView.setMarkedText("{", selectedRange: NSRange(location: 1, length: 0), replacementRange: NSRange(location: NSNotFound, length: 0))
+spin()
+textView.setMarkedText("", selectedRange: NSRange(location: 0, length: 0), replacementRange: NSRange(location: NSNotFound, length: 0))
+textView.unmarkText()
+spin()
+expect(!textView.hasMarkedText() && textView.string == "}" && !highlighted(0), "cancelled: \(textView.string)")
+
+// 2. A brace typed directly stays highlighted after the coloring that follows the edit.
+start("}", at: 0)
+textView.insertText("{", replacementRange: textView.selectedRange())
+spin()
+expect(textView.string == "{}" && highlighted(0) && highlighted(1), "the typed brace is not highlighted: \(textView.string)")
+// Moving the cursor over a brace highlights the pair, as before.
+start("a{b}c", at: 1)
+textView.setSelectedRange(NSRange(location: 2, length: 0))
+spin()
+expect(highlighted(1) && highlighted(3), "moving over a brace")
+// The highlight goes when the cursor moves on (SOLID).
+textView.setSelectedRange(NSRange(location: 4, length: 0))
+textView.setSelectedRange(NSRange(location: 5, length: 0))
+spin()
+expect(!highlighted(1), "the highlight stays after moving away")
 
 // 3. Fullwidth letters that a deleted line end puts into a comment lose their background (light and dark).
 for appearance in [NSAppearance.Name.aqua, .darkAqua] {
