@@ -9,6 +9,9 @@ import AppKit
 final class ControllerG: NSObject, DnDDelegate {
     var commandCompletionList: String?
     var sourceTextView: TeXTextView!
+    var preambleTextView: TeXTextView!
+    func recolorOutputView() {}
+    // @@CONTROLLER ACTIONS@@
     let makeatletterEnabledCheckBox = NSSwitch()
     var profile: Profile = [:]
     func currentProfile() -> Profile { profile }
@@ -52,6 +55,7 @@ func makeView() -> (NSWindow, TeXTextView) {
 let (sourceWindow, source) = makeView()
 let (preambleWindow, preamble) = makeView()
 controller.sourceTextView = source
+controller.preambleTextView = preamble
 
 var failures = 0
 func expect(_ condition: Bool, _ message: String) {
@@ -103,7 +107,7 @@ let changes: [(String, () -> Void)] = [
     ("theme switched", {
         controller.profile[LightThemeKey] = "Edited Lite"
         controller.profile[DarkThemeKey] = "Edited Dark"
-        source.recolorForThemeChange(); preamble.recolorForThemeChange()  // ControllerG.themeColorsChanged
+        controller.themeColorsChanged()  // the product's action, copied in by the runner
     }),
     ("theme color changed", {
         // The theme editor writes the changed color into the selected theme and calls themeColorsChanged.
@@ -114,7 +118,7 @@ let changes: [(String, () -> Void)] = [
         theme["EditorHighlightZenkakuSymbolBackground"] = colors(0.9, 0.7, 0.9)
         try! store.write(theme, title: title)
         ThemeLibrary.shared.invalidate(title: title)
-        source.recolorForThemeChange(); preamble.recolorForThemeChange()
+        controller.themeColorsChanged()
     }),
     ("appearance changed", {
         NSApp.appearance = NSAppearance(named: NSApp.isDarkMode ? .aqua : .darkAqua)

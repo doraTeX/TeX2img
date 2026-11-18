@@ -9,6 +9,9 @@ import AppKit
 final class ControllerG: NSObject, DnDDelegate {
     var commandCompletionList: String?
     var sourceTextView: TeXTextView!
+    var preambleTextView: TeXTextView!
+    func recolorOutputView() {}
+    // @@CONTROLLER ACTIONS@@
     let makeatletterEnabledCheckBox = NSSwitch()
     var profile: Profile = [:]
     func currentProfile() -> Profile { profile }
@@ -46,12 +49,28 @@ textView.awakeFromNib()
 textView.layoutManager?.allowsNonContiguousLayout = true
 textView.isContinuousSpellCheckingEnabled = false
 textView.allowsUndo = true
+// The preamble, in a window of its own that is never shown either.
+let preambleWindow = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 500, height: 300), styleMask: [.titled], backing: .buffered, defer: false)
+let preambleScroll = NSScrollView(frame: preambleWindow.contentView!.bounds)
+let preamble = TeXTextView(frame: NSRect(x: 0, y: 0, width: 480, height: 300))
+preamble.minSize = NSSize(width: 0, height: 300)
+preamble.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+preamble.isVerticallyResizable = true
+preamble.autoresizingMask = [.width]
+preamble.textContainer?.widthTracksTextView = true
+preambleScroll.documentView = preamble
+preambleWindow.contentView = preambleScroll
+preamble.controller = controller
+controller.preambleTextView = preamble
+preamble.awakeFromNib()
+preamble.layoutManager?.allowsNonContiguousLayout = true
+preamble.isContinuousSpellCheckingEnabled = false
 
 var failures = 0
 func expect(_ condition: Bool, _ message: String) {
     if !condition { FileHandle.standardError.write(Data("FAIL: \(message)\n".utf8)); failures += 1 }
 }
-expect(window.isVisible == false, "the window stays hidden")
+expect(window.isVisible == false && preambleWindow.isVisible == false, "the windows stay hidden")
 
 controller.profile = [CheckBraceKey: true, CheckBracketKey: true, CheckSquareBracketKey: true, CheckParenKey: true]
 let lm = textView.layoutManager!
@@ -72,10 +91,10 @@ func look(_ i: Int) -> Look {
 var length: Int { (textView.string as NSString).length }
 func anyMark() -> Bool { (0..<length).contains { look($0).mark } }
 /// The switch as the settings window stores it (the state of the switch, 1 or 0), or no switch at all (nil), and the
-/// coloring that the switch gives (ControllerG.fullwidthHighlightChanged colors the whole text of both views).
+/// product's action of the switch (ControllerG.fullwidthHighlightChanged, copied in by the runner).
 func setSwitch(_ on: Bool?) {
     if let on { controller.profile[HighlightFullwidthCharactersKey] = on ? 1 : 0 } else { controller.profile[HighlightFullwidthCharactersKey] = nil }
-    textView.colorizeEntireText()
+    controller.fullwidthHighlightChanged(nil)
 }
 func start(_ text: String, at location: Int) {
     textView.string = text
@@ -128,7 +147,7 @@ let recolorings: [(String, () -> Void)] = [
     ("whole text", { textView.colorizeEntireText() }),
     ("resize", { textView.setFrameSize(NSSize(width: textView.frame.width + 10, height: textView.frame.height)) }),
     ("visible area", { textView.visibleAreaChanged(Notification(name: NSView.boundsDidChangeNotification, object: nil)) }),
-    ("theme change", { textView.recolorForThemeChange() }),  // ControllerG.themeColorsChanged
+    ("theme change", { controller.themeColorsChanged() }),
     ("appearance", { textView.viewDidChangeEffectiveAppearance() }),
     ("typing at the start", {
         textView.setSelectedRange(NSRange(location: 0, length: 0))
@@ -304,9 +323,75 @@ do {
                         background: ThemePalette.color(theme, key: "EditorHighlightZenkakuSymbolBackground"), mark: true)
     expect(look(1) == expected, "on: the edited colors: \(look(1)) vs \(expected)")
     setSwitch(false)
-    textView.recolorForThemeChange()  // ControllerG.themeColorsChanged
+    controller.themeColorsChanged()
     expect(look(1) == look(0) && !anyMark(), "off: a theme change colors nothing: \(look(1))")
     controller.profile[LightThemeKey] = nil
+    NSApp.appearance = nil
+}
+
+// 7. Text being composed (marked text) when the switch or the theme changes (1st audit of the switch, F1): the coloring
+// waits, and once the composed text is committed or cancelled the whole text is colored, lines out of view too.
+// Both views, on to off and off to on.
+do {
+    var themed = ThemeLibrary.shared.store.read(title: ThemeStore.defaultLightTitle)!
+    themed["EditorHighlightZenkakuSymbolBackground"] = [0.3, 0.9, 0.5, 1.0]
+    try! ThemeLibrary.shared.store.write(themed, title: "Composed Theme")
+    ThemeLibrary.shared.invalidate()
+    NSApp.appearance = NSAppearance(named: .aqua)
+    let long = String(repeating: "abc\n", count: 600) + "Ａ"
+    for (view, part) in [(textView, "source"), (preamble, "preamble")] {
+        func lookIn(_ i: Int) -> Look {
+            let lm = view.layoutManager!
+            return Look(foreground: lm.temporaryAttribute(.foregroundColor, atCharacterIndex: i, effectiveRange: nil) as? NSColor,
+                        background: lm.temporaryAttribute(.backgroundColor, atCharacterIndex: i, effectiveRange: nil) as? NSColor,
+                        mark: lm.temporaryAttribute(.fullwidthBackgroundMark, atCharacterIndex: i, effectiveRange: nil) != nil)
+        }
+        for (change, from) in [("switch off", true), ("switch on", false), ("theme", true)] {
+            for ending in ["commit", "cancel"] {
+                let place = "\(part) \(change) while composing, \(ending)"
+                controller.profile[LightThemeKey] = nil
+                controller.profile[HighlightFullwidthCharactersKey] = from ? 1 : 0
+                view.string = long
+                view.colorizeEntireText()
+                view.setSelectedRange(NSRange(location: 0, length: 0))
+                view.scrollRangeToVisible(NSRange(location: 0, length: 0))
+                spin()
+                var lastIndex: Int { (view.string as NSString).length - 1 }
+                expect(NSMaxRange(view.visibleCharacterRange) < lastIndex, "\(place): the last line is out of view")
+                expect(lookIn(lastIndex) == (from ? fullwidthLook() : lookIn(lastIndex - 2)), "\(place): before: \(lookIn(lastIndex))")
+                view.setMarkedText("あ", selectedRange: NSRange(location: 1, length: 0), replacementRange: NSRange(location: NSNotFound, length: 0))
+                spin()
+                expect(view.hasMarkedText(), "\(place): composing")
+                switch change {
+                case "theme":
+                    controller.profile[LightThemeKey] = "Composed Theme"
+                    controller.themeColorsChanged()
+                default:
+                    controller.profile[HighlightFullwidthCharactersKey] = from ? 0 : 1
+                    controller.fullwidthHighlightChanged(nil)
+                }
+                spin()
+                if ending == "commit" {
+                    view.insertText("あ", replacementRange: view.markedRange())
+                } else {
+                    view.setMarkedText("", selectedRange: NSRange(location: 0, length: 0), replacementRange: NSRange(location: NSNotFound, length: 0))
+                    view.unmarkText()
+                }
+                spin(0.3)
+                expect(!view.hasMarkedText() && !view.coloringWaitsForMarkedText && !view.coloringWaitsForEntireText, "\(place): still waiting")
+                expect(NSMaxRange(view.visibleCharacterRange) < lastIndex, "\(place): the last line is still out of view")
+                let expected = change == "switch off" ? lookIn(lastIndex - 2) : fullwidthLook()
+                expect(lookIn(lastIndex) == expected, "\(place): the line out of view: \(lookIn(lastIndex)) vs \(expected)")
+                if change == "switch off" { expect(!(0...lastIndex).contains { lookIn($0).mark }, "\(place): a fullwidth mark is left") }
+                if change == "theme" {
+                    expect((lookIn(lastIndex).background?.usingColorSpace(.sRGB)?.redComponent ?? 1) < 0.5, "\(place): the new theme's background")
+                }
+                view.string = ""
+            }
+        }
+    }
+    controller.profile[LightThemeKey] = nil
+    controller.profile[HighlightFullwidthCharactersKey] = nil
     NSApp.appearance = nil
 }
 

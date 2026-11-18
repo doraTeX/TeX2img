@@ -24,9 +24,13 @@ extension TeXTextView {
     /// Text being composed with an input method (marked text) is not colored: every keystroke can resize the
     /// view, and coloring then would recolor the visible text each time and color the composed text itself.
     /// Coloring waits, and colorAfterMarkedTextEnds colors the visible text once the composed text is
-    /// committed or removed (TeXShop 5.60).
+    /// committed or removed (TeXShop 5.60). A request for given characters (the whole text, after the switch of
+    /// fullwidth letters or the theme changed) colors the whole text then: the text may have moved meanwhile.
     func colorizeText(range requested: NSRange? = nil) {
-        if waitsForMarkedText() { return }
+        if waitsForMarkedText() {
+            if requested != nil { coloringWaitsForEntireText = true }
+            return
+        }
         guard let controller else { return }
         let profile = controller.currentProfile()
 
@@ -209,7 +213,12 @@ extension TeXTextView {
     @objc private func colorWaitingForMarkedText() {
         guard coloringWaitsForMarkedText, !hasMarkedText() else { return }
         coloringWaitsForMarkedText = false
-        colorizeText()
+        if coloringWaitsForEntireText {
+            coloringWaitsForEntireText = false
+            colorizeEntireText()
+        } else {
+            colorizeText()
+        }
     }
 
     private func resetHighlight(_ sender: Any?) {

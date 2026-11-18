@@ -22,6 +22,8 @@ class TeXTextView: NSTextView {
     var braceHighlighting = false
     /// Set when coloring was skipped because text is being composed with an input method.
     var coloringWaitsForMarkedText = false
+    /// A coloring of the whole text was asked for while text was composed.
+    var coloringWaitsForEntireText = false
     var highlightBracesColorDict: [NSAttributedString.Key: Any]?
     var lastCursorLocation: UInt = 0
     var lastStringLength: UInt = 0

@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 
+import controller_actions
 import defaults_guard
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -45,7 +46,11 @@ def main():
     work = tempfile.mkdtemp(prefix="tex2img-fullwidth-switch-")
     try:
         main_file = os.path.join(work, "main.swift")
-        shutil.copy(os.path.join(ROOT, "tests/FullwidthHighlightSwitchRegression.swift"), main_file)
+        with open(os.path.join(ROOT, "tests/FullwidthHighlightSwitchRegression.swift"), encoding="utf-8") as f:
+            fixture = f.read()
+        # The real actions: the switch of fullwidth letters and symbols, and the change of the theme or its colors.
+        with open(main_file, "w", encoding="utf-8") as f:
+            f.write(controller_actions.insert(fixture, ["    @IBAction func fullwidthHighlightChanged(", "    func themeColorsChanged()"]))
         binary_dir = os.path.join(work, "bin")
         os.makedirs(binary_dir)
         name = defaults_guard.unique_tool_name("fullwidth-switch")
