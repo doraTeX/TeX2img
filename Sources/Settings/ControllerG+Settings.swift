@@ -31,7 +31,7 @@ extension ControllerG {
         // MARK: General
         autoRestoreCheckBox = makeSwitch()
         updateCheckSwitch = makeSwitch(#selector(automaticUpdateCheckChanged(_:)))
-        updateCheckSwitch.state = UserDefaults.standard.bool(forKey: "SUEnableAutomaticChecks") ? .on : .off
+        updateCheckSwitch.state = settingsDefaults.bool(forKey: "SUEnableAutomaticChecks") ? .on : .off
         cuiToolStatusView = NSImageView()
         cuiToolStatusView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([cuiToolStatusView.widthAnchor.constraint(equalToConstant: 14), cuiToolStatusView.heightAnchor.constraint(equalToConstant: 14)])
@@ -256,7 +256,7 @@ extension ControllerG {
             SettingsCategory(identifier: design.identifier, title: label(design.identifier), summary: label(design.identifier + " summary"),
                              symbol: design.symbol, color: SettingsCategory.rgb(design.color), startsGroup: design.startsGroup,
                              view: views[design.identifier]!)
-        }, minimumContentWidth: themeSettings.minimumPaneWidth)
+        }, minimumContentWidth: themeSettings.minimumPaneWidth, defaults: settingsDefaults, frameAutosaveName: settingsFrameAutosaveName)
         themeSettings.window = settingsWindowController.window
         shortcutPane.window = settingsWindowController.window
         settingsWindowController.keyEventHandler = { [weak self] event in
@@ -318,7 +318,7 @@ extension ControllerG {
     /// Applies the saved menu shortcuts once the main menu is in place.
     func startKeyboardShortcuts() {
         guard shortcutPane.store == nil, let menu = NSApp.mainMenu else { return }
-        shortcutPane.store = ShortcutStore(menu: menu, defaults: .standard)
+        shortcutPane.store = ShortcutStore(menu: menu, defaults: settingsDefaults)
     }
 
     /// Sidebar order, symbols and colors; the palette is TeXShop's.
@@ -361,7 +361,7 @@ extension ControllerG {
     }
 
     @objc func automaticUpdateCheckChanged(_ sender: NSSwitch) {
-        UserDefaults.standard.set(sender.state == .on, forKey: "SUEnableAutomaticChecks")
+        settingsDefaults.set(sender.state == .on, forKey: "SUEnableAutomaticChecks")
     }
 }
 

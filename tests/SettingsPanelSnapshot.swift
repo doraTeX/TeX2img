@@ -5,6 +5,9 @@ import AppKit
 // Run through tests/test_settings_panel.py.
 
 final class ControllerG: NSObject {
+    /// The settings code keeps its values here, in memory, and does not save the window frame.
+    let settingsDefaults: UserDefaults = MemoryDefaults()
+    let settingsFrameAutosaveName = ""
     var flashInMovingCheckBox: NSSwitch!
     var highlightContentCheckBox: NSSwitch!
     var beepCheckBox: NSSwitch!
@@ -153,7 +156,7 @@ _ = NSApplication.shared
 NSApp.setActivationPolicy(.prohibited)
 check(ThemeStore.userDirectory.path.hasPrefix(NSTemporaryDirectory()) || ThemeStore.userDirectory.path.contains("/settings-home/"),
       "the theme directory must be inside the test home: \(ThemeStore.userDirectory.path)")
-ThemeLibrary.shared.prepare()
+ThemeLibrary.shared.prepare(defaults: MemoryDefaults())
 let controller = ControllerG()
 controller.buildSettingsWindow()
 let settings = controller.settingsWindowController!
@@ -708,11 +711,8 @@ for appearance in [NSAppearance.Name.aqua, .darkAqua] {
     pane.endRecording()
     putPaneInWindow()
 }
-// The window remembers its category, and AppKit its frames, in the standard domain of this tool. The tool has a name of
-// its own for each run (test_settings_panel.py), so the domain is the test's own; it is removed here.
-if ProcessInfo.processInfo.processName.hasPrefix("tex2img-settings-snapshot-") {
-    UserDefaults.standard.removePersistentDomain(forName: ProcessInfo.processInfo.processName)
-}
+// Nothing is written to the standard user defaults: the settings code and the themes are given MemoryDefaults, and the
+// window does not save its frame. test_settings_panel.py checks that the domain of this tool was never made.
 
 print(report.joined(separator: "\n"))
 print("Settings panel checks passed")

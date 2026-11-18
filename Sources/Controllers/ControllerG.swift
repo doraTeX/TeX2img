@@ -175,6 +175,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private var lastColorDict: [String: Any] = [:]
     private var converter: Converter?
     private var runningTask: Process?
+    /// The user defaults of the settings window: the standard ones (tests of the settings code give their own).
+    var settingsDefaults: UserDefaults { .standard }
+    /// The name under which the settings window keeps its frame.
+    var settingsFrameAutosaveName: String { "SettingsWindow" }
     /// The process group of runningTask, recorded when it was launched.
     private var runningGroup: pid_t = 0
     /// Commands that Abort is stopping (up to 0.5 s); quitting finishes stopping them.

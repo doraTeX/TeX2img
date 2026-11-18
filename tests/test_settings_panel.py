@@ -5,13 +5,13 @@ Usage: python3 tests/test_settings_panel.py [output-directory]
 Images of every category (light and dark, English and Japanese) are written to the output directory.
 """
 import os
-import plistlib
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
-import uuid
+
+import defaults_guard
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCES = [
@@ -33,18 +33,15 @@ SOURCES = [
 
 def main():
     work = tempfile.mkdtemp(prefix="tex2img-settings-")
-    domain = None
     output = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.join(work, "images")
     os.makedirs(output, exist_ok=True)
     try:
         binary_dir = os.path.join(work, "bin")
         os.makedirs(binary_dir)
-        # A name of its own for each run: the standard user defaults domain of the tool (the category the window
-        # remembers, AppKit's window frames) is then the test's own. The other settings are in memory (MemoryDefaults).
-        domain = f"tex2img-settings-snapshot-{uuid.uuid4().hex}"
+        # A name of its own for each run: the tool must not make its standard user defaults domain (the settings code
+        # and the themes are given MemoryDefaults, and the window does not save its frame). No domain is changed.
+        domain = defaults_guard.unique_tool_name("settings-snapshot")
         binary = os.path.join(binary_dir, domain)
-        if subprocess.run(["defaults", "read", domain], capture_output=True).returncode == 0:
-            raise SystemExit(f"the domain {domain} exists already")
         # Top-level code must be in main.swift.
         main_file = os.path.join(work, "main.swift")
         shutil.copy(os.path.join(ROOT, "tests/SettingsPanelSnapshot.swift"), main_file)
@@ -73,22 +70,11 @@ def main():
             sys.stderr.write(result.stderr)
             if result.returncode != 0:
                 return result.returncode
+            if defaults_guard.check_untouched(domain):
+                return 1
         print("Images:", output)
         return 0
     finally:
-        # The tool removes its own domain; only if it could not (it stopped early), the domain of this run is removed here.
-        # No other domain is touched (CFFIXED_USER_HOME does not move user defaults, so the domain is in the real ones).
-        if domain and subprocess.run(["defaults", "read", domain], capture_output=True).returncode == 0:
-            subprocess.run(["defaults", "delete", domain], capture_output=True)
-        leftover = os.path.expanduser(f"~/Library/Preferences/{domain}.plist") if domain else None
-        if leftover and os.path.exists(leftover):
-            with open(leftover, "rb") as file:
-                try:
-                    empty = not plistlib.load(file)
-                except plistlib.InvalidFileException:
-                    empty = False
-            if empty:
-                os.remove(leftover)
         shutil.rmtree(os.path.join(work, "bin"), ignore_errors=True)
         shutil.rmtree(os.path.join(work, "settings-home"), ignore_errors=True)
 

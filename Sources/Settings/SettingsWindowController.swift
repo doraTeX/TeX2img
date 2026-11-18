@@ -62,8 +62,13 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
     let minimumContentWidth: CGFloat
     static let sidebarMinimumWidth: CGFloat = 190, sidebarWidth: CGFloat = 220
 
-    init(categories: [SettingsCategory], minimumContentWidth: CGFloat = 560) {
+    /// Where the selected category is kept (the standard user defaults; tests give their own).
+    private let defaults: UserDefaults
+
+    init(categories: [SettingsCategory], minimumContentWidth: CGFloat = 560, defaults: UserDefaults = .standard,
+         frameAutosaveName: String = "SettingsWindow") {
         self.categories = categories
+        self.defaults = defaults
         self.minimumContentWidth = max(560, minimumContentWidth)
         let back = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: NSLocalizedString("Back", comment: "")) ?? NSImage()
         let forward = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: NSLocalizedString("Forward", comment: "")) ?? NSImage()
@@ -85,12 +90,12 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
         buildContent()
         window.setContentSize(NSSize(width: width, height: 640))
         window.center()
-        window.setFrameAutosaveName("SettingsWindow")
+        window.setFrameAutosaveName(frameAutosaveName)
         // A frame saved by an earlier version may be narrower than the categories now need.
         if let content = window.contentView, content.frame.width < minimumWidth {
             window.setContentSize(NSSize(width: minimumWidth, height: content.frame.height))
         }
-        let saved = UserDefaults.standard.string(forKey: Self.selectedCategoryKey)
+        let saved = defaults.string(forKey: Self.selectedCategoryKey)
         let first = categories.contains { $0.identifier == saved } ? saved! : categories[0].identifier
         visit(first)
     }
@@ -272,7 +277,7 @@ final class SettingsWindowController: NSWindowController, NSTableViewDataSource,
         window?.title = category.title
         document.setAccessibilityLabel(category.title)
         scrollContentToTop()
-        UserDefaults.standard.set(identifier, forKey: Self.selectedCategoryKey)
+        defaults.set(identifier, forKey: Self.selectedCategoryKey)
         synchronizeSidebarSelection()
         updateNavigation()
         window?.recalculateKeyViewLoop()

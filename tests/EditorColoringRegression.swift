@@ -32,7 +32,7 @@ func check(_ condition: Bool, _ message: String) {
 
 _ = NSApplication.shared
 NSApp.setActivationPolicy(.prohibited)
-ThemeLibrary.shared.prepare()
+ThemeLibrary.shared.prepare(defaults: MemoryDefaults())  // nothing in the standard user defaults
 let controller = ControllerG()
 let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 500, height: 300), styleMask: [.titled], backing: .buffered, defer: false)
 let scroll = NSScrollView(frame: window.contentView!.bounds)

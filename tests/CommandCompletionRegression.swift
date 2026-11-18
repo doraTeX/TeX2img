@@ -31,7 +31,7 @@ func spin() { RunLoop.current.run(until: Date().addingTimeInterval(0.02)) }
 
 _ = NSApplication.shared
 NSApp.setActivationPolicy(.prohibited)
-ThemeLibrary.shared.prepare()
+ThemeLibrary.shared.prepare(defaults: MemoryDefaults())  // nothing in the standard user defaults
 let controller = ControllerG()
 controller.profile = [CommandCompletionKeyKey: 0, BeepKey: false, FlashBackgroundKey: false, FlashInMovingKey: false,
                       CheckBraceKey: true, CheckParenKey: true, CheckSquareBracketKey: true, CheckBracketKey: false,

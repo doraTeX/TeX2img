@@ -7,6 +7,8 @@ import subprocess
 import sys
 import tempfile
 
+import defaults_guard
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -25,15 +27,17 @@ def main():
                                                     "Sources/Utility/Utility.swift", "Sources/Core/Types.swift",
                                                     "Sources/Core/GlobalConstants.swift",
                                                     "Sources/Controllers/MyGlyphPopoverController.swift"]]
-        binary = os.path.join(binary_dir, "completion")
+        name = defaults_guard.unique_tool_name("completion")
+        binary = os.path.join(binary_dir, name)
         subprocess.run(["xcrun", "swiftc", "-module-name", "TeX2img",
                         "-import-objc-header", os.path.join(ROOT, "Sources/Core/Bridging-Header-G.h"), "-licucore",
-                        *sources, main_file, "-o", binary], check=True)
+                        *sources, os.path.join(ROOT, "tests/MemoryDefaults.swift"), main_file, "-o", binary], check=True)
         shutil.copytree(os.path.join(ROOT, "Resources/Themes"), os.path.join(binary_dir, "Themes"))
         home = os.path.join(work, "home")
         os.makedirs(os.path.join(home, "Library/Application Support"))
         env = dict(os.environ, CFFIXED_USER_HOME=home, HOME=home)
-        return subprocess.run([binary], env=env, timeout=120).returncode
+        code = subprocess.run([binary], env=env, timeout=120).returncode
+        return code or defaults_guard.check_untouched(name)
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
