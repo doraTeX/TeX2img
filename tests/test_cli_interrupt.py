@@ -18,21 +18,27 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--app', type=Path, required=True)
 args = parser.parse_args()
 cli = str(args.app.resolve() / 'Contents/SharedSupport/bin/tex2img')
-marker = f'/bin/sleep {4000 + os.getpid() % 1000}'
+base = 4000 + os.getpid() % 500 * 2
 
 
 def tex_running():
     return subprocess.run(['pgrep', '-f', marker], capture_output=True).returncode == 0
 
 
+marker = ''
+
+
 failures = []
 with tempfile.TemporaryDirectory(prefix='tex2img-interrupt-') as tmp:
     root = Path(tmp)
-    fake = root / 'fake-latex'
-    fake.write_text(f'#!/bin/sh\n{marker}\nexit 0\n')
-    fake.chmod(0o755)
     (root / 'a.tex').write_text('\\documentclass{article}\\begin{document}x\\end{document}\n')
-    for signal_number in (signal.SIGINT, signal.SIGTERM):
+    # The "TeX" also runs as a program that ignores SIGTERM, as one run by shell escape may (TeXShop 1c7c4a81:
+    # SIGTERM to the group, then SIGKILL).
+    for signal_number, ignores in ((signal.SIGINT, False), (signal.SIGTERM, False), (signal.SIGINT, True)):
+        marker = f'/bin/sleep {base + ignores}'
+        fake = root / f'fake-latex-{int(ignores)}'
+        fake.write_text('#!/bin/sh\n' + ("trap '' TERM\n" if ignores else '') + f'{marker}\nexit 0\n')
+        fake.chmod(0o755)
         # --workingdir current: the files of the stopped run stay in the test's folder, not the shared temporary one.
         process = subprocess.Popen([cli, '--no-preview', '--workingdir', 'current', '--latex', str(fake), '--dvidriver', str(fake),
                                     'a.tex', 'a.png'],
@@ -52,12 +58,12 @@ with tempfile.TemporaryDirectory(prefix='tex2img-interrupt-') as tmp:
                 break
             time.sleep(0.1)
         if tex_running():
-            failures.append(f'TeX is still running after {signal_number.name} to tex2img')
-            subprocess.run(['pkill', '-f', marker])
+            failures.append(f'TeX{" (ignoring SIGTERM)" if ignores else ""} is still running after {signal_number.name} to tex2img')
+            subprocess.run(['pkill', '-9', '-f', marker])
         if process.returncode == 0:
             failures.append(f'tex2img ended with 0 after {signal_number.name}')
 
 if failures:
     print('\n'.join('FAIL: ' + f for f in failures), file=sys.stderr)
     sys.exit(1)
-print('PASS: Ctrl-C and SIGTERM to tex2img stop the TeX it runs')
+print('PASS: Ctrl-C and SIGTERM to tex2img stop the TeX it runs, also one that ignores SIGTERM')

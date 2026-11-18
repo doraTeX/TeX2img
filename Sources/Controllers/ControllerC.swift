@@ -4,6 +4,7 @@ class ControllerC: NSObject, OutputController {
     var mudrawPath = "mudraw"
     private static let runningTaskLock = NSLock()
     private static var runningTask: Process?
+    private static var runningGroup: pid_t = 0
     private static var signalSources: [DispatchSourceSignal] = []
 
     /// Ctrl-C (and a termination or hang-up signal) stops the running command with what it started, then
@@ -15,10 +16,13 @@ class ControllerC: NSObject, OutputController {
             source.setEventHandler {
                 runningTaskLock.lock()
                 let task = runningTask
+                let group = runningGroup
                 runningTaskLock.unlock()
-                // As the GUI's Abort: terminate() stops the process group of the command (SIGTERM; TeX can
-                // take Ctrl-C as an interruption and go on).
-                task?.terminate()
+                // As the GUI's Abort: SIGTERM to the process group of the command (TeX can take Ctrl-C as an
+                // interruption and go on), then SIGKILL to what remains.
+                if let task {
+                    Utility.stopCommand(task, group: group)
+                }
                 exit(128 + signalNumber)
             }
             source.resume()
@@ -29,6 +33,7 @@ class ControllerC: NSObject, OutputController {
     private static func setRunningTask(_ task: Process?) {
         runningTaskLock.lock()
         runningTask = task
+        runningGroup = task.map(Utility.processGroup(of:)) ?? 0
         runningTaskLock.unlock()
     }
 

@@ -175,6 +175,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private var lastColorDict: [String: Any] = [:]
     private var converter: Converter?
     private var runningTask: Process?
+    /// The process group of runningTask, recorded when it was launched.
+    private var runningGroup: pid_t = 0
     private var outputPipe: Pipe?
     private var taskKilled = false
     private var generationAborted = false
@@ -249,6 +251,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         taskStateLock.lock()
         if runningTask === task {
             runningTask = nil
+            runningGroup = 0
         }
         taskStateLock.unlock()
     }
@@ -256,6 +259,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private func resetTaskState() {
         taskStateLock.lock()
         runningTask = nil
+        runningGroup = 0
         taskKilled = false
         generationAborted = false
         taskStateLock.unlock()
@@ -341,6 +345,11 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             stopTracking(task)
             return false
         }
+        taskStateLock.lock()
+        if runningTask === task {
+            runningGroup = Utility.processGroup(of: task)
+        }
+        taskStateLock.unlock()
 
         task.waitUntilExit()
         stopTracking(task)
@@ -2209,14 +2218,24 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         generateImage()
     }
 
-    @IBAction func abortCompilation(_ sender: Any) {
-        let task: Process?
+    /// Marks the generation as stopped and takes the running command, for the caller to stop.
+    private func takeRunningCommand() -> (task: Process, group: pid_t)? {
         taskStateLock.lock()
+        defer { taskStateLock.unlock() }
         taskKilled = true
-        task = runningTask
+        let task = runningTask
+        let group = runningGroup
         runningTask = nil
-        taskStateLock.unlock()
-        task?.terminate()
+        runningGroup = 0
+        return task.map { ($0, group) }
+    }
+
+    @IBAction func abortCompilation(_ sender: Any) {
+        guard let command = takeRunningCommand() else { return }
+        // SIGTERM, up to 0.5 s, then SIGKILL: off the main thread, which stays responsive.
+        DispatchQueue.global(qos: .userInitiated).async {
+            Utility.stopCommand(command.task, group: command.group)
+        }
     }
 
     @IBAction func extensionPopUpButtonChanged(_ sender: NSPopUpButton) {
