@@ -189,22 +189,22 @@
                             <menuItem title="スペルと文法" id="216">
                                 <menu key="submenu" title="スペルと文法" id="200">
                                     <items>
-                                        <menuItem title="チェックパネルを表示…" keyEquivalent=":" id="204">
+                                        <menuItem title="スペルと文法を表示" keyEquivalent=":" id="204">
                                             <connections>
                                                 <action selector="showGuessPanel:" target="-1" id="230"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="書類をいまチェック" keyEquivalent=";" id="201">
+                                        <menuItem title="書類を今すぐチェック" keyEquivalent=";" id="201">
                                             <connections>
                                                 <action selector="checkSpelling:" target="-1" id="225"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="スペルと一緒に文法もチェック" id="219">
+                                        <menuItem title="入力中にスペルチェック" id="219">
                                             <connections>
                                                 <action selector="toggleContinuousSpellChecking:" target="-1" id="222"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="入力中に自動スペルチェックをする" id="346">
+                                        <menuItem title="文法とスペルをチェック" id="346">
                                             <connections>
                                                 <action selector="toggleGrammarChecking:" target="-1" id="347"/>
                                             </connections>
@@ -215,7 +215,7 @@
                             <menuItem title="自動置換" id="348">
                                 <menu key="submenu" title="自動置換" id="349">
                                     <items>
-                                        <menuItem title="スマートコピー／ペースト" tag="1" id="350">
+                                        <menuItem title="スマートコピー/ペースト" tag="1" id="350">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleSmartInsertDelete:" target="-1" id="355"/>
@@ -264,12 +264,12 @@
                             <menuItem title="読み上げ" id="211">
                                 <menu key="submenu" title="読み上げ" id="212">
                                     <items>
-                                        <menuItem title="読み上げ開始" id="196">
+                                        <menuItem title="読み上げを開始" id="196">
                                             <connections>
                                                 <action selector="startSpeaking:" target="-1" id="233"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="読み上げ中止" id="195">
+                                        <menuItem title="読み上げを停止" id="195">
                                             <connections>
                                                 <action selector="stopSpeaking:" target="-1" id="227"/>
                                             </connections>
