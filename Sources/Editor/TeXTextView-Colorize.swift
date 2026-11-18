@@ -51,6 +51,9 @@ extension TeXTextView {
 
         var colorRange = NSRange(location: aLineStart, length: aLineEnd - aLineStart)
         layoutManager.removeTemporaryAttribute(.foregroundColor, forCharacterRange: colorRange)
+        // The background of fullwidth letters goes with their color: a character that is now in a comment (a deleted
+        // line end joined it to one) has none. Other backgrounds, such as that of enclosed contents, stay.
+        removeFullwidthBackground(in: colorRange)
 
         var location = aLineStart
         while location < aLineEnd {
@@ -90,17 +93,57 @@ extension TeXTextView {
         }
     }
 
+    /// Removes the fullwidth background of the light and the dark theme (the appearance may have changed since).
+    private func removeFullwidthBackground(in range: NSRange) {
+        guard let layoutManager, let controller else { return }
+        let profile = controller.currentProfile()
+        let backgrounds = [false, true].compactMap {
+            ThemeLibrary.shared.fullwidthAttributes(lightTitle: profile.stringForKey(LightThemeKey), darkTitle: profile.stringForKey(DarkThemeKey),
+                                                    dark: $0)?[.backgroundColor] as? NSColor
+        }
+        guard !backgrounds.isEmpty else { return }
+        var location = range.location
+        while location < NSMaxRange(range) {
+            var effective = NSRange(location: 0, length: 0)
+            let value = layoutManager.temporaryAttribute(.backgroundColor, atCharacterIndex: location, longestEffectiveRange: &effective, in: range)
+            let end = max(NSMaxRange(effective), location + 1)
+            if let color = value as? NSColor, backgrounds.contains(color) {
+                layoutManager.removeTemporaryAttribute(.backgroundColor, forCharacterRange: NSRange(location: location, length: end - location))
+            }
+            location = end
+        }
+    }
+
     func resetBackgroundColor(_ sender: Any?) {
         layoutManager?.removeTemporaryAttribute(
             .backgroundColor,
             forCharacterRange: NSRange(location: 0, length: textStorage?.length ?? 0)
         )
         contentHighlighting = false
-        // The background of fullwidth letters and symbols belongs to the theme, not to a highlight.
+        // The background of fullwidth letters and symbols belongs to the theme, not to a highlight. It is given where
+        // colorizeText gives it: not in comments, nor as the character of a command.
         guard let controller, let layoutManager, let text = textStorage?.string as NSString?,
               let background = UtilityG.fullwidthAttributes(inProfile: controller.currentProfile())?[.backgroundColor] else { return }
-        for location in 0..<text.length where ThemeLibrary.isHighlightedFullwidthCharacter(text.character(at: location)) {
-            layoutManager.addTemporaryAttribute(.backgroundColor, value: background, forCharacterRange: NSRange(location: location, length: 1))
+        var location = 0
+        while location < text.length {
+            let character = text.character(at: location)
+            if ThemeLibrary.isHighlightedFullwidthCharacter(character) {
+                layoutManager.addTemporaryAttribute(.backgroundColor, value: background, forCharacterRange: NSRange(location: location, length: 1))
+                location += 1
+            } else if character == "%".utf16.first! {
+                var end = 0
+                text.getLineStart(nil, end: nil, contentsEnd: &end, for: NSRange(location: location, length: 1))
+                location = max(end, location + 1)
+            } else if character == "\\".utf16.first! || character == 0x00a5 {
+                location += 1
+                if location < text.length, !isValidTeXCommandChar(text.character(at: location)) {
+                    location += 1
+                } else {
+                    while location < text.length, isValidTeXCommandChar(text.character(at: location)) { location += 1 }
+                }
+            } else {
+                location += 1
+            }
         }
     }
 
