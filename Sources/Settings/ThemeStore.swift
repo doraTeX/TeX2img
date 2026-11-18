@@ -129,12 +129,29 @@ struct ThemeStore {
             let title = (name as NSString).deletingPathExtension
             guard let destination = url(forTitle: title) else { continue }
             if !isNew && isDamaged(title: title) {
-                guard moveToBackups(title: title) else { continue }
-            } else if !(isNew || title == Self.defaultLightTitle || title == Self.defaultDarkTitle)
-                        || fileManager.fileExists(atPath: destination.path) {
-                continue
+                repair(title: title, at: destination, from: bundled.appendingPathComponent(name))
+            } else if (isNew || title == Self.defaultLightTitle || title == Self.defaultDarkTitle)
+                        && !fileManager.fileExists(atPath: destination.path) {
+                try? fileManager.copyItem(at: bundled.appendingPathComponent(name), to: destination)
             }
-            try? fileManager.copyItem(at: bundled.appendingPathComponent(name), to: destination)
+        }
+    }
+
+    /// Puts back a damaged copy. The bundled theme is first copied beside it under a hidden name; then the damaged
+    /// file goes to the backups, and the copy takes its place. If a step fails, the damaged file stays (or is put
+    /// back), so that the next launch tries again: a theme the user deleted is not brought back, and one that a
+    /// repair left half done is not lost.
+    private func repair(title: String, at destination: URL, from source: URL) {
+        let fileManager = FileManager.default
+        let fresh = directory.appendingPathComponent(".\(title).repair-\(UUID().uuidString).plist")
+        guard (try? fileManager.copyItem(at: source, to: fresh)) != nil else { return }
+        guard let backup = moveToBackups(title: title) else {
+            try? fileManager.removeItem(at: fresh)
+            return
+        }
+        if (try? fileManager.moveItem(at: fresh, to: destination)) == nil {
+            try? fileManager.removeItem(at: fresh)
+            try? fileManager.moveItem(at: backup, to: destination)
         }
     }
 
@@ -153,18 +170,18 @@ struct ThemeStore {
         return isDirectory.boolValue || read(title: title) == nil
     }
 
-    /// Moves the file of a theme to the backups, under a name that no earlier backup has.
-    func moveToBackups(title: String) -> Bool {
-        guard let url = url(forTitle: title) else { return false }
+    /// Moves the file of a theme to the backups, under a name that no earlier backup has, and returns where it went.
+    func moveToBackups(title: String) -> URL? {
+        guard let url = url(forTitle: title) else { return nil }
         let fileManager = FileManager.default
-        guard (try? fileManager.createDirectory(at: backupDirectory, withIntermediateDirectories: true)) != nil else { return false }
+        guard (try? fileManager.createDirectory(at: backupDirectory, withIntermediateDirectories: true)) != nil else { return nil }
         var backup = backupDirectory.appendingPathComponent(title).appendingPathExtension("plist")
         var number = 2
         while fileManager.fileExists(atPath: backup.path) || (try? backup.checkResourceIsReachable()) == true {
             backup = backupDirectory.appendingPathComponent("\(title) \(number)").appendingPathExtension("plist")
             number += 1
         }
-        return (try? fileManager.moveItem(at: url, to: backup)) != nil
+        return (try? fileManager.moveItem(at: url, to: backup)) != nil ? backup : nil
     }
 }
 

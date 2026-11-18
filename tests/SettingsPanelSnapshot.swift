@@ -434,6 +434,25 @@ check((try? Data(contentsOf: themeBackups.appendingPathComponent("Dracula 2.plis
       && (try? Data(contentsOf: themeBackups.appendingPathComponent("Dracula.plist"))) == Data("not a property list".utf8),
       "an earlier backup is kept")
 try! FileManager.default.removeItem(at: store.url(forTitle: "Mine Damaged")!)
+// A repair that cannot copy the bundled theme leaves the damaged file where it is, and the next launch repairs it
+// (F2 of the 1st audit of the port: the damaged file had gone to the backups and nothing came in its place).
+let unreadableBundle = store.directory.deletingLastPathComponent().appendingPathComponent("unreadable-bundle", isDirectory: true)
+try? FileManager.default.removeItem(at: unreadableBundle)
+try! FileManager.default.copyItem(at: ThemeStore.bundledDirectory!, to: unreadableBundle)
+let unreadableDracula = unreadableBundle.appendingPathComponent("Dracula.plist")
+try! FileManager.default.setAttributes([.posixPermissions: 0o000], ofItemAtPath: unreadableDracula.path)
+try! Data("damaged once more".utf8).write(to: store.url(forTitle: "Dracula")!)
+store.installBundledThemes(from: unreadableBundle)
+check((try? Data(contentsOf: store.url(forTitle: "Dracula")!)) == Data("damaged once more".utf8),
+      "a failed repair leaves the damaged file in place")
+check(!FileManager.default.fileExists(atPath: themeBackups.appendingPathComponent("Dracula 3.plist").path), "a failed repair makes no backup")
+check(!store.titles().contains { $0.hasPrefix(".") } && (try! FileManager.default.contentsOfDirectory(atPath: store.directory.path)).allSatisfy { !$0.hasPrefix(".Dracula") },
+      "a failed repair leaves no hidden copy")
+try! FileManager.default.setAttributes([.posixPermissions: 0o644], ofItemAtPath: unreadableDracula.path)
+store.installBundledThemes(from: unreadableBundle)
+check(ThemePalette.sameColors(store.read(title: "Dracula") ?? [:], bundledStore.read(title: "Dracula")!), "the next launch repairs it")
+check((try? Data(contentsOf: themeBackups.appendingPathComponent("Dracula 3.plist"))) == Data("damaged once more".utf8), "and keeps it in the backups")
+try! FileManager.default.removeItem(at: unreadableBundle)
 let themeDefaults = UserDefaults(suiteName: "tex2img.shortcut.test")!
 themeDefaults.removeObject(forKey: ThemeStore.bundledColorsUpdateKey)
 try! store.write(earlierCopy("SolarizedDark"), title: "SolarizedDark")
