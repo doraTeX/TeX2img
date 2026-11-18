@@ -109,9 +109,9 @@
 	</array>
 	<key>ImageBackground</key>
 	<array>
-		<integer>0</integer>
-		<integer>0</integer>
-		<integer>0</integer>
+		<integer>1</integer>
+		<integer>1</integer>
+		<integer>1</integer>
 		<integer>0</integer>
 	</array>
 	<key>ImageForeground</key>
@@ -172,9 +172,9 @@
 	</array>
 	<key>SyntaxComment</key>
 	<array>
-		<real>0.4214648995014463</real>
-		<real>0.4841349735731593</real>
-		<real>0.4887142229806348</real>
+		<real>0.596078</real>
+		<real>0.764706</real>
+		<real>0.47451</real>
 		<real>1</real>
 	</array>
 	<key>SyntaxIndex</key>
@@ -216,9 +216,9 @@
 	<string>LiteColors</string>
 	<key>XMLComment</key>
 	<array>
-		<real>0.5</real>
-		<real>0.5</real>
-		<real>0.5</real>
+		<real>0.615686</real>
+		<real>0.615686</real>
+		<real>0.615686</real>
 		<real>1</real>
 	</array>
 	<key>XMLParameter</key>
@@ -238,21 +238,21 @@
 	<key>XMLTag</key>
 	<array>
 		<real>1</real>
-		<real>0</real>
-		<real>0.2</real>
+		<real>0.423529</real>
+		<real>0.541176</real>
 		<real>1</real>
 	</array>
 	<key>XMLValue</key>
 	<array>
-		<real>0.6</real>
-		<real>0.6</real>
-		<real>0.2</real>
+		<real>0.635294</real>
+		<real>0.635294</real>
+		<real>0.211765</real>
 		<real>1</real>
 	</array>
 	<key>explFunction</key>
 	<array>
-		<real>0.5738074183</real>
-		<real>0.5655357838</real>
+		<real>0.647059</real>
+		<real>0.635294</real>
 		<real>0</real>
 		<real>1</real>
 	</array>
@@ -272,30 +272,30 @@
 	</array>
 	<key>explVariable</key>
 	<array>
-		<real>0.3612271356295268</real>
-		<real>0.5538832545280457</real>
-		<real>0.1470971305796211</real>
+		<real>0.443137</real>
+		<real>0.682353</real>
+		<real>0.180392</real>
 		<real>1</real>
 	</array>
 	<key>explmsg</key>
 	<array>
-		<real>0.2445922347363184</real>
-		<real>0.5628632708533178</real>
-		<real>0.5655312538146973</real>
+		<real>0.294118</real>
+		<real>0.67451</real>
+		<real>0.678431</real>
 		<real>1</real>
 	</array>
 	<key>explmykey</key>
 	<array>
-		<real>0.5337947981286083</real>
-		<real>0.2416767935226142</real>
-		<real>0.9631578326225281</real>
+		<real>0.709804</real>
+		<real>0.529412</real>
+		<real>0.976471</real>
 		<real>1</real>
 	</array>
 	<key>explmykeyArgument</key>
 	<array>
-		<real>0.7865745425224304</real>
-		<real>0.3276950635431077</real>
-		<real>0.3814485680324715</real>
+		<real>0.85098</real>
+		<real>0.529412</real>
+		<real>0.564706</real>
 		<real>1</real>
 	</array>
 </dict>

@@ -39,9 +39,9 @@
 	</array>
 	<key>EditorHighlightBraces</key>
 	<array>
-		<real>1</real>
+		<real>0.752941</real>
 		<real>0</real>
-		<real>1</real>
+		<real>0.752941</real>
 		<real>1</real>
 	</array>
 	<key>EditorHighlightContent</key>
@@ -165,9 +165,9 @@
 	</array>
 	<key>SyntaxCommand</key>
 	<array>
-		<real>0.1294117718935013</real>
-		<real>0.4627451002597809</real>
-		<real>0.7803921699523926</real>
+		<real>0.121569</real>
+		<real>0.439216</real>
+		<real>0.741176</real>
 		<real>1</real>
 	</array>
 	<key>SyntaxComment</key>
@@ -179,16 +179,16 @@
 	</array>
 	<key>SyntaxIndex</key>
 	<array>
-		<real>0.541176</real>
-		<real>0.427451</real>
+		<real>0.533333</real>
+		<real>0.419608</real>
 		<real>0</real>
 		<real>1</real>
 	</array>
 	<key>SyntaxMarker</key>
 	<array>
-		<real>0.8627451062202454</real>
-		<real>0.196078434586525</real>
-		<real>0.1843137294054031</real>
+		<real>0.835294</real>
+		<real>0.152941</real>
+		<real>0.141176</real>
 		<real>1</real>
 	</array>
 	<key>SyntaxMarkerParen</key>
@@ -216,15 +216,15 @@
 	<string>Solarized</string>
 	<key>XMLComment</key>
 	<array>
-		<real>0.5</real>
-		<real>0.5</real>
-		<real>0.5</real>
+		<real>0.431373</real>
+		<real>0.431373</real>
+		<real>0.431373</real>
 		<real>1</real>
 	</array>
 	<key>XMLParameter</key>
 	<array>
 		<real>0</real>
-		<real>0.541176</real>
+		<real>0.505882</real>
 		<real>0</real>
 		<real>1</real>
 	</array>
@@ -237,30 +237,30 @@
 	</array>
 	<key>XMLTag</key>
 	<array>
-		<real>1</real>
+		<real>0.870588</real>
 		<real>0</real>
-		<real>0.2</real>
+		<real>0.172549</real>
 		<real>1</real>
 	</array>
 	<key>XMLValue</key>
 	<array>
-		<real>0.478431</real>
-		<real>0.478431</real>
-		<real>0.121569</real>
+		<real>0.447059</real>
+		<real>0.447059</real>
+		<real>0.113725</real>
 		<real>1</real>
 	</array>
 	<key>explFunction</key>
 	<array>
-		<real>0.4235</real>
-		<real>0.4431</real>
-		<real>0.7686</real>
+		<real>0.376471</real>
+		<real>0.396078</real>
+		<real>0.74902</real>
 		<real>1</real>
 	</array>
 	<key>explIntenseFunction</key>
 	<array>
-		<real>0.8275</real>
-		<real>0.2118</real>
-		<real>0.5098</real>
+		<real>0.792157</real>
+		<real>0.172549</real>
+		<real>0.47451</real>
 		<real>1</real>
 	</array>
 	<key>explIntenseVariable</key>
@@ -272,29 +272,29 @@
 	</array>
 	<key>explVariable</key>
 	<array>
-		<real>0.5216</real>
-		<real>0.6</real>
+		<real>0.4</real>
+		<real>0.462745</real>
 		<real>0</real>
 		<real>1</real>
 	</array>
 	<key>explmsg</key>
 	<array>
-		<real>0.1647</real>
-		<real>0.6314</real>
-		<real>0.5961</real>
+		<real>0.12549</real>
+		<real>0.478431</real>
+		<real>0.454902</real>
 		<real>1</real>
 	</array>
 	<key>explmykey</key>
 	<array>
-		<real>0.7961</real>
-		<real>0.2941</real>
-		<real>0.0863</real>
+		<real>0.752941</real>
+		<real>0.278431</real>
+		<real>0.082353</real>
 		<real>1</real>
 	</array>
 	<key>explmykeyArgument</key>
 	<array>
-		<real>0.7098</real>
-		<real>0.5373</real>
+		<real>0.545098</real>
+		<real>0.411765</real>
 		<real>0</real>
 		<real>1</real>
 	</array>

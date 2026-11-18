@@ -109,9 +109,9 @@
 	</array>
 	<key>ImageBackground</key>
 	<array>
-		<integer>0</integer>
-		<integer>0</integer>
-		<integer>0</integer>
+		<integer>1</integer>
+		<integer>1</integer>
+		<integer>1</integer>
 		<integer>0</integer>
 	</array>
 	<key>ImageForeground</key>
@@ -172,7 +172,7 @@
 	</array>
 	<key>SyntaxComment</key>
 	<array>
-		<real>1</real>
+		<real>0.921569</real>
 		<integer>0</integer>
 		<integer>0</integer>
 		<integer>1</integer>
@@ -216,9 +216,9 @@
 	<string>LiteColors</string>
 	<key>XMLComment</key>
 	<array>
-		<real>0.5</real>
-		<real>0.5</real>
-		<real>0.5</real>
+		<real>0.458824</real>
+		<real>0.458824</real>
+		<real>0.458824</real>
 		<real>1</real>
 	</array>
 	<key>XMLParameter</key>
@@ -237,9 +237,9 @@
 	</array>
 	<key>XMLTag</key>
 	<array>
-		<real>1</real>
+		<real>0.913725</real>
 		<real>0</real>
-		<real>0.2</real>
+		<real>0.184314</real>
 		<real>1</real>
 	</array>
 	<key>XMLValue</key>
@@ -272,16 +272,16 @@
 	</array>
 	<key>explVariable</key>
 	<array>
-		<real>0.3084011078</real>
-		<real>0.5618229508</real>
+		<real>0.282353</real>
+		<real>0.513725</real>
 		<real>0</real>
 		<real>1</real>
 	</array>
 	<key>explmsg</key>
 	<array>
 		<real>0</real>
-		<real>0.5690457821</real>
-		<real>0.5746168494</real>
+		<real>0.509804</real>
+		<real>0.513725</real>
 		<real>1</real>
 	</array>
 	<key>explmykey</key>
@@ -293,9 +293,9 @@
 	</array>
 	<key>explmykeyArgument</key>
 	<array>
-		<real>0.8478753566741943</real>
-		<real>0.2924012940011032</real>
-		<real>0.36077542561165</real>
+		<real>0.835294</real>
+		<real>0.231373</real>
+		<real>0.305882</real>
 		<real>1</real>
 	</array>
 </dict>

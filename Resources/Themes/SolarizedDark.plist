@@ -102,9 +102,9 @@
 	</array>
 	<key>FootnoteColor</key>
 	<array>
-		<real>0.8104339838027954</real>
-		<real>0.1117527186870575</real>
-		<real>0.1393231600522995</real>
+		<real>0.917647</real>
+		<real>0.392157</real>
+		<real>0.415686</real>
 		<real>1</real>
 	</array>
 	<key>ImageBackground</key>
@@ -165,23 +165,23 @@
 	</array>
 	<key>SyntaxCommand</key>
 	<array>
-		<real>0.8600000143051147</real>
-		<real>0.1959999948740005</real>
-		<real>0.1840000003576279</real>
+		<real>0.894118</real>
+		<real>0.403922</real>
+		<real>0.396078</real>
 		<real>1</real>
 	</array>
 	<key>SyntaxComment</key>
 	<array>
-		<real>0.5992382592506159</real>
-		<real>0.1415595600346804</real>
-		<real>0.849357360208095</real>
+		<real>0.611765</real>
+		<real>0.8</real>
+		<real>0.239216</real>
 		<real>1</real>
 	</array>
 	<key>SyntaxIndex</key>
 	<array>
-		<real>0.8299999833106995</real>
-		<real>0.2099999934434891</real>
-		<real>0.5099999904632568</real>
+		<real>0.870588</real>
+		<real>0.4</real>
+		<real>0.627451</real>
 		<real>1</real>
 	</array>
 	<key>SyntaxMarker</key>
@@ -216,9 +216,9 @@
 	<string>SolarizedDark</string>
 	<key>XMLComment</key>
 	<array>
-		<real>0.5</real>
-		<real>0.5</real>
-		<real>0.5</real>
+		<real>0.560784</real>
+		<real>0.560784</real>
+		<real>0.560784</real>
 		<real>1</real>
 	</array>
 	<key>XMLParameter</key>
@@ -238,8 +238,8 @@
 	<key>XMLTag</key>
 	<array>
 		<real>1</real>
-		<real>0</real>
-		<real>0.2</real>
+		<real>0.290196</real>
+		<real>0.431373</real>
 		<real>1</real>
 	</array>
 	<key>XMLValue</key>
@@ -251,16 +251,16 @@
 	</array>
 	<key>explFunction</key>
 	<array>
-		<real>0.149</real>
-		<real>0.5451</real>
-		<real>0.8235</real>
+		<real>0.2</real>
+		<real>0.584314</real>
+		<real>0.854902</real>
 		<real>1</real>
 	</array>
 	<key>explIntenseFunction</key>
 	<array>
-		<real>0.4235</real>
-		<real>0.4431</real>
-		<real>0.7686</real>
+		<real>0.521569</real>
+		<real>0.537255</real>
+		<real>0.807843</real>
 		<real>1</real>
 	</array>
 	<key>explIntenseVariable</key>
@@ -286,9 +286,9 @@
 	</array>
 	<key>explmykey</key>
 	<array>
-		<real>0.7961</real>
-		<real>0.2941</real>
-		<real>0.0863</real>
+		<real>0.913725</real>
+		<real>0.403922</real>
+		<real>0.192157</real>
 		<real>1</real>
 	</array>
 	<key>explmykeyArgument</key>

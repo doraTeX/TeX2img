@@ -81,8 +81,8 @@
 	</array>
 	<key>EditorReverseSync</key>
 	<array>
-		<real>0.5807225108</real>
-		<real>0.066734083</real>
+		<real>0.486275</real>
+		<real>0.054902</real>
 		<real>0</real>
 		<real>1</real>
 	</array>
@@ -109,9 +109,9 @@
 	</array>
 	<key>ImageBackground</key>
 	<array>
-		<integer>0</integer>
-		<integer>0</integer>
-		<integer>0</integer>
+		<integer>1</integer>
+		<integer>1</integer>
+		<integer>1</integer>
 		<integer>0</integer>
 	</array>
 	<key>ImageForeground</key>
@@ -172,9 +172,9 @@
 	</array>
 	<key>SyntaxComment</key>
 	<array>
-		<real>0.4214648995014463</real>
-		<real>0.4841349735731593</real>
-		<real>0.4887142229806348</real>
+		<real>0.662745</real>
+		<real>0.713725</real>
+		<real>0.721569</real>
 		<real>1</real>
 	</array>
 	<key>SyntaxIndex</key>
@@ -216,9 +216,9 @@
 	<string>LiteColors</string>
 	<key>XMLComment</key>
 	<array>
-		<real>0.5</real>
-		<real>0.5</real>
-		<real>0.5</real>
+		<real>0.529412</real>
+		<real>0.529412</real>
+		<real>0.529412</real>
 		<real>1</real>
 	</array>
 	<key>XMLParameter</key>
@@ -238,8 +238,8 @@
 	<key>XMLTag</key>
 	<array>
 		<real>1</real>
-		<real>0</real>
-		<real>0.3689290583133698</real>
+		<real>0.156863</real>
+		<real>0.466667</real>
 		<real>1</real>
 	</array>
 	<key>XMLValue</key>
@@ -293,9 +293,9 @@
 	</array>
 	<key>explmykeyArgument</key>
 	<array>
-		<real>0.9765</real>
-		<real>0.149</real>
-		<real>0.4471</real>
+		<real>0.976471</real>
+		<real>0.207843</real>
+		<real>0.486275</real>
 		<real>1</real>
 	</array>
 </dict>

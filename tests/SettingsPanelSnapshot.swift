@@ -334,15 +334,39 @@ func near(_ value: Any?, _ expected: [Double]) -> Bool {
     guard let array = value as? [NSNumber], array.count >= 3 else { return false }
     return (0..<3).allSatisfy { abs(array[$0].doubleValue - expected[$0]) < 0.0005 }
 }
-for change in ThemeStore.bundledColorChanges {
+// The last change of each color is the color of the bundled theme (a color can change in more than one update).
+var lastChanges: [String: BundledThemeColorChange] = [:]
+for change in ThemeStore.bundledColorChanges { lastChanges[change.theme + "/" + change.key] = change }
+for change in lastChanges.values {
     check(near(bundledStore.read(title: change.theme)?[change.key], change.to), "bundled \(change.theme) has the new \(change.key)")
+}
+// Every color TeX2img draws as text is readable on its background (contrast 4.5 or more, as in TeXShop 6.00), in all the
+// bundled themes; in TeX2img's own themes, the matching braces too.
+func luminance(_ value: Any?) -> Double {
+    let c = (value as! [NSNumber]).prefix(3).map { min(max($0.doubleValue, 0), 1) }.map { $0 <= 0.03928 ? $0 / 12.92 : pow(($0 + 0.055) / 1.055, 2.4) }
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+}
+func contrast(_ a: Any?, _ b: Any?) -> Double {
+    let (x, y) = (luminance(a), luminance(b))
+    return (max(x, y) + 0.05) / (min(x, y) + 0.05)
+}
+for title in bundledStore.titles() {
+    let theme = bundledStore.read(title: title)!
+    var keys = ["EditorText", "SyntaxComment", "SyntaxCommand", "SyntaxMarkerCurly"]
+    if title == ThemeStore.defaultLightTitle || title == ThemeStore.defaultDarkTitle { keys.append("EditorHighlightBraces") }
+    for key in keys {
+        let value = ThemePalette.components(theme, key: key)
+        check(contrast(value, theme["EditorBackground"]) >= 4.5, "\(title) \(key) contrast \(contrast(value, theme["EditorBackground"]))")
+    }
+    check(contrast(theme["ConsoleText"], theme["ConsoleBackground"]) >= 4.5, "\(title) console contrast")
 }
 check(near(bundledStore.read(title: "Dracula")?["SyntaxMarkerCurly"], [0.9725490196078431, 0.9725490196078431, 0.9490196078431372]),
       "Dracula's braces are in its text color")
 // Copies as earlier versions installed them: the old colors, one of them changed by the user.
-func earlierCopy(_ theme: String) -> ThemeColors {
+// The earliest color wins when a color changed in more than one update.
+func earlierCopy(_ theme: String, before update: Int = 1) -> ThemeColors {
     var colors = bundledStore.read(title: theme)!
-    for change in ThemeStore.bundledColorChanges where change.theme == theme {
+    for change in ThemeStore.bundledColorChanges.reversed() where change.theme == theme && change.update >= update {
         var color = colors[change.key] as! [Any]
         for index in 0..<3 { color[index] = NSNumber(value: change.from[index]) }
         colors[change.key] = color
@@ -354,14 +378,29 @@ oldDracula["SyntaxMarkerParen"] = [0.5, 0.25, 0.125, 1.0]
 try! store.write(oldDracula, title: "Dracula")
 try! store.write(earlierCopy("Dracula"), title: "My Dracula")
 try! store.write(earlierCopy("Manteuffel"), title: "Manteuffel")
-check(store.updateBundledThemeColors(after: 0) == 1, "the update is done")
+check(store.updateBundledThemeColors(after: 0) == 2, "the updates are done")
 let updatedDracula = store.read(title: "Dracula")!
 check(near(updatedDracula["SyntaxMarkerCurly"], [0.9725490196078431, 0.9725490196078431, 0.9490196078431372])
       && near(updatedDracula["EditorHighlightContent"], [0.25098, 0.243137, 0.172549]), "a copy gets the new colors")
 check(near(updatedDracula["SyntaxMarkerParen"], [0.5, 0.25, 0.125]), "a color the user chose stays")
 check(near(store.read(title: "My Dracula")?["SyntaxMarkerCurly"], [0, 0, 0]), "a renamed copy stays")
-check(near(store.read(title: "Manteuffel")?["SyntaxCommand"], [0.043137, 0.52549, 0.701961]), "Manteuffel's commands are readable")
-check(ThemeStore.applyBundledColorChanges(to: &oldDracula, theme: "Dracula", after: 1) == false, "nothing after the last update")
+check(near(store.read(title: "Manteuffel")?["SyntaxCommand"], [0.039216, 0.466667, 0.623529]), "Manteuffel's commands: both updates in turn")
+check(near(store.read(title: "Manteuffel")?["SyntaxComment"], [0.243137, 0.490196, 0.243137]), "Manteuffel's comments are readable")
+check(ThemeStore.applyBundledColorChanges(to: &oldDracula, theme: "Dracula", after: 2) == false, "nothing after the last update")
+// Copies that the first update (TeX2img 3.0.x of 11-16) left: the second update gives them the readable colors once.
+var afterFirst = earlierCopy("SolarizedLite", before: 2)
+afterFirst["SyntaxCommand"] = [0.25, 0.5, 0.75, 1.0]
+try! store.write(afterFirst, title: "SolarizedLite")
+try! store.write(earlierCopy(ThemeStore.defaultLightTitle, before: 2), title: ThemeStore.defaultLightTitle)
+check(store.updateBundledThemeColors(after: 1) == 2, "the second update is done")
+let updatedSolarized = store.read(title: "SolarizedLite")!
+check(near(updatedSolarized["EditorText"], [0.372549, 0.447059, 0.478431]) && near(updatedSolarized["SyntaxComment"], [0.376471, 0.396078, 0.74902]),
+      "a copy of the first update gets the second")
+check(near(updatedSolarized["SyntaxCommand"], [0.25, 0.5, 0.75]), "a color the user chose stays in the second update")
+let updatedLite = store.read(title: ThemeStore.defaultLightTitle)!
+check(near(updatedLite["SyntaxComment"], [0.921569, 0, 0]) && near(updatedLite["EditorHighlightBraces"], [0.752941, 0, 0.752941]),
+      "TeX2img Lite's comments and braces become readable")
+check(ThemePalette.sameColors(updatedLite, bundledStore.read(title: ThemeStore.defaultLightTitle)!), "the updated TeX2img Lite is the bundled one")
 // A theme that is there but cannot be read leaves the update for the next launch.
 try! Data("not a property list".utf8).write(to: store.url(forTitle: "LiteTheme")!)
 check(store.updateBundledThemeColors(after: 0) == 0, "an unreadable theme keeps the update pending")
@@ -370,7 +409,7 @@ let themeDefaults = UserDefaults(suiteName: "tex2img.shortcut.test")!
 themeDefaults.removeObject(forKey: ThemeStore.bundledColorsUpdateKey)
 try! store.write(earlierCopy("SolarizedDark"), title: "SolarizedDark")
 ThemeLibrary.shared.prepare(defaults: themeDefaults)
-check(themeDefaults.integer(forKey: ThemeStore.bundledColorsUpdateKey) == 1
+check(themeDefaults.integer(forKey: ThemeStore.bundledColorsUpdateKey) == 2
       && near(store.read(title: "SolarizedDark")?["EditorHighlightContent"], [0.2, 0.188235, 0.039216]), "launch updates the copies once")
 themeDefaults.removeObject(forKey: ThemeStore.bundledColorsUpdateKey)
 
