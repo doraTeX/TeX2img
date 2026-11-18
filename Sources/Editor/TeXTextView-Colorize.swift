@@ -1,6 +1,12 @@
 import AppKit
 import Foundation
 
+extension NSAttributedString.Key {
+    /// Marks the characters that have the fullwidth background of the theme, so that it can be removed without
+    /// removing another background of the same color (the highlight of enclosed contents, say).
+    static let fullwidthBackgroundMark = NSAttributedString.Key("TeX2imgFullwidthBackground")
+}
+
 extension TeXTextView {
     /// The characters of the lines shown in the view; the text outside is laid out and colored when it is scrolled into view.
     var visibleCharacterRange: NSRange {
@@ -65,6 +71,9 @@ extension TeXTextView {
             if let fullwidthAttributes, ThemeLibrary.isHighlightedFullwidthCharacter(theChar) {
                 // Fullwidth letters, digits and symbols are easily mistaken for ASCII (TeXShop 5.60).
                 layoutManager.addTemporaryAttributes(fullwidthAttributes, forCharacterRange: NSRange(location: location, length: 1))
+                if fullwidthAttributes[.backgroundColor] != nil {
+                    layoutManager.addTemporaryAttribute(.fullwidthBackgroundMark, value: true, forCharacterRange: NSRange(location: location, length: 1))
+                }
                 location += 1
             } else if theChar == "{".utf16.first! || theChar == "}".utf16.first! || theChar == "$".utf16.first! {
                 colorRange = NSRange(location: location, length: 1)
@@ -111,22 +120,19 @@ extension TeXTextView {
         }
     }
 
-    /// Removes the fullwidth background of the light and the dark theme (the appearance may have changed since).
+    /// Removes the fullwidth backgrounds that the coloring gave (marked with fullwidthBackgroundMark); other
+    /// backgrounds stay, whatever their colors.
     private func removeFullwidthBackground(in range: NSRange) {
-        guard let layoutManager, let controller else { return }
-        let profile = controller.currentProfile()
-        let backgrounds = [false, true].compactMap {
-            ThemeLibrary.shared.fullwidthAttributes(lightTitle: profile.stringForKey(LightThemeKey), darkTitle: profile.stringForKey(DarkThemeKey),
-                                                    dark: $0)?[.backgroundColor] as? NSColor
-        }
-        guard !backgrounds.isEmpty else { return }
+        guard let layoutManager else { return }
         var location = range.location
         while location < NSMaxRange(range) {
             var effective = NSRange(location: 0, length: 0)
-            let value = layoutManager.temporaryAttribute(.backgroundColor, atCharacterIndex: location, longestEffectiveRange: &effective, in: range)
+            let mark = layoutManager.temporaryAttribute(.fullwidthBackgroundMark, atCharacterIndex: location, longestEffectiveRange: &effective, in: range)
             let end = max(NSMaxRange(effective), location + 1)
-            if let color = value as? NSColor, backgrounds.contains(color) {
-                layoutManager.removeTemporaryAttribute(.backgroundColor, forCharacterRange: NSRange(location: location, length: end - location))
+            if mark != nil {
+                let marked = NSRange(location: location, length: end - location)
+                layoutManager.removeTemporaryAttribute(.backgroundColor, forCharacterRange: marked)
+                layoutManager.removeTemporaryAttribute(.fullwidthBackgroundMark, forCharacterRange: marked)
             }
             location = end
         }
@@ -137,6 +143,7 @@ extension TeXTextView {
             .backgroundColor,
             forCharacterRange: NSRange(location: 0, length: textStorage?.length ?? 0)
         )
+        layoutManager?.removeTemporaryAttribute(.fullwidthBackgroundMark, forCharacterRange: NSRange(location: 0, length: textStorage?.length ?? 0))
         contentHighlighting = false
         // The background of fullwidth letters and symbols belongs to the theme, not to a highlight. It is given where
         // colorizeText gives it: not in comments, nor as the character of a command.
@@ -146,7 +153,8 @@ extension TeXTextView {
         while location < text.length {
             let character = text.character(at: location)
             if ThemeLibrary.isHighlightedFullwidthCharacter(character) {
-                layoutManager.addTemporaryAttribute(.backgroundColor, value: background, forCharacterRange: NSRange(location: location, length: 1))
+                layoutManager.addTemporaryAttributes([.backgroundColor: background, .fullwidthBackgroundMark: true],
+                                                     forCharacterRange: NSRange(location: location, length: 1))
                 location += 1
             } else if character == "%".utf16.first! {
                 var end = 0
@@ -214,6 +222,8 @@ extension TeXTextView {
             [.backgroundColor: UtilityG.enclosedContentBackgroundColor(inProfile: profile)],
             forCharacterRange: range
         )
+        // The background there is now the highlight's, also on fullwidth characters.
+        layoutManager?.removeTemporaryAttribute(.fullwidthBackgroundMark, forCharacterRange: range)
     }
 
     func textViewDidChangeSelection(_ notification: Notification) {

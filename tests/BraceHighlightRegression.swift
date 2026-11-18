@@ -183,6 +183,36 @@ for appearance in [NSAppearance.Name.aqua, .darkAqua] {
 }
 NSApp.appearance = nil
 
+// 6. A theme whose background of enclosed contents is the color of the fullwidth background: the coloring keeps the
+// highlight of the enclosed contents (it removed every background of that color; 2nd audit of the port, F5).
+do {
+    var sameColors = ThemeLibrary.shared.store.read(title: ThemeStore.defaultLightTitle)!
+    let shared: [Double] = [0.2, 0.4, 1.0, 1.0]
+    sameColors["EditorHighlightContent"] = shared
+    sameColors["EditorHighlightZenkakuSymbolBackground"] = shared
+    try! ThemeLibrary.shared.store.write(sameColors, title: "Same Backgrounds")
+    ThemeLibrary.shared.invalidate()
+    for appearance in [NSAppearance.Name.aqua, .darkAqua] {
+        NSApp.appearance = NSAppearance(named: appearance)
+        controller.profile[LightThemeKey] = "Same Backgrounds"
+        controller.profile[DarkThemeKey] = "Same Backgrounds"
+        controller.profile[HighlightContentKey] = true
+        start("x{ab}z１", at: 1)
+        textView.setSelectedRange(NSRange(location: 2, length: 0))
+        spin()
+        func background(_ i: Int) -> NSColor? { lm.temporaryAttribute(.backgroundColor, atCharacterIndex: i, effectiveRange: nil) as? NSColor }
+        let content = UtilityG.enclosedContentBackgroundColor(inProfile: controller.profile)
+        expect(background(2) == content && background(3) == content, "\(appearance.rawValue): the enclosed contents are highlighted")
+        textView.colorizeText()
+        expect(background(2) == content && background(3) == content, "\(appearance.rawValue): the coloring removed the highlight of the enclosed contents")
+        expect(background(6) != nil, "\(appearance.rawValue): the fullwidth digit keeps its background")
+        controller.profile[HighlightContentKey] = false
+        controller.profile[LightThemeKey] = nil
+        controller.profile[DarkThemeKey] = nil
+    }
+    NSApp.appearance = nil
+}
+
 // 4. The background flash for a brace without a partner is seen, and a flash that a later one started is not ended
 // by the earlier timer (the 2nd audit of the TeX2eps port, F3, which TeX2img shares).
 controller.profile[FlashBackgroundKey] = true
