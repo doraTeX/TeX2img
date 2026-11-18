@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Runs the real abortCompilation(_:) of the GUI (ControllerG) on a
+"""Runs the real abortCompilation(_:) and the quit handler (applicationWillTerminate) of the GUI (ControllerG) on a
 stub, against commands shaped like a TeX run: a shell that runs a program which runs another program.
 
 - Abort stops all of them, not only the shell (K5 of the 2026-11-17 audit; Process.terminate() reaches the group).
 - Abort also stops programs that ignore SIGTERM (TeXShop 1c7c4a81: SIGTERM to the group, then SIGKILL).
+- Quitting during a generation stops its commands in the same way, within a second (decision D3 of 11-18).
 No window is opened; the settings are not saved (the stub records the call).
 """
 from pathlib import Path
@@ -29,7 +30,7 @@ def extract_method(source, marker):
 
 controller = ROOT / 'Sources/Controllers/ControllerG.swift'
 methods = '\n'.join(extract_method(controller, marker) for marker in
-                    ('@IBAction func abortCompilation(', 'private func takeRunningCommand('))
+                    ('@IBAction func abortCompilation(', 'private func takeRunningCommand(', 'private func applicationWillTerminate('))
 MAIN = r'''
 import AppKit
 
@@ -108,6 +109,10 @@ func check(_ name: String, ignoresTERM: Bool, stop: (Stub) -> Void) -> Bool {
         var ok = true
         ok = check("Abort stops the shell and the programs it started", ignoresTERM: false) { $0.abortCompilation(NSNull()) } && ok
         ok = check("Abort stops programs that ignore SIGTERM", ignoresTERM: true) { $0.abortCompilation(NSNull()) } && ok
+        ok = check("Quitting during a generation stops its commands", ignoresTERM: true) { stub in
+            stub.applicationWillTerminate()
+            if !stub.profileController.saved { print("FAIL: the settings were not saved at quit") }
+        } && ok
         exit(ok ? 0 : 1)
     }
 }

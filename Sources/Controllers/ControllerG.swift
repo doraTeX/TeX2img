@@ -1369,6 +1369,11 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     private func applicationWillTerminate() {
+        // Quitting during a generation stops its commands as Abort does (at most 0.5 s), so that TeX and Ghostscript
+        // do not go on after TeX2img.
+        if generationThreadRunning, let command = takeRunningCommand() {
+            Utility.stopCommand(command.task, group: command.group)
+        }
         if NSColorPanel.sharedColorPanelExists {
             closeColorPanel()
         }
