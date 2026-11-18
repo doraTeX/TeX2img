@@ -69,6 +69,7 @@ final class ControllerG: NSObject {
     var workInInputFileDirectoryCheckBox: NSSwitch!
     var fillColorWell: NSColorWell!
     var makeatletterEnabledCheckBox: NSSwitch!
+    var highlightFullwidthCharactersCheckBox: NSSwitch!
     var autoDetectionTargetPopUp: NSPopUpButton!
     var spaceCharacterKindPopUp: NSPopUpButton!
     var fullwidthSpaceCharacterKindPopUp: NSPopUpButton!
@@ -100,6 +101,7 @@ final class ControllerG: NSObject {
     @objc func showFontPanelOfSource(_ sender: Any) {}
     @objc func tabWidthStepperPressed(_ sender: Any) {}
     @objc func invisibleCharacterKindChanged(_ sender: Any?) {}
+    @objc func fullwidthHighlightChanged(_ sender: Any?) {}
     func themeColorsChanged() { themeChanges += 1 }
 }
 
@@ -174,7 +176,7 @@ let defaultOn: [NSSwitch] = [controller.transparentCheckBox, controller.previewC
     controller.deleteTmpFileCheckBox, controller.embedSourceCheckBox, controller.showOutputWindowCheckBox, controller.guessCompilationButton,
     controller.autoRestoreCheckBox, controller.wrapLineCheckBox, controller.tabIndentCheckBox, controller.showSpaceCharacterCheckBox,
     controller.showTabCharacterCheckBox, controller.showNewLineCharacterCheckBox, controller.showFullwidthSpaceCharacterCheckBox,
-    controller.makeatletterEnabledCheckBox, controller.flashInMovingCheckBox, controller.highlightContentCheckBox, controller.beepCheckBox,
+    controller.makeatletterEnabledCheckBox, controller.highlightFullwidthCharactersCheckBox, controller.flashInMovingCheckBox, controller.highlightContentCheckBox, controller.beepCheckBox,
     controller.flashBackgroundCheckBox]
 check(defaultOn.allSatisfy { $0.state == .on }, "switches on by default")
 let defaultBrackets: [NSButton] = [controller.checkBraceCheckBox, controller.checkBracketCheckBox, controller.checkParenCheckBox,
@@ -323,6 +325,23 @@ check(ThemeLibrary.shared.fullwidthAttributes(lightTitle: ThemeStore.defaultLigh
       "TeX2img Lite colors fullwidth characters")
 try! store.write(["EditorText": [0, 0, 0, 1]], title: "No Fullwidth")
 check(ThemeLibrary.shared.fullwidthAttributes(lightTitle: "No Fullwidth", darkTitle: nil, dark: false) == nil, "a theme without the keys colors nothing")
+// The switch of fullwidth letters and symbols is a row of Syntax Coloring, on by default, and the theme keeps both colors.
+do {
+    let fullwidthSwitch = controller.highlightFullwidthCharactersCheckBox!
+    let row = all(SettingsRowView.self, in: settings.category("Editor")!.view).first { all(NSSwitch.self, in: $0).contains(fullwidthSwitch) }
+    let expectedLabel = language == "ja" ? "全角英数記号を強調" : "Highlight fullwidth letters and symbols"
+    check(row?.titleLabel?.stringValue == expectedLabel && row?.noteLabel == nil,
+          "the fullwidth switch row: \(String(describing: row?.titleLabel?.stringValue)) \(String(describing: row?.noteLabel?.stringValue))")
+    check(fullwidthSwitch.target === controller && fullwidthSwitch.action == #selector(ControllerG.fullwidthHighlightChanged(_:)),
+          "the fullwidth switch colors the text again")
+    var ancestor: NSView? = row
+    while let view = ancestor, view.identifier?.rawValue != "group" { ancestor = view.superview }
+    let heading = ancestor.flatMap { group in all(NSTextField.self, in: group).first { $0.identifier?.rawValue == "group.heading" } }
+    check(heading?.stringValue == (language == "ja" ? "構文の色分け" : "Syntax Coloring"), "the fullwidth switch is in Syntax Coloring: \(String(describing: heading?.stringValue))")
+    for role in [ThemeRole.fullwidthSymbol, .fullwidthBackground] {
+        check(themes.wells[role]?.isEnabled == true, "the theme keeps the well of \(role)")
+    }
+}
 let translucent: ThemeColors = ["EditorText": [1, 0, 0, 0.5], "EditorFlash": [0, 0, 1, 0.5]]
 check(ThemePalette.color(.text, in: translucent, dark: false).alphaComponent == 1, "opaque colors are drawn opaque")
 check(abs(ThemePalette.color(.flash, in: translucent, dark: false).alphaComponent - 0.5) < 0.001, "the flash keeps its opacity")

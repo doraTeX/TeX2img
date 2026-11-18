@@ -90,6 +90,7 @@ let ConsoleBackgroundColorForDarkModeKey = "consoleBackgroundColorForDarkMode"
 let LightThemeKey = "lightTheme"
 let DarkThemeKey = "darkTheme"
 let MakeatletterEnabledKey = "makeatletterEnabled"
+let HighlightFullwidthCharactersKey = "highlightFullwidthCharacters"
 let WorkingDirectoryTypeKey = "workingDirectoryType"
 let WorkingDirectoryPathKey = "workingDirectoryPath"
 let WorkingDirectoryTmp = 1

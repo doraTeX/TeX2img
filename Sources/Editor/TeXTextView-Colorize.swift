@@ -125,6 +125,11 @@ extension TeXTextView {
         }
     }
 
+    /// Colors every line, also those out of view (the switch of fullwidth letters and symbols changed).
+    func colorizeEntireText() {
+        colorizeText(range: NSRange(location: 0, length: (string as NSString).length))
+    }
+
     /// Removes the fullwidth backgrounds that the coloring gave (marked with fullwidthBackgroundMark); other
     /// backgrounds stay, whatever their colors.
     private func removeFullwidthBackground(in range: NSRange) {

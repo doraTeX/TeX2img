@@ -204,6 +204,7 @@
 "Syntax Coloring" = "構文の色分け";
 "Treat @ as part of command names" = "@ をコマンド名の一部と見なす";
 "As after \\makeatletter." = "\\makeatletterの後と同じ扱いです。";
+"Highlight fullwidth letters and symbols" = "全角英数記号を強調";
 "Matching Brackets" = "括弧の対応";
 "Brackets to match" = "対象";
 "Highlight while moving the cursor" = "カーソル移動時も黄色く強調";

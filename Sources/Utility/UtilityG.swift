@@ -102,8 +102,11 @@ class UtilityG: NSObject {
         readColor(from: profile, role: .consoleBackground)
     }
 
+    /// Nil when the switch is off: the characters are then colored as any other text. A profile without the switch
+    /// (an earlier version's) has it on.
     static func fullwidthAttributes(inProfile profile: Profile) -> [NSAttributedString.Key: Any]? {
-        ThemeLibrary.shared.fullwidthAttributes(lightTitle: profile.stringForKey(LightThemeKey), darkTitle: profile.stringForKey(DarkThemeKey),
+        guard profile[HighlightFullwidthCharactersKey] == nil || profile.boolForKey(HighlightFullwidthCharactersKey) else { return nil }
+        return ThemeLibrary.shared.fullwidthAttributes(lightTitle: profile.stringForKey(LightThemeKey), darkTitle: profile.stringForKey(DarkThemeKey),
                                                 dark: NSApp.isDarkMode)
     }
 

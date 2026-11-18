@@ -184,6 +184,7 @@ extension ControllerG {
         tabIndentCheckBox = makeSwitch()
         commandCompletionKeyPopUp = SettingsUI.makePopUp([("Escape", 1), ("Tab", 2)])
         makeatletterEnabledCheckBox = makeSwitch(refresh)
+        highlightFullwidthCharactersCheckBox = makeSwitch(#selector(fullwidthHighlightChanged(_:)))
         checkBraceCheckBox = SettingsUI.makeCheckbox("{ }", target: self, action: refresh)
         checkParenCheckBox = SettingsUI.makeCheckbox("( )", target: self, action: refresh)
         checkSquareCheckBox = SettingsUI.makeCheckbox("[ ]", target: self, action: refresh)
@@ -219,7 +220,10 @@ extension ControllerG {
                 SettingsUI.row(label("Tab width"), SettingsUI.numberAccessory(field: tabWidthTextField, stepper: tabWidthStepper, unit: label("characters"))),
                 SettingsUI.row(label("Indent with tabs"), tabIndentCheckBox),
             ]),
-            SettingsUI.group(label("Syntax Coloring"), [SettingsUI.row(label("Treat @ as part of command names"), note: label("As after \\makeatletter."), makeatletterEnabledCheckBox)]),
+            SettingsUI.group(label("Syntax Coloring"), [
+                SettingsUI.row(label("Treat @ as part of command names"), note: label("As after \\makeatletter."), makeatletterEnabledCheckBox),
+                SettingsUI.row(label("Highlight fullwidth letters and symbols"), highlightFullwidthCharactersCheckBox),
+            ]),
             SettingsUI.group(label("Matching Brackets"), [
                 SettingsUI.row(label("Brackets to match"), SettingsUI.hstack([checkBraceCheckBox, checkParenCheckBox, checkSquareCheckBox, checkBracketCheckBox], spacing: 14)),
                 SettingsUI.row(label("Highlight while moving the cursor"), flashInMovingCheckBox),
@@ -281,7 +285,7 @@ extension ControllerG {
     func applyDefaultSettingValues() {
         for control in [autoRestoreCheckBox, previewCheckBox, sendNotificationCheckBox, deleteTmpFileCheckBox, embedSourceCheckBox,
                         showOutputWindowCheckBox, transparentCheckBox, guessCompilationButton, flashInMovingCheckBox,
-                        highlightContentCheckBox, beepCheckBox, flashBackgroundCheckBox, makeatletterEnabledCheckBox,
+                        highlightContentCheckBox, beepCheckBox, flashBackgroundCheckBox, makeatletterEnabledCheckBox, highlightFullwidthCharactersCheckBox,
                         tabIndentCheckBox, wrapLineCheckBox, showSpaceCharacterCheckBox, showFullwidthSpaceCharacterCheckBox,
                         showNewLineCharacterCheckBox, showTabCharacterCheckBox] as [NSSwitch?] {
             control?.state = .on

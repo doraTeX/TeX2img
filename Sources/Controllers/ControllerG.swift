@@ -140,6 +140,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
 
     var makeatletterEnabledCheckBox: NSSwitch!
+    var highlightFullwidthCharactersCheckBox: NSSwitch!
 
     var autoDetectionTargetPopUp: NSPopUpButton!
 
@@ -820,6 +821,11 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         } else {
             makeatletterEnabledCheckBox.state = .on
         }
+        if keys.contains(HighlightFullwidthCharactersKey) {
+            highlightFullwidthCharactersCheckBox.state = aProfile.boolForKey(HighlightFullwidthCharactersKey) ? .on : .off
+        } else {
+            highlightFullwidthCharactersCheckBox.state = .on
+        }
 
         autoCompleteMenuItem.state = aProfile.boolForKey(AutoCompleteKey) ? .on : .off
         autoIndentMenuItem.state = aProfile.boolForKey(AutoIndentKey) ? .on : .off
@@ -1086,6 +1092,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             currentProfile[LightThemeKey] = themeSettings.lightTitle
             currentProfile[DarkThemeKey] = themeSettings.darkTitle
             currentProfile[MakeatletterEnabledKey] = makeatletterEnabledCheckBox.state.rawValue
+            currentProfile[HighlightFullwidthCharactersKey] = highlightFullwidthCharactersCheckBox.state.rawValue
             currentProfile[ColorPalleteColorKey] = colorPalleteColorWell.color.serializedString
         }
 
@@ -1865,6 +1872,12 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         preambleTextView.refreshWordWrap()
         preambleTextView.colorizeText()
         preambleTextView.fixupTabs()
+    }
+
+    /// Colors the whole text of both views again, so that no fullwidth color is left in lines out of view.
+    @IBAction func fullwidthHighlightChanged(_ sender: Any?) {
+        sourceTextView.colorizeEntireText()
+        preambleTextView.colorizeEntireText()
     }
 
     @IBAction func tabWidthStepperPressed(_ sender: Any) {

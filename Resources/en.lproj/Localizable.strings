@@ -204,6 +204,7 @@
 "Syntax Coloring" = "Syntax Coloring";
 "Treat @ as part of command names" = "Treat @ as part of command names";
 "As after \\makeatletter." = "As after \\makeatletter.";
+"Highlight fullwidth letters and symbols" = "Highlight fullwidth letters and symbols";
 "Matching Brackets" = "Matching Brackets";
 "Brackets to match" = "Brackets to match";
 "Highlight while moving the cursor" = "Highlight while moving the cursor";
