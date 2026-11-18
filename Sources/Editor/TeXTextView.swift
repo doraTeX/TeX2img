@@ -27,6 +27,9 @@ class TeXTextView: NSTextView {
     var currentDragOperation: NSDragOperation = []
     /// The braces being highlighted, kept so that the coloring that follows an edit does not remove the highlight.
     var highlightedBraceRanges: [NSRange] = []
+    /// A brace highlight that was to be removed while text was composed (marked text): the coloring after the composed
+    /// text is committed or cancelled removes it instead of giving it again.
+    var braceHighlightResetPending = false
     /// The background flash for a brace without a partner: the coloring that follows the edit keeps it, and only the
     /// timer of the latest flash ends it.
     var backgroundFlashing = false

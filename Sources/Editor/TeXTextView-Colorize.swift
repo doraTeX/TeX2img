@@ -96,7 +96,13 @@ extension TeXTextView {
         }
 
         // The brace highlight is given when the selection changes, which NSTextView reports before the didChangeText
-        // of the edit; the coloring after an edit gives it again, so that a typed brace stays highlighted.
+        // of the edit; the coloring after an edit gives it again, so that a typed brace stays highlighted. One that was
+        // to be removed while text was composed is removed now.
+        if braceHighlightResetPending {
+            braceHighlightResetPending = false
+            braceHighlighting = false
+            highlightedBraceRanges = []
+        }
         if braceHighlighting {
             let highlight = highlightBracesColorDict ?? [.foregroundColor: UtilityG.highlightedBraceColor(inProfile: profile)]
             for braceRange in highlightedBraceRanges where NSMaxRange(braceRange) <= length {
@@ -183,7 +189,11 @@ extension TeXTextView {
     private func resetHighlight(_ sender: Any?) {
         // While text is composed, the brace highlight stays and nothing is colored. The change of the
         // selection that commits or removes the composed text colors the visible text again.
-        if waitsForMarkedText() { return }
+        if waitsForMarkedText() {
+            braceHighlightResetPending = true
+            return
+        }
+        braceHighlightResetPending = false
         highlightedBraceRanges = []
         colorizeText()
         braceHighlighting = false
@@ -319,6 +329,7 @@ extension TeXTextView {
                 if skipMatchingBrace == 0 {
                     if highlightPattern != NOHIGHLIGHT {
                         braceHighlighting = true
+                        braceHighlightResetPending = false
                         highlightedBraceRanges = [NSRange(location: location, length: 1), NSRange(location: originalLocation, length: 1)]
                         layoutManager.addTemporaryAttributes(
                             highlightAttributes,

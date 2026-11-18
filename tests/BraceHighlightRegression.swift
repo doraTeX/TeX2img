@@ -56,9 +56,10 @@ controller.profile = [CheckBraceKey: true, CheckBracketKey: true, CheckSquareBra
 textView.isContinuousSpellCheckingEnabled = false
 let lm = textView.layoutManager!
 func spin(_ seconds: TimeInterval = 0.1) { RunLoop.current.run(until: Date().addingTimeInterval(seconds)) }
-let braceColor = UtilityG.highlightedBraceColor(inProfile: controller.profile)
 func highlighted(_ i: Int) -> Bool {
-    (lm.temporaryAttribute(.foregroundColor, atCharacterIndex: i, effectiveRange: nil) as? NSColor) == braceColor
+    // The color of the current appearance (light or dark).
+    (lm.temporaryAttribute(.foregroundColor, atCharacterIndex: i, effectiveRange: nil) as? NSColor)
+        == UtilityG.highlightedBraceColor(inProfile: controller.profile)
 }
 func start(_ text: String, at location: Int) {
     textView.string = text
@@ -107,6 +108,80 @@ textView.setSelectedRange(NSRange(location: 4, length: 0))
 textView.setSelectedRange(NSRange(location: 5, length: 0))
 spin()
 expect(!highlighted(1), "the highlight stays after moving away")
+
+// 5. A highlight that the selection change during composed text (marked text) could not remove is removed after the
+// composed text is committed or cancelled, and is not given again by the coloring then (TeX2eps port, 3rd audit F4).
+// Composed text is never colored. Light and dark.
+func anyHighlighted() -> Bool { (0..<(textView.string as NSString).length).contains(where: highlighted) }
+func mark(_ text: String) {
+    textView.setMarkedText(text, selectedRange: NSRange(location: (text as NSString).length, length: 0),
+                           replacementRange: NSRange(location: NSNotFound, length: 0))
+}
+func cancelMarked() {
+    textView.setMarkedText("", selectedRange: NSRange(location: 0, length: 0), replacementRange: NSRange(location: NSNotFound, length: 0))
+    textView.unmarkText()
+}
+func commitMarked(_ text: String) { textView.insertText(text, replacementRange: textView.markedRange()) }
+for appearance in [NSAppearance.Name.aqua, .darkAqua] {
+    NSApp.appearance = NSAppearance(named: appearance)
+    let mode = appearance == .aqua ? "light" : "dark"
+    // a. Typed brace lit, composed text after it, cancelled.
+    start("}", at: 0)
+    textView.insertText("{", replacementRange: textView.selectedRange())
+    spin()
+    expect(highlighted(0) && highlighted(1), "\(mode) a: lit")
+    mark("１２")
+    spin()
+    expect(!highlighted(1) || highlighted(0), "\(mode) a: marked")
+    cancelMarked()
+    spin()
+    expect(!anyHighlighted(), "\(mode) a: the highlight stays after the composed text is cancelled")
+    // b. The same, committed.
+    start("}", at: 0)
+    textView.insertText("{", replacementRange: textView.selectedRange())
+    spin()
+    mark("ab")
+    spin()
+    commitMarked("ab")
+    spin()
+    expect(textView.string == "{ab}" && !anyHighlighted(), "\(mode) b: the highlight stays after the composed text is committed: \(textView.string)")
+    // c. Cursor on a brace, composed text elsewhere, committed: the old pair is not lit again.
+    start("a{b}c", at: 1)
+    textView.setSelectedRange(NSRange(location: 2, length: 0))
+    spin()
+    expect(highlighted(1) && highlighted(3), "\(mode) c: lit")
+    textView.setSelectedRange(NSRange(location: 5, length: 0))
+    textView.lastCursorLocation = 5
+    mark("x")
+    spin()
+    commitMarked("x")
+    spin()
+    textView.colorizeText()
+    expect(!anyHighlighted(), "\(mode) c: the old pair is lit again after the commit")
+    // d. Undo (⌘Z) of the typed brace while it is lit.
+    start("}", at: 0)
+    textView.allowsUndo = true
+    let undo = textView.undoManager!
+    undo.removeAllActions()
+    undo.groupsByEvent = false
+    undo.beginUndoGrouping()
+    textView.insertText("{", replacementRange: textView.selectedRange())
+    undo.endUndoGrouping()
+    spin()
+    expect(highlighted(0) && highlighted(1), "\(mode) d: lit")
+    undo.undo()
+    undo.groupsByEvent = true
+    spin()
+    expect(textView.string == "}" && !anyHighlighted(), "\(mode) d: a highlight stays after the undo: \(textView.string)")
+    // e. Composed text is never colored as a highlight.
+    start("}", at: 0)
+    mark("{")
+    spin()
+    expect(!anyHighlighted(), "\(mode) e: composed text is highlighted")
+    cancelMarked()
+    spin()
+}
+NSApp.appearance = nil
 
 // 4. The background flash for a brace without a partner is seen, and a flash that a later one started is not ended
 // by the earlier timer (the 2nd audit of the TeX2eps port, F3, which TeX2img shares).
