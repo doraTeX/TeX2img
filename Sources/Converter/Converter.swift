@@ -324,11 +324,11 @@ class Converter: NSObject {
                                                   quiet: quietFlag) ?? false
 
             guard let lines = extractBoundingBoxLines(from: bboxFilePath) as? [String] else {
-                try? fileManager.removeItem(atPath: bboxFilePath)
+                removeUsedIntermediateFile(atPath: bboxFilePath)
                 controller?.showExecError("Ghostscript")
                 return nil
             }
-            try? fileManager.removeItem(atPath: bboxFilePath)
+            removeUsedIntermediateFile(atPath: bboxFilePath)
 
             var currentPage = 0
             var parseSuccess = success
@@ -432,7 +432,7 @@ class Converter: NSObject {
         }
 
         let versionString = try? String(contentsOfFile: gsVerFilePath, encoding: .utf8)
-        try? fileManager.removeItem(atPath: gsVerFilePath)
+        removeUsedIntermediateFile(atPath: gsVerFilePath)
 
         if let versionString,
            let regex = try? NSRegularExpression(pattern: "\\d+(?:\\.\\d+)?"),
@@ -1894,8 +1894,23 @@ class Converter: NSObject {
         return status
     }
 
+    /// Whether the working folder is in the temporary folder ($TMPDIR). The intermediate files there are kept after the
+    /// conversion (succeeded, failed or aborted), so that it can be traced afterwards; "Delete temporary files" removes
+    /// them from a working folder elsewhere only.
+    private var keepsIntermediateFiles: Bool {
+        let temporaryPath = URL(fileURLWithPath: fileManager.temporaryDirectory.path).resolvingSymlinksInPath().standardizedFileURL.path
+        let workingPath = URL(fileURLWithPath: workingDirectory).resolvingSymlinksInPath().standardizedFileURL.path
+        return workingPath == temporaryPath || workingPath.hasPrefix(temporaryPath.hasSuffix("/") ? temporaryPath : temporaryPath + "/")
+    }
+
+    /// Removes an intermediate file that has been read, except in the temporary folder, where it is kept.
+    private func removeUsedIntermediateFile(atPath path: String) {
+        guard !keepsIntermediateFiles else { return }
+        try? fileManager.removeItem(atPath: path)
+    }
+
     func deleteTemporaryFiles() {
-        guard deleteTmpFileFlag else { return }
+        guard deleteTmpFileFlag, !keepsIntermediateFiles else { return }
 
         let outputFileName = intermediateOutputFileName
         let basePath = workingDirectory.appendingPathComponent(tempFileBaseName)
