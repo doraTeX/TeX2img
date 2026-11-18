@@ -4,13 +4,16 @@ stub, against commands shaped like a TeX run: a shell that runs a program which 
 
 - Abort stops all of them, not only the shell (K5 of the 2026-11-17 audit; Process.terminate() reaches the group).
 - Abort also stops programs that ignore SIGTERM (TeXShop 1c7c4a81: SIGTERM to the group, then SIGKILL).
-- Quitting during a generation stops its commands in the same way, within a second (decision D3 of 11-18).
-No window is opened; the settings are not saved (the stub records the call).
+- Quitting during a generation stops its commands in the same way, within a second (decision D3 of 11-18), also when
+  Abort has just begun to stop them (F1 of the 1st audit of the port).
+No window is opened; the settings are not saved (the stub records the call). The commands run a waiting program that
+the test compiles under a name of its own, in its own folder: only its processes are looked for and stopped.
 """
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -47,6 +50,7 @@ final class Stub: NSObject {
     var runningTask: Process?
     var runningGroup: pid_t = 0
     var generationThreadRunning = false
+    var stoppingCommands: [(task: Process, group: pid_t)] = []
     let profileController = StubProfiles()
     func closeColorPanel() {}
     func closeFontPanel() {}
@@ -72,9 +76,15 @@ func kill(_ pattern: String) {
     pkill.waitUntilExit()
 }
 
+let waiter = CommandLine.arguments[1]
+var caseNumber = 0
+
 /// Starts the command as ControllerG.execCommand does (the group is recorded after launch) and stops it.
-func check(_ name: String, ignoresTERM: Bool, stop: (Stub) -> Void) -> Bool {
-    let marker = "/bin/sleep \(4000 + Int(getpid()) % 500)\(ignoresTERM ? 7 : 3)"
+/// With quits, the commands must be gone when the handler returns: the app ends right after it, and a stop that is
+/// still going on in the background ends with it.
+func check(_ name: String, ignoresTERM: Bool, quits: Bool = false, stop: (Stub) -> Void) -> Bool {
+    caseNumber += 1
+    let marker = "\(waiter) 30\(caseNumber)"
     let stub = Stub()
     let task = Process()
     task.executableURL = URL(fileURLWithPath: "/bin/sh")
@@ -92,10 +102,10 @@ func check(_ name: String, ignoresTERM: Bool, stop: (Stub) -> Void) -> Bool {
     stop(stub)
     let returned = Date().timeIntervalSince(start)
     var stopped = false
-    for _ in 0..<20 { if !running(marker) { stopped = true; break }; usleep(100_000) }
+    for _ in 0..<(quits ? 2 : 20) { if !running(marker) { stopped = true; break }; usleep(100_000) }
     if !stopped {
         kill(marker)
-        print("FAIL \(name): after 2 s, the program that the shell ran is still running")
+        print("FAIL \(name): \(quits ? "when the quit handler returned" : "after 2 s"), the program that the shell ran is still running")
         return false
     }
     guard stub.taskKilled && stub.runningTask == nil else { print("FAIL \(name): the command was not taken"); return false }
@@ -109,9 +119,15 @@ func check(_ name: String, ignoresTERM: Bool, stop: (Stub) -> Void) -> Bool {
         var ok = true
         ok = check("Abort stops the shell and the programs it started", ignoresTERM: false) { $0.abortCompilation(NSNull()) } && ok
         ok = check("Abort stops programs that ignore SIGTERM", ignoresTERM: true) { $0.abortCompilation(NSNull()) } && ok
-        ok = check("Quitting during a generation stops its commands", ignoresTERM: true) { stub in
+        ok = check("Quitting during a generation stops its commands", ignoresTERM: true, quits: true) { stub in
             stub.applicationWillTerminate()
             if !stub.profileController.saved { print("FAIL: the settings were not saved at quit") }
+        } && ok
+        ok = check("Quitting just after Abort finishes stopping the commands", ignoresTERM: true, quits: true) { stub in
+            stub.abortCompilation(NSNull())
+            usleep(50_000)
+            stub.generationThreadRunning = true
+            stub.applicationWillTerminate()
         } && ok
         exit(ok ? 0 : 1)
     }
@@ -121,7 +137,10 @@ func check(_ name: String, ignoresTERM: Bool, stop: (Stub) -> Void) -> Bool {
 with tempfile.TemporaryDirectory(prefix='tex2img-abort-') as tmp:
     work = Path(tmp)
     (work / 'main.swift').write_text(MAIN)
+    waiter = work / f'tex2img-test-waiter-{uuid.uuid4().hex}'
+    (work / 'waiter.c').write_text('#include <stdlib.h>\n#include <unistd.h>\nint main(int c, char **v) { sleep(c > 1 ? atoi(v[1]) : 300); return 0; }\n')
+    subprocess.run(['xcrun', 'clang', str(work / 'waiter.c'), '-o', str(waiter)], check=True)
     subprocess.run(['xcrun', 'swiftc', '-parse-as-library', str(work / 'main.swift'), str(ROOT / 'Sources/Utility/Utility.swift'),
                     str(ROOT / 'Sources/Extensions/Foundation/Pipe-Extension.swift'),
                     '-o', str(work / 'abort')], check=True)
-    sys.exit(subprocess.run([str(work / 'abort')], timeout=120).returncode)
+    sys.exit(subprocess.run([str(work / 'abort'), str(waiter)], timeout=120).returncode)

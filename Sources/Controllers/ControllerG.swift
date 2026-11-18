@@ -177,6 +177,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private var runningTask: Process?
     /// The process group of runningTask, recorded when it was launched.
     private var runningGroup: pid_t = 0
+    /// Commands that Abort is stopping (up to 0.5 s); quitting finishes stopping them.
+    private var stoppingCommands: [(task: Process, group: pid_t)] = []
     private var outputPipe: Pipe?
     private var taskKilled = false
     private var generationAborted = false
@@ -1371,7 +1373,15 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private func applicationWillTerminate() {
         // Quitting during a generation stops its commands as Abort does (at most 0.5 s), so that TeX and Ghostscript
         // do not go on after TeX2img.
+        // A command that Abort has just begun to stop is stopped to the end too (its SIGKILL comes after 0.5 s).
+        var commands: [(task: Process, group: pid_t)] = []
         if generationThreadRunning, let command = takeRunningCommand() {
+            commands.append(command)
+        }
+        taskStateLock.lock()
+        commands += stoppingCommands
+        taskStateLock.unlock()
+        for command in commands {
             Utility.stopCommand(command.task, group: command.group)
         }
         if NSColorPanel.sharedColorPanelExists {
@@ -2237,9 +2247,16 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     @IBAction func abortCompilation(_ sender: Any) {
         guard let command = takeRunningCommand() else { return }
+        taskStateLock.lock()
+        stoppingCommands.append(command)
+        taskStateLock.unlock()
         // SIGTERM, up to 0.5 s, then SIGKILL: off the main thread, which stays responsive.
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             Utility.stopCommand(command.task, group: command.group)
+            guard let self else { return }
+            self.taskStateLock.lock()
+            self.stoppingCommands.removeAll { $0.task === command.task }
+            self.taskStateLock.unlock()
         }
     }
 
