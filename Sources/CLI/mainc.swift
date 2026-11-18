@@ -778,7 +778,7 @@ private func printUsage() {
     print("")
     print("Behavior After Compiling:")
     print("  --[no-]preview             : disable/enable opening products (default: disabled)")
-    print("  --[no-]delete-tmpfiles     : disable/enable deleting temporary files outside $TMPDIR (default: enabled)")
+    print("  --[no-]delete-tmpfiles     : disable/enable deleting temporary files (default: enabled)")
     print("  --[no-]embed-source        : disable/enable embedding of the source in products (default: enabled)")
     print("  --[no-]copy-to-clipboard   : disable/enable copying products to the clipboard (default: disabled)")
     print("")
