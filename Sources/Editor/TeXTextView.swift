@@ -27,6 +27,10 @@ class TeXTextView: NSTextView {
     var currentDragOperation: NSDragOperation = []
     /// The braces being highlighted, kept so that the coloring that follows an edit does not remove the highlight.
     var highlightedBraceRanges: [NSRange] = []
+    /// The background flash for a brace without a partner: the coloring that follows the edit keeps it, and only the
+    /// timer of the latest flash ends it.
+    var backgroundFlashing = false
+    var backgroundFlashGeneration = 0
     /// TeX2img itself is replacing the text (an import, a restored source), which it may do while the source is
     /// read-only ("input from a file").
     var replacingEntireContents = false

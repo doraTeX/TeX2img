@@ -108,6 +108,27 @@ textView.setSelectedRange(NSRange(location: 5, length: 0))
 spin()
 expect(!highlighted(1), "the highlight stays after moving away")
 
+// 4. The background flash for a brace without a partner is seen, and a flash that a later one started is not ended
+// by the earlier timer (the 2nd audit of the TeX2eps port, F3, which TeX2img shares).
+controller.profile[FlashBackgroundKey] = true
+let flashColor = UtilityG.flashingBackgroundColor(inProfile: controller.profile)
+func flashing() -> Bool { textView.backgroundColor == flashColor }
+start("x", at: 1)
+textView.insertText("}", replacementRange: textView.selectedRange())
+spin(0.1)
+expect(flashing(), "a single background flash is not seen")
+spin(0.3)
+expect(!flashing(), "the single background flash does not end")
+start("x", at: 1)
+textView.insertText("}", replacementRange: textView.selectedRange())
+spin(0.15)
+textView.insertText("}", replacementRange: textView.selectedRange())
+spin(0.1)
+expect(flashing(), "the second background flash was ended by the earlier timer")
+spin(0.3)
+expect(!flashing(), "the second background flash does not end")
+controller.profile[FlashBackgroundKey] = false
+
 // 3. Fullwidth letters that a deleted line end puts into a comment lose their background (light and dark).
 for appearance in [NSAppearance.Name.aqua, .darkAqua] {
     NSApp.appearance = NSAppearance(named: appearance)

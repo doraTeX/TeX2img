@@ -25,7 +25,10 @@ extension TeXTextView {
         let profile = controller.currentProfile()
 
         textColor = UtilityG.foregroundColor(inProfile: profile)
-        backgroundColor = UtilityG.backgroundColor(inProfile: profile)
+        // A background flash that has just begun (when the brace was typed) is not ended by the coloring after the edit.
+        if !backgroundFlashing {
+            backgroundColor = UtilityG.backgroundColor(inProfile: profile)
+        }
         insertionPointColor = UtilityG.cursorColor(inProfile: profile)
 
         let commandColorAttribute: [NSAttributedString.Key: Any] = [
@@ -361,9 +364,15 @@ extension TeXTextView {
             NSSound.beep()
         }
         if profile.boolForKey(FlashBackgroundKey) {
+            backgroundFlashGeneration += 1
+            let generation = backgroundFlashGeneration
+            backgroundFlashing = true
             backgroundColor = UtilityG.flashingBackgroundColor(inProfile: profile)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) { [weak self] in
-                self?.resetBackgroundColorOfTextView(nil)
+                // A later flash keeps its own 0.2 s.
+                guard let self, generation == self.backgroundFlashGeneration else { return }
+                self.backgroundFlashing = false
+                self.resetBackgroundColorOfTextView(nil)
             }
         }
     }

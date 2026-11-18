@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Checks the highlight of matching braces (not for composed text; kept after typing) and the background of fullwidth
-characters that a deleted line end puts into a comment, in the real TeXTextView. No window is shown."""
+"""Checks the highlight of matching braces (not for composed text; kept after typing), the background flash for a brace
+without a partner (seen, and ended only by its own timer), and the background of fullwidth characters that a deleted
+line end puts into a comment, in the real TeXTextView. No window is shown."""
 import glob
 import os
 import shutil
