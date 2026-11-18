@@ -116,6 +116,9 @@ struct ThemeStore {
     }
 
     /// Copies the bundled themes into a new directory, and restores TeX2img's two default themes when they are missing.
+    /// A copy of a bundled theme that is damaged is moved to the backups and put back from the bundled one, without a
+    /// message (TeXShop's repair of ~/Library/TeXShop). This is done at launch only: while TeX2img runs, a damaged theme
+    /// is read from the bundled copy (ThemeLibrary), since another application may still be saving the file.
     func installBundledThemes(from bundled: URL?) {
         guard let bundled else { return }
         let fileManager = FileManager.default
@@ -124,11 +127,44 @@ struct ThemeStore {
         let names = (try? fileManager.contentsOfDirectory(atPath: bundled.path)) ?? []
         for name in names where name.hasSuffix(".plist") {
             let title = (name as NSString).deletingPathExtension
-            guard isNew || title == Self.defaultLightTitle || title == Self.defaultDarkTitle,
-                  let destination = url(forTitle: title),
-                  !fileManager.fileExists(atPath: destination.path) else { continue }
+            guard let destination = url(forTitle: title) else { continue }
+            if !isNew && isDamaged(title: title) {
+                guard moveToBackups(title: title) else { continue }
+            } else if !(isNew || title == Self.defaultLightTitle || title == Self.defaultDarkTitle)
+                        || fileManager.fileExists(atPath: destination.path) {
+                continue
+            }
             try? fileManager.copyItem(at: bundled.appendingPathComponent(name), to: destination)
         }
+    }
+
+    /// Where damaged theme files are kept: ~/Library/Application Support/TeX2img/Backups/Themes.
+    var backupDirectory: URL {
+        directory.deletingLastPathComponent().appendingPathComponent("Backups", isDirectory: true)
+            .appendingPathComponent("Themes", isDirectory: true)
+    }
+
+    /// Whether the file of a theme is there but holds no colors: a folder, unreadable, or not a property list of a
+    /// dictionary. A symbolic link and a name that could leave the folder are not checked (they are not used).
+    func isDamaged(title: String) -> Bool {
+        guard let url = url(forTitle: title) else { return false }
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { return false }
+        return isDirectory.boolValue || read(title: title) == nil
+    }
+
+    /// Moves the file of a theme to the backups, under a name that no earlier backup has.
+    func moveToBackups(title: String) -> Bool {
+        guard let url = url(forTitle: title) else { return false }
+        let fileManager = FileManager.default
+        guard (try? fileManager.createDirectory(at: backupDirectory, withIntermediateDirectories: true)) != nil else { return false }
+        var backup = backupDirectory.appendingPathComponent(title).appendingPathExtension("plist")
+        var number = 2
+        while fileManager.fileExists(atPath: backup.path) || (try? backup.checkResourceIsReachable()) == true {
+            backup = backupDirectory.appendingPathComponent("\(title) \(number)").appendingPathExtension("plist")
+            number += 1
+        }
+        return (try? fileManager.moveItem(at: url, to: backup)) != nil
     }
 }
 
@@ -442,10 +478,12 @@ final class ThemeLibrary {
     static let shared = ThemeLibrary(store: ThemeStore(directory: ThemeStore.userDirectory))
 
     let store: ThemeStore
+    private let bundledDirectory: URL?
     private var cache: [String: ThemeColors] = [:]
 
-    init(store: ThemeStore) {
+    init(store: ThemeStore, bundledDirectory: URL? = ThemeStore.bundledDirectory) {
         self.store = store
+        self.bundledDirectory = bundledDirectory
     }
 
     /// Installs the bundled themes, and once gives earlier copies of them the colors of later versions.
@@ -459,7 +497,9 @@ final class ThemeLibrary {
 
     func colors(title: String) -> ThemeColors? {
         if let cached = cache[title] { return cached }
-        guard let colors = store.read(title: title) else { return nil }
+        // A damaged copy of a bundled theme is read from the bundled one until the next launch repairs it.
+        let bundled = store.isDamaged(title: title) ? bundledDirectory.flatMap { ThemeStore(directory: $0).read(title: title) } : nil
+        guard let colors = store.read(title: title) ?? bundled else { return nil }
         cache[title] = colors
         return colors
     }

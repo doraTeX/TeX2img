@@ -405,6 +405,35 @@ check(ThemePalette.sameColors(updatedLite, bundledStore.read(title: ThemeStore.d
 try! Data("not a property list".utf8).write(to: store.url(forTitle: "LiteTheme")!)
 check(store.updateBundledThemeColors(after: 0) == 0, "an unreadable theme keeps the update pending")
 try! FileManager.default.removeItem(at: store.url(forTitle: "LiteTheme")!)
+// A damaged copy of a bundled theme (not a property list, or a folder) is read from the bundled theme while TeX2img
+// runs, and is put back at the next launch; the damaged file goes to the backups. A theme of the user's own and a copy
+// that is fine stay as they are (TeXShop's repair of ~/Library/TeXShop).
+try! Data("not a property list".utf8).write(to: store.url(forTitle: "Dracula")!)
+try? FileManager.default.removeItem(at: store.url(forTitle: "GLG-Lite")!)
+try! FileManager.default.createDirectory(at: store.url(forTitle: "GLG-Lite")!, withIntermediateDirectories: false)
+try! Data("garbage".utf8).write(to: store.url(forTitle: "Mine Damaged")!)
+let fineManteuffel = store.read(title: "Manteuffel")!
+let library = ThemeLibrary(store: store)
+let themeBackups = store.directory.deletingLastPathComponent().appendingPathComponent("Backups/Themes", isDirectory: true)
+check(store.read(title: "Dracula") == nil && store.read(title: "GLG-Lite") == nil, "damaged themes")
+check(ThemePalette.sameColors(library.colors(title: "Dracula") ?? [:], bundledStore.read(title: "Dracula")!), "a damaged copy is read from the bundled theme")
+check((try? Data(contentsOf: store.url(forTitle: "Dracula")!)) == Data("not a property list".utf8), "reading does not change the file")
+store.installBundledThemes(from: ThemeStore.bundledDirectory)
+check(ThemePalette.sameColors(store.read(title: "Dracula") ?? [:], bundledStore.read(title: "Dracula")!), "a damaged copy is put back at launch")
+check(ThemePalette.sameColors(store.read(title: "GLG-Lite") ?? [:], bundledStore.read(title: "GLG-Lite")!), "a folder in place of a copy is put back")
+check((try? Data(contentsOf: themeBackups.appendingPathComponent("Dracula.plist"))) == Data("not a property list".utf8),
+      "the damaged copy is in the backups")
+check(FileManager.default.fileExists(atPath: themeBackups.appendingPathComponent("GLG-Lite.plist").path), "the folder is in the backups")
+check(themeBackups.path.contains("/settings-home/"), "the backups are in the test home")
+check(store.read(title: "Mine Damaged") == nil && (try? Data(contentsOf: store.url(forTitle: "Mine Damaged")!)) == Data("garbage".utf8),
+      "a damaged theme of the user's own stays")
+check(store.read(title: "Manteuffel").map { ThemePalette.sameColors($0, fineManteuffel) } == true, "a copy that is fine stays")
+try! Data("damaged again".utf8).write(to: store.url(forTitle: "Dracula")!)
+store.installBundledThemes(from: ThemeStore.bundledDirectory)
+check((try? Data(contentsOf: themeBackups.appendingPathComponent("Dracula 2.plist"))) == Data("damaged again".utf8)
+      && (try? Data(contentsOf: themeBackups.appendingPathComponent("Dracula.plist"))) == Data("not a property list".utf8),
+      "an earlier backup is kept")
+try! FileManager.default.removeItem(at: store.url(forTitle: "Mine Damaged")!)
 let themeDefaults = UserDefaults(suiteName: "tex2img.shortcut.test")!
 themeDefaults.removeObject(forKey: ThemeStore.bundledColorsUpdateKey)
 try! store.write(earlierCopy("SolarizedDark"), title: "SolarizedDark")
