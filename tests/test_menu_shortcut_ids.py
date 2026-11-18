@@ -2,7 +2,7 @@
 """Builds the menus of MainMenu.xib (English and Japanese) off screen and reads them with the real ShortcutStore:
 every menu command must be listed in Settings › Keyboard. Commands with the same action and tag got the same
 identifier, and all but the first were dropped (Auto Complete, Replace Inserted ¥ with \\, Copy as Rich Text).
-No window is shown; the defaults are a throwaway suite.
+No window is shown; the defaults are in memory (tests/MemoryDefaults.swift).
 """
 import json
 from pathlib import Path
@@ -61,10 +61,9 @@ for entry in items {
     item.tag = entry[2] as! Int
     menu.addItem(item)
 }
-let defaults = UserDefaults(suiteName: "tex2img.menu-ids.test.\(getpid())")!
+let defaults = MemoryDefaults()
 let store = ShortcutStore(menu: main, defaults: defaults)
 for command in store.commands { print(command.path) }
-defaults.removePersistentDomain(forName: "tex2img.menu-ids.test.\(getpid())")
 '''
 
 failures = []
@@ -72,6 +71,7 @@ with tempfile.TemporaryDirectory(prefix='tex2img-menu-ids-') as tmp:
     work = Path(tmp)
     (work / 'main.swift').write_text(MAIN)
     subprocess.run(['xcrun', 'swiftc', '-module-name', 'MenuIDs', str(ROOT / 'Sources/Settings/KeyboardShortcuts.swift'),
+                    str(ROOT / 'tests/MemoryDefaults.swift'),
                     str(work / 'main.swift'), '-o', str(work / 'menu')], check=True)
     for language in ('Base', 'ja'):
         items = menu_items(ROOT / f'Resources/{language}.lproj/MainMenu.xib')

@@ -13,12 +13,12 @@ import subprocess
 import sys
 import tempfile
 import time
+import uuid
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--app', type=Path, required=True)
 args = parser.parse_args()
 cli = str(args.app.resolve() / 'Contents/SharedSupport/bin/tex2img')
-base = 4000 + os.getpid() % 500 * 2
 
 
 def tex_running():
@@ -31,11 +31,15 @@ marker = ''
 failures = []
 with tempfile.TemporaryDirectory(prefix='tex2img-interrupt-') as tmp:
     root = Path(tmp)
+    # A waiting program under a name of its own: only its processes are looked for and stopped.
+    waiter = root / f'tex2img-test-waiter-{uuid.uuid4().hex}'
+    (root / 'waiter.c').write_text('#include <stdlib.h>\n#include <unistd.h>\nint main(int c, char **v) { sleep(c > 1 ? atoi(v[1]) : 300); return 0; }\n')
+    subprocess.run(['xcrun', 'clang', str(root / 'waiter.c'), '-o', str(waiter)], check=True)
     (root / 'a.tex').write_text('\\documentclass{article}\\begin{document}x\\end{document}\n')
     # The "TeX" also runs as a program that ignores SIGTERM, as one run by shell escape may (TeXShop 1c7c4a81:
     # SIGTERM to the group, then SIGKILL).
     for signal_number, ignores in ((signal.SIGINT, False), (signal.SIGTERM, False), (signal.SIGINT, True)):
-        marker = f'/bin/sleep {base + ignores}'
+        marker = f'{waiter} {300 + ignores}'
         fake = root / f'fake-latex-{int(ignores)}'
         fake.write_text('#!/bin/sh\n' + ("trap '' TERM\n" if ignores else '') + f'{marker}\nexit 0\n')
         fake.chmod(0o755)

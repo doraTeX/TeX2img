@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import uuid
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCES = [
@@ -32,12 +33,18 @@ SOURCES = [
 
 def main():
     work = tempfile.mkdtemp(prefix="tex2img-settings-")
+    domain = None
     output = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.join(work, "images")
     os.makedirs(output, exist_ok=True)
     try:
         binary_dir = os.path.join(work, "bin")
         os.makedirs(binary_dir)
-        binary = os.path.join(binary_dir, "settings-snapshot")
+        # A name of its own for each run: the standard user defaults domain of the tool (the category the window
+        # remembers, AppKit's window frames) is then the test's own. The other settings are in memory (MemoryDefaults).
+        domain = f"tex2img-settings-snapshot-{uuid.uuid4().hex}"
+        binary = os.path.join(binary_dir, domain)
+        if subprocess.run(["defaults", "read", domain], capture_output=True).returncode == 0:
+            raise SystemExit(f"the domain {domain} exists already")
         # Top-level code must be in main.swift.
         main_file = os.path.join(work, "main.swift")
         shutil.copy(os.path.join(ROOT, "tests/SettingsPanelSnapshot.swift"), main_file)
@@ -49,7 +56,8 @@ def main():
                 if re.match(r'(let \w+Key = "[^"]*"|typealias Profile|let (PX_UNIT_TAG|QUALITY_PRIORITY_TAG) = )', line):
                     target.write(line)
         subprocess.run(["xcrun", "swiftc", "-O", "-module-name", "SettingsSnapshot",
-                        *[os.path.join(ROOT, s) for s in SOURCES], main_file, constants, "-o", binary], check=True)
+                        *[os.path.join(ROOT, s) for s in SOURCES], os.path.join(ROOT, "tests/MemoryDefaults.swift"),
+                        main_file, constants, "-o", binary], check=True)
         # Bundle.main of a command-line tool is its directory: give it the themes and the localizations.
         shutil.copytree(os.path.join(ROOT, "Resources/Themes"), os.path.join(binary_dir, "Themes"))
         for language in ("en", "ja"):
@@ -68,16 +76,17 @@ def main():
         print("Images:", output)
         return 0
     finally:
-        # The defaults of the test end up in the real preferences even with CFFIXED_USER_HOME; remove them.
-        # The emptied files are removed too; a file that still holds anything is left alone.
-        for domain in ("settings-snapshot", "tex2img.shortcut.test"):
+        # The tool removes its own domain; only if it could not (it stopped early), the domain of this run is removed here.
+        # No other domain is touched (CFFIXED_USER_HOME does not move user defaults, so the domain is in the real ones).
+        if domain and subprocess.run(["defaults", "read", domain], capture_output=True).returncode == 0:
             subprocess.run(["defaults", "delete", domain], capture_output=True)
-            leftover = os.path.expanduser(f"~/Library/Preferences/{domain}.plist")
-            try:
-                with open(leftover, "rb") as file:
+        leftover = os.path.expanduser(f"~/Library/Preferences/{domain}.plist") if domain else None
+        if leftover and os.path.exists(leftover):
+            with open(leftover, "rb") as file:
+                try:
                     empty = not plistlib.load(file)
-            except (OSError, plistlib.InvalidFileException):
-                empty = False
+                except plistlib.InvalidFileException:
+                    empty = False
             if empty:
                 os.remove(leftover)
         shutil.rmtree(os.path.join(work, "bin"), ignore_errors=True)

@@ -453,7 +453,7 @@ store.installBundledThemes(from: unreadableBundle)
 check(ThemePalette.sameColors(store.read(title: "Dracula") ?? [:], bundledStore.read(title: "Dracula")!), "the next launch repairs it")
 check((try? Data(contentsOf: themeBackups.appendingPathComponent("Dracula 3.plist"))) == Data("damaged once more".utf8), "and keeps it in the backups")
 try! FileManager.default.removeItem(at: unreadableBundle)
-let themeDefaults = UserDefaults(suiteName: "tex2img.shortcut.test")!
+let themeDefaults = MemoryDefaults()
 themeDefaults.removeObject(forKey: ThemeStore.bundledColorsUpdateKey)
 try! store.write(earlierCopy("SolarizedDark"), title: "SolarizedDark")
 ThemeLibrary.shared.prepare(defaults: themeDefaults)
@@ -535,7 +535,7 @@ let open = file.addItem(withTitle: "Open", action: #selector(NSDocumentControlle
 let edit = add("Edit", NSMenu())
 let copy = edit.addItem(withTitle: "Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
 let print_ = file.addItem(withTitle: "Print", action: #selector(NSView.printView(_:)), keyEquivalent: "P")
-let defaults = UserDefaults(suiteName: "tex2img.shortcut.test")!
+let defaults = MemoryDefaults()
 defaults.removeObject(forKey: ShortcutStore.overridesKey)
 // A new store reads the defaults from the menu, as at launch.
 func relaunch() -> ShortcutStore {
@@ -708,9 +708,11 @@ for appearance in [NSAppearance.Name.aqua, .darkAqua] {
     pane.endRecording()
     putPaneInWindow()
 }
-defaults.removePersistentDomain(forName: "tex2img.shortcut.test")
-// The window remembers its category in the standard domain of this tool; leave nothing behind.
-UserDefaults.standard.removePersistentDomain(forName: ProcessInfo.processInfo.processName)
+// The window remembers its category, and AppKit its frames, in the standard domain of this tool. The tool has a name of
+// its own for each run (test_settings_panel.py), so the domain is the test's own; it is removed here.
+if ProcessInfo.processInfo.processName.hasPrefix("tex2img-settings-snapshot-") {
+    UserDefaults.standard.removePersistentDomain(forName: ProcessInfo.processInfo.processName)
+}
 
 print(report.joined(separator: "\n"))
 print("Settings panel checks passed")
