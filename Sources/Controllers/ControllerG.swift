@@ -2002,7 +2002,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                     let menu = NSPopUpButton(frame: NSRect(x: 0, y: y, width: 600, height: 30))
                     menu.addItems(withTitles: candidates[i].map(\.label))
                     if candidates[i].isEmpty {
-                        menu.addItem(withTitle: japanese ? "見つかりません（現在の設定を保持）" : "Not found (keep current setting)")
+                        menu.addItem(withTitle: japanese ? "見つかりません" : "Not found")
                         menu.isEnabled = false
                     }
                     menus.append(menu)
