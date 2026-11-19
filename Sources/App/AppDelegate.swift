@@ -1,6 +1,62 @@
 import Cocoa
 
+/// Installed before NSApplicationMain. The main nib calls setFont: from awakeFromNib, which is before
+/// applicationWillFinishLaunching, and NSTextView raises if that font is nil.
 @main
+enum AppMain {
+    static func main() {
+        NSTextView.installNilFontGuard()
+        _ = NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)
+    }
+}
+
+extension NSTextView {
+    /// setFont: and setFont:range: both raise NSInvalidArgumentException when the font is nil.
+    /// Every NSTextView in the process goes through these methods, including AppKit's own calls.
+    static func installNilFontGuard() {
+        if nilFontGuardInstalled { return }
+        nilFontGuardInstalled = true
+
+        let setter = #selector(setter: NSTextView.font)
+        if let method = class_getInstanceMethod(self, setter) {
+            originalSetFont = unsafeBitCast(method_getImplementation(method), to: FontSetter.self)
+            let block: @convention(block) (AnyObject, NSFont?) -> Void = { object, font in
+                guard let font, let original = originalSetFont else { return }
+                original(object, setter, font)
+            }
+            install(setter, method: method, block: block)
+        }
+
+        let ranged = NSSelectorFromString("setFont:range:")
+        if let method = class_getInstanceMethod(self, ranged) {
+            originalSetFontRange = unsafeBitCast(method_getImplementation(method), to: RangedFontSetter.self)
+            let block: @convention(block) (AnyObject, NSFont?, NSRange) -> Void = { object, font, range in
+                guard let font, let original = originalSetFontRange else { return }
+                original(object, ranged, font, range)
+            }
+            install(ranged, method: method, block: block)
+        }
+    }
+
+    private typealias FontSetter = @convention(c) (AnyObject, Selector, NSFont?) -> Void
+    private typealias RangedFontSetter = @convention(c) (AnyObject, Selector, NSFont?, NSRange) -> Void
+
+    private static var originalSetFont: FontSetter?
+    private static var originalSetFontRange: RangedFontSetter?
+    /// imp_implementationWithBlock copies the block. This keeps the Swift values alive as well.
+    private static var nilFontGuardBlocks: [AnyObject] = []
+    private static var nilFontGuardInstalled = false
+
+    private static func install(_ selector: Selector, method: Method, block: Any) {
+        nilFontGuardBlocks.append(block as AnyObject)
+        let imp = imp_implementationWithBlock(block)
+        if let types = method_getTypeEncoding(method), class_addMethod(self, selector, imp, types) {
+            return
+        }
+        method_setImplementation(method, imp)
+    }
+}
+
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var observer: NSKeyValueObservation?
 

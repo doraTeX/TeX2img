@@ -189,7 +189,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     private var generationAborted = false
     /// Whether a conversion thread is running (main thread only).
     private var generationThreadRunning = false
-    private var sourceFont: NSFont?
+    /// NSTextView.setFont: raises when given nil, so this is never optional.
+    /// A stored NSFont can still be a null pointer; read it through presentFont.
+    private var sourceFont: NSFont = ControllerG.defaultSourceFont() ?? .systemFont(ofSize: 13)
     private var userNotificationDelegate: UserNotificationDelegate?
     private var notificationObservers = [NSObjectProtocol]()
     private let taskStateLock = NSLock()
@@ -390,10 +392,17 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         textView.insertionPointColor = cursorColor
 
         let entireRange = NSRange(location: 0, length: textView.string.nsLength)
-        textView.textStorage?.setAttributes([
+        var attributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: foregroundColor,
             .backgroundColor: backgroundColor
-        ], range: entireRange)
+        ]
+        if let font = Self.presentFont(resolvedSourceFont()) {
+            attributes[.font] = font
+            textView.textStorage?.setAttributes(attributes, range: entireRange)
+            setTextViewFont(font, on: textView)
+        } else {
+            textView.textStorage?.setAttributes(attributes, range: entireRange)
+        }
     }
 
     private func outputTextAttributes() -> [NSAttributedString.Key: Any] {
@@ -402,8 +411,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             .foregroundColor: UtilityG.consoleForegroundColor(inProfile: profile),
             .backgroundColor: UtilityG.consoleBackgroundColor(inProfile: profile)
         ]
-        if let sourceFont {
-            attributes[.font] = sourceFont
+        if let font = Self.presentFont(resolvedSourceFont()) {
+            attributes[.font] = font
         }
         return attributes
     }
@@ -802,6 +811,15 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
         loadColorWell(fillColorWell, from: aProfile, key: FillColorKey, defaultColor: .white)
 
+        // Theme migration recolors the output view, and that calls setFont:. The font has to exist first.
+        if let editorFont = Self.presentFont(editorFont(from: aProfile)) {
+            sourceFont = editorFont
+            setTextViewFont(editorFont, on: sourceTextView)
+            setTextViewFont(editorFont, on: preambleTextView)
+            setTextViewFont(editorFont, on: outputTextView)
+            setupFontTextField(editorFont)
+        }
+
         if let light = aProfile.stringForKey(LightThemeKey), let dark = aProfile.stringForKey(DarkThemeKey) {
             themeSettings.select(light: light, dark: dark)
         } else if keys.contains(ForegroundColorForLightModeKey) {
@@ -912,26 +930,14 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         loadSetting(for: preambleTextView, from: aProfile, key: PreambleKey)
         refreshOutputTextView(usingProfile: aProfile)
 
-        if let fontName = aProfile.stringForKey(SourceFontNameKey),
-           let aFont = NSFont(name: fontName, size: CGFloat(aProfile.floatForKey(SourceFontSizeKey))) {
-            sourceFont = aFont
-            sourceTextView.font = aFont
-            preambleTextView.font = aFont
-            outputTextView.font = aFont
-            setupFontTextField(aFont)
-        } else {
-            loadDefaultFont()
-        }
-
         sourceTextView.fixupTabs()
         sourceTextView.refreshWordWrap()
         preambleTextView.colorizeText()
         preambleTextView.fixupTabs()
         preambleTextView.refreshWordWrap()
 
-        if let sourceFont {
-            let displayFont = NSFont(name: sourceFont.fontName, size: NSFont.systemFontSize)
-            setInvisibleCharacterFont(displayFont)
+        if let font = Self.presentFont(resolvedSourceFont()) {
+            setInvisibleCharacterFont(NSFont(name: font.fontName, size: NSFont.systemFontSize))
         }
 
         if let inputSourceFilePath = aProfile.stringForKey(InputSourceFilePathKey) {
@@ -963,10 +969,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                         foregroundColor: UtilityG.consoleForegroundColor(inProfile: profile),
                         backgroundColor: UtilityG.consoleBackgroundColor(inProfile: profile),
                         cursorColor: UtilityG.cursorColor(inProfile: profile))
-        // The new colors replace all the attributes, the font too (it became Helvetica 12 until the next run).
-        if let sourceFont {
-            outputTextView.font = sourceFont
-        }
     }
 
     private func setInvisibleCharacterFont(_ font: NSFont?) {
@@ -1077,8 +1079,10 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             currentProfile[ShowSpaceCharacterKey] = showSpaceCharacterCheckBox.state.rawValue
             currentProfile[ShowFullwidthSpaceCharacterKey] = showFullwidthSpaceCharacterCheckBox.state.rawValue
             currentProfile[ShowNewLineCharacterKey] = showNewLineCharacterCheckBox.state.rawValue
-            currentProfile[SourceFontNameKey] = sourceFont?.fontName
-            currentProfile[SourceFontSizeKey] = sourceFont?.pointSize ?? 0
+            if let storedFont = Self.presentFont(resolvedSourceFont()) {
+                currentProfile[SourceFontNameKey] = storedFont.fontName
+                currentProfile[SourceFontSizeKey] = storedFont.pointSize
+            }
             currentProfile[PreambleKey] = preambleTextView.textStorage?.string ?? ""
             currentProfile[SourceBodyKey] = sourceTextView.textStorage?.string ?? ""
             currentProfile[InputMethodKey] = directInputButton.state == .on ? InputMethod.direct.rawValue : InputMethod.fromFile.rawValue
@@ -1374,17 +1378,74 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         }
     }
 
-    private func loadDefaultFont() {
-        if let defaultFont = NSFont(name: "Osaka-Mono", size: 13) {
-            sourceFont = defaultFont
-            sourceTextView.font = defaultFont
-            preambleTextView.font = defaultFont
-            setupFontTextField(defaultFont)
+    /// Hidden system SF Mono (.AppleSystemUIFontMonospaced), not the SF Mono family installed under /Library/Fonts.
+    /// Look the face up by name: the object monospacedSystemFont returns is not safe to hand to NSTextView.setFont: later.
+    private static func defaultSourceFont(size: CGFloat = 13) -> NSFont? {
+        let size = size > 0 ? size : 13
+        if let system = presentFont(.monospacedSystemFont(ofSize: size, weight: .regular)),
+           let stable = NSFont(name: system.fontName, size: size) {
+            return stable
         }
+        if let fixed = presentFont(.userFixedPitchFont(ofSize: size)) {
+            return fixed
+        }
+        return presentFont(.systemFont(ofSize: size))
+    }
+
+    /// NSFont is a class, so a value typed as non-optional can still be a null pointer. setFont: raises on that.
+    /// Not inlined: the compiler would otherwise delete the check because the static type is non-optional.
+    @inline(never)
+    @_optimize(none)
+    private static func presentFont(_ font: NSFont?) -> NSFont? { font }
+
+    private func resolvedSourceFont() -> NSFont {
+        if let font = Self.presentFont(sourceFont) { return font }
+        if let font = Self.presentFont(Self.defaultSourceFont() ?? .systemFont(ofSize: 13)) {
+            sourceFont = font
+            return font
+        }
+        return .systemFont(ofSize: 13)
+    }
+
+    private func setTextViewFont(_ font: NSFont, on textView: NSTextView) {
+        guard let font = Self.presentFont(font) ?? Self.presentFont(resolvedSourceFont()) else { return }
+        textView.font = font
+    }
+
+    /// A saved Osaka-Mono is the old built-in default, written into profiles on quit, so it follows the new default. Any other saved face stays.
+    private func editorFont(from profile: Profile) -> NSFont {
+        let savedSize = CGFloat(profile.floatForKey(SourceFontSizeKey))
+        let size: CGFloat = savedSize > 0 ? savedSize : 13
+        if let name = profile.stringForKey(SourceFontNameKey),
+           name != "Osaka-Mono",
+           let font = NSFont(name: name, size: size) {
+            return font
+        }
+        return Self.defaultSourceFont(size: size) ?? .systemFont(ofSize: size)
+    }
+
+    private func loadDefaultFont() {
+        guard let defaultFont = Self.presentFont(Self.defaultSourceFont()) else { return }
+        sourceFont = defaultFont
+        setTextViewFont(defaultFont, on: sourceTextView)
+        setTextViewFont(defaultFont, on: preambleTextView)
+        setTextViewFont(defaultFont, on: outputTextView)
+        setupFontTextField(defaultFont)
     }
 
     private func setupFontTextField(_ font: NSFont) {
-        fontTextField.stringValue = String(format: "%@ - %.1fpt", font.displayName ?? font.fontName, font.pointSize)
+        guard let font = Self.presentFont(font) else { return }
+        fontTextField.stringValue = String(format: "%@ - %.1fpt", sourceFontTitle(font), font.pointSize)
+    }
+
+    /// AppKit reports every weight of the hidden system mono face as ".SF NS Mono Light".
+    private func sourceFontTitle(_ font: NSFont) -> String {
+        guard let font = Self.presentFont(font) else { return ".SF NS Mono Regular" }
+        if font.fontName.hasPrefix(".AppleSystemUIFontMonospaced") {
+            let face = font.fontDescriptor.object(forKey: .face) as? String ?? "Regular"
+            return ".SF NS Mono \(face)"
+        }
+        return font.displayName ?? font.fontName
     }
 
     private func applicationWillTerminate() {
@@ -1581,7 +1642,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         openPanel.allowedContentTypes = importExtensions.compactMap { UTType(filenameExtension: $0) }
         openPanel.beginSheetModal(for: mainWindow) { returnCode in
             if returnCode == .OK, let path = openPanel.url?.path {
-                self.importSource(fromFilePathOrPDFDocument: path, skipConfirm: false)
+                _ = self.importSource(fromFilePathOrPDFDocument: path, skipConfirm: false)
             }
         }
     }
@@ -1613,7 +1674,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     }
 
     func textViewDroppedFile(_ file: Any) {
-        importSource(fromFilePathOrPDFDocument: file, skipConfirm: false)
+        _ = importSource(fromFilePathOrPDFDocument: file, skipConfirm: false)
     }
 
     // MARK: - Color palette
@@ -1962,21 +2023,19 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         let fontMgr = NSFontManager.shared
         fontMgr.target = self
         fontMgr.action = #selector(changeFont(_:))
-        guard let panel = fontMgr.fontPanel(true) else { return }
-        if let sourceFont {
-            panel.setPanelFont(sourceFont, isMultiple: false)
-        }
+        guard let font = Self.presentFont(resolvedSourceFont()), let panel = fontMgr.fontPanel(true) else { return }
+        panel.setPanelFont(font, isMultiple: false)
         panel.makeKeyAndOrderFront(self)
         panel.isEnabled = true
     }
 
     @IBAction private func changeFont(_ sender: Any) {
-        guard let font = NSFontManager.shared.selectedFont else { return }
+        guard let font = Self.presentFont(NSFontManager.shared.selectedFont) else { return }
         setupFontTextField(font)
         sourceFont = font
-        sourceTextView.font = font
-        preambleTextView.font = font
-        outputTextView.font = font
+        setTextViewFont(font, on: sourceTextView)
+        setTextViewFont(font, on: preambleTextView)
+        setTextViewFont(font, on: outputTextView)
         if let displayFont = NSFont(name: font.fontName, size: NSFont.systemFontSize) {
             setInvisibleCharacterFont(displayFont)
         }
@@ -2004,7 +2063,6 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                         foregroundColor: UtilityG.consoleForegroundColor(inProfile: profile),
                         backgroundColor: UtilityG.consoleBackgroundColor(inProfile: profile),
                         cursorColor: UtilityG.cursorColor(inProfile: profile))
-        outputTextView.font = sourceFont
     }
 
     func searchProgramsLogic(_ parameters: [String: Any]) {
