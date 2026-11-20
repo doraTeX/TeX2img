@@ -33,13 +33,15 @@ extension Dictionary where Key == String, Value == Any {
     }
 
     /// The saved frame of a window, or nil when there is none or it is not a frame (not finite, its right or top edge
-    /// not either, or no size).
-    func windowFrame(xKey: String, yKey: String, widthKey: String, heightKey: String) -> NSRect? {
+    /// not either, or no size), or when it is on none of the screens (frames of NSScreen): AppKit raises an exception
+    /// for a window placed that far, and one off every screen could not be seen.
+    func windowFrame(xKey: String, yKey: String, widthKey: String, heightKey: String, screens: [NSRect]) -> NSRect? {
         guard let x = (self[xKey] as? NSNumber)?.doubleValue, let y = (self[yKey] as? NSNumber)?.doubleValue,
               x.isFinite, y.isFinite, x != 0, y != 0,
               let width = positiveFiniteNumberForKey(widthKey), let height = positiveFiniteNumberForKey(heightKey),
               (x + width).isFinite, (y + height).isFinite else { return nil }
-        return NSRect(x: x, y: y, width: width, height: height)
+        let frame = NSRect(x: x, y: y, width: width, height: height)
+        return screens.contains { $0.intersects(frame) } ? frame : nil
     }
 
     func colorForKey(_ aKey: String) -> NSColor? {

@@ -18,9 +18,11 @@ func expect(_ name: String, _ ok: Bool) {
 }
 @main struct Main {
     static func main() {
+        // A main screen and one left of and below it.
+        let screens = [NSRect(x: 0, y: 0, width: 1920, height: 1080), NSRect(x: -2560, y: -1440, width: 2560, height: 1440)]
         let frame = { (x: Any, y: Any, width: Any, height: Any) -> NSRect? in
             let profile: [String: Any] = ["x": x, "y": y, "w": width, "h": height]
-            return profile.windowFrame(xKey: "x", yKey: "y", widthKey: "w", heightKey: "h")
+            return profile.windowFrame(xKey: "x", yKey: "y", widthKey: "w", heightKey: "h", screens: screens)
         }
         expect("a saved frame", frame(100, 200, 640.5, 480) == NSRect(x: 100, y: 200, width: 640.5, height: 480))
         expect("a frame left of the main screen", frame(-300, 50, 640, 480) == NSRect(x: -300, y: 50, width: 640, height: 480))
@@ -36,6 +38,12 @@ func expect(_ name: String, _ ok: Bool) {
         expect("right edge out of range", frame(1e308, 1, 1e308, 480) == nil)
         expect("top edge out of range", frame(1, 1.7e308, 640, 1.7e308) == nil)
         expect("a frame on a screen left of and below the main one", frame(-2560, -1440, 1280, 800) == NSRect(x: -2560, y: -1440, width: 1280, height: 800))
+        // Finite, with finite edges, but on no screen: AppKit raised an exception for an origin at 1e300.
+        expect("an origin at 1e300", frame(1e300, 1e300, 640, 480) == nil)
+        expect("an origin at -1e300", frame(-1e300, 100, 640, 480) == nil)
+        expect("off every screen", frame(5000, 100, 640, 480) == nil)
+        expect("partly on a screen", frame(1800, 1000, 640, 480) == NSRect(x: 1800, y: 1000, width: 640, height: 480))
+        expect("no screen", ["x": 100, "y": 200, "w": 640, "h": 480].windowFrame(xKey: "x", yKey: "y", widthKey: "w", heightKey: "h", screens: []) == nil)
 
         // The page box popup of the settings, restored from a profile with the line of ControllerG: a number of no box
         // selects the MediaBox, whatever was selected before; the five boxes are selected as saved.
@@ -89,7 +97,8 @@ func expect(_ name: String, _ ok: Bool) {
 # The product code goes through the checks above.
 USES = {
     'Sources/Controllers/ControllerG.swift': [
-        'aProfile.windowFrame(xKey: XKey, yKey: YKey, widthKey: MainWindowWidthKey, heightKey: MainWindowHeightKey)',
+        'aProfile.windowFrame(xKey: XKey, yKey: YKey, widthKey: MainWindowWidthKey, heightKey: MainWindowHeightKey,\n'
+        '                                            screens: NSScreen.screens.map(\\.frame))',
         'profile.positiveFiniteNumberForKey(SourceFontSizeKey) ?? 13',
         'let size = size.isFinite && size > 0 ? size : 13',
         'tabWidthTextField.integerValue = validTabWidth(aProfile.integerForKey(TabWidthKey))',

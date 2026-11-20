@@ -983,7 +983,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         adoptProfile(aProfile)
 
         // A saved frame that is not finite or has no size keeps the frame of the nib.
-        if let frame = aProfile.windowFrame(xKey: XKey, yKey: YKey, widthKey: MainWindowWidthKey, heightKey: MainWindowHeightKey) {
+        if let frame = aProfile.windowFrame(xKey: XKey, yKey: YKey, widthKey: MainWindowWidthKey, heightKey: MainWindowHeightKey,
+                                            screens: NSScreen.screens.map(\.frame)) {
             mainWindow.setFrame(frame, display: true)
         }
 
