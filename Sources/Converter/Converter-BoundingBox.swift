@@ -3,22 +3,45 @@ import Quartz
 extension Converter {
     
     /// EPSのDataの中から BoundingBox または HiresBoundingBox の値を探し，その範囲と値を返す
+    /// Only the header comments of the file itself are read: from the %! line to %%EndComments or the first line that
+    /// is not a %% comment (DSC). The same names in other comments or in an embedded document are not its box.
+    /// A box given at the end of the file, (atend), is not read.
     /// - Parameters:
     ///   - data: EPSを読み込んだData
     ///   - hires: HiResBoundingBox の方を読むか否か
     /// - Returns: 指定されたBBoxの範囲と値
     func bboxOf(data: Data, hires: Bool) -> (range: Range<Data.Index>, content: String)? {
-        let header = "%%" + (hires ? "HiRes" : "") + "BoundingBox: "
-        guard let returnCharData = "\n".data(using: .utf8),
-              let headerData = header.data(using: .utf8),
-              let headerRange = data.range(of: headerData) else { return nil }
-        
-        let searchRange = headerRange.upperBound..<data.endIndex
-        guard let contentEndIndex = data.range(of: returnCharData, options: [], in: searchRange)?.startIndex else { return nil }
-        let contentRange = headerRange.endIndex..<contentEndIndex
-        guard let content = String(data: data.subdata(in: contentRange), encoding: .utf8) else { return nil }
-        
-        return (range: contentRange, content: content)
+        let name = Array(("%%" + (hires ? "HiRes" : "") + "BoundingBox:").utf8)
+        let endComments = Array("%%EndComments".utf8)
+        var lineStart = data.startIndex
+        var firstLine = true
+        while lineStart < data.endIndex {
+            let lineEnd = data[lineStart...].firstIndex { $0 == 0x0A || $0 == 0x0D } ?? data.endIndex
+            let line = data[lineStart..<lineEnd]
+            if firstLine {
+                guard line.starts(with: Array("%!".utf8)) else { return nil }
+                firstLine = false
+            } else {
+                guard line.starts(with: Array("%%".utf8)), !line.elementsEqual(endComments) else { return nil }
+                if line.starts(with: name) {
+                    var contentStart = lineStart + name.count
+                    while contentStart < lineEnd, data[contentStart] == 0x20 || data[contentStart] == 0x09 { contentStart += 1 }
+                    let contentRange = contentStart..<lineEnd
+                    guard let content = String(data: data.subdata(in: contentRange), encoding: .utf8),
+                          content.trimmingCharacters(in: .whitespaces) != "(atend)" else { return nil }
+                    return (range: contentRange, content: content)
+                }
+            }
+            // The next line: after LF, CR or CR LF.
+            lineStart = lineEnd
+            if lineStart < data.endIndex, data[lineStart] == 0x0D {
+                lineStart += 1
+                if lineStart < data.endIndex, data[lineStart] == 0x0A { lineStart += 1 }
+            } else if lineStart < data.endIndex {
+                lineStart += 1
+            }
+        }
+        return nil
     }
     
     
@@ -75,14 +98,19 @@ extension Converter {
     /// - Returns: false when the file lacks one of the two lines (it is then left as it is), or cannot be read or written
     func replaceBBoxOf(epsPath: String, boundingBox: String, hiresBoundingBox: String) -> Bool {
         guard var epsData = Data(filePath: epsPath),
-              let bboxData = boundingBox.data(using: .utf8),
-              let hiresBboxData = hiresBoundingBox.data(using: .utf8) else { return false }
+              // The values end the line that holds them: a line break after them would leave an empty line, which
+              // ends the header comments (DSC) before the rest of them.
+              let bboxData = boundingBox.trimmingCharacters(in: .newlines).data(using: .utf8),
+              let hiresBboxData = hiresBoundingBox.trimmingCharacters(in: .newlines).data(using: .utf8) else { return false }
 
         // An EPS file without both boxes would be given out with neither the size of the page nor the one wanted.
-        guard let bbArea = bboxOf(data: epsData, hires: false) else { return false }
-        epsData.replaceSubrange(bbArea.range, with: bboxData)
-        guard let hiresBbArea = bboxOf(data: epsData, hires: true) else { return false }
-        epsData.replaceSubrange(hiresBbArea.range, with: hiresBboxData)
+        // Both are found before either is replaced; the later one is replaced first, so the other range still holds.
+        guard let bbArea = bboxOf(data: epsData, hires: false),
+              let hiresBbArea = bboxOf(data: epsData, hires: true) else { return false }
+        for (range, replacement) in [(bbArea.range, bboxData), (hiresBbArea.range, hiresBboxData)]
+            .sorted(by: { $0.0.lowerBound > $1.0.lowerBound }) {
+            epsData.replaceSubrange(range, with: replacement)
+        }
 
         return epsData.writeToPath(epsPath)
     }

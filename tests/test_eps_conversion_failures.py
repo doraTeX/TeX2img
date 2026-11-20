@@ -57,13 +57,19 @@ final class Shell {
         return outlineSucceeds
     }
     func pdf2image(_ p: String, outputFileName: String, page: UInt, crop: Bool) -> Bool { imageCalls += 1; return true }
+    // The bounding box Ghostscript finds on a page (the crop without keeping the page size).
+    func bboxString(ofPdf pdfPath: String, page: Int, hires: Bool) -> String? {
+        hires ? "%%HiResBoundingBox: 1.500000 2.500000 3.500000 4.500000\n" : "%%BoundingBox: 1 2 4 5\n"
+    }
 '''
     code += method(converter, '    private func convertPDF(_ pdfFileName:', '    private func copyTarget(')
-    code += method(converter, '    private func replaceEpsBBox(_ epsName: String, withPageBoxOfPdf', '    private func pdf2eps')
+    # The three ways the boxes of an EPS file are rewritten: the crop, the empty page, the page size kept.
+    code += method(converter, '    private func replaceEpsBBox(_ epsName: String, withBBoxOfPdf', '    private func pdf2eps')
     code += method(bounding, '    func bboxOf(data:', '    /// gsが出力')
     code += method(bounding, '    func replaceBBoxOf(epsPath:', '    /// PDFの特定')
     code += '}\n' + bounding[bounding.index('func enlargedBoundingBox('):]
     code += r'''
+let emptyBBox = "%%BoundingBox: 0 0 0 0\n"
 let eps = "%!PS-Adobe-3.0 EPSF-3.0\n%%BoundingBox: 0 0 10 10\n%%HiResBoundingBox: 0.250000 0.250000 9.750000 9.750000\n%%EOF\n"
 var failures = 0
 func expect(_ name: String, _ ok: Bool) { if !ok { print("FAIL \(name)"); failures += 1 } }
@@ -130,6 +136,46 @@ func read(_ path: String) -> String? { try? String(contentsOfFile: path, encodin
         let replaced = read(output("keep.eps")) ?? ""
         expect("a page: both boxes \(replaced)", replaced.contains("%%BoundingBox: 40 30 140 130\n")
                && replaced.contains("%%HiResBoundingBox: 40.000000 30.000000 140.000000 130.000000\n"))
+
+        // Only the header comments of the file are its boxes: not other comments, not an embedded document.
+        let head = "%!PS-Adobe-3.0 EPSF-3.0\n%%Creator: test\n"
+        let boxes = "%%BoundingBox: 0 0 10 10\n%%HiResBoundingBox: 0.250000 0.250000 9.750000 9.750000\n"
+        let body = "%%EndComments\n%%BeginProlog\n%%EndProlog\nnewpath\n"
+        let comments = "% %%BoundingBox: 0 0 10 10\n%%BoundingBox: 0 0 10 10\n%%HiResBoundingBox: 0.25 0.25 9.75 9.75\n"
+        let embedded = "%%BeginDocument: inner.eps\n%!PS-Adobe-3.0 EPSF-3.0\n%%BoundingBox: 0 0 10 10\n"
+            + "%%HiResBoundingBox: 0.25 0.25 9.75 9.75\n%%EndComments\n%%EndDocument\n"
+        let paths: [(String, (Shell, String) -> Bool)] = [
+            ("page size kept", { $0.replaceEpsBBox($1, withPageBoxOfPdf: "page.pdf", page: 1) }),
+            ("crop", { $0.replaceEpsBBox($1, withBBoxOfPdf: "page.pdf", page: 1) }),
+            ("empty page", { $0.replaceEpsBBoxWithEmptyBBox($1) }),
+        ]
+        let expected = ["page size kept": ("40 30 140 130", "40.000000 30.000000 140.000000 130.000000"),
+                        "crop": ("1 2 4 5", "1.500000 2.500000 3.500000 4.500000"),
+                        "empty page": ("0 0 0 0", "0.000000 0.000000 0.000000 0.000000")]
+        for (pathName, rewrite) in paths {
+            let shell = Shell(directory)
+            shell.pageBoxType = .cropBox
+            for (caseName, file) in [("boxes only in the body comments", head + body + comments),
+                                     ("boxes only in an embedded document", head + body + embedded),
+                                     ("boxes in an ordinary comment of the header", head + "% %%BoundingBox: 0 0 10 10\n" + body),
+                                     ("integer box at the end", head + "%%BoundingBox: (atend)\n%%HiResBoundingBox: (atend)\n" + body + "%%Trailer\n" + boxes),
+                                     ("boxes after an empty line", head + "\n" + boxes + body)] {
+                try! Data(file.utf8).write(to: URL(fileURLWithPath: output("nested.eps")))
+                expect("\(pathName), \(caseName): the step fails", !rewrite(shell, "nested.eps"))
+                expect("\(pathName), \(caseName): the file is kept", read(output("nested.eps")) == file)
+            }
+            // The boxes of the header are rewritten, and only they; those of an embedded document stay.
+            let (integer, hires) = expected[pathName]!
+            for (caseName, file, newline) in [("header and embedded", head + boxes + body + embedded, "\n"),
+                                              ("CR LF", (head + boxes + body).replacingOccurrences(of: "\n", with: "\r\n"), "\r\n")] {
+                try! Data(file.utf8).write(to: URL(fileURLWithPath: output("header.eps")))
+                expect("\(pathName), \(caseName): the step succeeds", rewrite(shell, "header.eps"))
+                let wanted = file.replacingOccurrences(of: "%%BoundingBox: 0 0 10 10" + newline + "%%HiResBoundingBox: 0.250000 0.250000 9.750000 9.750000",
+                                                       with: "%%BoundingBox: \(integer)" + newline + "%%HiResBoundingBox: \(hires)")
+                expect("\(pathName), \(caseName): only the header boxes, no empty line: \(read(output("header.eps")) ?? "nil")",
+                       read(output("header.eps")) == wanted)
+            }
+        }
         if failures > 0 { exit(1) }
         print("OK")
     }
