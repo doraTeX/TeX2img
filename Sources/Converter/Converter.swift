@@ -474,16 +474,14 @@ class Converter: NSObject {
     }
 
     private func replaceEpsBBox(_ epsName: String, withPageBoxOfPdf pdfName: String, page: UInt) -> Bool {
-        let pageBox = PDFPageBox(filePath: workingDirectory.appendingPathComponent(pdfName), page: Int(page))
         let epsPath = workingDirectory.appendingPathComponent(epsName)
-        var bbStr = ""
-        var hiresBbStr = ""
-        if let pageBox {
-            // A box whose numbers cannot be written fails the conversion, as a page that cannot be read does.
-            guard let box = pageBox.bboxString(of: pageBoxType, hires: false, addHeader: false),
-                  let hiresBox = pageBox.bboxString(of: pageBoxType, hires: true, addHeader: false) else { return false }
-            bbStr = box
-            hiresBbStr = hiresBox
+        // The EPS file is changed only with both boxes of the page. A page that cannot be read, or a box whose numbers
+        // cannot be written, fails the conversion and leaves the file as Ghostscript wrote it.
+        guard let pageBox = PDFPageBox(filePath: workingDirectory.appendingPathComponent(pdfName), page: Int(page)),
+              let bbStr = pageBox.bboxString(of: pageBoxType, hires: false, addHeader: false),
+              let hiresBbStr = pageBox.bboxString(of: pageBoxType, hires: true, addHeader: false) else {
+            controller?.showFileGenerationError(epsPath)
+            return false
         }
 
         replaceBBoxOf(epsPath: epsPath, boundingBox: bbStr, hiresBoundingBox: hiresBbStr)
@@ -1134,22 +1132,27 @@ class Converter: NSObject {
             return true
         }
 
+        // A step that fails fails the conversion: what it left in the working folder is not the result.
         if extension_ == "pdf" {
-            _ = outlinePDF(pdfFileName,
+            if !outlinePDF(pdfFileName,
                            intermediateOutlinedFileName: intermediateOutlinedFileName,
                            outputFileName: outputFileName,
                            page: page,
                            addMargin: true,
                            useCache: useCache,
-                           fillBackground: true)
+                           fillBackground: true) {
+                return false
+            }
         } else if extension_ == "eps" {
-            _ = outlinePDF(pdfFileName,
+            if !outlinePDF(pdfFileName,
                            intermediateOutlinedFileName: outlinedPdfFileName,
                            outputFileName: intermediateOutlinedFileName,
                            page: page,
                            addMargin: false,
                            useCache: useCache,
-                           fillBackground: false)
+                           fillBackground: false) {
+                return false
+            }
 
             if transparentFlag && hasMargin {
                 enlargeBoundingBox(of: workingDirectory.appendingPathComponent(intermediateOutlinedFileName))
@@ -1160,13 +1163,15 @@ class Converter: NSObject {
             }
             try? fileManager.moveItem(atPath: workingDirectory.appendingPathComponent(intermediateOutlinedFileName), toPath: outputFileName)
         } else {
-            _ = outlinePDF(pdfFileName,
+            if !outlinePDF(pdfFileName,
                            intermediateOutlinedFileName: intermediateOutlinedFileName,
                            outputFileName: outlinedPdfFileName,
                            page: page,
                            addMargin: false,
                            useCache: useCache,
-                           fillBackground: false)
+                           fillBackground: false) {
+                return false
+            }
 
             if !pdf2image(workingDirectory.appendingPathComponent(outlinedPdfFileName),
                           outputFileName: outputFileName, page: 1, crop: false) {

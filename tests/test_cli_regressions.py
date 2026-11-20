@@ -6,11 +6,14 @@ Usage: python3 tests/test_cli_regressions.py --app path/to/TeX2img.app
 """
 import argparse
 from pathlib import Path
+import re
+import shutil
 import subprocess
 import sys
 import tempfile
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import RectangleObject
+from PIL import Image
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--app', type=Path, required=True)
@@ -65,6 +68,20 @@ with tempfile.TemporaryDirectory(prefix='tex2img-cli-regressions-') as tmp:
     if (root / 'outside-out.pdf').exists():
         size = [float(v) for v in PdfReader(root / 'outside-out.pdf').pages[0].mediabox]
         check(size == [0, 0, 200, 200], f'the PDF file of a CropBox outside the MediaBox keeps the page: {size}')
+    # The PNG image is that of the whole page: as large as the one made with the MediaBox.
+    result = run('--keep-page-size', '--pagebox', 'media', 'outside.pdf', 'outside-media.png', cwd=root)
+    check(result.returncode == 0 and (root / 'outside-media.png').exists(), 'the PNG image of the MediaBox', result)
+
+    def image_size(name):
+        try:
+            with Image.open(root / name) as image:
+                image.load()
+                return image.size
+        except Exception:
+            return None
+    check(image_size('outside-out.png') is not None and image_size('outside-out.png') == image_size('outside-media.png'),
+          f'the PNG image of a CropBox outside the MediaBox: {image_size("outside-out.png")}, '
+          f'the MediaBox: {image_size("outside-media.png")}')
 
     # A resolution level that is not a finite number, or too large, does not crash the speed priority mode: Ghostscript
     # gets the resolution of the quality priority mode. The page has text, so it is converted, not left out as empty.
@@ -84,12 +101,44 @@ with tempfile.TemporaryDirectory(prefix='tex2img-cli-regressions-') as tmp:
     result = run('--left-margin', huge, '--right-margin', '1', 'text.pdf', 'huge.png', cwd=root)
     check(result.returncode == 1 and 'error' in (result.stdout + result.stderr).lower() and not (root / 'huge.png').exists(),
           'margins out of Int to PNG end with an error', result)
+
+    def boxes(name):
+        """The four numbers of %%BoundingBox and of %%HiResBoundingBox, or None for a file without both."""
+        if not (root / name).exists():
+            return None
+        text = (root / name).read_text(errors='replace')
+        integer = re.search(r'^%%BoundingBox: (-?\d+) (-?\d+) (-?\d+) (-?\d+)$', text, re.M)
+        hires = re.search(r'^%%HiResBoundingBox: (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+)$', text, re.M)
+        if not integer or not hires:
+            return None
+        return [int(v) for v in integer.groups()], [float(v) for v in hires.groups()]
     result = run('--transparent', 'text.pdf', 'plain.eps', cwd=root)
-    check(result.returncode == 0, 'a transparent EPS file', result)
+    check(result.returncode == 0 and boxes('plain.eps') is not None and boxes('plain.eps')[0][2] > boxes('plain.eps')[0][0],
+          f'a transparent EPS file: {boxes("plain.eps")}', result)
+    result = run('--transparent', '--top-margin', '3', '--left-margin', '2', 'text.pdf', 'margins.eps', cwd=root)
+    if boxes('plain.eps') and boxes('margins.eps'):
+        (l, b, r, t), (hl, hb, hr, ht) = boxes('plain.eps')
+        expected = ([l - 2, b, r, t + 3], [hl - 2, hb, hr, ht + 3])
+        check(result.returncode == 0 and boxes('margins.eps') == expected,
+              f'margins of a transparent EPS file: {boxes("margins.eps")}, expected {expected}', result)
+    else:
+        check(False, 'margins of a transparent EPS file', result)
     result = run('--transparent', '--top-margin', huge, '--bottom-margin', '1', 'text.pdf', 'huge.eps', cwd=root)
-    bbox = lambda name: [l for l in (root / name).read_bytes().splitlines() if l.startswith(b'%%BoundingBox:')] if (root / name).exists() else None
-    check(result.returncode == 0 and bbox('huge.eps') == bbox('plain.eps') is not None,
-          f'margins out of Int leave the bounding box of a transparent EPS file: {bbox("huge.eps")}', result)
+    check(result.returncode == 0 and boxes('huge.eps') is not None and boxes('huge.eps') == boxes('plain.eps'),
+          f'margins out of Int leave both boxes of a transparent EPS file: {boxes("huge.eps")}, plain {boxes("plain.eps")}',
+          result)
+
+    # A Ghostscript step that fails fails the conversion; what it wrote is not the output (an EPS file was made).
+    fake_gs = root / 'failing-eps-gs'
+    fake_gs.write_text('#!/bin/sh\n"%s" "$@"\nstatus=$?\ncase " $* " in *DEVICE=eps2write*|*DEVICE=epswrite*) exit 1 ;; esac\n'
+                       'exit $status\n' % shutil.which('gs'))
+    fake_gs.chmod(0o755)
+    result = run('--gs', str(fake_gs), 'text.pdf', 'failed.eps', cwd=root)
+    check(result.returncode == 1 and not (root / 'failed.eps').exists() and '1 file was generated' not in result.stdout,
+          'a failed Ghostscript step to EPS ends with 1 and makes no file', result)
+    result = run('--gs', str(fake_gs), 'text.pdf', 'not-failed.png', cwd=root)
+    check(result.returncode == 0 and image_size('not-failed.png') is not None,
+          'the same Ghostscript makes a PNG image (no EPS step)', result)
 
     # --num 0 compiles once (it crashed).
     (root / 'one.tex').write_text('\\documentclass{article}\\pagestyle{empty}\\begin{document}X\\end{document}\n')
