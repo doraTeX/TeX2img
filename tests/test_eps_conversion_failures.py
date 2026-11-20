@@ -159,7 +159,15 @@ func read(_ path: String) -> String? { try? String(contentsOfFile: path, encodin
                                      ("boxes only in an embedded document", head + body + embedded),
                                      ("boxes in an ordinary comment of the header", head + "% %%BoundingBox: 0 0 10 10\n" + body),
                                      ("integer box at the end", head + "%%BoundingBox: (atend)\n%%HiResBoundingBox: (atend)\n" + body + "%%Trailer\n" + boxes),
-                                     ("boxes after an empty line", head + "\n" + boxes + body)] {
+                                     ("boxes after an empty line", head + "\n" + boxes + body),
+                                     // The header ends at %%EndComments with spaces after it, and at the start of a
+                                     // later part without %%EndComments.
+                                     ("boxes after %%EndComments with spaces", head + "%%EndComments  \t\n" + boxes + "%%BeginProlog\n"),
+                                     ("boxes in the prolog", head + "%%BeginProlog\n" + boxes + "%%EndProlog\n"),
+                                     ("boxes in the setup", head + "%%BeginSetup\n" + boxes + "%%EndSetup\n"),
+                                     ("boxes after %%Page:", head + "%%Page: 1 1\n" + boxes),
+                                     ("boxes after %%Trailer", head + "%%Trailer\n" + boxes + "%%EOF\n"),
+                                     ("boxes after %%BeginDocument", head + "%%BeginDocument: inner.eps\n" + boxes + "%%EndDocument\n")] {
                 try! Data(file.utf8).write(to: URL(fileURLWithPath: output("nested.eps")))
                 expect("\(pathName), \(caseName): the step fails", !rewrite(shell, "nested.eps"))
                 expect("\(pathName), \(caseName): the file is kept", read(output("nested.eps")) == file)
@@ -167,6 +175,7 @@ func read(_ path: String) -> String? { try? String(contentsOfFile: path, encodin
             // The boxes of the header are rewritten, and only they; those of an embedded document stay.
             let (integer, hires) = expected[pathName]!
             for (caseName, file, newline) in [("header and embedded", head + boxes + body + embedded, "\n"),
+                                              ("%%EndComments with spaces", head + boxes + "%%Pages: 1\n%%EndComments \n%%BeginProlog\n", "\n"),
                                               ("CR LF", (head + boxes + body).replacingOccurrences(of: "\n", with: "\r\n"), "\r\n")] {
                 try! Data(file.utf8).write(to: URL(fileURLWithPath: output("header.eps")))
                 expect("\(pathName), \(caseName): the step succeeds", rewrite(shell, "header.eps"))

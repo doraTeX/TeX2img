@@ -4,7 +4,8 @@ extension Converter {
     
     /// EPSのDataの中から BoundingBox または HiresBoundingBox の値を探し，その範囲と値を返す
     /// Only the header comments of the file itself are read: from the %! line to %%EndComments or the first line that
-    /// is not a %% comment (DSC). The same names in other comments or in an embedded document are not its box.
+    /// is not a header comment (DSC): not a %% comment, or one that starts a section or a page (%%BeginProlog,
+    /// %%Page:, %%Trailer and the like). The same names in other comments or in an embedded document are not its box.
     /// A box given at the end of the file, (atend), is not read.
     /// - Parameters:
     ///   - data: EPSを読み込んだData
@@ -12,7 +13,6 @@ extension Converter {
     /// - Returns: 指定されたBBoxの範囲と値
     func bboxOf(data: Data, hires: Bool) -> (range: Range<Data.Index>, content: String)? {
         let name = Array(("%%" + (hires ? "HiRes" : "") + "BoundingBox:").utf8)
-        let endComments = Array("%%EndComments".utf8)
         var lineStart = data.startIndex
         var firstLine = true
         while lineStart < data.endIndex {
@@ -22,7 +22,7 @@ extension Converter {
                 guard line.starts(with: Array("%!".utf8)) else { return nil }
                 firstLine = false
             } else {
-                guard line.starts(with: Array("%%".utf8)), !line.elementsEqual(endComments) else { return nil }
+                guard Self.isHeaderComment(line) else { return nil }
                 if line.starts(with: name) {
                     var contentStart = lineStart + name.count
                     while contentStart < lineEnd, data[contentStart] == 0x20 || data[contentStart] == 0x09 { contentStart += 1 }
@@ -45,6 +45,16 @@ extension Converter {
     }
     
     
+    /// Whether a line (without its line break) can be in the header comments of a DSC file: a %% comment that neither
+    /// ends them (%%EndComments, with any spaces after it) nor starts a later part of the file.
+    static func isHeaderComment(_ line: Data) -> Bool {
+        guard let text = String(data: line, encoding: .isoLatin1), text.hasPrefix("%%") else { return false }
+        let trimmed = text.trimmingCharacters(in: CharacterSet(charactersIn: " \t"))
+        if trimmed == "%%EndComments" { return false }
+        let laterParts = ["%%Begin", "%%End", "%%Page:", "%%PageTrailer", "%%Trailer", "%%EOF", "%%Include"]
+        return !laterParts.contains { trimmed.hasPrefix($0) }
+    }
+
     /// gsが出力した bbox のデータにおける BoundingBox および HiResBoundingBox の行（行頭から末尾（改行除く））を読み取る
     /// - Parameters:
     ///   - bboxFilePath: gsが出力したbboxファイルのパス

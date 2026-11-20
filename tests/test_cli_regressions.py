@@ -170,6 +170,28 @@ with tempfile.TemporaryDirectory(prefix='tex2img-cli-regressions-') as tmp:
         check(result.returncode == 1 and '1 file was generated' not in result.stdout
               and kept.read_bytes() == b'%!PS-Adobe-3.0 EPSF-3.0\n%% an earlier output\n',
               f'an EPS file whose box lines are ordinary comments {options} fails and keeps the earlier output', result)
+    # The box lines moved out of the header: after an %%EndComments line with spaces after it, or into the prolog of a
+    # file without %%EndComments. They are not the boxes of the file there, so the conversion fails.
+    moves = {
+        'after-endcomments': r'if (/^%%(HiRes)?BoundingBox:/) { $b .= $_; next } '
+                             r'if (/^%%EndComments/) { print "%%EndComments  \n"; print $b; next } print',
+        'in-prolog': r'if (/^%%(HiRes)?BoundingBox:/) { $b .= $_; next } next if /^%%EndComments/; '
+                     r'print; print $b if /^%%BeginProlog/',
+    }
+    for move, script in moves.items():
+        moving_gs = root / f'{move}-gs'
+        moving_gs.write_text('#!/bin/sh\n"GS" "$@"\nstatus=$?\ncase " $* " in *DEVICE=eps2write*|*DEVICE=epswrite*)\n'
+                             '  for a in "$@"; do case "$a" in -sOutputFile=*) f="${a#-sOutputFile=}"\n'
+                             "    /usr/bin/perl -i -ne 'SCRIPT' \"$f\" ;; esac; done ;;\n"
+                             'esac\nexit $status\n'.replace('GS', shutil.which('gs')).replace('SCRIPT', script))
+        moving_gs.chmod(0o755)
+        for options in (['--keep-page-size'], []):
+            kept = root / 'kept.eps'
+            kept.write_bytes(b'%!PS-Adobe-3.0 EPSF-3.0\n%% an earlier output\n')
+            result = run('--gs', str(moving_gs), *options, 'text.pdf', kept.name, cwd=root)
+            check(result.returncode == 1 and '1 file was generated' not in result.stdout
+                  and kept.read_bytes() == b'%!PS-Adobe-3.0 EPSF-3.0\n%% an earlier output\n',
+                  f'an EPS file with the box lines {move} {options} fails and keeps the earlier output', result)
     result = run('--keep-page-size', 'text.pdf', 'kept-size.eps', cwd=root)
     check(result.returncode == 0 and boxes('kept-size.eps') is not None,
           f'an EPS file of the page size has both boxes: {boxes("kept-size.eps")}', result)
