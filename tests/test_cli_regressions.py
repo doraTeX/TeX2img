@@ -49,6 +49,20 @@ with tempfile.TemporaryDirectory(prefix='tex2img-cli-regressions-') as tmp:
         size = [float(v) for v in PdfReader(output).pages[0].mediabox] if output.exists() else None
         check(size == expected, f'--pagebox {box}: {size}', result)
 
+    # A CropBox outside the MediaBox is an empty box (it crashed with --keep-page-size --pagebox crop).
+    writer = PdfWriter()
+    page = writer.add_blank_page(200, 200)
+    page.cropbox = RectangleObject([500, 500, 600, 600])
+    writer.write(root / 'outside.pdf')
+    for output in ('outside-out.pdf', 'outside-out.eps', 'outside-out.png'):
+        result = run('--keep-page-size', '--pagebox', 'crop', 'outside.pdf', output, cwd=root)
+        check(result.returncode >= 0, f'a CropBox outside the MediaBox to {output} ends without a crash', result)
+
+    # A resolution level that is not a finite number does not crash the speed priority mode.
+    for level in ('nan', 'inf', '1e30'):
+        result = run('--quick', '--resolution', level, 'crop.pdf', f'quick-{level}.pdf', cwd=root)
+        check(result.returncode >= 0, f'--quick --resolution {level} ends without a crash', result)
+
     # --num 0 compiles once (it crashed).
     (root / 'one.tex').write_text('\\documentclass{article}\\pagestyle{empty}\\begin{document}X\\end{document}\n')
     result = run('--latex', 'pdflatex', '--num', '0', 'one.tex', 'one.png', cwd=root)

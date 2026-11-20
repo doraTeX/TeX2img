@@ -152,7 +152,8 @@ class Converter: NSObject {
         useBP = aProfile.integerForKey(UnitKey) == BP_UNIT_TAG
         speedPriorityMode = aProfile.integerForKey(PriorityKey) == SPEED_PRIORITY_TAG
         embedSource = aProfile.boolForKey(EmbedSourceKey)
-        pageBoxType = CGPDFBox(rawValue: Int32(aProfile.integerForKey(PageBoxKey))) ?? .mediaBox
+        // Int32(_:) traps on a number out of its range; a profile can hold any number.
+        pageBoxType = Int32(exactly: aProfile.integerForKey(PageBoxKey)).flatMap(CGPDFBox.init(rawValue:)) ?? .mediaBox
         delay = aProfile.floatForKey(DelayKey)
         loopCount = aProfile.integerForKey(LoopCountKey)
         fillColor = aProfile.colorForKey(FillColorKey) ?? .white
@@ -1026,8 +1027,11 @@ class Converter: NSObject {
                             useCache: Bool,
                             fillBackground fill: Bool) -> Bool {
         let extension_ = outputFileName.pathExtension.lowercased()
-        let lowResolution = Int(resolutionLevel * Float(Int(resolutionScale)) * 2 * 72)
-        let resolution = speedPriorityMode ? lowResolution : 20016
+        // Int(_:) traps on a resolution level that is not finite or too large (from the command line or a profile).
+        // Ghostscript cannot use such a resolution either; the quality priority one is used then.
+        let qualityResolution = 20016
+        let lowResolution = Int(exactly: (resolutionLevel * Float(Int(resolutionScale)) * 2 * 72).rounded(.towardZero)) ?? qualityResolution
+        let resolution = speedPriorityMode ? lowResolution : qualityResolution
         let trimFileName = tempFileBaseName + "-trim.pdf"
 
         if extension_ == "eps" {
