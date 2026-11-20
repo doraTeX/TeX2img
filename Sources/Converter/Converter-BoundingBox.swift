@@ -125,10 +125,9 @@ extension Converter {
                   let match3 = matchingAt(3),
                   let match4 = matchingAt(4) else { return }
 
-            let llx = match1 - leftMargin
-            let lly = match2 - bottomMargin
-            let urx = match3 + rightMargin
-            let ury = match4 + topMargin
+            // A box that the margins take out of Int (- and + trap) is left as it is, as one that cannot be read.
+            guard let (llx, lly, urx, ury) = enlargedBoundingBox((match1, match2, match3, match4), left: leftMargin,
+                                                                 bottom: bottomMargin, right: rightMargin, top: topMargin) else { return }
             let newContent = "\(llx) \(lly) \(urx) \(ury)"
             guard let newData = newContent.data(using: .utf8) else { return }
 
@@ -275,4 +274,14 @@ extension Converter {
         return outputDocument.writeToFilePath(outputPath)
     }
 
+}
+
+/// A bounding box with the margins added, or nil when a number does not fit in Int.
+func enlargedBoundingBox(_ box: (Int, Int, Int, Int), left: Int, bottom: Int, right: Int, top: Int) -> (Int, Int, Int, Int)? {
+    let (llx, o1) = box.0.subtractingReportingOverflow(left)
+    let (lly, o2) = box.1.subtractingReportingOverflow(bottom)
+    let (urx, o3) = box.2.addingReportingOverflow(right)
+    let (ury, o4) = box.3.addingReportingOverflow(top)
+    guard !(o1 || o2 || o3 || o4) else { return nil }
+    return (llx, lly, urx, ury)
 }

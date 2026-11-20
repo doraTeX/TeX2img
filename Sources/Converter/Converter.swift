@@ -152,8 +152,8 @@ class Converter: NSObject {
         useBP = aProfile.integerForKey(UnitKey) == BP_UNIT_TAG
         speedPriorityMode = aProfile.integerForKey(PriorityKey) == SPEED_PRIORITY_TAG
         embedSource = aProfile.boolForKey(EmbedSourceKey)
-        // Int32(_:) traps on a number out of its range; a profile can hold any number.
-        pageBoxType = Int32(exactly: aProfile.integerForKey(PageBoxKey)).flatMap(CGPDFBox.init(rawValue:)) ?? .mediaBox
+        // A profile can hold any number; only the five page boxes are used.
+        pageBoxType = CGPDFBox.pageBox(number: aProfile.integerForKey(PageBoxKey))
         delay = aProfile.floatForKey(DelayKey)
         loopCount = aProfile.integerForKey(LoopCountKey)
         fillColor = aProfile.colorForKey(FillColorKey) ?? .white
@@ -370,10 +370,15 @@ class Converter: NSObject {
         return bbStr == emptyBBox
     }
 
+    /// Whether a margin is added. Not from the sum of the margins: each fits in Int, their sum need not.
+    private var hasMargin: Bool {
+        [leftMargin, rightMargin, topMargin, bottomMargin].contains { $0 > 0 }
+    }
+
     private func willEmptyPageBeCreated(_ pdfPath: String, page: UInt, success: inout Bool) -> Bool {
         let isEmpty = isEmptyPage(pdfPath, page: page, success: &success)
         if !success { return false }
-        return !keepPageSizeFlag && isEmpty && ((leftMargin + rightMargin == 0) || (topMargin + bottomMargin == 0))
+        return !keepPageSizeFlag && isEmpty && ((leftMargin == 0 && rightMargin == 0) || (topMargin == 0 && bottomMargin == 0))
     }
 
 
@@ -471,8 +476,15 @@ class Converter: NSObject {
     private func replaceEpsBBox(_ epsName: String, withPageBoxOfPdf pdfName: String, page: UInt) -> Bool {
         let pageBox = PDFPageBox(filePath: workingDirectory.appendingPathComponent(pdfName), page: Int(page))
         let epsPath = workingDirectory.appendingPathComponent(epsName)
-        let bbStr = pageBox?.bboxString(of: pageBoxType, hires: false, addHeader: false) ?? ""
-        let hiresBbStr = pageBox?.bboxString(of: pageBoxType, hires: true, addHeader: false) ?? ""
+        var bbStr = ""
+        var hiresBbStr = ""
+        if let pageBox {
+            // A box whose numbers cannot be written fails the conversion, as a page that cannot be read does.
+            guard let box = pageBox.bboxString(of: pageBoxType, hires: false, addHeader: false),
+                  let hiresBox = pageBox.bboxString(of: pageBoxType, hires: true, addHeader: false) else { return false }
+            bbStr = box
+            hiresBbStr = hiresBox
+        }
 
         replaceBBoxOf(epsPath: epsPath, boundingBox: bbStr, hiresBoundingBox: hiresBbStr)
         return true
@@ -578,7 +590,7 @@ class Converter: NSObject {
     }
 
     private func eps2pdf(_ epsName: String, outputFileName pdfName: String, addMargin: Bool) -> Bool {
-        if addMargin && (leftMargin + rightMargin + topMargin + bottomMargin > 0) {
+        if addMargin && hasMargin {
             let trimFileName = String(format: "%@-trim.pdf", epsName.deletingPathExtension)
             return epstopdf(epsName, outputFileName: trimFileName) &&
                 pdfcrop(trimFileName, outputFileName: pdfName, page: 0, addMargin: true, useCache: false, fillBackground: false)
@@ -1139,7 +1151,7 @@ class Converter: NSObject {
                            useCache: useCache,
                            fillBackground: false)
 
-            if transparentFlag && (topMargin + bottomMargin + leftMargin + rightMargin > 0) {
+            if transparentFlag && hasMargin {
                 enlargeBoundingBox(of: workingDirectory.appendingPathComponent(intermediateOutlinedFileName))
             }
 

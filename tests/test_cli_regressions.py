@@ -49,19 +49,47 @@ with tempfile.TemporaryDirectory(prefix='tex2img-cli-regressions-') as tmp:
         size = [float(v) for v in PdfReader(output).pages[0].mediabox] if output.exists() else None
         check(size == expected, f'--pagebox {box}: {size}', result)
 
-    # A CropBox outside the MediaBox is an empty box (it crashed with --keep-page-size --pagebox crop).
+    # A CropBox outside the MediaBox is an empty box (it crashed with --keep-page-size --pagebox crop): the EPS file
+    # gets the empty bounding box, and the PDF and PNG files keep the whole page, as for any page box that would vanish.
     writer = PdfWriter()
     page = writer.add_blank_page(200, 200)
     page.cropbox = RectangleObject([500, 500, 600, 600])
     writer.write(root / 'outside.pdf')
     for output in ('outside-out.pdf', 'outside-out.eps', 'outside-out.png'):
         result = run('--keep-page-size', '--pagebox', 'crop', 'outside.pdf', output, cwd=root)
-        check(result.returncode >= 0, f'a CropBox outside the MediaBox to {output} ends without a crash', result)
+        check(result.returncode == 0 and '1 file was generated' in result.stdout and (root / output).exists(),
+              f'a CropBox outside the MediaBox to {output}', result)
+    eps = (root / 'outside-out.eps').read_bytes() if (root / 'outside-out.eps').exists() else b''
+    check(b'%%BoundingBox: 0 0 0 0\n' in eps and b'%%HiResBoundingBox: 0.000000 0.000000 0.000000 0.000000\n' in eps,
+          'the EPS file of a CropBox outside the MediaBox has the empty bounding box')
+    if (root / 'outside-out.pdf').exists():
+        size = [float(v) for v in PdfReader(root / 'outside-out.pdf').pages[0].mediabox]
+        check(size == [0, 0, 200, 200], f'the PDF file of a CropBox outside the MediaBox keeps the page: {size}')
 
-    # A resolution level that is not a finite number does not crash the speed priority mode.
-    for level in ('nan', 'inf', '1e30'):
-        result = run('--quick', '--resolution', level, 'crop.pdf', f'quick-{level}.pdf', cwd=root)
-        check(result.returncode >= 0, f'--quick --resolution {level} ends without a crash', result)
+    # A resolution level that is not a finite number, or too large, does not crash the speed priority mode: Ghostscript
+    # gets the resolution of the quality priority mode. The page has text, so it is converted, not left out as empty.
+    (root / 'text.tex').write_text('\\documentclass{article}\\pagestyle{empty}\\begin{document}Text\\end{document}\n')
+    result = run('--latex', 'pdflatex', '--num', '1', '--no-guess-compile', 'text.tex', 'text.pdf', cwd=root)
+    check(result.returncode == 0, 'text.pdf', result)
+    for level, resolution in (('nan', 20016), ('inf', 20016), ('1e30', 20016), ('15', 2160)):
+        output = root / f'quick-{level}.pdf'
+        result = run('--quick', '--resolution', level, 'text.pdf', output.name, cwd=root)
+        check(result.returncode == 0 and f'-r{resolution} ' in result.stdout and '1 file was generated' in result.stdout
+              and output.exists() and len(PdfReader(output).pages) == 1,
+              f'--quick --resolution {level} converts with -r{resolution}', result)
+
+    # Margins whose sum does not fit in Int (it crashed): too large an image is an error, and a bounding box that the
+    # margins take out of Int is left as it is.
+    huge = str(2 ** 63 - 1)
+    result = run('--left-margin', huge, '--right-margin', '1', 'text.pdf', 'huge.png', cwd=root)
+    check(result.returncode == 1 and 'error' in (result.stdout + result.stderr).lower() and not (root / 'huge.png').exists(),
+          'margins out of Int to PNG end with an error', result)
+    result = run('--transparent', 'text.pdf', 'plain.eps', cwd=root)
+    check(result.returncode == 0, 'a transparent EPS file', result)
+    result = run('--transparent', '--top-margin', huge, '--bottom-margin', '1', 'text.pdf', 'huge.eps', cwd=root)
+    bbox = lambda name: [l for l in (root / name).read_bytes().splitlines() if l.startswith(b'%%BoundingBox:')] if (root / name).exists() else None
+    check(result.returncode == 0 and bbox('huge.eps') == bbox('plain.eps') is not None,
+          f'margins out of Int leave the bounding box of a transparent EPS file: {bbox("huge.eps")}', result)
 
     # --num 0 compiles once (it crashed).
     (root / 'one.tex').write_text('\\documentclass{article}\\pagestyle{empty}\\begin{document}X\\end{document}\n')
