@@ -32,6 +32,24 @@ func expect(_ name: String, _ ok: Bool) {
             expect(name, frame(values[0], values[1], values[2], values[3]) == nil)
         }
         expect("a frame of text", frame("a", 1, 640, 480) == nil)
+        // Each number finite, but the right or the top edge is not.
+        expect("right edge out of range", frame(1e308, 1, 1e308, 480) == nil)
+        expect("top edge out of range", frame(1, 1.7e308, 640, 1.7e308) == nil)
+        expect("a frame on a screen left of and below the main one", frame(-2560, -1440, 1280, 800) == NSRect(x: -2560, y: -1440, width: 1280, height: 800))
+
+        // The page box popup of the settings, restored from a profile with the line of ControllerG: a number of no box
+        // selects the MediaBox, whatever was selected before; the five boxes are selected as saved.
+        for (saved, shown) in [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 0), (-1, 0), (7, 0), (Int.max, 0)] {
+            let pageBoxPopUp = NSPopUpButton(frame: .zero, pullsDown: false)
+            for (title, tag) in [("MediaBox", 0), ("CropBox", 1), ("BleedBox", 2), ("TrimBox", 3), ("ArtBox", 4)] {
+                pageBoxPopUp.addItem(withTitle: title)
+                pageBoxPopUp.lastItem?.tag = tag
+            }
+            pageBoxPopUp.selectItem(withTag: 3)
+            let aProfile: [String: Any] = [PageBoxKey: saved]
+            __PAGE_BOX_LINE__
+            expect("page box \(saved) shows \(shown), not \(pageBoxPopUp.selectedTag())", pageBoxPopUp.selectedTag() == shown)
+        }
 
         let size = { (value: Any) in ["s": value].positiveFiniteNumberForKey("s") }
         expect("font size 12.5", size(12.5) == 12.5)
@@ -91,8 +109,11 @@ def main():
         return 1
     with tempfile.TemporaryDirectory(prefix='saved-profile-values-') as directory:
         path = Path(directory)
-        (path / 'Test.swift').write_text(TEST)
+        controller = (ROOT / 'Sources/Controllers/ControllerG.swift').read_text()
+        line = next(l.strip() for l in controller.splitlines() if l.strip().startswith('pageBoxPopUp.selectItem(withTag:'))
+        (path / 'Test.swift').write_text('let PageBoxKey = "pageBox"\n' + TEST.replace('__PAGE_BOX_LINE__', line))
         sources = [str(ROOT / p) for p in ['Sources/Extensions/Foundation/NSDictionary-Extension.swift',
+                                           'Sources/Extensions/PDF/PDFPageBox.swift', 'Sources/Extensions/PDF/PDFDocument-Extension.swift',
                                            'Sources/Extensions/AppKit/NSColor-Extension.swift']]
         subprocess.run(['xcrun', 'swiftc', '-parse-as-library', str(path / 'Test.swift'), *sources, '-o', str(path / 'test')], check=True)
         return subprocess.run([str(path / 'test')], timeout=30).returncode

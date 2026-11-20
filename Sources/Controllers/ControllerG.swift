@@ -911,7 +911,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             tabCharacterKindPopUp.selectItem(withTag: aProfile.integerForKey(TabCharacterKindKey))
         }
         if keys.contains(PageBoxKey) {
-            pageBoxPopUp.selectItem(withTag: aProfile.integerForKey(PageBoxKey))
+            // Another number selects no item and would keep the box selected before; it is the MediaBox, as in conversion.
+            pageBoxPopUp.selectItem(withTag: Int(CGPDFBox.pageBox(number: aProfile.integerForKey(PageBoxKey)).rawValue))
         }
         if keys.contains(DelayKey) {
             delayTextField.floatValue = max(0, aProfile.floatForKey(DelayKey))

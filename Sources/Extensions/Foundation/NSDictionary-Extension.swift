@@ -32,11 +32,13 @@ extension Dictionary where Key == String, Value == Any {
         return CGFloat(value)
     }
 
-    /// The saved frame of a window, or nil when there is none or it is not a frame (not finite, or no size).
+    /// The saved frame of a window, or nil when there is none or it is not a frame (not finite, its right or top edge
+    /// not either, or no size).
     func windowFrame(xKey: String, yKey: String, widthKey: String, heightKey: String) -> NSRect? {
         guard let x = (self[xKey] as? NSNumber)?.doubleValue, let y = (self[yKey] as? NSNumber)?.doubleValue,
               x.isFinite, y.isFinite, x != 0, y != 0,
-              let width = positiveFiniteNumberForKey(widthKey), let height = positiveFiniteNumberForKey(heightKey) else { return nil }
+              let width = positiveFiniteNumberForKey(widthKey), let height = positiveFiniteNumberForKey(heightKey),
+              (x + width).isFinite, (y + height).isFinite else { return nil }
         return NSRect(x: x, y: y, width: width, height: height)
     }
 
