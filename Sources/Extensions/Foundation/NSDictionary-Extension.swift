@@ -26,8 +26,28 @@ extension Dictionary where Key == String, Value == Any {
         self[aKey] as? [String: Any]
     }
 
+    /// A finite number greater than zero, or nil: a profile can hold any number, and AppKit takes these as sizes.
+    func positiveFiniteNumberForKey(_ aKey: String) -> CGFloat? {
+        guard let value = (self[aKey] as? NSNumber)?.doubleValue, value.isFinite, value > 0 else { return nil }
+        return CGFloat(value)
+    }
+
+    /// The saved frame of a window, or nil when there is none or it is not a frame (not finite, or no size).
+    func windowFrame(xKey: String, yKey: String, widthKey: String, heightKey: String) -> NSRect? {
+        guard let x = (self[xKey] as? NSNumber)?.doubleValue, let y = (self[yKey] as? NSNumber)?.doubleValue,
+              x.isFinite, y.isFinite, x != 0, y != 0,
+              let width = positiveFiniteNumberForKey(widthKey), let height = positiveFiniteNumberForKey(heightKey) else { return nil }
+        return NSRect(x: x, y: y, width: width, height: height)
+    }
+
     func colorForKey(_ aKey: String) -> NSColor? {
         guard let string = stringForKey(aKey) else { return nil }
         return NSColor(serializedString: string)
     }
+}
+
+/// A tab width the settings accept (1 to 100). A profile can hold any number, and the width is the number of spaces an
+/// indent inserts; a width that is not positive is the default, 4.
+func validTabWidth(_ width: Int) -> Int {
+    width > 0 ? min(width, 100) : 4
 }

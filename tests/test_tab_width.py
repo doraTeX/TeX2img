@@ -25,7 +25,8 @@ method = extract_method(ROOT / 'Sources/Editor/TeXTextView.swift', 'func fixupTa
 MAIN = r'''
 import AppKit
 let TabWidthKey = "TabWidth"
-struct Profile { func integerForKey(_ key: String) -> Int { 4 } }
+var savedWidth = 4
+struct Profile { func integerForKey(_ key: String) -> Int { savedWidth } }
 final class FakeController { func currentProfile() -> Profile { Profile() } }
 final class Probe: NSTextView {
     let controller = FakeController()
@@ -42,6 +43,17 @@ for name in ["HiraginoSans-W3", "Helvetica", "Menlo-Regular", "Osaka-Mono"] {
     let actual = view.defaultParagraphStyle?.defaultTabInterval ?? 0
     if abs(actual - expected) > 0.01 { print("FAIL \(name): tab \(actual), 4 spaces \(expected)"); failures += 1 }
 }
+// A saved width out of the settings' 1...100 is the nearest one, or 4 when it is not positive.
+for (saved, width) in [(1000, 100), (-2, 4)] {
+    savedWidth = saved
+    let font = NSFont.userFixedPitchFont(ofSize: 13) ?? NSFont.systemFont(ofSize: 13)
+    let view = Probe(frame: NSRect(x: 0, y: 0, width: 400, height: 100))
+    view.font = font
+    view.fixupTabs()
+    let expected = CGFloat(width) * (" " as NSString).size(withAttributes: [.font: font]).width
+    let actual = view.defaultParagraphStyle?.defaultTabInterval ?? 0
+    if abs(actual - expected) > 0.01 { print("FAIL saved width \(saved): tab \(actual), \(width) spaces \(expected)"); failures += 1 }
+}
 if failures > 0 { exit(1) }
 print("PASS: a tab is as wide as the tab width in spaces")
 '''.replace('__METHOD__', method)
@@ -50,7 +62,9 @@ with tempfile.TemporaryDirectory(prefix='tex2img-tab-width-') as tmp:
     work = Path(tmp)
     (work / 'main.swift').write_text(MAIN)
     subprocess.run(['xcrun', 'swiftc', str(ROOT / 'Sources/Extensions/Foundation/String-Extension.swift'),
-                    str(ROOT / 'Sources/NSString/NSString-Extension.swift'), str(work / 'main.swift'), '-o', str(work / 'tab')], check=True)
+                    str(ROOT / 'Sources/NSString/NSString-Extension.swift'),
+                    str(ROOT / 'Sources/Extensions/Foundation/NSDictionary-Extension.swift'),
+                    str(ROOT / 'Sources/Extensions/AppKit/NSColor-Extension.swift'), str(work / 'main.swift'), '-o', str(work / 'tab')], check=True)
     result = subprocess.run([str(work / 'tab')], capture_output=True, text=True, timeout=60)
     print(result.stdout + result.stderr, end='')
     sys.exit(0 if result.returncode == 0 else 1)

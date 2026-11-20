@@ -2,8 +2,9 @@ import Cocoa
 let CommentOutTag=1,UncommentTag=2,ShiftRightTag=3,ShiftLeftTag=4
 let TabIndentKey="tab",TabWidthKey="width"
 func localizedString(_ s:String)->String{s}
-struct Profile{let useTab:Bool;func boolForKey(_ k:String)->Bool{useTab};func integerForKey(_ k:String)->Int{4}}
-class FakeController{var useTab=true;func currentProfile()->Profile{Profile(useTab:useTab)}}
+struct Profile{let useTab:Bool;let width:Int;func boolForKey(_ k:String)->Bool{useTab};func integerForKey(_ k:String)->Int{width}}
+class FakeController{var useTab=true;var width=4;func currentProfile()->Profile{Profile(useTab:useTab,width:width)}}
+__HELPERS__
 class ProbeView:NSTextView {
 override var selectedRange: NSRange { get { super.selectedRange() } set { super.setSelectedRange(newValue) } }
 let controller=FakeController()
@@ -38,6 +39,15 @@ __METHOD__
             v.string=input;v.setSelectedRange(NSRange(location:0,length:input.utf16.count))
             let item=NSMenuItem();item.tag=4;v.doCommentOrIndent(item)
             precondition(v.string == "a\nb" + (input.hasSuffix("\n") ? "\n" : ""), v.string.debugDescription)
+            cases += 1
+        }
+        // A saved tab width out of the settings' 1...100: an indent with spaces inserts at most 100 of them, and a
+        // width that is not positive is the default, 4.
+        for (width, spaces) in [(1000, 100), (Int.max, 100), (-3, 4), (0, 4), (7, 7)] {
+            let v=ProbeView(frame:NSRect(x:0,y:0,width:200,height:100));v.controller.useTab=false;v.controller.width=width
+            v.string="a";v.setSelectedRange(NSRange(location:0,length:1))
+            let item=NSMenuItem();item.tag=3;v.doCommentOrIndent(item)
+            precondition(v.string == String(repeating: " ", count: spaces) + "a", "tab width \(width): \(v.string.debugDescription)")
             cases += 1
         }
         print("エディタのコメント化・解除・インデント: \(cases)ケース成功")

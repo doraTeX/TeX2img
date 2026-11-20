@@ -793,8 +793,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         checkSquareCheckBox.state = aProfile.boolForKey(CheckSquareBracketKey) ? .on : .off
         checkParenCheckBox.state = aProfile.boolForKey(CheckParenKey) ? .on : .off
 
-        let tabWidth = aProfile.integerForKey(TabWidthKey)
-        tabWidthTextField.integerValue = tabWidth > 0 ? tabWidth : 4
+        tabWidthTextField.integerValue = validTabWidth(aProfile.integerForKey(TabWidthKey))
         tabWidthStepper.integerValue = tabWidthTextField.integerValue
 
         if keys.contains(TabIndentKey) {
@@ -982,13 +981,9 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         guard let aProfile = profileController.profileForName(autoSavedProfileName) else { return false }
         adoptProfile(aProfile)
 
-        let x = aProfile.floatForKey(XKey)
-        let y = aProfile.floatForKey(YKey)
-        let mainWindowWidth = aProfile.floatForKey(MainWindowWidthKey)
-        let mainWindowHeight = aProfile.floatForKey(MainWindowHeightKey)
-
-        if x != 0 && y != 0 && mainWindowWidth != 0 && mainWindowHeight != 0 {
-            mainWindow.setFrame(NSRect(x: CGFloat(x), y: CGFloat(y), width: CGFloat(mainWindowWidth), height: CGFloat(mainWindowHeight)), display: true)
+        // A saved frame that is not finite or has no size keeps the frame of the nib.
+        if let frame = aProfile.windowFrame(xKey: XKey, yKey: YKey, widthKey: MainWindowWidthKey, heightKey: MainWindowHeightKey) {
+            mainWindow.setFrame(frame, display: true)
         }
 
         if aProfile.boolForKey(AutoRestoreSourceKey), let body = aProfile.stringForKey(SourceBodyKey) {
@@ -1048,8 +1043,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
             currentProfile[TopMarginKey] = topMarginTextField.integerValue
             currentProfile[BottomMarginKey] = bottomMarginTextField.integerValue
 
-            let tabWidth = tabWidthTextField.integerValue
-            currentProfile[TabWidthKey] = tabWidth > 0 ? tabWidth : 4
+            currentProfile[TabWidthKey] = validTabWidth(tabWidthTextField.integerValue)
             currentProfile[TabIndentKey] = tabIndentCheckBox.state.rawValue
             currentProfile[WrapLineKey] = wrapLineCheckBox.state.rawValue
             currentProfile[UnitKey] = unitPopUp.selectedTag()
@@ -1381,7 +1375,7 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
     /// Hidden system SF Mono (.AppleSystemUIFontMonospaced), not the SF Mono family installed under /Library/Fonts.
     /// Look the face up by name: the object monospacedSystemFont returns is not safe to hand to NSTextView.setFont: later.
     private static func defaultSourceFont(size: CGFloat = 13) -> NSFont? {
-        let size = size > 0 ? size : 13
+        let size = size.isFinite && size > 0 ? size : 13
         if let system = presentFont(.monospacedSystemFont(ofSize: size, weight: .regular)),
            let stable = NSFont(name: system.fontName, size: size) {
             return stable
@@ -1414,8 +1408,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
 
     /// A saved Osaka-Mono is the old built-in default, written into profiles on quit, so it follows the new default. Any other saved face stays.
     private func editorFont(from profile: Profile) -> NSFont {
-        let savedSize = CGFloat(profile.floatForKey(SourceFontSizeKey))
-        let size: CGFloat = savedSize > 0 ? savedSize : 13
+        // A size that is not finite and positive makes no font.
+        let size = profile.positiveFiniteNumberForKey(SourceFontSizeKey) ?? 13
         if let name = profile.stringForKey(SourceFontNameKey),
            name != "Osaka-Mono",
            let font = NSFont(name: name, size: size) {

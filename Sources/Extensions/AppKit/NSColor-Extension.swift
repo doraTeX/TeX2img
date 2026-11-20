@@ -33,9 +33,11 @@ extension NSColor {
         let b: Int
         
         if let export = usingColorSpace(.deviceRGB) {
-            r = Int(round(export.redComponent * 255))
-            g = Int(round(export.greenComponent * 255))
-            b = Int(round(export.blueComponent * 255))
+            // Int(_:) traps on a component that is not finite; one out of 0...1 is shown as the nearest end.
+            let byte = { (component: CGFloat) in component.isFinite ? Int((min(max(component, 0), 1) * 255).rounded()) : 0 }
+            r = byte(export.redComponent)
+            g = byte(export.greenComponent)
+            b = byte(export.blueComponent)
         } else {
             r = 0
             g = 0
@@ -48,8 +50,10 @@ extension NSColor {
     convenience init?(serializedString string: String) {
         let chunks = string.components(separatedBy: ":")
         
-        guard chunks.count == 4 else { return nil }
-        let components = chunks.map { CGFloat(Double($0) ?? 0) }
+        // A component that is not a finite number is no color (the caller uses its default); one out of 0...1
+        // is the nearest end, as a device RGB color is drawn.
+        let components = chunks.compactMap { Double($0) }.filter(\.isFinite).map { CGFloat(min(max($0, 0), 1)) }
+        guard chunks.count == 4, components.count == 4 else { return nil }
         
         self.init(deviceRed: components[0],
                   green: components[1],

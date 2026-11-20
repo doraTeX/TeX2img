@@ -334,7 +334,7 @@ class TeXTextView: NSTextView {
 
         // The width of the space character; glyph number 32 is another glyph in most proportional fonts.
         let charWidth = (" " as NSString).size(withAttributes: [.font: font]).width
-        paragraphStyle.defaultTabInterval = charWidth * CGFloat(currentProfile.integerForKey(TabWidthKey))
+        paragraphStyle.defaultTabInterval = charWidth * CGFloat(validTabWidth(currentProfile.integerForKey(TabWidthKey)))
         paragraphStyle.tabStops = []
 
         defaultParagraphStyle = paragraphStyle
@@ -529,7 +529,7 @@ class TeXTextView: NSTextView {
 
         let aProfile = controller.currentProfile()
         let useTabForIndent = aProfile.boolForKey(TabIndentKey)
-        let tabWidth = aProfile.integerForKey(TabWidthKey)
+        let tabWidth = validTabWidth(aProfile.integerForKey(TabWidthKey))
 
         repeat {
             // Swift の String は値型なので、前の行を編集した後に取り直す。
@@ -573,17 +573,13 @@ class TeXTextView: NSTextView {
                 }
 
             case Int(ShiftRightTag):
-                var indentString = ""
-                if tabWidth > 0 {
-                    indentString = String(repeating: " ", count: tabWidth)
-                }
                 if useTabForIndent {
                     replaceCharacters(in: modifyRange, with: "\t")
                     blockEnd += 1
                     lineEnd += 1
                     increment += 1
                 } else {
-                    replaceCharacters(in: modifyRange, with: indentString)
+                    replaceCharacters(in: modifyRange, with: String(repeating: " ", count: tabWidth))
                     blockEnd += tabWidth
                     lineEnd += tabWidth
                     increment += tabWidth
