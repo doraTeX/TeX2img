@@ -72,20 +72,19 @@ extension Converter {
     ///   - epsPath: EPSのパス
     ///   - boundingBox: 新しいBoundingBoxの内容
     ///   - hiresBoundingBox: 新しいHiResBoundingBoxの内容
-    func replaceBBoxOf(epsPath: String, boundingBox: String, hiresBoundingBox: String) {
+    /// - Returns: false when the file lacks one of the two lines (it is then left as it is), or cannot be read or written
+    func replaceBBoxOf(epsPath: String, boundingBox: String, hiresBoundingBox: String) -> Bool {
         guard var epsData = Data(filePath: epsPath),
               let bboxData = boundingBox.data(using: .utf8),
-              let hiresBboxData = hiresBoundingBox.data(using: .utf8) else { return }
-        
-        if let bbArea = bboxOf(data: epsData, hires: false) {
-            epsData.replaceSubrange(bbArea.range, with: bboxData)
-        }
+              let hiresBboxData = hiresBoundingBox.data(using: .utf8) else { return false }
 
-        if let hiresBbArea = bboxOf(data: epsData, hires: true) {
-            epsData.replaceSubrange(hiresBbArea.range, with: hiresBboxData)
-        }
+        // An EPS file without both boxes would be given out with neither the size of the page nor the one wanted.
+        guard let bbArea = bboxOf(data: epsData, hires: false) else { return false }
+        epsData.replaceSubrange(bbArea.range, with: bboxData)
+        guard let hiresBbArea = bboxOf(data: epsData, hires: true) else { return false }
+        epsData.replaceSubrange(hiresBbArea.range, with: hiresBboxData)
 
-        guard epsData.writeToPath(epsPath) else { return }
+        return epsData.writeToPath(epsPath)
     }
 
     

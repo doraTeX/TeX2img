@@ -115,6 +115,15 @@ func read(_ path: String) -> String? { try? String(contentsOfFile: path, encodin
         expect("no page: an error is shown", keep.controller?.errors == [output("keep.eps")])
         expect("no such page: the step fails", !keep.replaceEpsBBox("keep.eps", withPageBoxOfPdf: "page.pdf", page: 2))
         expect("no such page: the EPS file is kept", read(output("keep.eps")) == eps)
+        // An EPS file without one of its box lines: the step fails and the file stays as it is.
+        for missing in ["%%BoundingBox: 0 0 10 10\n", "%%HiResBoundingBox: 0.250000 0.250000 9.750000 9.750000\n"] {
+            let boxless = eps.replacingOccurrences(of: missing, with: "")
+            try! Data(boxless.utf8).write(to: URL(fileURLWithPath: output("boxless.eps")))
+            keep.pageBoxType = .cropBox
+            expect("no \(missing): the step fails", !keep.replaceEpsBBox("boxless.eps", withPageBoxOfPdf: "page.pdf", page: 1))
+            expect("no \(missing): the file is kept", read(output("boxless.eps")) == boxless)
+        }
+        keep.pageBoxType = .mediaBox
         // A page that can be read: both boxes are those of the page box.
         keep.pageBoxType = .cropBox
         expect("a page: the step succeeds", keep.replaceEpsBBox("keep.eps", withPageBoxOfPdf: "page.pdf", page: 1))

@@ -140,6 +140,25 @@ with tempfile.TemporaryDirectory(prefix='tex2img-cli-regressions-') as tmp:
     check(result.returncode == 0 and image_size('not-failed.png') is not None,
           'the same Ghostscript makes a PNG image (no EPS step)', result)
 
+    # An EPS file from Ghostscript without its two box lines: the conversion fails, with and without keeping the page
+    # size, and an output file already there is left as it was (it was given out with neither box).
+    boxless_gs = root / 'boxless-eps-gs'
+    boxless_gs.write_text('#!/bin/sh\n"%s" "$@"\nstatus=$?\ncase " $* " in *DEVICE=eps2write*|*DEVICE=epswrite*)\n'
+                          '  for a in "$@"; do case "$a" in -sOutputFile=*) f="${a#-sOutputFile=}"\n'
+                          '    grep -v -e "^%%%%BoundingBox:" -e "^%%%%HiResBoundingBox:" "$f" > "$f.tmp" && mv "$f.tmp" "$f" ;; esac; done ;;\n'
+                          'esac\nexit $status\n' % shutil.which('gs'))
+    boxless_gs.chmod(0o755)
+    for options in (['--keep-page-size'], []):
+        kept = root / 'kept.eps'
+        kept.write_bytes(b'%!PS-Adobe-3.0 EPSF-3.0\n%% an earlier output\n')
+        result = run('--gs', str(boxless_gs), *options, 'text.pdf', kept.name, cwd=root)
+        check(result.returncode == 1 and '1 file was generated' not in result.stdout
+              and kept.read_bytes() == b'%!PS-Adobe-3.0 EPSF-3.0\n%% an earlier output\n',
+              f'an EPS file without its box lines {options} fails and keeps the earlier output', result)
+    result = run('--keep-page-size', 'text.pdf', 'kept-size.eps', cwd=root)
+    check(result.returncode == 0 and boxes('kept-size.eps') is not None,
+          f'an EPS file of the page size has both boxes: {boxes("kept-size.eps")}', result)
+
     # --num 0 compiles once (it crashed).
     (root / 'one.tex').write_text('\\documentclass{article}\\pagestyle{empty}\\begin{document}X\\end{document}\n')
     result = run('--latex', 'pdflatex', '--num', '0', 'one.tex', 'one.png', cwd=root)

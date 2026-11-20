@@ -463,13 +463,19 @@ class Converter: NSObject {
             .replacingOccurrences(of: "%%HiResBoundingBox: ", with: "")
         let bbContent = bbStr.replacingOccurrences(of: "%%BoundingBox: ", with: "")
 
-        replaceBBoxOf(epsPath: epsPath, boundingBox: bbContent, hiresBoundingBox: hiresBbStr ?? bbContent)
+        guard replaceBBoxOf(epsPath: epsPath, boundingBox: bbContent, hiresBoundingBox: hiresBbStr ?? bbContent) else {
+            controller?.showFileGenerationError(epsPath)
+            return false
+        }
         return true
     }
 
     private func replaceEpsBBoxWithEmptyBBox(_ epsName: String) -> Bool {
         let epsPath = workingDirectory.appendingPathComponent(epsName)
-        replaceBBoxOf(epsPath: epsPath, boundingBox: "0 0 0 0\n", hiresBoundingBox: "0.000000 0.000000 0.000000 0.000000\n")
+        guard replaceBBoxOf(epsPath: epsPath, boundingBox: "0 0 0 0\n", hiresBoundingBox: "0.000000 0.000000 0.000000 0.000000\n") else {
+            controller?.showFileGenerationError(epsPath)
+            return false
+        }
         return true
     }
 
@@ -484,7 +490,10 @@ class Converter: NSObject {
             return false
         }
 
-        replaceBBoxOf(epsPath: epsPath, boundingBox: bbStr, hiresBoundingBox: hiresBbStr)
+        guard replaceBBoxOf(epsPath: epsPath, boundingBox: bbStr, hiresBoundingBox: hiresBbStr) else {
+            controller?.showFileGenerationError(epsPath)
+            return false
+        }
         return true
     }
 
