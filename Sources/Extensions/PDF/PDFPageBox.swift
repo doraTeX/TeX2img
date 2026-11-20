@@ -31,7 +31,12 @@ class PDFPageBox: NSObject {
     func bboxString(of box: CGPDFBox, hires: Bool, addHeader: Bool) -> String {
         let mediaBoxRect = self.mediaBoxRect
         var rect = self.boxRect(box).intersection(mediaBoxRect) // MediaBox でクリップ
-        
+        // A box that lies outside the MediaBox has no intersection: CGRect.null, whose origin is infinite, and Int(_:)
+        // traps on that. PDFKit shows such a page as empty, so the box is an empty one at the corner of the MediaBox.
+        if rect.isNull {
+            rect = CGRect(origin: mediaBoxRect.origin, size: .zero)
+        }
+
         // gs がデフォルトで -dUseMediaBox で呼ばれることに対応して，MediaBox に対する相対座標を返す
         rect.origin.x -= mediaBoxRect.origin.x
         rect.origin.y -= mediaBoxRect.origin.y
