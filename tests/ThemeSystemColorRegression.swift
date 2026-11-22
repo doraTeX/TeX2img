@@ -66,6 +66,12 @@ check(ThemePalette.sameUsedColors(older, bundled, bundled: bundled) && ThemePale
 var customRed = bundled; customRed["EditorSelection"] = red
 check(!ThemePalette.sameUsedColors(customRed, older, bundled: bundled) && !ThemePalette.sameUsedColors(older, customRed, bundled: bundled),
       "an earlier copy and a theme with its own selection color differ")
+// A theme without a cursor color, using the system's: turning the switch off gives it the default cursor color, not the
+// bundled one, so a theme of the same name storing the bundled cursor color differs.
+var withoutCursor = bundled; withoutCursor["EditorInsertionPoint"] = nil; withoutCursor[cursorKey] = true
+var withCursor = bundled; withCursor["EditorInsertionPoint"] = green; withCursor[cursorKey] = true
+var bundledWithCursor = bundled; bundledWithCursor["EditorInsertionPoint"] = green
+check(!ThemePalette.sameUsedColors(withoutCursor, withCursor, bundled: bundledWithCursor), "a missing cursor color is not the bundled one")
 // Without a bundled theme of the name (a theme of the user's own without the color), a stored color counts.
 check(!ThemePalette.sameUsedColors(older, bundled), "a stored selection color counts for a theme without a bundled one")
 check(!ThemePalette.sameUsedColors(older, ["EditorText": red, "EditorSelection": green, selectionKey: false]), "a selection drawn in the theme's color counts")

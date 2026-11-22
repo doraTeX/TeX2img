@@ -50,6 +50,7 @@ def main():
             "every key compared": ("        for key in keysAddedWithSelection where copy[key] == nil { bundled[key] = nil }\n", ""),
             "only shared keys compared": ("        return sameColors(copy, bundled)\n    }", "        return Set(copy.keys).intersection(bundled.keys).subtracting([\"Title\"]).allSatisfy { NSDictionary(dictionary: [$0: copy[$0]!]).isEqual(to: [$0: bundled[$0]!]) }\n    }"),
             "bundled color not used for a missing one": ("                    x = x ?? components(bundled, key: role.key)\n                    y = y ?? components(bundled, key: role.key)\n", ""),
+            "every color filled in from the bundled theme": ("                if role == .selection, ThemeSystemColor.uses(role, in: a)", "                if ThemeSystemColor.uses(role, in: a)"),
             "a missing color taken as the same": ("                return x == y\n", "                return x == y || x == nil || y == nil\n"),
         }
         for name, (old, new) in mutations.items():

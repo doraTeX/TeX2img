@@ -501,14 +501,14 @@ enum ThemePalette {
     /// Whether two themes agree in every color TeX2img draws, and in the system color switches. Keys that only TeXShop
     /// uses, such as the expl3 colors, are ignored.
     /// A color whose system color switch is on in both comes back when the switch is turned off: the one stored, or, for a
-    /// theme that stores none (an earlier copy), the color of the bundled theme of the same name (`bundled`), which turning
-    /// the switch off gives it. An earlier copy and the new bundled theme are then the same, while a color of its own
-    /// stored on either side counts.
+    /// selection color that a theme does not store (an earlier copy), the color of the bundled theme of the same name
+    /// (`bundled`), which turning the switch off gives it (the cursor gets no color then). An earlier copy and the new
+    /// bundled theme are then the same, while a color of its own stored on either side counts.
     static func sameUsedColors(_ a: ThemeColors, _ b: ThemeColors, bundled: ThemeColors? = nil) -> Bool {
         ThemeSystemColor.roles.allSatisfy { ThemeSystemColor.uses($0, in: a) == ThemeSystemColor.uses($0, in: b) }
             && ThemeRole.allCases.allSatisfy { role in
                 var x = components(a, key: role.key), y = components(b, key: role.key)
-                if ThemeSystemColor.uses(role, in: a) && ThemeSystemColor.uses(role, in: b), let bundled {
+                if role == .selection, ThemeSystemColor.uses(role, in: a) && ThemeSystemColor.uses(role, in: b), let bundled {
                     x = x ?? components(bundled, key: role.key)
                     y = y ?? components(bundled, key: role.key)
                 }
