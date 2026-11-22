@@ -49,7 +49,8 @@ def main():
             "switches ignored when drawing": ("        if ThemeSystemColor.uses(role, in: theme), let system = ThemeSystemColor.systemColor(role) { return system }\n", ""),
             "every key compared": ("        for key in keysAddedWithSelection where copy[key] == nil { bundled[key] = nil }\n", ""),
             "only shared keys compared": ("        return sameColors(copy, bundled)\n    }", "        return Set(copy.keys).intersection(bundled.keys).subtracting([\"Title\"]).allSatisfy { NSDictionary(dictionary: [$0: copy[$0]!]).isEqual(to: [$0: bundled[$0]!]) }\n    }"),
-            "colors not drawn compared": ("                (ThemeSystemColor.uses(role, in: a) && ThemeSystemColor.uses(role, in: b))\n                    || ", "                "),
+            "colors not drawn compared": ("                return x == y || (ThemeSystemColor.uses(role, in: a) && ThemeSystemColor.uses(role, in: b) && (x == nil || y == nil))", "                return x == y"),
+            "stored colors ignored with the switch on": ("&& (x == nil || y == nil))", ")"),
         }
         for name, (old, new) in mutations.items():
             assert source.count(old) == 1, name

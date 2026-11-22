@@ -61,6 +61,12 @@ check(!ThemePalette.sameSharedColors(["Title": "B"], bundled), "a missing text c
 // TeXShop's bundled theme with the selection color and an earlier copy without it draw the same: not offered for import.
 check(ThemePalette.sameUsedColors(older, bundled) && ThemePalette.sameUsedColors(bundled, older), "an earlier copy and the new bundled theme draw the same")
 check(!ThemePalette.sameUsedColors(older, ["EditorText": red, "EditorSelection": green, selectionKey: false]), "a selection drawn in the theme's color counts")
+// Both using the system's color, with stored colors of their own that differ: they differ (the colors come back when the
+// switch is turned off).
+check(!ThemePalette.sameUsedColors(["EditorText": red, "EditorInsertionPoint": red, cursorKey: true],
+                                   ["EditorText": red, "EditorInsertionPoint": green, cursorKey: true]), "stored cursor colors that differ count")
+check(!ThemePalette.sameUsedColors(["EditorText": red, "EditorSelection": red, selectionKey: true],
+                                   ["EditorText": red, "EditorSelection": green, selectionKey: true]), "stored selection colors that differ count")
 check(!ThemePalette.sameUsedColors(["EditorText": red, "EditorSelection": red, selectionKey: false],
                                    ["EditorText": red, "EditorSelection": green, selectionKey: false]), "selection colors drawn differ")
 

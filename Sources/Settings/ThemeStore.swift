@@ -500,13 +500,14 @@ enum ThemePalette {
 
     /// Whether two themes agree in every color TeX2img draws, and in the system color switches. Keys that only TeXShop
     /// uses, such as the expl3 colors, are ignored.
-    /// A color whose system color switch is on in both is not drawn and does not count: an earlier copy without the
-    /// selection color and a theme with one, both showing the system's selection, are the same.
+    /// A color whose system color switch is on in both and that only one of them stores does not count: an earlier copy
+    /// without the selection color and a theme with one, both showing the system's selection, are the same. Colors both
+    /// store count, since they come back when the switch is turned off.
     static func sameUsedColors(_ a: ThemeColors, _ b: ThemeColors) -> Bool {
         ThemeSystemColor.roles.allSatisfy { ThemeSystemColor.uses($0, in: a) == ThemeSystemColor.uses($0, in: b) }
             && ThemeRole.allCases.allSatisfy { role in
-                (ThemeSystemColor.uses(role, in: a) && ThemeSystemColor.uses(role, in: b))
-                    || components(a, key: role.key) == components(b, key: role.key)
+                let x = components(a, key: role.key), y = components(b, key: role.key)
+                return x == y || (ThemeSystemColor.uses(role, in: a) && ThemeSystemColor.uses(role, in: b) && (x == nil || y == nil))
             }
     }
 
