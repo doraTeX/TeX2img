@@ -500,14 +500,19 @@ enum ThemePalette {
 
     /// Whether two themes agree in every color TeX2img draws, and in the system color switches. Keys that only TeXShop
     /// uses, such as the expl3 colors, are ignored.
-    /// A color whose system color switch is on in both and that only one of them stores does not count: an earlier copy
-    /// without the selection color and a theme with one, both showing the system's selection, are the same. Colors both
-    /// store count, since they come back when the switch is turned off.
-    static func sameUsedColors(_ a: ThemeColors, _ b: ThemeColors) -> Bool {
+    /// A color whose system color switch is on in both comes back when the switch is turned off: the one stored, or, for a
+    /// theme that stores none (an earlier copy), the color of the bundled theme of the same name (`bundled`), which turning
+    /// the switch off gives it. An earlier copy and the new bundled theme are then the same, while a color of its own
+    /// stored on either side counts.
+    static func sameUsedColors(_ a: ThemeColors, _ b: ThemeColors, bundled: ThemeColors? = nil) -> Bool {
         ThemeSystemColor.roles.allSatisfy { ThemeSystemColor.uses($0, in: a) == ThemeSystemColor.uses($0, in: b) }
             && ThemeRole.allCases.allSatisfy { role in
-                let x = components(a, key: role.key), y = components(b, key: role.key)
-                return x == y || (ThemeSystemColor.uses(role, in: a) && ThemeSystemColor.uses(role, in: b) && (x == nil || y == nil))
+                var x = components(a, key: role.key), y = components(b, key: role.key)
+                if ThemeSystemColor.uses(role, in: a) && ThemeSystemColor.uses(role, in: b), let bundled {
+                    x = x ?? components(bundled, key: role.key)
+                    y = y ?? components(bundled, key: role.key)
+                }
+                return x == y
             }
     }
 

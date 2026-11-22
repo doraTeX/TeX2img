@@ -396,7 +396,7 @@ final class ThemeSettingsController: NSObject {
         return texShop.titles().filter { title in
             guard let colors = texShop.read(title: title) else { return false }
             guard let own = library.store.read(title: title) else { return true }
-            return !ThemePalette.sameUsedColors(colors, own)
+            return !ThemePalette.sameUsedColors(colors, own, bundled: bundledColors(title: title))
         }
     }
 

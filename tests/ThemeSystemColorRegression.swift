@@ -59,7 +59,15 @@ check(!ThemePalette.sameUsedColors(["EditorText": red, selectionKey: false], ["E
 // A color of earlier versions missing from the copy is still a change that can be restored.
 check(!ThemePalette.sameSharedColors(["Title": "B"], bundled), "a missing text color is a change")
 // TeXShop's bundled theme with the selection color and an earlier copy without it draw the same: not offered for import.
-check(ThemePalette.sameUsedColors(older, bundled) && ThemePalette.sameUsedColors(bundled, older), "an earlier copy and the new bundled theme draw the same")
+check(ThemePalette.sameUsedColors(older, bundled, bundled: bundled) && ThemePalette.sameUsedColors(bundled, older, bundled: bundled),
+      "an earlier copy and the new bundled theme draw the same")
+// An earlier copy, and a theme of the same name elsewhere (TeXShop's) with a selection color of its own: they differ,
+// since turning the switch off gives the copy the bundled color.
+var customRed = bundled; customRed["EditorSelection"] = red
+check(!ThemePalette.sameUsedColors(customRed, older, bundled: bundled) && !ThemePalette.sameUsedColors(older, customRed, bundled: bundled),
+      "an earlier copy and a theme with its own selection color differ")
+// Without a bundled theme of the name (a theme of the user's own without the color), a stored color counts.
+check(!ThemePalette.sameUsedColors(older, bundled), "a stored selection color counts for a theme without a bundled one")
 check(!ThemePalette.sameUsedColors(older, ["EditorText": red, "EditorSelection": green, selectionKey: false]), "a selection drawn in the theme's color counts")
 // Both using the system's color, with stored colors of their own that differ: they differ (the colors come back when the
 // switch is turned off).

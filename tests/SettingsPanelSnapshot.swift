@@ -319,6 +319,23 @@ check(ThemeStore.texShopDirectory.path.contains("/settings-home/"), "the TeXShop
 try? texShopThemes.write(withExpl, title: "SolarizedDark")
 try? texShopThemes.write(otherComment, title: "Solarized Comment")
 check(themes.importableTeXShopThemes() == ["Solarized Comment"], "importable TeXShop themes: \(themes.importableTeXShopThemes())")
+// An earlier copy of SolarizedLite, without the selection color and the switches: TeXShop's bundled SolarizedLite (the
+// same colors, with the selection color) is not offered, but one with a selection color of its own is.
+do {
+    let ownLite = store.read(title: "SolarizedLite")!
+    var earlier = ownLite
+    for key in ThemePalette.keysAddedWithSelection { earlier[key] = nil }
+    try! store.write(earlier, title: "SolarizedLite")
+    try! texShopThemes.write(ThemeStore(directory: ThemeStore.bundledDirectory!).read(title: "SolarizedLite")!, title: "SolarizedLite")
+    check(!themes.importableTeXShopThemes().contains("SolarizedLite"), "TeXShop's unchanged SolarizedLite is not offered for an earlier copy")
+    var red = ThemeStore(directory: ThemeStore.bundledDirectory!).read(title: "SolarizedLite")!
+    red["EditorSelection"] = [1, 0, 0, 1]
+    try! texShopThemes.write(red, title: "SolarizedLite")
+    check(themes.importableTeXShopThemes().contains("SolarizedLite"), "a TeXShop SolarizedLite with its own selection color is offered")
+    try! store.write(ownLite, title: "SolarizedLite")
+    try? FileManager.default.removeItem(at: texShopThemes.url(forTitle: "SolarizedLite")!)
+    check(themes.importableTeXShopThemes() == ["Solarized Comment"], "the TeXShop themes as before")
+}
 // Fullwidth letters and symbols are colored only by themes that define them.
 check(ThemeLibrary.isHighlightedFullwidthCharacter(0xFF21) && ThemeLibrary.isHighlightedFullwidthCharacter(0x2212)
       && !ThemeLibrary.isHighlightedFullwidthCharacter(0xFF0C) && !ThemeLibrary.isHighlightedFullwidthCharacter(0x3042), "fullwidth characters")
