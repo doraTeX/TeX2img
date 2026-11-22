@@ -1,7 +1,7 @@
 import AppKit
 
 // Runs the product's TeXTextView in a window that is never shown, with a stand-in for ControllerG, and checks the switch
-// of the highlight of fullwidth letters, digits, symbols and the minus sign (Settings › Editor › Syntax Coloring):
+// of the highlight of fullwidth letters, digits, symbols and the minus sign (Settings › Editor › Syntax Highlighting):
 // off, these characters take exactly the attributes of ordinary text in every context and after every coloring;
 // on again, they get the theme's colors back; a profile without the switch (an earlier version's) has it on.
 // Run through tests/test_fullwidth_highlight_switch.py.

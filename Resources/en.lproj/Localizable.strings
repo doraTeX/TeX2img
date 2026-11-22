@@ -201,7 +201,7 @@
 "Indent with tabs" = "Indent with tabs";
 "Input" = "Input";
 "Command completion key" = "Command completion key";
-"Syntax Coloring" = "Syntax Coloring";
+"Syntax Highlighting" = "Syntax Highlighting";
 "Treat @ as part of command names" = "Treat @ as part of command names";
 "As after \\makeatletter." = "As after \\makeatletter.";
 "Highlight fullwidth letters and symbols" = "Highlight fullwidth letters and symbols";

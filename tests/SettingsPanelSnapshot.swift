@@ -343,7 +343,7 @@ check(ThemeLibrary.shared.fullwidthAttributes(lightTitle: ThemeStore.defaultLigh
       "TeX2img Lite colors fullwidth characters")
 try! store.write(["EditorText": [0, 0, 0, 1]], title: "No Fullwidth")
 check(ThemeLibrary.shared.fullwidthAttributes(lightTitle: "No Fullwidth", darkTitle: nil, dark: false) == nil, "a theme without the keys colors nothing")
-// The switch of fullwidth letters and symbols is a row of Syntax Coloring, on by default, and the theme keeps both colors.
+// The switch of fullwidth letters and symbols is a row of Syntax Highlighting, on by default, and the theme keeps both colors.
 do {
     let fullwidthSwitch = controller.highlightFullwidthCharactersCheckBox!
     let row = all(SettingsRowView.self, in: settings.category("Editor")!.view).first { all(NSSwitch.self, in: $0).contains(fullwidthSwitch) }
@@ -355,7 +355,7 @@ do {
     var ancestor: NSView? = row
     while let view = ancestor, view.identifier?.rawValue != "group" { ancestor = view.superview }
     let heading = ancestor.flatMap { group in all(NSTextField.self, in: group).first { $0.identifier?.rawValue == "group.heading" } }
-    check(heading?.stringValue == (language == "ja" ? "構文の色分け" : "Syntax Coloring"), "the fullwidth switch is in Syntax Coloring: \(String(describing: heading?.stringValue))")
+    check(heading?.stringValue == (language == "ja" ? "シンタックスハイライト" : "Syntax Highlighting"), "the fullwidth switch is in Syntax Highlighting: \(String(describing: heading?.stringValue))")
     for role in [ThemeRole.fullwidthSymbol, .fullwidthBackground] {
         check(themes.wells[role]?.isEnabled == true, "the theme keeps the well of \(role)")
     }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Checks the switch of the highlight of fullwidth letters, digits and symbols (Settings > Editor > Syntax Coloring) in
+"""Checks the switch of the highlight of fullwidth letters, digits and symbols (Settings > Editor > Syntax Highlighting) in
 the real TeXTextView: off, these characters look exactly like ordinary text in every context and after every coloring;
 on again, they get the theme's colors back; a profile without the switch has it on. Also checks that the switch of the
 settings window colors the whole text of both views. No window is shown."""

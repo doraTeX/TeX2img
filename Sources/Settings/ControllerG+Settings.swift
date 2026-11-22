@@ -220,7 +220,7 @@ extension ControllerG {
                 SettingsUI.row(label("Tab width"), SettingsUI.numberAccessory(field: tabWidthTextField, stepper: tabWidthStepper, unit: label("characters"))),
                 SettingsUI.row(label("Indent with tabs"), tabIndentCheckBox),
             ]),
-            SettingsUI.group(label("Syntax Coloring"), [
+            SettingsUI.group(label("Syntax Highlighting"), [
                 SettingsUI.row(label("Treat @ as part of command names"), note: label("As after \\makeatletter."), makeatletterEnabledCheckBox),
                 SettingsUI.row(label("Highlight fullwidth letters and symbols"), highlightFullwidthCharactersCheckBox),
             ]),
