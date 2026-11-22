@@ -66,6 +66,10 @@ class UtilityG: NSObject {
         readColor(from: profile, role: .cursor)
     }
 
+    static func selectionColor(inProfile profile: Profile) -> NSColor {
+        readColor(from: profile, role: .selection)
+    }
+
     static func braceColor(inProfile profile: Profile) -> NSColor {
         readColor(from: profile, role: .marker)
     }

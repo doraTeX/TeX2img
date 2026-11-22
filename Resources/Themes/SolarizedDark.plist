@@ -72,6 +72,8 @@
 		<real>0.5889999866485596</real>
 		<real>1</real>
 	</array>
+	<key>EditorInsertionPointUsesSystemColor</key>
+	<false/>
 	<key>EditorInvisibleChar</key>
 	<array>
 		<real>1</real>
@@ -86,6 +88,15 @@
 		<real>0.105882</real>
 		<real>1</real>
 	</array>
+	<key>EditorSelection</key>
+	<array>
+		<real>0.152941</real>
+		<real>0.274510</real>
+		<real>0.258824</real>
+		<integer>1</integer>
+	</array>
+	<key>EditorSelectionUsesSystemColor</key>
+	<true/>
 	<key>EditorText</key>
 	<array>
 		<real>0.5139999985694885</real>

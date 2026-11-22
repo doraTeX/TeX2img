@@ -260,6 +260,16 @@ enum SettingsUI {
         NSButton(checkboxWithTitle: title, target: target, action: action)
     }
 
+    /// A small check box under a color well: "Use system color".
+    static func makeColorSwitch(_ title: String, target: AnyObject?, action: Selector?) -> NSButton {
+        let box = NSButton(checkboxWithTitle: title, target: target, action: action)
+        box.controlSize = .small
+        box.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
+        box.translatesAutoresizingMaskIntoConstraints = false
+        box.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        return box
+    }
+
     static func makeButton(_ title: String, target: AnyObject?, action: Selector?) -> NSButton {
         let button = NSButton(title: title, target: target, action: action)
         button.bezelStyle = .rounded
@@ -489,16 +499,31 @@ enum SettingsUI {
 
     /// Color wells three to a row, each followed by its name, at the same places in every group (TeXShop 6.00's theme
     /// groups). The last name of a group may use the empty columns after it.
-    static func colorGrid(_ items: [(NSColorWell, String)], columnWidth: CGFloat) -> (NSView, [SettingsLabel]) {
+    /// A color with a switch (the system color of the cursor and the selection) has it under its well, at the left edge
+    /// of the column; the cell is a group named after the color, so that switches of the same title are told apart.
+    static func colorGrid(_ items: [(NSColorWell, String)], columnWidth: CGFloat, switches: [Int: NSButton] = [:]) -> (NSView, [SettingsLabel]) {
         var cells: [[NSView]] = []
         var labels: [SettingsLabel] = []
         var current: [NSView] = []
-        for (well, title) in items {
+        for (index, (well, title)) in items.enumerated() {
             let label = SettingsLabel(labelWithString: title)
             label.translatesAutoresizingMaskIntoConstraints = false
             label.enabledTextColor = .labelColor
             labels.append(label)
-            current.append(hstack([well, label], spacing: colorNameSpacing))
+            let named = hstack([well, label], spacing: colorNameSpacing)
+            if let box = switches[index] {
+                let cell = NSStackView(views: [named, box])
+                cell.orientation = .vertical
+                cell.alignment = .leading
+                cell.spacing = 4
+                cell.translatesAutoresizingMaskIntoConstraints = false
+                cell.setAccessibilityElement(true)
+                cell.setAccessibilityRole(.group)
+                cell.setAccessibilityLabel(title)
+                current.append(cell)
+            } else {
+                current.append(named)
+            }
             if current.count == colorColumns { cells.append(current); current = [] }
         }
         if !current.isEmpty {

@@ -5,7 +5,7 @@ typealias ThemeColors = [String: Any]
 
 /// The theme colors TeX2img uses, with the TeXShop key that stores each of them.
 enum ThemeRole: CaseIterable {
-    case text, background, cursor, flash
+    case text, background, cursor, selection, flash
     case comment, command, marker
     case invisible, highlightedBrace, enclosedContent
     case consoleText, consoleBackground
@@ -21,6 +21,7 @@ enum ThemeRole: CaseIterable {
         case .text: return "EditorText"
         case .background: return "EditorBackground"
         case .cursor: return "EditorInsertionPoint"
+        case .selection: return "EditorSelection"
         case .flash: return "EditorFlash"
         case .comment: return "SyntaxComment"
         case .command: return "SyntaxCommand"
@@ -440,6 +441,7 @@ enum ThemePalette {
         case (.text, false): return .defaultForegroundColorForLightMode
         case (.background, false): return .defaultBackgroundColorForLightMode
         case (.cursor, false): return .defaultCursorColorForLightMode
+        case (.selection, false): return NSColor(srgbRed: 0xB3 / 255.0, green: 0xD7 / 255.0, blue: 1, alpha: 1)
         case (.flash, false): return .defaultFlashingBackgroundColorForLightMode
         case (.comment, false): return .defaultCommentColorForLightMode
         case (.command, false): return .defaultCommandColorForLightMode
@@ -452,6 +454,7 @@ enum ThemePalette {
         case (.text, true): return .defaultForegroundColorForDarkMode
         case (.background, true): return .defaultBackgroundColorForDarkMode
         case (.cursor, true): return .defaultCursorColorForDarkMode
+        case (.selection, true): return NSColor(srgbRed: 0x3F / 255.0, green: 0x63 / 255.0, blue: 0x8B / 255.0, alpha: 1)
         case (.flash, true): return .defaultFlashingBackgroundColorForDarkMode
         case (.comment, true): return .defaultCommentColorForDarkMode
         case (.command, true): return .defaultCommandColorForDarkMode
@@ -475,6 +478,14 @@ enum ThemePalette {
         if let value = components(of: color) { theme[key] = value }
     }
 
+    /// Whether a copy of a bundled theme still has the bundled settings: only the keys both have count (TeXShop's
+    /// isChangedTitle:), since earlier copies lack the settings added since, such as the selection color and the system
+    /// color switches, and TeX2img gives a missing one its default.
+    static func sameSharedColors(_ copy: ThemeColors, _ bundled: ThemeColors) -> Bool {
+        let shared = Set(copy.keys).intersection(bundled.keys).subtracting(["Title"])
+        return shared.allSatisfy { NSDictionary(dictionary: [$0: copy[$0]!]).isEqual(to: [$0: bundled[$0]!]) }
+    }
+
     /// Whether two themes show the same colors (titles are ignored).
     static func sameColors(_ a: ThemeColors, _ b: ThemeColors) -> Bool {
         var a = a, b = b
@@ -483,10 +494,58 @@ enum ThemePalette {
         return NSDictionary(dictionary: a).isEqual(to: b)
     }
 
-    /// Whether two themes agree in every color TeX2img draws. Keys that only TeXShop uses,
-    /// such as the expl3 colors, are ignored.
+    /// Whether two themes agree in every color TeX2img draws, and in the system color switches. Keys that only TeXShop
+    /// uses, such as the expl3 colors, are ignored.
     static func sameUsedColors(_ a: ThemeColors, _ b: ThemeColors) -> Bool {
         ThemeRole.allCases.allSatisfy { components(a, key: $0.key) == components(b, key: $0.key) }
+            && ThemeSystemColor.roles.allSatisfy { ThemeSystemColor.uses($0, in: a) == ThemeSystemColor.uses($0, in: b) }
+    }
+
+    /// The color drawn for a role: the system's while the theme's switch of the cursor or the selection is on, left
+    /// dynamic so that each view draws it as its appearance and the system's settings have it; the theme's otherwise.
+    static func drawnColor(_ role: ThemeRole, in theme: ThemeColors?, dark: Bool) -> NSColor {
+        if ThemeSystemColor.uses(role, in: theme), let system = ThemeSystemColor.systemColor(role) { return system }
+        return color(role, in: theme, dark: dark)
+    }
+}
+
+/// The switches "Use system color" of the cursor and the selection (TeXShop 6.00's TSThemeSystemColor.h): a theme keeps
+/// its own color while the switch is on. A theme without the switch, or with anything but a number in its place, shows
+/// what TeX2img drew before there were switches: the theme's cursor color and the system's selection color.
+enum ThemeSystemColor {
+    static let roles: [ThemeRole] = [.cursor, .selection]
+
+    static func key(_ role: ThemeRole) -> String? {
+        switch role {
+        case .cursor: return "EditorInsertionPointUsesSystemColor"
+        case .selection: return "EditorSelectionUsesSystemColor"
+        default: return nil
+        }
+    }
+
+    static func uses(_ role: ThemeRole, in theme: ThemeColors?) -> Bool {
+        guard let key = key(role) else { return false }
+        if let number = theme?[key] as? NSNumber { return number.boolValue }
+        return role == .selection
+    }
+
+    static func systemColor(_ role: ThemeRole) -> NSColor? {
+        switch role {
+        // Before macOS 14 a text view draws its cursor in the text color unless it is given another.
+        case .cursor:
+            if #available(macOS 14.0, *) { return .textInsertionPointColor }
+            return .textColor
+        case .selection: return .selectedTextBackgroundColor
+        default: return nil
+        }
+    }
+
+    /// Gives a text view its selection color, each time the theme's colors are applied: the system's included, so that
+    /// a view whose theme turns the switch on again draws the system's, not the color it had.
+    static func setSelectionColor(_ color: NSColor, of view: NSTextView) {
+        var attributes = view.selectedTextAttributes
+        attributes[.backgroundColor] = color
+        view.selectedTextAttributes = attributes
     }
 }
 
@@ -542,10 +601,11 @@ final class ThemeLibrary {
         (0xFF01...0xFF0B).contains(c) || c == 0xFF0D || (0xFF0F...0xFF5D).contains(c) || c == 0x2212
     }
 
-    /// Falls back to the default theme of the mode when the selected file cannot be read.
+    /// Falls back to the default theme of the mode when the selected file cannot be read. The cursor and the selection
+    /// follow the theme's system color switches (ThemePalette.drawnColor).
     func color(_ role: ThemeRole, lightTitle: String?, darkTitle: String?, dark: Bool) -> NSColor {
         let title = (dark ? darkTitle : lightTitle) ?? (dark ? ThemeStore.defaultDarkTitle : ThemeStore.defaultLightTitle)
         let theme = colors(title: title) ?? colors(title: dark ? ThemeStore.defaultDarkTitle : ThemeStore.defaultLightTitle)
-        return ThemePalette.color(role, in: theme, dark: dark)
+        return ThemePalette.drawnColor(role, in: theme, dark: dark)
     }
 }

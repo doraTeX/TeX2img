@@ -12,6 +12,8 @@ final class ThemeSettingsController: NSObject {
     private(set) var resetButton: NSButton!
     private(set) var newButton: NSButton!
     private(set) var wells: [ThemeRole: NSColorWell] = [:]
+    /// "Use system color" under the wells of the cursor and the selection (ThemeSystemColor).
+    private(set) var systemColorSwitches: [ThemeRole: NSButton] = [:]
     private var editingColors: ThemeColors?
     /// Colors changed in the color panel and not yet written: a drag in the panel changes the color many times
     /// a second, and each write rereads and recolors the source.
@@ -48,7 +50,14 @@ final class ThemeSettingsController: NSObject {
             if #available(macOS 14.0, *) { well.supportsAlpha = role.usesOpacity }
             wells[role] = well
         }
+        for role in ThemeSystemColor.roles {
+            systemColorSwitches[role] = SettingsUI.makeColorSwitch(NSLocalizedString("Use system color", comment: ""),
+                                                                    target: self, action: #selector(systemColorSwitchChanged(_:)))
+        }
         reloadThemeMenus()
+        // The accent or highlight color changed in System Settings: the wells of the switches that are on show it.
+        NotificationCenter.default.addObserver(self, selector: #selector(systemColorsChanged(_:)),
+                                               name: NSColor.systemColorsDidChangeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(savePendingColors),
                                                name: NSApplication.willTerminateNotification, object: nil)
     }
@@ -68,11 +77,13 @@ final class ThemeSettingsController: NSObject {
                                                NSLocalizedString("New Theme…", comment: "")].joined(separator: "\n")),
         ])
         let colorGroups: [(String, [(ThemeRole, String)])] = [
+            // The cursor and the selection, with their switches, on the second row together.
             (NSLocalizedString("Colors: Source", comment: ""), [
                 (.text, NSLocalizedString("Text", comment: "")),
                 (.background, NSLocalizedString("Background", comment: "")),
-                (.cursor, NSLocalizedString("Cursor", comment: "")),
                 (.flash, NSLocalizedString("Flashing Background", comment: "")),
+                (.cursor, NSLocalizedString("Cursor", comment: "")),
+                (.selection, NSLocalizedString("Selection", comment: "")),
             ]),
             (NSLocalizedString("Colors: Syntax Highlighting", comment: ""), [
                 (.comment, NSLocalizedString("% Comment", comment: "")),
@@ -96,12 +107,18 @@ final class ThemeSettingsController: NSObject {
         let names = colorGroups.flatMap { _, items in
             items.enumerated().filter { !SettingsUI.colorItemIsMerged($0.offset, count: items.count) }.map(\.element.1)
         }
-        let columnWidth = SettingsUI.colorColumnWidth(names)
+        // A switch in a column of its own (the cursor's) must fit the column too.
+        let switchWidth = systemColorSwitches.values.map { ceil($0.intrinsicContentSize.width) }.max() ?? 0
+        let columnWidth = max(SettingsUI.colorColumnWidth(names), switchWidth)
         minimumPaneWidth = ceil(SettingsUI.colorGridWidth(columnWidth: columnWidth) + SettingsUI.paneContentInsets)
+        let switchTitle = NSLocalizedString("Use system color", comment: "")
         return [themes, editing] + colorGroups.map { title, items in
-            let (grid, labels) = SettingsUI.colorGrid(items.map { (wells[$0.0]!, $0.1) }, columnWidth: columnWidth)
+            var switches: [Int: NSButton] = [:]
+            for (index, item) in items.enumerated() { switches[index] = systemColorSwitches[item.0] }
+            let (grid, labels) = SettingsUI.colorGrid(items.map { (wells[$0.0]!, $0.1) }, columnWidth: columnWidth, switches: switches)
             colorLabels += labels
-            let row = SettingsUI.contentRow(grid, searchTitle: items.map(\.1).joined(separator: "\n"))
+            let names = items.map(\.1) + (switches.isEmpty ? [] : [switchTitle])
+            let row = SettingsUI.contentRow(grid, searchTitle: names.joined(separator: "\n"))
             return SettingsUI.group(title, [row])
         }
     }
@@ -166,7 +183,62 @@ final class ThemeSettingsController: NSObject {
         }
         for label in colorLabels { label.isEnabled = enabled }
         newButton.isEnabled = enabled
+        refreshSystemColorControls()
         updateResetButton()
+    }
+
+    /// The switches of the edited theme, and their wells: a well whose switch is on cannot be changed and shows the
+    /// system's color as the Settings window draws it; the theme's color stays in the theme.
+    private func refreshSystemColorControls() {
+        let enabled = editingColors != nil
+        for role in ThemeSystemColor.roles {
+            guard let box = systemColorSwitches[role], let well = wells[role] else { continue }
+            let on = ThemeSystemColor.uses(role, in: editingColors)
+            box.state = on ? .on : .off
+            box.isEnabled = enabled
+            well.isEnabled = enabled && !on
+            if on, let system = ThemeSystemColor.systemColor(role) {
+                well.color = settingsWindowColor(system)
+            } else {
+                well.color = ThemePalette.color(role, in: editingColors, dark: editingIsDark)
+            }
+        }
+    }
+
+    /// A system color as the Settings window draws it.
+    private func settingsWindowColor(_ color: NSColor) -> NSColor {
+        let appearance = window?.effectiveAppearance ?? NSApp.effectiveAppearance
+        var resolved = color
+        appearance.performAsCurrentDrawingAppearance { resolved = color.usingColorSpace(.sRGB) ?? color }
+        return resolved
+    }
+
+    @objc private func systemColorsChanged(_ notification: Notification) {
+        if editingColors != nil { refreshSystemColorControls() }
+    }
+
+    /// Turns a switch on or off; the theme's color stays. A theme without a selection color turned off gets one, so
+    /// that what is drawn does not change at once: the color of the bundled theme of the same name, or else the
+    /// system's as it is drawn now.
+    @objc private func systemColorSwitchChanged(_ sender: NSButton) {
+        guard let role = systemColorSwitches.first(where: { $0.value === sender })?.key, let key = ThemeSystemColor.key(role) else { return }
+        savePendingColors()
+        guard let title = editingTitle, var colors = library.store.read(title: title) ?? editingColors else {
+            refreshSystemColorControls()
+            return
+        }
+        let on = sender.state == .on
+        colors[key] = on
+        if !on, role == .selection, ThemePalette.color(colors, key: role.key) == nil {
+            if let bundled = bundledColors(title: title), let color = ThemePalette.components(bundled, key: role.key) {
+                colors[role.key] = [color[0], color[1], color[2], 1].map { NSNumber(value: $0) }
+            } else if let system = ThemeSystemColor.systemColor(role) {
+                ThemePalette.set(settingsWindowColor(system).withAlphaComponent(1), for: role.key, in: &colors)
+            }
+        }
+        library.invalidate(title: title)
+        save(colors, title: title)
+        refreshSystemColorControls()
     }
 
     private func bundledColors(title: String) -> ThemeColors? {
@@ -179,7 +251,7 @@ final class ThemeSettingsController: NSObject {
             resetButton.isEnabled = false
             return
         }
-        resetButton.isEnabled = !ThemePalette.sameColors(original, editingColors)
+        resetButton.isEnabled = !ThemePalette.sameSharedColors(editingColors, original)
     }
 
     // MARK: Editing
@@ -221,6 +293,7 @@ final class ThemeSettingsController: NSObject {
             for (role, well) in wells where changed[role] == nil {
                 well.color = ThemePalette.color(role, in: colors, dark: editingIsDark)
             }
+            refreshSystemColorControls()
         }
     }
 

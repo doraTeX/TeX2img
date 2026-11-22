@@ -230,6 +230,8 @@
 "Text" = "Text";
 "Cursor" = "Cursor";
 "Flashing Background" = "Background flash";
+"Selection" = "Selection";
+"Use system color" = "Use system color";
 "Colors: Syntax Highlighting" = "Syntax Highlighting";
 "% Comment" = "% Comment";
 "\\command" = "\\command";

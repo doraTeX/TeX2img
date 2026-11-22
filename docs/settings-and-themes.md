@@ -46,12 +46,20 @@ TeXShop と同じ plist 形式のテーマを `~/Library/Application Support/TeX
 - 「TeXShop から取り込む」には、`~/Library/TeXShop/Themes` のテーマのうち、TeX2img にないものと
   色が違うものを並べる。選ぶとコピーする（同名のテーマがあるときは置き換えを確認する）。
 - TeX2img が使う色とテーマのキー：文字 `EditorText`、背景 `EditorBackground`、カーソル
-  `EditorInsertionPoint`、背景の点滅 `EditorFlash`、コメント `SyntaxComment`、コマンド `SyntaxCommand`、
+  `EditorInsertionPoint`、選択範囲 `EditorSelection`、背景の点滅 `EditorFlash`、コメント `SyntaxComment`、コマンド `SyntaxCommand`、
   `{ } と $` `SyntaxMarkerCurly`（ない場合は `SyntaxMarker`）、不可視文字 `EditorInvisibleChar`、
   強調表示された括弧 `EditorHighlightBraces`、括弧内の背景 `EditorHighlightContent`、
   出力ウインドウの文字・背景 `ConsoleText`／`ConsoleBackground`，全角英数記号の文字・背景
   `EditorHighlightZenkakuSymbol`／`EditorHighlightZenkakuSymbolBackground`。キーがないテーマでは従来の既定色を使う
   （全角英数記号のキーがないテーマでは，ほかの文字と同じに表示する）。
+- カーソルと選択範囲には「システムカラーを使う」がある（TeXShop 6.00と同じ。キーは
+  `EditorInsertionPointUsesSystemColor`／`EditorSelectionUsesSystemColor`）。オンの間はシステムの色
+  （アクセントカラー・強調表示色）で描き，テーマの色はファイルに残す。キーがない（または数でない）テーマは，以前と同じ
+  見え方として読む（カーソルはオフ，選択範囲はオン）。同梱テーマはカーソルがオフ，選択範囲がオンで，選択範囲の色は
+  TeXShop と同じ（TeX2img Lite は #B3D7FF，TeX2img Dark は #264F78）。選択範囲の色のないテーマでチェックを外すと，
+  同名の同梱テーマの色，なければそのときのシステムの色を書き込む。「ソース」は「文字・背景・背景の点滅」「カーソル・
+  選択範囲」の2行で，チェックボックスはウェルの下に左端をそろえて置く。「元の色に戻す…」は，コピーと同梱テーマの両方に
+  あるキーだけを比べる（以前のコピーにないキーは変えたうちに数えない）。
 - 色はTeXShop 6.00と同じく1行に3つ並べ，列の位置はグループ間でそろえる。グループの最後の色は，後ろの空いた列も使える。
   列の幅は（最後の色を除く）最も長い色の名前に合わせ，設定の窓の最小幅は，最も狭いサイドバーでも3列が収まる幅にする
   （英語で843pt，日本語で792pt。以前は780pt）。以前の版が覚えた窓の幅がそれより狭ければ広げる。

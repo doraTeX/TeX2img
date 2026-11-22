@@ -230,6 +230,8 @@
 "Text" = "文字";
 "Cursor" = "カーソル";
 "Flashing Background" = "背景の点滅";
+"Selection" = "選択範囲";
+"Use system color" = "システムカラーを使う";
 "Colors: Syntax Highlighting" = "シンタックスハイライト";
 "% Comment" = "% コメント";
 "\\command" = "\\command";

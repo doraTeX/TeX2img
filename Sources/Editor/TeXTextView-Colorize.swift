@@ -40,6 +40,7 @@ extension TeXTextView {
             backgroundColor = UtilityG.backgroundColor(inProfile: profile)
         }
         insertionPointColor = UtilityG.cursorColor(inProfile: profile)
+        ThemeSystemColor.setSelectionColor(UtilityG.selectionColor(inProfile: profile), of: self)
 
         let commandColorAttribute: [NSAttributedString.Key: Any] = [
             .foregroundColor: UtilityG.commandColor(inProfile: profile),
