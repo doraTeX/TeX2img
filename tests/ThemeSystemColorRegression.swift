@@ -56,6 +56,13 @@ check(ThemePalette.sameSharedColors(older, bundled), "an earlier copy is the bun
 check(!ThemePalette.sameSharedColors(["EditorText": red, selectionKey: false], bundled), "a switch turned off is a change")
 check(!ThemePalette.sameSharedColors(["EditorText": green], bundled), "a color is a change")
 check(!ThemePalette.sameUsedColors(["EditorText": red, selectionKey: false], ["EditorText": red]), "a TeXShop theme with another switch is importable")
+// A color of earlier versions missing from the copy is still a change that can be restored.
+check(!ThemePalette.sameSharedColors(["Title": "B"], bundled), "a missing text color is a change")
+// TeXShop's bundled theme with the selection color and an earlier copy without it draw the same: not offered for import.
+check(ThemePalette.sameUsedColors(older, bundled) && ThemePalette.sameUsedColors(bundled, older), "an earlier copy and the new bundled theme draw the same")
+check(!ThemePalette.sameUsedColors(older, ["EditorText": red, "EditorSelection": green, selectionKey: false]), "a selection drawn in the theme's color counts")
+check(!ThemePalette.sameUsedColors(["EditorText": red, "EditorSelection": red, selectionKey: false],
+                                   ["EditorText": red, "EditorSelection": green, selectionKey: false]), "selection colors drawn differ")
 
 // The bundled themes.
 let folder = URL(fileURLWithPath: CommandLine.arguments[1])

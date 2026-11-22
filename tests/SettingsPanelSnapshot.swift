@@ -1,4 +1,5 @@
 import AppKit
+import ObjectiveC
 
 // Builds the settings window with the product code and a stand-in for ControllerG,
 // checks its structure, and renders every category off screen. No window is shown.
@@ -341,6 +342,39 @@ do {
     for role in [ThemeRole.fullwidthSymbol, .fullwidthBackground] {
         check(themes.wells[role]?.isEnabled == true, "the theme keeps the well of \(role)")
     }
+}
+// A color changed and then a system color switch clicked before the color is written (it waits 0.2 s): the color and
+// the switch are both saved, the switch as it was clicked, turned off and turned on. The window is taken for the key
+// window, as it is when the user clicks; a theme of its own is edited.
+do {
+    let keyWindow = class_getInstanceMethod(NSWindow.self, #selector(getter: NSWindow.isKeyWindow))!
+    let original = method_getImplementation(keyWindow)
+    let alwaysKey: @convention(block) (NSWindow) -> Bool = { _ in true }
+    method_setImplementation(keyWindow, imp_implementationWithBlock(alwaysKey))
+    defer { method_setImplementation(keyWindow, original) }
+    try! store.write(store.read(title: ThemeStore.defaultLightTitle)!, title: "Switch Probe")
+    themes.reloadThemeMenus()
+    themes.editingPopup.selectItem(withTitle: "Switch Probe")
+    NSApp.sendAction(themes.editingPopup.action!, to: themes.editingPopup.target, from: themes.editingPopup)
+    check(themes.window != nil, "the theme settings know their window")
+    for (index, (role, turnOn)) in [(ThemeRole.selection, false), (.cursor, true)].enumerated() {
+        let well = themes.wells[.text]!
+        let color = NSColor(srgbRed: 0.1 * Double(index + 1), green: 0.2, blue: 0.3, alpha: 1)
+        well.color = color
+        NSApp.sendAction(well.action!, to: well.target, from: well)
+        let box = themes.systemColorSwitches[role]!
+        box.state = turnOn ? .on : .off
+        NSApp.sendAction(box.action!, to: box.target, from: box)
+        let saved = store.read(title: "Switch Probe") ?? [:]
+        let text = ThemePalette.components(saved, key: "EditorText") ?? []
+        check(ThemeSystemColor.uses(role, in: saved) == turnOn && box.state == (turnOn ? .on : .off),
+              "the switch of \(role) clicked right after a color change is kept: \(String(describing: saved[ThemeSystemColor.key(role)!]))")
+        check(text.count == 4 && abs(text[0] - 0.1 * Double(index + 1)) < 0.001 && abs(text[1] - 0.2) < 0.001, "the color changed before is kept: \(text)")
+        check(themes.wells[role]?.isEnabled == !turnOn, "the well of \(role) follows its switch")
+    }
+    try? FileManager.default.removeItem(at: store.url(forTitle: "Switch Probe")!)
+    themes.reloadThemeMenus()
+    themes.prepareForDisplay(dark: false)
 }
 let translucent: ThemeColors = ["EditorText": [1, 0, 0, 0.5], "EditorFlash": [0, 0, 1, 0.5]]
 check(ThemePalette.color(.text, in: translucent, dark: false).alphaComponent == 1, "opaque colors are drawn opaque")

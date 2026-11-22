@@ -47,7 +47,9 @@ def main():
         mutations = {
             "no switch: the selection as the cursor": ("        return role == .selection\n", "        return false\n"),
             "switches ignored when drawing": ("        if ThemeSystemColor.uses(role, in: theme), let system = ThemeSystemColor.systemColor(role) { return system }\n", ""),
-            "every key compared": ("        let shared = Set(copy.keys).intersection(bundled.keys).subtracting([\"Title\"])\n", "        if !sameColors(copy, bundled) { return false }\n        let shared = Set(copy.keys).intersection(bundled.keys).subtracting([\"Title\"])\n"),
+            "every key compared": ("        for key in keysAddedWithSelection where copy[key] == nil { bundled[key] = nil }\n", ""),
+            "only shared keys compared": ("        return sameColors(copy, bundled)\n    }", "        return Set(copy.keys).intersection(bundled.keys).subtracting([\"Title\"]).allSatisfy { NSDictionary(dictionary: [$0: copy[$0]!]).isEqual(to: [$0: bundled[$0]!]) }\n    }"),
+            "colors not drawn compared": ("                (ThemeSystemColor.uses(role, in: a) && ThemeSystemColor.uses(role, in: b))\n                    || ", "                "),
         }
         for name, (old, new) in mutations.items():
             assert source.count(old) == 1, name

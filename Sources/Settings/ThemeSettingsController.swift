@@ -222,12 +222,14 @@ final class ThemeSettingsController: NSObject {
     /// system's as it is drawn now.
     @objc private func systemColorSwitchChanged(_ sender: NSButton) {
         guard let role = systemColorSwitches.first(where: { $0.value === sender })?.key, let key = ThemeSystemColor.key(role) else { return }
+        // The state clicked, taken before the colors still waiting are saved: saving them shows the switches as the
+        // file has them.
+        let on = sender.state == .on
         savePendingColors()
         guard let title = editingTitle, var colors = library.store.read(title: title) ?? editingColors else {
             refreshSystemColorControls()
             return
         }
-        let on = sender.state == .on
         colors[key] = on
         if !on, role == .selection, ThemePalette.color(colors, key: role.key) == nil {
             if let bundled = bundledColors(title: title), let color = ThemePalette.components(bundled, key: role.key) {

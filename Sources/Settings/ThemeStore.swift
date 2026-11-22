@@ -478,12 +478,16 @@ enum ThemePalette {
         if let value = components(of: color) { theme[key] = value }
     }
 
-    /// Whether a copy of a bundled theme still has the bundled settings: only the keys both have count (TeXShop's
-    /// isChangedTitle:), since earlier copies lack the settings added since, such as the selection color and the system
-    /// color switches, and TeX2img gives a missing one its default.
+    /// The settings added to themes with the selection color (TeXShop 6.00): copies made before have none of them.
+    static let keysAddedWithSelection: Set<String> = ["EditorSelection", "EditorInsertionPointUsesSystemColor", "EditorSelectionUsesSystemColor"]
+
+    /// Whether a copy of a bundled theme still has the bundled settings. The settings added with the selection color
+    /// that the copy does not have yet do not count (earlier copies lack them, and TeX2img reads them as before); any
+    /// other difference, a color of earlier versions missing included, does.
     static func sameSharedColors(_ copy: ThemeColors, _ bundled: ThemeColors) -> Bool {
-        let shared = Set(copy.keys).intersection(bundled.keys).subtracting(["Title"])
-        return shared.allSatisfy { NSDictionary(dictionary: [$0: copy[$0]!]).isEqual(to: [$0: bundled[$0]!]) }
+        var bundled = bundled
+        for key in keysAddedWithSelection where copy[key] == nil { bundled[key] = nil }
+        return sameColors(copy, bundled)
     }
 
     /// Whether two themes show the same colors (titles are ignored).
@@ -496,9 +500,14 @@ enum ThemePalette {
 
     /// Whether two themes agree in every color TeX2img draws, and in the system color switches. Keys that only TeXShop
     /// uses, such as the expl3 colors, are ignored.
+    /// A color whose system color switch is on in both is not drawn and does not count: an earlier copy without the
+    /// selection color and a theme with one, both showing the system's selection, are the same.
     static func sameUsedColors(_ a: ThemeColors, _ b: ThemeColors) -> Bool {
-        ThemeRole.allCases.allSatisfy { components(a, key: $0.key) == components(b, key: $0.key) }
-            && ThemeSystemColor.roles.allSatisfy { ThemeSystemColor.uses($0, in: a) == ThemeSystemColor.uses($0, in: b) }
+        ThemeSystemColor.roles.allSatisfy { ThemeSystemColor.uses($0, in: a) == ThemeSystemColor.uses($0, in: b) }
+            && ThemeRole.allCases.allSatisfy { role in
+                (ThemeSystemColor.uses(role, in: a) && ThemeSystemColor.uses(role, in: b))
+                    || components(a, key: role.key) == components(b, key: role.key)
+            }
     }
 
     /// The color drawn for a role: the system's while the theme's switch of the cursor or the selection is on, left
