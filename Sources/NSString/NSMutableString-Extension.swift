@@ -8,6 +8,15 @@ extension NSMutableString {
         return self
     }
 
+    /// CRLF (Windows) and CR (old Mac) become LF, as when a file is opened (TeXShop 6.00).
+    @discardableResult
+    func replaceLineEndingsWithLF() -> NSMutableString {
+        for ending in ["\r\n", "\r"] {
+            replaceOccurrences(of: ending, with: "\n", options: .literal, range: NSRange(location: 0, length: length))
+        }
+        return self
+    }
+
     func replaceFirstOccuarnce(ofString target: String, replacment replacement: String) -> NSMutableString {
         let range = self.range(of: target)
         if range.location != NSNotFound {

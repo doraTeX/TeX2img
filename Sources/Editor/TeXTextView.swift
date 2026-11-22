@@ -412,8 +412,9 @@ class TeXTextView: NSTextView {
         let oldString = string.substring(with: oldRange)
 
         stringBuf = stringBuf.replacingOccurrences(of: "#SEL#", with: oldString)
-        // #PASTE# stands for the text on the clipboard, or nothing (TeXShop 5.60).
-        stringBuf = stringBuf.replacingOccurrences(of: "#PASTE#", with: NSPasteboard.general.string(forType: .string) ?? "")
+        // #PASTE# stands for the text on the clipboard, or nothing (TeXShop 5.60), with LF line endings as a paste.
+        let clipboard = NSMutableString(string: NSPasteboard.general.string(forType: .string) ?? "").replaceLineEndingsWithLF()
+        stringBuf = stringBuf.replacingOccurrences(of: "#PASTE#", with: clipboard as String)
 
         var searchRange = stringBuf.range(of: "#INS#", options: .literal)
         if searchRange.location != NSNotFound {
@@ -476,10 +477,14 @@ class TeXTextView: NSTextView {
     override func readSelection(from pboard: NSPasteboard, type: NSPasteboard.PasteboardType) -> Bool {
         let currentProfile = controller.currentProfile()
 
-        if type == .string, currentProfile.boolForKey(ConvertYenMarkKey) {
-            guard let pasteboardString = pboard.string(forType: .string) else { return false }
+        // Pasted text gets LF line endings, as a file that is opened (TeXShop 6.00), and with the setting backslashes
+        // for yen signs. Text that needs neither is pasted by AppKit.
+        if type == .string, let pasteboardString = pboard.string(forType: .string) {
+            let convertYen = currentProfile.boolForKey(ConvertYenMarkKey)
             let string = NSMutableString(string: pasteboardString)
-            _ = string.replaceYenWithBackSlash()
+            if convertYen { _ = string.replaceYenWithBackSlash() }
+            string.replaceLineEndingsWithLF()
+            guard convertYen || string as String != pasteboardString else { return super.readSelection(from: pboard, type: type) }
 
             let selectedRange = self.selectedRange
             if shouldChangeText(in: selectedRange, replacementString: string as String) {
