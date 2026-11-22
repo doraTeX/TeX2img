@@ -427,12 +427,13 @@ enum ThemePalette {
         return NSColor(srgbRed: c[0], green: c[1], blue: c[2], alpha: c[3])
     }
 
-    /// The color of a role in a theme, or the default of that mode when the theme lacks it.
+    /// The color of a role in a theme, or the default of that mode when the theme lacks it. A missing color of text
+    /// and what it is drawn on is chosen so that the pair reads (ThemePairs).
     static func color(_ role: ThemeRole, in theme: ThemeColors?, dark: Bool) -> NSColor {
         // A theme without the fullwidth colors shows those characters like other text.
         if role == .fullwidthSymbol, color(theme, key: role.key) == nil { return color(.text, in: theme, dark: dark) }
         if role == .fullwidthBackground, color(theme, key: role.key) == nil { return color(.background, in: theme, dark: dark) }
-        let color = color(theme, key: role.key) ?? defaultColor(role, dark: dark)
+        let color = color(theme, key: role.key) ?? ThemePairs.missingColor(role, in: theme, dark: dark) ?? defaultColor(role, dark: dark)
         return role.usesOpacity ? color : color.withAlphaComponent(1)
     }
 
@@ -521,6 +522,229 @@ enum ThemePalette {
     static func drawnColor(_ role: ThemeRole, in theme: ThemeColors?, dark: Bool) -> NSColor {
         if ThemeSystemColor.uses(role, in: theme), let system = ThemeSystemColor.systemColor(role) { return system }
         return color(role, in: theme, dark: dark)
+    }
+}
+
+/// The colors a theme lacks of text and what it is drawn on, chosen so that they read, as TeXShop 6.00 chooses them
+/// (TSColorSupport opaqueColorForKey:fromDictionary:isWindowDark:). A theme of either kind can be used in a light or a
+/// dark window, and its file may lack colors or have lost them. The colors that go together, as a chain of four places
+/// (TeXShop's active line comes first; TeX2img has none), and the pairs next to each other in it that must read:
+///   the source: EditorText on EditorBackground, EditorInsertionPoint on EditorBackground;
+///   the output window: ConsoleText on ConsoleBackground.
+/// The missing colors of a group are chosen together. Each may be the default color of the mode, that of the other mode,
+/// white, black, one of 64 grays, or the opposite of one of the theme's own colors of the group. Of all the choices,
+/// the one is taken whose pairs with a missing color read best, the weakest of them counted up to a contrast of 4.5
+/// (WCAG); of the choices that read as well, the one nearest the default colors: the default of the mode first, then
+/// that of the other mode, then white or black, then the nearest of the others. When none of these makes all the pairs
+/// read, grays of any lightness are tried. The theme file is not changed; every view and the Settings wells ask here.
+enum ThemePairs {
+    static let chains: [[ThemeRole?]] = [[nil, .text, .background, .cursor], [nil, .consoleText, .consoleBackground, nil]]
+
+    private static let lock = NSLock()
+    private static var chosen: [String: [NSColor]] = [:]
+
+    /// The color drawn for a role the theme lacks, or nil when the role is not in a group.
+    static func missingColor(_ role: ThemeRole, in theme: ThemeColors?, dark: Bool) -> NSColor? {
+        guard let chain = chains.first(where: { $0.contains(role) }), let place = chain.firstIndex(of: role) else { return nil }
+        // The choice depends only on the theme's colors of the group and the mode: it is made once for them.
+        let signature = "\(dark) " + chain.map { role -> String in
+            guard let role, let theme, let components = ThemePalette.components(theme, key: role.key) else { return "-" }
+            return "\(components)"
+        }.joined(separator: " ")
+        lock.lock()
+        if let known = chosen[signature] { lock.unlock(); return known[place] }
+        lock.unlock()
+        let result = choose(chain, in: theme, dark: dark)
+        lock.lock()
+        if chosen.count > 256 { chosen.removeAll() }
+        chosen[signature] = result
+        lock.unlock()
+        return result[place]
+    }
+
+    /// The relative luminance of a color (sRGB, WCAG).
+    static func luminance(_ color: NSColor) -> Double {
+        guard let rgb = color.usingColorSpace(.sRGB) else { return 0 }
+        let c = [rgb.redComponent, rgb.greenComponent, rgb.blueComponent].map { component -> Double in
+            let v = Double(component)
+            return v <= 0.03928 ? v / 12.92 : pow((v + 0.055) / 1.055, 2.4)
+        }
+        return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+    }
+
+    static func contrast(_ a: NSColor, _ b: NSColor) -> Double {
+        let x = luminance(a), y = luminance(b)
+        return (max(x, y) + 0.05) / (min(x, y) + 0.05)
+    }
+
+    private static func choose(_ chain: [ThemeRole?], in theme: ThemeColors?, dark: Bool) -> [NSColor] {
+        let own: [NSColor?] = chain.map { role in role.flatMap { ThemePalette.color(theme, key: $0.key) } }
+        // The theme's own colors of the group, and their opposites.
+        let opposites = own.compactMap { $0?.usingColorSpace(.sRGB) }.map {
+            NSColor(srgbRed: 1 - $0.redComponent, green: 1 - $0.greenComponent, blue: 1 - $0.blueComponent, alpha: 1)
+        }
+        // For each place of the chain: no role (absent), the theme's own color (one choice), or the choices with their cost.
+        var choices: [[NSColor]] = [], costs: [[Double]] = []
+        var missing = [false, false, false, false]
+        for k in 0..<4 {
+            guard let role = chain[k] else { choices.append([]); costs.append([]); continue }
+            if let mine = own[k] { choices.append([mine]); costs.append([0]); continue }
+            missing[k] = true
+            let mine = ThemePalette.defaultColor(role, dark: dark)
+            var list = [mine, ThemePalette.defaultColor(role, dark: !dark),
+                        NSColor(srgbRed: 1, green: 1, blue: 1, alpha: 1), NSColor(srgbRed: 0, green: 0, blue: 0, alpha: 1)]
+            var cost: [Double] = [0, 10, 20, 20]
+            let origin = mine.usingColorSpace(.sRGB) ?? mine
+            let grays = (0..<64).map { NSColor(srgbRed: Double($0) / 63, green: Double($0) / 63, blue: Double($0) / 63, alpha: 1) }
+            for other in opposites + grays {
+                let rgb = other.usingColorSpace(.sRGB) ?? other
+                let dr = Double(rgb.redComponent - origin.redComponent), dg = Double(rgb.greenComponent - origin.greenComponent)
+                let db = Double(rgb.blueComponent - origin.blueComponent)
+                list.append(other)
+                cost.append(30 + (dr * dr + dg * dg + db * db).squareRoot())
+            }
+            choices.append(list)
+            costs.append(cost)
+        }
+        let n = choices.map(\.count)
+        let lum = choices.map { $0.map(luminance) }
+        // The score of a pair: its contrast up to 4.5; a pair of two of the theme's own colors does not count.
+        func score(_ a: Int, _ i: Int, _ b: Int, _ j: Int) -> Double {
+            if n[a] == 0 || n[b] == 0 || (!missing[a] && !missing[b]) { return 4.5 }
+            let x = lum[a][i], y = lum[b][j]
+            return min(4.5, (max(x, y) + 0.05) / (min(x, y) + 0.05))
+        }
+        // The chain 0-1-2-3: for a text (1) and a background (2), the best active line (0) and cursor (3) are found on
+        // their own. First the best score; then the cheapest choice that reaches it.
+        let n0 = max(n[0], 1), n3 = max(n[3], 1)
+        let bestLine = (0..<n[1]).map { t in (0..<n0).map { score(0, $0, 1, t) }.max() ?? 0 }
+        let bestCursor = (0..<n[2]).map { bg in (0..<n3).map { score(2, bg, 3, $0) }.max() ?? 0 }
+        var best = -1.0
+        for t in 0..<n[1] { for bg in 0..<n[2] { best = max(best, min(score(1, t, 2, bg), bestLine[t], bestCursor[bg])) } }
+        var cheapest = Double.infinity
+        var pick = [0, 0, 0, 0]
+        for t in 0..<n[1] {
+            for bg in 0..<n[2] {
+                if min(score(1, t, 2, bg), bestLine[t], bestCursor[bg]) < best - 1e-9 { continue }
+                var lineCost = Double.infinity, cursorCost = Double.infinity, line = 0, cursor = 0
+                for e in 0..<n0 where score(0, e, 1, t) >= best - 1e-9 && (n[0] == 0 ? 0 : costs[0][e]) < lineCost {
+                    lineCost = n[0] == 0 ? 0 : costs[0][e]
+                    line = e
+                }
+                for c in 0..<n3 where score(2, bg, 3, c) >= best - 1e-9 && (n[3] == 0 ? 0 : costs[3][c]) < cursorCost {
+                    cursorCost = n[3] == 0 ? 0 : costs[3][c]
+                    cursor = c
+                }
+                let total = costs[1][t] + costs[2][bg] + lineCost + cursorCost
+                if total < cheapest - 1e-9 {
+                    cheapest = total
+                    pick = [line, t, bg, cursor]
+                }
+            }
+        }
+        var gray: [NSColor?] = [nil, nil, nil, nil]
+        if best < 4.5 - 1e-9 {
+            gray = graysForChain(present: n.map { $0 > 0 }, missing: missing,
+                                 point: (0..<4).map { n[$0] > 0 ? log(lum[$0][missing[$0] ? 0 : pick[$0]] + 0.05) : 0 })
+        }
+        return (0..<4).map { k in gray[k] ?? (n[k] > 0 ? choices[k][pick[k]] : NSColor(srgbRed: 0, green: 0, blue: 0, alpha: 1)) }
+    }
+
+    /// When no choice makes all the pairs read, grays of any lightness are tried. The chain is solved in the lightness
+    /// x = ln(L + 0.05), where a pair reads when its two x are at least ln(4.5) apart: going along the chain, each place
+    /// keeps the set of x (intervals) for which the places before it can still be chosen, then the x are picked back from
+    /// the end, each nearest the default color (`point`, also the x of the theme's own colors). If even that cannot make
+    /// all the pairs read, the text comes first: the pairs of text read if they can, else they read as well as they can,
+    /// and the cursor on the background reads as well as it can besides (the greatest contrasts are found by halving).
+    private static func graysForChain(present: [Bool], missing: [Bool], point: [Double]) -> [NSColor?] {
+        let low = log(0.05), high = log(1.05)
+        // For the distances of the text pairs and of the cursor pair: the x of each place, or nil when there are none.
+        func solve(_ textDistance: Double, _ cursorDistance: Double) -> [Double]? {
+            var sets: [[(Double, Double)]] = [[], [], [], []]
+            var previous = -1
+            for k in 0..<4 where present[k] {
+                // The place's own x.
+                let a = missing[k] ? low : point[k], b = missing[k] ? high : point[k]
+                var pieces = [(a, b)]
+                if previous >= 0 && (missing[k] || missing[previous]) {
+                    // x at least d from some x of the previous place: x <= max - d, or x >= min + d.
+                    let d = k == 3 ? cursorDistance : textDistance
+                    let least = sets[previous][0].0, most = sets[previous][sets[previous].count - 1].1
+                    pieces = [(a, min(b, most - d)), (max(a, least + d), b)]
+                }
+                for piece in pieces where piece.0 <= piece.1 {
+                    // Pieces in order and not overlapping.
+                    if let last = sets[k].last, piece.0 <= last.1 {
+                        sets[k][sets[k].count - 1].1 = max(last.1, piece.1)
+                    } else {
+                        sets[k].append(piece)
+                    }
+                }
+                if sets[k].isEmpty { return nil }
+                previous = k
+            }
+            // Back from the end: each x nearest the place's default color, far enough from the next one.
+            var x = [0.0, 0.0, 0.0, 0.0]
+            var next = -1
+            for k in stride(from: 3, through: 0, by: -1) where present[k] {
+                var chosenX = Double.nan, distance = Double.infinity
+                for interval in sets[k] {
+                    var ranges = [interval]
+                    if next >= 0 && (missing[k] || missing[next]) {
+                        let d = next == 3 ? cursorDistance : textDistance
+                        ranges = [(interval.0, min(interval.1, x[next] - d)), (max(interval.0, x[next] + d), interval.1)]
+                    }
+                    for range in ranges where range.0 <= range.1 {
+                        // Nearest the default color, but inside the range by up to 0.001, so that the pairs keep what
+                        // margin they can: a thin range gives its middle.
+                        let inside = min(1e-3, (range.1 - range.0) / 2)
+                        let candidate = min(max(point[k], range.0 + inside), range.1 - inside)
+                        if abs(candidate - point[k]) < distance {
+                            distance = abs(candidate - point[k])
+                            chosenX = candidate
+                        }
+                    }
+                }
+                if chosenX.isNaN { return nil }
+                x[k] = chosenX
+                next = k
+            }
+            return x
+        }
+        // The gray of lightness exp(x) - 0.05 (sRGB).
+        func grayOf(_ value: Double) -> NSColor {
+            let l = min(1, max(0, exp(value) - 0.05))
+            let v = l <= 0.03928 / 12.92 ? l * 12.92 : 1.055 * pow(l, 1 / 2.4) - 0.055
+            return NSColor(srgbRed: v, green: v, blue: v, alpha: 1)
+        }
+        // Whether the grays for x, made into colors, let every pair with a missing color read.
+        func reads(_ values: [Double]) -> Bool {
+            let drawn = (0..<4).map { k in present[k] ? (missing[k] ? luminance(grayOf(values[k])) : exp(point[k]) - 0.05) : 0 }
+            for k in 1..<4 where present[k - 1] && present[k] && (missing[k - 1] || missing[k]) {
+                if (max(drawn[k - 1], drawn[k]) + 0.05) / (min(drawn[k - 1], drawn[k]) + 0.05) < 4.5 { return false }
+            }
+            return true
+        }
+        // The greatest distance for which test(distance) holds, by halving.
+        func greatest(_ test: (Double) -> Bool) -> Double {
+            var reached = 0.0, unreached = log(21.0) + 1e-6
+            for _ in 0..<50 {
+                let middle = (reached + unreached) / 2
+                if test(middle) { reached = middle } else { unreached = middle }
+            }
+            return reached
+        }
+        // Exactly 4.5: the margin comes from choosing inside the ranges (above).
+        let enough = log(4.5)
+        var x = solve(enough, enough)
+        if let found = x, !reads(found) { x = nil }
+        if x == nil {
+            let text = solve(enough, 0) != nil ? enough : greatest { solve($0, 0) != nil }
+            let cursor = greatest { solve(text, $0) != nil }
+            x = solve(text, cursor)
+        }
+        guard let x else { return [nil, nil, nil, nil] }
+        return (0..<4).map { present[$0] && missing[$0] ? grayOf(x[$0]) : nil }
     }
 }
 

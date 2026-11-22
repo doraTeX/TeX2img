@@ -51,7 +51,11 @@ TeXShop と同じ plist 形式のテーマを `~/Library/Application Support/TeX
   強調表示された括弧 `EditorHighlightBraces`、括弧内の背景 `EditorHighlightContent`、
   出力ウインドウの文字・背景 `ConsoleText`／`ConsoleBackground`，全角英数記号の文字・背景
   `EditorHighlightZenkakuSymbol`／`EditorHighlightZenkakuSymbolBackground`。キーがないテーマでは従来の既定色を使う
-  （全角英数記号のキーがないテーマでは，ほかの文字と同じに表示する）。
+  （全角英数記号のキーがないテーマでは，ほかの文字と同じに表示する）。ただし，文字とその下の色は組で選ぶ（TeXShop 6.00と同じ）：
+  ソースの文字・背景・カーソル（文字と背景，カーソルと背景）と，出力ウインドウの文字・背景で，テーマにない色は，テーマの色と
+  合わせてコントラスト4.5以上で読めるように選ぶ。候補は，そのモードの既定色，もう一方のモードの既定色，白・黒，64段階の灰色，
+  テーマの色の反対の色の順に既定に近いものを優先し，どれでも読めなければ任意の明るさの灰色を探す（それでも無理なら文字を先に読めるようにする）。
+  テーマのファイルは変えず，設定のウェルも描く色を示す。
 - カーソルと選択範囲には「システムカラーを使う」がある（TeXShop 6.00と同じ。キーは
   `EditorInsertionPointUsesSystemColor`／`EditorSelectionUsesSystemColor`）。オンの間はシステムの色
   （アクセントカラー・強調表示色。macOS 12・13 ではカーソルは文字の色で，NSTextView の既定と同じ）で描き，テーマの色はファイルに残す。キーがない（または数でない）テーマは，以前と同じ
