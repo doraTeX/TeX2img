@@ -60,6 +60,13 @@ class ProfileController: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         }
     }
 
+    /// The profiles that name a renamed theme for Light or Dark Mode name it by its new name, and are saved.
+    func renameTheme(from old: String, to new: String) {
+        guard let renamed = ThemeStore.profiles(profiles, renamingTheme: old, to: new) else { return }
+        profiles = renamed
+        saveProfiles()
+    }
+
     func saveProfiles() {
         let defaults = UserDefaults.standard
         defaults.set(profileNames, forKey: profileNamesKey)

@@ -1468,6 +1468,12 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
         profileController.saveProfiles()
     }
 
+    /// A theme renamed in Settings: the saved profiles that name it for Light or Dark Mode name it by its new name, so
+    /// that loading one of them later does not fall back to TeX2img's themes.
+    func themeWasRenamed(from old: String, to new: String) {
+        profileController?.renameTheme(from: old, to: new)
+    }
+
     deinit {
         notificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
     }
@@ -2098,6 +2104,8 @@ class ControllerG: NSObject, OutputController, DnDDelegate {
                     view.addSubview(label)
                     let menu = NSPopUpButton(frame: NSRect(x: 0, y: y, width: 600, height: 30))
                     menu.addItems(withTitles: candidates[i].map(\.label))
+                    // The newest release is selected, not a development build before it (TeXShop 6.00).
+                    if !candidates[i].isEmpty { menu.selectItem(at: EnginePathDiscovery.preselectedIndex(candidates[i])) }
                     if candidates[i].isEmpty {
                         menu.addItem(withTitle: japanese ? "見つかりません" : "Not found")
                         menu.isEnabled = false

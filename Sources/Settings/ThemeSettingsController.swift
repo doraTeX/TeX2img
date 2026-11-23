@@ -36,6 +36,8 @@ final class ThemeSettingsController: NSObject {
 
     /// Called after the selected themes or the colors of a selected theme change.
     var colorsChanged: (() -> Void)?
+    /// Called after a theme is renamed in the list: the saved profiles that name it follow.
+    var themeRenamed: ((_ old: String, _ new: String) -> Void)?
     weak var window: NSWindow?
 
     var lightTitle: String { lightPopup.titleOfSelectedItem ?? ThemeStore.defaultLightTitle }
@@ -77,8 +79,9 @@ final class ThemeSettingsController: NSObject {
         let listRow = SettingsUI.contentRow(listView, searchTitle: [
             NSLocalizedString("New Theme", comment: ""), NSLocalizedString("Duplicate", comment: ""),
             NSLocalizedString("Rename", comment: ""), NSLocalizedString("Restore", comment: ""),
+            NSLocalizedString("Delete", comment: ""), NSLocalizedString("Move to Trash", comment: ""),
             NSLocalizedString("Export…", comment: ""), NSLocalizedString("Import…", comment: ""),
-            NSLocalizedString("Import from TeXShop", comment: ""),
+            NSLocalizedString("Show in Finder", comment: ""), NSLocalizedString("Import from TeXShop", comment: ""),
         ].joined(separator: "\n"))
         listView.trailingAnchor.constraint(equalTo: listRow.trailingAnchor, constant: -12).isActive = true
         let editing = SettingsUI.group(NSLocalizedString("Editing Themes", comment: ""), [listRow])
@@ -553,6 +556,8 @@ final class ThemeSettingsController: NSObject {
     }
 
     @objc func duplicateTheme(_ sender: Any?) {
+        // A color changed a moment ago is in the theme before it is copied.
+        savePendingColors()
         guard let title = targetListTitle, let colors = library.store.read(title: title) else { return }
         let proposed = String(format: NSLocalizedString("%@ copy", comment: ""), title)
         do {
@@ -580,6 +585,7 @@ final class ThemeSettingsController: NSObject {
             return false
         }
         themeListChanged(from: old, to: new, choose: new)
+        themeRenamed?(old, new)
         return true
     }
 

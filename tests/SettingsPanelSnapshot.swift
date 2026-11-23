@@ -104,6 +104,8 @@ final class ControllerG: NSObject {
     @objc func invisibleCharacterKindChanged(_ sender: Any?) {}
     @objc func fullwidthHighlightChanged(_ sender: Any?) {}
     func themeColorsChanged() { themeChanges += 1 }
+    var themeRenames: [String] = []
+    func themeWasRenamed(from old: String, to new: String) { themeRenames.append("\(old) → \(new)") }
 }
 
 func check(_ condition: Bool, _ message: String) {
@@ -283,6 +285,12 @@ let hits = { (query: String) -> [String] in
 }
 check(hits("ＧＨＯＳＴＳＣＲＩＰＴ") == ["Ghostscript"], "width-insensitive search")
 check(hits("svgz").count >= 3, "notes are searchable")
+// The actions of the list of themes are found, the names of the menus included.
+for query in language == "ja" ? ["ゴミ箱", "Finder", "複製", "書き出す"] : ["Trash", "Finder", "Duplicate", "Export"] {
+    check(SettingsWindowController.searchEntries(in: settings.category("Appearance")!.view).contains { entry in
+        SettingsWindowController.tokens(query).allSatisfy { SettingsWindowController.normalized([entry.title, entry.note].joined(separator: " ")).contains($0) }
+    }, "searching for \(query) finds the list of themes")
+}
 
 // Navigation history.
 check(settings.select("Editor") && settings.currentIdentifier == "Editor", "select a category")
@@ -437,6 +445,14 @@ do {
     check(themes.renameTheme(copyName, to: "Renamed Copy"), "renaming a theme")
     check(themes.lightTitle == "Renamed Copy" && store.contains(title: "Renamed Copy") && !store.contains(title: copyName)
           && (store.read(title: "Renamed Copy")?["Title"] as? String) == "Renamed Copy", "Light Mode follows the rename: \(themes.lightTitle)")
+    // The saved profiles follow it too (ProfileController.renameTheme with this function).
+    check(controller.themeRenames == ["\(copyName) → Renamed Copy"], "the rename reaches the profiles: \(controller.themeRenames)")
+    let profiles: [[String: Any]] = [["lightTheme": copyName, "darkTheme": "TeX2img Dark"], ["lightTheme": "SolarizedLite", "darkTheme": copyName], ["x": 1]]
+    let renamedProfiles = ThemeStore.profiles(profiles, renamingTheme: copyName, to: "Renamed Copy")
+    check(renamedProfiles?[0]["lightTheme"] as? String == "Renamed Copy" && renamedProfiles?[0]["darkTheme"] as? String == "TeX2img Dark"
+          && renamedProfiles?[1]["darkTheme"] as? String == "Renamed Copy" && renamedProfiles?[1]["lightTheme"] as? String == "SolarizedLite"
+          && renamedProfiles?.count == 3, "saved profiles name the theme by its new name")
+    check(ThemeStore.profiles(profiles, renamingTheme: "Other", to: "New") == nil, "profiles without the theme are not saved again")
     messages.removeAll()
     check(!themes.renameTheme("Renamed Copy", to: untitled) && store.contains(title: "Renamed Copy"), "a name in use is refused")
     check(!themes.renameTheme("Renamed Copy", to: untitled.uppercased()) && store.contains(title: "Renamed Copy"), "a name in use in another case is refused")
@@ -490,6 +506,18 @@ do {
         let alwaysKey: @convention(block) (NSWindow) -> Bool = { _ in true }
         method_setImplementation(keyWindow, imp_implementationWithBlock(alwaysKey))
         defer { method_setImplementation(keyWindow, original) }
+        // A color changed and the theme duplicated at once, before the color is written (it waits 0.2 s): the copy has it.
+        themes.chooseTheme(untitled)
+        let commentWell = themes.wells[.comment]!
+        commentWell.color = NSColor(srgbRed: 0.2, green: 0.6, blue: 0.4, alpha: 1)
+        NSApp.sendAction(commentWell.action!, to: commentWell.target, from: commentWell)
+        themes.duplicateTheme(nil)
+        let duplicated = String(format: NSLocalizedString("%@ copy", comment: ""), untitled)
+        let copiedComment = ThemePalette.components(store.read(title: duplicated) ?? [:], key: "SyntaxComment") ?? []
+        check(copiedComment.count == 4 && abs(copiedComment[0] - 0.2) < 0.001 && abs(copiedComment[1] - 0.6) < 0.001,
+              "a color changed just before is in the copy: \(copiedComment)")
+        if let url = store.url(forTitle: duplicated) { try? FileManager.default.removeItem(at: url) }
+        themes.reloadThemeMenus()
         themes.chooseTheme(untitled)
         try! FileManager.default.moveItem(at: store.url(forTitle: untitled)!, to: store.url(forTitle: "Moved Elsewhere")!)
         let well = themes.wells[.comment]!
@@ -836,6 +864,12 @@ check(pane.isRecording && paneWindow.firstResponder?.isKind(of: NSView.self) == 
       && (paneWindow.firstResponder as? NSView)?.identifier?.rawValue == "shortcut.recorder", "recording starts in the row")
 check(pane.tableView(keyTable, viewFor: keyTable.tableColumns[1], row: saveRow)?.identifier?.rawValue == "shortcut.recording",
       "the shortcut cell is the recording field")
+// The keys AppKit shows change (another keyboard layout) while recording: recording goes on, and the line under the list
+// still shows the default (as the layout shows it).
+NotificationCenter.default.post(name: ShortcutStore.shownKeysChangedNotification, object: pane.store)
+check(pane.isRecording && (paneWindow.firstResponder as? NSView)?.identifier?.rawValue == "shortcut.recorder"
+      && statusText() == String(format: NSLocalizedString("Default shortcut: %@", comment: ""), "⌘S"),
+      "recording goes on when the shown keys change: \(statusText())")
 // A key used by another command is refused; recording goes on with the reason under the list and the triangle in the row.
 check(pane.handleKeySearchEvent(key("o", .command, code: 31)) && pane.isRecording && save.keyEquivalent == "s", "a used key is refused")
 check(statusText().contains("File › Open") && statusWarns(), "the refusal names the command: \(statusText())")

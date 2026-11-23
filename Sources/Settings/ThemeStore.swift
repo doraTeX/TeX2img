@@ -104,6 +104,19 @@ struct ThemeStore {
 
     // MARK: The list of themes (TeXShop 6.00's TSThemeFileStore)
 
+    /// Profiles whose theme for Light or Dark Mode (lightTheme, darkTheme) is a renamed theme, with the new name; nil when
+    /// none names it.
+    static func profiles(_ profiles: [[String: Any]], renamingTheme old: String, to new: String) -> [[String: Any]]? {
+        var result = profiles, changed = false
+        for index in result.indices {
+            for key in ["lightTheme", "darkTheme"] where result[index][key] as? String == old {
+                result[index][key] = new
+                changed = true
+            }
+        }
+        return changed ? result : nil
+    }
+
     /// Every name in the folder that a theme could have, in any case of its extension and whatever the item is: a new
     /// theme never takes one of them.
     private func takenTitles() -> [String] {

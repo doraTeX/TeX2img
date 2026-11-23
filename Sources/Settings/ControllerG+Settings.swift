@@ -251,6 +251,7 @@ extension ControllerG {
         // MARK: Appearance
         themeSettings = ThemeSettingsController(library: ThemeLibrary.shared)
         themeSettings.colorsChanged = { [weak self] in self?.themeColorsChanged() }
+        themeSettings.themeRenamed = { [weak self] old, new in self?.themeWasRenamed(from: old, to: new) }
         let appearance = SettingsUI.pane(header: header("Appearance"), groups: themeSettings.groups())
 
         settingsDependentRows = [.pageBox: pageBoxRow, .animationDelay: delayRow, .animationLoop: loopRow, .autoPaste: autoPasteRow, .ungroup: ungroupRow]
