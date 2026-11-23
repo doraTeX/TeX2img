@@ -298,10 +298,11 @@ check(store.titles().contains(ThemeStore.defaultLightTitle) && store.titles().co
 let themes = controller.themeSettings!
 themes.prepareForDisplay(dark: false)
 check(themes.lightTitle == ThemeStore.defaultLightTitle && themes.darkTitle == ThemeStore.defaultDarkTitle, "default themes selected")
-check(themes.editingPopup.titleOfSelectedItem == ThemeStore.defaultLightTitle, "the light theme is edited in light mode")
+check(themes.editingTitle == ThemeStore.defaultLightTitle && themes.themeTable.selectedRow == themes.listTitles.firstIndex(of: ThemeStore.defaultLightTitle),
+      "the light theme is edited in light mode, and selected in the list")
 let blackText = ThemePalette.color(.text, in: store.read(title: ThemeStore.defaultLightTitle), dark: false).usingColorSpace(.sRGB)!
 check(blackText.redComponent < 0.01 && blackText.greenComponent < 0.01, "TeX2img Lite keeps black text")
-check(!themes.resetButton.isEnabled, "nothing to restore before editing")
+check(!themes.isChanged(ThemeStore.defaultLightTitle), "nothing to restore before editing")
 check(ThemePalette.components(["SyntaxMarker": [0.1, 0.2, 0.3, 1]], key: "SyntaxMarkerCurly") == [0.1, 0.2, 0.3, 1], "brace color inherits SyntaxMarker")
 check(ThemePalette.components(["EditorInvisibleChar": [1.235, 0.013, 0.011, 1]], key: "EditorInvisibleChar")?.first == 1, "out-of-range components are clamped")
 check(ThemePalette.components(["EditorText": [Double.nan, 0, 0]], key: "EditorText") == nil, "invalid components are ignored")
@@ -371,8 +372,8 @@ do {
     defer { method_setImplementation(keyWindow, original) }
     try! store.write(store.read(title: ThemeStore.defaultLightTitle)!, title: "Switch Probe")
     themes.reloadThemeMenus()
-    themes.editingPopup.selectItem(withTitle: "Switch Probe")
-    NSApp.sendAction(themes.editingPopup.action!, to: themes.editingPopup.target, from: themes.editingPopup)
+    themes.chooseTheme("Switch Probe")
+    check(themes.editingTitle == "Switch Probe", "a theme of its own chosen in the list")
     check(themes.window != nil, "the theme settings know their window")
     for (index, (role, turnOn)) in [(ThemeRole.selection, false), (.cursor, true)].enumerated() {
         let well = themes.wells[.text]!
@@ -391,6 +392,119 @@ do {
     }
     try? FileManager.default.removeItem(at: store.url(forTitle: "Switch Probe")!)
     themes.reloadThemeMenus()
+    themes.prepareForDisplay(dark: false)
+}
+// The list of themes (TeXShop 6.00): add, duplicate, rename, delete, export and import; the themes of Light and Dark Mode
+// follow a rename and fall back to TeX2img's own when theirs is deleted; the themes that come with TeX2img cannot be
+// renamed or deleted, and show a mark once changed. No sheet or panel is shown: the actions after a question are run as
+// the answer runs them.
+do {
+    var messages: [String] = []
+    themes.presentMessage = { messages.append($0) }
+    defer { themes.presentMessage = nil }
+    themes.prepareForDisplay(dark: false)
+    check(themes.listTitles == store.titles() && themes.themeTable.numberOfRows == themes.listTitles.count, "the list shows the themes")
+    check(themes.listView.identifier?.rawValue == "settings.theme-list.frame" && themes.listView.window != nil, "the list is in the Themes pane")
+    let rowOf = { (title: String) in themes.listTitles.firstIndex(of: title) ?? -1 }
+    func cellMarks(_ title: String) -> [String] {
+        guard rowOf(title) >= 0, let cell = themes.themeTable.view(atColumn: 0, row: rowOf(title), makeIfNecessary: true) else { return [] }
+        return all(NSImageView.self, in: cell).compactMap(\.toolTip)
+    }
+    let lightMark = NSLocalizedString("Theme in Light Mode", comment: ""), darkMark = NSLocalizedString("Theme in Dark Mode", comment: "")
+    check(cellMarks(ThemeStore.defaultLightTitle) == [lightMark] && cellMarks(ThemeStore.defaultDarkTitle) == [darkMark],
+          "the themes in use are marked: \(cellMarks(ThemeStore.defaultLightTitle)) \(cellMarks(ThemeStore.defaultDarkTitle))")
+    // ＋ adds a theme with the colors of TeX2img Lite (the window is light), under a free name.
+    let before = Set(store.titles())
+    themes.addTheme(nil)
+    let added = Set(store.titles()).subtracting(before)
+    check(added.count == 1, "＋ adds one theme: \(added)")
+    let untitled = added.first ?? ""
+    let windowIsDark = themes.window?.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
+    let expectedNew = windowIsDark ? ThemeStore.defaultDarkTitle : ThemeStore.defaultLightTitle
+    check(ThemePalette.sameColors(store.read(title: untitled) ?? [:], ThemeStore(directory: ThemeStore.bundledDirectory!).read(title: expectedNew)!),
+          "the new theme has the colors of \(expectedNew) (window dark: \(windowIsDark)), keys \(Set((store.read(title: untitled) ?? [:]).keys).symmetricDifference(Set(ThemeStore(directory: ThemeStore.bundledDirectory!).read(title: expectedNew)!.keys)))")
+    check(themes.editingTitle == untitled && (store.read(title: untitled)?["Title"] as? String) == untitled, "the new theme is edited, titled as its file")
+    themes.addTheme(nil)
+    check(store.titles().contains("\(untitled) 2"), "a second new theme gets a number: \(store.titles())")
+    // Duplicate: the colors of the selected theme, named after it.
+    themes.chooseTheme("SolarizedDark")
+    themes.duplicateTheme(nil)
+    let copyName = String(format: NSLocalizedString("%@ copy", comment: ""), "SolarizedDark")
+    check(themes.editingTitle == copyName && ThemePalette.sameUsedColors(store.read(title: copyName) ?? [:], store.read(title: "SolarizedDark")!),
+          "duplicate copies the theme: \(String(describing: themes.editingTitle))")
+    // A theme in use renamed: Light Mode follows it; the bundled themes cannot be renamed or deleted.
+    themes.select(light: copyName, dark: ThemeStore.defaultDarkTitle)
+    check(themes.renameTheme(copyName, to: "Renamed Copy"), "renaming a theme")
+    check(themes.lightTitle == "Renamed Copy" && store.contains(title: "Renamed Copy") && !store.contains(title: copyName)
+          && (store.read(title: "Renamed Copy")?["Title"] as? String) == "Renamed Copy", "Light Mode follows the rename: \(themes.lightTitle)")
+    messages.removeAll()
+    check(!themes.renameTheme("Renamed Copy", to: untitled) && store.contains(title: "Renamed Copy"), "a name in use is refused")
+    check(!themes.renameTheme("Renamed Copy", to: untitled.uppercased()) && store.contains(title: "Renamed Copy"), "a name in use in another case is refused")
+    check(!themes.renameTheme("Renamed Copy", to: "a/b") && store.contains(title: "Renamed Copy"), "a name with a slash is refused")
+    check(messages == [String(format: NSLocalizedString("A theme named “%@” already exists.", comment: ""), untitled),
+                       String(format: NSLocalizedString("A theme named “%@” already exists.", comment: ""), untitled.uppercased()),
+                       String(format: NSLocalizedString("“%@” cannot be the name of a theme.", comment: ""), "a/b")], "the reasons told: \(messages)")
+    themes.chooseTheme(ThemeStore.defaultLightTitle)
+    let menu = themes.actionsButton.menu!
+    themes.menuNeedsUpdate(menu)
+    let renameItem = menu.items.first { $0.action == #selector(ThemeSettingsController.renameTheme(_:)) }
+    check(renameItem.map { !themes.validateMenuItem($0) } == true, "a bundled theme cannot be renamed")
+    check(!themes.removeButton.isEnabled, "a bundled theme cannot be deleted")
+    check(menu.items.contains { $0.title == NSLocalizedString("Import from TeXShop", comment: "") && $0.submenu != nil }, "TeXShop's themes are offered in the actions menu")
+    // A changed bundled theme shows a mark and can be restored.
+    var changed = store.read(title: "SolarizedLite")!
+    let original = changed
+    changed["SyntaxComment"] = [0.9, 0.1, 0.1, 1]
+    try! store.write(changed, title: "SolarizedLite")
+    themes.reloadThemeMenus()
+    check(themes.isChanged("SolarizedLite") && cellMarks("SolarizedLite").contains(NSLocalizedString("Customized", comment: "")), "a changed bundled theme is marked")
+    try! store.write(original, title: "SolarizedLite")
+    themes.reloadThemeMenus()
+    // The theme in use moved to the Trash: Light Mode falls back to TeX2img Lite, and the next theme is edited.
+    themes.chooseTheme("Renamed Copy")
+    themes.trashTheme("Renamed Copy")
+    check(!store.contains(title: "Renamed Copy") && themes.lightTitle == ThemeStore.defaultLightTitle, "Light Mode falls back after a delete: \(themes.lightTitle)")
+    check(themes.editingTitle != nil && themes.editingTitle != "Renamed Copy", "another theme is edited after a delete")
+    // Export and import: what is exported is imported again under a free name; a file without a color is refused.
+    let exchange = FileManager.default.temporaryDirectory.appendingPathComponent("theme-exchange-\(UUID().uuidString)")
+    try! FileManager.default.createDirectory(at: exchange, withIntermediateDirectories: true)
+    let exported = exchange.appendingPathComponent("SolarizedDark.plist")
+    try! store.export("SolarizedDark", to: exported)
+    let imported = themes.importURLs([exported])
+    check(imported == ["SolarizedDark 2"] && ThemePalette.sameUsedColors(store.read(title: "SolarizedDark 2") ?? [:], store.read(title: "SolarizedDark")!),
+          "an exported theme comes back under a free name: \(imported)")
+    let empty = exchange.appendingPathComponent("Empty.plist")
+    try! PropertyListSerialization.data(fromPropertyList: ["Title": "Empty"], format: .xml, options: 0).write(to: empty)
+    messages.removeAll()
+    check(themes.importURLs([empty]).isEmpty && !store.contains(title: "Empty"), "a file without a color is not imported")
+    check(messages == [String(format: NSLocalizedString("“%@” is not a theme.", comment: ""), "Empty.plist")], "the reason told: \(messages)")
+    check((try? store.add([:], title: "x")) != nil, "an empty theme can be added (edited) but not exported")
+    check((try? store.export("x", to: exchange.appendingPathComponent("x.plist"))) == nil
+          && !FileManager.default.fileExists(atPath: exchange.appendingPathComponent("x.plist").path), "an empty theme is not exported")
+    // A theme renamed elsewhere while it is edited is not made again under its old name: a color changed then is not
+    // saved, the user is told, and another theme is edited. The window is taken for the key window, as when the user
+    // clicks.
+    do {
+        let keyWindow = class_getInstanceMethod(NSWindow.self, #selector(getter: NSWindow.isKeyWindow))!
+        let original = method_getImplementation(keyWindow)
+        let alwaysKey: @convention(block) (NSWindow) -> Bool = { _ in true }
+        method_setImplementation(keyWindow, imp_implementationWithBlock(alwaysKey))
+        defer { method_setImplementation(keyWindow, original) }
+        themes.chooseTheme(untitled)
+        try! FileManager.default.moveItem(at: store.url(forTitle: untitled)!, to: store.url(forTitle: "Moved Elsewhere")!)
+        let well = themes.wells[.comment]!
+        well.color = .red
+        messages.removeAll()
+        NSApp.sendAction(well.action!, to: well.target, from: well)
+        themes.reloadThemeMenus() // saves the color waiting
+        check(!store.contains(title: untitled) && store.contains(title: "Moved Elsewhere"), "a theme gone elsewhere is not written again")
+        check(messages == [String(format: NSLocalizedString("“%@” is no longer in the Themes folder.", comment: ""), untitled)]
+              && themes.editingTitle != untitled, "the user is told, and another theme is edited: \(messages) \(String(describing: themes.editingTitle))")
+    }
+    for title in [untitled, "\(untitled) 2", "SolarizedDark 2", "Moved Elsewhere", "x"] {
+        if let url = store.url(forTitle: title) { try? FileManager.default.removeItem(at: url) }
+    }
+    try? FileManager.default.removeItem(at: exchange)
     themes.prepareForDisplay(dark: false)
 }
 let translucent: ThemeColors = ["EditorText": [1, 0, 0, 0.5], "EditorFlash": [0, 0, 1, 0.5]]

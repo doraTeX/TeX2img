@@ -76,11 +76,135 @@ struct ThemeStore {
         return url
     }
 
+    /// The themes of the folder: its property list files (not folders or links), by composed name (the file system may
+    /// give a name decomposed), in Finder's order.
     func titles() -> [String] {
         let names = (try? FileManager.default.contentsOfDirectory(atPath: directory.path)) ?? []
-        return names.filter { $0.hasSuffix(".plist") && !$0.hasPrefix(".") }
-            .map { ($0 as NSString).deletingPathExtension }
-            .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
+        var titles: [String] = []
+        for name in names where name.hasSuffix(".plist") && !name.hasPrefix(".") {
+            let title = (name as NSString).deletingPathExtension.precomposedStringWithCanonicalMapping
+            if let url = url(forTitle: title), Self.isRegularFile(url), !titles.contains(title) { titles.append(title) }
+        }
+        return titles.sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+    }
+
+    static func isRegularFile(_ url: URL) -> Bool {
+        (try? FileManager.default.attributesOfItem(atPath: url.path)[.type] as? FileAttributeType) == .typeRegular
+    }
+
+    /// Colors that can be exported and imported as a theme: a dictionary with at least one color (TeXShop 6.00).
+    static func isTheme(_ colors: ThemeColors) -> Bool {
+        colors.keys.contains { $0 != "Title" && ThemePalette.components(colors, key: $0) != nil }
+    }
+
+    /// An error about a theme, named by its title (the list tells the user which).
+    static func error(_ code: CocoaError.Code, title: String) -> CocoaError {
+        CocoaError(code, userInfo: [NSFilePathErrorKey: title])
+    }
+
+    // MARK: The list of themes (TeXShop 6.00's TSThemeFileStore)
+
+    /// Every name in the folder that a theme could have, in any case of its extension and whatever the item is: a new
+    /// theme never takes one of them.
+    private func takenTitles() -> [String] {
+        let names = (try? FileManager.default.contentsOfDirectory(atPath: directory.path)) ?? []
+        return names.filter { ($0 as NSString).pathExtension.caseInsensitiveCompare("plist") == .orderedSame }
+            .map { ($0 as NSString).deletingPathExtension.precomposedStringWithCanonicalMapping }
+    }
+
+    private func hasTitle(_ title: String, except: String? = nil) -> Bool {
+        takenTitles().contains { $0 != except && $0.caseInsensitiveCompare(title) == .orderedSame }
+    }
+
+    /// The title, or the title with the first number from 2 that no theme has.
+    func availableTitle(for title: String) -> String {
+        guard hasTitle(title) else { return title }
+        var number = 2
+        while hasTitle("\(title) \(number)") { number += 1 }
+        return "\(title) \(number)"
+    }
+
+    /// Adds a theme under the title, or the title with a number when it is taken, and returns the title given. The file is
+    /// created only where none is: another TeX2img may take the free name meanwhile, and the next one is tried.
+    @discardableResult
+    func add(_ colors: ThemeColors, title proposed: String) throws -> String {
+        let title = proposed.precomposedStringWithCanonicalMapping
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        for _ in 0..<100 {
+            let candidate = availableTitle(for: title)
+            guard let url = url(forTitle: candidate) else { throw Self.error(.fileWriteInvalidFileName, title: candidate) }
+            var copy = colors
+            copy["Title"] = candidate
+            let data = try PropertyListSerialization.data(fromPropertyList: copy, format: .xml, options: 0)
+            var coordinationError: NSError?, writeError: Error?, written = false
+            NSFileCoordinator(filePresenter: nil).coordinate(writingItemAt: url, options: [], error: &coordinationError) { url in
+                do { try data.write(to: url, options: .withoutOverwriting); written = true } catch { writeError = error }
+            }
+            if written { return candidate }
+            let failure = (writeError ?? coordinationError) as NSError?
+            let exists = (failure?.domain == NSCocoaErrorDomain && failure?.code == CocoaError.fileWriteFileExists.rawValue)
+                || (failure?.domain == NSPOSIXErrorDomain && failure?.code == Int(EEXIST))
+            if !exists { throw failure ?? CocoaError(.fileWriteUnknown) }
+        }
+        throw Self.error(.fileWriteFileExists, title: title)
+    }
+
+    /// Renames a theme: the file is read, moved and given its new title inside it in one coordinated write, so that a color
+    /// saved meanwhile waits for it.
+    func rename(_ title: String, to proposed: String) throws {
+        let newTitle = proposed.precomposedStringWithCanonicalMapping
+        guard title != newTitle else { return }
+        guard let from = url(forTitle: title), let to = url(forTitle: newTitle) else { throw Self.error(.fileWriteInvalidFileName, title: newTitle) }
+        var coordinationError: NSError?, renameError: Error?, renamed = false
+        NSFileCoordinator(filePresenter: nil).coordinate(writingItemAt: from, options: .forMoving, writingItemAt: to, options: .forReplacing,
+                                                          error: &coordinationError) { oldURL, newURL in
+            if hasTitle(newTitle, except: title) { renameError = Self.error(.fileWriteFileExists, title: newTitle); return }
+            guard Self.isRegularFile(oldURL), var colors = read(title: title) else {
+                renameError = Self.error(.fileReadCorruptFile, title: title)
+                return
+            }
+            colors["Title"] = newTitle
+            do {
+                let data = try PropertyListSerialization.data(fromPropertyList: colors, format: .xml, options: 0)
+                try FileManager.default.moveItem(at: oldURL, to: newURL)
+                do {
+                    try data.write(to: newURL, options: .atomic)
+                } catch {
+                    try? FileManager.default.moveItem(at: newURL, to: oldURL)
+                    throw error
+                }
+                renamed = true
+            } catch {
+                renameError = error
+            }
+        }
+        if !renamed { throw renameError ?? coordinationError ?? CocoaError(.fileWriteUnknown) }
+    }
+
+    /// Moves a theme's file to the Trash; never a folder that has a theme's name.
+    func trash(_ title: String) throws {
+        guard let url = url(forTitle: title), Self.isRegularFile(url) else { throw Self.error(.fileNoSuchFile, title: title) }
+        try FileManager.default.trashItem(at: url, resultingItemURL: nil)
+    }
+
+    /// Writes a theme's file where it is to go, when it can be imported again. Nothing is made where it was to go
+    /// otherwise.
+    func export(_ title: String, to destination: URL) throws {
+        guard let url = url(forTitle: title) else { throw Self.error(.fileNoSuchFile, title: title) }
+        let data = try Data(contentsOf: url)
+        guard let colors = (try? PropertyListSerialization.propertyList(from: data, format: nil)) as? ThemeColors, Self.isTheme(colors) else {
+            throw Self.error(.fileReadCorruptFile, title: title)
+        }
+        try data.write(to: destination, options: .atomic)
+    }
+
+    /// Adds the theme of a file under its name (with a number when the name is taken), and returns the title given.
+    func importFile(at url: URL) throws -> String {
+        let data = try Data(contentsOf: url)
+        guard let colors = (try? PropertyListSerialization.propertyList(from: data, format: nil)) as? ThemeColors, Self.isTheme(colors) else {
+            throw Self.error(.fileReadCorruptFile, title: url.lastPathComponent)
+        }
+        return try add(colors, title: url.deletingPathExtension().lastPathComponent)
     }
 
     func read(title: String) -> ThemeColors? {
@@ -88,7 +212,9 @@ struct ThemeStore {
         return (try? PropertyListSerialization.propertyList(from: data, format: nil)) as? ThemeColors
     }
 
-    func write(_ colors: ThemeColors, title: String) throws {
+    /// Writes a theme. With `existing`, only over the theme's own file: a theme renamed or deleted elsewhere is not made
+    /// again under its old name.
+    func write(_ colors: ThemeColors, title: String, existing: Bool = false) throws {
         guard let url = url(forTitle: title) else {
             throw CocoaError(.fileWriteInvalidFileName)
         }
@@ -101,6 +227,10 @@ struct ThemeStore {
         var writeError: Error?
         var written = false
         NSFileCoordinator(filePresenter: nil).coordinate(writingItemAt: url, options: .forReplacing, error: &coordinationError) { url in
+            if existing && !Self.isRegularFile(url) {
+                writeError = Self.error(.fileNoSuchFile, title: title)
+                return
+            }
             do {
                 try data.write(to: url, options: .atomic)
                 written = true
