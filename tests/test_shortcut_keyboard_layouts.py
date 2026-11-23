@@ -44,7 +44,8 @@ def build(directory, store_source, name):
     store.write_text(store_source)
     binary = directory / name
     subprocess.run(["xcrun", "swiftc", "-parse-as-library", "-target", "arm64-apple-macos13", "-module-name", "Probe",
-                    str(ROOT / "tests/ShortcutLayoutDispatch.swift"), str(store), "-o", str(binary)], check=True)
+                    str(ROOT / "tests/ShortcutLayoutDispatch.swift"), str(ROOT / "tests/MemoryDefaults.swift"), str(store),
+                    "-o", str(binary)], check=True)
     return binary
 
 

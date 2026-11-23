@@ -153,11 +153,9 @@ struct Probe {
         window.makeKeyAndOrderFront(nil)
         app.activate(ignoringOtherApps: true)
         spin(0.5)
-        let suite = "tex2img-layout-probe-\(UUID().uuidString)"
-        // exit() skips defer: every way out goes through finish.
+        // exit() skips defer: every way out goes through finish. The store's settings live in memory (MemoryDefaults).
         func finish(_ code: Int32) -> Never {
             restoreLayouts()
-            UserDefaults.standard.removePersistentDomain(forName: suite)
             spin(0.3)
             exit(code)
         }
@@ -181,9 +179,7 @@ struct Probe {
             let main = buildMenu()
             NSApp.mainMenu = main
             spin(0.3)
-            let defaults = UserDefaults(suiteName: suite)!
-            defaults.removePersistentDomain(forName: suite)
-            let store = ShortcutStore(menu: main, defaults: defaults)
+            let store = ShortcutStore(menu: main, defaults: MemoryDefaults())
             spin(0.3)
             checkLikeReference(main, reference, runs, "store started")
             // The keys AppKit shows on this layout, worked out once, give every default as shown.
@@ -241,7 +237,6 @@ struct Probe {
             store.restoreAll()
             spin(0.3)
             checkLikeReference(main, reference, runs, "all restored")
-            defaults.removePersistentDomain(forName: suite)
         }
 
         // Layouts switched while the app runs: the defaults follow the layout, a recorded key stays as recorded.
@@ -249,8 +244,7 @@ struct Probe {
         let main = buildMenu()
         NSApp.mainMenu = main
         spin(0.3)
-        let defaults = UserDefaults(suiteName: suite)!
-        let store = ShortcutStore(menu: main, defaults: defaults)
+        let store = ShortcutStore(menu: main, defaults: MemoryDefaults())
         spin(0.3)
         if let jumpCommand = command(store, jump) {
             require(store.setKey("é", modifiers: [.command, .control], for: jumpCommand) == nil, "recording Control-Command-é on French")
