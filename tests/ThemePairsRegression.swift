@@ -92,6 +92,13 @@ for dark in [false, true] {
           "a white cursor alone: text and cursor read (dark \(dark))")
 }
 
+// The source and the output window are chosen apart: a theme whose two backgrounds are black and which lacks the text and
+// the cursor gets a cursor that reads, whichever color is asked for first.
+let blackBackgrounds: ThemeColors = ["EditorBackground": [0, 0, 0, 1], "ConsoleBackground": [0, 0, 0, 1]]
+_ = drawn(.consoleText, blackBackgrounds, false)
+check(contrast(.cursor, .background, blackBackgrounds, false) >= reads, "the cursor after the output window's text was asked for")
+check(contrast(.consoleText, .consoleBackground, blackBackgrounds, false) >= reads, "the output window's text")
+
 // The fullwidth colors a theme lacks follow the text and the background drawn.
 check(rgb(drawn(.fullwidthSymbol, darkBackground, false)) == rgb(drawn(.text, darkBackground, false)), "fullwidth text follows the text")
 

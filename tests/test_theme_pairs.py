@@ -48,6 +48,7 @@ def main():
             "white and black before the defaults": ("var cost: [Double] = [0, 10, 20, 20]", "var cost: [Double] = [20, 10, 0, 0]"),
             "pairs of own colors counted": ("|| (!missing[a] && !missing[b]) { return 4.5 }", "{ return 4.5 }"),
             "the cursor left out": ("[[nil, .text, .background, .cursor], [nil", "[[nil, .text, .background, nil], [nil"),
+            "groups not told apart in the memory": ('let signature = "\\(dark) \\(chain[1]?.key ?? "") " + chain.map', 'let signature = "\\(dark) " + chain.map'),
             "the output window left out": (", [nil, .consoleText, .consoleBackground, nil]]", "]"),
             "no text first when nothing reads": ("let text = solve(enough, 0) != nil ? enough : greatest { solve($0, 0) != nil }",
                                                  "let text = 0.0"),

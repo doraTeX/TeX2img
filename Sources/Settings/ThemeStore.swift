@@ -676,8 +676,8 @@ enum ThemePairs {
     /// The color drawn for a role the theme lacks, or nil when the role is not in a group.
     static func missingColor(_ role: ThemeRole, in theme: ThemeColors?, dark: Bool) -> NSColor? {
         guard let chain = chains.first(where: { $0.contains(role) }), let place = chain.firstIndex(of: role) else { return nil }
-        // The choice depends only on the theme's colors of the group and the mode: it is made once for them.
-        let signature = "\(dark) " + chain.map { role -> String in
+        // The choice depends only on the group, the theme's colors of the group and the mode: it is made once for them.
+        let signature = "\(dark) \(chain[1]?.key ?? "") " + chain.map { role -> String in
             guard let role, let theme, let components = ThemePalette.components(theme, key: role.key) else { return "-" }
             return "\(components)"
         }.joined(separator: " ")
