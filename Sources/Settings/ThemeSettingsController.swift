@@ -555,10 +555,21 @@ final class ThemeSettingsController: NSObject {
         }
     }
 
+    /// The theme an action is for, taken before the colors waiting are written: writing them can find the theme gone (renamed
+    /// or deleted elsewhere), which says so and edits another; the action then stops instead of acting on that one.
+    private func listActionTitle() -> String? {
+        guard let title = targetListTitle else { return nil }
+        savePendingColors()
+        guard listTitles.contains(title), library.store.contains(title: title) else {
+            if listTitles.contains(title) { themeWentMissing(title) }
+            return nil
+        }
+        return title
+    }
+
     @objc func duplicateTheme(_ sender: Any?) {
         // A color changed a moment ago is in the theme before it is copied.
-        savePendingColors()
-        guard let title = targetListTitle, let colors = library.store.read(title: title) else { return }
+        guard let title = listActionTitle(), let colors = library.store.read(title: title) else { return }
         let proposed = String(format: NSLocalizedString("%@ copy", comment: ""), title)
         do {
             let copy = try library.store.add(colors, title: proposed)
@@ -596,8 +607,7 @@ final class ThemeSettingsController: NSObject {
 
     /// Puts back the colors of the theme that comes with TeX2img, after asking.
     @objc func restoreTheme(_ sender: Any?) {
-        savePendingColors()
-        guard let title = targetListTitle, let original = bundledColors(title: title), let window else { return }
+        guard let title = listActionTitle(), let original = bundledColors(title: title), let window else { return }
         let alert = NSAlert()
         alert.messageText = String(format: NSLocalizedString("Restore the original colors of “%@”?", comment: ""), title)
         alert.addButton(withTitle: NSLocalizedString("Restore", comment: ""))
@@ -640,8 +650,7 @@ final class ThemeSettingsController: NSObject {
     /// Exported is what can be imported again: a theme that is gone, cannot be opened, or is not one is not offered, and
     /// the reason is told.
     @objc func exportTheme(_ sender: Any?) {
-        savePendingColors()
-        guard let title = targetListTitle, let window else { return }
+        guard let title = listActionTitle(), let window else { return }
         guard let colors = library.store.read(title: title), ThemeStore.isTheme(colors) else {
             if library.store.contains(title: title) {
                 showError(String(format: NSLocalizedString("“%@” is not a theme.", comment: ""), title))

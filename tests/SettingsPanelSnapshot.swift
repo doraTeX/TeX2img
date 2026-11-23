@@ -518,6 +518,21 @@ do {
               "a color changed just before is in the copy: \(copiedComment)")
         if let url = store.url(forTitle: duplicated) { try? FileManager.default.removeItem(at: url) }
         themes.reloadThemeMenus()
+        // The same, but the theme renamed elsewhere meanwhile: the user is told, and no theme is duplicated (not the one
+        // edited next either).
+        themes.chooseTheme("\(untitled) 2")
+        try! FileManager.default.moveItem(at: store.url(forTitle: "\(untitled) 2")!, to: store.url(forTitle: "Renamed Away")!)
+        commentWell.color = NSColor(srgbRed: 0.3, green: 0.3, blue: 0.7, alpha: 1)
+        NSApp.sendAction(commentWell.action!, to: commentWell.target, from: commentWell)
+        let titlesBefore = Set(store.titles())
+        messages.removeAll()
+        themes.duplicateTheme(nil)
+        check(Set(store.titles()) == titlesBefore && !store.contains(title: "\(untitled) 2"),
+              "nothing is duplicated when the theme is gone: \(Set(store.titles()).subtracting(titlesBefore))")
+        check(messages == [String(format: NSLocalizedString("“%@” is no longer in the Themes folder.", comment: ""), "\(untitled) 2")],
+              "the user is told once: \(messages)")
+        if let url = store.url(forTitle: "Renamed Away") { try? FileManager.default.removeItem(at: url) }
+        themes.reloadThemeMenus()
         themes.chooseTheme(untitled)
         try! FileManager.default.moveItem(at: store.url(forTitle: untitled)!, to: store.url(forTitle: "Moved Elsewhere")!)
         let well = themes.wells[.comment]!
