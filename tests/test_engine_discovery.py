@@ -33,6 +33,7 @@ def main():
         return 1
     if "--mutations" in sys.argv:
         mutations = {
+            "any name with TeX in it": ('"# + names.joined(separator: "|") + #"', '[A-Za-z0-9.\\\\-]*(?:TeX|dvipdfmx)[A-Za-z0-9\\\\-]*'),
             "the banner is the first line": ("        if let line = lines.first(where: { banner?.firstMatch(in: $0, range: NSRange($0.startIndex..., in: $0)) != nil }) { return line }\n", ""),
             "the version read from the first line": ("                : capture(#\"^[^\\n]*?\\s([0-9]+(?:[.\\-][0-9]+)*)\"#, in: bannerLine(in: output))",
                                                      "                : capture(#\"^[^\\n]*?\\s([0-9]+(?:[.\\-][0-9]+)*)\"#, in: output)"),

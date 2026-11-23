@@ -18,13 +18,16 @@ enum EnginePathDiscovery {
         }
     }
 
-    /// The line of --version output that is the program's banner: its name (a TeX engine, dvips or dvipdfmx) followed by its
-    /// version number, as "e-upTeX 3.14…", "This is LuaHBTeX, Version 1.18.0…" or "This is dvipdfmx Version 2024…". Other
+    /// The line of --version output that is the program's banner: its own name (a TeX engine, dvips or dvipdfmx, as they
+    /// call themselves) followed by its version number, as "e-upTeX 3.14…", "This is LuaHBTeX, Version 1.18.0…" or "This is dvipdfmx Version 2024…". Other
     /// lines (a wrapper's own words, warnings, copyright) are never read for a version or a release, even when they name
     /// TeX Live. Only output without such a line is read from its first line that is not empty (TeXShop 6.00).
     static func bannerLine(in output: String) -> String {
         let lines = output.components(separatedBy: .newlines)
-        let banner = try? NSRegularExpression(pattern: #"^\s*(?:This is )?[A-Za-z0-9.\-]*(?:TeX|tex|dvips\(k\)|dvipdfmx|dvipdfm|dvips)[A-Za-z0-9\-]*,? (?:[Vv]ersion )?[0-9]"#)
+        // The names the engines and drivers give themselves; a wrapper's own name ("TeXWrapper 2.0") is not one of them.
+        let names = ["pdfTeX", "e-pTeX", "e-upTeX", "pTeX", "upTeX", "e-TeX", "XeTeX", "LuaTeX", "LuaHBTeX", "LuajitTeX",
+                     "LuajitHBTeX", "TeX", "dvips\\(k\\)", "dvips", "xdvipdfmx", "dvipdfmx", "dvipdfm"]
+        let banner = try? NSRegularExpression(pattern: #"^\s*(?:This is )?(?:"# + names.joined(separator: "|") + #"),? (?:[Vv]ersion )?[0-9]"#)
         if let line = lines.first(where: { banner?.firstMatch(in: $0, range: NSRange($0.startIndex..., in: $0)) != nil }) { return line }
         return lines.first { !$0.trimmingCharacters(in: .whitespaces).isEmpty } ?? ""
     }

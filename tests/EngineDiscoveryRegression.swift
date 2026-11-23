@@ -79,8 +79,14 @@ struct EngineDiscoveryRegression {
             "printf 'Local wrapper for TeX Live 2030\\ne-upTeX 3.14 (TeX Live 2027/dev)\\n'")
         let wrappedNoYear = try script("wrapped/2025/bin/universal-darwin", "uplatex",
             "printf 'Wrapper started\\ne-upTeX 3.141592653-p4.1.0-u1.29-2.6 (utf8.uptex) (TeX Live 2025)\\n'")
+        let wrappedVersioned = try script("wrapped/2024/bin/universal-darwin", "uplatex",
+            "printf 'TeXWrapper 2.0 for TeX Live 2030\\ne-upTeX 3.141592653-p4.1.0-u1.29-2.6 (utf8.uptex) (TeX Live 2024/dev)\\n'")
         let wrapped = EnginePathDiscovery.candidates(program: "uplatex", paths: EnginePathDiscovery.texLivePaths(roots: [wrapperRoot.path]))
-        precondition(wrapped.map(\.path) == [wrappedDev, wrappedRelease, wrappedNoYear], "\(wrapped.map(\.path))")
+        precondition(wrapped.map(\.path) == [wrappedDev, wrappedRelease, wrappedNoYear, wrappedVersioned], "\(wrapped.map(\.path))")
+        precondition(wrapped[3].label.hasPrefix("TeX Live 2024/dev 3.141592653") && wrapped[3].dev,
+                     "a wrapper with a version of its own is not the engine: \(wrapped[3].label)")
+        precondition(EnginePathDiscovery.bannerLine(in: "TeXWrapper 2.0 for TeX Live 2030\ne-upTeX 3.14 (TeX Live 2027/dev)\n") == "e-upTeX 3.14 (TeX Live 2027/dev)")
+        precondition(EnginePathDiscovery.bannerLine(in: "LaTeXWrap 1.0\nThis is TeX, Version 3.141592653 (TeX Live 2026)\n") == "This is TeX, Version 3.141592653 (TeX Live 2026)")
         precondition(wrapped[0].label.hasPrefix("TeX Live 2027/dev 3.14 — ") && wrapped[0].dev, wrapped[0].label)
         precondition(wrapped[1].label.hasPrefix("TeX Live 2026 3.141592653") && wrapped[2].label.hasPrefix("TeX Live 2025 3.141592653"),
                      "\(wrapped[1].label) \(wrapped[2].label)")
