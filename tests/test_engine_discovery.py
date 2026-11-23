@@ -33,11 +33,13 @@ def main():
         return 1
     if "--mutations" in sys.argv:
         mutations = {
+            "the banner is the first line": ("        if let line = lines.first(where: { banner?.firstMatch(in: $0, range: NSRange($0.startIndex..., in: $0)) != nil }) { return line }\n", ""),
+            "the version read from the first line": ("                : capture(#\"^[^\\n]*?\\s([0-9]+(?:[.\\-][0-9]+)*)\"#, in: bannerLine(in: output))",
+                                                     "                : capture(#\"^[^\\n]*?\\s([0-9]+(?:[.\\-][0-9]+)*)\"#, in: output)"),
             "development builds sorted as releases": ("            if a.1.dev != b.1.dev { return b.1.dev }\n", ""),
             "the first entry selected": ("        candidates.firstIndex { $0.year > 0 && !$0.dev } ?? 0", "        0"),
             "any dev prefix is a development build": ("(/dev(?=[/)\\s]|$))?", "(/dev)?"),
-            "the year read from the whole output": ("        let line = output.components(separatedBy: .newlines).first { !$0.trimmingCharacters(in: .whitespaces).isEmpty } ?? \"\"",
-                                                     "        let line = output"),
+            "the year read from the whole output": ("        let line = bannerLine(in: output)\n", "        let line = output\n"),
         }
         for name, (old, new) in mutations.items():
             assert source.count(old) == 1, name

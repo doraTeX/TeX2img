@@ -18,11 +18,22 @@ enum EnginePathDiscovery {
         }
     }
 
-    /// The release named in a --version banner (its first line): name, year and whether it is a development build; nil when
+    /// The line of --version output that is the program's banner: its name (a TeX engine, dvips or dvipdfmx) followed by its
+    /// version number, as "e-upTeX 3.14…", "This is LuaHBTeX, Version 1.18.0…" or "This is dvipdfmx Version 2024…". Other
+    /// lines (a wrapper's own words, warnings, copyright) are never read for a version or a release, even when they name
+    /// TeX Live. Only output without such a line is read from its first line that is not empty (TeXShop 6.00).
+    static func bannerLine(in output: String) -> String {
+        let lines = output.components(separatedBy: .newlines)
+        let banner = try? NSRegularExpression(pattern: #"^\s*(?:This is )?[A-Za-z0-9.\-]*(?:TeX|tex|dvips\(k\)|dvipdfmx|dvipdfm|dvips)[A-Za-z0-9\-]*,? (?:[Vv]ersion )?[0-9]"#)
+        if let line = lines.first(where: { banner?.firstMatch(in: $0, range: NSRange($0.startIndex..., in: $0)) != nil }) { return line }
+        return lines.first { !$0.trimmingCharacters(in: .whitespaces).isEmpty } ?? ""
+    }
+
+    /// The release named in a --version banner (bannerLine): name, year and whether it is a development build; nil when
     /// none. Between releases the sources say "YYYY/dev"; distributors may append "/Name". Builds outside TeX Live say
     /// "Web2C". "dev" counts only as a whole component, so that "/dev-tools" stays a distributor's name (TeXShop 6.00).
     static func release(inBanner output: String) -> (name: String, year: Int, dev: Bool)? {
-        let line = output.components(separatedBy: .newlines).first { !$0.trimmingCharacters(in: .whitespaces).isEmpty } ?? ""
+        let line = bannerLine(in: output)
         guard let regex = try? NSRegularExpression(pattern: #"(?:TeX Live|Web2C) ([0-9]{4})(/dev(?=[/)\s]|$))?"#),
               let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)),
               let whole = Range(match.range, in: line), let year = Range(match.range(at: 1), in: line) else { return nil }
@@ -156,7 +167,8 @@ enum EnginePathDiscovery {
             guard !seen.contains(identity), let output = versionOutput(path) else { continue }
             seen.insert(identity)
             let release = program == "gs" ? nil : release(inBanner: output)
-            let version = capture(program == "gs" ? #"^\s*([0-9]+(?:\.[0-9]+)+)"# : #"^[^\n]*?\s([0-9]+(?:[.\-][0-9]+)*)"#, in: output)
+            let version = program == "gs" ? capture(#"^\s*([0-9]+(?:\.[0-9]+)+)"#, in: output)
+                : capture(#"^[^\n]*?\s([0-9]+(?:[.\-][0-9]+)*)"#, in: bannerLine(in: output))
             matches.append((matches.count, Candidate(path: path, version: version, year: release?.year ?? 0,
                                                      release: release?.name ?? "", dev: release?.dev ?? false)))
         }

@@ -70,6 +70,25 @@ struct EngineDiscoveryRegression {
         precondition(EnginePathDiscovery.release(inBanner: "This is dvipdfmx Version 20240305") == nil)
         precondition(EnginePathDiscovery.release(inBanner: "\nThis is dvipdfmx Version 20240305\nwrapped for TeX Live 2030") == nil,
                      "a release named after the banner line is not taken")
+        // A wrapper that prints its own words before the engine's banner, with a year of its own or none: the version, the
+        // release and whether it is a development build come from the engine's line only.
+        let wrapperRoot = root.appendingPathComponent("wrapped")
+        let wrappedRelease = try script("wrapped/2026/bin/universal-darwin", "uplatex",
+            "printf 'Local wrapper for TeX Live 2030\\ne-upTeX 3.141592653-p4.1.0-u1.30-2.6 (utf8.uptex) (TeX Live 2026)\\nkpathsea version 6.4.0\\n'")
+        let wrappedDev = try script("wrapped/2027/bin/universal-darwin", "uplatex",
+            "printf 'Local wrapper for TeX Live 2030\\ne-upTeX 3.14 (TeX Live 2027/dev)\\n'")
+        let wrappedNoYear = try script("wrapped/2025/bin/universal-darwin", "uplatex",
+            "printf 'Wrapper started\\ne-upTeX 3.141592653-p4.1.0-u1.29-2.6 (utf8.uptex) (TeX Live 2025)\\n'")
+        let wrapped = EnginePathDiscovery.candidates(program: "uplatex", paths: EnginePathDiscovery.texLivePaths(roots: [wrapperRoot.path]))
+        precondition(wrapped.map(\.path) == [wrappedDev, wrappedRelease, wrappedNoYear], "\(wrapped.map(\.path))")
+        precondition(wrapped[0].label.hasPrefix("TeX Live 2027/dev 3.14 — ") && wrapped[0].dev, wrapped[0].label)
+        precondition(wrapped[1].label.hasPrefix("TeX Live 2026 3.141592653") && wrapped[2].label.hasPrefix("TeX Live 2025 3.141592653"),
+                     "\(wrapped[1].label) \(wrapped[2].label)")
+        precondition(EnginePathDiscovery.preselectedIndex(wrapped) == 1, "the release 2026 is selected, not the wrapper's year")
+        for banner in ["This is LuaHBTeX, Version 1.18.0 (TeX Live 2026)", "This is dvips(k) 2026.1 (TeX Live 2026)  Copyright",
+                       "This is dvipdfmx Version 20260305 by the DVIPDFMx project team,", "pdfTeX 3.141592653-2.6-1.40.28 (TeX Live 2026)"] {
+            precondition(EnginePathDiscovery.bannerLine(in: "pdfTeX wrapper: Local build for TeX Live 2099\n" + banner + "\n") == banner, banner)
+        }
         print("Engine discovery regression tests passed")
     }
 }
