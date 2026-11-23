@@ -214,14 +214,24 @@ final class ShortcutPaneController: NSObject, NSTableViewDataSource, NSTableView
             // The keys AppKit shows change a little after an assignment or a change of keyboard layout.
             shownKeysObserver = store.map { store in
                 NotificationCenter.default.addObserver(forName: ShortcutStore.shownKeysChangedNotification, object: store, queue: .main) { [weak self] _ in
-                    guard let self, self.editingCommand == nil else { return }
-                    self.reloadCommands()
+                    self?.shownKeysChanged()
                 }
             }
             reloadCommands()
         }
     }
     private var shownKeysObserver: NSObjectProtocol?
+
+    /// The keys AppKit shows changed (another keyboard layout): the list, the recording field and the default under the
+    /// list show them, and recording goes on.
+    private func shownKeysChanged() {
+        guard let editing = editingCommand else { reloadCommands(); return }
+        let column = table.column(withIdentifier: NSUserInterfaceItemIdentifier("shortcut"))
+        let rows = IndexSet((0..<table.numberOfRows).filter { command(at: $0) !== editing })
+        if column >= 0, !rows.isEmpty { table.reloadData(forRowIndexes: rows, columnIndexes: IndexSet(integer: column)) }
+        updateRecorder()
+        updateStatus()
+    }
 
     /// A key as the list shows it: for a command, its key as AppKit shows it on the current keyboard layout.
     private func shownKey(_ item: NSMenuItem, command: ShortcutCommand?) -> String {
