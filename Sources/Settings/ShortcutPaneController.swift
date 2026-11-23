@@ -208,7 +208,26 @@ private final class ShortcutRecordingCell: NSView {
 
 /// The menu shortcuts group of the Keyboard category (TeXShop's TSShortcutPaneController without macros).
 final class ShortcutPaneController: NSObject, NSTableViewDataSource, NSTableViewDelegate, NSSearchFieldDelegate {
-    var store: ShortcutStore? { didSet { reloadCommands() } }
+    var store: ShortcutStore? {
+        didSet {
+            if let observer = shownKeysObserver { NotificationCenter.default.removeObserver(observer) }
+            // The keys AppKit shows change a little after an assignment or a change of keyboard layout.
+            shownKeysObserver = store.map { store in
+                NotificationCenter.default.addObserver(forName: ShortcutStore.shownKeysChangedNotification, object: store, queue: .main) { [weak self] _ in
+                    guard let self, self.editingCommand == nil else { return }
+                    self.reloadCommands()
+                }
+            }
+            reloadCommands()
+        }
+    }
+    private var shownKeysObserver: NSObjectProtocol?
+
+    /// A key as the list shows it: for a command, its key as AppKit shows it on the current keyboard layout.
+    private func shownKey(_ item: NSMenuItem, command: ShortcutCommand?) -> String {
+        let binding = command.flatMap { store?.shownBinding(for: $0) } ?? ShortcutKeys.shownBinding(item)
+        return ShortcutKeys.display(key: binding.key, modifiers: binding.modifiers)
+    }
     /// Tab is reserved when it completes commands.
     var completionUsesTab: () -> Bool = { false }
     weak var window: NSWindow?
@@ -521,7 +540,7 @@ final class ShortcutPaneController: NSObject, NSTableViewDataSource, NSTableView
     private func inactiveReason(for match: ShortcutMatch) -> String? {
         guard !match.winner, let owner = searchMatches.first(where: \.winner) else { return nil }
         return String(format: NSLocalizedString("This shortcut is inactive because it conflicts with “%@” (%@).", comment: ""),
-                      owner.path, ShortcutKeys.display(key: owner.item.keyEquivalent, modifiers: owner.item.keyEquivalentModifierMask))
+                      owner.path, shownKey(owner.item, command: owner.command))
     }
 
     // Ordinary rows draw their text 2pt inside the cell; the warning row lines up with them.
@@ -587,12 +606,12 @@ final class ShortcutPaneController: NSObject, NSTableViewDataSource, NSTableView
             let match = searchMatches[row]
             command = match.command
             reason = inactiveReason(for: match)
-            text = !isCommand ? ShortcutKeys.display(key: match.item.keyEquivalent, modifiers: match.item.keyEquivalentModifierMask)
+            text = !isCommand ? shownKey(match.item, command: match.command)
                 : reason == nil ? "\(match.path) — \(NSLocalizedString("Assigned", comment: ""))" : match.path
         } else {
             guard visibleCommands.indices.contains(row) else { return nil }
             command = visibleCommands[row]
-            text = isCommand ? command!.path : ShortcutKeys.display(key: command!.item.keyEquivalent, modifiers: command!.item.keyEquivalentModifierMask)
+            text = isCommand ? command!.path : shownKey(command!.item, command: command)
         }
         if !isCommand, let command, command === editingCommand { return recordingCell }
         let label = !isCommand && command != nil ? shortcutLabel(text) : NSTextField(labelWithString: text)
@@ -660,8 +679,12 @@ final class ShortcutPaneController: NSObject, NSTableViewDataSource, NSTableView
     @objc private func restoreShortcut(_ sender: Any?) {
         endRecording()
         guard let command = selectedCommand, let store else { return }
-        showError(store.restore(command))
-        reloadCommands()
+        // Right after a change of keyboard layout, the keys it shows are worked out first (TeXShop 6.00).
+        store.whenKeysOfCurrentLayoutAreKnown { [weak self] in
+            guard let self, store.commands.contains(where: { $0 === command }) else { return }
+            self.showError(store.restore(command))
+            self.reloadCommands()
+        }
     }
 
     @objc private func restoreAll(_ sender: Any?) {
@@ -778,8 +801,7 @@ final class ShortcutPaneController: NSObject, NSTableViewDataSource, NSTableView
     private func updateRecorder() {
         guard let command = editingCommand else { return }
         // An empty field, as in Xcode, for a command without a shortcut (the list shows a dash).
-        let current = command.item.keyEquivalent.isEmpty ? ""
-            : ShortcutKeys.display(key: command.item.keyEquivalent, modifiers: command.item.keyEquivalentModifierMask)
+        let current = command.item.keyEquivalent.isEmpty ? "" : shownKey(command.item, command: command)
         recorder.shortcut = capturedBinding.map { ShortcutKeys.display(key: $0.key, modifiers: $0.modifiers) } ?? current
         recorder.removeButton.isHidden = command.item.keyEquivalent.isEmpty
         recordingCell.warning.isHidden = recordingError == nil
@@ -791,9 +813,10 @@ final class ShortcutPaneController: NSObject, NSTableViewDataSource, NSTableView
         let error = editingCommand != nil ? recordingError : nil
         var text = error
         if text == nil, let command = editingCommand ?? selectedCommand {
+            // The default as the current keyboard layout shows it (on a French layout, Command-& for Command-1).
+            let shown = store?.shownDefault(for: command) ?? ShortcutBinding(command.defaultKey, command.defaultModifiers)
             text = command.defaultKey.isEmpty ? NSLocalizedString("Default shortcut: None", comment: "")
-                : String(format: NSLocalizedString("Default shortcut: %@", comment: ""),
-                         ShortcutKeys.display(key: command.defaultKey, modifiers: command.defaultModifiers))
+                : String(format: NSLocalizedString("Default shortcut: %@", comment: ""), ShortcutKeys.display(key: shown.key, modifiers: shown.modifiers))
         }
         // A blank line keeps the list and the buttons where they are.
         statusText.stringValue = text?.isEmpty == false ? text! : " "
@@ -842,6 +865,20 @@ final class ShortcutPaneController: NSObject, NSTableViewDataSource, NSTableView
 
     /// A key in use by another command is refused and recording goes on.
     private func applyCapturedShortcut() {
+        guard let store, let binding = capturedBinding, let command = editingCommand else { return }
+        // Right after a change of keyboard layout, the keys it shows are worked out first (TeXShop 6.00): the key is then
+        // judged as the menu shows the other keys.
+        guard store.knowsKeysOfCurrentLayout else {
+            store.whenKeysOfCurrentLayoutAreKnown { [weak self] in
+                guard let self, self.editingCommand === command, self.capturedBinding == binding else { return }
+                self.assignCapturedShortcut()
+            }
+            return
+        }
+        assignCapturedShortcut()
+    }
+
+    private func assignCapturedShortcut() {
         guard let store, let binding = capturedBinding, let command = editingCommand else { return }
         if let conflict = conflictForCapturedShortcut() {
             showRecordingError(conflict)
