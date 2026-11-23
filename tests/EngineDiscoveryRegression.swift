@@ -49,6 +49,27 @@ struct EngineDiscoveryRegression {
         let dviOld = try script("old", "dvipdfmx", "echo 'This is dvipdfmx Version 20240305'")
         let dviNew = try script("new", "dvipdfmx", "echo 'This is dvipdfmx Version 20260305'")
         precondition(EnginePathDiscovery.candidates(program: "dvipdfmx", paths: paths).map(\.path) == [dviNew, dviOld])
+        // Development builds of TeX Live (TeXShop 6.00): listed by year as the banner names them (not by their folder), after the release of the
+        // same year, and the newest release is selected first.
+        let devRoot = root.appendingPathComponent("dev")
+        let release2026 = try script("dev/2026/bin/universal-darwin", "uplatex", "echo 'e-upTeX 3.141592653-p4.1.0-u1.30-2.6 (utf8.uptex) (TeX Live 2026)'")
+        let dev2027 = try script("dev/2027/bin/universal-darwin", "uplatex", "echo 'e-upTeX 3.141592653-p4.1.1-u1.31-2.6 (utf8.uptex) (TeX Live 2027/dev)'")
+        let dev2026 = try script("dev/2028/bin/universal-darwin", "uplatex", "echo 'e-upTeX 3.141592653-p4.1.0-u1.30-2.6 (utf8.uptex) (TeX Live 2026/dev)'")
+        let devFound = EnginePathDiscovery.candidates(program: "uplatex", paths: EnginePathDiscovery.texLivePaths(roots: [devRoot.path]))
+        precondition(devFound.map(\.path) == [dev2027, release2026, dev2026], "\(devFound.map(\.path))")
+        precondition(devFound[0].label.hasPrefix("TeX Live 2027/dev ") && devFound[0].dev && !devFound[1].dev, devFound[0].label)
+        precondition(devFound[1].label.hasPrefix("TeX Live 2026 3.141592653"), devFound[1].label)
+        precondition(EnginePathDiscovery.preselectedIndex(devFound) == 1, "the newest release is selected")
+        // Only development builds: the newest of them.
+        precondition(EnginePathDiscovery.preselectedIndex([devFound[0], devFound[2]]) == 0)
+        // A distributor's name is not a development build, and only the banner line names the release.
+        precondition(EnginePathDiscovery.release(inBanner: "pdfTeX 3.14 (TeX Live 2026/dev-tools)")?.dev == false)
+        precondition(EnginePathDiscovery.release(inBanner: "pdfTeX 3.14 (TeX Live 2026/Debian)").map { ($0.name, $0.dev) } ?? ("", true) == ("TeX Live 2026", false))
+        precondition(EnginePathDiscovery.release(inBanner: "pdfTeX 3.14 (Web2C 2027/dev)").map { ($0.name, $0.year, $0.dev) } ?? ("", 0, false) == ("Web2C 2027/dev", 2027, true))
+        precondition(EnginePathDiscovery.release(inBanner: "pdfTeX 3.14 (TeX Live 2026)\nLocal wrapper for TeX Live 2030")?.year == 2026)
+        precondition(EnginePathDiscovery.release(inBanner: "This is dvipdfmx Version 20240305") == nil)
+        precondition(EnginePathDiscovery.release(inBanner: "\nThis is dvipdfmx Version 20240305\nwrapped for TeX Live 2030") == nil,
+                     "a release named after the banner line is not taken")
         print("Engine discovery regression tests passed")
     }
 }

@@ -7,10 +7,31 @@ enum EnginePathDiscovery {
         let path: String
         let version: String
         let year: Int
+        /// The release as the banner names it ("TeX Live 2027/dev", "Web2C 2026"), and whether it is a development build
+        /// (TeXShop 6.00).
+        var release: String = ""
+        var dev: Bool = false
         var label: String {
-            let description = year > 0 ? "TeX Live \(year) \(version)" : version
+            let name = release.isEmpty ? (year > 0 ? "TeX Live \(year)" : "") : release
+            let description = [name, version].filter { !$0.isEmpty }.joined(separator: " ")
             return "\(description.isEmpty ? "?" : description) — \(path)"
         }
+    }
+
+    /// The release named in a --version banner (its first line): name, year and whether it is a development build; nil when
+    /// none. Between releases the sources say "YYYY/dev"; distributors may append "/Name". Builds outside TeX Live say
+    /// "Web2C". "dev" counts only as a whole component, so that "/dev-tools" stays a distributor's name (TeXShop 6.00).
+    static func release(inBanner output: String) -> (name: String, year: Int, dev: Bool)? {
+        let line = output.components(separatedBy: .newlines).first { !$0.trimmingCharacters(in: .whitespaces).isEmpty } ?? ""
+        guard let regex = try? NSRegularExpression(pattern: #"(?:TeX Live|Web2C) ([0-9]{4})(/dev(?=[/)\s]|$))?"#),
+              let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)),
+              let whole = Range(match.range, in: line), let year = Range(match.range(at: 1), in: line) else { return nil }
+        return (String(line[whole]), Int(line[year]) ?? 0, match.range(at: 2).location != NSNotFound)
+    }
+
+    /// The candidate to select first: the newest release a banner names; without one, the first (TeXShop 6.00).
+    static func preselectedIndex(_ candidates: [Candidate]) -> Int {
+        candidates.firstIndex { $0.year > 0 && !$0.dev } ?? 0
     }
 
     static func texLivePaths(roots: [String]) -> [String] {
@@ -134,14 +155,17 @@ enum EnginePathDiscovery {
             let identity = (path as NSString).resolvingSymlinksInPath
             guard !seen.contains(identity), let output = versionOutput(path) else { continue }
             seen.insert(identity)
-            let year = Int(capture("TeX Live ([0-9]{4})", in: output)) ?? 0
+            let release = program == "gs" ? nil : release(inBanner: output)
             let version = capture(program == "gs" ? #"^\s*([0-9]+(?:\.[0-9]+)+)"# : #"^[^\n]*?\s([0-9]+(?:[.\-][0-9]+)*)"#, in: output)
-            matches.append((matches.count, Candidate(path: path, version: version, year: year)))
+            matches.append((matches.count, Candidate(path: path, version: version, year: release?.year ?? 0,
+                                                     release: release?.name ?? "", dev: release?.dev ?? false)))
         }
         return matches.sorted { a, b in
             let ak = a.1.year > 0 || !a.1.version.isEmpty, bk = b.1.year > 0 || !b.1.version.isEmpty
             if ak != bk { return ak }
             if a.1.year != b.1.year { return a.1.year > b.1.year }
+            // "YYYY/dev" is the trunk before the YYYY release, so it is older than that release.
+            if a.1.dev != b.1.dev { return b.1.dev }
             let order = a.1.version.compare(b.1.version, options: .numeric)
             return order == .orderedSame ? a.0 < b.0 : order == .orderedDescending
         }.map { $0.1 }
